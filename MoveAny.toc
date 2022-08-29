@@ -1,0 +1,30 @@
+## Interface: 90207
+## Version: 0.1.0
+## Title: MoveAny |T135994/:16:16:0:0|t by |cFFAAAAFFD4KiR |T132115/:16:16:0:0|t 
+## Notes: Move Any Ui or Frame
+## Author: D4KiR
+## DefaultState: enabled
+## SavedVariables: MATAB
+## SavedVariablesPerCharacter: MATABPC
+## X-Curse-Project-ID: 646134
+## X-Wago-ID: e56n3pK9
+
+libs\LibDBIcon-1.0\embeds.xml
+libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
+
+libs/math.lua
+libs/db.lua
+libs/dropdown.lua
+
+ele/actionbars.lua
+ele/bagbar.lua
+ele/buffbar.lua
+ele/frames.lua
+ele/malock.lua
+ele/mavehicleseatindicator.lua
+ele/micromenu.lua
+ele/minimap.lua
+ele/multicastactionbar.lua
+ele/petbar.lua
+ele/stancebar.lua
+core.lua
