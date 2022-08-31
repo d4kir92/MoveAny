@@ -503,6 +503,10 @@ function MoveAny:Event( event, ... )
 			["name"] = "MAPetBar",
 			["lstr"] = "PetBar"
 		} )
+		MoveAny:RegisterWidget( {
+			["name"] = "PossessBarFrame",
+			["lstr"] = "PossessBarFrame"
+		} )
 	end
 	if ZoneAbilityFrame then
 		ZoneAbilityFrame:SetParent( UIParent )
