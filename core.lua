@@ -553,7 +553,7 @@ function MoveAny:Event( event, ... )
 		} )
 		MoveAny:RegisterWidget( {
 			["name"] = "MultiCastActionBarFrame",
-			["lstr"] = "MultiCastActionBarFrame"
+			["lstr"] = "totemactionbar"
 		} )
 	end
 
