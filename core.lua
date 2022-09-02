@@ -606,8 +606,8 @@ function MoveAny:Event( event, ... )
 		OnTooltipShow = function(tooltip)
 			if not tooltip or not tooltip.AddLine then return end
 			tooltip:AddLine( "MoveAny")
-			tooltip:AddLine( "LeftClick = Locks/Unlocks" )
-			tooltip:AddLine( "RightClick = Options" )
+			tooltip:AddLine( "LeftClick = Locks/Unlocks + Options" )
+			--tooltip:AddLine( "RightClick = Options" )
 		end,
 	})
 	if MoveAnyMinimapIcon then
@@ -624,6 +624,11 @@ function MoveAny:Event( event, ... )
 	end
 
 	--print("|cff00ff00Loaded " .. AddOnName )
+end
+
+SLASH_MOAN1, SLASH_MOAN2 = "/moan", "/moveany"
+SlashCmdList["MOAN"] = function(msg)
+	MoveAny:ToggleDrag()
 end
 
 local f = CreateFrame("Frame")
