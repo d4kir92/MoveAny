@@ -462,6 +462,10 @@ function MoveAny:Event( event, ... )
 		["lstr"] = "IAMoneyBar"
 	} )
 	MoveAny:RegisterWidget( {
+		["name"] = "IATokenBar",
+		["lstr"] = "IATokenBar"
+	} )
+	MoveAny:RegisterWidget( {
 		["name"] = "IASkills",
 		["lstr"] = "IASkills"
 	} )
