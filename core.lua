@@ -521,7 +521,33 @@ function MoveAny:Event( event, ... )
 		["name"] = "ZoneAbilityFrame",
 		["lstr"] = "ZoneAbilityFrame"
 	} )
-	
+	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
+		local glfsw, glfsh = 244, 84
+		if GroupLootFrame1 then
+			glfsw, glfsh = GroupLootFrame1:GetSize()
+			for i = 2, 10 do
+				local glf = _G["GroupLootFrame" .. i]
+				if glf then -- i till 4 in classic
+					hooksecurefunc( glf, "SetPoint", function( self, ... )
+						if self.masetpoint then return end
+						self.masetpoint = true
+				
+						self:SetMovable( true )
+						self:ClearAllPoints()
+						self:SetPoint( "BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4 )
+						
+						self.masetpoint = false
+					end )
+				end
+			end
+		end
+		MoveAny:RegisterWidget( {
+			["name"] = "GroupLootFrame1",
+			["lstr"] = "GroupLootFrame1",
+			["sw"] = glfsw,
+			["sh"] = glfsh
+		} )
+	end
 	if ExtraAbilityContainer then
 		ExtraAbilityContainer:SetSize( 180, 100 )
 		ExtraAbilityContainer:ClearAllPoints()
