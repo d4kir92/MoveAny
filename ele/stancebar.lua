@@ -20,9 +20,11 @@ function MoveAny:UpdateStanceBar()
 					local bb = _G["StanceButton" .. i]
 					if bb then
 						bb:SetSize( btnsize, btnsize )
-						bb:ClearAllPoints()
-						bb:SetParent( MAStanceBar )
-						bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
+
+						--bb:SetParent( MAStanceBar )
+						--bb:ClearAllPoints()
+						--bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
+
 						bb.Hide = bb.Show
 						bb:Show()
 					end
