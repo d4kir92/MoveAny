@@ -84,6 +84,9 @@ function MoveAny:InitMALock()
 	AddCheckBox( 10, py, "FOCUSFRAME", "Focusframe" )
 	py = py - sh
 
+	AddCheckBox( 10, py, "RUNEFRAME", "DK - RuneFrame" )
+	py = py - sh
+
 	AddCheckBox( 10, py, "GROUPLOOTCONTAINER", "GroupLootContainer" )
 	py = py - sh
 	

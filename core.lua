@@ -108,32 +108,10 @@ function MoveAny:RegisterWidget( tab )
 			dragframe.t:SetColorTexture( MoveAny:GetColor( "el" ) )
 
 			dragframe.name = dragframe:CreateFontString( nil, nil, "GameFontNormal" )
-			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 7 )
+			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
+			local font, fontSize, fontFlags = dragframe.name:GetFont()
+			dragframe.name:SetFont( font, 15, fontFlags )
 			dragframe.name:SetText( lstr or name )
-
-			dragframe.pos = dragframe:CreateFontString( nil, nil, "GameFontNormal" )
-			dragframe.pos:SetPoint( "CENTER", dragframe, "CENTER", 0, -7 )
-			dragframe.pos:SetText( "LOADING" )
-
-			function dragframe:UpdatePosition()
-				if MADrag then
-					local frame = _G[name]
-					local ofsx = 0
-					local ofsy = 0
-					if frame then
-						_, _, _, ofsx, ofsy = frame:GetPoint()
-					end
-					if ofsx and ofsy then
-						local text = "x: " .. MAMathR( ofsx ) .. " y: " .. MAMathR( ofsy )
-						dragframe.pos:SetText( text )
-					end
-
-					C_Timer.After( 0.3, dragframe.UpdatePosition )
-				else
-					C_Timer.After( 0.5, dragframe.UpdatePosition )
-				end
-			end
-			dragframe:UpdatePosition()
 		end
 
 		dragframe:SetAlpha( 1 )
@@ -327,6 +305,12 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "PlayerFrame",
 			["lstr"] = PLAYER
+		} )
+	end
+	if MoveAny:IsEnabled( "RUNEFRAME", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "RuneFrame",
+			["lstr"] = "RuneFrame"
 		} )
 	end
 	if MoveAny:IsEnabled( "TARGETFRAME", true ) then
@@ -737,6 +721,9 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	btn:SetScript( "OnClick", function()
 		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
 		MoveAny:SetElePoint( name, p1, p2, p3, p4 + x, p5 + y )
+
+		p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
+		parent.pos:SetText( format( "Position X: %d Y:%d", p4, p5 ) )
 	end )
 
 	return btn
@@ -758,18 +745,28 @@ function MAMenuOptions( opt, frame )
 		local content = tab.content
 
 		if string.find( content.name, GENERAL ) then
-			local yp1 = MAMoveButton( content, name, btnsize * 2, 0, 0, 1,				"Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down" )
+			content.pos = content:CreateFontString( nil, nil, "GameFontNormal" )
+			content.pos:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -4 )
+			local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
+			content.pos:SetText( format( "Position X: %d Y:%d", p4, p5 ) )
+
 			local yp5 = MAMoveButton( content, name, btnsize * 2, -btnsize * 1, 0, 5, 	"Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down" )
-
-			local ym5 = MAMoveButton( content, name, btnsize * 2, -btnsize * 3, 0, -5,	"Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down" )
+			local yp1 = MAMoveButton( content, name, btnsize * 2, -btnsize * 2, 0, 1,				"Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down" )
+			
 			local ym1 = MAMoveButton( content, name, btnsize * 2, -btnsize * 4, 0, -1, 	"Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down" )
+			local ym5 = MAMoveButton( content, name, btnsize * 2, -btnsize * 5, 0, -5,	"Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down" )
+			
+			local xm5 = MAMoveButton( content, name, 0, -btnsize * 3, -5, 0,	"Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up" )
+			local xm1 = MAMoveButton( content, name, btnsize * 1, -btnsize * 3, -1, 0, 			"Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up" )
 
-			local xm1 = MAMoveButton( content, name, 0, -btnsize * 2, -1, 0, 			"Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up" )
-			local xm5 = MAMoveButton( content, name, btnsize * 1, -btnsize * 2, -5, 0,	"Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up" )
+			local xp1 = MAMoveButton( content, name, btnsize * 3, -btnsize * 3, 1, 0,	"Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up" )
+			local xp5 = MAMoveButton( content, name, btnsize * 4, -btnsize * 3, 5, 0, 	"Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up" )
 
-			local xp5 = MAMoveButton( content, name, btnsize * 3, -btnsize * 2, 5, 0, 	"Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up" )
-			local xp1 = MAMoveButton( content, name, btnsize * 4, -btnsize * 2, 1, 0,	"Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up" )
-		
+			content.scale = content:CreateFontString( nil, nil, "GameFontNormal" )
+			content.scale:SetPoint( "TOPLEFT", content, "TOPLEFT", 200, -4 )
+			local scale = MoveAny:GetEleScale( name )
+			content.scale:SetText( format( "Scale: %0.1f", scale ) )
+
 			local sup = CreateFrame( "Button", "sup", content )
 			sup:SetNormalTexture( "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up" )
 			sup:SetPushedTexture( "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down" )
@@ -778,6 +775,7 @@ function MAMenuOptions( opt, frame )
 			sup:SetPoint( "TOPLEFT", content, "TOPLEFT", 200, -24 )
 			sup:SetScript( "OnClick", function()
 				MoveAny:SetEleScale( name, frame:GetScale() + 0.1 )
+				content.scale:SetText( format( "Scale: %0.1f", MoveAny:GetEleScale( name ) ) )
 			end )
 
 			local sdn = CreateFrame( "Button", "sdn", content )
@@ -788,6 +786,7 @@ function MAMenuOptions( opt, frame )
 			sdn:SetPoint( "TOPLEFT", content, "TOPLEFT", 200, -48 )
 			sdn:SetScript( "OnClick", function()
 				MoveAny:SetEleScale( name, frame:GetScale() - 0.1 )
+				content.scale:SetText( format( "Scale: %d", MoveAny:GetEleScale( name ) ) )
 			end )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
 			opts["ROWS"] = opts["ROWS"] or 1
