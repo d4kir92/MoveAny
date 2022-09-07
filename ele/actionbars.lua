@@ -63,34 +63,6 @@ function MAUpdateActionBar( frame )
 	end
 end
 
-function MAUpdateAction()
-	if not InCombatLockdown() then
-		if abs then
-			for i, v in pairs( abs ) do
-				if v.btns then
-					for x, abtn in pairs( v.btns ) do
-						if abtn.UpdateAction then
-							abtn:UpdateAction()
-						elseif ActionButton_UpdateAction then
-							ActionButton_UpdateAction( abtn )
-							ActionButton_Update( abtn )
-						end
-						if abtn.UpdateHotkeys then
-							abtn:UpdateHotkeys( abtn.buttonType )
-						elseif ActionButton_UpdateHotkeys then
-							ActionButton_UpdateHotkeys( abtn, abtn.buttonType);
-						end
-					end
-				else
-					MoveAny:MSG_Error( "[MAUpdateAction] Missing ActionButtons" )
-				end
-			end
-		else
-			MoveAny:MSG_Error( "[MAUpdateAction] Missing ActionBars" )
-		end
-	end
-end
-
 function MoveAny:CustomBars()
 	-- Hide Artworks
 	for i = 0, 3 do
@@ -146,7 +118,7 @@ function MoveAny:CustomBars()
 					end
 
 					if _G[btnname] == nil then
-						_G[btnname] = CreateFrame( "CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate, SecureHandlerStateTemplate" )
+						_G[btnname] = CreateFrame( "CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate" )
 
 						_G[btnname].commandName = "CLICK " .. btnname
 						_G["BINDING_NAME_CLICK " .. btnname] = _G["BINDING_NAME_" .. btnname] or "Actionbar " .. i .. " Button " .. x
@@ -184,8 +156,6 @@ function MoveAny:CustomBars()
 			end
 		end
 	end
-
-	MAUpdateAction()
 end
 
 local oldcvar = -1
@@ -237,135 +207,77 @@ f:SetScript( "OnEvent", function( self, event )
 				if frame.init == nil then
 					frame.init = true
 
-					if ActionButton1.UpdateAction then
-						frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
-							self:SetAttribute( "actionpage", newstate );
-
-							if ActionButton1 then
-								ActionButton1:UpdateAction()
-								ActionButton1:UpdateHotkeys( nil )
-							end
-							if ActionButton2 then
-								ActionButton2:UpdateAction()
-								ActionButton2:UpdateHotkeys( nil )
-							end
-							if ActionButton3 then
-								ActionButton3:UpdateAction()
-								ActionButton3:UpdateHotkeys( nil )
-							end
-							if ActionButton4 then
-								ActionButton4:UpdateAction()
-								ActionButton4:UpdateHotkeys( nil )
-							end
-							if ActionButton5 then
-								ActionButton5:UpdateAction()
-								ActionButton5:UpdateHotkeys( nil )
-							end
-							if ActionButton6 then
-								ActionButton6:UpdateAction()
-								ActionButton6:UpdateHotkeys( nil )
-							end
-							if ActionButton7 then
-								ActionButton7:UpdateAction()
-								ActionButton7:UpdateHotkeys( nil )
-							end
-							if ActionButton8 then
-								ActionButton8:UpdateAction()
-								ActionButton8:UpdateHotkeys( nil )
-							end
-							if ActionButton9 then
-								ActionButton9:UpdateAction()
-								ActionButton9:UpdateHotkeys( nil )
-							end
-							if ActionButton10 then
-								ActionButton10:UpdateAction()
-								ActionButton10:UpdateHotkeys( nil )
-							end
-							if ActionButton11 then
-								ActionButton11:UpdateAction()
-								ActionButton11:UpdateHotkeys( nil )
-							end
-							if ActionButton12 then
-								ActionButton12:UpdateAction()
-								ActionButton12:UpdateHotkeys( nil )
-							end
-						]] );
-					else
-						frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
+					frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
 						self:SetAttribute( "actionpage", newstate );
-
-						if ActionButton1 then
-							ActionButton_UpdateAction( ActionButton1 )
-							ActionButton_Update( ActionButton1 )
-							ActionButton_UpdateHotkeys( ActionButton1, nil );
-						end
-						if ActionButton2 then
-							ActionButton_UpdateAction( ActionButton2 )
-							ActionButton_Update( ActionButton2 )
-							ActionButton_UpdateHotkeys( ActionButton2, nil );
-						end
-						if ActionButton3 then
-							ActionButton_UpdateAction( ActionButton3 )
-							ActionButton_Update( ActionButton3 )
-							ActionButton_UpdateHotkeys( ActionButton3, nil );
-						end
-						if ActionButton4 then
-							ActionButton_UpdateAction( ActionButton4 )
-							ActionButton_Update( ActionButton4 )
-							ActionButton_UpdateHotkeys( ActionButton4, nil );
-						end
-						if ActionButton5 then
-							ActionButton_UpdateAction( ActionButton5 )
-							ActionButton_Update( ActionButton5 )
-							ActionButton_UpdateHotkeys( ActionButton5, nil );
-						end
-						if ActionButton6 then
-							ActionButton_UpdateAction( ActionButton6 )
-							ActionButton_Update( ActionButton6 )
-							ActionButton_UpdateHotkeys( ActionButton6, nil );
-						end
-						if ActionButton7 then
-							ActionButton_UpdateAction( ActionButton7 )
-							ActionButton_Update( ActionButton7 )
-							ActionButton_UpdateHotkeys( ActionButton7, nil );
-						end
-						if ActionButton8 then
-							ActionButton_UpdateAction( ActionButton8 )
-							ActionButton_Update( ActionButton8 )
-							ActionButton_UpdateHotkeys( ActionButton8, nil );
-						end
-						if ActionButton9 then
-							ActionButton_UpdateAction( ActionButton9 )
-							ActionButton_Update( ActionButton9 )
-							ActionButton_UpdateHotkeys( ActionButton9, nil );
-						end
-						if ActionButton10 then
-							ActionButton_UpdateAction( ActionButton10 )
-							ActionButton_Update( ActionButton10 )
-							ActionButton_UpdateHotkeys( ActionButton10, nil );
-						end
-						if ActionButton11 then
-							ActionButton_UpdateAction( ActionButton11 )
-							ActionButton_Update( ActionButton11 )
-							ActionButton_UpdateHotkeys( ActionButton11, nil );
-						end
-						if ActionButton12 then
-							ActionButton_UpdateAction( ActionButton12 )
-							ActionButton_Update( ActionButton12 )
-							ActionButton_UpdateHotkeys( ActionButton12, nil );
-						end
 					]] );
-					end
 					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
-						
-					if frame.btns then
-						for id, abtn in pairs( frame.btns ) do
-							abtn:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
 
-							]] );
-							RegisterStateDriver( abtn, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
+					--[[
+						Assess whether the attribute that was changed and triggered the blizzard _onattributechanged event was the 'statehidden' attribute
+						Assess whether the player has an OverrideActionBar or VehicleActionBar
+						If they do, determine if the 6 (< 7) OverrideActionBarButtons which are used for VehicleActionBar, too, are hidden or not
+						If the player has a special bar and the OverrideActionBarButton is hidden, also hide the respective ActionButton that is part of the paging bar
+						However, if they have a special bar but the OverrideActionBarButton is shown, also show the respective ActionButton that is part of the paging bar
+						Hide the ActionButtons7-12 if the player has a special bar
+						If the player doesn't have an OverrideActionBar nor VehicleActionBar, show ActionButtons1-12 that are part of the paging bar
+					]]--
+					local _onAttributeChanged = [[
+						if name == 'statehidden' then
+							if (HasOverrideActionBar() or HasVehicleActionBar()) then
+								for i = 1, 12 do
+									if i < 7 then
+										if overridebuttons[i]:GetAttribute('statehidden') then
+											buttons[i]:SetAttribute('statehidden', true)
+											buttons[i]:Hide()
+										else
+											buttons[i]:SetAttribute('statehidden', false)
+											buttons[i]:Show()
+										end
+									else
+										buttons[i]:SetAttribute('statehidden', true)
+										buttons[i]:Hide()
+									end
+								end
+							else
+								for i = 1, 12 do
+									buttons[i]:SetAttribute('statehidden', false)
+									buttons[i]:Show()
+								end
+							end
 						end
+					]]
+					--[[
+						Generate a secure frame, AttributeChangedFrame, that is used to 'hook' into the _onattributechanged
+						Set frame references for both the ActionButtons and the OverrideActionBarButtons, which are used for both VehicleActionBar and OverrideActionBar bars
+						Make two secure tables, buttons and overridebuttons; populate it with the buttons using the just set frame references
+						'Hook' our secure frame to run the secure _onAttributeChanged snippet when the blizzard event, _onattributechanged, fires
+						Finish by registering the secure frame as a secure state driver, because for some reason this is required for the _onattributechanged to properly be hooked
+					]]--
+					local AttributeChangedFrame = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
+					for i = 1, 12 do
+						local button = _G['ActionButton'..i]
+						AttributeChangedFrame:SetFrameRef('ActionButton'..i, button)
 					end
+					
+					for i = 1, 6 do
+						local overrideButton = _G['OverrideActionBarButton'..i]
+						AttributeChangedFrame:SetFrameRef('OverrideActionBarButton'..i, overrideButton)
+					end
+					
+					AttributeChangedFrame:Execute([[
+						buttons = table.new()
+						for i = 1, 12 do
+							buttons[i] = self:GetFrameRef('ActionButton'..i)
+						end
+					
+						overridebuttons = table.new()
+						for j = 1, 6 do
+							overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
+						end
+					]])
+					
+					AttributeChangedFrame:SetAttribute('_onattributechanged', _onAttributeChanged)
+					RegisterStateDriver(AttributeChangedFrame, 'visibility', '[overridebar][shapeshift][vehicleui][possessbar] show; hide')
 				end
 			end
 	end

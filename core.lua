@@ -233,10 +233,12 @@ function MoveAny:RegisterWidget( tab )
 	frame:SetDontSavePosition( true )
 	frame:SetClampedToScreen( true )
 
-	frame:ClearAllPoints()
-	local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-	if dbp1 and dbp3 then
-		frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+	if not frame.secure then
+		frame:ClearAllPoints()
+		local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+		if dbp1 and dbp3 then
+			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+		end
 	end
 
 	hooksecurefunc( frame, "SetPoint", function( self, ... )
@@ -244,10 +246,12 @@ function MoveAny:RegisterWidget( tab )
 		self.masetpoint_ele = true
 
 		self:SetMovable( true )
-		self:ClearAllPoints()
-		local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-		self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-		
+		if not self.secure then
+			self:ClearAllPoints()
+			local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+			self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+		end
+
 		self.masetpoint_ele = false
 	end )
 
@@ -485,7 +489,8 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAStanceBar",
-			["lstr"] = "StanceBar"
+			["lstr"] = "StanceBar",
+			["secure"] = true
 		} )
 		MoveAny:RegisterWidget( {
 			["name"] = "MAPetBar",
@@ -764,7 +769,7 @@ function MAMenuOptions( opt, frame )
 
 			content.scale = content:CreateFontString( nil, nil, "GameFontNormal" )
 			content.scale:SetPoint( "TOPLEFT", content, "TOPLEFT", 200, -4 )
-			local scale = MoveAny:GetEleScale( name )
+			local scale = MoveAny:GetEleScale( name ) or 1
 			content.scale:SetText( format( "Scale: %0.1f", scale ) )
 
 			local sup = CreateFrame( "Button", "sup", content )
