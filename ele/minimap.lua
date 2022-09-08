@@ -2,36 +2,44 @@
 local AddOnName, MoveAny = ...
 
 function MoveAny:InitMinimap()
-	if MinimapToggleButton then
-		MinimapToggleButton:SetParent( MAHIDDEN )
+	if MoveAny:IsEnabled( "MINIMAP", true ) == false then
+		return
 	end
-	MinimapCluster:SetParent( MAHIDDEN )
-	MinimapBackdrop:SetParent( MAHIDDEN )
-	for i, v in pairs({MinimapCluster:GetChildren()}) do
-		if v ~= Minimap then
-			v:SetParent( Minimap )
+
+	if not ElvUI then
+		if MinimapToggleButton then
+			MinimapToggleButton:SetParent( MAHIDDEN )
 		end
-	end
-	for i, v in pairs({MinimapBackdrop:GetChildren()}) do
-		if v ~= Minimap then
-			v:SetParent( Minimap )
+		MinimapCluster:SetParent( MAHIDDEN )
+		MinimapBackdrop:SetParent( MAHIDDEN )
+		for i, v in pairs({MinimapCluster:GetChildren()}) do
+			if v ~= Minimap then
+				v:SetParent( Minimap )
+			end
 		end
+		for i, v in pairs({MinimapBackdrop:GetChildren()}) do
+			if v ~= Minimap then
+				v:SetParent( Minimap )
+			end
+		end
+		Minimap:SetParent( UIParent )
 	end
-	Minimap:SetParent( UIParent )
 	--Minimap:ClearAllPoints()
 	--Minimap:SetPoint( "CENTER", MinimapCluster, "CENTER", 0, 0 )
 
-	local sw, sh = Minimap:GetSize()
-	local texture = MinimapBorder:GetTexture()
-	local texcoord = { MinimapBorder:GetTexCoord() }
+	if not ElvUI then
+		local sw, sh = Minimap:GetSize()
+		local texture = MinimapBorder:GetTexture()
+		local texcoord = { MinimapBorder:GetTexCoord() }
 
-	Minimap.Border = Minimap:CreateTexture( "Minimap.Border", "ARTWORK", nil, 1 )
-	Minimap.Border:SetPoint( "CENTER", Minimap, "CENTER", -6, -17 )
-	Minimap.Border:SetTexture( texture )
-	Minimap.Border:SetSize( sw, sh )
-	Minimap.Border:SetTexCoord( unpack( texcoord ) )
-	Minimap.Border:SetScale( 1.40 )
-	
+		Minimap.Border = Minimap:CreateTexture( "Minimap.Border", "ARTWORK", nil, 1 )
+		Minimap.Border:SetPoint( "CENTER", Minimap, "CENTER", -6, -17 )
+		Minimap.Border:SetTexture( texture )
+		Minimap.Border:SetSize( sw, sh )
+		Minimap.Border:SetTexCoord( unpack( texcoord ) )
+		Minimap.Border:SetScale( 1.40 )
+	end
+
 	-- FIX MINIMAP
 	if MiniMapTracking and MiniMapTrackingButton then
 		MiniMapTrackingButton:ClearAllPoints()
@@ -151,7 +159,6 @@ function MoveAny:InitMinimap()
 	}
 
 	if debugMinimap then
-
 		for i, name in pairs( miniMapTab ) do
 			local btn = _G[name]
 			if btn then
