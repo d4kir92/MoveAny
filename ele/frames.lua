@@ -74,10 +74,8 @@ function MoveAny:MoveFrames()
 
 				frame:SetScript( "OnDragStart", function(self, btn)
 					frame:SetUserPlaced( false )
-
 					frame:SetAlpha(0.34)
 
-					frame.ismoving = true
 					if btn == "RightButton" then
 						frame.iscaling = true
 						
@@ -89,6 +87,7 @@ function MoveAny:MoveFrames()
 						
 						GameTooltip:Hide()
 					elseif btn == "LeftButton" then
+						frame.ismoving = true
 						if not InCombatLockdown() then
 							self:StartMoving()
 						end

@@ -29,15 +29,17 @@ function MoveAny:InitMinimap()
 
 	if not ElvUI then
 		local sw, sh = Minimap:GetSize()
-		local texture = MinimapBorder:GetTexture()
-		local texcoord = { MinimapBorder:GetTexCoord() }
+		if MinimapBorder then
+			local texture = MinimapBorder:GetTexture()
+			local texcoord = { MinimapBorder:GetTexCoord() }
 
-		Minimap.Border = Minimap:CreateTexture( "Minimap.Border", "ARTWORK", nil, 1 )
-		Minimap.Border:SetPoint( "CENTER", Minimap, "CENTER", -6, -17 )
-		Minimap.Border:SetTexture( texture )
-		Minimap.Border:SetSize( sw, sh )
-		Minimap.Border:SetTexCoord( unpack( texcoord ) )
-		Minimap.Border:SetScale( 1.40 )
+			Minimap.Border = Minimap:CreateTexture( "Minimap.Border", "ARTWORK", nil, 1 )
+			Minimap.Border:SetPoint( "CENTER", Minimap, "CENTER", -6, -17 )
+			Minimap.Border:SetTexture( texture )
+			Minimap.Border:SetSize( sw, sh )
+			Minimap.Border:SetTexCoord( unpack( texcoord ) )
+			Minimap.Border:SetScale( 1.40 )
+		end
 	end
 
 	-- FIX MINIMAP

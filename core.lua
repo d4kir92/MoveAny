@@ -66,8 +66,10 @@ function MoveAny:RegisterWidget( tab )
 		tab.delay = tab.delay + 0.2
 	end
 
-	UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil 
-	
+	if UIPARENT_MANAGED_FRAME_POSITIONS then
+		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil 
+	end
+
 	local frame = _G[name]
 	local s, e = strfind( name, ".", 1, true )
 	if e then
@@ -287,12 +289,21 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitDB()
 
 	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
-		UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
-		MainMenuBarArtFrame:Hide()
-		UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
+		if UIPARENT_MANAGED_FRAME_POSITIONS then
+			UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
+		end
+		if MainMenuBarArtFrame then
+			if UIPARENT_MANAGED_FRAME_POSITIONS then
+				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
+			end
+			MainMenuBarArtFrame:Hide()
+		end
+		
 		if StatusTrackingBarManager then
 			StatusTrackingBarManager:Hide()
-			UIPARENT_MANAGED_FRAME_POSITIONS["StatusTrackingBarManager"] = nil
+			if UIPARENT_MANAGED_FRAME_POSITIONS then
+				UIPARENT_MANAGED_FRAME_POSITIONS["StatusTrackingBarManager"] = nil
+			end
 		end
 	end
 
