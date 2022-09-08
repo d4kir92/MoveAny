@@ -231,7 +231,7 @@ function MoveAny:RegisterWidget( tab )
 	MoveAny:SetEleSize( name, sw, sh )
 
 	frame:SetMovable( true )
-	frame:SetUserPlaced( true )
+	--frame:SetUserPlaced( true )
 	frame:SetDontSavePosition( true )
 	frame:SetClampedToScreen( true )
 

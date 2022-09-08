@@ -90,6 +90,7 @@ function MoveAny:MoveFrames()
 						frame.ismoving = true
 						if not InCombatLockdown() then
 							self:StartMoving()
+							frame:SetUserPlaced( false )
 						end
 					end
 				end)
