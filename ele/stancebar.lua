@@ -21,18 +21,22 @@ function MoveAny:UpdateStanceBar()
 					if bb then
 						bb:SetSize( btnsize, btnsize )
 
-						hooksecurefunc( bb, "SetPoint", function( self, ... )
-							if self.masetpoint then return end
-							self.masetpoint = true
-							bb:SetParent( MAStanceBar )
-							bb:ClearAllPoints()
-							bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
-							self.masetpoint = false
-						end )
-						bb:SetPoint( "CENTER" )
+						if bb.setup == nil then
+							bb.setup = true
 
-						bb.Hide = bb.Show
-						bb:Show()
+							hooksecurefunc( bb, "SetPoint", function( self, ... )
+								if self.masetpoint then return end
+								self.masetpoint = true
+								bb:SetParent( MAStanceBar )
+								bb:ClearAllPoints()
+								bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
+								self.masetpoint = false
+							end )
+							bb:SetPoint( "CENTER" )
+
+							bb.Hide = bb.Show
+							bb:Show()
+						end
 					end
 				end
 			end

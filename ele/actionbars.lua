@@ -59,6 +59,15 @@ function MAUpdateActionBar( frame )
 
 	frame:SetSize( cols * btnsize, rows * btnsize )
 	for id, abtn in pairs( frame.btns ) do
+		--[[if abtn.setup == nil then
+			hooksecurefunc( abtn, "SetPoint", function( self, ... )
+				if self.abtnsetpoint then return end
+				self.abtnsetpoint = true
+				self:ClearAllPoints()
+				self:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * btnsize, 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * btnsize )
+				self.abtnsetpoint = false
+			end )
+		end]]
 		abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * btnsize, 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * btnsize )
 	end
 end
