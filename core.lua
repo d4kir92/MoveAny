@@ -231,7 +231,7 @@ function MoveAny:RegisterWidget( tab )
 	MoveAny:SetEleSize( name, sw, sh )
 
 	frame:SetMovable( true )
-	--frame:SetUserPlaced( true )
+	
 	frame:SetDontSavePosition( true )
 	frame:SetClampedToScreen( true )
 
@@ -285,6 +285,10 @@ MAHIDDEN = CreateFrame( "FRAME", "MAHIDDEN" )
 MAHIDDEN:Hide()
 function MoveAny:Event( event, ... )
 	--print("|cff00ff00>>> Loading " .. AddOnName )
+
+	if IsAddOnLoaded("D4KiR MoveAndImprove") then
+		MoveAny:MSG( "DON'T use MoveAndImprove, when you use MoveAny" )
+	end
 
 	MoveAny:InitDB()
 

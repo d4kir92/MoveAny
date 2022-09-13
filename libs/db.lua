@@ -2,10 +2,14 @@
 local AddOnName, MoveAny = ...
 
 local COL_R = "|cFFFF0000"
+local COL_Y = "|cFFFFFF00"
+
+function MoveAny:MSG( msg )
+	print( "|cff3FC7EB" .. "[MoveAny]|r " .. COL_Y .. msg )
+end
 
 function MoveAny:MSG_Error( msg )
-	print( "|cFFA4A4FF" .. "[MoveAny] " .. COL_R .. "[ERROR] |r|r" .. msg )
-		
+	print( "|cff3FC7EB" .. "[MoveAny]|r " .. COL_R .. "[ERROR] |r" .. msg )
 end
 
 function MoveAny:GetCP()
