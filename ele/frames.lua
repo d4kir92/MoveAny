@@ -202,10 +202,10 @@ function MoveAny:MoveFrames()
 			end
 		end
 		if not allsetup then
-			C_Timer.After( 0.3, MoveAny.MoveFrames )
+			C_Timer.After( 0.1, MoveAny.MoveFrames )
 		end
 	else
-		C_Timer.After( 0.3, MoveAny.MoveFrames )
+		C_Timer.After( 0.1, MoveAny.MoveFrames )
 	end
 end
 

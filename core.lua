@@ -55,7 +55,7 @@ function MoveAny:ToggleDrag()
 	end
 end
 
-function MoveAny:RegisterWidget( tab )
+function MoveAny:RegisterWidget( tab, debug )
 	local name = tab.name
 	local lstr = tab.lstr
 	local sw = tab.sw
@@ -93,15 +93,9 @@ function MoveAny:RegisterWidget( tab )
 			dragframe:SetSize( 100, 100 )
 		end
 		
-		if MoveAny:GetElePoint( name ) then
-			dragframe:ClearAllPoints()
-			local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-			dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
-		else
-			dragframe:ClearAllPoints()
-			dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
-		end
-		
+		dragframe:ClearAllPoints()
+		dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
+
 		dragframe:SetToplevel( true )
 
 		if true then
@@ -179,6 +173,7 @@ function MoveAny:RegisterWidget( tab )
 				local p1, p2, p3, p4, p5 = dragframe:GetPoint()
 				p4 = MAGrid( p4 )
 				p5 = MAGrid( p5 )
+				print("TEST1", name, p1, p2, p3, p4, p5 )
 				MoveAny:SetElePoint( name, p1, _, p3, p4, p5 )
 
 				dragframe:SetMovable(true)
@@ -191,7 +186,9 @@ function MoveAny:RegisterWidget( tab )
 					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 
 					local sw, sh = dragframe:GetSize()
-					frame:SetSize( sw, sh )
+					if not InCombatLockdown() then
+						frame:SetSize( sw, sh )
+					end
 				end
 			end
 		end)
@@ -219,6 +216,7 @@ function MoveAny:RegisterWidget( tab )
 	end )
 
 	if MoveAny:GetElePoint( name ) == nil then
+		print("TEST2", name)
 		local an, parent, re, px, py = frame:GetPoint()
 		if (parent == nil or parent == UIParent) and an ~= nil and re ~= nil then
 			MoveAny:SetElePoint( name, an, UIParent, re, MAGrid( px ), MAGrid( py ) ) 
@@ -273,7 +271,9 @@ function MoveAny:RegisterWidget( tab )
 
 	local dragframe = _G[name .. "_DRAG"]
 
-	frame:SetSize( sw, sh )
+	if not InCombatLockdown() then
+		frame:SetSize( sw, sh )
+	end
 	dragframe:SetSize( sw, sh )
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
@@ -375,8 +375,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "MINIMAP", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "Minimap",
-			["lstr"] = MINIMAP_LABEL--,
-			--["secure"] = true
+			["lstr"] = MINIMAP_LABEL
 		} )
 	end
 	if MoveAny:IsEnabled( "BUFFS", true ) then
@@ -494,9 +493,8 @@ function MoveAny:Event( event, ... )
 				if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 					MoveAny:RegisterWidget( {
 						["name"] = "MAActionBar" .. i,
-						["lstr"] = "MAActionBar" .. i,
-						["secure"] = i == 1
-					} )
+						["lstr"] = "MAActionBar" .. i
+					}, true )
 				end
 			end
 		end
@@ -740,6 +738,7 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	btn:SetPoint( "TOPLEFT", parent, "TOPLEFT", ofsx, ofsy )
 	btn:SetScript( "OnClick", function()
 		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
+		print("TEST3", name)
 		MoveAny:SetElePoint( name, p1, p2, p3, p4 + x, p5 + y )
 
 		p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )

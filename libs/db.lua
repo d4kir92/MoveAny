@@ -83,17 +83,23 @@ function MoveAny:GetEleOptions( key )
 end
 
 function MoveAny:GetElePoint( key )
-	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
+	if key then
+		MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 
-	local an = MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"]
-	local pa = MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"]
-	local re = MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"]
-	local px = MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"]
-	local py = MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"]
-	return an, pa, re, px, py
+		local an = MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"]
+		local pa = MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"]
+		local re = MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"]
+		local px = MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"]
+		local py = MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"]
+		return an, pa, re, px, py
+	else
+		MoveAny:MSG_Error( "[GetElePoint] KEY not found" )
+		return "CENTER", UIParent, "CENTER"
+	end
 end
 
 function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
+	print("TEST", key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3

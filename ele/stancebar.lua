@@ -50,9 +50,16 @@ end
 function MoveAny:InitStanceBar()
 	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
 		MAStanceBar = CreateFrame( "FRAME", "MAStanceBar", UIParent )
-		MAStanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 75 )
 		MAStanceBar:SetSize( btnsize, btnsize )
 		MAStanceBar.cou = -1
+
+		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( "MAStanceBar" )
+		if p1 then
+			MAStanceBar:ClearAllPoints()
+			MAStanceBar:SetPoint( p1, UIParent, p3, p4, p5 )
+		else
+			MAStanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 75 )
+		end
 
 		MoveAny:UpdateStanceBar()
 	end
