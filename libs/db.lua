@@ -99,7 +99,6 @@ function MoveAny:GetElePoint( key )
 end
 
 function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
-	print("TEST", key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3

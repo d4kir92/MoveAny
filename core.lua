@@ -173,7 +173,7 @@ function MoveAny:RegisterWidget( tab, debug )
 				local p1, p2, p3, p4, p5 = dragframe:GetPoint()
 				p4 = MAGrid( p4 )
 				p5 = MAGrid( p5 )
-				print("TEST1", name, p1, p2, p3, p4, p5 )
+
 				MoveAny:SetElePoint( name, p1, _, p3, p4, p5 )
 
 				dragframe:SetMovable(true)
@@ -216,7 +216,6 @@ function MoveAny:RegisterWidget( tab, debug )
 	end )
 
 	if MoveAny:GetElePoint( name ) == nil then
-		print("TEST2", name)
 		local an, parent, re, px, py = frame:GetPoint()
 		if (parent == nil or parent == UIParent) and an ~= nil and re ~= nil then
 			MoveAny:SetElePoint( name, an, UIParent, re, MAGrid( px ), MAGrid( py ) ) 
@@ -738,7 +737,6 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	btn:SetPoint( "TOPLEFT", parent, "TOPLEFT", ofsx, ofsy )
 	btn:SetScript( "OnClick", function()
 		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
-		print("TEST3", name)
 		MoveAny:SetElePoint( name, p1, p2, p3, p4 + x, p5 + y )
 
 		p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
