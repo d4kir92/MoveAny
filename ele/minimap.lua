@@ -167,7 +167,7 @@ function MoveAny:InitMinimap()
 				btn.Hide = btn.Show
 				btn:Show()
 			else
-				print(name, "not found")
+				MoveAny:MSG( tostring( name ) .. " not found" )
 			end
 		end
 	end

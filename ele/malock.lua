@@ -89,7 +89,10 @@ function MoveAny:InitMALock()
 
 	AddCheckBox( 10, py, "GROUPLOOTCONTAINER", "GroupLootContainer" )
 	py = py - sh
-	
+
+	AddCheckBox( 10, py, "CompactRaidFrameManager", "CompactRaidFrameManager" )
+	py = py - sh
+
 	MALock.save = CreateFrame( "BUTTON", "MALock" .. ".opt.close", MALock, "UIPanelButtonTemplate" )
 	MALock.save:SetSize( 120, 24 )
 	MALock.save:SetPoint( "TOPLEFT", MALock, "TOPLEFT", 10, -MALock:GetHeight() + 24 + 10 + 24 + 10 )

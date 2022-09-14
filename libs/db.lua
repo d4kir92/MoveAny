@@ -55,13 +55,13 @@ function MoveAny:GetTab()
 	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
-function MoveAny:SetEnabled( name, value )
-	MoveAny:GetTab()["ELES"]["OPTIONS"][name] = MoveAny:GetTab()["ELES"]["OPTIONS"][name] or {}
-	MoveAny:GetTab()["ELES"]["OPTIONS"][name]["ENABLED"] = value
+function MoveAny:SetEnabled( element, value )
+	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
+	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 end
 
-function MoveAny:IsEnabled( name, value )
-	if name == nil then
+function MoveAny:IsEnabled( element, value )
+	if element == nil then
 		MoveAny:MSG_Error( "[IsEnabled] Missing Name" )
 		return false
 	end
@@ -69,17 +69,30 @@ function MoveAny:IsEnabled( name, value )
 		MoveAny:MSG_Error( "[IsEnabled] Missing Value" )
 		return false
 	end
-	MoveAny:GetTab()["ELES"]["OPTIONS"][name] = MoveAny:GetTab()["ELES"]["OPTIONS"][name] or {}
-	if MoveAny:GetTab()["ELES"]["OPTIONS"][name]["ENABLED"] == nil then
-		MoveAny:GetTab()["ELES"]["OPTIONS"][name]["ENABLED"] = value
+	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
+	if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
+		MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 	end
-	return MoveAny:GetTab()["ELES"]["OPTIONS"][name]["ENABLED"]
+	return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
 end
 
 function MoveAny:GetEleOptions( key )
 	MoveAny:GetTab()["ELES"]["OPTIONS"][key] = MoveAny:GetTab()["ELES"]["OPTIONS"][key] or {}
 
 	return MoveAny:GetTab()["ELES"]["OPTIONS"][key]
+end
+
+function MoveAny:GetEleOption( element, key, value )
+	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
+	if MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] ~= nil then
+		return MoveAny:GetTab()["ELES"]["OPTIONS"][element][key]
+	end
+	return value
+end
+
+function MoveAny:SetEleOption( element, key, value )
+	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
+	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
 end
 
 function MoveAny:GetElePoint( key )

@@ -21,8 +21,12 @@ local framelevel = 100
 
 -- Colors
 local colors = {}
-colors["bg"] = { 0.03, 	0.03, 	0.03, 	1 		}
-colors["el"] = { 0.3, 	0.3, 	1.0, 	0.3 	}
+colors["bg"] = 		{ 0.03, 0.03, 	0.03, 	1 	}
+colors["el"] = 		{ 0.3, 	0.3, 	1.0, 	0.3 }
+colors["hidden"] = 	{ 1.0, 	0.0, 	0.0, 	0.3 }
+
+MAHIDDEN = CreateFrame( "FRAME", "MAHIDDEN" )
+MAHIDDEN:Hide()
 
 function MoveAny:GetColor( key )
 	return colors[key][1], colors[key][2], colors[key][3], colors[key][4]
@@ -205,6 +209,25 @@ function MoveAny:RegisterWidget( tab, debug )
 		return false
 	end
 
+	local maframe1 = _G["MA" .. name]
+	local maframe2 = _G[string.gsub( name, "MA", "" )]
+	local dragf = _G[name .. "_DRAG"]
+	if MoveAny:GetEleOption( name, "Hide", false ) then
+		frame.oldparent = frame.oldparent or frame:GetParent()
+		frame:SetParent( MAHIDDEN )
+		if maframe1 then
+			maframe1.oldparent = maframe1.oldparent or frame:GetParent()
+			maframe1:SetParent( MAHIDDEN )
+		end
+		if maframe2 then
+			maframe2.oldparent = maframe2.oldparent or frame:GetParent()
+			maframe2:SetParent( MAHIDDEN )
+		end
+		dragf.t:SetColorTexture( MoveAny:GetColor( "hidden" ) )
+	else
+		dragf.t:SetColorTexture( MoveAny:GetColor( "el" ) )
+	end
+
 	frame.secure = secure
 
 	sw = sw or frame:GetWidth()
@@ -280,11 +303,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	dragframe:Show()
 end
 
-MAHIDDEN = CreateFrame( "FRAME", "MAHIDDEN" )
-MAHIDDEN:Hide()
 function MoveAny:Event( event, ... )
-	--print("|cff00ff00>>> Loading " .. AddOnName )
-
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG( "DON'T use MoveAndImprove, when you use MoveAny" )
 	end
@@ -342,6 +361,40 @@ function MoveAny:Event( event, ... )
 			["name"] = "FocusFrame",
 			["lstr"] = FOCUS
 		} )
+	end
+	if MoveAny:IsEnabled( "CompactRaidFrameManager", true ) then
+		MACompactRaidFrameManager = CreateFrame( "FRAME", "MACompactRaidFrameManager", UIParent )
+		MACompactRaidFrameManager:SetSize( 20, 135 )
+		MACompactRaidFrameManager:SetPoint( "CENTER" )
+
+		hooksecurefunc( CompactRaidFrameManager, "SetPoint", function( self, ... )
+			if self.crfmsetpoint then return end
+			self.crfmsetpoint = true
+			self:ClearAllPoints()
+			self:SetPoint( "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0 )
+			self.crfmsetpoint = false
+		end )
+		CompactRaidFrameManager:SetPoint( "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0 )
+		
+		hooksecurefunc( CompactRaidFrameManager, "SetParent", function( self, ... )
+			self:SetFrameStrata( "LOW" )
+		end )
+
+		CompactRaidFrameManagerToggleButton:HookScript( "OnClick", function( self, ... )
+			if CompactRaidFrameManager.collapsed then
+				MACompactRaidFrameManager:SetSize( 20, 135 )
+			else
+				MACompactRaidFrameManager:SetSize( 200, 135 )
+			end
+		end )
+
+		MoveAny:RegisterWidget( {
+			["name"] = "MACompactRaidFrameManager",
+			["lstr"] = "MACompactRaidFrameManager"
+		} )
+
+		CompactRaidFrameManager.Hide = CompactRaidFrameManager.Show
+		CompactRaidFrameManager:Show()
 	end
 
 
@@ -653,8 +706,6 @@ function MoveAny:Event( event, ... )
 	else
 		MoveAny:ToggleDrag()
 	end
-
-	--print("|cff00ff00Loaded " .. AddOnName )
 end
 
 SLASH_MOAN1, SLASH_MOAN2 = "/moan", "/moveany"
@@ -805,6 +856,46 @@ function MAMenuOptions( opt, frame )
 				MoveAny:SetEleScale( name, frame:GetScale() - 0.1 )
 				content.scale:SetText( format( "Scale: %d", MoveAny:GetEleScale( name ) ) )
 			end )
+
+			local hide = CreateFrame( "CheckButton", "hide", content, "ChatConfigCheckButtonTemplate" )
+			hide:SetSize( btnsize, btnsize )
+			hide:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -160 )
+			hide:SetChecked( MoveAny:GetEleOption( name, "Hide", false ) )
+			hide:SetText( HIDE )
+			hide:SetScript( "OnClick", function()
+				local checked = hide:GetChecked()
+				MoveAny:SetEleOption( name, "Hide", checked )
+				
+				local maframe1 = _G["MA" .. name]
+				local maframe2 = _G[string.gsub( name, "MA", "" )]
+				local dragf = _G[name .. "_DRAG"]
+				if checked then
+					frame.oldparent = frame.oldparent or frame:GetParent()
+					frame:SetParent( MAHIDDEN )
+					if maframe1 then
+						maframe1.oldparent = maframe1.oldparent or maframe1:GetParent()
+						maframe1:SetParent( MAHIDDEN )
+					end
+					if maframe2 then
+						maframe2.oldparent = maframe2.oldparent or maframe2:GetParent()
+						maframe2:SetParent( MAHIDDEN )
+					end
+					dragf.t:SetColorTexture( MoveAny:GetColor( "hidden" ) )
+				else
+					frame:SetParent( frame.oldparent )
+					if maframe1 then
+						maframe1:SetParent( maframe1.oldparent )
+					end
+					if maframe2 then
+						maframe2:SetParent( maframe2.oldparent )
+					end
+					dragf.t:SetColorTexture( MoveAny:GetColor( "el" ) )
+				end		
+			end )
+			hide.text = hide:CreateFontString( nil, "ARTWORK" )
+			hide.text:SetFont( STANDARD_TEXT_FONT, 12, "THINOUTLINE" )
+			hide.text:SetPoint( "LEFT", hide, "RIGHT", 0, 0)
+			hide.text:SetText( getglobal("HIDE") )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
 			opts["ROWS"] = opts["ROWS"] or 1
 			

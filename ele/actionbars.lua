@@ -190,7 +190,7 @@ function MoveAny:UpdateABs()
 							_G[btnname .. "NormalTexture"]:Hide()
 						end
 					else
-						print("NOT FOUND", btnname)
+						MoveAny:MSG( "NOT FOUND: " .. tostring( btnname ) )
 					end
 				end
 			end
