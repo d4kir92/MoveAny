@@ -365,7 +365,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "CompactRaidFrameManager", true ) then
 		MACompactRaidFrameManager = CreateFrame( "FRAME", "MACompactRaidFrameManager", UIParent )
 		MACompactRaidFrameManager:SetSize( 20, 135 )
-		MACompactRaidFrameManager:SetPoint( "CENTER" )
+		MACompactRaidFrameManager:SetPoint( "TOPLEFT", UIParent, "TOPLEFT", 0, -250 )
 
 		hooksecurefunc( CompactRaidFrameManager, "SetPoint", function( self, ... )
 			if self.crfmsetpoint then return end
@@ -392,9 +392,6 @@ function MoveAny:Event( event, ... )
 			["name"] = "MACompactRaidFrameManager",
 			["lstr"] = "MACompactRaidFrameManager"
 		} )
-
-		CompactRaidFrameManager.Hide = CompactRaidFrameManager.Show
-		CompactRaidFrameManager:Show()
 	end
 
 
