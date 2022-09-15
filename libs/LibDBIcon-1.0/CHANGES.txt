@@ -1,10 +1,26 @@
 ------------------------------------------------------------------------
-r94 | funkehdude | 2022-04-22 00:49:57 +0000 (Fri, 22 Apr 2022) | 1 line
+r99 | funkehdude | 2022-09-05 19:13:27 +0000 (Mon, 05 Sep 2022) | 1 line
+Changed paths:
+   A /trunk/LibDBIcon-1.0_Wrath.toc
+
+Add Wrath toc
+------------------------------------------------------------------------
+r98 | funkehdude | 2022-09-05 19:12:13 +0000 (Mon, 05 Sep 2022) | 1 line
 Changed paths:
    M /trunk/LibDBIcon-1.0.toc
-   M /trunk/LibDBIcon-1.0_TBC.toc
-   M /trunk/LibDBIcon-1.0_Vanilla.toc
 
 bump toc
+------------------------------------------------------------------------
+r97 | funkehdude | 2022-06-01 04:20:44 +0000 (Wed, 01 Jun 2022) | 1 line
+Changed paths:
+   M /trunk/LibDBIcon-1.0.toc
+
+bump toc
+------------------------------------------------------------------------
+r96 | funkehdude | 2022-04-24 14:05:38 +0000 (Sun, 24 Apr 2022) | 1 line
+Changed paths:
+   M /trunk/LibDBIcon-1.0/LibDBIcon-1.0.lua
+
+Remove old compat code
 ------------------------------------------------------------------------
 

@@ -192,6 +192,8 @@ end
 
 function MoveAny:GetMinimapTable()
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+	
+	MoveAny:GetTab()["MMICON"] = MoveAny:GetTab()["MMICON"] or {}
 
 	return MoveAny:GetTab()["MMICON"]
 end
