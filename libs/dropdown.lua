@@ -13,7 +13,7 @@ function MACreateDropdown( opts )
     local default_val = opts["defaultVal"] or ""
     local change_func = opts["changeFunc"] or function (dropdown_val) end
 
-    local dropdown = CreateFrame("Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate")
+    local dropdown = CreateFrame( "Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate" )
     local dd_title = dropdown:CreateFontString(dropdown, "OVERLAY", "GameFontNormal")
     dd_title:SetPoint("TOPLEFT", 20, 10)
 

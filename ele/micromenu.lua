@@ -16,7 +16,7 @@ function MoveAny:InitMicroMenu()
 			mbc = #MICRO_BUTTONS
 		end
 
-		MAMenuBar = CreateFrame( "FRAME", "MAMenuBar", UIParent )
+		MAMenuBar = CreateFrame( "Frame", "MAMenuBar", UIParent )
 		MAMenuBar:SetSize( (sw - 4) * mbc, sh - 4 )
 		if MicroButtonAndBagsBar then
 			local p1, p2, p3, p4, p5 = MicroButtonAndBagsBar:GetPoint()

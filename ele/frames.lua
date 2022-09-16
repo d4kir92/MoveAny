@@ -5,7 +5,7 @@ MAFRAMES = {}
 
 local currentFrame = nil
 local currentFrameName = nil
-local scaler = CreateFrame("FRAME")
+local scaler = CreateFrame( "Frame" )
 scaler:SetScript( "OnUpdate", function()
 	if currentFrame and not currentFrame:IsShown() then
 		currentFrame:SetAlpha(1)
@@ -181,7 +181,7 @@ function MoveAny:MoveFrames()
 						return x/s, y/s;
 					end
 
-					if MAIBUILD ~= "RETAIL" then -- TBC, ERA
+					if MABUILD ~= "RETAIL" then -- TBC, ERA
 						WorldMapFrame.ScrollContainer:HookScript("OnMouseWheel", function(self, delta)
 							local x, y = self:GetNormalizedCursorPosition()
 							local nextZoomOutScale, nextZoomInScale = self:GetCurrentZoomRange()
@@ -209,7 +209,7 @@ function MoveAny:MoveFrames()
 	end
 end
 
-local MAIFRAMES = {}
+local MAFRAMES = {}
 tinsert( MAFRAMES, {
 	"GameMenuFrame",
 	1
@@ -364,7 +364,7 @@ tinsert( MAFRAMES, {
 	"BankFrame",
 	1
 } )
-if MAIBUILD ~= "RETAIL" then
+if MABUILD ~= "RETAIL" then
 	tinsert( MAFRAMES, {
 		"WardrobeFrame",
 		1

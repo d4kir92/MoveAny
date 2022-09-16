@@ -1,5 +1,5 @@
 ## Interface: 20504
-## Version: 0.3.5
+## Version: 0.4.0
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -16,15 +16,27 @@ libs/math.lua
 libs/db.lua
 libs/dropdown.lua
 
+locale/enUS.lua
+locale/deDE.lua
+locale/esES.lua
+locale/frFR.lua
+locale/itIT.lua
+locale/ptBR.lua
+locale/ruRU.lua
+locale/zhCN.lua
+libs/lang.lua
+
 ele/actionbars.lua
 ele/bagbar.lua
 ele/buffbar.lua
 ele/frames.lua
-ele/malock.lua
 ele/mavehicleseatindicator.lua
 ele/micromenu.lua
 ele/minimap.lua
 ele/multicastactionbar.lua
 ele/petbar.lua
 ele/stancebar.lua
+
 core.lua
+registerwidgets.lua
+malock.lua

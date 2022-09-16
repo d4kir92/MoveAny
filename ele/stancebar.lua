@@ -48,8 +48,8 @@ function MoveAny:UpdateStanceBar()
 end
 
 function MoveAny:InitStanceBar()
-	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
-		MAStanceBar = CreateFrame( "FRAME", "MAStanceBar", UIParent )
+	if MoveAny:IsEnabled( "STANCEBAR", true ) then
+		MAStanceBar = CreateFrame( "Frame", "MAStanceBar", UIParent )
 		MAStanceBar:SetSize( btnsize, btnsize )
 		MAStanceBar.cou = -1
 

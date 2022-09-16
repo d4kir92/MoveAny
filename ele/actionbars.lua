@@ -101,7 +101,7 @@ function MoveAny:CustomBars()
 			if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 				
 				local name = "MAActionBar" .. i
-				_G[name] = CreateFrame( "FRAME", name, UIParent, "SecureHandlerStateTemplate" )
+				_G[name] = CreateFrame( "Frame", name, UIParent, "SecureHandlerStateTemplate" )
 
 				local bar = _G[name] 
 				bar:SetSize( 36 * 12, 36 )
@@ -199,7 +199,7 @@ function MoveAny:UpdateABs()
 	C_Timer.After( 0.5, MoveAny.UpdateABs )
 end
 
-local f = CreateFrame( "FRAME" )
+local f = CreateFrame( "Frame" )
 f:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 f:RegisterEvent( "UPDATE_BONUS_ACTIONBAR" )
 f:RegisterEvent( "ACTIONBAR_PAGE_CHANGED" )
@@ -219,17 +219,9 @@ f:SetScript( "OnEvent", function( self, event )
 					frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
 						self:SetAttribute( "actionpage", newstate );
 					]] );
-					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
+					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
+														--OLD: "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
 
-					--[[
-						Assess whether the attribute that was changed and triggered the blizzard _onattributechanged event was the 'statehidden' attribute
-						Assess whether the player has an OverrideActionBar or VehicleActionBar
-						If they do, determine if the 6 (< 7) OverrideActionBarButtons which are used for VehicleActionBar, too, are hidden or not
-						If the player has a special bar and the OverrideActionBarButton is hidden, also hide the respective ActionButton that is part of the paging bar
-						However, if they have a special bar but the OverrideActionBarButton is shown, also show the respective ActionButton that is part of the paging bar
-						Hide the ActionButtons7-12 if the player has a special bar
-						If the player doesn't have an OverrideActionBar nor VehicleActionBar, show ActionButtons1-12 that are part of the paging bar
-					]]--
 					local _onAttributeChanged = [[
 						if name == 'statehidden' then
 							if (HasOverrideActionBar() or HasVehicleActionBar()) then
@@ -255,13 +247,7 @@ f:SetScript( "OnEvent", function( self, event )
 							end
 						end
 					]]
-					--[[
-						Generate a secure frame, AttributeChangedFrame, that is used to 'hook' into the _onattributechanged
-						Set frame references for both the ActionButtons and the OverrideActionBarButtons, which are used for both VehicleActionBar and OverrideActionBar bars
-						Make two secure tables, buttons and overridebuttons; populate it with the buttons using the just set frame references
-						'Hook' our secure frame to run the secure _onAttributeChanged snippet when the blizzard event, _onattributechanged, fires
-						Finish by registering the secure frame as a secure state driver, because for some reason this is required for the _onattributechanged to properly be hooked
-					]]--
+
 					local AttributeChangedFrame = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
 					for i = 1, 12 do
 						local button = _G['ActionButton'..i]

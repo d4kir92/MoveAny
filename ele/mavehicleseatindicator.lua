@@ -3,7 +3,7 @@ local AddOnName, MoveAny = ...
 
 function MoveAny:InitMAVehicleSeatIndicator()
 	if VehicleSeatIndicator then
-		MAVehicleSeatIndicator = CreateFrame( "FRAME", "MAVehicleSeatIndicator", UIParent )
+		MAVehicleSeatIndicator = CreateFrame( "Frame", "MAVehicleSeatIndicator", UIParent )
 		MAVehicleSeatIndicator:SetSize( 100, 100 )
 
 		MAVehicleSeatIndicator:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -300, -300 )

@@ -26,8 +26,8 @@ function MoveAny:UpdatePetBar()
 end
 
 function MoveAny:InitPetBar()
-	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
-		MAPetBar = CreateFrame( "FRAME", "MAPetBar", UIParent )
+	if MoveAny:IsEnabled( "PETBAR", true ) then
+		MAPetBar = CreateFrame( "Frame", "MAPetBar", UIParent )
 		MAPetBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 110 )
 
 		for i = 1, 10 do

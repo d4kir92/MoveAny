@@ -25,7 +25,7 @@ function MoveAny:InitBags()
 			bagsw = bagsw - sw / 2
 		end
 		
-		MABagBar = CreateFrame( "FRAME", "MABagBar", UIParent )
+		MABagBar = CreateFrame( "Frame", "MABagBar", UIParent )
 		MABagBar:SetSize( bagsw, sh )
 		if MicroButtonAndBagsBar then
 			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )

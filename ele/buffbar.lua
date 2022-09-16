@@ -4,7 +4,7 @@ local AddOnName, MoveAny = ...
 local btnsize = 36
 
 function MoveAny:InitBuffBar()
-	MABuffBar = CreateFrame( "FRAME", "MABuffBar", UIParent )
+	MABuffBar = CreateFrame( "Frame", "MABuffBar", UIParent )
 	if BuffFrame then
 		MABuffBar:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -165, -32 )
 	else
