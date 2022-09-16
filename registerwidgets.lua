@@ -658,15 +658,6 @@ function MoveAny:Event( event, ... )
 	if MainMenuBarPerformanceBarFrame then
 		MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "CastingBarFrame",
-		["lstr"] = "CASTINGBAR"
-	} )
-	MoveAny:RegisterWidget( {
-		["name"] = "TalkingHeadFrame",
-		["lstr"] = "TALKINGHEAD",
-		["secure"] = true
-	} )
 	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
 		for i = 1, 10 do
 			if i ~= 2 then
@@ -778,7 +769,16 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LEAVEVEHICLE"
 		} )
 	end
-
+	MoveAny:RegisterWidget( {
+		["name"] = "CastingBarFrame",
+		["lstr"] = "CASTINGBAR"
+	} )
+	MoveAny:RegisterWidget( {
+		["name"] = "TalkingHeadFrame",
+		["lstr"] = "TALKINGHEAD",
+		["secure"] = true
+	} )
+	
 
 
 	-- BOTTOMLEFT

@@ -221,7 +221,7 @@ f:SetScript( "OnEvent", function( self, event )
 					]] );
 					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
 														--OLD: "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
-
+					
 					local _onAttributeChanged = [[
 						if name == 'statehidden' then
 							if (HasOverrideActionBar() or HasVehicleActionBar()) then
@@ -247,6 +247,16 @@ f:SetScript( "OnEvent", function( self, event )
 							end
 						end
 					]]
+					if MABUILD == "CLASSIC" then
+						_onAttributeChanged = [[
+						if name == 'statehidden' then
+							for i = 1, 12 do
+								buttons[i]:SetAttribute('statehidden', false)
+								buttons[i]:Show()
+							end
+						end
+					]]
+					end
 
 					local AttributeChangedFrame = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
 					for i = 1, 12 do
@@ -256,7 +266,9 @@ f:SetScript( "OnEvent", function( self, event )
 					
 					for i = 1, 6 do
 						local overrideButton = _G['OverrideActionBarButton'..i]
-						AttributeChangedFrame:SetFrameRef('OverrideActionBarButton'..i, overrideButton)
+						if overrideButton then
+							AttributeChangedFrame:SetFrameRef('OverrideActionBarButton'..i, overrideButton)
+						end
 					end
 					
 					AttributeChangedFrame:Execute([[
