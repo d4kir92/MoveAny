@@ -54,7 +54,7 @@ local frameinit = {}
 function MoveAny:MoveFrames()
 	if not InCombatLockdown() then
 		local allsetup = true
-		for i, mf in pairs(MAFRAMES) do
+		for i, mf in pairs( MAFRAMES ) do
 			local name = mf[1]
 			local frame = _G[name]
 			local scale = mf[2]
@@ -165,38 +165,6 @@ function MoveAny:MoveFrames()
 					frame:ClearAllPoints()
 					frame:SetPoint(p1, p2, p3, p4, p5)
 				end
-
-				
-
-				if WorldMapFrame and WorldMapFrame.GetName and WorldMapFrame:GetName() == mf[1] then
-					if WorldMapFrame.ScrollContainer.Child.TiledBackground then
-						WorldMapFrame.ScrollContainer.Child.TiledBackground:Hide()
-					end
-					WorldMapFrame.BlackoutFrame.Show = WorldMapFrame.BlackoutFrame.Hide
-					WorldMapFrame.BlackoutFrame:Hide()
-
-					WorldMapFrame.ScrollContainer.GetCursorPosition = function(f)
-						local x,y = MapCanvasScrollControllerMixin.GetCursorPosition(f);
-						local s = WorldMapFrame:GetScale();
-						return x/s, y/s;
-					end
-
-					if MABUILD ~= "RETAIL" then -- TBC, ERA
-						WorldMapFrame.ScrollContainer:HookScript("OnMouseWheel", function(self, delta)
-							local x, y = self:GetNormalizedCursorPosition()
-							local nextZoomOutScale, nextZoomInScale = self:GetCurrentZoomRange()
-							if delta == 1 then
-								if nextZoomInScale > self:GetCanvasScale() then
-									self:InstantPanAndZoom( nextZoomInScale, x, y )
-								end
-							else
-								if nextZoomOutScale < self:GetCanvasScale() then
-									self:InstantPanAndZoom( nextZoomOutScale, x, y )
-								end
-							end
-						end)
-					end
-				end
 			else
 				allsetup = false
 			end
@@ -209,7 +177,6 @@ function MoveAny:MoveFrames()
 	end
 end
 
-local MAFRAMES = {}
 tinsert( MAFRAMES, {
 	"GameMenuFrame",
 	1
