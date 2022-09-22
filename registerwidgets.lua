@@ -474,6 +474,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "TARGETFRAME"
 		} )
 	end
+	if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "TargetFrameToT",
+			["lstr"] = "TARGETOFTARGETFRAME"
+		} )
+	end
 	if MoveAny:IsEnabled( "FOCUSFRAME", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "FocusFrame",
@@ -511,6 +517,10 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "COMPACTRAIDFRAMEMANAGER"
 		} )
 	end
+	MoveAny:RegisterWidget( {
+		["name"] = "MAFPSFrame",
+		["lstr"] = "MAFPSFrame"
+	} )
 	MoveAny:RegisterWidget( {
 		["name"] = "IASkills",
 		["lstr"] = "IASKILLS"
@@ -673,8 +683,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "STANCEBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAStanceBar",
-			["lstr"] = "STANCEBAR",
-			["secure"] = true
+			["lstr"] = "STANCEBAR"
 		} )
 	end
 	if MoveAny:IsEnabled( "PETBAR", true ) then
@@ -812,7 +821,8 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitMAVehicleSeatIndicator()
 	MoveAny:InitStanceBar()
 	MoveAny:InitBuffBar()
-
+	MoveAny:InitMAFPSFrame()
+	
 	MoveAny:MoveFrames()
 
 	local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {

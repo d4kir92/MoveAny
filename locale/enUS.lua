@@ -11,10 +11,12 @@ end
 function MALang_enUS()
 	local tab = {
 		["TOPLEFT"] = "Top Left",
-		["PLAYERFRAME"] = "Playerframe",
-		["TARGETFRAME"] = "Targetframe",
-		["FOCUSFRAME"] = "Focusframe",
-		["RUNEFRAME"] = "Deathknight - RunesFrame",
+		["PLAYERFRAME"] = "Player Frame",
+		["TARGETFRAME"] = "Target Frame",
+		["TARGETOFTARGETFRAME"] = "Target of Target Frame",
+		["FOCUSFRAME"] = "Focus Frame",
+		["RUNEFRAME"] = "Deathknight - Runes Frame",
+		["MAFPSFrame"] = "FPS",
 
 		["TOPRIGHT"] = "Top Right",
 		["MINIMAP"] = "Mini Map",

@@ -3,10 +3,12 @@
 function MALang_deDE()
 	local tab = {
 		["TOPLEFT"] = "Oben Links",
-		["PLAYERFRAME"] = "Spielerfenster",
-		["TARGETFRAME"] = "Zielfenster",
-		["FOCUSFRAME"] = "Fokusfenster",
-		["RUNEFRAME"] = "Todesritter - Runenfenster",
+		["PLAYERFRAME"] = "Spieler Fenster",
+		["TARGETFRAME"] = "Ziel Fenster",
+		["TARGETOFTARGETFRAME"] = "Ziel des Ziels Fenster",
+		["FOCUSFRAME"] = "Fokus Fenster",
+		["RUNEFRAME"] = "Todesritter - Runen Fenster",
+		["MAFPSFrame"] = "FPS",
 
 		["TOPRIGHT"] = "Oben Rechts",
 		["MINIMAP"] = "Minimap",
