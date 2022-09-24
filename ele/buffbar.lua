@@ -10,13 +10,14 @@ function MoveAny:InitBuffBar()
 	else
 		MABuffBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 	end
-	MABuffBar:SetSize( btnsize * 8, btnsize * 6 )
+	MABuffBar:SetSize( btnsize * 8, btnsize * 3 )
 
 	hooksecurefunc( BuffFrame, "SetPoint", function( self, ... )
 		if self.masetpoint_buff then return end
 		self.masetpoint_buff = true
 
 		self:SetMovable( true )
+		self:SetParent( MABuffBar )
 		self:ClearAllPoints()
 		self:SetPoint( "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0 )
 		

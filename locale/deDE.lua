@@ -13,6 +13,7 @@ function MALang_deDE()
 		["TOPRIGHT"] = "Oben Rechts",
 		["MINIMAP"] = "Minimap",
 		["BUFFS"] = "Stärkungszauber",
+		["DEBUFFS"] = "Schwächungszauber",
 
 		["RIGHT"] = "Rechts",
 		["QUESTTRACKER"] = "Questverfolgung",

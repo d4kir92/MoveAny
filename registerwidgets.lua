@@ -360,8 +360,14 @@ function MoveAny:RegisterWidget( tab, debug )
 			MoveAny:SetElePoint( name, an, UIParent, re, MAGrid( px ), MAGrid( py ) ) 
 		elseif frame:GetLeft() and frame:GetBottom() then
 			MoveAny:SetElePoint( name, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", MAGrid( frame:GetLeft() ), MAGrid( frame:GetBottom() ) ) 
+		elseif parent ~= nil then
+			MoveAny:SetElePoint( name, an, UIParent, re, MAGrid( parent:GetLeft() ), MAGrid( parent:GetBottom() ) ) 
 		else
-			MoveAny:SetElePoint( name, "CENTER", UIParent, "CENTER", 0, 0 ) 
+			local an = tab.an or "CENTER" 
+			local re = tab.re or "CENTER" 
+			local px = tab.px or 0
+			local py = tab.py or 0
+			MoveAny:SetElePoint( name, an, UIParent, re, px, py ) 
 		end
 	end
 	MoveAny:SetEleSize( name, sw, sh )
@@ -560,15 +566,23 @@ function MoveAny:Event( event, ... )
 			["name"] = "MABuffBar",
 			["lstr"] = "BUFFS",
 			["sw"] = 36 * 8,
-			["sh"] = 36 * 6
+			["sh"] = 36 * 3
+		} )
+	end
+	if MoveAny:IsEnabled( "DEBUFFS", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MADebuffBar",
+			["lstr"] = "DEBUFFS",
+			["sw"] = 36 * 8,
+			["sh"] = 36 * 3
 		} )
 	end
 	if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
 		if ObjectiveTrackerFrame == nil then
 			ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
 			ObjectiveTrackerFrame:SetSize( 224, 600 )
-			ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", 0, 0 )
-			
+			ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
+		
 			if QuestWatchFrame then
 				hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
 					if self.masetpoint then return end
@@ -731,7 +745,11 @@ function MoveAny:Event( event, ... )
 			["name"] = "GroupLootFrame1",
 			["lstr"] = "GROUPLOOTCONTAINER",
 			["sw"] = glfsw,
-			["sh"] = glfsh
+			["sh"] = glfsh,
+			["px"] = 0,
+			["py"] = 200,
+			["an"] = "BOTTOM",
+			["re"] = "BOTTOM"
 		} )
 	end
 	if ExtraAbilityContainer then
@@ -821,6 +839,7 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitMAVehicleSeatIndicator()
 	MoveAny:InitStanceBar()
 	MoveAny:InitBuffBar()
+	MoveAny:InitDebuffBar()
 	MoveAny:InitMAFPSFrame()
 	
 	MoveAny:MoveFrames()

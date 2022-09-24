@@ -21,6 +21,7 @@ function MALang_enUS()
 		["TOPRIGHT"] = "Top Right",
 		["MINIMAP"] = "Mini Map",
 		["BUFFS"] = "Buffs",
+		["DEBUFFS"] = "Debuffs",
 
 		["RIGHT"] = "Right",
 		["QUESTTRACKER"] = "Questtracker",
