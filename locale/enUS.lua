@@ -12,6 +12,7 @@ function MALang_enUS()
 	local tab = {
 		["TOPLEFT"] = "Top Left",
 		["PLAYERFRAME"] = "Player Frame",
+		["PETFRAME"] = "Pet Frame",
 		["TARGETFRAME"] = "Target Frame",
 		["TARGETOFTARGETFRAME"] = "Target of Target Frame",
 		["FOCUSFRAME"] = "Focus Frame",

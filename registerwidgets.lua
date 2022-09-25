@@ -468,7 +468,13 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "PLAYERFRAME"
 		} )
 	end
-	if MoveAny:IsEnabled( "RUNEFRAME", true ) and class == "DEATHKNIGHT" then
+	if MoveAny:IsEnabled( "PETFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "PetFrame",
+			["lstr"] = "PETFRAME"
+		} )
+	end
+	if MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
 		MoveAny:RegisterWidget( {
 			["name"] = "RuneFrame",
 			["lstr"] = "RUNEFRAME"
@@ -480,7 +486,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "TARGETFRAME"
 		} )
 	end
-	if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", true ) then
+	if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TargetFrameToT",
 			["lstr"] = "TARGETOFTARGETFRAME"
@@ -564,17 +570,13 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "BUFFS", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MABuffBar",
-			["lstr"] = "BUFFS",
-			["sw"] = 36 * 8,
-			["sh"] = 36 * 3
+			["lstr"] = "BUFFS"
 		} )
 	end
-	if MoveAny:IsEnabled( "DEBUFFS", true ) then
+	if MoveAny:IsEnabled( "DEBUFFS", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MADebuffBar",
-			["lstr"] = "DEBUFFS",
-			["sw"] = 36 * 8,
-			["sh"] = 36 * 3
+			["lstr"] = "DEBUFFS"
 		} )
 	end
 	if MoveAny:IsEnabled( "QUESTTRACKER", true ) then

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.4.3" )
+	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.4.4" )
 }
 
 local searchStr = ""
@@ -103,8 +103,9 @@ function MoveAny:InitMALock()
 
 		AddCategory( "TOPLEFT" )
 		AddCheckBox( 4, "PLAYERFRAME" )
+		AddCheckBox( 24, "PETFRAME" )
 		AddCheckBox( 4, "TARGETFRAME" )
-		AddCheckBox( 4, "TARGETOFTARGETFRAME" )
+		AddCheckBox( 24, "TARGETOFTARGETFRAME" )
 		AddCheckBox( 4, "FOCUSFRAME" )
 		if class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME" )

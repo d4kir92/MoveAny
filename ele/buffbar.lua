@@ -10,7 +10,11 @@ function MoveAny:InitBuffBar()
 	else
 		MABuffBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 	end
-	MABuffBar:SetSize( btnsize * 8, btnsize * 3 )
+	if MoveAny:IsEnabled( "DEBUFFS", false ) == true then
+		MABuffBar:SetSize( btnsize * 8, btnsize * 3 )
+	else
+		MABuffBar:SetSize( btnsize * 8, btnsize * 6 )	
+	end
 
 	hooksecurefunc( BuffFrame, "SetPoint", function( self, ... )
 		if self.masetpoint_buff then return end

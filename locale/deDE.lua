@@ -4,6 +4,7 @@ function MALang_deDE()
 	local tab = {
 		["TOPLEFT"] = "Oben Links",
 		["PLAYERFRAME"] = "Spieler Fenster",
+		["PETFRAME"] = "Begleiter Fenster",
 		["TARGETFRAME"] = "Ziel Fenster",
 		["TARGETOFTARGETFRAME"] = "Ziel des Ziels Fenster",
 		["FOCUSFRAME"] = "Fokus Fenster",
