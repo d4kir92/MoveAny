@@ -666,9 +666,14 @@ function MoveAny:Event( event, ... )
 		hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 			if self.masetpoint_gt then return end
 			self.masetpoint_gt = true
-			local p1, _, p3 = MAGameTooltip:GetPoint()
-			self:ClearAllPoints()
-			self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
+			local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
+			local owner = self:GetOwner()
+			if owner then
+				if owner == UIParent then
+					self:ClearAllPoints()
+					self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
+				end
+			end
 			self.masetpoint_gt = false
 		end )
 
