@@ -66,31 +66,37 @@ function MoveAny:MoveFrames()
 					frame:SetScale(scale)
 				end
 				
-				frame:SetMovable(true)
+				frame:SetMovable( true )
 				frame:SetUserPlaced( false )
-				frame:EnableMouse(true)
-				frame:SetClampedToScreen(true)
+				frame:EnableMouse( true )
+				frame:SetClampedToScreen( true )
 				frame:RegisterForDrag("LeftButton", "RightButton")
-
+			
 				frame:SetScript( "OnDragStart", function(self, btn)
 					frame:SetUserPlaced( false )
 					frame:SetAlpha(0.34)
+					if IsShiftKeyDown() then
+						MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
+						MoveAny:SetFrameScale( name, nil )
 
-					if btn == "RightButton" then
-						frame.iscaling = true
-						
-						currentFrame = frame
-						currentFrameName = name
+						MoveAny:MSG( "[MoveFrames] Reseted Frame: " .. name )
+					else
+						if btn == "RightButton" then
+							frame.iscaling = true
+							
+							currentFrame = frame
+							currentFrameName = name
 
-						frame.prevMouseX = nil
-						frame.prevMouseY = nil
-						
-						GameTooltip:Hide()
-					elseif btn == "LeftButton" then
-						frame.ismoving = true
-						if not InCombatLockdown() then
-							self:StartMoving()
-							frame:SetUserPlaced( false )
+							frame.prevMouseX = nil
+							frame.prevMouseY = nil
+							
+							GameTooltip:Hide()
+						elseif btn == "LeftButton" then
+							frame.ismoving = true
+							if not InCombatLockdown() then
+								self:StartMoving()
+								frame:SetUserPlaced( false )
+							end
 						end
 					end
 				end)
@@ -123,10 +129,6 @@ function MoveAny:MoveFrames()
 						frame:UpdateValues()
 
 						frame:SetUserPlaced( false )
-
-						if strfind(name, "ContainerFrame") == 1 then
-							C_UI.Reload()
-						end
 					end
 					if frame.isscaling then
 						frame.isscaling = false
@@ -213,14 +215,16 @@ tinsert( MAFRAMES, {
 	nil,
 	true
 } )
-for i = 2, 5 do
-	tinsert( MAFRAMES, {
-		"ContainerFrame" .. i,
-		1,
-		true,
-		"ContainerFrame" .. i - 1,
-		true
-	} )
+for i = 2, 20 do
+	if _G["ContainerFrame" .. i] then
+		tinsert( MAFRAMES, {
+			"ContainerFrame" .. i,
+			1,
+			true,
+			"ContainerFrame" .. i - 1,
+			true
+		} )
+	end
 end
 
 tinsert( MAFRAMES, {
