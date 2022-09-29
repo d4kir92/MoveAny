@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.4.7" )
+	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.4.8" )
 }
 
 local searchStr = ""

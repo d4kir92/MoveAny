@@ -325,6 +325,15 @@ function MoveAny:RegisterWidget( tab, debug )
 		return false
 	end
 
+	frame:SetMovable( true )
+	
+	frame:SetDontSavePosition( true )
+	frame:SetClampedToScreen( true )
+
+	if frame.SetUserPlaced then
+		frame:SetUserPlaced( false )
+	end
+
 	local maframe1 = _G["MA" .. name]
 	local maframe2 = _G[string.gsub( name, "MA", "" )]
 	local dragf = _G[name .. "_DRAG"]
@@ -371,11 +380,6 @@ function MoveAny:RegisterWidget( tab, debug )
 		end
 	end
 	MoveAny:SetEleSize( name, sw, sh )
-
-	frame:SetMovable( true )
-	
-	frame:SetDontSavePosition( true )
-	frame:SetClampedToScreen( true )
 
 	if not frame.secure then
 		frame:ClearAllPoints()
@@ -662,7 +666,10 @@ function MoveAny:Event( event, ... )
 		MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
 		MAGameTooltip:SetSize( 100, 100 )
 		MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
-		
+
+		GameTooltip:SetMovable( true )
+		GameTooltip:SetUserPlaced( false )
+
 		hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 			if self.masetpoint_gt then return end
 			self.masetpoint_gt = true
