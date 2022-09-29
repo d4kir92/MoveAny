@@ -31,6 +31,7 @@ function MALang_enUS()
 		["MICROMENU"] = "Micro Menu",
 		["BAGS"] = "Bags",
 		["GAMETOOLTIP"] = "Tooltip",
+		["GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
 
 		["BOTTOM"] = "Bottom",
 		["ACTIONBARS"] = "Actionbars 1-6",

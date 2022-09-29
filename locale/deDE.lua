@@ -23,7 +23,8 @@ function MALang_deDE()
 		["MICROMENU"] = "Mikro Menü",
 		["BAGS"] = "Taschen",
 		["GAMETOOLTIP"] = "Tooltip",
-		
+		["GAMETOOLTIP_ONCURSOR"] = "Tooltip am Zeiger",
+
 		["BOTTOM"] = "Unten",
 		["ACTIONBARS"] = "Aktionsleisten 1-6",
 		["ACTIONBAR7"] = "Benutzerdefinierte Aktionsleiste 7",

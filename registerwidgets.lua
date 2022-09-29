@@ -692,6 +692,38 @@ function MoveAny:Event( event, ... )
 		GameTooltip:SetMovable( true )
 		GameTooltip:SetUserPlaced( false )
 
+		function MAGameTooltipOnDefaultPosition()
+			local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
+			if p1 and p2 and p3 and p4 and p5 then
+				if p2 == MAGameTooltip then
+					return true
+				elseif p2 == UIParent then
+					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+						return true
+					end
+				end
+			end
+			return false
+		end
+
+		function MAThinkGameTooltip()
+			if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == true then
+				local point, parent, relativePoint, ofsx, ofsy = GameTooltip:GetPoint()
+				local owner = GameTooltip:GetOwner()
+				if owner and owner == UIParent then
+					local scale = GameTooltip:GetEffectiveScale()
+					local mX, mY = GetCursorPosition()
+					mX = mX / scale
+					mY = mY / scale
+					GameTooltip:ClearAllPoints()
+					GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
+					GameTooltip.default = 1
+				end
+			end
+			C_Timer.After( 0.01, MAThinkGameTooltip )
+		end
+		MAThinkGameTooltip()
+
 		hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 			if self.masetpoint_gt then return end
 			self.masetpoint_gt = true
@@ -700,13 +732,14 @@ function MoveAny:Event( event, ... )
 			self:SetUserPlaced( false )
 
 			local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
-			local owner = self:GetOwner()
-			if owner then
-				if owner == UIParent then
+
+			if MAGameTooltipOnDefaultPosition() then
+				if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == false then
 					self:ClearAllPoints()
 					self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
 				end
 			end
+
 			self.masetpoint_gt = false
 		end )
 
