@@ -17,6 +17,10 @@ function MoveAny:InitDebuffBar()
 				self.masetpoint_buff = true
 
 				self:SetMovable( true )
+				if self.SetUserPlaced then
+					self:SetUserPlaced( false )
+				end
+
 				self:ClearAllPoints()
 				self:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
 				

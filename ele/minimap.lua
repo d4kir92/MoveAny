@@ -51,6 +51,12 @@ function MoveAny:InitMinimap()
 
 		hooksecurefunc( MiniMapTrackingButton, "SetPoint", function( self, ... )
 			local p1, p2, p3, p4, p5 = self:GetPoint()
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			MiniMapTracking:ClearAllPoints()
 			MiniMapTracking:SetPoint( p1, Minimap, p3, p4, p5 )
 		end )
@@ -58,6 +64,12 @@ function MoveAny:InitMinimap()
 			local p1, p2, p3, p4, p5 = MiniMapTrackingButton:GetPoint()
 			if self.iasetpoint then return end
 			self.iasetpoint = true
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			self:ClearAllPoints()
 			self:SetPoint( p1, Minimap, p3, p4, p5 )
 			self.iasetpoint = false
@@ -125,6 +137,12 @@ function MoveAny:InitMinimap()
 			end
 			if self.iasetpoint then return end
 			self.iasetpoint = true
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			GarrisonLandingPageMinimapButton:ClearAllPoints()
 			GarrisonLandingPageMinimapButton:SetPoint( "BOTTOMLEFT", Minimap, "BOTTOMLEFT", -2, -30 )
 			self.iasetpoint = false
@@ -140,6 +158,12 @@ function MoveAny:InitMinimap()
 			end
 			if self.iasetpoint then return end
 			self.iasetpoint = true
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			QueueStatusMinimapButton:ClearAllPoints()
 			QueueStatusMinimapButton:SetPoint( "BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, 2 )
 			self.iasetpoint = false

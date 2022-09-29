@@ -140,6 +140,12 @@ function MoveAny:MoveFrames()
 				hooksecurefunc(frame, "SetPoint", function( self, ... )
 					if self.masetpoint_frame then return end
 					self.masetpoint_frame = true
+					
+					self:SetMovable( true )
+					if self.SetUserPlaced then
+						self:SetUserPlaced( false )
+					end
+
 					if not InCombatLockdown() then
 						local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 						if dbp1 and dbp3 then

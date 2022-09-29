@@ -37,6 +37,12 @@ function MoveAny:InitPetBar()
 
 				hooksecurefunc( MAPetBar, "SetPoint", function( self, ... )
 					bb:SetParent( MAPetBar )
+
+					bb:SetMovable( true )
+					if bb.SetUserPlaced then
+						bb:SetUserPlaced( false )
+					end
+
 					bb:ClearAllPoints()
 					bb:SetPoint( "TOPLEFT", MAPetBar, "TOPLEFT", (i - 1) * btnsize, 0 )
 				end )

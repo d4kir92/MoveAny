@@ -27,6 +27,12 @@ function MoveAny:UpdateStanceBar()
 							hooksecurefunc( bb, "SetPoint", function( self, ... )
 								if self.masetpoint then return end
 								self.masetpoint = true
+								
+								self:SetMovable( true )
+								if self.SetUserPlaced then
+									self:SetUserPlaced( false )
+								end
+
 								bb:SetParent( MAStanceBar )
 								bb:ClearAllPoints()
 								bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )

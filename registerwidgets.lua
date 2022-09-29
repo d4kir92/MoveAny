@@ -394,6 +394,10 @@ function MoveAny:RegisterWidget( tab, debug )
 		self.masetpoint_ele = true
 
 		self:SetMovable( true )
+		if self.SetUserPlaced then
+			self:SetUserPlaced( false )
+		end
+
 		if not self.secure then
 			self:ClearAllPoints()
 			local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
@@ -510,6 +514,12 @@ function MoveAny:Event( event, ... )
 		hooksecurefunc( CompactRaidFrameManager, "SetPoint", function( self, ... )
 			if self.crfmsetpoint then return end
 			self.crfmsetpoint = true
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			self:ClearAllPoints()
 			self:SetPoint( "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0 )
 			self.crfmsetpoint = false
@@ -593,6 +603,12 @@ function MoveAny:Event( event, ... )
 				hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
 					if self.masetpoint then return end
 					self.masetpoint = true
+
+					self:SetMovable( true )
+					if self.SetUserPlaced then
+						self:SetUserPlaced( false )
+					end
+
 					QuestWatchFrame:ClearAllPoints()
 					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 					self.masetpoint = false
@@ -607,6 +623,12 @@ function MoveAny:Event( event, ... )
 				hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
 					if self.masetpoint then return end
 					self.masetpoint = true
+
+					self:SetMovable( true )
+					if self.SetUserPlaced then
+						self:SetUserPlaced( false )
+					end
+
 					WatchFrame:ClearAllPoints()
 					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 					self.masetpoint = false
@@ -673,6 +695,10 @@ function MoveAny:Event( event, ... )
 		hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 			if self.masetpoint_gt then return end
 			self.masetpoint_gt = true
+
+			self:SetMovable( true )
+			self:SetUserPlaced( false )
+
 			local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
 			local owner = self:GetOwner()
 			if owner then
@@ -747,6 +773,10 @@ function MoveAny:Event( event, ... )
 						self.masetpoint = true
 				
 						self:SetMovable( true )
+						if self.SetUserPlaced then
+							self:SetUserPlaced( false )
+						end
+
 						self:ClearAllPoints()
 						self:SetPoint( "BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4 )
 						

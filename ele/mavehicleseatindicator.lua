@@ -11,6 +11,12 @@ function MoveAny:InitMAVehicleSeatIndicator()
 		hooksecurefunc( MAVehicleSeatIndicator, "SetPoint", function( self, ... )
 			if self.masetpoint_maseat then return end
 			self.masetpoint_maseat = true
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			VehicleSeatIndicator:ClearAllPoints()
 			VehicleSeatIndicator:SetPoint( "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0 )
 			self.masetpoint_maseat = false
@@ -19,6 +25,12 @@ function MoveAny:InitMAVehicleSeatIndicator()
 		hooksecurefunc( VehicleSeatIndicator, "SetPoint", function( self, ... )
 			if self.masetpoint_seat then return end
 			self.masetpoint_seat = true
+
+			self:SetMovable( true )
+			if self.SetUserPlaced then
+				self:SetUserPlaced( false )
+			end
+
 			self:ClearAllPoints()
 			self:SetPoint( "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0 )
 			self.masetpoint_seat = false

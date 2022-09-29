@@ -21,6 +21,10 @@ function MoveAny:InitBuffBar()
 		self.masetpoint_buff = true
 
 		self:SetMovable( true )
+		if self.SetUserPlaced then
+			self:SetUserPlaced( false )
+		end
+		
 		self:SetParent( MABuffBar )
 		self:ClearAllPoints()
 		self:SetPoint( "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0 )

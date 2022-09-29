@@ -33,6 +33,12 @@ function MoveAny:InitMicroMenu()
 				hooksecurefunc( mb, "SetPoint", function( self, ... )
 					if self.masetpoint then return end
 					self.masetpoint = true
+
+					mb:SetMovable( true )
+					if mb.SetUserPlaced then
+						mb:SetUserPlaced( false )
+					end
+
 					mb:ClearAllPoints()
 					mb:SetParent( MAMenuBar )
 					mb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", (i - 1) * (sw - 4) - 2, 2 )
