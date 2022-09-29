@@ -692,14 +692,35 @@ function MoveAny:Event( event, ... )
 		GameTooltip:SetMovable( true )
 		GameTooltip:SetUserPlaced( false )
 
+		local gtp4 = nil
+		local gtp5 = nil
+
+		function MANearNumber( num1, num2, near )
+			if num1 + near >= num2 and num1 - near <= num2 then
+				return true
+			end
+			return false
+		end
+
 		function MAGameTooltipOnDefaultPosition()
 			local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
 			if p1 and p2 and p3 and p4 and p5 then
 				if p2 == MAGameTooltip then
 					return true
 				elseif p2 == UIParent then
+					if gtp4 == nil and gtp5 == nil then
+						_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
+						
+						gtp4 = floor( gtp4 )
+						gtp5 = floor( gtp5 )
+					end
+
 					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
-						return true
+						p4 = floor( p4 )
+						p5 = floor( p5 )
+						if MANearNumber( p4, gtp4, 1 ) and MANearNumber( p5, gtp5, 1 ) then
+							return true
+						end
 					end
 				end
 			end
