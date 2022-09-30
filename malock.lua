@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.5.1" )
+	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.5.2" )
 }
 
 local searchStr = ""
@@ -152,6 +152,7 @@ function MoveAny:InitMALock()
 	MALock.Search = CreateFrame( "EditBox", "MALock_Search", MALock, "InputBoxTemplate" )
 	MALock.Search:SetPoint( "TOPLEFT", MALock, "TOPLEFT", 12, -26 )
 	MALock.Search:SetSize( 400, 24 )
+	MALock.Search:SetAutoFocus( false )
 	MALock.Search:SetScript( "OnTextChanged", function( self, ... )
 		searchStr = MALock.Search:GetText()
 		MAUpdateElementList()

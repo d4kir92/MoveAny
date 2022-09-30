@@ -609,6 +609,8 @@ function MoveAny:Event( event, ... )
 						self:SetUserPlaced( false )
 					end
 
+					self:SetParent( ObjectiveTrackerFrame )
+
 					QuestWatchFrame:ClearAllPoints()
 					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 					self.masetpoint = false
@@ -628,6 +630,8 @@ function MoveAny:Event( event, ... )
 					if self.SetUserPlaced then
 						self:SetUserPlaced( false )
 					end
+					
+					self:SetParent( ObjectiveTrackerFrame )
 
 					WatchFrame:ClearAllPoints()
 					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
