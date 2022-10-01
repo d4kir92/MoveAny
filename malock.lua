@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.5.2" )
+	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.5.3" )
 }
 
 local searchStr = ""
@@ -102,28 +102,43 @@ function MoveAny:InitMALock()
 		posy = -4
 
 		AddCategory( "TOPLEFT" )
-		AddCheckBox( 4, "PLAYERFRAME" )
-		AddCheckBox( 24, "PETFRAME" )
-		AddCheckBox( 4, "TARGETFRAME" )
-		AddCheckBox( 24, "TARGETOFTARGETFRAME" )
-		AddCheckBox( 4, "FOCUSFRAME" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "PLAYERFRAME" )
+			AddCheckBox( 24, "PETFRAME" )
+			AddCheckBox( 4, "TARGETFRAME" )
+			AddCheckBox( 24, "TARGETOFTARGETFRAME" )
+			AddCheckBox( 4, "FOCUSFRAME" )
+		end
 		if class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME" )
 		end
 
+		AddCategory( "TOP" )
+		AddCheckBox( 4, "ZONETEXTFRAME" )
+		AddCheckBox( 4, "UIWIDGETTOPCENTER" )
+		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP" )
+
 		AddCategory( "TOPRIGHT" )
-		AddCheckBox( 4, "MINIMAP" )
-		AddCheckBox( 4, "BUFFS" )
-		AddCheckBox( 24, "DEBUFFS" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "MINIMAP" )
+			AddCheckBox( 4, "BUFFS" )
+			AddCheckBox( 24, "DEBUFFS" )
+			AddCheckBox( 4, "UIWIDGETBELOWMINIMAP" )
+		end
 
 		AddCategory( "RIGHT" )
-		AddCheckBox( 4, "QUESTTRACKER" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "QUESTTRACKER" )
+		end
 
 		AddCategory( "BOTTOMRIGHT" )
-		AddCheckBox( 4, "MICROMENU" )
-		AddCheckBox( 4, "BAGS" )
-		AddCheckBox( 4, "GAMETOOLTIP" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "MICROMENU" )
+			AddCheckBox( 4, "BAGS" )
+			AddCheckBox( 4, "GAMETOOLTIP" )
+		end
 		AddCheckBox( 24, "GAMETOOLTIP_ONCURSOR" )
+
 
 		AddCategory( "BOTTOM" )
 		AddCheckBox( 4, "ACTIONBARS" )
@@ -137,10 +152,15 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "TOTEMBAR" )
 		end
 		AddCheckBox( 4, "POSSESSBAR" )
-		AddCheckBox( 4, "LEAVEVEHICLE" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "LEAVEVEHICLE" )
+		end
 		AddCheckBox( 4, "MAINMENUEXPBAR" )
 		AddCheckBox( 4, "REPUTATIONWATCHBAR" )
 		AddCheckBox( 4, "GROUPLOOTCONTAINER" )
+		AddCheckBox( 4, "CASTINGBAR" )
+		AddCheckBox( 4, "TALKINGHEAD" )
+		AddCheckBox( 4, "MAFPSFrame" )
 
 		AddCategory( "BOTTOMLEFT" )
 		AddCheckBox( 4, "CHAT" )

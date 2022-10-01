@@ -11,6 +11,8 @@ function MALang_deDE()
 		["RUNEFRAME"] = "Todesritter - Runen Fenster",
 		["MAFPSFrame"] = "FPS",
 
+		["TOP"] = "Oben",
+
 		["TOPRIGHT"] = "Oben Rechts",
 		["MINIMAP"] = "Minimap",
 		["BUFFS"] = "Stärkungszauber",

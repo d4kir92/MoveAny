@@ -1,12 +1,13 @@
 
 local AddOnName, MoveAny = ...
 
+MABUILDNR = select(4, GetBuildInfo())
 MABUILD = "CLASSIC"
-if select(4, GetBuildInfo()) > 90000 then
+if MABUILDNR > 90000 then
 	MABUILD = "RETAIL"
-elseif select(4, GetBuildInfo()) > 29999 then
+elseif MABUILDNR > 29999 then
 	MABUILD = "WRATH"
-elseif select(4, GetBuildInfo()) > 19999 then
+elseif MABUILDNR > 19999 then
 	MABUILD = "TBC"
 end
 

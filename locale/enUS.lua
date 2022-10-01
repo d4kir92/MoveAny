@@ -19,6 +19,8 @@ function MALang_enUS()
 		["RUNEFRAME"] = "Deathknight - Runes Frame",
 		["MAFPSFrame"] = "FPS",
 
+		["TOP"] = "Top",
+
 		["TOPRIGHT"] = "Top Right",
 		["MINIMAP"] = "Mini Map",
 		["BUFFS"] = "Buffs",
