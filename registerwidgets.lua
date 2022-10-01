@@ -193,10 +193,20 @@ function MAMenuOptions( opt, frame )
 	end
 end
 
-function MoveAny:ToggleMinimapButton()
-	MoveAny:GetMinimapTable()["show"] = not MoveAny:GetMinimapTable()["show"]
+function MoveAny:UpdateMinimapButton()
 	if MAMMBTN then
-		if MoveAny:GetMinimapTable()["show"] then
+		if MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) then
+			MAMMBTN:Show("MoveAnyMinimapIcon")
+		else
+			MAMMBTN:Hide("MoveAnyMinimapIcon")
+		end
+	end
+end
+
+function MoveAny:ToggleMinimapButton()
+	MoveAny:SetEnabled( "SHOWMINIMAPBUTTON", not MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) )
+	if MAMMBTN then
+		if MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) then
 			MAMMBTN:Show("MoveAnyMinimapIcon")
 		else
 			MAMMBTN:Hide("MoveAnyMinimapIcon")
@@ -205,14 +215,14 @@ function MoveAny:ToggleMinimapButton()
 end
 
 function MoveAny:HideMinimapButton()
-	MoveAny:GetMinimapTable()["show"] = false
+	MoveAny:SetEnabled( "SHOWMINIMAPBUTTON", false )
 	if MAMMBTN then
 		MAMMBTN:Hide("MoveAnyMinimapIcon")
 	end
 end
 
 function MoveAny:ShowMinimapButton()
-	MoveAny:GetMinimapTable()["show"] = true
+	MoveAny:SetEnabled( "SHOWMINIMAPBUTTON", true )
 	if MAMMBTN then
 		MAMMBTN:Show("MoveAnyMinimapIcon")
 	end
@@ -1001,10 +1011,6 @@ function MoveAny:Event( event, ... )
 	
 	MoveAny:MoveFrames()
 
-	if MoveAny:GetMinimapTable() and MoveAny:GetMinimapTable()["show"] == nil then
-		MoveAny:GetMinimapTable()["show"] = true
-	end
-
 	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
 		text = "MoveAnyMinimapIcon",
@@ -1027,6 +1033,14 @@ function MoveAny:Event( event, ... )
 		MAMMBTN = LibStub("LibDBIcon-1.0", true)
 		if MAMMBTN then
 			MAMMBTN:Register( "MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable() )
+		end
+	end
+
+	if MAMMBTN then
+		if MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) then
+			MAMMBTN:Show("MoveAnyMinimapIcon")
+		else
+			MAMMBTN:Hide("MoveAnyMinimapIcon")
 		end
 	end
 
