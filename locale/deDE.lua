@@ -2,6 +2,12 @@
 
 function MALang_deDE()
 	local tab = {
+		["MMBTNLEFT"] = "Linksklick => Sperren/Entsperren + Optionen",
+		["MMBTNRIGHT"] = "Rechtsklick => Minimapknopf verstecken",
+
+		["GENERAL"] = "Allgemein",
+		["SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
+
 		["TOPLEFT"] = "Oben Links",
 		["PLAYERFRAME"] = "Spieler Fenster",
 		["PETFRAME"] = "Begleiter Fenster",

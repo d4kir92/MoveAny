@@ -193,6 +193,31 @@ function MAMenuOptions( opt, frame )
 	end
 end
 
+function MoveAny:ToggleMinimapButton()
+	MoveAny:GetMinimapTable()["show"] = not MoveAny:GetMinimapTable()["show"]
+	if MAMMBTN then
+		if MoveAny:GetMinimapTable()["show"] then
+			MAMMBTN:Show("MoveAnyMinimapIcon")
+		else
+			MAMMBTN:Hide("MoveAnyMinimapIcon")
+		end
+	end
+end
+
+function MoveAny:HideMinimapButton()
+	MoveAny:GetMinimapTable()["show"] = false
+	if MAMMBTN then
+		MAMMBTN:Hide("MoveAnyMinimapIcon")
+	end
+end
+
+function MoveAny:ShowMinimapButton()
+	MoveAny:GetMinimapTable()["show"] = true
+	if MAMMBTN then
+		MAMMBTN:Show("MoveAnyMinimapIcon")
+	end
+end
+
 function MoveAny:RegisterWidget( tab, debug )
 	local name = tab.name
 	local lstr = tab.lstr
@@ -976,7 +1001,11 @@ function MoveAny:Event( event, ... )
 	
 	MoveAny:MoveFrames()
 
-	local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
+	if MoveAny:GetMinimapTable() and MoveAny:GetMinimapTable()["show"] == nil then
+		MoveAny:GetMinimapTable()["show"] = true
+	end
+
+	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
 		text = "MoveAnyMinimapIcon",
 		icon = 135994,
@@ -984,20 +1013,20 @@ function MoveAny:Event( event, ... )
 			if btn == "LeftButton" then
 				MoveAny:ToggleDrag()
 			elseif btn == "RightButton" then
-				--ToggleMinimapButton()
+				MoveAny:HideMinimapButton()
 			end
 		end,
 		OnTooltipShow = function(tooltip)
 			if not tooltip or not tooltip.AddLine then return end
 			tooltip:AddLine( "MoveAny")
-			tooltip:AddLine( "LeftClick = Locks/Unlocks + Options" )
-			--tooltip:AddLine( "RightClick = Options" )
+			tooltip:AddLine( MAGT( "MMBTNLEFT" ) )
+			tooltip:AddLine( MAGT( "MMBTNRIGHT" ) )
 		end,
 	})
 	if MoveAnyMinimapIcon then
-		icon = LibStub("LibDBIcon-1.0", true)
-		if icon then
-			icon:Register( "MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable() )
+		MAMMBTN = LibStub("LibDBIcon-1.0", true)
+		if MAMMBTN then
+			MAMMBTN:Register( "MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable() )
 		end
 	end
 

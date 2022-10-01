@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.5.3" )
+	["title"] = format( "MoveAny v|cff3FC7EB%s", "0.5.4" )
 }
 
 local searchStr = ""
@@ -35,7 +35,7 @@ local function AddCategory( key )
 	end
 end
 
-local function AddCheckBox( x, key )
+local function AddCheckBox( x, key, func )
 	if cbs[key] == nil then
 		cbs[key] = CreateFrame( "CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate" ) --CreateFrame( "CheckButton", "moversettingsmove", mover, "UICheckButtonTemplate" )
 		local cb = cbs[key]
@@ -43,6 +43,10 @@ local function AddCheckBox( x, key )
 		cb:SetChecked( MoveAny:IsEnabled( key, true ) )
 		cb:SetScript( "OnClick", function( self )
 			MoveAny:SetEnabled( key, self:GetChecked() )
+
+			if func then
+				func()
+			end
 
 			if MALock.save then
 				MALock.save:Enable()
@@ -100,6 +104,9 @@ function MoveAny:InitMALock()
 		
 		local sh = 24
 		posy = -4
+
+		AddCategory( "GENERAL" )
+		AddCheckBox( 4, "SHOWMINIMAPBUTTON", MoveAny.ToggleMinimapButton )
 
 		AddCategory( "TOPLEFT" )
 		if MABUILDNR < 100000 then

@@ -10,6 +10,12 @@ end
 
 function MALang_enUS()
 	local tab = {
+		["MMBTNLEFT"] = "Left Click => Locks/Unlocks + Options",
+		["MMBTNRIGHT"] = "Right Click => Hide Minimap Button",
+
+		["GENERAL"] = "General",
+		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
+
 		["TOPLEFT"] = "Top Left",
 		["PLAYERFRAME"] = "Player Frame",
 		["PETFRAME"] = "Pet Frame",

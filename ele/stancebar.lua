@@ -39,9 +39,6 @@ function MoveAny:UpdateStanceBar()
 								self.masetpoint = false
 							end )
 							bb:SetPoint( "CENTER" )
-
-							bb.Hide = bb.Show
-							bb:Show()
 						end
 					end
 				end
