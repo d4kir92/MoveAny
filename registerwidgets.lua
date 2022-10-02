@@ -239,9 +239,9 @@ function MoveAny:RegisterWidget( tab, debug )
 		tab.delay = tab.delay + 0.2
 	end
 
-	--[[if UIPARENT_MANAGED_FRAME_POSITIONS then
+	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
 		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil 
-	end]]
+	end
 
 	local frame = _G[name]
 	local s, e = strfind( name, ".", 1, true )
