@@ -4,7 +4,7 @@ local AddOnName, MoveAny = ...
 local btnsize = 36
 
 function MoveAny:UpdatePetBar()
-	if UnitExists( "pet" ) then
+	if PetHasActionBar() and UnitIsVisible("pet") then
 		MAPetBar:SetAlpha( 1 )
 		for i = 1, 10 do
 			local bb = _G["PetActionButton" .. i]
