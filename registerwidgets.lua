@@ -301,7 +301,7 @@ function MoveAny:RegisterWidget( tab, debug )
 					dragframe.opt:SetFrameLevel( framelevel )
 					framelevel = framelevel + 1
 
-					dragframe.opt:SetSize( 500, 400 )
+					dragframe.opt:SetSize( 300, 250 )
 					dragframe.opt:SetPoint( "CENTER" )
 					dragframe.opt:SetClampedToScreen( true )
 					dragframe.opt:SetMovable( true )
