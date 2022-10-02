@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.5.8" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.5.9" )
 }
 
 local searchStr = ""
@@ -147,7 +147,7 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "BAGS" )
 			AddCheckBox( 4, "GAMETOOLTIP" )
 		end
-		AddCheckBox( 24, "GAMETOOLTIP_ONCURSOR" )
+		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR" )
 
 
 		AddCategory( "BOTTOM" )

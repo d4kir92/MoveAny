@@ -738,90 +738,90 @@ function MoveAny:Event( event, ... )
 		["name"] = "IATokenBar",
 		["lstr"] = "TOKENBAR"
 	} )
-	if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
-		if MABUILDNR < 100000 then
+	
+	local gtp4 = nil
+	local gtp5 = nil
+
+	function MANearNumber( num1, num2, near )
+		if num1 + near >= num2 and num1 - near <= num2 then
+			return true
+		end
+		return false
+	end
+
+	function MAGameTooltipOnDefaultPosition()
+		local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
+		if p1 and p2 and p3 and p4 and p5 then
+			if p2 == MAGameTooltip then
+				return true
+			elseif p2 == UIParent then
+				if gtp4 == nil and gtp5 == nil then
+					_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
+					
+					gtp4 = floor( gtp4 )
+					gtp5 = floor( gtp5 )
+				end
+
+				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+					p4 = floor( p4 )
+					p5 = floor( p5 )
+					if MANearNumber( p4, gtp4, 1 ) and MANearNumber( p5, gtp5, 1 ) then
+						return true
+					end
+				end
+			end
+		end
+		return false
+	end
+
+	function MAThinkGameTooltip()
+		if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == true then
+			local point, parent, relativePoint, ofsx, ofsy = GameTooltip:GetPoint()
+			local owner = GameTooltip:GetOwner()
+			if owner and owner == UIParent then
+				local scale = GameTooltip:GetEffectiveScale()
+				local mX, mY = GetCursorPosition()
+				mX = mX / scale
+				mY = mY / scale
+				GameTooltip:ClearAllPoints()
+				GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
+				GameTooltip.default = 1
+			end
+		end
+		C_Timer.After( 0.01, MAThinkGameTooltip )
+	end
+	MAThinkGameTooltip()
+
+	GameTooltip:SetMovable( true )
+	GameTooltip:SetUserPlaced( false )
+
+	if MABUILDNR < 100000 then
+		if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
 			MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
 			MAGameTooltip:SetSize( 100, 100 )
 			MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
-		end
-
-		GameTooltip:SetMovable( true )
-		GameTooltip:SetUserPlaced( false )
-
-		local gtp4 = nil
-		local gtp5 = nil
-
-		function MANearNumber( num1, num2, near )
-			if num1 + near >= num2 and num1 - near <= num2 then
-				return true
-			end
-			return false
-		end
-
-		function MAGameTooltipOnDefaultPosition()
-			local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
-			if p1 and p2 and p3 and p4 and p5 then
-				if p2 == MAGameTooltip then
-					return true
-				elseif p2 == UIParent then
-					if gtp4 == nil and gtp5 == nil then
-						_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
-						
-						gtp4 = floor( gtp4 )
-						gtp5 = floor( gtp5 )
-					end
-
-					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
-						p4 = floor( p4 )
-						p5 = floor( p5 )
-						if MANearNumber( p4, gtp4, 1 ) and MANearNumber( p5, gtp5, 1 ) then
-							return true
-						end
-					end
-				end
-			end
-			return false
-		end
-
-		function MAThinkGameTooltip()
-			if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == true then
-				local point, parent, relativePoint, ofsx, ofsy = GameTooltip:GetPoint()
-				local owner = GameTooltip:GetOwner()
-				if owner and owner == UIParent then
-					local scale = GameTooltip:GetEffectiveScale()
-					local mX, mY = GetCursorPosition()
-					mX = mX / scale
-					mY = mY / scale
-					GameTooltip:ClearAllPoints()
-					GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
-					GameTooltip.default = 1
-				end
-			end
-			C_Timer.After( 0.01, MAThinkGameTooltip )
-		end
-		MAThinkGameTooltip()
-
-		if MABUILDNR < 100000 then
+		
 			hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 				if self.masetpoint_gt then return end
 				self.masetpoint_gt = true
-
+	
 				self:SetMovable( true )
 				self:SetUserPlaced( false )
-
+	
 				local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
-
+	
 				if MAGameTooltipOnDefaultPosition() then
 					if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == false then
 						self:ClearAllPoints()
 						self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
 					end
 				end
-
+	
 				self.masetpoint_gt = false
 			end )
 		end
-		if MABUILDNR < 100000 then
+
+		if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAGameTooltip",
 				["lstr"] = "GAMETOOLTIP"
