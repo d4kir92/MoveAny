@@ -850,7 +850,8 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "STANCEBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAStanceBar",
-			["lstr"] = "STANCEBAR"
+			["lstr"] = "STANCEBAR",
+			["secure"] = true
 		} )
 	end
 	if MoveAny:IsEnabled( "PETBAR", true ) then

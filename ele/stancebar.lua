@@ -52,18 +52,22 @@ end
 
 function MoveAny:InitStanceBar()
 	if MoveAny:IsEnabled( "STANCEBAR", true ) then
-		MAStanceBar = CreateFrame( "Frame", "MAStanceBar", UIParent )
-		MAStanceBar:SetSize( btnsize, btnsize )
-		MAStanceBar.cou = -1
+		if not InCombatLockdown() then
+			MAStanceBar = CreateFrame( "Frame", "MAStanceBar", UIParent )
+			MAStanceBar:SetSize( btnsize, btnsize )
+			MAStanceBar.cou = -1
 
-		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( "MAStanceBar" )
-		if p1 then
-			MAStanceBar:ClearAllPoints()
-			MAStanceBar:SetPoint( p1, UIParent, p3, p4, p5 )
+			local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( "MAStanceBar" )
+			if p1 then
+				MAStanceBar:ClearAllPoints()
+				MAStanceBar:SetPoint( p1, UIParent, p3, p4, p5 )
+			else
+				MAStanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 75 )
+			end
+
+			MoveAny:UpdateStanceBar()
 		else
-			MAStanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 75 )
+			C_Timer.After( 0.1, MoveAny.InitStanceBar )
 		end
-
-		MoveAny:UpdateStanceBar()
 	end
 end

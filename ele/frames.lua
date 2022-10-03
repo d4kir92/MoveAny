@@ -384,3 +384,7 @@ tinsert( MAFRAMES, {
 	1,
 	true
 } )
+tinsert( MAFRAMES, {
+	"WorldStateScoreFrame",
+	1
+} )
