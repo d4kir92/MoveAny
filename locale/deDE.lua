@@ -72,6 +72,26 @@ function MALang_deDE()
 		["MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["REPUTATIONWATCHBAR"] = "Reputationsleiste",
 		["UIWIDGETPOWERBAR"] = "Machtleiste",
+
+
+
+		["PROFILE"] = "Profil",
+		["PROFILES"] = "Profile",
+		["ADDPROFILE"] = "Profil hinzufügen",
+		["CURRENT"] = "Derzeitiges",
+		["SHARE"] = "Teilen",
+		["SHAREPROFILE"] = "Profil teilen",
+		["GETPROFILE"] = "Profil erhalten",
+		["INHERITFROM"] = "Vererben von",
+		["ADD"] = "Hinzufügen",
+		["REMOVE"] = "Entfernen",
+		["RENAME"] = "Umbenennen",
+		["PLAYER"] = "Spieler",
+		["DOWNLOAD"] = "Herunterladen",
+		["UPLOAD"] = "Hochladen",
+		["STATUS"] = "Status",
+		["DONE"] = "Fertig",
+		["WAITINGFOROWNER"] = "Auf Besitzer warten",
 	}
 
 	MAUpdateLanguageTab( tab )

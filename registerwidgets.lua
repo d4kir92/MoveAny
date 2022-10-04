@@ -1018,7 +1018,7 @@ function MoveAny:Event( event, ... )
 		icon = 135994,
 		OnClick = function(self, btn)
 			if btn == "LeftButton" then
-				MoveAny:ToggleDrag()
+				MoveAny:ToggleMALock()
 			elseif btn == "RightButton" then
 				MoveAny:HideMinimapButton()
 			end
@@ -1046,9 +1046,10 @@ function MoveAny:Event( event, ... )
 	end
 
 	if MoveAny:IsEnabled( "MALOCK", false ) then
-		-- Not hide
-	else
-		MoveAny:ToggleDrag()
+		MoveAny:ShowMALock()
+	end
+	if MoveAny:IsEnabled( "MAPROFILES", false ) then
+		MoveAny:ShowProfiles()
 	end
 end
 

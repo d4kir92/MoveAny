@@ -32,5 +32,6 @@ function MAUpdateLanguage()
 	elseif GetLocale() == "zhCN" then
 		MALang_zhCN()
 	end
+	--MALang_enUS()
 end
 MAUpdateLanguage()

@@ -82,6 +82,26 @@ function MALang_enUS()
 		["MAINMENUEXPBAR"] = "Exp Bar",
 		["REPUTATIONWATCHBAR"] = "Reputation Bar",
 		["UIWIDGETPOWERBAR"] = "Power Bar",
+
+		
+		
+		["PROFILE"] = "Profile",
+		["PROFILES"] = "Profiles",
+		["ADDPROFILE"] = "Add Profile",
+		["CURRENT"] = "Current",
+		["SHARE"] = "Share",
+		["SHAREPROFILE"] = "Share Profile",
+		["GETPROFILE"] = "Get Profile",
+		["INHERITFROM"] = "Inherit from",
+		["ADD"] = "Add",
+		["REMOVE"] = "Remove",
+		["RENAME"] = "Rename",
+		["PLAYER"] = "Player",
+		["DOWNLOAD"] = "Download",
+		["UPLOAD"] = "Upload",
+		["STATUS"] = "Status",
+		["DONE"] = "Done",
+		["WAITINGFOROWNER"] = "Waiting for Owner",
 	}
 
 	MAUpdateLanguageTab( tab )

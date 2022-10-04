@@ -19,26 +19,93 @@ function MoveAny:GetCP()
 	return MATAB["CURRENTPROFILE"]
 end
 
-function MoveAny:AddProfile( name )
+function MoveAny:SetCP( name )
+	MATAB = MATAB or {}
+	MATAB["CURRENTPROFILE"] = name
+end
+
+
+
+
+function MoveAny:GetValidProfileName( name )
+	if MATAB["PROFILES"][name] == nil then
+		return name
+	end
+	return MoveAny:GetValidProfileName( name .. " NEW" )
+end
+
+function MoveAny:AddProfile( newname, other )
+	MATAB = MATAB or {}
+	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+	
+	local name = MoveAny:GetValidProfileName( newname )
+	-- Profile
+	MATAB["PROFILES"][name] = MATAB["PROFILES"][name] or {}
+
+	if other and MATAB["PROFILES"][other] then
+		MATAB["PROFILES"][name] = MATAB["PROFILES"][other]
+	else
+		-- Frames
+		MATAB["PROFILES"][name]["FRAMES"] =  MATAB["PROFILES"][name]["FRAMES"] or {}
+		MATAB["PROFILES"][name]["FRAMES"]["POINTS"] = MATAB["PROFILES"][name]["FRAMES"]["POINTS"] or {}
+		MATAB["PROFILES"][name]["FRAMES"]["SIZES"] = MATAB["PROFILES"][name]["FRAMES"]["SIZES"] or {}
+
+		-- Eles
+		MATAB["PROFILES"][name]["ELES"] = MATAB["PROFILES"][name]["ELES"] or {}
+		MATAB["PROFILES"][name]["ELES"]["POINTS"] = MATAB["PROFILES"][name]["ELES"]["POINTS"] or {}
+		MATAB["PROFILES"][name]["ELES"]["SIZES"] = MATAB["PROFILES"][name]["ELES"]["SIZES"] or {}
+		MATAB["PROFILES"][name]["ELES"]["OPTIONS"] = MATAB["PROFILES"][name]["ELES"]["OPTIONS"] or {}
+
+		MATAB["PROFILES"][name]["ELES"]["OPTIONS"]["ACTIONBARS"] = MATAB["PROFILES"][name]["ELES"]["OPTIONS"]["ACTIONBARS"] or {}
+	end
+
+	MoveAny:SetCP( name )
+end
+
+function MoveAny:RemoveProfile( name )
 	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 
 	-- Profile
-	MATAB["PROFILES"][name] = MATAB["PROFILES"][name] or {}
-
-	-- Frames
-	MATAB["PROFILES"][name]["FRAMES"] =  MATAB["PROFILES"][name]["FRAMES"] or {}
-	MATAB["PROFILES"][name]["FRAMES"]["POINTS"] = MATAB["PROFILES"][name]["FRAMES"]["POINTS"] or {}
-	MATAB["PROFILES"][name]["FRAMES"]["SIZES"] = MATAB["PROFILES"][name]["FRAMES"]["SIZES"] or {}
-
-	-- Eles
-	MATAB["PROFILES"][name]["ELES"] = MATAB["PROFILES"][name]["ELES"] or {}
-	MATAB["PROFILES"][name]["ELES"]["POINTS"] = MATAB["PROFILES"][name]["ELES"]["POINTS"] or {}
-	MATAB["PROFILES"][name]["ELES"]["SIZES"] = MATAB["PROFILES"][name]["ELES"]["SIZES"] or {}
-	MATAB["PROFILES"][name]["ELES"]["OPTIONS"] = MATAB["PROFILES"][name]["ELES"]["OPTIONS"] or {}
-
-	MATAB["PROFILES"][name]["ELES"]["OPTIONS"]["ACTIONBARS"] = MATAB["PROFILES"][name]["ELES"]["OPTIONS"]["ACTIONBARS"] or {}
+	MATAB["PROFILES"][name] = nil
+	print(MATAB["PROFILES"][name], name)
+	MoveAny:SetCP( "DEFAULT" )
 end
+
+function MoveAny:RenameProfile( oldname, newname )
+	print("old", oldname, "new", newname)
+	if MATAB["PROFILES"][newname] ~= nil then
+		MoveAny:MSG( "[RenameProfile] can't rename, new Name already exists." )
+		return false
+	end
+	if MATAB["PROFILES"][oldname] == nil then
+		MoveAny:MSG( "[RenameProfile] can't rename, old Profile don't exists." )
+		return false
+	end
+
+	local isCurrent = MoveAny:GetCP() == oldname
+
+	MoveAny:AddProfile( newname, oldname )
+	MoveAny:RemoveProfile( oldname )
+
+	if isCurrent then
+		MoveAny:SetCP( newname )
+	end
+	
+	C_UI.Reload()
+	return true
+end
+
+
+function MoveAny:GetProfiles()
+	MATAB = MATAB or {}
+	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+
+	return MATAB["PROFILES"]
+end
+
+
+
 
 function MoveAny:InitDB()
 	-- DB
@@ -48,7 +115,9 @@ function MoveAny:InitDB()
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	MATAB["CURRENTPROFILE"] = MATAB["CURRENTPROFILE"] or "DEFAULT"
 
-	MoveAny:AddProfile( "DEFAULT" )
+	if MATAB["PROFILES"]["DEFAULT"] == nil then
+		MoveAny:AddProfile( "DEFAULT" )
+	end
 end
 
 function MoveAny:GetTab()
@@ -56,6 +125,14 @@ function MoveAny:GetTab()
 end
 
 function MoveAny:SetEnabled( element, value )
+	if element == nil then
+		MoveAny:MSG_Error( "[SetEnabled] Missing Name" )
+		return false
+	end
+	if value == nil then
+		MoveAny:MSG_Error( "[SetEnabled] Missing Value" )
+		return false
+	end
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 end
@@ -65,13 +142,9 @@ function MoveAny:IsEnabled( element, value )
 		MoveAny:MSG_Error( "[IsEnabled] Missing Name" )
 		return false
 	end
-	if value == nil then
-		MoveAny:MSG_Error( "[IsEnabled] Missing Value" )
-		return false
-	end
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
-		MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
+		return value
 	end
 	return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
 end
@@ -112,6 +185,8 @@ function MoveAny:GetElePoint( key )
 end
 
 function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
+	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
+
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3

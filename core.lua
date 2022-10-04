@@ -16,13 +16,12 @@ SlashCmdList["RL"] = function(msg)
 	C_UI.Reload()
 end
 
-SLASH_MOAN1, SLASH_MOAN2 = "/moan", "/moveany"
-SlashCmdList["MOAN"] = function(msg)
-	MoveAny:ToggleDrag()
+SLASH_MOVEANY1 = "/moveany"
+SlashCmdList["MOVEANY"] = function(msg)
+	MoveAny:ToggleMALock()
 end
 
 MADragFrames = MADragFrames or {}
-MADrag = true
 
 -- Colors
 local colors = {}
@@ -38,12 +37,8 @@ function MoveAny:GetColor( key )
 end
 -- Colors
 
-function MoveAny:ToggleDrag()
-	MADrag = not MADrag
-
-	MoveAny:SetEnabled( "MALOCK", MADrag )
-
-	if MADrag then
+function MoveAny:ShowMALock()
+	if MoveAny:IsEnabled( "MALOCK", false ) then
 		for i, df in pairs( MADragFrames ) do
 			df:EnableMouse( true )
 			df:SetAlpha( 1 )
@@ -52,7 +47,11 @@ function MoveAny:ToggleDrag()
 			MALock:Show()
 			MAGridFrame:Show()
 		end
-	else
+	end
+end
+
+function MoveAny:HideMALock()
+	if not MoveAny:IsEnabled( "MALOCK", false ) then
 		for i, df in pairs( MADragFrames ) do
 			df:EnableMouse( false )
 			df:SetAlpha( 0 )
@@ -64,15 +63,24 @@ function MoveAny:ToggleDrag()
 	end
 end
 
+function MoveAny:ToggleMALock()
+	MoveAny:SetEnabled( "MALOCK", not MoveAny:IsEnabled( "MALOCK", false ) )
+	if MoveAny:IsEnabled( "MALOCK", false ) then
+		MoveAny:ShowMALock()
+	else
+		MoveAny:HideMALock()
+	end
+end
+
 local f = CreateFrame( "Frame" )
 f.incombat = false 
 
 f:SetScript( "OnUpdate", function()
-	if MADrag and InCombatLockdown() then
+	if MoveAny:IsEnabled( "MALOCK", false ) and InCombatLockdown() then
 		f.incombat = true
-		MoveAny:ToggleDrag()
+		MoveAny:ToggleMALock()
 	elseif f.incombat and not InCombatLockdown() then
 		f.incombat = false
-		MoveAny:ToggleDrag()
+		MoveAny:ToggleMALock()
 	end
 end )
