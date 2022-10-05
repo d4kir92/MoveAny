@@ -3,7 +3,7 @@
 function MALang_deDE()
 	local tab = {
 		["MMBTNLEFT"] = "Linksklick => Sperren/Entsperren + Optionen",
-		["MMBTNRIGHT"] = "Rechtsklick => Minimapknopf verstecken",
+		["MMBTNRIGHT"] = "Shift + Rechtsklick => Minimapknopf verstecken",
 
 		["GENERAL"] = "Allgemein",
 		["SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",

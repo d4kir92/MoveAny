@@ -1019,7 +1019,7 @@ function MoveAny:Event( event, ... )
 		OnClick = function(self, btn)
 			if btn == "LeftButton" then
 				MoveAny:ToggleMALock()
-			elseif btn == "RightButton" then
+			elseif IsShiftKeyDown() and btn == "RightButton" then
 				MoveAny:HideMinimapButton()
 			end
 		end,

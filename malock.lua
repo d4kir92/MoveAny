@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.0" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.1" )
 }
 
 local PREFIX = "MOAN"
@@ -466,6 +466,7 @@ function MoveAny:ShowProfiles()
 						MAGetProfile:Hide()
 						WebOwner = source
 						WebProfile = profile
+						WebProfileData = {}
 						C_ChatInfo.SendAddonMessage( PREFIX, "WP;" .. profile, "WHISPER", source )
 						
 						if MADownloadProfile == nil then
@@ -503,9 +504,8 @@ function MoveAny:ShowProfiles()
 							MADownloadProfile.btn:SetScript( "OnClick", function()
 								local profileName = MADownloadProfile.ProfileName:GetText()
 								if MATAB["PROFILES"][profileName] == nil then 
-									MoveAny:AddProfile( profileName )
-								
-									--MATAB["PROFILES"][profileName] = WebProfileData
+
+									MoveAny:ImportProfile( profileName, WebProfileData )
 
 									C_UI.Reload()
 								else
@@ -555,13 +555,12 @@ function MoveAny:ShowProfiles()
 				end
 			end
 			GetProfiles()
-			--C_ChatInfo.SendAddonMessage( PREFIX, "SP", "WHISPER", source )
 		end ) 
 
 		local index = 0
 		for name, tab in pairs( MoveAny:GetProfiles() ) do
 			btn = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
-			btn:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 24 - br )
+			btn:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 40 - br )
 			btn:SetSize( 160, 24 )
 			if name == MoveAny:GetCP() then
 				btn:SetText( "(" .. MAGT( "CURRENT" ) .. ") " .. name )
@@ -574,7 +573,7 @@ function MoveAny:ShowProfiles()
 			end )
 
 			btnShare = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
-			btnShare:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160  + br, -index * 24 - br )
+			btnShare:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160  + br, -index * 40 - br )
 			btnShare:SetSize( 80, 24 )
 			btnShare:SetText( MAGT( "SHARE" ) )
 			btnShare:SetScript( "OnClick", function()
@@ -669,7 +668,22 @@ function MoveAny:ShowProfiles()
 											local per = string.format( "%0.1f", cur / max * 100 )
 											WebStatus = tonumber( per )
 											C_ChatInfo.SendAddonMessage( PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source )
-											C_ChatInfo.SendAddonMessage( PREFIX, "DL;" .. profile .. ";" .. "FAKEDATA", "WHISPER", source )
+											if w ~= nil then
+												local typ = type( w )
+												local val = w
+												if typ == "boolean" then
+													if w then
+														val = 1
+													else
+														val = 0
+													end
+												elseif typ == "table" then
+													val = ""
+												end
+												if typ ~= "table" then
+													C_ChatInfo.SendAddonMessage( PREFIX, "DL;" .. profile .. ";" .. "POINTS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source )
+												end
+											end
 										end )
 									end
 								end
@@ -683,7 +697,22 @@ function MoveAny:ShowProfiles()
 												local per = string.format( "%0.1f", cur / max * 100 )
 												WebStatus = tonumber( per )
 												C_ChatInfo.SendAddonMessage( PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source )
-												C_ChatInfo.SendAddonMessage( PREFIX, "DL;" .. profile .. ";" .. "FAKEDATA", "WHISPER", source )
+												if w ~= nil then
+													local typ = type( w )
+													local val = w
+													if typ == "boolean" then
+														if w then
+															val = 1
+														else
+															val = 0
+														end
+													elseif typ == "table" then
+														val = ""
+													end
+													if typ ~= "table" then
+														C_ChatInfo.SendAddonMessage( PREFIX, "DL;" .. profile .. ";" .. "SIZES" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source )
+													end
+												end
 											end )
 										end
 									end
@@ -697,7 +726,22 @@ function MoveAny:ShowProfiles()
 													local per = string.format( "%0.1f", cur / max * 100 )
 													WebStatus = tonumber( per )
 													C_ChatInfo.SendAddonMessage( PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source )
-													C_ChatInfo.SendAddonMessage( PREFIX, "DL;" .. profile .. ";" .. "FAKEDATA", "WHISPER", source )
+													if w ~= nil then
+														local typ = type( w )
+														local val = w
+														if typ == "boolean" then
+															if w then
+																val = 1
+															else
+																val = 0
+															end
+														elseif typ == "table" then
+															val = ""
+														end
+														if typ ~= "table" then
+															C_ChatInfo.SendAddonMessage( PREFIX, "DL;" .. profile .. ";" .. "OPTIONS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source )
+														end
+													end
 												end )
 											end
 										end
@@ -796,7 +840,7 @@ function MoveAny:ShowProfiles()
 
 			if name ~= "DEFAULT" then
 				btnRen = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
-				btnRen:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 24 - br )
+				btnRen:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 40 - br )
 				btnRen:SetSize( 100, 24 )
 				btnRen:SetText( MAGT( "RENAME" ) )
 				btnRen:SetScript( "OnClick", function()
@@ -851,7 +895,7 @@ function MoveAny:ShowProfiles()
 
 			if name ~= "DEFAULT" then
 				btnRem = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
-				btnRem:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 24 - br )
+				btnRem:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br )
 				btnRem:SetSize( 100, 24 )
 				btnRem:SetText( MAGT( "REMOVE" ) )
 				btnRem:SetScript( "OnClick", function()
@@ -914,9 +958,23 @@ local function OnEvent(self, event, ...)
 				end
 			elseif cmd == "DL" then
 				local target = tab[2]
-				local data = tab[3]
+				local mainIndex = tab[3]
+				local subIndex = tab[4]
+				local index = tab[5]
+				local typ = tab[6]
+				local val = tab[7]
 				if source and target and source == WebOwner and target == WebProfile then
-					--print(data) -- WIP
+					WebProfileData = WebProfileData or {}
+					WebProfileData[mainIndex] = WebProfileData[mainIndex] or {}
+					WebProfileData[mainIndex][subIndex] = WebProfileData[mainIndex][subIndex] or {}
+					if typ == "boolean" then
+						if val == "1" then
+							val = true
+						else
+							val = false
+						end
+					end
+					WebProfileData[mainIndex][subIndex][index] = val
 				end
 			end
 		end

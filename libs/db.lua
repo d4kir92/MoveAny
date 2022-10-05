@@ -68,12 +68,18 @@ function MoveAny:RemoveProfile( name )
 
 	-- Profile
 	MATAB["PROFILES"][name] = nil
-	print(MATAB["PROFILES"][name], name)
+
 	MoveAny:SetCP( "DEFAULT" )
 end
 
+function MoveAny:ImportProfile( name, eleTab )
+	MoveAny:AddProfile( name )
+	for i, v in pairs( eleTab ) do
+		MATAB["PROFILES"][name]["ELES"][i] = v
+	end
+end
+
 function MoveAny:RenameProfile( oldname, newname )
-	print("old", oldname, "new", newname)
 	if MATAB["PROFILES"][newname] ~= nil then
 		MoveAny:MSG( "[RenameProfile] can't rename, new Name already exists." )
 		return false
