@@ -14,14 +14,16 @@ end
 
 function MoveAny:GetCP()
 	MATAB = MATAB or {}
-	MATAB["CURRENTPROFILE"] = MATAB["CURRENTPROFILE"] or "DEFAULT"
+	MATABPC = MATABPC or {}
+	MATABPC["CURRENTPROFILE"] = MATABPC["CURRENTPROFILE"] or "DEFAULT"
 
-	return MATAB["CURRENTPROFILE"]
+	return MATABPC["CURRENTPROFILE"]
 end
 
 function MoveAny:SetCP( name )
 	MATAB = MATAB or {}
-	MATAB["CURRENTPROFILE"] = name
+	MATABPC = MATABPC or {}
+	MATABPC["CURRENTPROFILE"] = name
 end
 
 
@@ -119,10 +121,15 @@ function MoveAny:InitDB()
 
 	-- PROFILES
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
-	MATAB["CURRENTPROFILE"] = MATAB["CURRENTPROFILE"] or "DEFAULT"
+	MATABPC = MATABPC or {}
+	MATABPC["CURRENTPROFILE"] = MATABPC["CURRENTPROFILE"] or "DEFAULT"
 
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:AddProfile( "DEFAULT" )
+	end
+
+	if MATAB["PROFILES"][MoveAny:GetCP()] == nil then
+		MoveAny:SetCP( "DEFAULT" )
 	end
 end
 
