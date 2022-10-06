@@ -7,6 +7,9 @@ function MALang_deDE()
 
 		["GENERAL"] = "Allgemein",
 		["SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
+		["FRAMESSHIFTDRAG"] = "Fenster mit Shift + Linksklick bewegen",
+		["FRAMESSHIFTSCALE"] = "Fenster mit Shift + Rechtsklick skalieren",
+		["FRAMESSHIFTRESET"] = "Fenster mit Mausradklick resetten",
 
 		["TOPLEFT"] = "Oben Links",
 		["PLAYERFRAME"] = "Spieler Fenster",
@@ -72,6 +75,9 @@ function MALang_deDE()
 		["MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["REPUTATIONWATCHBAR"] = "Reputationsleiste",
 		["UIWIDGETPOWERBAR"] = "Machtleiste",
+
+		["ROWS"] = "Reihen",
+		["SPACING"] = "Abstand",
 
 
 

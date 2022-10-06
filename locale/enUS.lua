@@ -15,6 +15,9 @@ function MALang_enUS()
 
 		["GENERAL"] = "General",
 		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
+		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick",
+		["FRAMESSHIFTSCALE"] = "Scale Frame with Shift + Rightclick",
+		["FRAMESSHIFTRESET"] = "Reset Frame with Mousewheelclick",
 
 		["TOPLEFT"] = "Top Left",
 		["PLAYERFRAME"] = "Player Frame",
@@ -83,8 +86,11 @@ function MALang_enUS()
 		["REPUTATIONWATCHBAR"] = "Reputation Bar",
 		["UIWIDGETPOWERBAR"] = "Power Bar",
 
+		["ROWS"] = "Rows",
+		["SPACING"] = "Spacing",
 		
 		
+
 		["PROFILE"] = "Profile",
 		["PROFILES"] = "Profiles",
 		["ADDPROFILE"] = "Add Profile",

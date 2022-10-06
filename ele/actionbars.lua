@@ -2,29 +2,19 @@
 local AddOnName, MoveAny = ...
 
 MAMaxAB = 10
-
 local btnsize = 36
-
-local bars = {}
-bars[1] = "ACTIONBUTTON"
-bars[2] = "ACTIONBAR2BUTTON"
-bars[3] = "MULTIACTIONBAR1BUTTON" --"MultiBarRightButton"
-bars[4] = "MULTIACTIONBAR2BUTTON" --"MultiBarLeftButton"
-bars[5] = "MULTIACTIONBAR2BUTTON" --"MultiBarBottomRightButton"
-bars[6] = "MULTIACTIONBAR1BUTTON" --"MultiBarBottomLeftButton"
-bars[7] = "ACTIONBAR7BUTTON"
-bars[8] = "ACTIONBAR8BUTTON"
-bars[9] = "ACTIONBAR9BUTTON"
-bars[10] = "ACTIONBAR10BUTTON"
-
 local btns = {}
+local abpoints = {}
+local abs = {}
+local oldcvar = -1
+
 btns[1] = "ActionButton"
 btns[3] = "MultiBarRightButton" --"MultiBarRightButton"
 btns[4] = "MultiBarLeftButton" --"MultiBarLeftButton"
 btns[5] = "MultiBarBottomRightButton" --"MultiBarBottomRightButton"
 btns[6] = "MultiBarBottomLeftButton" --"MultiBarBottomLeftButton"
 
-local abpoints = {}
+
 local function MASetPoint( id, po, pa, re, px, py, rows )
 	local name = "MAActionBar" .. id
 
@@ -36,6 +26,7 @@ local function MASetPoint( id, po, pa, re, px, py, rows )
 	abpoints[name]["PY"] = py
 	abpoints[name]["ROWS"] = rows
 end
+local dSpacing = 4
 MASetPoint( 1, "BOTTOM", UIParent, "BOTTOM", 0, 0, 1 )
 MASetPoint( 3, "RIGHT", UIParent, "RIGHT", 0, 0, 12 )
 MASetPoint( 4, "RIGHT", UIParent, "RIGHT", -36, 0, 12 )
@@ -46,29 +37,31 @@ MASetPoint( 8, "CENTER", UIParent, "CENTER", -360, 0 * 36, 1 )
 MASetPoint( 9, "CENTER", UIParent, "CENTER", -360, 1 * 36, 1 )
 MASetPoint( 10, "CENTER", UIParent, "CENTER", -360, 2 * 36, 1 )
 
-local abs = {}
-
 function MAUpdateActionBar( frame )
 	local name = frame:GetName()
 	local opts = MoveAny:GetEleOptions( name )
-	opts["ROWS"] = opts["ROWS"] or abpoints[name]["ROWS"]
 
-	local rows = opts["ROWS"]
+	opts["ROWS"] = opts["ROWS"] or nil
+	opts["SPACING"] = opts["SPACING"] or dSpacing
+
+	if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then
+		opts["ROWS"] = abpoints[name]["ROWS"]
+	end
+
+	local rows = opts["ROWS"] or 1
 	rows = tonumber( rows )
-	local cols = 12 / rows
+	local cols = getn( frame.btns ) / rows
 
-	frame:SetSize( cols * btnsize, rows * btnsize )
-	for id, abtn in pairs( frame.btns ) do
-		--[[if abtn.setup == nil then
-			hooksecurefunc( abtn, "SetPoint", function( self, ... )
-				if self.abtnsetpoint then return end
-				self.abtnsetpoint = true
-				self:ClearAllPoints()
-				self:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * btnsize, 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * btnsize )
-				self.abtnsetpoint = false
-			end )
-		end]]
-		abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * btnsize, 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * btnsize )
+	local spacing = opts["SPACING"]
+	spacing = tonumber( spacing )
+
+	if frame.btns and frame.btns[1] then
+		local fSizeW, fSizeH = frame.btns[1]:GetSize()
+
+		frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
+		for id, abtn in pairs( frame.btns ) do
+			abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
+		end
 	end
 end
 
@@ -117,10 +110,6 @@ function MoveAny:CustomBars()
 
 				for x = 1, 12 do
 					local btnname = "ActionBar" .. i .. "Button" .. x
-					--[[local orgbtnname = btnname
-					if bars[i] then
-						orgbtnname = bars[i] .. x
-					end]]
 
 					if btns[i] then
 						btnname = btns[i] .. x
@@ -167,7 +156,6 @@ function MoveAny:CustomBars()
 	end
 end
 
-local oldcvar = -1
 function MoveAny:UpdateABs()
 	local cvar = tonumber( GetCVar( "alwaysShowActionBars" ) )
 	if cvar ~= oldcvar then

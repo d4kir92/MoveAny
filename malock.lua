@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.1" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.2" )
 }
 
 local PREFIX = "MOAN"
@@ -119,6 +119,9 @@ function MoveAny:InitMALock()
 
 		AddCategory( "GENERAL" )
 		AddCheckBox( 4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton )
+		AddCheckBox( 4, "FRAMESSHIFTDRAG", false )
+		AddCheckBox( 4, "FRAMESSHIFTSCALE", false )
+		AddCheckBox( 4, "FRAMESSHIFTRESET", true )
 
 		AddCategory( "TOPLEFT" )
 		if MABUILDNR < 100000 then

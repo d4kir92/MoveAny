@@ -70,32 +70,48 @@ function MoveAny:MoveFrames()
 				frame:SetUserPlaced( false )
 				frame:EnableMouse( true )
 				frame:SetClampedToScreen( true )
-				frame:RegisterForDrag("LeftButton", "RightButton")
+				frame:RegisterForDrag("LeftButton", "RightButton", "MiddleButton")
 			
 				frame:SetScript( "OnDragStart", function(self, btn)
 					frame:SetUserPlaced( false )
-					frame:SetAlpha(0.34)
-					if IsShiftKeyDown() then
+
+					if (MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and btn == "RightButton") then
+						frame:SetAlpha(0.34)
+
+						frame.iscaling = true
+						
+						currentFrame = frame
+						currentFrameName = name
+
+						frame.prevMouseX = nil
+						frame.prevMouseY = nil
+						
+						GameTooltip:Hide()
+					elseif (MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and IsShiftKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and btn == "LeftButton") then
+						frame.ismoving = true
+						if not InCombatLockdown() then
+							frame:SetAlpha(0.34)
+
+							self:StartMoving()
+							frame:SetUserPlaced( false )
+						end
+					elseif MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) and btn == "MiddleButton" then
 						MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
 						MoveAny:SetFrameScale( name, nil )
 
-						MoveAny:MSG( "[MoveFrames] Reseted Frame: " .. name )
+						MoveAny:MSG( "[" .. name .. "] is reset, reopen the frame." )
 					else
 						if btn == "RightButton" then
-							frame.iscaling = true
-							
-							currentFrame = frame
-							currentFrameName = name
-
-							frame.prevMouseX = nil
-							frame.prevMouseY = nil
-							
-							GameTooltip:Hide()
+							if MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) then
+								MoveAny:MSG( MAGT( "FRAMESSHIFTSCALE" ) .. "." )
+							end
 						elseif btn == "LeftButton" then
-							frame.ismoving = true
-							if not InCombatLockdown() then
-								self:StartMoving()
-								frame:SetUserPlaced( false )
+							if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
+								MoveAny:MSG( MAGT( "FRAMESSHIFTDRAG" ) .. "." )
+							end
+						else
+							if not MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) then
+								MoveAny:MSG( "[" .. MAGT( "FRAMESSHIFTRESET" ) .. "] is disabled." )
 							end
 						end
 					end

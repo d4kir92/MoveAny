@@ -26,10 +26,32 @@ function MoveAny:InitMicroMenu()
 		else
 			MAMenuBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 		end
+		MAMenuBar.btns = {}
 
 		if MICRO_BUTTONS then
 			for i, mbname in pairs( MICRO_BUTTONS ) do
 				local mb = _G[mbname] 
+
+				local sw, sh = mb:GetSize()
+				if MABUILD ~= "RETAIL" then
+					sw = sw - 2
+					sh = sh - 24
+				else
+					sw = sw - 2
+					sh = sh - 4
+				end
+
+				local hb = CreateFrame( "FRAME" )
+				hb:SetParent( MAMenuBar )
+				hb:SetSize( sw, sh )
+				hb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0 )
+
+				if false then
+					hb.t = hb:CreateTexture( "hb_debug" .. i, "BACKGROUND", nil, 1 )
+					hb.t:SetAllPoints( hb )
+					hb.t:SetColorTexture( 0, 1, 0, 0.5 )
+				end
+
 				hooksecurefunc( mb, "SetPoint", function( self, ... )
 					if self.masetpoint then return end
 					self.masetpoint = true
@@ -40,10 +62,11 @@ function MoveAny:InitMicroMenu()
 					end
 
 					mb:ClearAllPoints()
-					mb:SetParent( MAMenuBar )
-					mb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", (i - 1) * (sw - 4) - 2, 2 )
-					if MABUILD ~= "RETAIL" then
-						mb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", (i - 1) * (sw - 4) - 2, 2 + 21 )
+					mb:SetParent( hb )
+					if MABUILD == "RETAIL" then
+						mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
+					else
+						mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 					end
 					self.masetpoint = false
 				end )
@@ -53,11 +76,13 @@ function MoveAny:InitMicroMenu()
 					mb:SetParent( MAMenuBar )
 					self.masetparent = false
 				end )
+
 				mb:ClearAllPoints()
-				mb:SetParent( MAMenuBar )
-				mb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", (i - 1) * (sw - 4) - 2, 2 )
-				if MABUILD ~= "RETAIL" then
-					mb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", (i - 1) * (sw - 4) - 2, 2 + 21 )
+				mb:SetParent( hb )
+				if MABUILD == "RETAIL" then
+					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
+				else
+					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 				end
 
 				hooksecurefunc( mb, "Hide", function( self )
@@ -69,7 +94,11 @@ function MoveAny:InitMicroMenu()
 					end
 				end )
 				mb:Show()
+
+				tinsert( MAMenuBar.btns, hb )
 			end
 		end
+
+		MAUpdateActionBar( MAMenuBar )
 	end
 end

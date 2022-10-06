@@ -78,7 +78,7 @@ function MAMenuOptions( opt, frame )
 	
 	local tabs = { GENERAL }
 
-	if string.find( name, "MAActionBar" ) then
+	if string.find( name, "MAActionBar" ) or name == "MAMenuBar" then
 		table.insert( tabs, ACTIONBARS_LABEL )
 	end
 
@@ -86,7 +86,7 @@ function MAMenuOptions( opt, frame )
 	
 	for i, tab in pairs( contents ) do
 		local content = tab.content
-
+		
 		if string.find( content.name, GENERAL ) then
 			content.pos = content:CreateFontString( nil, nil, "GameFontNormal" )
 			content.pos:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -4 )
@@ -172,13 +172,28 @@ function MAMenuOptions( opt, frame )
 			hide.text:SetPoint( "LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText( getglobal("HIDE") )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
+
+			local max = getn( frame.btns )
+			local items = {}
+			if max == 12 then
+				items = { "1", "2", "3", "4", "6", "12" }
+			elseif max == 10 then
+				items = { "1", "2", "5", "10" }
+			elseif max == 8 then
+				items = { "1", "2", "4", "8" }
+			elseif max == 6 then
+				items = { "1", "2", "3", "6" }
+			else
+				MoveAny:MSG( "FOUND OTHER MAX: " .. max .. " for " .. name )
+				items = { "1" }
+			end
+
 			opts["ROWS"] = opts["ROWS"] or 1
-			
 			local rows = {
 				["name"] = "raid",
 				["parent"]= content,
-				["title"] = "ROWS",
-				["items"]= { "1", "2", "3", "4", "6", "12" },
+				["title"] = MAGT( "ROWS" ),
+				["items"]= items,
 				["defaultVal"] = opts["ROWS"], 
 				["changeFunc"] = function( dropdown_frame, dropdown_val )
 					opts["ROWS"] = dropdown_val
@@ -186,9 +201,31 @@ function MAMenuOptions( opt, frame )
 					MAUpdateActionBar( frame )
 				end
 			}
-
 			local ddrows = MACreateDropdown( rows )
-			ddrows:SetPoint( "TOPLEFT", content, "TOPLEFT", 0, -36 );
+			ddrows:SetPoint( "TOPLEFT", content, "TOPLEFT", 0, -26 );
+
+
+
+			opts["SPACING"] = opts["SPACING"] or 4
+			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			slider:SetWidth( content:GetWidth() - 110 )
+			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 100, -26 );
+			slider.Low:SetText( 0 )
+			slider.High:SetText( 16 )
+			slider.Text:SetText( MAGT("SPACING") .. ": " .. opts["SPACING"] )
+			slider:SetMinMaxValues( 0, 16 )
+			slider:SetObeyStepOnDrag( true )
+			slider:SetValueStep( 1 )
+			slider:SetValue( opts["SPACING"] )
+			slider:SetScript( "OnValueChanged", function(self, val)
+				val = tonumber( string.format( "%" .. 0 .. "f", val ) )
+				if val and val ~= opts["SPACING"] then
+					opts["SPACING"] = val
+					slider.Text:SetText( MAGT( "SPACING" ) .. ": " .. val )
+
+					MAUpdateActionBar( frame )
+				end
+			end )
 		end
 	end
 end
