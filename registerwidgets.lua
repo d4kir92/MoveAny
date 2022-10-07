@@ -568,6 +568,12 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "TARGETFRAME"
 			} )
 		end
+		if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "TargetFrameSpellBar",
+				["lstr"] = "TARGETFRAMESPELLBAR"
+			} )
+		end
 		if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", false ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "TargetFrameToT",
@@ -578,6 +584,12 @@ function MoveAny:Event( event, ... )
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
 				["lstr"] = "FOCUSFRAME"
+			} )
+		end
+		if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "FocusFrameSpellBar",
+				["lstr"] = "FOCUSFRAMESPELLBAR"
 			} )
 		end
 	end

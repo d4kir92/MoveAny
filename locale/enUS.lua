@@ -24,7 +24,9 @@ function MALang_enUS()
 		["PETFRAME"] = "Pet Frame",
 		["TARGETFRAME"] = "Target Frame",
 		["TARGETOFTARGETFRAME"] = "Target of Target Frame",
+		["TARGETFRAMESPELLBAR"] = "Castbar from Target",
 		["FOCUSFRAME"] = "Focus Frame",
+		["FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
 		["RUNEFRAME"] = "Deathknight - Runes Frame",
 		["MAFPSFrame"] = "FPS",
 

@@ -16,7 +16,9 @@ function MALang_deDE()
 		["PETFRAME"] = "Begleiter Fenster",
 		["TARGETFRAME"] = "Ziel Fenster",
 		["TARGETOFTARGETFRAME"] = "Ziel des Ziels Fenster",
+		["TARGETFRAMESPELLBAR"] = "Zauberleiste vom Ziel",
 		["FOCUSFRAME"] = "Fokus Fenster",
+		["FOCUSFRAMESPELLBAR"] = "Zauberleiste vom Fokus",
 		["RUNEFRAME"] = "Todesritter - Runen Fenster",
 		["MAFPSFrame"] = "FPS",
 

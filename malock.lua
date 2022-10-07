@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.3" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.4" )
 }
 
 local PREFIX = "MOAN"
@@ -127,9 +127,11 @@ function MoveAny:InitMALock()
 		if MABUILDNR < 100000 then
 			AddCheckBox( 4, "PLAYERFRAME" )
 			AddCheckBox( 24, "PETFRAME" )
-			AddCheckBox( 4, "TARGETFRAME" )
-			AddCheckBox( 24, "TARGETOFTARGETFRAME" )
-			AddCheckBox( 4, "FOCUSFRAME" )
+			AddCheckBox( 4, "TARGETFRAME", true )
+			AddCheckBox( 24, "TARGETOFTARGETFRAME", false )
+			AddCheckBox( 24, "TARGETFRAMESPELLBAR", false )
+			AddCheckBox( 4, "FOCUSFRAME", true )
+			AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
 		end
 		if class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME" )
