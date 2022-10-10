@@ -271,6 +271,8 @@ function MoveAny:RegisterWidget( tab, debug )
 	local sw = tab.sw
 	local sh = tab.sh
 	local secure = tab.secure
+	local userplaced = tab.userplaced 
+	
 	tab.delay = tab.delay or 0.2
 	if tab.delay < 2 then
 		tab.delay = tab.delay + 0.2
@@ -402,8 +404,8 @@ function MoveAny:RegisterWidget( tab, debug )
 	frame:SetDontSavePosition( true )
 	frame:SetClampedToScreen( true )
 
-	if frame.SetUserPlaced then
-		--frame:SetUserPlaced( false )
+	if userplaced and frame.SetUserPlaced then
+		frame:SetUserPlaced( true )
 	end
 
 	local maframe1 = _G["MA" .. name]
@@ -466,8 +468,8 @@ function MoveAny:RegisterWidget( tab, debug )
 		self.masetpoint_ele = true
 
 		self:SetMovable( true )
-		if self.SetUserPlaced then
-			--self:SetUserPlaced( false )
+		if userplaced and self.SetUserPlaced then
+			self:SetUserPlaced( true )
 		end
 
 		if not self.secure then
@@ -545,13 +547,15 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "PLAYERFRAME", true ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "PlayerFrame",
-				["lstr"] = "PLAYERFRAME"
+				["lstr"] = "PLAYERFRAME",
+				["userplaced"] = true
 			} )
 		end
 		if MoveAny:IsEnabled( "PETFRAME", false ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "PetFrame",
-				["lstr"] = "PETFRAME"
+				["lstr"] = "PETFRAME",
+				["userplaced"] = true
 			} )
 		end
 	end
@@ -565,7 +569,8 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "TARGETFRAME", true ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "TargetFrame",
-				["lstr"] = "TARGETFRAME"
+				["lstr"] = "TARGETFRAME",
+				["userplaced"] = true
 			} )
 		end
 		if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
@@ -577,13 +582,15 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", false ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "TargetFrameToT",
-				["lstr"] = "TARGETOFTARGETFRAME"
+				["lstr"] = "TARGETOFTARGETFRAME",
+				["userplaced"] = true
 			} )
 		end
 		if MoveAny:IsEnabled( "FOCUSFRAME", true ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
-				["lstr"] = "FOCUSFRAME"
+				["lstr"] = "FOCUSFRAME",
+				["userplaced"] = true
 			} )
 		end
 		if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
