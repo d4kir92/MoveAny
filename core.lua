@@ -16,7 +16,7 @@ SlashCmdList["RL"] = function(msg)
 	C_UI.Reload()
 end
 
-SLASH_MOVEANY1 = "/moveany"
+SLASH_MOVEANY1, SLASH_MOVEANY2 = "/move", "/moveany"
 SlashCmdList["MOVEANY"] = function(msg)
 	MoveAny:ToggleMALock()
 end
