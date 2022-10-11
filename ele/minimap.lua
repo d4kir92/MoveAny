@@ -28,25 +28,23 @@ function MoveAny:InitMinimap()
 		end
 		Minimap:SetParent( UIParent )
 		
-		
-		local sw, sh = Minimap:GetSize()
 		if MinimapBorder then
+			local sw, sh = Minimap:GetSize()
 			local texture = MinimapBorder:GetTexture()
 			local texcoord = { MinimapBorder:GetTexCoord() }
 
-			Minimap.Border = Minimap:CreateTexture( "Minimap.Border", "ARTWORK", nil, 1 )
-			Minimap.Border:SetPoint( "CENTER", Minimap, "CENTER", -6, -17 )
-			Minimap.Border:SetTexture( texture )
-			Minimap.Border:SetSize( sw, sh )
-			Minimap.Border:SetTexCoord( unpack( texcoord ) )
-			Minimap.Border:SetScale( 1.40 )
+			MinimapBorder = Minimap:CreateTexture( "MinimapBorder2", "ARTWORK", nil, 1 )
+			MinimapBorder:SetPoint( "CENTER", Minimap, "CENTER", -6, -17 )
+			MinimapBorder:SetTexture( texture )
+			MinimapBorder:SetSize( sw, sh )
+			MinimapBorder:SetTexCoord( unpack( texcoord ) )
+			MinimapBorder:SetScale( 1.40 )
 		end
-
 
 		-- FIX MINIMAP
 		if MiniMapTracking and MiniMapTrackingButton then
 			MiniMapTrackingButton:ClearAllPoints()
-			MiniMapTrackingButton:SetPoint( "TOPLEFT", Minimap, "TOPLEFT", -14, -20 )
+			MiniMapTrackingButton:SetPoint( "TOPLEFT", Minimap, "TOPLEFT", -20, -40 )
 			MiniMapTrackingButton:SetParent( Minimap )
 			MiniMapTrackingButton:SetFrameLevel( 5 )
 
@@ -61,24 +59,19 @@ function MoveAny:InitMinimap()
 				MiniMapTracking:ClearAllPoints()
 				MiniMapTracking:SetPoint( p1, Minimap, p3, p4, p5 )
 			end )
-			hooksecurefunc( MiniMapTracking, "SetPoint", function( self, ... )
-				local p1, p2, p3, p4, p5 = MiniMapTrackingButton:GetPoint()
-				if self.iasetpoint then return end
-				self.iasetpoint = true
 
-				self:SetMovable( true )
-				if self.SetUserPlaced then
-					self:SetUserPlaced( false )
-				end
+			hooksecurefunc( MiniMapTracking, "SetPoint", function( self, ... )
+				if self.setpoint then return end
+				self.setpoint = true
 
 				self:ClearAllPoints()
-				self:SetPoint( p1, Minimap, p3, p4, p5 )
-				self.iasetpoint = false
+				self:SetPoint( "CENTER", MiniMapTrackingButton, "CENTER", 0, 0 )
+
+				self.setpoint = false
 			end )
-			local p1, p2, p3, p4, p5 = MiniMapTrackingButton:GetPoint()
 			MiniMapTracking:ClearAllPoints()
-			MiniMapTracking:SetPoint( p1, Minimap, p3, p4, p5 )
-			MiniMapTracking:SetParent( Minimap )
+			MiniMapTracking:SetPoint( "CENTER", MiniMapTrackingButton, "CENTER", 0, 0 )
+			MiniMapTracking:SetParent( MiniMapTrackingButton )
 			MiniMapTracking:SetFrameLevel( 4 )
 		elseif MiniMapTracking then
 			MiniMapTracking:ClearAllPoints()
