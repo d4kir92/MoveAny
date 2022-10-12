@@ -84,13 +84,3 @@ f:SetScript( "OnUpdate", function()
 		MoveAny:ToggleMALock()
 	end
 end )
---exportInterfaceFiles code
-
---[[function Test()
-	if MultiBarBottomRight.Selection and MultiBarBottomRight.Selection.Center then
-		print( MultiBarBottomRight.Selection.Center:GetTexture() )4554383
-	end
-	C_Timer.After( 1, Test )
-end
-Test()]]
-
