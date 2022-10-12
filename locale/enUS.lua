@@ -110,6 +110,8 @@ function MALang_enUS()
 		["STATUS"] = "Status",
 		["DONE"] = "Done",
 		["WAITINGFOROWNER"] = "Waiting for Owner",
+		["WAITFORPLAYERPROFILE"] = "Wait for other player to press \"Get Profiles\".",
+		["WAITFORPLAYERPROFILE2"] = "Wait for other player to press \"Share\".",
 	}
 
 	MAUpdateLanguageTab( tab )

@@ -26,7 +26,7 @@ MADragFrames = MADragFrames or {}
 -- Colors
 local colors = {}
 colors["bg"] = 		{ 0.03, 0.03, 	0.03, 	1 	}
-colors["el"] = 		{ 0.3, 	0.3, 	1.0, 	0.3 }
+colors["el"] = 		{ 0.6, 	0.84, 	1.0, 	0.55 }
 colors["hidden"] = 	{ 1.0, 	0.0, 	0.0, 	0.3 }
 
 MAHIDDEN = CreateFrame( "Frame", "MAHIDDEN" )
@@ -84,3 +84,13 @@ f:SetScript( "OnUpdate", function()
 		MoveAny:ToggleMALock()
 	end
 end )
+--exportInterfaceFiles code
+
+--[[function Test()
+	if MultiBarBottomRight.Selection and MultiBarBottomRight.Selection.Center then
+		print( MultiBarBottomRight.Selection.Center:GetTexture() )4554383
+	end
+	C_Timer.After( 1, Test )
+end
+Test()]]
+

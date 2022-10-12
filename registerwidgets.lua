@@ -289,7 +289,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	if _G[name .. "_DRAG"] == nil then
-		_G[name .. "_DRAG"] = CreateFrame( "Frame", name .. "_DRAG", UIParent )
+		_G[name .. "_DRAG"] = CreateFrame( "FRAME", name .. "_DRAG", UIParent )
 
 		local dragframe = _G[name .. "_DRAG"]
 
@@ -314,8 +314,8 @@ function MoveAny:RegisterWidget( tab, debug )
 			dragframe.t = dragframe:CreateTexture( name .. "_DRAG.t", "BACKGROUND", nil, 1 )
 			dragframe.t:SetAllPoints( dragframe )
 			dragframe.t:SetColorTexture( MoveAny:GetColor( "el" ) )
-
-			dragframe.name = dragframe:CreateFontString( nil, nil, "GameFontNormal" )
+			
+			dragframe.name = dragframe:CreateFontString( nil, nil, "GameFontHighlightLarge" )
 			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
 			local font, fontSize, fontFlags = dragframe.name:GetFont()
 			dragframe.name:SetFont( font, 15, fontFlags )
@@ -431,12 +431,7 @@ function MoveAny:RegisterWidget( tab, debug )
 
 	sw = sw or frame:GetWidth()
 	sh = sh or frame:GetHeight()
-
-	hooksecurefunc( frame, "SetSize", function( self, sw, sh )
-		local dragframe = _G[name .. "_DRAG"]
-		dragframe:SetSize( sw, sh )
-	end )
-
+	
 	if MoveAny:GetElePoint( name ) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
 		if (parent == nil or parent == UIParent) and an ~= nil and re ~= nil then
@@ -495,12 +490,24 @@ function MoveAny:RegisterWidget( tab, debug )
 		frame:SetScale( MoveAny:GetEleScale( name ) )
 	end
 
-	local dragframe = _G[name .. "_DRAG"]
+	hooksecurefunc( frame, "SetSize", function( self, w, h )
+		if w < 10 then
+			w = sw
+		end
+		if h < 10 then
+			h = sh
+		end
+		local df = _G[name .. "_DRAG"]
+		df:SetSize( w, h )
+	end )
 
 	if not InCombatLockdown() then
 		frame:SetSize( sw, sh )
 	end
+
+	local dragframe = _G[name .. "_DRAG"]
 	dragframe:SetSize( sw, sh )
+
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
 	

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.7" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.8" )
 }
 
 local PREFIX = "MOAN"
@@ -429,6 +429,10 @@ function MoveAny:ShowProfiles()
 				MAGetProfile.f:SetPoint( "TOPLEFT", MAGetProfile, "TOPLEFT", 6, -26 )
 				MAGetProfile.f:SetText( MAGT( "GETPROFILE" ) )
 
+				MAGetProfile.f2 = MAGetProfile:CreateFontString( nil, nil, "GameFontNormal" )
+				MAGetProfile.f2:SetPoint( "BOTTOMLEFT", MAGetProfile, "BOTTOMLEFT", 6, 6 )
+				MAGetProfile.f2:SetText( MAGT( "WAITFORPLAYERPROFILE2" ) )
+
 				MAGetProfile.SF = CreateFrame( "ScrollFrame", "MAGetProfile_SF", MAGetProfile, "UIPanelScrollFrameTemplate" )
 				MAGetProfile.SF:SetPoint( "TOPLEFT", MAGetProfile, br, -30 - 24 )
 				MAGetProfile.SF:SetPoint( "BOTTOMRIGHT", MAGetProfile, -32, 24 + br )
@@ -606,6 +610,10 @@ function MoveAny:ShowProfiles()
 					MAShareProfile.f = MAShareProfile:CreateFontString( nil, nil, "GameFontNormal" )
 					MAShareProfile.f:SetPoint( "TOPLEFT", MAShareProfile, "TOPLEFT", 6, -26 )
 					MAShareProfile.f:SetText( MAGT( "PROFILE" ) .. ": " .. name )
+
+					MAShareProfile.f2 = MAShareProfile:CreateFontString( nil, nil, "GameFontNormal" )
+					MAShareProfile.f2:SetPoint( "BOTTOMLEFT", MAShareProfile, "BOTTOMLEFT", 6, 6 )
+					MAShareProfile.f2:SetText( MAGT( "WAITFORPLAYERPROFILE" ) )
 
 					MAShareProfile.SF = CreateFrame( "ScrollFrame", "MAShareProfile_SF", MAShareProfile, "UIPanelScrollFrameTemplate" )
 					MAShareProfile.SF:SetPoint( "TOPLEFT", MAShareProfile, br, -30 - 24 )

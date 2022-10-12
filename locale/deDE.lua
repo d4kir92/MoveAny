@@ -100,6 +100,8 @@ function MALang_deDE()
 		["STATUS"] = "Status",
 		["DONE"] = "Fertig",
 		["WAITINGFOROWNER"] = "Auf Besitzer warten",
+		["WAITFORPLAYERPROFILE"] = "Auf anderen Spieler warten, der auf \"Profile erhalten\" drückt.",
+		["WAITFORPLAYERPROFILE2"] = "Auf anderen Spieler warten, der auf \"Teilen\" drückt.",
 	}
 
 	MAUpdateLanguageTab( tab )
