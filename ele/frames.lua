@@ -76,8 +76,6 @@ function MoveAny:MoveFrames()
 					frame:SetUserPlaced( false )
 
 					if (MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and btn == "RightButton") then
-						frame:SetAlpha(0.34)
-
 						frame.iscaling = true
 						
 						currentFrame = frame
@@ -90,8 +88,6 @@ function MoveAny:MoveFrames()
 					elseif (MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and IsShiftKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and btn == "LeftButton") then
 						frame.ismoving = true
 						if not InCombatLockdown() then
-							frame:SetAlpha(0.34)
-
 							self:StartMoving()
 							frame:SetUserPlaced( false )
 						end
@@ -137,8 +133,6 @@ function MoveAny:MoveFrames()
 				end
 
 				frame:SetScript("OnDragStop", function(self)
-					frame:SetAlpha(1)
-
 					if frame.ismoving then
 						frame.ismoving = false
 						frame:StopMovingOrSizing()
