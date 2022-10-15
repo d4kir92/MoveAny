@@ -52,7 +52,13 @@ function MoveAny:InitBags()
 			else
 				bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", (i - 1) * sw, 0 )
 			end
-			bb.Hide = bb.Show
+
+			hooksecurefunc( bb, "Hide", function( self )
+				if self.mashow then return end
+				self.mashow = true
+				self:Show()
+				self.mashow = false
+			end )
 			bb:Show()
 		end
 	end

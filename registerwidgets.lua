@@ -1063,6 +1063,14 @@ function MoveAny:Event( event, ... )
 
 
 
+	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] then
+		ArenaEnemyFrames:SetMovable( true )
+		ArenaEnemyFrames:SetUserPlaced( true )
+		UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] = nil 
+	end
+
+
+
 	MoveAny:InitBags()
 	MoveAny:InitMALock()
 	MoveAny:InitMicroMenu()

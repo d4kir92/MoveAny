@@ -70,19 +70,40 @@ function MoveAny:CustomBars()
 	for i = 0, 3 do
 		local texture = _G["MainMenuMaxLevelBar" .. i]
 		if texture then
+			hooksecurefunc( texture, "Show", function( self )
+				if self.mahide then return end
+				self.mahide = true
+				self:Hide()
+				self.mahide = false
+			end )
 			texture:Hide()
 		end
 	end
 	if StanceBarLeft then
-		StanceBarLeft.Show = StanceBarLeft.Hide
+		hooksecurefunc( StanceBarLeft, "Show", function( self )
+			if self.mahide then return end
+			self.mahide = true
+			self:Hide()
+			self.mahide = false
+		end )
 		StanceBarLeft:Hide()
 	end
 	if StanceBarMiddle then
-		StanceBarMiddle.Show = StanceBarMiddle.Hide
+		hooksecurefunc( StanceBarMiddle, "Show", function( self )
+			if self.mahide then return end
+			self.mahide = true
+			self:Hide()
+			self.mahide = false
+		end )
 		StanceBarMiddle:Hide()
 	end
 	if StanceBarRight then
-		StanceBarRight.Show = StanceBarRight.Hide
+		hooksecurefunc( StanceBarRight, "Show", function( self )
+			if self.mahide then return end
+			self.mahide = true
+			self:Hide()
+			self.mahide = false
+		end )
 		StanceBarRight:Hide()
 	end
 

@@ -182,7 +182,12 @@ function MoveAny:InitMinimap()
 			for i, name in pairs( miniMapTab ) do
 				local btn = _G[name]
 				if btn then
-					btn.Hide = btn.Show
+					hooksecurefunc( btn, "Hide", function( self )
+						if self.mashow then return end
+						self.mashow = true
+						self:Show()
+						self.mashow = false
+					end )
 					btn:Show()
 				else
 					MoveAny:MSG( tostring( name ) .. " not found" )
