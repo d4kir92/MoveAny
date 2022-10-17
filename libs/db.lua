@@ -41,18 +41,16 @@ function MoveAny:AddProfile( newname, other )
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	
 	local name = MoveAny:GetValidProfileName( newname )
-	-- Profile
+
 	MATAB["PROFILES"][name] = MATAB["PROFILES"][name] or {}
 
 	if other and MATAB["PROFILES"][other] then
 		MATAB["PROFILES"][name] = MATAB["PROFILES"][other]
 	else
-		-- Frames
 		MATAB["PROFILES"][name]["FRAMES"] =  MATAB["PROFILES"][name]["FRAMES"] or {}
 		MATAB["PROFILES"][name]["FRAMES"]["POINTS"] = MATAB["PROFILES"][name]["FRAMES"]["POINTS"] or {}
 		MATAB["PROFILES"][name]["FRAMES"]["SIZES"] = MATAB["PROFILES"][name]["FRAMES"]["SIZES"] or {}
 
-		-- Eles
 		MATAB["PROFILES"][name]["ELES"] = MATAB["PROFILES"][name]["ELES"] or {}
 		MATAB["PROFILES"][name]["ELES"]["POINTS"] = MATAB["PROFILES"][name]["ELES"]["POINTS"] or {}
 		MATAB["PROFILES"][name]["ELES"]["SIZES"] = MATAB["PROFILES"][name]["ELES"]["SIZES"] or {}
@@ -68,7 +66,6 @@ function MoveAny:RemoveProfile( name )
 	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 
-	-- Profile
 	MATAB["PROFILES"][name] = nil
 
 	MoveAny:SetCP( "DEFAULT" )
@@ -116,10 +113,8 @@ end
 
 
 function MoveAny:InitDB()
-	-- DB
 	MATAB = MATAB or {}
 
-	-- PROFILES
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	MATABPC = MATABPC or {}
 	MATABPC["CURRENTPROFILE"] = MATABPC["CURRENTPROFILE"] or "DEFAULT"

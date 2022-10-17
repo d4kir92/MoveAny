@@ -23,7 +23,8 @@ end
 
 MADragFrames = MADragFrames or {}
 
--- Colors
+
+
 local colors = {}
 colors["bg"] = 		{ 0.03, 0.03, 	0.03, 	1 	}
 colors["el"] = 		{ 0.6, 	0.84, 	1.0, 	0.55 }
@@ -35,7 +36,8 @@ MAHIDDEN:Hide()
 function MoveAny:GetColor( key )
 	return colors[key][1], colors[key][2], colors[key][3], colors[key][4]
 end
--- Colors
+
+
 
 function MoveAny:ShowMALock()
 	if MoveAny:IsEnabled( "MALOCK", false ) then

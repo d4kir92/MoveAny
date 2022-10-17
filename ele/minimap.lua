@@ -41,7 +41,6 @@ function MoveAny:InitMinimap()
 			MinimapBorder:SetScale( 1.40 )
 		end
 
-		-- FIX MINIMAP
 		if MiniMapTracking and MiniMapTrackingButton then
 			MiniMapTrackingButton:ClearAllPoints()
 			MiniMapTrackingButton:SetPoint( "TOPLEFT", Minimap, "TOPLEFT", -20, -40 )

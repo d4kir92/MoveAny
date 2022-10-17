@@ -66,7 +66,6 @@ function MAUpdateActionBar( frame )
 end
 
 function MoveAny:CustomBars()
-	-- Hide Artworks
 	for i = 0, 3 do
 		local texture = _G["MainMenuMaxLevelBar" .. i]
 		if texture then
@@ -146,8 +145,8 @@ function MoveAny:CustomBars()
 					if _G[btnname .. "FloatingBG"] == nil then
 						_G[btnname .. "FloatingBG"] = _G[btnname]:CreateTexture( btnname .. "FloatingBG", "BACKGROUND" )
 						_G[btnname .. "FloatingBG"]:SetParent( _G[btnname] )
-						_G[btnname .. "FloatingBG"]:SetPoint( "TOPLEFT", -15, 15 ) --_G[btnname])
-						_G[btnname .. "FloatingBG"]:SetPoint( "BOTTOMRIGHT", 15, -15 ) --_G[btnname])
+						_G[btnname .. "FloatingBG"]:SetPoint( "TOPLEFT", -15, 15 )
+						_G[btnname .. "FloatingBG"]:SetPoint( "BOTTOMRIGHT", 15, -15 )
 						_G[btnname .. "FloatingBG"]:SetTexture("Interface/Buttons/UI-Quickslot")
 						_G[btnname .. "FloatingBG"]:SetVertexColor( 1, 1, 0, 0.4 )
 						_G[btnname .. "FloatingBG"]:SetDrawLayer( "BACKGROUND", -1 )
@@ -229,8 +228,7 @@ f:SetScript( "OnEvent", function( self, event )
 						self:SetAttribute( "actionpage", newstate );
 					]] );
 					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
-														--OLD: "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
-					
+
 					local _onAttributeChanged = [[
 						if name == 'statehidden' then
 							if (HasOverrideActionBar() or HasVehicleActionBar()) then

@@ -5,7 +5,6 @@ MADragFrames = MADragFrames or {}
 
 local framelevel = 100
 
--- TABS
 local function SelectTab( self )
 	PanelTemplates_SetTab( self:GetParent(), self:GetID() )
 
@@ -759,7 +758,7 @@ function MoveAny:Event( event, ... )
 					WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
 				end
 			end
-			if ObjectiveTrackerFrame then -- RETAIL
+			if ObjectiveTrackerFrame then
 				ObjectiveTrackerFrame:SetHeight( 600 )
 				MoveAny:RegisterWidget( {
 					["name"] = "ObjectiveTrackerFrame",
@@ -950,7 +949,7 @@ function MoveAny:Event( event, ... )
 			glfsw, glfsh = GroupLootFrame1:GetSize()
 			for i = 2, 10 do
 				local glf = _G["GroupLootFrame" .. i]
-				if glf then -- i till 4 in classic
+				if glf then
 					hooksecurefunc( glf, "SetPoint", function( self, ... )
 						if self.masetpoint then return end
 						self.masetpoint = true
@@ -1087,7 +1086,7 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitDebuffBar()
 	MoveAny:InitMAFPSFrame()
 	
-	--MoveAny:MoveFrames()
+	MoveAny:MoveFrames()
 
 	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",

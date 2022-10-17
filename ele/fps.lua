@@ -1,7 +1,7 @@
 
 local AddOnName, MoveAny = ...
 
-local config_update = 1 -- in seconds
+local config_update = 1
 
 function MoveAny:InitMAFPSFrame()
 	if MoveAny:IsEnabled( "MAFPSFrame", true ) then

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.12" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.13" )
 }
 
 local PREFIX = "MOAN"
@@ -51,7 +51,7 @@ local function AddCheckBox( x, key, val, func )
 		val = true
 	end
 	if cbs[key] == nil then
-		cbs[key] = CreateFrame( "CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate" ) --CreateFrame( "CheckButton", "moversettingsmove", mover, "UICheckButtonTemplate" )
+		cbs[key] = CreateFrame( "CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate" )
 		local cb = cbs[key]
 		cb:SetSize( 24, 24 )
 		cb:SetChecked( MoveAny:IsEnabled( key, val ) )
@@ -826,8 +826,6 @@ function MoveAny:ShowProfiles()
 				-- Receive Buyers
 				local function GetProfiles()
 					if MAShareProfile:IsVisible() then
-						--C_ChatInfo.SendAddonMessage( PREFIX, "SP;" .. name, "PARTY" )
-
 						MAShareProfile.lines = MAShareProfile.lines or {}
 						local id = 0
 						for name, tab in pairs( IAWantProfiles ) do
@@ -849,7 +847,6 @@ function MoveAny:ShowProfiles()
 				end
 				ShareProfile()
 			end )
-			--btnShare:SetEnabled( false )
 
 			if name ~= "DEFAULT" then
 				btnRen = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )

@@ -1,10 +1,4 @@
 
---- Opts:
----     name (string): Name of the dropdown (lowercase)
----     parent (Frame): Parent frame of the dropdown.
----     items (Table): String table of the dropdown options.
----     defaultVal (String): String value for the dropdown to default to (empty otherwise).
----     changeFunc (Function): A custom function to be called, after selecting a dropdown option.
 function MACreateDropdown( opts )
     local dropdown_name = "$parent_" .. opts["name"] .. "_dropdown"
     local menu_items = opts["items"] or {}

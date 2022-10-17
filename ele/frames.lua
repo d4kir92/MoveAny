@@ -16,26 +16,21 @@ scaler:SetScript( "OnUpdate", function()
 	if currentFrame then		
 		local curMouseX, curMouseY = GetCursorPosition()
 
-		-- Only try to scale once there was at least one previous position
 		if scaler.prevMouseX and scaler.prevMouseY then
 			if curMouseY > scaler.prevMouseY then
-				-- Add to scale
 				local newScale = math.min(
 					currentFrame:GetScale() + 0.006,
 					1.5
 				)
 
-				-- Scale
 				currentFrame:SetScale( newScale )
 				MoveAny:SetFrameScale( currentFrameName, newScale )
 			elseif curMouseY < scaler.prevMouseY then
-				-- Subtract from scale
 				local newScale = math.max(
 					currentFrame:GetScale() - 0.006,
 					0.5
 				)
 
-				-- Scale
 				currentFrame:SetScale( newScale )
 				MoveAny:SetFrameScale( currentFrameName, newScale )
 			end
@@ -44,7 +39,6 @@ scaler:SetScript( "OnUpdate", function()
 		GameTooltip:SetOwner(currentFrame)
 		GameTooltip:SetText(math.floor( currentFrame:GetScale() * 100 ) .. "%")
 
-		-- Update previous mouse position
 		scaler.prevMouseX = curMouseX
 		scaler.prevMouseY = curMouseY
 	end
