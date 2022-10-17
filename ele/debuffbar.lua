@@ -3,6 +3,7 @@ local AddOnName, MoveAny = ...
 
 local btnsize = 36
 
+local debuffs = {}
 function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled( "DEBUFFS", true ) then
 		MADebuffBar = CreateFrame( "Frame", "MADebuffBar", UIParent )
@@ -12,26 +13,56 @@ function MoveAny:InitDebuffBar()
 		MADebuffBar:SetSize( btnsize * 8, btnsize * 3 )
 
 		function IALoadDebuff()
-			if DebuffButton1 then
-				hooksecurefunc( DebuffButton1, "SetPoint", function( self, ... )
-					if self.masetpoint_buff then return end
-					self.masetpoint_buff = true
-
-					self:SetMovable( true )
-					if self.SetUserPlaced then
-						self:SetUserPlaced( false )
-					end
-
-					self:ClearAllPoints()
-					self:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
+			for i = 1, 32 do
+				local debuffBtn = _G["DebuffButton" .. i]
+				
+				if debuffBtn and not tContains( debuffs, debuffBtn ) then
+					table.insert( debuffs, debuffBtn )
 					
-					self.masetpoint_buff = false
-				end )
-				DebuffButton1:ClearAllPoints()
-				DebuffButton1:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
-			else
-				C_Timer.After( 0.1, IALoadDebuff )
+					if i == 1 then
+						hooksecurefunc( debuffBtn, "SetPoint", function( self, ... )
+							if self.masetpoint_buff then return end
+							self.masetpoint_buff = true
+		
+							self:SetMovable( true )
+							if self.SetUserPlaced then
+								self:SetUserPlaced( false )
+							end
+		
+							self:SetParent( MADebuffBar )
+							self:ClearAllPoints()
+							self:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
+							
+							self.masetpoint_buff = false
+						end )
+						debuffBtn:ClearAllPoints()
+						debuffBtn:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
+					else
+						local op1, op2, op3, op4, op5 = debuffBtn:GetPoint()
+						hooksecurefunc( debuffBtn, "SetPoint", function( self, ... )
+							if self.masetpoint_buff then return end
+							self.masetpoint_buff = true
+
+							p1, p2, p3, p4, p5 = ...
+
+							self:SetMovable( true )
+							if self.SetUserPlaced then
+								self:SetUserPlaced( false )
+							end
+		
+							self:SetParent( MADebuffBar )
+							self:ClearAllPoints()
+							self:SetPoint( p1, p2, p3, p4, p5 )
+							
+							self.masetpoint_buff = false
+						end )
+						debuffBtn:ClearAllPoints()
+						debuffBtn:SetPoint( op1, op2, op3, op4, op5 )
+					end
+				end
 			end
+
+			C_Timer.After( 0.3, IALoadDebuff )
 		end
 		IALoadDebuff()
 

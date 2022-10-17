@@ -191,7 +191,7 @@ function MoveAny:MoveFrames()
 			C_Timer.After( 0.1, MoveAny.MoveFrames )
 		end
 	else
-		C_Timer.After( 0.1, MoveAny.MoveFrames )
+		C_Timer.After( 0.2, MoveAny.MoveFrames )
 	end
 end
 

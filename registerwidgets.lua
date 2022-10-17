@@ -129,7 +129,7 @@ function MAMenuOptions( opt, frame )
 			sdn:SetPoint( "TOPLEFT", content, "TOPLEFT", 200, -48 )
 			sdn:SetScript( "OnClick", function()
 				MoveAny:SetEleScale( name, frame:GetScale() - 0.1 )
-				content.scale:SetText( format( "Scale: %d", MoveAny:GetEleScale( name ) ) )
+				content.scale:SetText( format( "Scale: %0.1f", MoveAny:GetEleScale( name ) ) )
 			end )
 
 			local hide = CreateFrame( "CheckButton", "hide", content, "ChatConfigCheckButtonTemplate" )
@@ -389,7 +389,7 @@ function MoveAny:RegisterWidget( tab, debug )
 
 		tinsert( MADragFrames, dragframe )
 	end
-
+	
 	if frame == nil then
 		C_Timer.After( tab.delay or 0.2, function()
 			--if tab.delay < 1 then
@@ -398,7 +398,7 @@ function MoveAny:RegisterWidget( tab, debug )
 		end )
 		return false
 	end
-
+	
 	frame:SetMovable( true )
 	
 	frame:SetDontSavePosition( true )
@@ -515,6 +515,12 @@ function MoveAny:RegisterWidget( tab, debug )
 end
 
 function MoveAny:Event( event, ... )
+	MoveAny.init = MoveAny.init or false
+	if MoveAny.init then
+		return
+	end
+	MoveAny.init = true
+
 	local _, class = UnitClass( "PLAYER" )
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG( "DON'T use MoveAndImprove, when you use MoveAny" )
@@ -540,7 +546,7 @@ function MoveAny:Event( event, ... )
 					UIPARENT_MANAGED_FRAME_POSITIONS["StatusTrackingBarManager"] = nil
 				end
 			end
-
+			
 			MoveAny:CustomBars()
 			MoveAny:UpdateABs()
 		end
@@ -1081,7 +1087,7 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitDebuffBar()
 	MoveAny:InitMAFPSFrame()
 	
-	MoveAny:MoveFrames()
+	--MoveAny:MoveFrames()
 
 	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
