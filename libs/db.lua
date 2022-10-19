@@ -5,11 +5,11 @@ local COL_R = "|cFFFF0000"
 local COL_Y = "|cFFFFFF00"
 
 function MoveAny:MSG( msg )
-	print( "|cff3FC7EB" .. "[MoveAny]|r " .. COL_Y .. msg )
+	print( "|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_Y .. msg )
 end
 
 function MoveAny:MSG_Error( msg )
-	print( "|cff3FC7EB" .. "[MoveAny]|r " .. COL_R .. "[ERROR] |r" .. msg )
+	print( "|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_R .. "[ERROR] |r" .. msg )
 end
 
 function MoveAny:GetCP()
