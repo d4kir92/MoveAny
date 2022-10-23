@@ -20,6 +20,7 @@ function MALang_deDE()
 		["FOCUSFRAME"] = "Fokus Fenster",
 		["FOCUSFRAMESPELLBAR"] = "Zauberleiste vom Fokus",
 		["RUNEFRAME"] = "Todesritter - Runen Fenster",
+		["TOTEMFRAME"] = "Totem Zähler",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Oben",

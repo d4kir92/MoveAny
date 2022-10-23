@@ -577,6 +577,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "RUNEFRAME"
 		} )
 	end
+	if MoveAny:IsEnabled( "TOTEMFRAME", false ) and class == "SHAMAN" then
+		MoveAny:RegisterWidget( {
+			["name"] = "TotemFrame",
+			["lstr"] = "TOTEMFRAME"
+		} )
+	end
 	if MABUILDNR < 100000 then
 		if MoveAny:IsEnabled( "TARGETFRAME", true ) then
 			MoveAny:RegisterWidget( {

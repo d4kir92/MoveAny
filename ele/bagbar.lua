@@ -60,6 +60,22 @@ function MoveAny:InitBags()
 				self.mashow = false
 			end )
 			bb:Show()
+
+			local border = _G[mbname .. "NormalTexture"]
+			if border then
+				hooksecurefunc( border, "Show", function( self )
+					self:Hide()
+				end )
+				border:Hide()
+
+				hooksecurefunc( border, "SetAlpha", function( self, alpha )
+					if self.iasetalpha then return end
+					self.iasetalpha = true
+					self:SetAlpha( 0 )
+					self.iasetalpha = false							
+				end )
+				border:SetAlpha( 0 )
+			end
 		end
 	end
 end

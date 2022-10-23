@@ -106,8 +106,6 @@ function MoveAny:CustomBars()
 		StanceBarRight:Hide()
 	end
 
-
-
 	local id = 1
 	for i = 1, MAMaxAB do
 		if i ~= 2 then
@@ -135,11 +133,17 @@ function MoveAny:CustomBars()
 						btnname = btns[i] .. x
 					end
 
+					local id = (i - 1) * 12 + x
+						
 					if _G[btnname] == nil then
 						_G[btnname] = CreateFrame( "CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate" )
 
 						_G[btnname].commandName = "CLICK " .. btnname
 						_G["BINDING_NAME_CLICK " .. btnname] = _G["BINDING_NAME_" .. btnname] or "Actionbar " .. i .. " Button " .. x
+					
+						_G[btnname]:SetAttribute( "action", id )
+					else
+						_G[btnname].bindingID = x
 					end
 
 					if _G[btnname .. "FloatingBG"] == nil then
@@ -153,18 +157,13 @@ function MoveAny:CustomBars()
 					end
 
 					local btn = _G[btnname]
-
-					local id = (i - 1) * 12 + x
+					
 					btn.maid = id
-					--btn:SetAttribute( "type", "action" )
-					btn:SetAttribute( "action", id )
-					--btn:SetAttribute( "useparent-unit", true )
-					--btn:SetAttribute( "useparent-actionpage", true )
 					btn:SetID( id )
-
+					
 					btn:ClearAllPoints()
 					btn:SetParent( bar )
-					btn:SetPoint( "TOPLEFT", bar, "TOPLEFT", (x - 1) * 36, 0 )
+					btn:SetPoint( "TOPLEFT", btn:GetParent(), "TOPLEFT", (x - 1) * 36, 0 )
 					btn:SetSize( 36, 36 )
 
 					tinsert( bar.btns, btn )
@@ -174,6 +173,35 @@ function MoveAny:CustomBars()
 			end
 		end
 	end
+
+	hooksecurefunc( "ActionButton_UpdateHotkeys", function( self, actionButtonType )
+		local id
+		if ( not actionButtonType ) then
+			actionButtonType = "ACTIONBUTTON"
+			id = self:GetID()
+		else
+			if ( actionButtonType == "MULTICASTACTIONBUTTON" ) then
+				id = self.buttonIndex
+			else
+				id = self:GetID()
+			end
+		end
+		if self.bindingID then
+			id = self.bindingID
+		end
+	
+		local hotkey = self.HotKey
+		local key1, key2 = GetBindingKey(actionButtonType..id) or
+					GetBindingKey("CLICK "..self:GetName()..":LeftButton")
+		local text = GetBindingText(key1, 1)
+		if ( text == "" ) then
+			hotkey:SetText(RANGE_INDICATOR)
+			hotkey:Hide()
+		else
+			hotkey:SetText(text)
+			hotkey:Show()
+		end
+	end )
 end
 
 function MoveAny:UpdateABs()

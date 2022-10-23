@@ -28,6 +28,7 @@ function MALang_enUS()
 		["FOCUSFRAME"] = "Focus Frame",
 		["FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
 		["RUNEFRAME"] = "Deathknight - Runes Frame",
+		["TOTEMFRAME"] = "Totem Timers",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Top",

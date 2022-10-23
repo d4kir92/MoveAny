@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.14" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.6.15" )
 }
 
 local PREFIX = "MOAN"
@@ -134,7 +134,10 @@ function MoveAny:InitMALock()
 			AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
 		end
 		if class == "DEATHKNIGHT" then
-			AddCheckBox( 4, "RUNEFRAME" )
+			AddCheckBox( 4, "RUNEFRAME", false )
+		end
+		if class == "SHAMAN" then
+			AddCheckBox( 4, "TOTEMFRAME", false )
 		end
 
 		AddCategory( "TOP" )
