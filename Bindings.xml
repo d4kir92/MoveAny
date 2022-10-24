@@ -1,0 +1,349 @@
+<Bindings>
+	<!-- MultiAction bar bindings header="MULTIActionBar" -->
+	<Binding name="CLICK ActionBar7Button1:LeftButton" runOnUp="true" header="ActionBar7" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 1)
+		else
+			MultiActionButtonUp("ActionBar7", 1)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button2:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 2)
+		else
+			MultiActionButtonUp("ActionBar7", 2)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button3:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 3)
+		else
+			MultiActionButtonUp("ActionBar7", 3)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button4:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 4)
+		else
+			MultiActionButtonUp("ActionBar7", 4)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button5:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 5)
+		else
+			MultiActionButtonUp("ActionBar7", 5)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button6:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 6)
+		else
+			MultiActionButtonUp("ActionBar7", 6)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button7:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 7)
+		else
+			MultiActionButtonUp("ActionBar7", 7)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button8:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 8)
+		else
+			MultiActionButtonUp("ActionBar7", 8)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button9:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 9)
+		else
+			MultiActionButtonUp("ActionBar7", 9)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button10:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 10)
+		else
+			MultiActionButtonUp("ActionBar7", 10)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button11:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 11)
+		else
+			MultiActionButtonUp("ActionBar7", 11)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar7Button12:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar7", 12)
+		else
+			MultiActionButtonUp("ActionBar7", 12)
+		end
+	</Binding>
+
+
+
+	<Binding name="CLICK ActionBar8Button1:LeftButton" runOnUp="true" header="ActionBar8" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 1)
+		else
+			MultiActionButtonUp("ActionBar8", 1)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button2:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 2)
+		else
+			MultiActionButtonUp("ActionBar8", 2)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button3:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 3)
+		else
+			MultiActionButtonUp("ActionBar8", 3)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button4:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 4)
+		else
+			MultiActionButtonUp("ActionBar8", 4)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button5:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 5)
+		else
+			MultiActionButtonUp("ActionBar8", 5)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button6:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 6)
+		else
+			MultiActionButtonUp("ActionBar8", 6)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button7:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 7)
+		else
+			MultiActionButtonUp("ActionBar8", 7)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button8:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 8)
+		else
+			MultiActionButtonUp("ActionBar8", 8)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button9:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 9)
+		else
+			MultiActionButtonUp("ActionBar8", 9)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button10:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 10)
+		else
+			MultiActionButtonUp("ActionBar8", 10)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button11:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 11)
+		else
+			MultiActionButtonUp("ActionBar8", 11)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar8Button12:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar8", 12)
+		else
+			MultiActionButtonUp("ActionBar8", 12)
+		end
+	</Binding>
+
+
+
+	<Binding name="CLICK ActionBar9Button1:LeftButton" runOnUp="true" header="ActionBar9" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 1)
+		else
+			MultiActionButtonUp("ActionBar9", 1)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button2:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 2)
+		else
+			MultiActionButtonUp("ActionBar9", 2)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button3:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 3)
+		else
+			MultiActionButtonUp("ActionBar9", 3)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button4:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 4)
+		else
+			MultiActionButtonUp("ActionBar9", 4)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button5:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 5)
+		else
+			MultiActionButtonUp("ActionBar9", 5)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button6:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 6)
+		else
+			MultiActionButtonUp("ActionBar9", 6)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button7:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 7)
+		else
+			MultiActionButtonUp("ActionBar9", 7)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button8:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 8)
+		else
+			MultiActionButtonUp("ActionBar9", 8)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button9:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 9)
+		else
+			MultiActionButtonUp("ActionBar9", 9)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button10:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 10)
+		else
+			MultiActionButtonUp("ActionBar9", 10)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button11:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 11)
+		else
+			MultiActionButtonUp("ActionBar9", 11)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar9Button12:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar9", 12)
+		else
+			MultiActionButtonUp("ActionBar9", 12)
+		end
+	</Binding>
+
+
+
+
+	<Binding name="CLICK ActionBar10Button1:LeftButton" runOnUp="true" header="ActionBar10" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 1)
+		else
+			MultiActionButtonUp("ActionBar10", 1)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button2:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 2)
+		else
+			MultiActionButtonUp("ActionBar10", 2)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button3:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 3)
+		else
+			MultiActionButtonUp("ActionBar10", 3)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button4:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 4)
+		else
+			MultiActionButtonUp("ActionBar10", 4)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button5:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 5)
+		else
+			MultiActionButtonUp("ActionBar10", 5)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button6:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 6)
+		else
+			MultiActionButtonUp("ActionBar10", 6)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button7:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 7)
+		else
+			MultiActionButtonUp("ActionBar10", 7)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button8:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 8)
+		else
+			MultiActionButtonUp("ActionBar10", 8)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button9:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 9)
+		else
+			MultiActionButtonUp("ActionBar10", 9)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button10:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 10)
+		else
+			MultiActionButtonUp("ActionBar10", 10)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button11:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 11)
+		else
+			MultiActionButtonUp("ActionBar10", 11)
+		end
+	</Binding>
+	<Binding name="CLICK ActionBar10Button12:LeftButton" runOnUp="true" category="BINDING_HEADER_MULTIACTIONBAR">
+		if ( keystate == "down" ) then
+			MultiActionButtonDown("ActionBar10", 12)
+		else
+			MultiActionButtonUp("ActionBar10", 12)
+		end
+	</Binding>
+</Bindings>

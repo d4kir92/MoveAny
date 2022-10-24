@@ -107,6 +107,11 @@ function MoveAny:CustomBars()
 	end
 
 	local id = 1
+	for i = 7, MAMaxAB do
+		for x = 1, 12 do
+			_G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] = _G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] or "Actionbar " .. i .. " Button " .. x
+		end
+	end
 	for i = 1, MAMaxAB do
 		if i ~= 2 then
 			if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
@@ -119,7 +124,7 @@ function MoveAny:CustomBars()
 				bar:SetPoint( abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"] )
 				
 				if i > 1 then
-					bar:SetAttribute( "actionpage", 1 )
+					bar:SetAttribute( "actionpage", i )
 				end
 
 				bar.btns = {}
@@ -139,8 +144,7 @@ function MoveAny:CustomBars()
 						_G[btnname] = CreateFrame( "CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate" )
 
 						_G[btnname].commandName = "CLICK " .. btnname
-						_G["BINDING_NAME_CLICK " .. btnname] = _G["BINDING_NAME_" .. btnname] or "Actionbar " .. i .. " Button " .. x
-					
+						
 						_G[btnname]:SetAttribute( "action", id )
 					else
 						_G[btnname].bindingID = x
@@ -159,8 +163,7 @@ function MoveAny:CustomBars()
 					local btn = _G[btnname]
 					
 					btn.maid = id
-					btn:SetID( id )
-					
+
 					btn:ClearAllPoints()
 					btn:SetParent( bar )
 					btn:SetPoint( "TOPLEFT", btn:GetParent(), "TOPLEFT", (x - 1) * 36, 0 )
@@ -173,35 +176,6 @@ function MoveAny:CustomBars()
 			end
 		end
 	end
-
-	hooksecurefunc( "ActionButton_UpdateHotkeys", function( self, actionButtonType )
-		local id
-		if ( not actionButtonType ) then
-			actionButtonType = "ACTIONBUTTON"
-			id = self:GetID()
-		else
-			if ( actionButtonType == "MULTICASTACTIONBUTTON" ) then
-				id = self.buttonIndex
-			else
-				id = self:GetID()
-			end
-		end
-		if self.bindingID then
-			id = self.bindingID
-		end
-	
-		local hotkey = self.HotKey
-		local key1, key2 = GetBindingKey(actionButtonType..id) or
-					GetBindingKey("CLICK "..self:GetName()..":LeftButton")
-		local text = GetBindingText(key1, 1)
-		if ( text == "" ) then
-			hotkey:SetText(RANGE_INDICATOR)
-			hotkey:Hide()
-		else
-			hotkey:SetText(text)
-			hotkey:Show()
-		end
-	end )
 end
 
 function MoveAny:UpdateABs()
