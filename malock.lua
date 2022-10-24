@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.0" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.1" )
 }
 
 local PREFIX = "MOAN"
@@ -150,7 +150,6 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "MINIMAP" )
 			AddCheckBox( 4, "BUFFS" )
 			AddCheckBox( 24, "DEBUFFS" )
-			AddCheckBox( 4, "UIWIDGETBELOWMINIMAP" )
 		end
 
 		AddCategory( "RIGHT" )

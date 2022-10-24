@@ -27,7 +27,7 @@ MADragFrames = MADragFrames or {}
 
 local colors = {}
 colors["bg"] = 		{ 0.03, 0.03, 	0.03, 	1 	}
-colors["el"] = 		{ 0.6, 	0.84, 	1.0, 	0.55 }
+colors["el"] = 		{ 0.6, 	0.84, 	1.0, 	1 }
 colors["hidden"] = 	{ 1.0, 	0.0, 	0.0, 	0.3 }
 
 MAHIDDEN = CreateFrame( "Frame", "MAHIDDEN" )

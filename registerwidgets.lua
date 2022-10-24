@@ -313,12 +313,23 @@ function MoveAny:RegisterWidget( tab, debug )
 			dragframe.t = dragframe:CreateTexture( name .. "_DRAG.t", "BACKGROUND", nil, 1 )
 			dragframe.t:SetAllPoints( dragframe )
 			dragframe.t:SetColorTexture( MoveAny:GetColor( "el" ) )
-			
+			dragframe.t:SetAlpha( 0.33 )
+
 			dragframe.name = dragframe:CreateFontString( nil, nil, "GameFontHighlightLarge" )
 			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
 			local font, fontSize, fontFlags = dragframe.name:GetFont()
 			dragframe.name:SetFont( font, 15, fontFlags )
 			dragframe.name:SetText( MAGT( lstr ) )
+			dragframe.name:Hide()
+
+			dragframe:SetScript( "OnEnter", function()
+				dragframe.name:Show()
+				dragframe.t:SetAlpha( 0.66 )
+			end )
+			dragframe:SetScript( "OnLeave", function()
+				dragframe.name:Hide()
+				dragframe.t:SetAlpha( 0.33 )
+			end )
 		end
 
 		dragframe:SetAlpha( 1 )
