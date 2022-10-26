@@ -1039,6 +1039,14 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "REPUTATIONWATCHBAR"
 		} )
 	end
+
+	if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "StatusTrackingBarManager",
+			["lstr"] = "STATUSTRACKINGBARMANAGER"
+		} )
+	end
+	
 	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MABUILD == "WRATH" and class == "SHAMAN" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MultiCastActionBarFrame",

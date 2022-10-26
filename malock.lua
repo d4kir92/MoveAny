@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.8" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.9" )
 }
 
 local PREFIX = "MOAN"
@@ -185,8 +185,12 @@ function MoveAny:InitMALock()
 		if MABUILDNR < 100000 then
 			AddCheckBox( 4, "LEAVEVEHICLE" )
 		end
-		AddCheckBox( 4, "MAINMENUEXPBAR" )
-		AddCheckBox( 4, "REPUTATIONWATCHBAR" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "MAINMENUEXPBAR" )
+			AddCheckBox( 4, "REPUTATIONWATCHBAR" )
+		else
+			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER" )
+		end
 		AddCheckBox( 4, "GROUPLOOTCONTAINER" )
 		AddCheckBox( 4, "CASTINGBAR" )
 		AddCheckBox( 4, "TALKINGHEAD" )

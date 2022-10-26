@@ -51,6 +51,7 @@ function MALang_deDE()
 		["TOTEMBAR"] = "Schamane - Totemleiste",
 		["LEAVEVEHICLE"] = "Fahrzeug verlassen Taste",
 		["GROUPLOOTCONTAINER"] = "Beute-Würfeln Fenster",
+		["STATUSTRACKINGBARMANAGER"] = "Statusverfolgungsleiste Manager (EP, Ruf)",
 
 		["BOTTOMLEFT"] = "Unten Links",
 		["CHAT"] = "Chatfenster",

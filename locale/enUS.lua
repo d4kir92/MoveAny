@@ -59,6 +59,7 @@ function MALang_enUS()
 		["TOTEMBAR"] = "Shaman - Totem Bar",
 		["LEAVEVEHICLE"] = "Leave Vehicle Button",
 		["GROUPLOOTCONTAINER"] = "Loot Roll frame",
+		["STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
 
 		["BOTTOMLEFT"] = "Bottom Left",
 		["CHAT"] = "Chatframe",

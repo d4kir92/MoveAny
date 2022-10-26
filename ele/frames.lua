@@ -236,7 +236,10 @@ for i = 2, 20 do
 		} )
 	end
 end
-
+tinsert( MAFRAMES, {
+	"ContainerFrameCombinedBags",
+	1
+} )
 tinsert( MAFRAMES, {
 	"LFGParentFrame",
 	1
