@@ -805,19 +805,17 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOMRIGHT
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "MICROMENU", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MAMenuBar",
-				["lstr"] = "MICROMENU"
-			} )
-		end
-		if MoveAny:IsEnabled( "BAGS", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MABagBar",
-				["lstr"] = "BAGS"
-			} )
-		end
+	if MoveAny:IsEnabled( "MICROMENU", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MAMenuBar",
+			["lstr"] = "MICROMENU"
+		} )
+	end
+	if MoveAny:IsEnabled( "BAGS", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MABagBar",
+			["lstr"] = "BAGS"
+		} )
 	end
 	MoveAny:RegisterWidget( {
 		["name"] = "IAMoneyBar",
@@ -1103,10 +1101,10 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitMAVehicleSeatIndicator()
 	if MABUILDNR < 100000 then
 		MoveAny:InitStanceBar()
-		MoveAny:InitMicroMenu()
 		MoveAny:InitMinimap()
-		MoveAny:InitBags()
 	end
+	MoveAny:InitMicroMenu()
+	MoveAny:InitBags()
 	MoveAny:InitBuffBar()
 	MoveAny:InitDebuffBar()
 	MoveAny:InitMAFPSFrame()

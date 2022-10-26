@@ -3,6 +3,24 @@ local AddOnName, MoveAny = ...
 
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled( "MICROMENU", true ) then
+		local MBTNS = MICRO_BUTTONS
+		if MICRO_BUTTONS == nil then
+			MBTNS = {
+				"CharacterMicroButton",
+				"SpellbookMicroButton",
+				"TalentMicroButton",
+				"AchievementMicroButton",
+				"QuestLogMicroButton",
+				"GuildMicroButton",
+				"LFDMicroButton",
+				"EJMicroButton",
+				"CollectionsMicroButton",
+				"MainMenuMicroButton",
+				"HelpMicroButton",
+				"StoreMicroButton",
+			}
+		end
+
 		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
 		end
@@ -12,8 +30,8 @@ function MoveAny:InitMicroMenu()
 			sh = sh - 21
 		end
 		local mbc = 11
-		if MICRO_BUTTONS then
-			mbc = #MICRO_BUTTONS
+		if MBTNS then
+			mbc = #MBTNS
 		end
 
 		MAMenuBar = CreateFrame( "Frame", "MAMenuBar", UIParent )
@@ -27,18 +45,15 @@ function MoveAny:InitMicroMenu()
 			MAMenuBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 		end
 		MAMenuBar.btns = {}
-
-		if MICRO_BUTTONS then
-			for i, mbname in pairs( MICRO_BUTTONS ) do
+		
+		if MBTNS then
+			for i, mbname in pairs( MBTNS ) do
 				local mb = _G[mbname] 
 
 				local sw, sh = mb:GetSize()
 				if MABUILD ~= "RETAIL" then
 					sw = sw - 2
 					sh = sh - 24
-				else
-					sw = sw - 2
-					sh = sh - 4
 				end
 
 				local hb = CreateFrame( "FRAME" )
@@ -94,7 +109,6 @@ function MoveAny:InitMicroMenu()
 					end
 				end )
 				mb:Show()
-
 				tinsert( MAMenuBar.btns, hb )
 			end
 		end

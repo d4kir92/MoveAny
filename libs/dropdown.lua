@@ -7,21 +7,29 @@ function MACreateDropdown( opts )
     local default_val = opts["defaultVal"] or ""
     local change_func = opts["changeFunc"] or function (dropdown_val) end
 
-    local dropdown = CreateFrame( "Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate" )
-    local dd_title = dropdown:CreateFontString(dropdown, "OVERLAY", "GameFontNormal")
-    dd_title:SetPoint("TOPLEFT", 20, 10)
 
-    for _, item in pairs(menu_items) do -- Sets the dropdown width to the largest item string width.
-        dd_title:SetText(item)
-        local text_width = dd_title:GetStringWidth() + 30
-        if text_width > dropdown_width then
-            dropdown_width = text_width
-        end
-    end
+
+
+    local dropdown = CreateFrame( "Frame", dropdown_name, opts["parent"], "UIDropDownMenuTemplate" )
+
+	if dropdown.CreateFontString ~= nil then
+		local dd_title = dropdown:CreateFontString( "dropdown", "OVERLAY", "GameFontNormal" )
+		dd_title:SetPoint("TOPLEFT", 20, 10)
+
+		for _, item in pairs(menu_items) do -- Sets the dropdown width to the largest item string width.
+			dd_title:SetText(item)
+			local text_width = dd_title:GetStringWidth() + 30
+			if text_width > dropdown_width then
+				dropdown_width = text_width
+			end
+		end
+
+		dd_title:SetText(title_text)
+	end
 
     UIDropDownMenu_SetWidth(dropdown, dropdown_width)
     UIDropDownMenu_SetText(dropdown, default_val)
-    dd_title:SetText(title_text)
+   
 
     UIDropDownMenu_Initialize(dropdown, function(self, level, _)
         local info = UIDropDownMenu_CreateInfo()

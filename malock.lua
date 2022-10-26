@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.5" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.6" )
 }
 
 local PREFIX = "MOAN"
@@ -158,9 +158,9 @@ function MoveAny:InitMALock()
 		end
 
 		AddCategory( "BOTTOMRIGHT" )
+		AddCheckBox( 4, "MICROMENU" )
+		AddCheckBox( 4, "BAGS" )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "MICROMENU" )
-			AddCheckBox( 4, "BAGS" )
 			AddCheckBox( 4, "GAMETOOLTIP" )
 		end
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR" )
