@@ -180,6 +180,8 @@ function MAMenuOptions( opt, frame )
 			local items = {}
 			if max == 12 then
 				items = { "1", "2", "3", "4", "6", "12" }
+			elseif max == 11 then
+				items = { "1", "11" }
 			elseif max == 10 then
 				items = { "1", "2", "5", "10" }
 			elseif max == 8 then
@@ -787,6 +789,13 @@ function MoveAny:Event( event, ... )
 					["sh"] = 600
 				} )
 			end
+		end
+	else
+		if MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "QueueStatusButton",
+				["lstr"] = "QUEUESTATUSBUTTON"
+			} )
 		end
 	end
 	MoveAny:RegisterWidget( {

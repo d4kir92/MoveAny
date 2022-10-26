@@ -46,6 +46,7 @@ function MALang_enUS()
 		["BAGS"] = "Bags",
 		["GAMETOOLTIP"] = "Tooltip",
 		["GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
+		["QUEUESTATUSBUTTON"] = "LFG Status",
 
 		["BOTTOM"] = "Bottom",
 		["ACTIONBARS"] = "Actionbars 1-6",

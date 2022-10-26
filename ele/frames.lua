@@ -262,6 +262,10 @@ tinsert( MAFRAMES, {
 	1
 } )
 tinsert( MAFRAMES, {
+	"ClassTalentFrame",
+	1
+} )
+tinsert( MAFRAMES, {
 	"FriendsFrame",
 	1
 } )

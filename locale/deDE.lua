@@ -38,6 +38,7 @@ function MALang_deDE()
 		["BAGS"] = "Taschen",
 		["GAMETOOLTIP"] = "Tooltip",
 		["GAMETOOLTIP_ONCURSOR"] = "Tooltip am Zeiger",
+		["QUEUESTATUSBUTTON"] = "SNG Status (LFG)",
 
 		["BOTTOM"] = "Unten",
 		["ACTIONBARS"] = "Aktionsleisten 1-6",

@@ -13,11 +13,11 @@ function MoveAny:InitMicroMenu()
 				"QuestLogMicroButton",
 				"GuildMicroButton",
 				"LFDMicroButton",
-				"EJMicroButton",
 				"CollectionsMicroButton",
-				"MainMenuMicroButton",
-				"HelpMicroButton",
+				"EJMicroButton",
 				"StoreMicroButton",
+				"HelpMicroButton",
+				"MainMenuMicroButton",
 			}
 		end
 
