@@ -3,7 +3,7 @@ local AddOnName, MoveAny = ...
 
 MABUILDNR = select(4, GetBuildInfo())
 MABUILD = "CLASSIC"
-if MABUILDNR > 90000 then
+if MABUILDNR >= 100000 then
 	MABUILD = "RETAIL"
 elseif MABUILDNR > 29999 then
 	MABUILD = "WRATH"

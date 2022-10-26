@@ -23,7 +23,11 @@ local function CreateTabs( frame, args )
 	local tabs = {}
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
-		local tab = CreateFrame( "Button", frame:GetName() .. "Tab" .. i, frame, "CharacterFrameTabButtonTemplate" )
+		local template = "CharacterFrameTabButtonTemplate"
+		if MABUILD == "RETAIL" then
+			template = "PanelTabButtonTemplate"
+		end
+		local tab = CreateFrame( "Button", frame:GetName() .. "Tab" .. i, frame, template )
 		tab:SetID( i )
 		tab:SetText( args[i] )
 		tab:SetScript( "OnClick", function( self )
