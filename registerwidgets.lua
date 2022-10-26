@@ -920,30 +920,32 @@ function MoveAny:Event( event, ... )
 	if MainMenuBarPerformanceBarFrame then
 		MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
 	end
-	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
-		for i = 1, 10 do
-			if i ~= 2 then
-				if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
-					MoveAny:RegisterWidget( {
-						["name"] = "MAActionBar" .. i,
-						["lstr"] = "ACTIONBAR" .. i
-					}, true )
+	if MABUILDNR < 100000 then
+		if MoveAny:IsEnabled( "ACTIONBARS", true ) then
+			for i = 1, 10 do
+				if i ~= 2 then
+					if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+						MoveAny:RegisterWidget( {
+							["name"] = "MAActionBar" .. i,
+							["lstr"] = "ACTIONBAR" .. i
+						}, true )
+					end
 				end
 			end
 		end
-	end
-	if MoveAny:IsEnabled( "STANCEBAR", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAStanceBar",
-			["lstr"] = "STANCEBAR",
-			["secure"] = true
-		} )
-	end
-	if MoveAny:IsEnabled( "PETBAR", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAPetBar",
-			["lstr"] = "PETBAR"
-		} )
+		if MoveAny:IsEnabled( "STANCEBAR", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAStanceBar",
+				["lstr"] = "STANCEBAR",
+				["secure"] = true
+			} )
+		end
+		if MoveAny:IsEnabled( "PETBAR", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAPetBar",
+				["lstr"] = "PETBAR"
+			} )
+		end
 	end
 	if MoveAny:IsEnabled( "POSSESSBAR", true ) then
 		MoveAny:RegisterWidget( {
@@ -1092,13 +1094,15 @@ function MoveAny:Event( event, ... )
 	end
 
 
-
-	MoveAny:InitBags()
+	
 	MoveAny:InitMALock()
-	MoveAny:InitMicroMenu()
-	MoveAny:InitMinimap()
 	MoveAny:InitMAVehicleSeatIndicator()
-	MoveAny:InitStanceBar()
+	if MABUILDNR < 100000 then
+		MoveAny:InitStanceBar()
+		MoveAny:InitMicroMenu()
+		MoveAny:InitMinimap()
+		MoveAny:InitBags()
+	end
 	MoveAny:InitBuffBar()
 	MoveAny:InitDebuffBar()
 	MoveAny:InitMAFPSFrame()

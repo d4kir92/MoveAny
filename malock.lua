@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.3" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.4" )
 }
 
 local PREFIX = "MOAN"
@@ -167,13 +167,15 @@ function MoveAny:InitMALock()
 
 
 		AddCategory( "BOTTOM" )
-		AddCheckBox( 4, "ACTIONBARS" )
-		AddCheckBox( 24, "ACTIONBAR7" )
-		AddCheckBox( 24, "ACTIONBAR8" )
-		AddCheckBox( 24, "ACTIONBAR9" )
-		AddCheckBox( 24, "ACTIONBAR10" )
-		AddCheckBox( 4, "PETBAR" )
-		AddCheckBox( 4, "STANCEBAR" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "ACTIONBARS" )
+			AddCheckBox( 24, "ACTIONBAR7" )
+			AddCheckBox( 24, "ACTIONBAR8" )
+			AddCheckBox( 24, "ACTIONBAR9" )
+			AddCheckBox( 24, "ACTIONBAR10" )
+			AddCheckBox( 4, "PETBAR" )
+			AddCheckBox( 4, "STANCEBAR" )
+		end
 		if MABUILD == "WRATH" and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMBAR" )
 		end
