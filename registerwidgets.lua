@@ -1102,11 +1102,11 @@ function MoveAny:Event( event, ... )
 	if MABUILDNR < 100000 then
 		MoveAny:InitStanceBar()
 		MoveAny:InitMinimap()
+		MoveAny:InitBuffBar()
+		MoveAny:InitDebuffBar()
 	end
 	MoveAny:InitMicroMenu()
 	MoveAny:InitBags()
-	MoveAny:InitBuffBar()
-	MoveAny:InitDebuffBar()
 	MoveAny:InitMAFPSFrame()
 	
 	MoveAny:MoveFrames()
