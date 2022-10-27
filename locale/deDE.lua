@@ -106,6 +106,10 @@ function MALang_deDE()
 		["WAITINGFOROWNER"] = "Auf Besitzer warten",
 		["WAITFORPLAYERPROFILE"] = "Auf anderen Spieler warten, der auf \"Profile erhalten\" drückt.",
 		["WAITFORPLAYERPROFILE2"] = "Auf anderen Spieler warten, der auf \"Teilen\" drückt.",
+
+		["ALPHAINCOMBAT"] = "Sichtbarkeit (im Kampf)",
+		["ALPHANOTINCOMBAT"] = "Sichtbarkeit (Nicht im Kampf)",
+		["ALPHAINVEHICLE"] = "Sichtbarkeit (im Fahrzeug)",
 	}
 
 	MAUpdateLanguageTab( tab )

@@ -116,6 +116,10 @@ function MALang_enUS()
 		["WAITINGFOROWNER"] = "Waiting for Owner",
 		["WAITFORPLAYERPROFILE"] = "Wait for other player to press \"Get Profiles\".",
 		["WAITFORPLAYERPROFILE2"] = "Wait for other player to press \"Share\".",
+
+		["ALPHAINCOMBAT"] = "Alpha (in Combat)",
+		["ALPHANOTINCOMBAT"] = "Alpha (not in Combat)",
+		["ALPHAINVEHICLE"] = "Alpha (in Vehicle)",
 	}
 
 	MAUpdateLanguageTab( tab )

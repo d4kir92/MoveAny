@@ -2,6 +2,7 @@
 local AddOnName, MoveAny = ...
 
 MADragFrames = MADragFrames or {}
+MAEleFrames = MAEleFrames or {}
 
 local framelevel = 100
 
@@ -73,6 +74,31 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	end )
 
 	return btn
+end
+
+function MACreateSlider( parent, x, y, name, key, steps, vmin, vmax, func )
+	local slider = CreateFrame( "Slider", nil, parent, "OptionsSliderTemplate" )
+	slider:SetWidth( parent:GetWidth() - 20 )
+	slider:SetPoint( "TOPLEFT", parent, "TOPLEFT", x, y );
+	slider.Low:SetText( vmin )
+	slider.High:SetText( vmax )
+	slider.Text:SetText( MAGT( key ) .. ": " .. MoveAny:GetEleOption( name, key, 1 ) )
+	slider:SetMinMaxValues( vmin, vmax )
+	slider:SetObeyStepOnDrag( true )
+	slider:SetValueStep( steps )
+	slider:SetValue( MoveAny:GetEleOption( name, key, 1 ) )
+	slider:SetScript( "OnValueChanged", function(self, val)
+		val = tonumber( string.format( "%" .. steps .. "f", val ) )
+		if val then
+			MoveAny:SetEleOption( name, key, val )
+			slider.Text:SetText( MAGT( key ) .. ": " .. val )
+
+			if func then
+				func()
+			end
+		end
+	end )
+	return slider
 end
 
 function MAMenuOptions( opt, frame )
@@ -174,6 +200,10 @@ function MAMenuOptions( opt, frame )
 			hide.text:SetFont( STANDARD_TEXT_FONT, 12, "THINOUTLINE" )
 			hide.text:SetPoint( "LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText( getglobal("HIDE") )
+
+			MACreateSlider( content, 10, -210, name, "ALPHAINCOMBAT", 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MACreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MACreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 0.1, 0, 1, MoveAny.UpdateAlphas )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
 
 			local max = getn( frame.btns )
@@ -363,7 +393,7 @@ function MoveAny:RegisterWidget( tab, debug )
 					dragframe.opt:SetFrameLevel( framelevel )
 					framelevel = framelevel + 1
 
-					dragframe.opt:SetSize( 300, 250 )
+					dragframe.opt:SetSize( 300, 370 )
 					dragframe.opt:SetPoint( "CENTER" )
 					dragframe.opt:SetClampedToScreen( true )
 					dragframe.opt:SetMovable( true )
@@ -421,7 +451,9 @@ function MoveAny:RegisterWidget( tab, debug )
 		end )
 		return false
 	end
-	
+
+	tinsert( MAEleFrames, frame )
+
 	frame:SetMovable( true )
 	
 	frame:SetDontSavePosition( true )
@@ -535,6 +567,79 @@ function MoveAny:RegisterWidget( tab, debug )
 	dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
 	
 	dragframe:Show()
+end
+
+local invehicle = nil
+local incombat = nil
+local lastEle = nil
+local lastSize = 0
+
+function MoveAny:SetEleAlpha( ele, alpha )
+	if ele:GetAlpha() ~= alpha then
+		ele:SetAlpha( alpha )
+	end
+end
+
+function MoveAny:SetMouseEleAlpha( ele )
+	if lastEle and ele ~= lastEle then
+		MoveAny:UpdateAlphas()
+	end
+	lastEle = ele
+end
+
+function MoveAny:CheckAlphas()
+	if incombat ~= InCombatLockdown() then
+		incombat = InCombatLockdown()
+		MoveAny:UpdateAlphas()
+	elseif UnitInVehicle and invehicle ~= UnitInVehicle( "PLAYER" ) then
+		invehicle = UnitInVehicle( "PLAYER" )
+		MoveAny:UpdateAlphas()
+	end
+
+	if lastSize ~= getn( MAEleFrames ) then
+		lastSize = getn( MAEleFrames )
+		MoveAny:UpdateAlphas()
+	end
+
+	local ele = GetMouseFocus()
+	if ele then
+		local parent = ele:GetParent()
+		if tContains( MAEleFrames, ele ) then
+			ele:SetAlpha(1)
+			MoveAny:SetMouseEleAlpha( ele )
+		elseif parent then
+			if tContains( MAEleFrames, parent ) then
+				parent:SetAlpha(1)
+				MoveAny:SetMouseEleAlpha( parent )
+			elseif parent:GetParent() and tContains( MAEleFrames, parent:GetParent() ) then
+				parent:GetParent():SetAlpha(1)
+				MoveAny:SetMouseEleAlpha( parent:GetParent() )
+			end
+		elseif lastEle then
+			lastEle = nil
+			MoveAny:UpdateAlphas()
+		end
+	elseif lastEle then
+		lastEle = nil
+		MoveAny:UpdateAlphas()
+	end
+
+	C_Timer.After( 0.1, MoveAny.CheckAlphas )
+end
+
+function MoveAny:UpdateAlphas()
+	for i, ele in pairs( MAEleFrames ) do
+		local alphaInVehicle = MoveAny:GetEleOption( ele:GetName(), "ALPHAINVEHICLE", 1 )
+		local alphaInCombat = MoveAny:GetEleOption( ele:GetName(), "ALPHAINCOMBAT", 1 )
+		local alphaNotInCombat = MoveAny:GetEleOption( ele:GetName(), "ALPHANOTINCOMBAT", 1 )
+		if UnitInVehicle and invehicle then
+			MoveAny:SetEleAlpha( ele, alphaInVehicle )
+		elseif incombat then
+			MoveAny:SetEleAlpha( ele, alphaInCombat )
+		elseif not incombat then
+			MoveAny:SetEleAlpha( ele, alphaNotInCombat )
+		end
+	end
 end
 
 function MoveAny:Event( event, ... )
@@ -1187,6 +1292,8 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "MAPROFILES", false ) then
 		MoveAny:ShowProfiles()
 	end
+
+	MoveAny:CheckAlphas()
 end
 
 local f = CreateFrame( "Frame" )
