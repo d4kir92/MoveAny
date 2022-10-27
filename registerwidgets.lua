@@ -235,6 +235,13 @@ function MAMenuOptions( opt, frame )
 	end
 end
 
+function MoveAny:IsBlizEditModeEnabled()
+	if EditModeManagerFrame and EditModeManagerFrame:IsShown() then
+		return true
+	end
+	return false
+end
+
 function MoveAny:UpdateMinimapButton()
 	if MAMMBTN then
 		if MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) then
@@ -608,19 +615,14 @@ function MoveAny:Event( event, ... )
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "TargetFrameSpellBar",
-				["lstr"] = "TARGETFRAMESPELLBAR"
-			} )
-		end
-		if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "TargetFrameToT",
-				["lstr"] = "TARGETOFTARGETFRAME",
-				["userplaced"] = true
-			} )
-		end
+	end
+	if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "TargetFrameSpellBar",
+			["lstr"] = "TARGETFRAMESPELLBAR"
+		} )
+	end
+	if MABUILDNR < 100000 then
 		if MoveAny:IsEnabled( "FOCUSFRAME", true ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
@@ -628,12 +630,26 @@ function MoveAny:Event( event, ... )
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "FocusFrameSpellBar",
-				["lstr"] = "FOCUSFRAMESPELLBAR"
-			} )
-		end
+	end
+	if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "FocusFrameSpellBar",
+			["lstr"] = "FOCUSFRAMESPELLBAR"
+		} )
+	end
+	if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "TargetFrameToT",
+			["lstr"] = "TARGETOFTARGETFRAME",
+			["userplaced"] = true
+		} )
+	end
+	if MoveAny:IsEnabled( "TARGETOFFOCUSFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "FocusFrameToT",
+			["lstr"] = "TARGETOFFOCUSFRAME",
+			["userplaced"] = true
+		} )
 	end
 	if MoveAny:IsEnabled( "COMPACTRAIDFRAMEMANAGER", true ) then
 		MACompactRaidFrameManager = CreateFrame( "Frame", "MACompactRaidFrameManager", UIParent )
@@ -871,6 +887,10 @@ function MoveAny:Event( event, ... )
 	end
 
 	function MAThinkGameTooltip()
+		if MoveAny:IsBlizEditModeEnabled() then
+			C_Timer.After( 0.1, MAThinkGameTooltip )
+			return
+		end
 		if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == true then
 			local point, parent, relativePoint, ofsx, ofsy = GameTooltip:GetPoint()
 			local owner = GameTooltip:GetOwner()

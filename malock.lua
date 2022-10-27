@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.9" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.10" )
 }
 
 local PREFIX = "MOAN"
@@ -128,11 +128,14 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "PLAYERFRAME" )
 			AddCheckBox( 24, "PETFRAME" )
 			AddCheckBox( 4, "TARGETFRAME", true )
-			AddCheckBox( 24, "TARGETOFTARGETFRAME", false )
-			AddCheckBox( 24, "TARGETFRAMESPELLBAR", false )
-			AddCheckBox( 4, "FOCUSFRAME", true )
-			AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
 		end
+		AddCheckBox( 24, "TARGETOFTARGETFRAME", false )
+		AddCheckBox( 24, "TARGETFRAMESPELLBAR", false )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "FOCUSFRAME", true )
+		end
+		AddCheckBox( 24, "TARGETOFFOCUSFRAME", false )
+		AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
 		if class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME", false )
 		end
@@ -192,8 +195,10 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER" )
 		end
 		AddCheckBox( 4, "GROUPLOOTCONTAINER" )
-		AddCheckBox( 4, "CASTINGBAR" )
-		AddCheckBox( 4, "TALKINGHEAD" )
+		if MABUILDNR < 100000 then
+			AddCheckBox( 4, "CASTINGBAR" )
+			AddCheckBox( 4, "TALKINGHEAD" )
+		end
 		AddCheckBox( 4, "MAFPSFrame" )
 
 		AddCategory( "BOTTOMLEFT" )
