@@ -161,6 +161,12 @@ function MoveAny:MoveFrames()
 				end )
 
 				if not dontscale then
+					hooksecurefunc( frame, "SetScale", function( self, scale )
+						if self.masetscale then return end
+						self.masetscale = true
+						self:SetScale( MoveAny:GetFrameScale( name ) or scale )
+						self.masetscale = false
+					end )
 					if MoveAny:GetFrameScale( name ) then
 						if frame:GetHeight() * MoveAny:GetFrameScale( name ) > GetScreenHeight() then
 							MoveAny:SetFrameScale( name, GetScreenHeight() / frame:GetHeight() )
