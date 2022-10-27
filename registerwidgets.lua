@@ -339,7 +339,8 @@ function MoveAny:RegisterWidget( tab, debug )
 		dragframe:SetFrameStrata( "MEDIUM" )
 		dragframe:SetFrameLevel( 99 )
 
-		dragframe:Hide()
+		dragframe:SetAlpha( 0 )
+		dragframe:EnableMouse( false )
 
 		if MoveAny:GetEleSize( name ) then
 			dragframe:SetSize( MoveAny:GetEleSize( name ) )
@@ -374,8 +375,6 @@ function MoveAny:RegisterWidget( tab, debug )
 				dragframe.t:SetAlpha( 0.33 )
 			end )
 		end
-
-		dragframe:SetAlpha( 1 )
 
 		dragframe:SetScript("OnMouseDown", function( self, btn )
 			local frame = _G[name]
@@ -566,7 +565,13 @@ function MoveAny:RegisterWidget( tab, debug )
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
 	
-	dragframe:Show()
+	if MoveAny:IsEnabled( "MALOCK", false ) then
+		dragframe:SetAlpha( 1 )
+		dragframe:EnableMouse( true )
+	else
+		dragframe:SetAlpha( 0 )
+		dragframe:EnableMouse( false )
+	end
 end
 
 local invehicle = nil
@@ -1173,10 +1178,12 @@ function MoveAny:Event( event, ... )
 	end
 	
 	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MABUILD == "WRATH" and class == "SHAMAN" then
-		MoveAny:RegisterWidget( {
-			["name"] = "MultiCastActionBarFrame",
-			["lstr"] = "TOTEMBAR"
-		} )
+		C_Timer.After( 4, function()
+			MoveAny:RegisterWidget( {
+				["name"] = "MultiCastActionBarFrame",
+				["lstr"] = "TOTEMBAR"
+			} )
+		end )
 	end
 	if MABUILDNR < 100000 then
 		if MoveAny:IsEnabled( "LEAVEVEHICLE", true ) then
