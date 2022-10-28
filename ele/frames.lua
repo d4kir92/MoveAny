@@ -196,6 +196,14 @@ function MoveAny:MoveFrames()
 end
 
 tinsert( MAFRAMES, {
+	"StaticPopup1",
+	1
+} )
+tinsert( MAFRAMES, {
+	"StaticPopup2",
+	1
+} )
+tinsert( MAFRAMES, {
 	"GameMenuFrame",
 	1
 } )

@@ -102,6 +102,10 @@ function MACreateSlider( parent, x, y, name, key, steps, vmin, vmax, func )
 end
 
 function MAMenuOptions( opt, frame )
+	if frame == nil then
+		MoveAny:MSG( "FRAME NOT FOUND" )
+	end
+
 	local name = frame:GetName()
 	local opts = MoveAny:GetEleOptions( name )
 	
@@ -210,6 +214,9 @@ function MAMenuOptions( opt, frame )
 			local items = {}
 			if max == 12 then
 				items = { "1", "2", "3", "4", "6", "12" }
+				if frame == MAMenuBar then
+					items = { "1", "2", "3", "4", "6", "10", "11", "12" }
+				end
 			elseif max == 11 then
 				items = { "1", "11" }
 			elseif max == 10 then
@@ -231,6 +238,7 @@ function MAMenuOptions( opt, frame )
 				["items"]= items,
 				["defaultVal"] = opts["ROWS"], 
 				["changeFunc"] = function( dropdown_frame, dropdown_val )
+					dropdown_val = tonumber( dropdown_val )
 					opts["ROWS"] = dropdown_val
 
 					MAUpdateActionBar( frame )
@@ -1087,22 +1095,23 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "PETBAR"
 			} )
 		end
-	end
-	if MoveAny:IsEnabled( "POSSESSBAR", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "PossessBarFrame",
-			["lstr"] = "POSSESSBAR"
-		} )
+
+		if MoveAny:IsEnabled( "POSSESSBAR", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "PossessBarFrame",
+				["lstr"] = "POSSESSBAR"
+			} )
+		end
 	end
 	if ZoneAbilityFrame then
 		ZoneAbilityFrame:SetParent( UIParent )
 		ZoneAbilityFrame:ClearAllPoints()
 		ZoneAbilityFrame:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 200 )
+		MoveAny:RegisterWidget( {
+			["name"] = "ZoneAbilityFrame",
+			["lstr"] = "ZONEABILITYFRAME"
+		} )
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "ZoneAbilityFrame",
-		["lstr"] = "ZONEABILITYFRAME"
-	} )
 	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
 		local glfsw, glfsh = 244, 84
 		if GroupLootFrame1 then
@@ -1143,38 +1152,42 @@ function MoveAny:Event( event, ... )
 			ExtraAbilityContainer:SetSize( 180, 100 )
 			ExtraAbilityContainer:ClearAllPoints()
 			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+		
+			MoveAny:RegisterWidget( {
+				["name"] = "ExtraAbilityContainer",
+				["lstr"] = "EXTRAABILITYCONTAINER"
+			} )
 		end
-		MoveAny:RegisterWidget( {
-			["name"] = "ExtraAbilityContainer",
-			["lstr"] = "EXTRAABILITYCONTAINER"
-		} )
-	end
-	if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
-		if MainMenuExpBar then
-			MainMenuExpBar:ClearAllPoints()
-			MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
+
+		if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
+			if MainMenuExpBar then
+				MainMenuExpBar:ClearAllPoints()
+				MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
+			end
+			MoveAny:RegisterWidget( {
+				["name"] = "MainMenuExpBar",
+				["lstr"] = "MAINMENUEXPBAR"
+			} )
 		end
-		MoveAny:RegisterWidget( {
-			["name"] = "MainMenuExpBar",
-			["lstr"] = "MAINMENUEXPBAR"
-		} )
-	end
-	if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
-		if ReputationWatchBar then
-			ReputationWatchBar:ClearAllPoints()
-			ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
+		if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
+			if ReputationWatchBar then
+				ReputationWatchBar:ClearAllPoints()
+				ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
+			end
+			MoveAny:RegisterWidget( {
+				["name"] = "ReputationWatchBar",
+				["lstr"] = "REPUTATIONWATCHBAR"
+			} )
 		end
-		MoveAny:RegisterWidget( {
-			["name"] = "ReputationWatchBar",
-			["lstr"] = "REPUTATIONWATCHBAR"
-		} )
 	end
 
-	if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "StatusTrackingBarManager",
-			["lstr"] = "STATUSTRACKINGBARMANAGER"
-		} )
+	if StatusTrackingBarManager then
+		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "StatusTrackingBarManager",
+				["lstr"] = "STATUSTRACKINGBARMANAGER"
+			} )
+		end
 	end
 	
 	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MABUILD == "WRATH" and class == "SHAMAN" then
@@ -1203,12 +1216,14 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "CASTINGBAR"
 			} )
 		end
-		if MoveAny:IsEnabled( "TALKINGHEAD", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "TalkingHeadFrame",
-				["lstr"] = "TALKINGHEAD",
-				["secure"] = true
-			} )
+		if TalkingHeadFrame then
+			if MoveAny:IsEnabled( "TALKINGHEAD", true ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "TalkingHeadFrame",
+					["lstr"] = "TALKINGHEAD",
+					["secure"] = true
+				} )
+			end
 		end
 	end
 	
@@ -1229,12 +1244,14 @@ function MoveAny:Event( event, ... )
 
 
 	-- CENTER
-	MoveAny:RegisterWidget( {
-		["name"] = "UIWidgetPowerBarContainerFrame",
-		["lstr"] = "UIWIDGETPOWERBAR",
-		["sw"] = 36 * 6,
-		["sh"] = 36 * 1
-	} )
+	if UIWidgetPowerBarContainerFrame then
+		MoveAny:RegisterWidget( {
+			["name"] = "UIWidgetPowerBarContainerFrame",
+			["lstr"] = "UIWIDGETPOWERBAR",
+			["sw"] = 36 * 6,
+			["sh"] = 36 * 1
+		} )
+	end
 
 
 

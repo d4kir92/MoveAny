@@ -33,6 +33,8 @@ function MoveAny:InitMicroMenu()
 		if MBTNS then
 			mbc = #MBTNS
 		end
+		local opts = MoveAny:GetEleOptions( "MICROMENU" )
+		opts["ROWS"] = opts["ROWS"] or 1
 
 		MAMenuBar = CreateFrame( "Frame", "MAMenuBar", UIParent )
 		MAMenuBar:SetSize( (sw - 4) * mbc, sh - 4 )
@@ -56,7 +58,7 @@ function MoveAny:InitMicroMenu()
 					sh = sh - 24
 				end
 
-				local hb = CreateFrame( "FRAME" )
+				local hb = CreateFrame( "FRAME", mbname .. "_HB", MAMenuBar )
 				hb:SetParent( MAMenuBar )
 				hb:SetSize( sw, sh )
 				hb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0 )
@@ -88,7 +90,7 @@ function MoveAny:InitMicroMenu()
 				hooksecurefunc( mb, "SetParent", function( self, ... )
 					if self.masetparent then return end
 					self.masetparent = true
-					mb:SetParent( MAMenuBar )
+					mb:SetParent( hb )
 					self.masetparent = false
 				end )
 

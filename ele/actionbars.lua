@@ -50,7 +50,42 @@ function MAUpdateActionBar( frame )
 
 	local rows = opts["ROWS"] or 1
 	rows = tonumber( rows )
-	local cols = getn( frame.btns ) / rows
+
+	if frame == MAMenuBar then
+		if rows == 12 or rows == 6 or rows == 4 or rows == 3 then
+			if HelpMicroButton then
+				HelpMicroButton:GetParent():SetParent( MAMenuBar )
+			end
+			if MainMenuMicroButton then
+				MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+			end
+		elseif rows == 10 or rows == 2 then
+			if HelpMicroButton then
+				HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+			end
+			if MainMenuMicroButton then
+				MainMenuMicroButton:GetParent():SetParent( MAHIDDEN )
+			end
+		else
+			if HelpMicroButton then
+				HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+			end
+			if MainMenuMicroButton then
+				MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+			end
+		end
+	end
+
+	local maxbtns = 0
+	for i, abtn in pairs( frame.btns ) do
+		if abtn:GetParent() ~= MAHIDDEN then
+			maxbtns = maxbtns + 1
+		end
+	end
+	if maxbtns == 0 then
+		maxbtns = 1
+	end
+	local cols = maxbtns / rows
 
 	local spacing = opts["SPACING"]
 	spacing = tonumber( spacing )
@@ -59,8 +94,12 @@ function MAUpdateActionBar( frame )
 		local fSizeW, fSizeH = frame.btns[1]:GetSize()
 
 		frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
-		for id, abtn in pairs( frame.btns ) do
-			abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
+		local id = 1
+		for i, abtn in pairs( frame.btns ) do
+			if abtn:GetParent() ~= MAHIDDEN then
+				abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
+				id = id + 1
+			end
 		end
 	end
 end
