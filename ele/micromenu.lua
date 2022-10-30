@@ -70,8 +70,8 @@ function MoveAny:InitMicroMenu()
 				end
 
 				hooksecurefunc( mb, "SetPoint", function( self, ... )
-					if self.masetpoint then return end
-					self.masetpoint = true
+					if self.mmbsetpoint then return end
+					self.mmbsetpoint = true
 
 					mb:SetMovable( true )
 					if mb.SetUserPlaced then
@@ -85,7 +85,7 @@ function MoveAny:InitMicroMenu()
 					else
 						mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 					end
-					self.masetpoint = false
+					self.mmbsetpoint = false
 				end )
 				hooksecurefunc( mb, "SetParent", function( self, ... )
 					if self.masetparent then return end

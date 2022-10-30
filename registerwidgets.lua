@@ -521,8 +521,8 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	hooksecurefunc( frame, "SetPoint", function( self, ... )
-		if self.masetpoint_ele then return end
-		self.masetpoint_ele = true
+		if self.elesetpoint then return end
+		self.elesetpoint = true
 
 		self:SetMovable( true )
 		if userplaced and self.SetUserPlaced then
@@ -535,17 +535,17 @@ function MoveAny:RegisterWidget( tab, debug )
 			self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 		end
 
-		self.masetpoint_ele = false
+		self.elesetpoint = false
 	end )
 
 	hooksecurefunc( frame, "SetScale", function( self, scale )
-		if self.masetpoint_ele then return end
-		self.masetpoint_ele = true
+		if self.masetscale_ele then return end
+		self.masetscale_ele = true
 
 		local dragframe = _G[name .. "_DRAG"]
 		dragframe:SetScale( scale )
 
-		self.masetpoint_ele = false
+		self.masetscale_ele = false
 	end )
 
 	if MoveAny:GetEleScale( name ) ~= nil then
@@ -812,10 +812,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAFPSFrame"
 		} )
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "IASkills",
-		["lstr"] = "IASKILLS"
-	} )
+	if IASkills then
+		MoveAny:RegisterWidget( {
+			["name"] = "IASkills",
+			["lstr"] = "IASKILLS"
+		} )
+	end
 
 
 
@@ -823,7 +825,8 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "ZONETEXTFRAME", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "ZoneTextFrame",
-			["lstr"] = "ZONETEXTFRAME"
+			["lstr"] = "ZONETEXTFRAME",
+			["userplaced"] = true
 		} )
 	end
 	if MoveAny:IsEnabled( "UIWIDGETTOPCENTER", true ) then
@@ -831,7 +834,8 @@ function MoveAny:Event( event, ... )
 			["name"] = "UIWidgetTopCenterContainerFrame",
 			["lstr"] = "UIWIDGETTOPCENTER",
 			["sw"] = 36 * 5,
-			["sh"] = 36 * 2
+			["sh"] = 36 * 2,
+			["userplaced"] = true
 		} )
 	end
 	
@@ -843,7 +847,8 @@ function MoveAny:Event( event, ... )
 			["name"] = "UIWidgetBelowMinimapContainerFrame",
 			["lstr"] = "UIWIDGETBELOWMINIMAP",
 			["sw"] = 36 * 5,
-			["sh"] = 36 * 2
+			["sh"] = 36 * 2,
+			["userplaced"] = true
 		} )
 	end
 	if MABUILDNR < 100000 then
@@ -873,8 +878,8 @@ function MoveAny:Event( event, ... )
 			
 				if QuestWatchFrame then
 					hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
-						if self.masetpoint then return end
-						self.masetpoint = true
+						if self.qwfsetpoint then return end
+						self.qwfsetpoint = true
 
 						self:SetMovable( true )
 						if self.SetUserPlaced then
@@ -885,7 +890,7 @@ function MoveAny:Event( event, ... )
 
 						QuestWatchFrame:ClearAllPoints()
 						QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-						self.masetpoint = false
+						self.qwfsetpoint = false
 					end )
 					QuestWatchFrame:ClearAllPoints()
 					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
@@ -895,8 +900,8 @@ function MoveAny:Event( event, ... )
 
 				if WatchFrame then
 					hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
-						if self.masetpoint then return end
-						self.masetpoint = true
+						if self.wfsetpoint then return end
+						self.wfsetpoint = true
 
 						self:SetMovable( true )
 						if self.SetUserPlaced then
@@ -907,7 +912,7 @@ function MoveAny:Event( event, ... )
 
 						WatchFrame:ClearAllPoints()
 						WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-						self.masetpoint = false
+						self.wfsetpoint = false
 					end )
 					WatchFrame:ClearAllPoints()
 					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
@@ -920,7 +925,8 @@ function MoveAny:Event( event, ... )
 				MoveAny:RegisterWidget( {
 					["name"] = "ObjectiveTrackerFrame",
 					["lstr"] = "QUESTTRACKER",
-					["sh"] = 600
+					["sh"] = 600,
+					["userplaced"] = true
 				} )
 			end
 		end
@@ -1036,8 +1042,8 @@ function MoveAny:Event( event, ... )
 			MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
 		
 			hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
-				if self.masetpoint_gt then return end
-				self.masetpoint_gt = true
+				if self.gtsetpoint then return end
+				self.gtsetpoint = true
 	
 				self:SetMovable( true )
 				self:SetUserPlaced( false )
@@ -1051,7 +1057,7 @@ function MoveAny:Event( event, ... )
 					end
 				end
 	
-				self.masetpoint_gt = false
+				self.gtsetpoint = false
 			end )
 		end
 
@@ -1109,7 +1115,8 @@ function MoveAny:Event( event, ... )
 		ZoneAbilityFrame:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 200 )
 		MoveAny:RegisterWidget( {
 			["name"] = "ZoneAbilityFrame",
-			["lstr"] = "ZONEABILITYFRAME"
+			["lstr"] = "ZONEABILITYFRAME",
+			["userplaced"] = true
 		} )
 	end
 	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
@@ -1120,8 +1127,8 @@ function MoveAny:Event( event, ... )
 				local glf = _G["GroupLootFrame" .. i]
 				if glf then
 					hooksecurefunc( glf, "SetPoint", function( self, ... )
-						if self.masetpoint then return end
-						self.masetpoint = true
+						if self.glfsetpoint then return end
+						self.glfsetpoint = true
 				
 						self:SetMovable( true )
 						if self.SetUserPlaced then
@@ -1131,7 +1138,7 @@ function MoveAny:Event( event, ... )
 						self:ClearAllPoints()
 						self:SetPoint( "BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4 )
 						
-						self.masetpoint = false
+						self.glfsetpoint = false
 					end )
 				end
 			end
@@ -1147,18 +1154,18 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
+	if ExtraAbilityContainer then
+		ExtraAbilityContainer:SetSize( 180, 100 )
+		ExtraAbilityContainer:ClearAllPoints()
+		ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+	
+		MoveAny:RegisterWidget( {
+			["name"] = "ExtraAbilityContainer",
+			["lstr"] = "EXTRAABILITYCONTAINER",
+			["userplaced"] = true
+		} )
+	end
 	if MABUILDNR < 100000 then
-		if ExtraAbilityContainer then
-			ExtraAbilityContainer:SetSize( 180, 100 )
-			ExtraAbilityContainer:ClearAllPoints()
-			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-		
-			MoveAny:RegisterWidget( {
-				["name"] = "ExtraAbilityContainer",
-				["lstr"] = "EXTRAABILITYCONTAINER"
-			} )
-		end
-
 		if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
 			if MainMenuExpBar then
 				MainMenuExpBar:ClearAllPoints()
@@ -1194,7 +1201,8 @@ function MoveAny:Event( event, ... )
 		C_Timer.After( 4, function()
 			MoveAny:RegisterWidget( {
 				["name"] = "MultiCastActionBarFrame",
-				["lstr"] = "TOTEMBAR"
+				["lstr"] = "TOTEMBAR",
+				["userplaced"] = true
 			} )
 		end )
 	end

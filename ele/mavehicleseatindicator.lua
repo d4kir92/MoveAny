@@ -9,8 +9,8 @@ function MoveAny:InitMAVehicleSeatIndicator()
 		MAVehicleSeatIndicator:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -300, -300 )
 
 		hooksecurefunc( MAVehicleSeatIndicator, "SetPoint", function( self, ... )
-			if self.masetpoint_maseat then return end
-			self.masetpoint_maseat = true
+			if self.mavsisetpoint then return end
+			self.mavsisetpoint = true
 
 			self:SetMovable( true )
 			if self.SetUserPlaced then
@@ -19,12 +19,12 @@ function MoveAny:InitMAVehicleSeatIndicator()
 
 			VehicleSeatIndicator:ClearAllPoints()
 			VehicleSeatIndicator:SetPoint( "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0 )
-			self.masetpoint_maseat = false
+			self.mavsisetpoint = false
 		end )
 
 		hooksecurefunc( VehicleSeatIndicator, "SetPoint", function( self, ... )
-			if self.masetpoint_seat then return end
-			self.masetpoint_seat = true
+			if self.vsisetpoint then return end
+			self.vsisetpoint = true
 
 			self:SetMovable( true )
 			if self.SetUserPlaced then
@@ -33,7 +33,7 @@ function MoveAny:InitMAVehicleSeatIndicator()
 
 			self:ClearAllPoints()
 			self:SetPoint( "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0 )
-			self.masetpoint_seat = false
+			self.vsisetpoint = false
 		end )
 		VehicleSeatIndicator:ClearAllPoints()
 		VehicleSeatIndicator:SetPoint( "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0 )

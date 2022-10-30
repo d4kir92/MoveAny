@@ -18,8 +18,8 @@ function MoveAny:InitBuffBar()
 		end
 
 		hooksecurefunc( BuffFrame, "SetPoint", function( self, ... )
-			if self.masetpoint_buff then return end
-			self.masetpoint_buff = true
+			if self.buffsetpoint then return end
+			self.buffsetpoint = true
 
 			self:SetMovable( true )
 			if self.SetUserPlaced then
@@ -30,7 +30,7 @@ function MoveAny:InitBuffBar()
 			self:ClearAllPoints()
 			self:SetPoint( "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0 )
 			
-			self.masetpoint_buff = false
+			self.buffsetpoint = false
 		end )
 		BuffFrame:ClearAllPoints()
 		BuffFrame:SetPoint( "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0 )

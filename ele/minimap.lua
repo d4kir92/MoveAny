@@ -60,13 +60,13 @@ function MoveAny:InitMinimap()
 			end )
 
 			hooksecurefunc( MiniMapTracking, "SetPoint", function( self, ... )
-				if self.setpoint then return end
-				self.setpoint = true
+				if self.mmtsetpoint then return end
+				self.mmtsetpoint = true
 
 				self:ClearAllPoints()
 				self:SetPoint( "CENTER", MiniMapTrackingButton, "CENTER", 0, 0 )
 
-				self.setpoint = false
+				self.mmtsetpoint = false
 			end )
 			MiniMapTracking:ClearAllPoints()
 			MiniMapTracking:SetPoint( "CENTER", MiniMapTrackingButton, "CENTER", 0, 0 )

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.15" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.16" )
 }
 
 local PREFIX = "MOAN"
@@ -283,6 +283,47 @@ function MoveAny:InitMALock()
 	MAGridFrame.ver:SetPoint( "CENTER", 0.5, 0 )
 	MAGridFrame.ver:SetSize( 1, GetScreenHeight() )
 	MAGridFrame.ver:SetColorTexture( 1, 1, 1, 1 )
+
+	for x = 0, GetScreenWidth() / 2, 10 do
+		local line = MAGridFrame:CreateTexture()
+		line:SetPoint( "CENTER", 0.5 + x, 0 )
+		line:SetSize( 1.09, GetScreenHeight() )
+		if x % 50 == 0 then
+			line:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+		end
+	end
+	for x = 0, -GetScreenWidth() / 2, -10 do
+		local line = MAGridFrame:CreateTexture()
+		line:SetPoint( "CENTER", 0.5 + x, 0 )
+		line:SetSize( 1.09, GetScreenHeight() )
+		if x % 50 == 0 then
+			line:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+		end
+	end
+	for y = 0, GetScreenHeight() / 2, 10 do
+		local line = MAGridFrame:CreateTexture()
+		line:SetPoint( "CENTER", 0, 0.5 + y )
+		line:SetSize( GetScreenWidth(), 1.09, GetScreenHeight() )
+		if y % 50 == 0 then
+			line:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+		end
+	end
+	for y = 0, -GetScreenHeight() / 2, -10 do
+		local line = MAGridFrame:CreateTexture()
+		line:SetPoint( "CENTER", 0, 0.5 + y )
+		line:SetSize( GetScreenWidth(), 1.09 )
+		if y % 50 == 0 then
+			line:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+		end
+	end
 
 	local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( "MALock" )
 	if dbp1 and dbp3 then

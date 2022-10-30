@@ -142,8 +142,8 @@ function MoveAny:MoveFrames()
 				end)
 
 				hooksecurefunc(frame, "SetPoint", function( self, ... )
-					if self.masetpoint_frame then return end
-					self.masetpoint_frame = true
+					if self.framesetpoint then return end
+					self.framesetpoint = true
 					
 					self:SetMovable( true )
 					if self.SetUserPlaced then
@@ -157,7 +157,7 @@ function MoveAny:MoveFrames()
 							self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 						end
 					end
-					self.masetpoint_frame = false
+					self.framesetpoint = false
 				end )
 
 				if not dontscale then

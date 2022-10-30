@@ -21,8 +21,8 @@ function MoveAny:InitDebuffBar()
 					
 					if i == 1 then
 						hooksecurefunc( debuffBtn, "SetPoint", function( self, ... )
-							if self.masetpoint_buff then return end
-							self.masetpoint_buff = true
+							if self.debuffsetpoint then return end
+							self.debuffsetpoint = true
 		
 							self:SetMovable( true )
 							if self.SetUserPlaced then
@@ -33,15 +33,15 @@ function MoveAny:InitDebuffBar()
 							self:ClearAllPoints()
 							self:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
 							
-							self.masetpoint_buff = false
+							self.debuffsetpoint = false
 						end )
 						debuffBtn:ClearAllPoints()
 						debuffBtn:SetPoint( "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0 )
 					else
 						local op1, op2, op3, op4, op5 = debuffBtn:GetPoint()
 						hooksecurefunc( debuffBtn, "SetPoint", function( self, ... )
-							if self.masetpoint_buff then return end
-							self.masetpoint_buff = true
+							if self.debuffsetpoint then return end
+							self.debuffsetpoint = true
 
 							p1, p2, p3, p4, p5 = ...
 
@@ -54,7 +54,7 @@ function MoveAny:InitDebuffBar()
 							self:ClearAllPoints()
 							self:SetPoint( p1, p2, p3, p4, p5 )
 							
-							self.masetpoint_buff = false
+							self.debuffsetpoint = false
 						end )
 						debuffBtn:ClearAllPoints()
 						debuffBtn:SetPoint( op1, op2, op3, op4, op5 )
