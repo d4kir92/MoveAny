@@ -389,6 +389,10 @@ tinsert( MAFRAMES, {
 	1
 } )
 tinsert( MAFRAMES, {
+	"AuctionFrame",
+	1
+} )
+tinsert( MAFRAMES, {
 	"AnimaDiversionFrame",
 	1
 } )

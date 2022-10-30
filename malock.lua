@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.17" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.18" )
 }
 
 local PREFIX = "MOAN"
@@ -291,7 +291,7 @@ function MoveAny:InitMALock()
 		if x % 50 == 0 then
 			line:SetColorTexture( 1, 1, 0.5, 0.25 )
 		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
 		end
 	end
 	for x = 0, -GetScreenWidth() / 2, -10 do
@@ -301,7 +301,7 @@ function MoveAny:InitMALock()
 		if x % 50 == 0 then
 			line:SetColorTexture( 1, 1, 0.5, 0.25 )
 		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
 		end
 	end
 	for y = 0, GetScreenHeight() / 2, 10 do
@@ -311,7 +311,7 @@ function MoveAny:InitMALock()
 		if y % 50 == 0 then
 			line:SetColorTexture( 1, 1, 0.5, 0.25 )
 		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
 		end
 	end
 	for y = 0, -GetScreenHeight() / 2, -10 do
@@ -321,7 +321,7 @@ function MoveAny:InitMALock()
 		if y % 50 == 0 then
 			line:SetColorTexture( 1, 1, 0.5, 0.25 )
 		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.10 )
+			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
 		end
 	end
 
