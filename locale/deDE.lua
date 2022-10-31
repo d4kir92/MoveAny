@@ -30,6 +30,7 @@ function MALang_deDE()
 		["MINIMAP"] = "Minimap",
 		["BUFFS"] = "Stärkungszauber",
 		["DEBUFFS"] = "Schwächungszauber",
+		["VEHICLESEATINDICATOR"] = "Fahrzeugsitzanzeige",
 
 		["RIGHT"] = "Rechts",
 		["QUESTTRACKER"] = "Questverfolgung",

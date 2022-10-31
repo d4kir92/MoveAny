@@ -38,6 +38,7 @@ function MALang_enUS()
 		["MINIMAP"] = "Mini Map",
 		["BUFFS"] = "Buffs",
 		["DEBUFFS"] = "Debuffs",
+		["VEHICLESEATINDICATOR"] = "Vehicle Seat Indicator",
 
 		["RIGHT"] = "Right",
 		["QUESTTRACKER"] = "Questtracker",

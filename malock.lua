@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.20" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.21" )
 }
 
 local PREFIX = "MOAN"
@@ -154,6 +154,7 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "BUFFS" )
 			AddCheckBox( 24, "DEBUFFS" )
 		end
+		AddCheckBox( 4, "VEHICLESEATINDICATOR" )
 
 		AddCategory( "RIGHT" )
 		if MABUILDNR < 100000 then

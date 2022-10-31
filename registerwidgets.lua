@@ -943,7 +943,7 @@ function MoveAny:Event( event, ... )
 	end
 	MoveAny:RegisterWidget( {
 		["name"] = "MAVehicleSeatIndicator",
-		["lstr"] = "LEAVEVEHICLE"
+		["lstr"] = "VEHICLESEATINDICATOR"
 	} )
 	MoveAny:RegisterWidget( {
 		["name"] = "DurabilityFrame",
