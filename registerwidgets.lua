@@ -1244,13 +1244,28 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOMLEFT
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "CHAT", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "ChatFrame1",
-				["lstr"] = "CHAT"
-			} )
+	if MoveAny:IsEnabled( "CHAT", true ) then
+		if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
+			ChatFrame1:SetClampRectInsets(0, 25, 25, 0)
+		else
+			ChatFrame1:SetClampRectInsets(-35, 25, 25, 0)
 		end
+		MoveAny:RegisterWidget( {
+			["name"] = "ChatFrame1",
+			["lstr"] = "CHAT"
+		} )
+	end
+	if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "ChatFrame1ButtonFrame",
+			["lstr"] = "CHATBUTTONFRAME"
+		} )
+	end
+	if MoveAny:IsEnabled( "CHATQUICKJOIN", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "QuickJoinToastButton",
+			["lstr"] = "CHATQUICKJOIN"
+		} )
 	end
 	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
 		MoveAny:RegisterWidget( {

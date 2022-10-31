@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.19" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.20" )
 }
 
 local PREFIX = "MOAN"
@@ -206,10 +206,10 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "ZONEABILITYFRAME" )
 
 		AddCategory( "BOTTOMLEFT" )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "CHAT" )
-		end
-		AddCheckBox( 24, "CHATEDITBOX", false )
+		AddCheckBox( 4, "CHAT", true )
+		AddCheckBox( 4, "CHATBUTTONFRAME", false )
+		AddCheckBox( 4, "CHATQUICKJOIN", false )
+		AddCheckBox( 4, "CHATEDITBOX", false )
 
 		AddCategory( "LEFT" )
 		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER" )
