@@ -343,10 +343,6 @@ tinsert( MAFRAMES, {
 	1
 } )
 tinsert( MAFRAMES, {
-	"CommunitiesFrame",
-	1
-} )
-tinsert( MAFRAMES, {
 	"PVEFrame",
 	1
 } )
@@ -356,6 +352,10 @@ tinsert( MAFRAMES, {
 } )
 --[[tinsert( MAFRAMES, {
 	"CollectionsJournal",
+	1
+} )]]
+--[[tinsert( MAFRAMES, {
+	"CommunitiesFrame",
 	1
 } )]]
 tinsert( MAFRAMES, {

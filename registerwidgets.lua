@@ -617,17 +617,16 @@ function MoveAny:CheckAlphas()
 
 	local ele = GetMouseFocus()
 	if ele then
-		local parent = ele:GetParent()
 		if tContains( MAEleFrames, ele ) then
 			ele:SetAlpha(1)
 			MoveAny:SetMouseEleAlpha( ele )
-		elseif parent then
-			if tContains( MAEleFrames, parent ) then
-				parent:SetAlpha(1)
-				MoveAny:SetMouseEleAlpha( parent )
-			elseif parent:GetParent() and tContains( MAEleFrames, parent:GetParent() ) then
-				parent:GetParent():SetAlpha(1)
-				MoveAny:SetMouseEleAlpha( parent:GetParent() )
+		elseif ele.GetParent and ele:GetParent() then
+			if tContains( MAEleFrames, ele:GetParent() ) then
+				ele:GetParent():SetAlpha(1)
+				MoveAny:SetMouseEleAlpha( ele:GetParent() )
+			elseif ele:GetParent().GetParent and ele:GetParent():GetParent() and tContains( MAEleFrames, ele:GetParent():GetParent() ) then
+				ele:GetParent():GetParent():SetAlpha(1)
+				MoveAny:SetMouseEleAlpha( ele:GetParent():GetParent() )
 			end
 		elseif lastEle then
 			lastEle = nil
