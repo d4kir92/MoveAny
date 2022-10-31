@@ -67,7 +67,7 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	btn:SetPoint( "TOPLEFT", parent, "TOPLEFT", ofsx, ofsy )
 	btn:SetScript( "OnClick", function()
 		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
-		MoveAny:SetElePoint( name, p1, p2, p3, p4 + x, p5 + y )
+		MoveAny:SetElePoint( name, p1, UIParent, p3, p4 + x, p5 + y )
 
 		p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
 		parent.pos:SetText( format( "Position X: %d Y:%d", p4, p5 ) )
@@ -428,21 +428,21 @@ function MoveAny:RegisterWidget( tab, debug )
 				p4 = MAGrid( p4 )
 				p5 = MAGrid( p5 )
 
-				MoveAny:SetElePoint( name, p1, _, p3, p4, p5 )
+				MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
 
 				dragframe:SetMovable(true)
 
 				dragframe:ClearAllPoints()
-				local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 				dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
 				if frame then
-					frame:ClearAllPoints()
-					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-
 					local sw, sh = dragframe:GetSize()
 					if not InCombatLockdown() then
 						frame:SetSize( sw, sh )
 					end
+
+					local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+					frame:ClearAllPoints()
+					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				end
 			end
 		end)
@@ -521,21 +521,22 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	hooksecurefunc( frame, "SetPoint", function( self, ... )
-		if self.elesetpoint then return end
-		self.elesetpoint = true
-
+		if self.elesetpoint then
+			return
+		end
+		
 		self:SetMovable( true )
 		if userplaced and self.SetUserPlaced then
 			self:SetUserPlaced( true )
 		end
 
 		if not self.secure then
-			self:ClearAllPoints()
+			self.elesetpoint = true
 			local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+			self:ClearAllPoints()
 			self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			self.elesetpoint = false
 		end
-
-		self.elesetpoint = false
 	end )
 
 	hooksecurefunc( frame, "SetScale", function( self, scale )
@@ -782,9 +783,10 @@ function MoveAny:Event( event, ... )
 			if self.SetUserPlaced then
 				self:SetUserPlaced( false )
 			end
-
-			self:ClearAllPoints()
-			self:SetPoint( "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0 )
+			if not InCombatLockdown() then
+				self:ClearAllPoints()
+				self:SetPoint( "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0 )
+			end
 			self.crfmsetpoint = false
 		end )
 		CompactRaidFrameManager:SetPoint( "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0 )
@@ -843,6 +845,7 @@ function MoveAny:Event( event, ... )
 
 	-- TOPRIGHT
 	if MoveAny:IsEnabled( "UIWIDGETBELOWMINIMAP", true ) then
+		UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetBelowMinimapContainerFrame",
 			["lstr"] = "UIWIDGETBELOWMINIMAP",
@@ -1109,6 +1112,7 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 	end
+
 	if ZoneAbilityFrame then
 		ZoneAbilityFrame:SetParent( UIParent )
 		ZoneAbilityFrame:ClearAllPoints()
@@ -1154,16 +1158,18 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
-	if ExtraAbilityContainer then
-		ExtraAbilityContainer:SetSize( 180, 100 )
-		ExtraAbilityContainer:ClearAllPoints()
-		ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-	
-		MoveAny:RegisterWidget( {
-			["name"] = "ExtraAbilityContainer",
-			["lstr"] = "EXTRAABILITYCONTAINER",
-			["userplaced"] = true
-		} )
+	if MABUILDNR < 100000 then
+		if ExtraAbilityContainer then
+			ExtraAbilityContainer:SetSize( 180, 100 )
+			ExtraAbilityContainer:ClearAllPoints()
+			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+		
+			MoveAny:RegisterWidget( {
+				["name"] = "ExtraAbilityContainer",
+				["lstr"] = "EXTRAABILITYCONTAINER",
+				["userplaced"] = true
+			} )
+		end
 	end
 	if MABUILDNR < 100000 then
 		if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
@@ -1238,10 +1244,18 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOMLEFT
-	if MoveAny:IsEnabled( "CHAT", true ) then
+	if MABUILDNR < 100000 then
+		if MoveAny:IsEnabled( "CHAT", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "ChatFrame1",
+				["lstr"] = "CHAT"
+			} )
+		end
+	end
+	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "ChatFrame1",
-			["lstr"] = "CHAT"
+			["name"] = "ChatFrame1EditBox",
+			["lstr"] = "CHATEDITBOX"
 		} )
 	end
 
