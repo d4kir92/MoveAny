@@ -64,8 +64,8 @@ function MALang_enUS()
 		["STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
 
 		["BOTTOMLEFT"] = "Bottom Left",
-		["CHAT"] = "Chatframe",
-		["CHATBUTTONFRAME"] = "Chat Buttons",
+		["CHAT"] = "Chatframe %d",
+		["CHATBUTTONFRAME"] = "Chat Buttons %d",
 		["CHATQUICKJOIN"] = "Chat Quick Join",
 		["CHATEDITBOX"] = "Chat Inputbox",
 

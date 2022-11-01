@@ -33,7 +33,7 @@ function MALang_frFR()
 		["GROUPLOOTCONTAINER"] = "Cadre de rouleau de butin",
 
 		["BOTTOMLEFT"] = "En bas à gauche",
-		["CHAT"] = "Cadre de chat",
+		["CHAT"] = "Cadre de chat %d",
 
 		["LEFT"] = "Left",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",

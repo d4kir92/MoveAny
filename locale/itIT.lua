@@ -33,7 +33,7 @@ function MALang_itIT()
 		["GROUPLOOTCONTAINER"] = "Cornice del rotolo di bottino",
 
 		["BOTTOMLEFT"] = "In basso a sinistra",
-		["CHAT"] = "Chatframe",
+		["CHAT"] = "Chatframe %d",
 
 		["LEFT"] = "Sinistra",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",

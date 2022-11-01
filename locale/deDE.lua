@@ -56,8 +56,8 @@ function MALang_deDE()
 		["STATUSTRACKINGBARMANAGER"] = "Statusverfolgungsleiste Manager (EP, Ruf)",
 
 		["BOTTOMLEFT"] = "Unten Links",
-		["CHAT"] = "Chatfenster",
-		["CHATBUTTONFRAME"] = "Chat Knöpfe",
+		["CHAT"] = "Chatfenster %d",
+		["CHATBUTTONFRAME"] = "Chat Knöpfe %d",
 		["CHATQUICKJOIN"] = "Chat Schnellbeitritt",
 		["CHATEDITBOX"] = "Chat Eingabefeld",
 

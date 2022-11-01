@@ -33,7 +33,7 @@ function MALang_ptBR()
 		["GROUPLOOTCONTAINER"] = "Loot Roll frame",
 
 		["BOTTOMLEFT"] = "Bottom Left",
-		["CHAT"] = "Chatframe",
+		["CHAT"] = "Chatframe %d",
 
 		["ESQUERDA"] = "Esquerda",
 		["COMPACTRAIDFRAMEMANAGER"] = "Gerente de Raid",

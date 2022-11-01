@@ -33,7 +33,7 @@ function MALang_zhCN()
 		["GROUPLOOTCONTAINER"] = "战利品滚动框架",
 
 		["BOTTOMLEFT"] = "左下角", 
-		["CHAT"] = "聊天框", 
+		["CHAT"] = "聊天框 %d",
 
 		["LEFT"] = "左", 
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",

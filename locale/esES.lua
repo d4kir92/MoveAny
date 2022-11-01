@@ -33,7 +33,7 @@ function MALang_esES()
 		["GROUPLOOTCONTAINER"] = "Marco del rollo de botín",
 
 		["BOTTOMLEFT"] = "Parte inferior izquierda",
-		["CHAT"] = "Marco del chat",
+		["CHAT"] = "Marco del chat %d",
 
 		["LEFT"] = "Izquierda",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",

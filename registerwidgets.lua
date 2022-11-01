@@ -318,6 +318,12 @@ end
 function MoveAny:RegisterWidget( tab, debug )
 	local name = tab.name
 	local lstr = tab.lstr
+	local lstri = tab.lstri
+	if lstri then
+		lstr = format( MAGT( lstr ), lstri )
+	else
+		lstr = MAGT( lstr )
+	end
 	local sw = tab.sw
 	local sh = tab.sh
 	local secure = tab.secure
@@ -371,7 +377,7 @@ function MoveAny:RegisterWidget( tab, debug )
 			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
 			local font, fontSize, fontFlags = dragframe.name:GetFont()
 			dragframe.name:SetFont( font, 15, fontFlags )
-			dragframe.name:SetText( MAGT( lstr ) )
+			dragframe.name:SetText( lstr )
 			dragframe.name:Hide()
 
 			dragframe:SetScript( "OnEnter", function()
@@ -813,7 +819,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAFPSFrame"
 		} )
 	end
-	if IASkills then
+	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IASkills",
 			["lstr"] = "IASKILLS"
@@ -940,14 +946,18 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "MAVehicleSeatIndicator",
-		["lstr"] = "VEHICLESEATINDICATOR"
-	} )
-	MoveAny:RegisterWidget( {
-		["name"] = "DurabilityFrame",
-		["lstr"] = "DURABILITY"
-	} )
+	if MoveAny:IsEnabled( "VEHICLESEATINDICATOR", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MAVehicleSeatIndicator",
+			["lstr"] = "VEHICLESEATINDICATOR"
+		} )
+	end
+	if MoveAny:IsEnabled( "DURABILITY", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "DurabilityFrame",
+			["lstr"] = "DURABILITY"
+		} )
+	end
 
 
 
@@ -968,14 +978,18 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "BAGS"
 		} )
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "IAMoneyBar",
-		["lstr"] = "MONEYBAR"
-	} )
-	MoveAny:RegisterWidget( {
-		["name"] = "IATokenBar",
-		["lstr"] = "TOKENBAR"
-	} )
+	if IAMoneyBar and MoveAny:IsEnabled( "MONEYBAR", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "IAMoneyBar",
+			["lstr"] = "MONEYBAR"
+		} )
+	end
+	if IATokenBar and MoveAny:IsEnabled( "TOKENBAR", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "IATokenBar",
+			["lstr"] = "TOKENBAR"
+		} )
+	end
 	
 	local gtp4 = nil
 	local gtp5 = nil
@@ -1112,7 +1126,7 @@ function MoveAny:Event( event, ... )
 		end
 	end
 
-	if ZoneAbilityFrame then
+	if ZoneAbilityFrame and MoveAny:IsEnabled( "ZONEABILITYFRAME", true ) then
 		ZoneAbilityFrame:SetParent( UIParent )
 		ZoneAbilityFrame:ClearAllPoints()
 		ZoneAbilityFrame:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 200 )
@@ -1243,24 +1257,44 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOMLEFT
-	if MoveAny:IsEnabled( "CHAT", true ) then
-		if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
-			ChatFrame1:SetClampRectInsets(0, 25, 25, 0)
-		else
-			ChatFrame1:SetClampRectInsets(-35, 25, 25, 0)
+	for i = 1, 4 do
+		if MoveAny:IsEnabled( "CHAT" .. i, false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "ChatFrame" .. i,
+				["lstr"] = "CHAT",
+				["lstri"] = i
+			} )
 		end
-		MoveAny:RegisterWidget( {
-			["name"] = "ChatFrame1",
-			["lstr"] = "CHAT"
-		} )
+
+		if MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+			hooksecurefunc( _G["ChatFrame" .. i], "SetClampRectInsets", function( self )
+				if self.setclamprectinsets_ma then return end
+				self.setclamprectinsets_ma = true
+				_G["ChatFrame" .. i]:SetClampRectInsets(0, 25, 25, 0)
+				self.setclamprectinsets_ma = false
+			end )
+			_G["ChatFrame" .. i]:SetClampRectInsets(0, 25, 25, 0)
+		else
+			hooksecurefunc( _G["ChatFrame" .. i], "SetClampRectInsets", function( self )
+				if self.setclamprectinsets_ma then return end
+				self.setclamprectinsets_ma = true
+				_G["ChatFrame" .. i]:SetClampRectInsets(-35, 25, 25, 0)
+				self.setclamprectinsets_ma = false
+			end )
+			_G["ChatFrame" .. i]:SetClampRectInsets(-35, 25, 25, 0)
+		end
+
+
+
+		if MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "ChatFrame" .. i .. "ButtonFrame",
+				["lstr"] = "CHATBUTTONFRAME",
+				["lstri"] = i
+			} )
+		end
 	end
-	if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "ChatFrame1ButtonFrame",
-			["lstr"] = "CHATBUTTONFRAME"
-		} )
-	end
-	if MoveAny:IsEnabled( "CHATQUICKJOIN", false ) then
+	if QuickJoinToastButton and MoveAny:IsEnabled( "CHATQUICKJOIN", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "QuickJoinToastButton",
 			["lstr"] = "CHATQUICKJOIN"
@@ -1280,7 +1314,7 @@ function MoveAny:Event( event, ... )
 
 
 	-- CENTER
-	if UIWidgetPowerBarContainerFrame then
+	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled( "UIWIDGETPOWERBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetPowerBarContainerFrame",
 			["lstr"] = "UIWIDGETPOWERBAR",

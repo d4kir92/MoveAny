@@ -33,7 +33,7 @@ function MALang_ruRU()
 		["GROUPLOOTCONTAINER"] = "Рамка для лута",
 
 		["BOTTOMLEFT"] = "Нижний левый",
-		["CHAT"] = "Рамка чата",
+		["CHAT"] = "Рамка чата %d",
 
 		["LEFT"] = "Слева",
 		["COMPACTRAIDFRAMEMANAGER"] = "Менеджер рейдов",

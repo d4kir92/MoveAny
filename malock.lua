@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.23" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.24" )
 }
 
 local PREFIX = "MOAN"
@@ -46,9 +46,16 @@ local function AddCategory( key )
 	end
 end
 
-local function AddCheckBox( x, key, val, func )
+local function AddCheckBox( x, key, val, func, id )
 	if val == nil then
 		val = true
+	end
+	local lstr = MAGT( key )
+	if id then
+		lstr = format( lstr, id )
+	end
+	if id then
+		key = key .. id
 	end
 	if cbs[key] == nil then
 		cbs[key] = CreateFrame( "CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate" )
@@ -69,7 +76,7 @@ local function AddCheckBox( x, key, val, func )
 
 		cb.f = cb:CreateFontString( nil, nil, "GameFontNormal" )
 		cb.f:SetPoint( "LEFT", cb, "RIGHT", 0, 0 )
-		cb.f:SetText( MAGT( key ) )
+		cb.f:SetText( lstr )
 	end
 
 	cbs[key]:ClearAllPoints()
@@ -136,6 +143,9 @@ function MoveAny:InitMALock()
 		end
 		AddCheckBox( 24, "TARGETOFFOCUSFRAME", false )
 		AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
+		if IASkills then
+			AddCheckBox( 4, "IASKILLS", true )
+		end
 		if class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME", false )
 		end
@@ -155,6 +165,7 @@ function MoveAny:InitMALock()
 			AddCheckBox( 24, "DEBUFFS" )
 		end
 		AddCheckBox( 4, "VEHICLESEATINDICATOR" )
+		AddCheckBox( 4, "DURABILITY" )
 
 		AddCategory( "RIGHT" )
 		if MABUILDNR < 100000 then
@@ -170,6 +181,12 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "QUEUESTATUSBUTTON" )
 		end
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR" )
+		if IAMoneyBar then
+			AddCheckBox( 4, "MONEYBAR" )
+		end
+		if IATokenBar then
+			AddCheckBox( 4, "TOKENBAR" )
+		end
 
 
 		AddCategory( "BOTTOM" )
@@ -205,11 +222,20 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "EXTRAABILITYCONTAINER" )
 		end
 		AddCheckBox( 4, "ZONEABILITYFRAME" )
+		AddCheckBox( 4, "UIWIDGETPOWERBAR" )
 
 		AddCategory( "BOTTOMLEFT" )
-		AddCheckBox( 4, "CHAT", true )
-		AddCheckBox( 4, "CHATBUTTONFRAME", false )
-		AddCheckBox( 4, "CHATQUICKJOIN", false )
+		AddCheckBox( 4, "CHAT", true, nil, 1 )
+		AddCheckBox( 4, "CHAT", false, nil, 2 )
+		AddCheckBox( 4, "CHAT", false, nil, 3 )
+		AddCheckBox( 4, "CHAT", false, nil, 4 )
+		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 1 )
+		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 2 )
+		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 3 )
+		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 4 )
+		if QuickJoinToastButton then
+			AddCheckBox( 4, "CHATQUICKJOIN", false )
+		end
 		AddCheckBox( 4, "CHATEDITBOX", false )
 
 		AddCategory( "LEFT" )
