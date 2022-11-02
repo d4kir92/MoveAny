@@ -12,9 +12,9 @@ function MoveAny:InitBuffBar()
 			MABuffBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 		end
 		if MoveAny:IsEnabled( "DEBUFFS", false ) == true then
-			MABuffBar:SetSize( btnsize * 8, btnsize * 3 )
+			MABuffBar:SetSize( btnsize * 10, btnsize * 3 )
 		else
-			MABuffBar:SetSize( btnsize * 8, btnsize * 6 )	
+			MABuffBar:SetSize( btnsize * 10, btnsize * 6 )	
 		end
 
 		hooksecurefunc( BuffFrame, "SetPoint", function( self, ... )
@@ -170,7 +170,7 @@ function MoveAny:InitBuffBar()
 
 							local count = GetEnchantCount()
 							local id = i + count
-							local caly = (id - 0.1) / 8 
+							local caly = (id - 0.1) / 10
 							local cy = caly - caly % 1
 
 							self:ClearAllPoints()
@@ -181,7 +181,7 @@ function MoveAny:InitBuffBar()
 									self:SetPoint( p1, MABuffBar, p3, count * (sw + 4), 0 )
 								end
 							else
-								if id % 8 == 1 then
+								if id % 10 == 1 then
 									if dirV == "BOTTOM" then
 										self:SetPoint( p1, MABuffBar, p3, 0, -cy * (sh + 10) )
 									else

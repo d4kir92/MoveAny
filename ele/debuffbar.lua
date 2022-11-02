@@ -10,7 +10,7 @@ function MoveAny:InitDebuffBar()
 		
 		MADebuffBar:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -165, -132 )
 
-		MADebuffBar:SetSize( btnsize * 8, btnsize * 3 )
+		MADebuffBar:SetSize( btnsize * 10, btnsize * 3 )
 
 		function IALoadDebuff()
 			for i = 1, 32 do
@@ -121,7 +121,7 @@ function MoveAny:InitDebuffBar()
 							local sw, sh = self:GetSize()
 
 							local id = i
-							local caly = (id - 0.1) / 8 
+							local caly = (id - 0.1) / 10 
 							local cy = caly - caly % 1
 
 							self:ClearAllPoints()
@@ -132,7 +132,7 @@ function MoveAny:InitDebuffBar()
 									self:SetPoint( p1, MADebuffBar, p3, 0, 0 )
 								end
 							else
-								if id % 8 == 1 then
+								if id % 10 == 1 then
 									if dirV == "BOTTOM" then
 										self:SetPoint( p1, MADebuffBar, p3, 0, -cy * (sh + 10) )
 									else
