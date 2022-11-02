@@ -1256,7 +1256,7 @@ function MoveAny:Event( event, ... )
 			end
 		end
 	end
-	if MoveAny:IsEnabled( "ALERTFRAME", true ) then
+	if AlertFrame and MoveAny:IsEnabled( "ALERTFRAME", true ) then
 		local afsw, afsh = 276, 68
 		MoveAny:RegisterWidget( {
 			["name"] = "AlertFrame",

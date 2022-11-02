@@ -145,6 +145,25 @@ function MoveAny:CustomBars()
 		StanceBarRight:Hide()
 	end
 
+	if SlidingActionBarTexture0 then
+		hooksecurefunc( SlidingActionBarTexture0, "Show", function( self )
+			if self.mahide then return end
+			self.mahide = true
+			self:Hide()
+			self.mahide = false
+		end )
+		SlidingActionBarTexture0:Hide()
+	end
+	if SlidingActionBarTexture1 then
+		hooksecurefunc( SlidingActionBarTexture1, "Show", function( self )
+			if self.mahide then return end
+			self.mahide = true
+			self:Hide()
+			self.mahide = false
+		end )
+		SlidingActionBarTexture1:Hide()
+	end
+
 	local id = 1
 	for i = 7, MAMaxAB do
 		for x = 1, 12 do
