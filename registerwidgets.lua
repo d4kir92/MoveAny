@@ -955,6 +955,11 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 	if MoveAny:IsEnabled( "DURABILITY", true ) then
+		if DurabilityFrame.SetAlerts ~= nil then
+			DurabilityFrame:SetAlerts()
+		elseif DurabilityFrame_SetAlerts ~= nil then
+			DurabilityFrame_SetAlerts()
+		end
 		MoveAny:RegisterWidget( {
 			["name"] = "DurabilityFrame",
 			["lstr"] = "DURABILITY",
