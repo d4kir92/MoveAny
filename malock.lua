@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.24" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.25" )
 }
 
 local PREFIX = "MOAN"
@@ -124,11 +124,15 @@ function MoveAny:InitMALock()
 		local sh = 24
 		posy = -4
 
+
+
 		AddCategory( "GENERAL" )
 		AddCheckBox( 4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton )
 		AddCheckBox( 4, "FRAMESSHIFTDRAG", false )
 		AddCheckBox( 4, "FRAMESSHIFTSCALE", false )
 		AddCheckBox( 4, "FRAMESSHIFTRESET", true )
+
+
 
 		AddCategory( "TOPLEFT" )
 		if MABUILDNR < 100000 then
@@ -143,7 +147,7 @@ function MoveAny:InitMALock()
 		end
 		AddCheckBox( 24, "TARGETOFFOCUSFRAME", false )
 		AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
-		if IASkills then
+		if IASkills and MABUILD ~= "RETAIL" then
 			AddCheckBox( 4, "IASKILLS", true )
 		end
 		if class == "DEATHKNIGHT" then
@@ -153,10 +157,14 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "TOTEMFRAME", false )
 		end
 
+
+
 		AddCategory( "TOP" )
 		AddCheckBox( 4, "ZONETEXTFRAME" )
 		AddCheckBox( 4, "UIWIDGETTOPCENTER" )
 		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP" )
+
+
 
 		AddCategory( "TOPRIGHT" )
 		if MABUILDNR < 100000 then
@@ -167,10 +175,14 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "VEHICLESEATINDICATOR" )
 		AddCheckBox( 4, "DURABILITY" )
 
+
+
 		AddCategory( "RIGHT" )
 		if MABUILDNR < 100000 then
 			AddCheckBox( 4, "QUESTTRACKER" )
 		end
+
+
 
 		AddCategory( "BOTTOMRIGHT" )
 		AddCheckBox( 4, "MICROMENU" )
@@ -187,6 +199,7 @@ function MoveAny:InitMALock()
 		if IATokenBar then
 			AddCheckBox( 4, "TOKENBAR" )
 		end
+
 
 
 		AddCategory( "BOTTOM" )
@@ -224,19 +237,31 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "ZONEABILITYFRAME" )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR" )
 
+
+
 		AddCategory( "BOTTOMLEFT" )
+
 		AddCheckBox( 4, "CHAT", true, nil, 1 )
+		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 1 )
+		AddCheckBox( 24, "CHATEDITBOX", false, nil, 1 )
+
 		AddCheckBox( 4, "CHAT", false, nil, 2 )
+		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 2 )
+		AddCheckBox( 24, "CHATEDITBOX", false, nil, 2 )
+
 		AddCheckBox( 4, "CHAT", false, nil, 3 )
+		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 3 )
+		AddCheckBox( 24, "CHATEDITBOX", false, nil, 3 )
+
 		AddCheckBox( 4, "CHAT", false, nil, 4 )
-		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 1 )
-		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 2 )
-		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 3 )
-		AddCheckBox( 4, "CHATBUTTONFRAME", false, nil, 4 )
+		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 4 )
+		AddCheckBox( 24, "CHATEDITBOX", false, nil, 4 )
+
 		if QuickJoinToastButton then
 			AddCheckBox( 4, "CHATQUICKJOIN", false )
 		end
-		AddCheckBox( 4, "CHATEDITBOX", false )
+		
+
 
 		AddCategory( "LEFT" )
 		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER" )

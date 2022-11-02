@@ -75,5 +75,101 @@ function MoveAny:InitDebuffBar()
 			MADebuffBar.t:SetAllPoints( MADebuffBar )
 			MADebuffBar.t:SetColorTexture( 1, 0, 0, 0.2 )
 		end
+
+		local rel = "RIGHT"
+		local dirH = "LEFT"
+		local dirV = "BOTTOM"
+		function MAUpdateDebuffDirections()
+			local p1, p2, p3, p4, p5 = MADebuffBar:GetPoint()
+			rel = "RIGHT"
+			if p1 == "TOPLEFT" then
+				rel = "LEFT"
+			elseif p1 == "LEFT" then
+				rel = "LEFT"
+			elseif p1 == "BOTTOMLEFT" then
+				rel = "LEFT"
+			end
+			dirH = "LEFT"
+			if rel == "LEFT" then
+				dirH = "RIGHT"
+			end
+			dirV = "BOTTOM"
+			if p3 == "BOTTOMLEFT" then
+				dirV = "TOP"
+			elseif p3 == "BOTTOM" then
+				dirV = "TOP"
+			elseif p3 == "BOTTOMRIGHT" then
+				dirV = "TOP"
+			end
+		end
+		MAUpdateDebuffDirections()
+		
+		function MAUpdateDebuffs()
+			MAUpdateDebuffDirections()
+			
+			for i = 1, 32 do
+				local dbtn = _G["DebuffButton" .. i]
+				if dbtn then
+					if dbtn.masetup == nil then
+						dbtn.masetup = true
+						
+						hooksecurefunc( dbtn, "SetPoint", function( self, ... )
+							if self.setpoint_dbtn then return end
+							self.setpoint_dbtn = true
+							
+							local p1, p2, p3, p4, p5 = MADebuffBar:GetPoint()
+							local sw, sh = self:GetSize()
+
+							local id = i
+							local caly = (id - 0.1) / 8 
+							local cy = caly - caly % 1
+
+							self:ClearAllPoints()
+							if i == 1 then
+								if rel == "RIGHT" then
+									self:SetPoint( p1, MADebuffBar, p3, 0, 0 )
+								else
+									self:SetPoint( p1, MADebuffBar, p3, 0, 0 )
+								end
+							else
+								if id % 8 == 1 then
+									if dirV == "BOTTOM" then
+										self:SetPoint( p1, MADebuffBar, p3, 0, -cy * (sh + 10) )
+									else
+										self:SetPoint( p1, MADebuffBar, p3, 0, cy * (sh + 10) )
+									end
+								else
+									if rel == "RIGHT" then
+										self:SetPoint( rel, _G["DebuffButton" .. (i - 1)], dirH, -4, 0 )
+									else
+										self:SetPoint( rel, _G["DebuffButton" .. (i - 1)], dirH, 4, 0 )
+									end
+								end
+							end
+
+							self.setpoint_dbtn = false
+						end )
+					end
+					dbtn:SetPoint( "CENTER", 0, 0 )
+				end
+			end
+		end
+		
+		hooksecurefunc( MADebuffBar, "SetPoint", function( self, ... )
+			MAUpdateDebuffs()
+		end )
+
+		local f = CreateFrame( "FRAME" )
+		f:RegisterEvent( "UNIT_AURA" )
+		f:SetScript( "OnEvent", function( self, event, ... )
+			if event == "UNIT_AURA" then
+				unit = ...
+				if unit and unit == "player" then
+					MAUpdateDebuffs()
+				end
+			end
+		end )
+
+		C_Timer.After( 1, MAUpdateDebuffs )
 	end
 end

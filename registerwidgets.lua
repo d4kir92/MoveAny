@@ -518,14 +518,6 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 	MoveAny:SetEleSize( name, sw, sh )
 
-	if not frame.secure then
-		frame:ClearAllPoints()
-		local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-		if dbp1 and dbp3 then
-			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-		end
-	end
-
 	hooksecurefunc( frame, "SetPoint", function( self, ... )
 		if self.elesetpoint then
 			return
@@ -544,6 +536,14 @@ function MoveAny:RegisterWidget( tab, debug )
 			self.elesetpoint = false
 		end
 	end )
+
+	if not frame.secure then
+		frame:ClearAllPoints()
+		local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+		if dbp1 and dbp3 then
+			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+		end
+	end
 
 	hooksecurefunc( frame, "SetScale", function( self, scale )
 		if self.masetscale_ele then return end
@@ -819,7 +819,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAFPSFrame"
 		} )
 	end
-	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) then
+	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) and MABUILD ~= "RETAIL" then
 		MoveAny:RegisterWidget( {
 			["name"] = "IASkills",
 			["lstr"] = "IASKILLS"
@@ -1258,38 +1258,48 @@ function MoveAny:Event( event, ... )
 
 	-- BOTTOMLEFT
 	for i = 1, 4 do
-		if MoveAny:IsEnabled( "CHAT" .. i, false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "ChatFrame" .. i,
-				["lstr"] = "CHAT",
-				["lstri"] = i
-			} )
-		end
+		if _G["ChatFrame" .. i] then
+			if MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "ChatFrame" .. i .. "ButtonFrame",
+					["lstr"] = "CHATBUTTONFRAME",
+					["lstri"] = i
+				} )
+			end
 
-		if MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+
+			
+			local left = -35
+			if  MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+				left = 0
+			end
+			local bottom = -35
+			if MoveAny:IsEnabled( "CHATEDITBOX" .. i, false ) then
+				bottom = 0
+			end
 			hooksecurefunc( _G["ChatFrame" .. i], "SetClampRectInsets", function( self )
 				if self.setclamprectinsets_ma then return end
 				self.setclamprectinsets_ma = true
-				_G["ChatFrame" .. i]:SetClampRectInsets(0, 25, 25, 0)
+				_G["ChatFrame" .. i]:SetClampRectInsets( left, 25, 25, bottom )
 				self.setclamprectinsets_ma = false
 			end )
-			_G["ChatFrame" .. i]:SetClampRectInsets(0, 25, 25, 0)
-		else
-			hooksecurefunc( _G["ChatFrame" .. i], "SetClampRectInsets", function( self )
-				if self.setclamprectinsets_ma then return end
-				self.setclamprectinsets_ma = true
-				_G["ChatFrame" .. i]:SetClampRectInsets(-35, 25, 25, 0)
-				self.setclamprectinsets_ma = false
-			end )
-			_G["ChatFrame" .. i]:SetClampRectInsets(-35, 25, 25, 0)
+			_G["ChatFrame" .. i]:SetClampRectInsets( left, 25, 25, bottom )
+			
+
+
+			if MoveAny:IsEnabled( "CHAT" .. i, false ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "ChatFrame" .. i,
+					["lstr"] = "CHAT",
+					["lstri"] = i
+				} )
+			end
 		end
 
-
-
-		if MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+		if MoveAny:IsEnabled( "CHATEDITBOX" .. i, false ) then
 			MoveAny:RegisterWidget( {
-				["name"] = "ChatFrame" .. i .. "ButtonFrame",
-				["lstr"] = "CHATBUTTONFRAME",
+				["name"] = "ChatFrame" .. i .. "EditBox",
+				["lstr"] = "CHATEDITBOX",
 				["lstri"] = i
 			} )
 		end
@@ -1298,12 +1308,6 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "QuickJoinToastButton",
 			["lstr"] = "CHATQUICKJOIN"
-		} )
-	end
-	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "ChatFrame1EditBox",
-			["lstr"] = "CHATEDITBOX"
 		} )
 	end
 
