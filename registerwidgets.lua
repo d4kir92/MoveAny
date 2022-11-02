@@ -161,8 +161,10 @@ function MAMenuOptions( opt, frame )
 			sdn:SetSize( btnsize, btnsize )
 			sdn:SetPoint( "TOPLEFT", content, "TOPLEFT", 200, -48 )
 			sdn:SetScript( "OnClick", function()
-				MoveAny:SetEleScale( name, frame:GetScale() - 0.1 )
-				content.scale:SetText( format( "Scale: %0.1f", MoveAny:GetEleScale( name ) ) )
+				if frame:GetScale() > 0.3 then
+					MoveAny:SetEleScale( name, frame:GetScale() - 0.1 )
+					content.scale:SetText( format( "Scale: %0.1f", MoveAny:GetEleScale( name ) ) )
+				end
 			end )
 
 			local hide = CreateFrame( "CheckButton", "hide", content, "ChatConfigCheckButtonTemplate" )

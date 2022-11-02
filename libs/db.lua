@@ -227,15 +227,19 @@ function MoveAny:GetEleScale( key )
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 
 	local scale = MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"]
-	if scale > 0 then
+	if scale and scale > 0 then
 		return scale
-	else
+	elseif scale then
 		MoveAny:MSG( "[GetEleScale] SCALE <= 0, key: " .. tostring( key ) )
 		return 1
 	end
 end
 
 function MoveAny:SetEleScale( key, scale )
+	if scale == nil then
+		MoveAny:MSG( "[SetEleScale] NO SCALE, key: " .. tostring( key ) )
+		return
+	end
 	if scale > 0 then
 		MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 
