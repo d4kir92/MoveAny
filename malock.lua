@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.30" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.31" )
 }
 
 local PREFIX = "MOAN"
@@ -150,11 +150,14 @@ function MoveAny:InitMALock()
 		if IASkills and MABUILD ~= "RETAIL" then
 			AddCheckBox( 4, "IASKILLS", true )
 		end
-		if class == "DEATHKNIGHT" then
+		if RuneFrame and class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME", false )
 		end
-		if class == "SHAMAN" then
+		if TotemFrame and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMFRAME", false )
+		end
+		if WarlockPowerFrame and class == "WARLOCK" then
+			AddCheckBox( 4, "WARLOCKPOWERFRAME", false )
 		end
 
 

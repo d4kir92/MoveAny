@@ -315,6 +315,25 @@ function MoveAny:ShowMinimapButton()
 	end
 end
 
+function MoveAny:GetFrame( ele, name, c )
+	c = c + 1
+	if c > 10 then
+		return ele
+	end
+	local s1, e1 = strfind( name, ".", 1, true )
+	if e1 then
+		local tab = { strsplit(".", name ) }
+		for i, na in pairs( tab ) do
+			if i == 1 and _G[na] then
+				ele = _G[na]
+			elseif i > 1 and ele[na]then
+				ele = ele[na]
+			end
+		end
+	end
+	return ele
+end
+
 function MoveAny:RegisterWidget( tab, debug )
 	local name = tab.name
 	local lstr = tab.lstr
@@ -338,11 +357,7 @@ function MoveAny:RegisterWidget( tab, debug )
 		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil 
 	end
 
-	local frame = _G[name]
-	local s, e = strfind( name, ".", 1, true )
-	if e then
-		frame = _G[strsub( name, 1, s - 1 )][strsub( name, e + 1 )]
-	end
+	local frame = MoveAny:GetFrame( _G[name], name, 0 )
 
 	if _G[name .. "_DRAG"] == nil then
 		_G[name .. "_DRAG"] = CreateFrame( "FRAME", name .. "_DRAG", UIParent )
@@ -721,16 +736,22 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 	end
-	if MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
+	if RuneFrame and MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
 		MoveAny:RegisterWidget( {
 			["name"] = "RuneFrame",
 			["lstr"] = "RUNEFRAME"
 		} )
 	end
-	if MoveAny:IsEnabled( "TOTEMFRAME", false ) and class == "SHAMAN" then
+	if TotemFrame and MoveAny:IsEnabled( "TOTEMFRAME", false ) and class == "SHAMAN" then
 		MoveAny:RegisterWidget( {
 			["name"] = "TotemFrame",
 			["lstr"] = "TOTEMFRAME"
+		} )
+	end
+	if WarlockPowerFrame and MoveAny:IsEnabled( "WARLOCKPOWERFRAME", false ) and class == "WARLOCK" then
+		MoveAny:RegisterWidget( {
+			["name"] = "WarlockPowerFrame",
+			["lstr"] = "WARLOCKPOWERFRAME"
 		} )
 	end
 	if MABUILDNR < 100000 then
