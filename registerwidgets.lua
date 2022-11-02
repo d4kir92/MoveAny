@@ -315,11 +315,7 @@ function MoveAny:ShowMinimapButton()
 	end
 end
 
-function MoveAny:GetFrame( ele, name, c )
-	c = c + 1
-	if c > 10 then
-		return ele
-	end
+function MoveAny:GetFrame( ele, name )
 	local s1, e1 = strfind( name, ".", 1, true )
 	if e1 then
 		local tab = { strsplit(".", name ) }
@@ -357,7 +353,7 @@ function MoveAny:RegisterWidget( tab, debug )
 		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil 
 	end
 
-	local frame = MoveAny:GetFrame( _G[name], name, 0 )
+	local frame = MoveAny:GetFrame( _G[name], name )
 
 	if _G[name .. "_DRAG"] == nil then
 		_G[name .. "_DRAG"] = CreateFrame( "FRAME", name .. "_DRAG", UIParent )
