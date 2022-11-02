@@ -562,13 +562,15 @@ function MoveAny:RegisterWidget( tab, debug )
 		if self.masetscale_ele then return end
 		self.masetscale_ele = true
 
-		local dragframe = _G[name .. "_DRAG"]
-		dragframe:SetScale( scale )
+		if scale and scale > 0 then
+			local dragframe = _G[name .. "_DRAG"]
+			dragframe:SetScale( scale )
+		end
 
 		self.masetscale_ele = false
 	end )
 
-	if MoveAny:GetEleScale( name ) ~= nil then
+	if MoveAny:GetEleScale( name ) and MoveAny:GetEleScale( name ) > 0 then
 		frame:SetScale( MoveAny:GetEleScale( name ) )
 	end
 

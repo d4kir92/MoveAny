@@ -23,16 +23,20 @@ scaler:SetScript( "OnUpdate", function()
 					1.5
 				)
 
-				currentFrame:SetScale( newScale )
-				MoveAny:SetFrameScale( currentFrameName, newScale )
+				if newScale > 0 then
+					currentFrame:SetScale( newScale )
+					MoveAny:SetFrameScale( currentFrameName, newScale )
+				end
 			elseif curMouseY < scaler.prevMouseY then
 				local newScale = math.max(
 					currentFrame:GetScale() - 0.006,
 					0.5
 				)
 
-				currentFrame:SetScale( newScale )
-				MoveAny:SetFrameScale( currentFrameName, newScale )
+				if newScale > 0 then
+					currentFrame:SetScale( newScale )
+					MoveAny:SetFrameScale( currentFrameName, newScale )
+				end
 			end
 		end
 
@@ -57,7 +61,9 @@ function MoveAny:MoveFrames()
 			if frame and frameinit[name] == nil then
 				frameinit[name] = true
 				if scale ~= 1 then
-					frame:SetScale(scale)
+					if scale > 0 then
+						frame:SetScale( scale )
+					end
 				end
 				
 				frame:SetMovable( true )
@@ -164,15 +170,24 @@ function MoveAny:MoveFrames()
 					hooksecurefunc( frame, "SetScale", function( self, scale )
 						if self.masetscale then return end
 						self.masetscale = true
-						self:SetScale( MoveAny:GetFrameScale( name ) or scale )
+						if MoveAny:GetFrameScale( name ) or scale then
+							local sca = MoveAny:GetFrameScale( name ) or scale
+							if sca > 0 then
+								self:SetScale( sca )
+							end
+						end
 						self.masetscale = false
 					end )
-					if MoveAny:GetFrameScale( name ) then
+					if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
 						if frame:GetHeight() * MoveAny:GetFrameScale( name ) > GetScreenHeight() then
-							MoveAny:SetFrameScale( name, GetScreenHeight() / frame:GetHeight() )
+							if GetScreenHeight() / frame:GetHeight() > 0 then
+								MoveAny:SetFrameScale( name, GetScreenHeight() / frame:GetHeight() )
+							end
 							frame:SetScale( MoveAny:GetFrameScale( name ) )
 						end
-						frame:SetScale( MoveAny:GetFrameScale( name ) )
+						if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
+							frame:SetScale( MoveAny:GetFrameScale( name ) )
+						end
 					else
 						frame:SetScale( 1 )
 					end
