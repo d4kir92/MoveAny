@@ -155,6 +155,11 @@ function MoveAny:InitDebuffBar()
 			end
 		end
 		
+		if MABuffBar then
+			hooksecurefunc( MABuffBar, "SetPoint", function( self, ... )
+				MAUpdateDebuffs()
+			end )
+		end
 		hooksecurefunc( MADebuffBar, "SetPoint", function( self, ... )
 			MAUpdateDebuffs()
 		end )

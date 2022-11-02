@@ -7,9 +7,9 @@ function MALang_deDE()
 
 		["GENERAL"] = "Allgemein",
 		["SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
-		["FRAMESSHIFTDRAG"] = "Fenster mit Shift + Linksklick bewegen",
-		["FRAMESSHIFTSCALE"] = "Fenster mit Shift + Rechtsklick skalieren",
-		["FRAMESSHIFTRESET"] = "Fenster mit Mausradklick resetten",
+		["FRAMESSHIFTDRAG"] = "Fenster mit Shift + Linksklick-ziehen bewegen",
+		["FRAMESSHIFTSCALE"] = "Fenster mit Shift + Rechtsklick-ziehen skalieren",
+		["FRAMESSHIFTRESET"] = "Fenster mit Mausradklick-ziehen resetten",
 
 		["TOPLEFT"] = "Oben Links",
 		["PLAYERFRAME"] = "Spielerfenster",
