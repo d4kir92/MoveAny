@@ -467,13 +467,15 @@ function MoveAny:RegisterWidget( tab, debug )
 
 	tinsert( MAEleFrames, frame )
 
+	frame.ignoreFramePositionManager = true
+
 	frame:SetMovable( true )
 	
 	frame:SetDontSavePosition( true )
 	frame:SetClampedToScreen( true )
 
-	if userplaced and frame.SetUserPlaced then
-		frame:SetUserPlaced( true )
+	if frame.SetUserPlaced then
+		frame:SetUserPlaced( userplaced or false )
 	end
 
 	local maframe1 = _G["MA" .. name]
@@ -524,8 +526,8 @@ function MoveAny:RegisterWidget( tab, debug )
 		end
 		
 		self:SetMovable( true )
-		if userplaced and self.SetUserPlaced then
-			self:SetUserPlaced( true )
+		if self.SetUserPlaced then
+			self:SetUserPlaced( userplaced or false )
 		end
 
 		if not self.secure then
@@ -955,7 +957,8 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "DURABILITY", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "DurabilityFrame",
-			["lstr"] = "DURABILITY"
+			["lstr"] = "DURABILITY",
+			["userplaced"] = true
 		} )
 	end
 
@@ -1252,6 +1255,15 @@ function MoveAny:Event( event, ... )
 				} )
 			end
 		end
+	end
+	if MoveAny:IsEnabled( "ALERTFRAME", true ) then
+		local afsw, afsh = 276, 68
+		MoveAny:RegisterWidget( {
+			["name"] = "AlertFrame",
+			["lstr"] = "ALERTFRAME",
+			["sw"] = afsw,
+			["sh"] = afsh
+		} )
 	end
 	
 

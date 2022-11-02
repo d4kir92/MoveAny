@@ -54,6 +54,7 @@ function MALang_deDE()
 		["LEAVEVEHICLE"] = "Fahrzeug verlassen Taste",
 		["GROUPLOOTCONTAINER"] = "Beute-Würfeln Fenster",
 		["STATUSTRACKINGBARMANAGER"] = "Statusverfolgungsleiste Manager (EP, Ruf)",
+		["ALERTFRAME"] = "Alarmfenster (Bonus Beute, Erfolg, ...)",
 
 		["BOTTOMLEFT"] = "Unten Links",
 		["CHAT"] = "Chatfenster %d",

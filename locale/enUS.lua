@@ -62,6 +62,7 @@ function MALang_enUS()
 		["LEAVEVEHICLE"] = "Leave Vehicle Button",
 		["GROUPLOOTCONTAINER"] = "Loot Roll frame",
 		["STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
+		["ALERTFRAME"] = "Alert Frame (Bonus Loot, Achiements, ...)",
 
 		["BOTTOMLEFT"] = "Bottom Left",
 		["CHAT"] = "Chatframe %d",
