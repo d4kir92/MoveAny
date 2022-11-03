@@ -126,6 +126,26 @@ function MoveAny:InitDB()
 	if MATAB["PROFILES"][MoveAny:GetCP()] == nil then
 		MoveAny:SetCP( "DEFAULT" )
 	end
+
+	-- FIX, parent had big junk behind
+	for x, profil in pairs( MATAB["PROFILES"] ) do
+		if profil then
+			if profil["ELES"] and profil["ELES"]["POINTS"] then
+				for i, v in pairs( profil["ELES"]["POINTS"] ) do
+					if v.PA then
+						v.PA = nil
+					end
+				end
+			end
+			if profil["FRAMES"] and profil["FRAMES"]["POINTS"] then
+				for i, v in pairs( profil["FRAMES"]["POINTS"] ) do
+					if v.PA then
+						v.PA = nil
+					end
+				end
+			end
+		end
+	end
 end
 
 function MoveAny:GetTab()
@@ -181,11 +201,12 @@ function MoveAny:GetElePoint( key )
 		MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 
 		local an = MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"]
-		local pa = MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"]
+		--local pa = MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"]
+		MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = nil
 		local re = MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"]
 		local px = MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"]
 		local py = MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"]
-		return an, pa, re, px, py
+		return an, _, re, px, py
 	else
 		MoveAny:MSG_Error( "[GetElePoint] KEY not found" )
 		return "CENTER", UIParent, "CENTER"
@@ -196,7 +217,8 @@ function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
 	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
-	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
+	--MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
+	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = nil
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.33" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.7.34" )
 }
 
 local PREFIX = "MOAN"
@@ -388,7 +388,7 @@ function MoveAny:InitMALock()
 		end
 	end
 
-	local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( "MALock" )
+	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( "MALock" )
 	if dbp1 and dbp3 then
 		MALock:ClearAllPoints()
 		MALock:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
@@ -1036,7 +1036,7 @@ function MoveAny:ShowProfiles()
 			index = index + 1
 		end
 
-		local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( "MALock" )
+		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( "MALock" )
 		if dbp1 and dbp3 then
 			MAProfiles:ClearAllPoints()
 			MAProfiles:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )

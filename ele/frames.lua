@@ -365,14 +365,6 @@ tinsert( MAFRAMES, {
 	"EncounterJournal",
 	1
 } )
---[[tinsert( MAFRAMES, {
-	"CollectionsJournal",
-	1
-} )]]
---[[tinsert( MAFRAMES, {
-	"CommunitiesFrame",
-	1
-} )]]
 tinsert( MAFRAMES, {
 	"WeeklyRewardsFrame",
 	1
@@ -432,3 +424,12 @@ tinsert( MAFRAMES, {
 	"WorldStateScoreFrame",
 	1
 } )
+
+--[[tinsert( MAFRAMES, {
+	"CollectionsJournal",
+	1
+} )]]
+--[[tinsert( MAFRAMES, {
+	"CommunitiesFrame",
+	1
+} )]]

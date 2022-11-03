@@ -66,10 +66,10 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	btn:SetSize( btnsize, btnsize )
 	btn:SetPoint( "TOPLEFT", parent, "TOPLEFT", ofsx, ofsy )
 	btn:SetScript( "OnClick", function()
-		local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
+		local p1, _, p3, p4, p5 = MoveAny:GetElePoint( name )
 		MoveAny:SetElePoint( name, p1, UIParent, p3, p4 + x, p5 + y )
 
-		p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
+		p1, _, p3, p4, p5 = MoveAny:GetElePoint( name )
 		parent.pos:SetText( format( "Position X: %d Y:%d", p4, p5 ) )
 	end )
 
@@ -123,7 +123,7 @@ function MAMenuOptions( opt, frame )
 		if string.find( content.name, GENERAL ) then
 			content.pos = content:CreateFontString( nil, nil, "GameFontNormal" )
 			content.pos:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -4 )
-			local p1, p2, p3, p4, p5 = MoveAny:GetElePoint( name )
+			local p1, _, p3, p4, p5 = MoveAny:GetElePoint( name )
 			content.pos:SetText( format( "Position X: %d Y:%d", p4, p5 ) )
 
 			local yp5 = MAMoveButton( content, name, btnsize * 2, -btnsize * 1, 0, 5, 	"Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down" )
@@ -459,7 +459,7 @@ function MoveAny:RegisterWidget( tab, debug )
 						frame:SetSize( sw, sh )
 					end
 
-					local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 					frame:ClearAllPoints()
 					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				end
@@ -545,7 +545,7 @@ function MoveAny:RegisterWidget( tab, debug )
 
 		if not self.secure then
 			self.elesetpoint = true
-			local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 			self:ClearAllPoints()
 			self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 			self.elesetpoint = false
@@ -554,7 +554,7 @@ function MoveAny:RegisterWidget( tab, debug )
 
 	if not frame.secure then
 		frame:ClearAllPoints()
-		local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 		if dbp1 and dbp3 then
 			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 		end
@@ -1387,7 +1387,9 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitBags()
 	MoveAny:InitMAFPSFrame()
 	
-	MoveAny:MoveFrames()
+	if MoveAny.MoveFrames then
+		MoveAny:MoveFrames()
+	end
 
 	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
