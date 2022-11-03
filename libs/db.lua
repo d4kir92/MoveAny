@@ -4,6 +4,10 @@ local AddOnName, MoveAny = ...
 local COL_R = "|cFFFF0000"
 local COL_Y = "|cFFFFFF00"
 
+function MoveAny:HR()
+	print( COL_Y .. "----------------------------------------------------------------------" )
+end
+
 function MoveAny:MSG( msg )
 	print( "|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_Y .. msg )
 end
@@ -36,7 +40,7 @@ function MoveAny:GetValidProfileName( name )
 	return MoveAny:GetValidProfileName( name .. " NEW" )
 end
 
-function MoveAny:AddProfile( newname, other )
+function MoveAny:AddProfile( newname, other, noChange )
 	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	
@@ -58,7 +62,9 @@ function MoveAny:AddProfile( newname, other )
 
 		MATAB["PROFILES"][name]["ELES"]["OPTIONS"]["ACTIONBARS"] = MATAB["PROFILES"][name]["ELES"]["OPTIONS"]["ACTIONBARS"] or {}
 	end
-
+	if noChange then
+		return
+	end
 	MoveAny:SetCP( name )
 end
 
@@ -109,6 +115,98 @@ function MoveAny:GetProfiles()
 	return MATAB["PROFILES"]
 end
 
+function MoveAny:MAIImportPointValue( profileName, n, t, key, dbKey )
+	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+	if MATAB["PROFILES"]["DEFAULT"] == nil then
+		MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
+		return
+	end
+
+	local eleName = nil
+	local value = nil
+	local s1, e1 = strfind( n, key, 1, true )
+	if s1 then
+		eleName = strsub( n, 1, s1 - 1 )
+		if MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"][eleName] ~= nil then
+			value = t
+		end
+	end
+
+	if eleName and value then
+		if MATAB["PROFILES"][profileName] == nil then
+			MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
+			return
+		end
+		MATAB["PROFILES"][profileName]["ELES"] = MATAB["PROFILES"][profileName]["ELES"] or {}
+		MATAB["PROFILES"][profileName]["ELES"]["POINTS"] = MATAB["PROFILES"][profileName]["ELES"]["POINTS"] or {}
+		MATAB["PROFILES"][profileName]["ELES"]["POINTS"][eleName] = MATAB["PROFILES"][profileName]["ELES"]["POINTS"][eleName] or {}
+
+		MATAB["PROFILES"][profileName]["ELES"]["POINTS"][eleName][dbKey] = value
+	end
+end
+
+function MoveAny:MAIImportSizesValue( profileName, n, t, key, dbKey )
+	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+	if MATAB["PROFILES"]["DEFAULT"] == nil then
+		MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
+		return
+	end
+
+	local eleName = nil
+	local value = nil
+	local s1, e1 = strfind( n, key, 1, true )
+	if s1 then
+		eleName = strsub( n, 1, s1 - 1 )
+		if MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"][eleName] ~= nil then
+			value = t
+		end
+	end
+
+	if eleName and value then
+		if MATAB["PROFILES"][profileName] == nil then
+			MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
+			return
+		end
+		MATAB["PROFILES"][profileName]["ELES"] = MATAB["PROFILES"][profileName]["ELES"] or {}
+		MATAB["PROFILES"][profileName]["ELES"]["SIZES"] = MATAB["PROFILES"][profileName]["ELES"]["SIZES"] or {}
+		MATAB["PROFILES"][profileName]["ELES"]["SIZES"][eleName] = MATAB["PROFILES"][profileName]["ELES"]["SIZES"][eleName] or {}
+
+		MATAB["PROFILES"][profileName]["ELES"]["SIZES"][eleName][dbKey] = value
+	end
+end
+
+function MoveAny:MAIImportOptionValue( profileName, n, t, key, dbKey )
+	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+	if MATAB["PROFILES"]["DEFAULT"] == nil then
+		MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
+		return
+	end
+
+	local eleName = nil
+	local value = nil
+	local s1, e1 = strfind( n, key, 1, true )
+	if s1 then
+		eleName = strsub( n, 1, s1 - 1 )
+		if MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"][eleName] ~= nil then
+			value = t
+		elseif MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"]["MA" .. eleName] ~= nil then 
+			eleName = "MA" .. eleName
+			value = t
+		end
+	end
+
+	if eleName and value then
+		if MATAB["PROFILES"][profileName] == nil then
+			MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
+			return
+		end
+		MATAB["PROFILES"][profileName]["ELES"] = MATAB["PROFILES"][profileName]["ELES"] or {}
+		MATAB["PROFILES"][profileName]["ELES"]["OPTIONS"] = MATAB["PROFILES"][profileName]["ELES"]["OPTIONS"] or {}
+		MATAB["PROFILES"][profileName]["ELES"]["OPTIONS"][eleName] = MATAB["PROFILES"][profileName]["ELES"]["OPTIONS"][eleName] or {}
+
+		MATAB["PROFILES"][profileName]["ELES"]["OPTIONS"][eleName][dbKey] = value
+	end
+end
 
 
 
@@ -145,6 +243,32 @@ function MoveAny:InitDB()
 				end
 			end
 		end
+	end
+
+	if MAITAB then
+		MoveAny:HR()
+		MoveAny:MSG( "...MoveAndImprove detected, importing Profiles..." )
+		for name, tab in pairs( MAITAB["PROFILES"] ) do
+			local newName = name .. " by MAI"
+			if MATAB["PROFILES"][newName] == nil then
+				MoveAny:MSG( "Importing Profile: " .. name )
+				MoveAny:AddProfile( newName, nil, true )
+				for n, t in pairs( tab ) do
+					MoveAny:MAIImportPointValue( newName, n, t, "point", "AN" )
+					MoveAny:MAIImportPointValue( newName, n, t, "relativePoint", "RE" )
+					MoveAny:MAIImportPointValue( newName, n, t, "ofsx", "PX" )
+					MoveAny:MAIImportPointValue( newName, n, t, "ofsy", "PY" )
+
+					MoveAny:MAIImportSizesValue( newName, n, t, "scale", "SCALE" )
+					MoveAny:MAIImportOptionValue( newName, n, t, "rows", "ROWS" )
+					MoveAny:MAIImportOptionValue( newName, n, t, "spacing", "SPACING" )
+				end
+			else
+				MoveAny:MSG( "Already Imported Profile: " .. name )
+			end
+		end
+		MoveAny:MSG( "Done Importing Profiles." )
+		MoveAny:HR()
 	end
 end
 
@@ -217,7 +341,6 @@ function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
 	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
-	--MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = nil
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
@@ -280,16 +403,16 @@ function MoveAny:GetFramePoint( key )
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key] = MoveAny:GetTab()["FRAMES"]["POINTS"][key] or {}
 
 	local an = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["AN"]
-	local pa = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PA"]
+	--local pa = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PA"]
 	local re = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["RE"]
 	local px = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PX"]
 	local py = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PY"]
-	return an, pa, re, px, py
+	return an, _, re, px, py
 end
 
 function MoveAny:SetFramePoint( key, p1, p2, p3, p4, p5 )
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["AN"] = p1
-	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PA"] = p1
+	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PA"] = nil
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["RE"] = p3
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PX"] = p4
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PY"] = p5

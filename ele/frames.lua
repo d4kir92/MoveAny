@@ -122,7 +122,7 @@ function MoveAny:MoveFrames()
 							MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", frame.x, frame.y )
 							
 							frame:ClearAllPoints()
-							local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
+							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 							if dbp1 and dbp3 then
 								frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 							end
@@ -157,7 +157,7 @@ function MoveAny:MoveFrames()
 					end
 
 					if not InCombatLockdown() then
-						local dbp1, dbp2, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
+						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 						if dbp1 and dbp3 then
 							self:ClearAllPoints()
 							self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
