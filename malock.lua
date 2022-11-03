@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.0" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.1" )
 }
 
 local PREFIX = "MOAN"
@@ -48,6 +48,7 @@ end
 
 local function AddCheckBox( x, key, val, func, id )
 	if val == nil then
+		MoveAny:MSG( "Missing Value For: " .. tostring( key ) )
 		val = true
 	end
 	local lstr = MAGT( key )
@@ -80,7 +81,7 @@ local function AddCheckBox( x, key, val, func, id )
 	end
 
 	cbs[key]:ClearAllPoints()
-	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MAGT( key ) ), strlower( searchStr ) ) then
+	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( lstr ), strlower( searchStr ) ) then
 		cbs[key]:Show()
 
 		cbs[key]:SetPoint( "TOPLEFT", MALock.SC, "TOPLEFT", x, posy )
@@ -136,17 +137,19 @@ function MoveAny:InitMALock()
 
 		AddCategory( "TOPLEFT" )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "PLAYERFRAME" )
-			AddCheckBox( 24, "PETFRAME" )
+			AddCheckBox( 4, "PLAYERFRAME", true )
+		end
+		AddCheckBox( 4, "PETFRAME", true )
+		if MABUILDNR < 100000 then
 			AddCheckBox( 4, "TARGETFRAME", true )
 		end
-		AddCheckBox( 24, "TARGETOFTARGETFRAME", false )
-		AddCheckBox( 24, "TARGETFRAMESPELLBAR", false )
+		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
+		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
 		if MABUILDNR < 100000 then
 			AddCheckBox( 4, "FOCUSFRAME", true )
 		end
-		AddCheckBox( 24, "TARGETOFFOCUSFRAME", false )
-		AddCheckBox( 24, "FOCUSFRAMESPELLBAR", false )
+		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
+		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
 		if IASkills and MABUILD ~= "RETAIL" then
 			AddCheckBox( 4, "IASKILLS", true )
 		end
@@ -163,82 +166,82 @@ function MoveAny:InitMALock()
 
 
 		AddCategory( "TOP" )
-		AddCheckBox( 4, "ZONETEXTFRAME" )
-		AddCheckBox( 4, "UIWIDGETTOPCENTER" )
-		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP" )
+		AddCheckBox( 4, "ZONETEXTFRAME", true )
+		AddCheckBox( 4, "UIWIDGETTOPCENTER", true )
+		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP", true )
 
 
 
 		AddCategory( "TOPRIGHT" )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "MINIMAP" )
-			AddCheckBox( 4, "BUFFS" )
-			AddCheckBox( 24, "DEBUFFS" )
+			AddCheckBox( 4, "MINIMAP", true )
+			AddCheckBox( 4, "BUFFS", true )
+			AddCheckBox( 24, "DEBUFFS", false )
 		end
-		AddCheckBox( 4, "VEHICLESEATINDICATOR" )
-		AddCheckBox( 4, "DURABILITY" )
+		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
+		AddCheckBox( 4, "DURABILITY", true )
 
 
 
 		AddCategory( "RIGHT" )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "QUESTTRACKER" )
+			AddCheckBox( 4, "QUESTTRACKER", true )
 		end
 
 
 
 		AddCategory( "BOTTOMRIGHT" )
-		AddCheckBox( 4, "MICROMENU" )
-		AddCheckBox( 4, "BAGS" )
+		AddCheckBox( 4, "MICROMENU", true )
+		AddCheckBox( 4, "BAGS", true )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "GAMETOOLTIP" )
+			AddCheckBox( 4, "GAMETOOLTIP", true )
 		else
-			AddCheckBox( 4, "QUEUESTATUSBUTTON" )
+			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
 		end
-		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR" )
+		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
 		if IAMoneyBar then
-			AddCheckBox( 4, "MONEYBAR" )
+			AddCheckBox( 4, "MONEYBAR", true )
 		end
 		if IATokenBar then
-			AddCheckBox( 4, "TOKENBAR" )
+			AddCheckBox( 4, "TOKENBAR", true )
 		end
 
 
 
 		AddCategory( "BOTTOM" )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "ACTIONBARS" )
-			AddCheckBox( 24, "ACTIONBAR7" )
-			AddCheckBox( 24, "ACTIONBAR8" )
-			AddCheckBox( 24, "ACTIONBAR9" )
-			AddCheckBox( 24, "ACTIONBAR10" )
-			AddCheckBox( 4, "PETBAR" )
-			AddCheckBox( 4, "STANCEBAR" )
+			AddCheckBox( 4, "ACTIONBARS", true )
+			AddCheckBox( 4, "ACTIONBAR7", false )
+			AddCheckBox( 4, "ACTIONBAR8", false )
+			AddCheckBox( 4, "ACTIONBAR9", false )
+			AddCheckBox( 4, "ACTIONBAR10", false )
+			AddCheckBox( 4, "PETBAR", true )
+			AddCheckBox( 4, "STANCEBAR", true )
 		end
 		if MABUILD == "WRATH" and class == "SHAMAN" then
-			AddCheckBox( 4, "TOTEMBAR" )
+			AddCheckBox( 4, "TOTEMBAR", true )
 		end
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "POSSESSBAR" )
-			AddCheckBox( 4, "LEAVEVEHICLE" )
+			AddCheckBox( 4, "POSSESSBAR", true )
+			AddCheckBox( 4, "LEAVEVEHICLE", true )
 		end
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "MAINMENUEXPBAR" )
-			AddCheckBox( 4, "REPUTATIONWATCHBAR" )
+			AddCheckBox( 4, "MAINMENUEXPBAR", true )
+			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
 		else
-			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER" )
+			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
 		end
-		AddCheckBox( 4, "GROUPLOOTCONTAINER" )
+		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "CASTINGBAR" )
-			AddCheckBox( 4, "TALKINGHEAD" )
+			AddCheckBox( 4, "CASTINGBAR", true )
+			AddCheckBox( 4, "TALKINGHEAD", true )
 		end
-		AddCheckBox( 4, "MAFPSFrame" )
+		AddCheckBox( 4, "MAFPSFrame", true )
 		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "EXTRAABILITYCONTAINER" )
+			AddCheckBox( 4, "EXTRAABILITYCONTAINER", true )
 		end
-		AddCheckBox( 4, "ZONEABILITYFRAME" )
-		AddCheckBox( 4, "UIWIDGETPOWERBAR" )
+		AddCheckBox( 4, "ZONEABILITYFRAME", true )
+		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ALERTFRAME", true )
 
 
@@ -268,7 +271,7 @@ function MoveAny:InitMALock()
 
 
 		AddCategory( "LEFT" )
-		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER" )
+		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", true )
 	end
 
 	MALock.Search = CreateFrame( "EditBox", "MALock_Search", MALock, "InputBoxTemplate" )

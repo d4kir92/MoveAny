@@ -111,7 +111,7 @@ function MAMenuOptions( opt, frame )
 	
 	local tabs = { GENERAL }
 
-	if string.find( name, "MAActionBar" ) or name == "MAMenuBar" then
+	if string.find( name, "MAActionBar" ) or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" then
 		table.insert( tabs, ACTIONBARS_LABEL )
 	end
 
@@ -119,7 +119,7 @@ function MAMenuOptions( opt, frame )
 	
 	for i, tab in pairs( contents ) do
 		local content = tab.content
-		
+
 		if string.find( content.name, GENERAL ) then
 			content.pos = content:CreateFontString( nil, nil, "GameFontNormal" )
 			content.pos:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -4 )
@@ -211,7 +211,6 @@ function MAMenuOptions( opt, frame )
 			MACreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 0.1, 0, 1, MoveAny.UpdateAlphas )
 			MACreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 0.1, 0, 1, MoveAny.UpdateAlphas )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
-
 			local max = getn( frame.btns )
 			local items = {}
 			if max == 12 then
@@ -225,8 +224,20 @@ function MAMenuOptions( opt, frame )
 				items = { "1", "2", "5", "10" }
 			elseif max == 8 then
 				items = { "1", "2", "4", "8" }
+			elseif max == 7 then
+				items = { "1", "7" }
 			elseif max == 6 then
 				items = { "1", "2", "3", "6" }
+			elseif max == 5 then
+				items = { "1", "5" }
+			elseif max == 4 then
+				items = { "1", "2", "4" }
+			elseif max == 3 then
+				items = { "1", "3" }
+			elseif max == 2 then
+				items = { "1", "2" }
+			elseif max == 1 then
+				items = { "1" }
 			else
 				MoveAny:MSG( "FOUND OTHER MAX: " .. max .. " for " .. name )
 				items = { "1" }
@@ -678,6 +689,10 @@ function MoveAny:UpdateAlphas()
 	end
 end
 
+function MoveAny:AnyActionbarEnabled()
+	return MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR7", true ) or MoveAny:IsEnabled( "ACTIONBAR8", true ) or MoveAny:IsEnabled( "ACTIONBAR9", true ) or MoveAny:IsEnabled( "ACTIONBAR10", true )
+end
+
 function MoveAny:Event( event, ... )
 	MoveAny.init = MoveAny.init or false
 	if MoveAny.init then
@@ -710,7 +725,8 @@ function MoveAny:Event( event, ... )
 					UIPARENT_MANAGED_FRAME_POSITIONS["StatusTrackingBarManager"] = nil
 				end
 			end
-			
+		end
+		if MoveAny:AnyActionbarEnabled() then
 			MoveAny:CustomBars()
 			MoveAny:UpdateABs()
 		end
@@ -728,13 +744,13 @@ function MoveAny:Event( event, ... )
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "PETFRAME", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "PetFrame",
-				["lstr"] = "PETFRAME",
-				["userplaced"] = true
-			} )
-		end
+	end
+	if MoveAny:IsEnabled( "PETFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "PetFrame",
+			["lstr"] = "PETFRAME",
+			["userplaced"] = true
+		} )
 	end
 	if RuneFrame and MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
 		MoveAny:RegisterWidget( {
@@ -1121,10 +1137,10 @@ function MoveAny:Event( event, ... )
 		MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
 	end
 	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "ACTIONBARS", true ) then
+		if MoveAny:AnyActionbarEnabled()then
 			for i = 1, 10 do
 				if i ~= 2 then
-					if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+					if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 						MoveAny:RegisterWidget( {
 							["name"] = "MAActionBar" .. i,
 							["lstr"] = "ACTIONBAR" .. i

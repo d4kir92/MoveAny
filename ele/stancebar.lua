@@ -10,21 +10,30 @@ function MoveAny:UpdateStanceBar()
 	else
 		cou = NUM_STANCE_SLOTS
 	end
-
+	
 	if MAStanceBar and cou then
 		if MAStanceBar.cou ~= cou then
 			MAStanceBar.cou = cou
 
+			MAStanceBar.btns = {}
+			
 			if cou ~= 10 then
 				for i = 1, cou do
 					local bb = _G["StanceButton" .. i]
 					if bb then
-						bb:SetSize( btnsize, btnsize )
-
 						if bb.setup == nil then
 							bb.setup = true
 
-							hooksecurefunc( bb, "SetPoint", function( self, ... )
+							bb:SetSize( btnsize, btnsize )
+							bb:SetMovable( true )
+							if bb.SetUserPlaced then
+								bb:SetUserPlaced( false )
+							end
+							bb:SetParent( MAStanceBar )
+
+							--bb:ClearAllPoints()
+							--bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
+							--[[hooksecurefunc( bb, "SetPoint", function( self, ... )
 								if self.sbsetpoint then return end
 								self.sbsetpoint = true
 								
@@ -38,12 +47,16 @@ function MoveAny:UpdateStanceBar()
 								bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
 								self.sbsetpoint = false
 							end )
-							bb:SetPoint( "CENTER" )
+							bb:SetPoint( "CENTER" )]]
 						end
+
+						tinsert( MAStanceBar.btns, bb )
 					end
 				end
 			end
 			MAStanceBar:SetSize( cou * btnsize, btnsize )
+
+			MAUpdateActionBar( MAStanceBar )
 		end
 	end
 
@@ -56,6 +69,7 @@ function MoveAny:InitStanceBar()
 			MAStanceBar = CreateFrame( "Frame", "MAStanceBar", UIParent )
 			MAStanceBar:SetSize( btnsize, btnsize )
 			MAStanceBar.cou = -1
+			MAStanceBar.btns = {}
 
 			local p1, _, p3, p4, p5 = MoveAny:GetElePoint( "MAStanceBar" )
 			if p1 then

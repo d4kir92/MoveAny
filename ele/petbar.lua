@@ -29,7 +29,7 @@ function MoveAny:InitPetBar()
 	if MoveAny:IsEnabled( "PETBAR", true ) then
 		MAPetBar = CreateFrame( "Frame", "MAPetBar", UIParent )
 		MAPetBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 110 )
-
+		MAPetBar.btns = {}
 		for i = 1, 10 do
 			local bb = _G["PetActionButton" .. i]
 			if bb then
@@ -48,6 +48,8 @@ function MoveAny:InitPetBar()
 				end )
 				bb:ClearAllPoints()
 				bb:SetPoint( "TOPLEFT", MAPetBar, "TOPLEFT", (i - 1) * btnsize, 0 )
+
+				tinsert( MAPetBar.btns, bb )
 			end
 		end
 		MAPetBar:SetSize( 10 * btnsize, btnsize )

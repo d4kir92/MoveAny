@@ -93,10 +93,13 @@ function MAUpdateActionBar( frame )
 	if frame.btns and frame.btns[1] then
 		local fSizeW, fSizeH = frame.btns[1]:GetSize()
 
-		frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
+		if not InCombatLockdown() then
+			frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
+		end
 		local id = 1
 		for i, abtn in pairs( frame.btns ) do
 			if abtn:GetParent() ~= MAHIDDEN then
+				abtn:ClearAllPoints()
 				abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
 				id = id + 1
 			end
@@ -105,63 +108,65 @@ function MAUpdateActionBar( frame )
 end
 
 function MoveAny:CustomBars()
-	for i = 0, 3 do
-		local texture = _G["MainMenuMaxLevelBar" .. i]
-		if texture then
-			hooksecurefunc( texture, "Show", function( self )
+	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
+		for i = 0, 3 do
+			local texture = _G["MainMenuMaxLevelBar" .. i]
+			if texture then
+				hooksecurefunc( texture, "Show", function( self )
+					if self.mahide then return end
+					self.mahide = true
+					self:Hide()
+					self.mahide = false
+				end )
+				texture:Hide()
+			end
+		end
+		if StanceBarLeft then
+			hooksecurefunc( StanceBarLeft, "Show", function( self )
 				if self.mahide then return end
 				self.mahide = true
 				self:Hide()
 				self.mahide = false
 			end )
-			texture:Hide()
+			StanceBarLeft:Hide()
 		end
-	end
-	if StanceBarLeft then
-		hooksecurefunc( StanceBarLeft, "Show", function( self )
-			if self.mahide then return end
-			self.mahide = true
-			self:Hide()
-			self.mahide = false
-		end )
-		StanceBarLeft:Hide()
-	end
-	if StanceBarMiddle then
-		hooksecurefunc( StanceBarMiddle, "Show", function( self )
-			if self.mahide then return end
-			self.mahide = true
-			self:Hide()
-			self.mahide = false
-		end )
-		StanceBarMiddle:Hide()
-	end
-	if StanceBarRight then
-		hooksecurefunc( StanceBarRight, "Show", function( self )
-			if self.mahide then return end
-			self.mahide = true
-			self:Hide()
-			self.mahide = false
-		end )
-		StanceBarRight:Hide()
-	end
+		if StanceBarMiddle then
+			hooksecurefunc( StanceBarMiddle, "Show", function( self )
+				if self.mahide then return end
+				self.mahide = true
+				self:Hide()
+				self.mahide = false
+			end )
+			StanceBarMiddle:Hide()
+		end
+		if StanceBarRight then
+			hooksecurefunc( StanceBarRight, "Show", function( self )
+				if self.mahide then return end
+				self.mahide = true
+				self:Hide()
+				self.mahide = false
+			end )
+			StanceBarRight:Hide()
+		end
 
-	if SlidingActionBarTexture0 then
-		hooksecurefunc( SlidingActionBarTexture0, "Show", function( self )
-			if self.mahide then return end
-			self.mahide = true
-			self:Hide()
-			self.mahide = false
-		end )
-		SlidingActionBarTexture0:Hide()
-	end
-	if SlidingActionBarTexture1 then
-		hooksecurefunc( SlidingActionBarTexture1, "Show", function( self )
-			if self.mahide then return end
-			self.mahide = true
-			self:Hide()
-			self.mahide = false
-		end )
-		SlidingActionBarTexture1:Hide()
+		if SlidingActionBarTexture0 then
+			hooksecurefunc( SlidingActionBarTexture0, "Show", function( self )
+				if self.mahide then return end
+				self.mahide = true
+				self:Hide()
+				self.mahide = false
+			end )
+			SlidingActionBarTexture0:Hide()
+		end
+		if SlidingActionBarTexture1 then
+			hooksecurefunc( SlidingActionBarTexture1, "Show", function( self )
+				if self.mahide then return end
+				self.mahide = true
+				self:Hide()
+				self.mahide = false
+			end )
+			SlidingActionBarTexture1:Hide()
+		end
 	end
 
 	local id = 1
@@ -172,7 +177,7 @@ function MoveAny:CustomBars()
 	end
 	for i = 1, MAMaxAB do
 		if i ~= 2 then
-			if i <= 6 or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+			if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 				
 				local name = "MAActionBar" .. i
 				_G[name] = CreateFrame( "Frame", name, UIParent, "SecureHandlerStateTemplate" )
