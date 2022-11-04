@@ -13,7 +13,7 @@ function MoveAny:InitMAVehicleSeatIndicator()
 			self.mavsisetpoint = true
 
 			self:SetMovable( true )
-			if self.SetUserPlaced then
+			if self.SetUserPlaced and self:IsMovable() then
 				self:SetUserPlaced( false )
 			end
 
@@ -27,7 +27,7 @@ function MoveAny:InitMAVehicleSeatIndicator()
 			self.vsisetpoint = true
 
 			self:SetMovable( true )
-			if self.SetUserPlaced then
+			if self.SetUserPlaced and self:IsMovable() then
 				self:SetUserPlaced( false )
 			end
 

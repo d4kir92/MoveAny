@@ -51,7 +51,7 @@ function MoveAny:InitMinimap()
 				local p1, p2, p3, p4, p5 = self:GetPoint()
 
 				self:SetMovable( true )
-				if self.SetUserPlaced then
+				if self.SetUserPlaced and self:IsMovable() then
 					self:SetUserPlaced( false )
 				end
 
@@ -132,7 +132,7 @@ function MoveAny:InitMinimap()
 				self.iasetpoint = true
 
 				self:SetMovable( true )
-				if self.SetUserPlaced then
+				if self.SetUserPlaced and self:IsMovable() then
 					self:SetUserPlaced( false )
 				end
 
@@ -153,7 +153,7 @@ function MoveAny:InitMinimap()
 				self.iasetpoint = true
 
 				self:SetMovable( true )
-				if self.SetUserPlaced then
+				if self.SetUserPlaced and self:IsMovable() then
 					self:SetUserPlaced( false )
 				end
 

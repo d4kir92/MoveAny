@@ -65,6 +65,9 @@ function MALang_deDE()
 
 		["LEFT"] = "Links",
 		["COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",
+		["BATTLENETFRIENDSNOTIFICATION"] = "Benachrichtigungen von Battlenet Freunden",
+
+
 
 		["ZONETEXTFRAME"] = "Zonentext",
 		["UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status bei BGs/Dungeons)",

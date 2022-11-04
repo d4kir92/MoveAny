@@ -25,7 +25,7 @@ function MoveAny:InitDebuffBar()
 							self.debuffsetpoint = true
 		
 							self:SetMovable( true )
-							if self.SetUserPlaced then
+							if self.SetUserPlaced and self:IsMovable() then
 								self:SetUserPlaced( false )
 							end
 		
@@ -46,7 +46,7 @@ function MoveAny:InitDebuffBar()
 							p1, p2, p3, p4, p5 = ...
 
 							self:SetMovable( true )
-							if self.SetUserPlaced then
+							if self.SetUserPlaced and self:IsMovable() then
 								self:SetUserPlaced( false )
 							end
 		

@@ -26,28 +26,10 @@ function MoveAny:UpdateStanceBar()
 
 							bb:SetSize( btnsize, btnsize )
 							bb:SetMovable( true )
-							if bb.SetUserPlaced then
+							if bb.SetUserPlaced and bb:IsMovable() then
 								bb:SetUserPlaced( false )
 							end
 							bb:SetParent( MAStanceBar )
-
-							--bb:ClearAllPoints()
-							--bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
-							--[[hooksecurefunc( bb, "SetPoint", function( self, ... )
-								if self.sbsetpoint then return end
-								self.sbsetpoint = true
-								
-								self:SetMovable( true )
-								if self.SetUserPlaced then
-									self:SetUserPlaced( false )
-								end
-
-								bb:SetParent( MAStanceBar )
-								bb:ClearAllPoints()
-								bb:SetPoint( "TOPLEFT", MAStanceBar, "TOPLEFT", (i - 1) * btnsize, 0 )
-								self.sbsetpoint = false
-							end )
-							bb:SetPoint( "CENTER" )]]
 						end
 
 						tinsert( MAStanceBar.btns, bb )

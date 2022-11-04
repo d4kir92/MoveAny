@@ -14,7 +14,6 @@ function MoveAny:InitMAFPSFrame()
 		MAFPSFrame.fps:SetFont( STANDARD_TEXT_FONT, 14, "THINOUTLINE" )
 
 		function MAFPSThink()
-
 			MAFPSFrame.fps:SetText( format( "|cff3FC7EBFPS|r: %3d", GetFramerate() ) )
 			C_Timer.After( config_update, MAFPSThink )
 		end

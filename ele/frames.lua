@@ -121,9 +121,9 @@ function MoveAny:MoveFrames()
 
 							MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", frame.x, frame.y )
 							
-							frame:ClearAllPoints()
 							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 							if dbp1 and dbp3 then
+								frame:ClearAllPoints()
 								frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 							end
 						else
@@ -152,7 +152,7 @@ function MoveAny:MoveFrames()
 					self.framesetpoint = true
 					
 					self:SetMovable( true )
-					if self.SetUserPlaced then
+					if self.SetUserPlaced and self:IsMovable() then
 						self:SetUserPlaced( false )
 					end
 

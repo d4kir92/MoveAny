@@ -74,7 +74,7 @@ function MoveAny:InitMicroMenu()
 					self.mmbsetpoint = true
 
 					mb:SetMovable( true )
-					if mb.SetUserPlaced then
+					if mb.SetUserPlaced and mb:IsMovable() then
 						mb:SetUserPlaced( false )
 					end
 

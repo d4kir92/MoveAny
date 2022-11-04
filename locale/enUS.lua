@@ -73,6 +73,7 @@ function MALang_enUS()
 
 		["LEFT"] = "Left",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
+		["BATTLENETFRIENDSNOTIFICATION"] = "Battlenet Friends Notifications",
 
 
 

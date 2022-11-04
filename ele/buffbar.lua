@@ -22,7 +22,7 @@ function MoveAny:InitBuffBar()
 			self.buffsetpoint = true
 
 			self:SetMovable( true )
-			if self.SetUserPlaced then
+			if self.SetUserPlaced and self:IsMovable() then
 				self:SetUserPlaced( false )
 			end
 			

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.1" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.2" )
 }
 
 local PREFIX = "MOAN"
@@ -205,7 +205,7 @@ function MoveAny:InitMALock()
 		if IATokenBar then
 			AddCheckBox( 4, "TOKENBAR", true )
 		end
-
+		
 
 
 		AddCategory( "BOTTOM" )
@@ -272,6 +272,9 @@ function MoveAny:InitMALock()
 
 		AddCategory( "LEFT" )
 		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", true )
+		if BNToastFrame then
+			AddCheckBox( 4, "BATTLENETFRIENDSNOTIFICATION", true )
+		end
 	end
 
 	MALock.Search = CreateFrame( "EditBox", "MALock_Search", MALock, "InputBoxTemplate" )

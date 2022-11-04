@@ -354,7 +354,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 	local sw = tab.sw
 	local sh = tab.sh
-	local secure = tab.secure
+	local secure = tab.ma_secure
 	local userplaced = tab.userplaced 
 	
 	tab.delay = tab.delay or 0.2
@@ -494,13 +494,12 @@ function MoveAny:RegisterWidget( tab, debug )
 	frame.ignoreFramePositionManager = true
 
 	frame:SetMovable( true )
-	
-	frame:SetDontSavePosition( true )
-	frame:SetClampedToScreen( true )
-
-	if frame.SetUserPlaced then
+	if frame.SetUserPlaced and frame:IsMovable() then
 		frame:SetUserPlaced( userplaced or false )
 	end
+
+	frame:SetDontSavePosition( true )
+	frame:SetClampedToScreen( true )
 
 	local maframe1 = _G["MA" .. name]
 	local maframe2 = _G[string.gsub( name, "MA", "" )]
@@ -521,7 +520,7 @@ function MoveAny:RegisterWidget( tab, debug )
 		dragf.t:SetColorTexture( MoveAny:GetColor( "el" ) )
 	end
 
-	frame.secure = secure
+	frame.ma_secure = secure
 
 	sw = sw or frame:GetWidth()
 	sh = sh or frame:GetHeight()
@@ -550,11 +549,11 @@ function MoveAny:RegisterWidget( tab, debug )
 		end
 		
 		self:SetMovable( true )
-		if self.SetUserPlaced then
+		if self.SetUserPlaced and self:IsMovable() then
 			self:SetUserPlaced( userplaced or false )
 		end
 
-		if not self.secure then
+		if not self.ma_secure then
 			self.elesetpoint = true
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 			self:ClearAllPoints()
@@ -563,10 +562,10 @@ function MoveAny:RegisterWidget( tab, debug )
 		end
 	end )
 
-	if not frame.secure then
-		frame:ClearAllPoints()
+	if not frame.ma_secure then
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 		if dbp1 and dbp3 then
+			frame:ClearAllPoints()
 			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 		end
 	end
@@ -824,7 +823,7 @@ function MoveAny:Event( event, ... )
 			self.crfmsetpoint = true
 
 			self:SetMovable( true )
-			if self.SetUserPlaced then
+			if self.SetUserPlaced and self:IsMovable() then
 				self:SetUserPlaced( false )
 			end
 			if not InCombatLockdown() then
@@ -889,7 +888,7 @@ function MoveAny:Event( event, ... )
 
 	-- TOPRIGHT
 	if MoveAny:IsEnabled( "UIWIDGETBELOWMINIMAP", true ) then
-		UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
+		--UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetBelowMinimapContainerFrame",
 			["lstr"] = "UIWIDGETBELOWMINIMAP",
@@ -929,16 +928,22 @@ function MoveAny:Event( event, ... )
 						self.qwfsetpoint = true
 
 						self:SetMovable( true )
-						if self.SetUserPlaced then
+						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )
 						end
 
 						self:SetParent( ObjectiveTrackerFrame )
 
-						QuestWatchFrame:ClearAllPoints()
-						QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+						self:ClearAllPoints()
+						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 						self.qwfsetpoint = false
 					end )
+
+					QuestWatchFrame:SetMovable( true )
+					if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
+						QuestWatchFrame:SetUserPlaced( false )
+					end
+					self:SetParent( ObjectiveTrackerFrame )
 					QuestWatchFrame:ClearAllPoints()
 					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 
@@ -951,16 +956,22 @@ function MoveAny:Event( event, ... )
 						self.wfsetpoint = true
 
 						self:SetMovable( true )
-						if self.SetUserPlaced then
+						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )
 						end
 						
 						self:SetParent( ObjectiveTrackerFrame )
 
-						WatchFrame:ClearAllPoints()
-						WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+						self:ClearAllPoints()
+						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 						self.wfsetpoint = false
 					end )
+
+					WatchFrame:SetMovable( true )
+					if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
+						WatchFrame:SetUserPlaced( false )
+					end
+					WatchFrame:SetParent( ObjectiveTrackerFrame )
 					WatchFrame:ClearAllPoints()
 					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 
@@ -984,6 +995,12 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "QUEUESTATUSBUTTON"
 			} )
 		end
+	end
+	if BNToastFrame and MoveAny:IsEnabled( "BATTLENETFRIENDSNOTIFICATION", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "BNToastFrame",
+			["lstr"] = "BATTLENETFRIENDSNOTIFICATION"
+		} )
 	end
 	if MoveAny:IsEnabled( "VEHICLESEATINDICATOR", true ) then
 		MoveAny:RegisterWidget( {
@@ -1193,7 +1210,7 @@ function MoveAny:Event( event, ... )
 						self.glfsetpoint = true
 				
 						self:SetMovable( true )
-						if self.SetUserPlaced then
+						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )
 						end
 

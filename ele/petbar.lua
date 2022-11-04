@@ -39,7 +39,7 @@ function MoveAny:InitPetBar()
 					bb:SetParent( MAPetBar )
 
 					bb:SetMovable( true )
-					if bb.SetUserPlaced then
+					if bb.SetUserPlaced and bb:IsMovable() then
 						bb:SetUserPlaced( false )
 					end
 
