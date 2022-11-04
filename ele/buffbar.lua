@@ -78,6 +78,13 @@ function MoveAny:InitBuffBar()
 				if self.setpoint_te1 then return end
 				self.setpoint_te1 = true
 
+				self:SetMovable( true )
+				if self.SetUserPlaced and self:IsMovable() then
+					self:SetUserPlaced( false )
+				end
+
+				self:SetParent( MABuffBar )
+
 				local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
@@ -94,6 +101,13 @@ function MoveAny:InitBuffBar()
 			hooksecurefunc( TempEnchant2, "SetPoint", function( self, ... )
 				if self.setpoint_te2 then return end
 				self.setpoint_te2 = true
+
+				self:SetMovable( true )
+				if self.SetUserPlaced and self:IsMovable() then
+					self:SetUserPlaced( false )
+				end
+
+				self:SetParent( MABuffBar )
 
 				local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
 				if dirH == "LEFT" then
@@ -113,6 +127,13 @@ function MoveAny:InitBuffBar()
 				if self.setpoint_te3 then return end
 				self.setpoint_te3 = true
 
+				self:SetMovable( true )
+				if self.SetUserPlaced and self:IsMovable() then
+					self:SetUserPlaced( false )
+				end
+
+				self:SetParent( MABuffBar )
+				
 				local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
