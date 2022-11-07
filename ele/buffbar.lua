@@ -175,9 +175,9 @@ function MoveAny:InitBuffBar()
 			if TempEnchant3 then
 				TempEnchant3:SetPoint( "CENTER", 0, 0 )
 			end
-
-			for i = 1, 32 do
-				local bbtn = _G["BuffButton" .. i]
+			
+			for bid = 1, 32 do
+				local bbtn = _G["BuffButton" .. bid]
 				if bbtn then
 					if bbtn.masetup == nil then
 						bbtn.masetup = true
@@ -185,34 +185,55 @@ function MoveAny:InitBuffBar()
 						hooksecurefunc( bbtn, "SetPoint", function( self, ... )
 							if self.setpoint_bbtn then return end
 							self.setpoint_bbtn = true
-							
+
 							local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
 							local sw, sh = self:GetSize()
 
+							local numBuffs = 1
+							local prevBuff = nil
+							for i = 1, 32 do
+								local btn = _G["BuffButton" .. i]
+								if i == bid then
+									break 
+								end
+								if btn then
+									if btn:GetParent() == BuffFrame then
+										numBuffs = numBuffs + 1
+										prevBuff = btn
+									end
+								end
+							end
+
 							local count = GetEnchantCount()
-							local id = i + count
+							if GetCVarBool( "consolidateBuffs" ) then
+								count = count + 1
+							end
+							local id = numBuffs + count
 							local caly = (id - 0.1) / 10
 							local cy = caly - caly % 1
 
-							self:ClearAllPoints()
-							if i == 1 then
-								if rel == "RIGHT" then
-									self:SetPoint( p1, MABuffBar, p3, -count * (sw + 4), 0 )
-								else
-									self:SetPoint( p1, MABuffBar, p3, count * (sw + 4), 0 )
-								end
-							else
-								if id % 10 == 1 then
-									if dirV == "BOTTOM" then
-										self:SetPoint( p1, MABuffBar, p3, 0, -cy * (sh + 10) )
+							
+							if bbtn:GetParent() == BuffFrame then
+								self:ClearAllPoints()
+								if numBuffs == 1 then
+									if rel == "RIGHT" then
+										self:SetPoint( p1, MABuffBar, p3, -count * (sw + 4), 0 )
 									else
-										self:SetPoint( p1, MABuffBar, p3, 0, cy * (sh + 10) )
+										self:SetPoint( p1, MABuffBar, p3, count * (sw + 4), 0 )
 									end
 								else
-									if rel == "RIGHT" then
-										self:SetPoint( rel, _G["BuffButton" .. (i - 1)], dirH, -4, 0 )
-									else
-										self:SetPoint( rel, _G["BuffButton" .. (i - 1)], dirH, 4, 0 )
+									if id % 10 == 1 then
+										if dirV == "BOTTOM" then
+											self:SetPoint( p1, MABuffBar, p3, 0, -cy * (sh + 10) )
+										else
+											self:SetPoint( p1, MABuffBar, p3, 0, cy * (sh + 10) )
+										end
+									elseif prevBuff then
+										if rel == "RIGHT" then
+											self:SetPoint( rel, prevBuff, dirH, -4, 0 )
+										else
+											self:SetPoint( rel, prevBuff, dirH, 4, 0 )
+										end
 									end
 								end
 							end
@@ -220,6 +241,7 @@ function MoveAny:InitBuffBar()
 							self.setpoint_bbtn = false
 						end )
 					end
+					bbtn:ClearAllPoints()
 					bbtn:SetPoint( "CENTER", 0, 0 )
 				end
 			end

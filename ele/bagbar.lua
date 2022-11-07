@@ -27,16 +27,20 @@ function MoveAny:InitBags()
 			tinsert( BAGS, "MainMenuBarBackpackButton" )
 		end
 
-		local sw, sh = CharacterBag0Slot:GetSize()
-		
-		local mbc = #BAGS
-		local bagsw = sw * mbc
-		if KeyRingButton ~= nil then
-			bagsw = bagsw - sw / 2
+		local sw, sh = 0, 0
+		for i, mbname in pairs( BAGS ) do
+			local bb = _G[mbname]
+			if bb then
+				local w, h = bb:GetSize()
+				sw = sw + w
+				if h > sh then
+					sh = h
+				end
+			end
 		end
-		
+
 		MABagBar = CreateFrame( "Frame", "MABagBar", UIParent )
-		MABagBar:SetSize( bagsw, sh )
+		MABagBar:SetSize( sw, sh )
 		if MicroButtonAndBagsBar then
 			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
 		elseif MABUILD ~= "RETAIL" then
@@ -48,37 +52,15 @@ function MoveAny:InitBags()
 		if MABUILD ~= "RETAIL" then
 			MainMenuBarBackpackButtonNormalTexture:Hide()
 		end
+		local x = 0
 		for i, mbname in pairs( BAGS ) do
 			local bb = _G[mbname]
 
-			if mbname == "KeyRingButton" then
-				bb:SetSize( sw / 2, sh )
-			elseif mbname == "BagBarExpandToggle" then
-				
-			else
-				bb:SetSize( sw, sh )
-			end
-
-			if MABUILD ~= "RETAIL" then
-				bb:ClearAllPoints()
-				bb:SetParent( MABagBar )
-				if mbname == "KeyRingButton" then
-					bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", 0, 0 )
-				elseif mbc > 5 then
-					bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", sw / 2 + (i - 2) * sw, 0 )
-				else
-					bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", (i - 1) * sw, 0 )
-				end
-			else
-				bb:ClearAllPoints()
-				bb:SetParent( MABagBar )
-				if mbname == "BagBarExpandToggle" then
-					local w, h = BagBarExpandToggle:GetSize()
-					bb:SetPoint( "LEFT", MABagBar, "LEFT", (i - 1) * sw + sw / 2 - w / 2, 0 )
-				else
-					bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", (i - 1) * sw, 0 )
-				end
-			end
+			local w, h = bb:GetSize()
+			bb:ClearAllPoints()
+			bb:SetParent( MABagBar )
+			bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", x, -(sh / 2 - h / 2) )
+			x = x + w
 
 			if MABUILD ~= "RETAIL" then
 				hooksecurefunc( bb, "Hide", function( self )

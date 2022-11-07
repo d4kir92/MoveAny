@@ -208,7 +208,9 @@ function MoveAny:MAIImportOptionValue( profileName, n, t, key, dbKey )
 	end
 end
 
-
+function MoveAny:GetTab()
+	return MATAB["PROFILES"][MoveAny:GetCP()]
+end
 
 function MoveAny:InitDB()
 	MATAB = MATAB or {}
@@ -272,10 +274,6 @@ function MoveAny:InitDB()
 	end
 end
 
-function MoveAny:GetTab()
-	return MATAB["PROFILES"][MoveAny:GetCP()]
-end
-
 function MoveAny:SetEnabled( element, value )
 	if element == nil then
 		MoveAny:MSG_Error( "[SetEnabled] Missing Name" )
@@ -296,7 +294,7 @@ function MoveAny:IsEnabled( element, value )
 	end
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
-		return value
+		MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 	end
 	return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
 end

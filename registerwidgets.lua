@@ -356,6 +356,13 @@ function MoveAny:RegisterWidget( tab, debug )
 	local sh = tab.sh
 	local secure = tab.ma_secure
 	local userplaced = tab.userplaced 
+
+	local cleft = tab.cleft
+	local cright = tab.cright
+	local ctop = tab.ctop
+	local cbottom = tab.cbottom
+	local posx = tab.posx
+	local posy = tab.posy
 	
 	tab.delay = tab.delay or 0.2
 	if tab.delay < 2 then
@@ -463,7 +470,8 @@ function MoveAny:RegisterWidget( tab, debug )
 				dragframe:SetMovable(true)
 
 				dragframe:ClearAllPoints()
-				dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
+
+				dragframe:SetPoint( "CENTER", frame, "CENTER", posx, posy )
 				if frame then
 					local sw, sh = dragframe:GetSize()
 					if not InCombatLockdown() then
@@ -488,6 +496,17 @@ function MoveAny:RegisterWidget( tab, debug )
 		end )
 		return false
 	end
+
+	if cleft or cright or ctop or cbottom then
+		local l = cleft or 0
+		local r = cright or 0
+		local t = ctop or 0
+		local b = cbottom or 0
+		if frame.SetClampRectInsets then
+			frame:SetClampRectInsets( l, r, t, b )
+		end
+	end
+			
 
 	tinsert( MAEleFrames, frame )
 
@@ -524,7 +543,7 @@ function MoveAny:RegisterWidget( tab, debug )
 
 	sw = sw or frame:GetWidth()
 	sh = sh or frame:GetHeight()
-	
+
 	if MoveAny:GetElePoint( name ) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
 		if (parent == nil or parent == UIParent) and an ~= nil and re ~= nil then
@@ -605,7 +624,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	dragframe:SetSize( sw, sh )
 
 	dragframe:ClearAllPoints()
-	dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
+	dragframe:SetPoint( "CENTER", frame, "CENTER", posx, posy )
 	
 	if MoveAny:IsEnabled( "MALOCK", false ) then
 		dragframe:SetAlpha( 1 )
@@ -649,7 +668,7 @@ function MoveAny:CheckAlphas()
 	end
 
 	local ele = GetMouseFocus()
-	if ele then
+	if ele and ele ~= CompactRaidFrameManager then
 		if tContains( MAEleFrames, ele ) then
 			ele:SetAlpha(1)
 			MoveAny:SetMouseEleAlpha( ele )
@@ -767,6 +786,18 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "WarlockPowerFrame",
 			["lstr"] = "WARLOCKPOWERFRAME"
+		} )
+	end
+	if MonkHarmonyBarFrame and MoveAny:IsEnabled( "MONKHARMONYBARFRAME", false ) and class == "MONK" then
+		MoveAny:RegisterWidget( {
+			["name"] = "MonkHarmonyBarFrame",
+			["lstr"] = "MONKHARMONYBARFRAME"
+		} )
+	end
+	if MageArcaneChargesFrame and MoveAny:IsEnabled( "MAGEARCANECHARGESFRAME", false ) and class == "MAGE" then
+		MoveAny:RegisterWidget( {
+			["name"] = "MageArcaneChargesFrame",
+			["lstr"] = "MAGEARCANECHARGESFRAME"
 		} )
 	end
 	if MABUILDNR < 100000 then
@@ -1271,9 +1302,18 @@ function MoveAny:Event( event, ... )
 
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
+			local sw, sh = StatusTrackingBarManager:GetSize()
 			MoveAny:RegisterWidget( {
 				["name"] = "StatusTrackingBarManager",
-				["lstr"] = "STATUSTRACKINGBARMANAGER"
+				["lstr"] = "STATUSTRACKINGBARMANAGER",
+				["sw"] = sw - 6,
+				["sh"] = sh - 8,
+				["cleft"] = 0,
+				["cright"] = 2,
+				["ctop"] = 4,
+				["cbottom"] = 4,
+				["posx"] = 1,
+				["posy"] = 4,
 			} )
 		end
 	end
