@@ -17,7 +17,7 @@ function MALang_enUS()
 		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
 		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
 		["FRAMESSHIFTSCALE"] = "Scale Frame with Shift + Rightclick-drag",
-		["FRAMESSHIFTRESET"] = "Reset Frame with Mousewheelclick-drag",
+		["FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",
 
 		["TOPLEFT"] = "Top Left",
 		["PLAYERFRAME"] = "Player Frame",

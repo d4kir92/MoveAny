@@ -91,7 +91,7 @@ function MoveAny:MoveFrames()
 							self:StartMoving()
 							frame:SetUserPlaced( false )
 						end
-					elseif MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) and btn == "MiddleButton" then
+					elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) and IsShiftKeyDown() and btn == "MiddleButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and btn == "MiddleButton") then
 						MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
 						MoveAny:SetFrameScale( name, nil )
 
@@ -105,9 +105,9 @@ function MoveAny:MoveFrames()
 							if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
 								MoveAny:MSG( MAGT( "FRAMESSHIFTDRAG" ) .. "." )
 							end
-						else
-							if not MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) then
-								MoveAny:MSG( "[" .. MAGT( "FRAMESSHIFTRESET" ) .. "] is disabled." )
+						elseif btn == "MiddleButton" then
+							if MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) then
+								MoveAny:MSG( MAGT( "FRAMESSHIFTRESET" ) .. "." )
 							end
 						end
 					end
