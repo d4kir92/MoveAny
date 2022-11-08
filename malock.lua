@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.5" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.6" )
 }
 
 local PREFIX = "MOAN"
@@ -254,21 +254,13 @@ function MoveAny:InitMALock()
 
 		AddCategory( "BOTTOMLEFT" )
 
-		AddCheckBox( 4, "CHAT", true, nil, 1 )
-		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 1 )
-		AddCheckBox( 24, "CHATEDITBOX", false, nil, 1 )
-
-		AddCheckBox( 4, "CHAT", false, nil, 2 )
-		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 2 )
-		AddCheckBox( 24, "CHATEDITBOX", false, nil, 2 )
-
-		AddCheckBox( 4, "CHAT", false, nil, 3 )
-		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 3 )
-		AddCheckBox( 24, "CHATEDITBOX", false, nil, 3 )
-
-		AddCheckBox( 4, "CHAT", false, nil, 4 )
-		AddCheckBox( 24, "CHATBUTTONFRAME", false, nil, 4 )
-		AddCheckBox( 24, "CHATEDITBOX", false, nil, 4 )
+		for i = 1, 5 do
+			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
+				AddCheckBox( 4, "CHAT", true, nil, i )
+			end
+		end
+		AddCheckBox( 4, "CHATBUTTONFRAME", false )
+		AddCheckBox( 4, "CHATEDITBOX", false )
 
 		if QuickJoinToastButton then
 			AddCheckBox( 4, "CHATQUICKJOIN", false )

@@ -470,7 +470,6 @@ function MoveAny:RegisterWidget( tab, debug )
 				dragframe:SetMovable(true)
 
 				dragframe:ClearAllPoints()
-
 				dragframe:SetPoint( "CENTER", frame, "CENTER", posx, posy )
 				if frame then
 					local sw, sh = dragframe:GetSize()
@@ -1368,52 +1367,75 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOMLEFT
-	for i = 1, 4 do
-		if _G["ChatFrame" .. i] then
-			if MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
-				MoveAny:RegisterWidget( {
-					["name"] = "ChatFrame" .. i .. "ButtonFrame",
-					["lstr"] = "CHATBUTTONFRAME",
-					["lstri"] = i
-				} )
-			end
-
-
-			
+	for i = 1, 5 do
+		local cf = _G["ChatFrame" .. i]
+		if cf then	
 			local left = -35
-			if  MoveAny:IsEnabled( "CHATBUTTONFRAME" .. i, false ) then
+			if  MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
 				left = 0
 			end
 			local bottom = -35
-			if MoveAny:IsEnabled( "CHATEDITBOX" .. i, false ) then
+			if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
 				bottom = 0
 			end
-			hooksecurefunc( _G["ChatFrame" .. i], "SetClampRectInsets", function( self )
+			hooksecurefunc( cf, "SetClampRectInsets", function( self )
 				if self.setclamprectinsets_ma then return end
 				self.setclamprectinsets_ma = true
-				_G["ChatFrame" .. i]:SetClampRectInsets( left, 25, 25, bottom )
+				cf:SetClampRectInsets( left, 25, 25, bottom )
 				self.setclamprectinsets_ma = false
 			end )
-			_G["ChatFrame" .. i]:SetClampRectInsets( left, 25, 25, bottom )
+			cf:SetClampRectInsets( left, 25, 25, bottom )
 			
-
-
-			if MoveAny:IsEnabled( "CHAT" .. i, false ) then
+			if MoveAny:IsEnabled( "CHAT" .. i, false ) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
 				MoveAny:RegisterWidget( {
 					["name"] = "ChatFrame" .. i,
 					["lstr"] = "CHAT",
 					["lstri"] = i
 				} )
 			end
-		end
+			if i > 1 then
+				if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
+					local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
+					if cbf then
+						hooksecurefunc( cbf, "SetPoint", function( self, ... )
+							if self.cbfsetpoint then return end
+							
+							self:SetMovable( true )
+							if self.SetUserPlaced and self:IsMovable() then
+								self:SetUserPlaced( true )
+							end
+					
+							self.cbfsetpoint = true
 
-		if MoveAny:IsEnabled( "CHATEDITBOX" .. i, false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "ChatFrame" .. i .. "EditBox",
-				["lstr"] = "CHATEDITBOX",
-				["lstri"] = i
-			} )
+							self:ClearAllPoints()
+							self:SetPoint( "CENTER", _G["ChatFrame" .. 1 .. "ButtonFrame"], "CENTER", 0, 0 )
+
+							self.cbfsetpoint = false
+						end )
+
+						cbf:SetMovable( true )
+						if cbf.SetUserPlaced and cbf:IsMovable() then
+							cbf:SetUserPlaced( true )
+						end
+
+						cbf:ClearAllPoints()
+						cbf:SetPoint( "CENTER", _G["ChatFrame" .. 1 .. "ButtonFrame"], "CENTER", 0, 0 )
+					end
+				end
+			end
 		end
+	end
+	if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "ChatFrame" .. 1 .. "ButtonFrame",
+			["lstr"] = "CHATBUTTONFRAME",
+		} )
+	end
+	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "ChatFrame" .. 1 .. "EditBox",
+			["lstr"] = "CHATEDITBOX",
+		} )
 	end
 	if QuickJoinToastButton and MoveAny:IsEnabled( "CHATQUICKJOIN", false ) then
 		MoveAny:RegisterWidget( {

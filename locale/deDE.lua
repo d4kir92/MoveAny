@@ -59,9 +59,9 @@ function MALang_deDE()
 
 		["BOTTOMLEFT"] = "Unten Links",
 		["CHAT"] = "Chatfenster %d",
-		["CHATBUTTONFRAME"] = "Chat Knöpfe %d",
+		["CHATBUTTONFRAME"] = "Chat Knöpfe",
 		["CHATQUICKJOIN"] = "Chat Schnellbeitritt",
-		["CHATEDITBOX"] = "Chat Eingabefeld %d",
+		["CHATEDITBOX"] = "Chat Eingabefeld",
 
 		["LEFT"] = "Links",
 		["COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",

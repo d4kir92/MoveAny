@@ -67,9 +67,9 @@ function MALang_enUS()
 
 		["BOTTOMLEFT"] = "Bottom Left",
 		["CHAT"] = "Chatframe %d",
-		["CHATBUTTONFRAME"] = "Chat Buttons %d",
+		["CHATBUTTONFRAME"] = "Chat Buttons",
 		["CHATQUICKJOIN"] = "Chat Quick Join",
-		["CHATEDITBOX"] = "Chat Inputbox %d",
+		["CHATEDITBOX"] = "Chat Inputbox",
 
 		["LEFT"] = "Left",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
