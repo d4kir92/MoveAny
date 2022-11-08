@@ -8,7 +8,26 @@ local BAGS = {
 	"CharacterBag0Slot"
 }
 
+function MABAGSTryAdd( fra, index )
+	if _G[fra] == nil then
+		return
+	end
+	if fra and not tContains( BAGS, fra ) then
+		if index then
+			tinsert( BAGS, index, tostring( fra ) )
+		else
+			tinsert( BAGS, tostring( fra ) )
+		end
+	end
+end
+
 function MAUpdateBags()
+	MABAGSTryAdd( "CharacterReagentBag0Slot", 1 )
+	MABAGSTryAdd( "KeyRingButton", 1 )
+	MABAGSTryAdd( "BagBarExpandToggle", #BAGS + 1 )
+	MABAGSTryAdd( "BagToggle", #BAGS )
+	MABAGSTryAdd( "MainMenuBarBackpackButton" )
+
 	local sw, sh = 0, 0
 	for i, mbname in pairs( BAGS ) do
 		local bb = _G[mbname]
@@ -25,14 +44,41 @@ function MAUpdateBags()
 		local x = 0
 		for i, mbname in pairs( BAGS ) do
 			local bb = _G[mbname]
+			if bb then
+				local w, h = bb:GetSize()
+				bb:SetParent( MABagBar )
+				bb:ClearAllPoints()
+				bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", x, -(sh / 2 - h / 2) )
+				x = x + w
+			end
+		end
+	end
+end
 
-			local w, h = bb:GetSize()
-			bb:SetParent( MABagBar )
-			bb:ClearAllPoints()
-			bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", x, -(sh / 2 - h / 2) )
-			x = x + w
+function MoveAny:InitBags()
+	if MoveAny:IsEnabled( "BAGS", true ) then
+		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
+			MicroButtonAndBagsBar.MicroBagBar:Hide()
+		end
 
-			if MABUILD ~= "RETAIL" then
+		MABagBar = CreateFrame( "Frame", "MABagBar", UIParent )
+
+		if MicroButtonAndBagsBar then
+			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
+		elseif MABUILD ~= "RETAIL" then
+			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
+		else
+			MABagBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
+		end
+
+		if MABUILD ~= "RETAIL" then
+			MainMenuBarBackpackButtonNormalTexture:Hide()
+		end
+
+		for i, mbname in pairs( BAGS ) do
+			local bb = _G[mbname]
+
+			if bb and MABUILD ~= "RETAIL" then
 				hooksecurefunc( bb, "Hide", function( self )
 					if self.mashow then return end
 					self.mashow = true
@@ -57,43 +103,6 @@ function MAUpdateBags()
 					border:SetAlpha( 0 )
 				end
 			end
-		end
-	end
-end
-
-function MoveAny:InitBags()
-	if MoveAny:IsEnabled( "BAGS", true ) then
-		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
-			MicroButtonAndBagsBar.MicroBagBar:Hide()
-		end
-		
-		if CharacterReagentBag0Slot ~= nil then
-			tinsert( BAGS, 1, "CharacterReagentBag0Slot" )
-		end
-		if KeyRingButton ~= nil then
-			tinsert( BAGS, 1, "KeyRingButton" )
-		end
-		if BagBarExpandToggle ~= nil then
-			tinsert( BAGS, "BagBarExpandToggle" )
-		end
-		if MainMenuBarBackpackButton ~= nil then
-			tinsert( BAGS, "MainMenuBarBackpackButton" )
-		end
-
-		
-
-		MABagBar = CreateFrame( "Frame", "MABagBar", UIParent )
-
-		if MicroButtonAndBagsBar then
-			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
-		elseif MABUILD ~= "RETAIL" then
-			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
-		else
-			MABagBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
-		end
-
-		if MABUILD ~= "RETAIL" then
-			MainMenuBarBackpackButtonNormalTexture:Hide()
 		end
 
 		MAUpdateBags()
