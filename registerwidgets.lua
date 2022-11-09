@@ -1381,7 +1381,7 @@ function MoveAny:Event( event, ... )
 			hooksecurefunc( cf, "SetClampRectInsets", function( self )
 				if self.setclamprectinsets_ma then return end
 				self.setclamprectinsets_ma = true
-				cf:SetClampRectInsets( left, 25, 25, bottom )
+				self:SetClampRectInsets( left, 25, 25, bottom )
 				self.setclamprectinsets_ma = false
 			end )
 			cf:SetClampRectInsets( left, 25, 25, bottom )
@@ -1432,6 +1432,17 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
+		local eb = _G["ChatFrame" .. 1 .. "EditBox"]
+		if eb then
+			local sw, sh = eb:GetSize()
+			hooksecurefunc( eb, "SetClampRectInsets", function( self )
+				if self.setclamprectinsets_ma then return end
+				self.setclamprectinsets_ma = true
+				self:SetClampRectInsets( 2, 2, 2, 2 )
+				self.setclamprectinsets_ma = false
+			end )
+			eb:SetClampRectInsets( 2, 2, 2, 2 )
+		end
 		MoveAny:RegisterWidget( {
 			["name"] = "ChatFrame" .. 1 .. "EditBox",
 			["lstr"] = "CHATEDITBOX",

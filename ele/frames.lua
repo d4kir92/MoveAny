@@ -2,6 +2,10 @@
 local AddOnName, MoveAny = ...
 
 MAFRAMES = {}
+MASECUREFRAMES = {
+	"StaticPopup1",
+	"StaticPopup2"
+}
 
 local currentFrame = nil
 local currentFrameName = nil
@@ -195,8 +199,25 @@ function MoveAny:MoveFrames()
 
 				local p1, p2, p3, p4, p5 = frame:GetPoint()
 				if frame.GetPoint and frame:GetPoint() then
-					frame:ClearAllPoints()
-					frame:SetPoint(p1, p2, p3, p4, p5)
+					if not tContains( MASECUREFRAMES, frame ) then
+						frame:ClearAllPoints()
+						frame:SetPoint( p1, p2, p3, p4, p5 )
+					elseif tContains( MASECUREFRAMES, frame ) then
+						if not InCombatLockdown() then
+							frame:ClearAllPoints()
+							frame:SetPoint( p1, p2, p3, p4, p5 )
+						else
+							local function Test()
+								if not InCombatLockdown() then
+									frame:ClearAllPoints()
+									frame:SetPoint( p1, p2, p3, p4, p5 )
+								else
+									C_Timer.After( 0.1, Test )
+								end
+							end
+							Test()
+						end
+					end
 				end
 			else
 				allsetup = false
@@ -424,12 +445,41 @@ tinsert( MAFRAMES, {
 	"WorldStateScoreFrame",
 	1
 } )
+tinsert( MAFRAMES, {
+	"ItemTextFrame",
+	1
+} )
+tinsert( MAFRAMES, {
+	"ExpansionLandingPage",
+	1
+} )
+tinsert( MAFRAMES, {
+	"MajorFactionRenownFrame",
+	1
+} )
+tinsert( MAFRAMES, {
+	"GenericTraitFrame",
+	1
+} )
+tinsert( MAFRAMES, {
+	"FlightMapFrame",
+	1
+} )
+tinsert( MAFRAMES, {
+	"ItemUpgradeFrame",
+	1
+} )
+tinsert( MAFRAMES, {
+	"ProfessionsFrame",
+	1
+} )
+tinsert( MAFRAMES, {
+	"CommunitiesFrame",
+	1
+} )
 
 --[[tinsert( MAFRAMES, {
 	"CollectionsJournal",
 	1
 } )]]
---[[tinsert( MAFRAMES, {
-	"CommunitiesFrame",
-	1
-} )]]
+
