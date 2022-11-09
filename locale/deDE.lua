@@ -22,7 +22,9 @@ function MALang_deDE()
 		["TARGETOFFOCUSFRAME"] = "Ziel des Fokusfenster",
 		["RUNEFRAME"] = "Todesritter - Runen Fenster",
 		["TOTEMFRAME"] = "Totem Zähler",
-		["WARLOCKPOWERFRAME"] = "Hexenmeister Machtleiste",
+		["WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster",
+		["MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster",
+		["MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Oben",

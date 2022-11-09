@@ -30,7 +30,9 @@ function MALang_enUS()
 		["TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
 		["RUNEFRAME"] = "Deathknight - Runes Frame",
 		["TOTEMFRAME"] = "Totem Timers",
-		["WARLOCKPOWERFRAME"] = "Warlock Power bar",
+		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
+		["MONKHARMONYBARFRAME"] = "Monk Harmony frame",
+		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Top",
