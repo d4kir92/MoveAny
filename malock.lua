@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.11" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.12" )
 }
 
 local PREFIX = "MOAN"
@@ -1106,6 +1106,12 @@ local function OnEvent(self, event, ...)
 						else
 							val = false
 						end
+					elseif typ == "number" then
+						--val = tonumber( val )
+					elseif typ == "string" then
+						--
+					elseif typ == "table" then
+						--
 					end
 					WebProfileData[mainIndex][subIndex][index] = val
 				end

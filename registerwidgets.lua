@@ -1123,6 +1123,7 @@ function MoveAny:Event( event, ... )
 			C_Timer.After( 0.1, MAThinkGameTooltip )
 			return
 		end
+
 		if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == true then
 			local point, parent, relativePoint, ofsx, ofsy = GameTooltip:GetPoint()
 			local owner = GameTooltip:GetOwner()
@@ -1131,6 +1132,7 @@ function MoveAny:Event( event, ... )
 				local mX, mY = GetCursorPosition()
 				mX = mX / scale
 				mY = mY / scale
+
 				GameTooltip:ClearAllPoints()
 				GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
 				GameTooltip.default = 1
@@ -1148,16 +1150,16 @@ function MoveAny:Event( event, ... )
 			MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
 			MAGameTooltip:SetSize( 100, 100 )
 			MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
-		
+			
 			hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 				if self.gtsetpoint then return end
 				self.gtsetpoint = true
-	
+
 				self:SetMovable( true )
 				self:SetUserPlaced( false )
-	
+
 				local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
-	
+
 				if MAGameTooltipOnDefaultPosition() then
 					if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == false then
 						self:ClearAllPoints()

@@ -212,6 +212,25 @@ function MoveAny:GetTab()
 	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
+function MoveAny:FixTable( tab )
+	for i, v in pairs( tab ) do
+		local typ = type( v )
+		if typ == "string" then
+			if type( tonumber( v ) ) == "number" then
+				tab[i] = tonumber( v )
+			end
+		elseif typ == "table" then
+			MoveAny:FixTable( v )
+		elseif typ == "number" then
+			--
+		elseif typ == "boolean" then
+			--
+		else
+			MoveAny:MSG( "Missing typ", typ )
+		end
+	end
+end
+
 function MoveAny:InitDB()
 	MATAB = MATAB or {}
 
@@ -226,6 +245,8 @@ function MoveAny:InitDB()
 	if MATAB["PROFILES"][MoveAny:GetCP()] == nil then
 		MoveAny:SetCP( "DEFAULT" )
 	end
+
+	MoveAny:FixTable( MATAB["PROFILES"] )
 
 	-- FIX, parent had big junk behind
 	for x, profil in pairs( MATAB["PROFILES"] ) do
@@ -370,8 +391,11 @@ function MoveAny:GetEleScale( key )
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 
 	local scale = MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"]
-	if scale and scale > 0 then
-		return scale
+	if scale and type( scale ) ~= "number" then
+		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = tonumber( scale )
+	end
+	if scale and tonumber( scale ) > 0 then
+		return tonumber( scale )
 	elseif scale then
 		MoveAny:MSG( "[GetEleScale] SCALE <= 0, key: " .. tostring( key ) )
 		return 1
