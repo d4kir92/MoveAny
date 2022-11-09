@@ -86,12 +86,16 @@ function MoveAny:InitBuffBar()
 				self:SetParent( MABuffBar )
 
 				local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
+				local x = 0
+				if GetCVarBool( "consolidateBuffs" ) then
+					x = x + 1
+				end
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, 0, 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * -(30 + 4), 0 )
 				else
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, 0, 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * (30 + 4), 0 )
 				end
 
 				self.setpoint_te1 = false
@@ -110,12 +114,16 @@ function MoveAny:InitBuffBar()
 				self:SetParent( MABuffBar )
 
 				local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
+				local x = 1
+				if GetCVarBool( "consolidateBuffs" ) then
+					x = x + 1
+				end
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, -(30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * -(30 + 4), 0 )
 				else
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * (30 + 4), 0 )
 				end
 
 
@@ -135,12 +143,16 @@ function MoveAny:InitBuffBar()
 				self:SetParent( MABuffBar )
 				
 				local p1, p2, p3, p4, p5 = MABuffBar:GetPoint()
+				local x = 2
+				if GetCVarBool( "consolidateBuffs" ) then
+					x = x + 1
+				end
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, -2 * (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, -x * (30 + 4), 0 )
 				else
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, 2 * (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * (30 + 4), 0 )
 				end
 
 
@@ -165,6 +177,8 @@ function MoveAny:InitBuffBar()
 
 		function MAUpdateBuffs()
 			MAUpdateBuffDirections()
+
+			ConsolidatedBuffs:SetParent( MABuffBar )
 
 			if TempEnchant1 then
 				TempEnchant1:SetPoint( "CENTER", 0, 0 )
