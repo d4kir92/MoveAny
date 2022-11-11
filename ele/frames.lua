@@ -1,11 +1,80 @@
 
 local AddOnName, MoveAny = ...
 
-MAFRAMES = {}
 MASECUREFRAMES = {
 	"StaticPopup1",
 	"StaticPopup2"
 }
+
+MAFRAMES = MAFRAMES or {
+	"StaticPopup1",
+	"StaticPopup2",
+	"GameMenuFrame",
+	"InterfaceOptionsFrame",
+	"QuickKeybindFrame",
+	"VideoOptionsFrame",
+	"KeyBindingFrame",
+	"MacroFrame",
+	"AddonList",
+	"ContainerFrameCombinedBags",
+	"LFGParentFrame",
+	"LootFrame",
+	"CharacterFrame",
+	"InspectFrame",
+	"SpellBookFrame",
+	"PlayerTalentFrame",
+	"ClassTalentFrame",
+	"FriendsFrame",
+	"HelpFrame",
+	"TradeSkillFrame",
+	"QuestLogFrame",
+	"WorldMapFrame",
+	"ChallengesKeystoneFrame",
+	"CovenantMissionFrame",
+	"OrderHallMissionFrame",
+	"PVPMatchScoreboard",
+	"GossipFrame",
+	"MerchantFrame",
+	"PetStableFrame",
+	"QuestFrame",
+	"ClassTrainerFrame",
+	"AchievementFrame",
+	"PVEFrame",
+	"EncounterJournal",
+	"WeeklyRewardsFrame",
+	"BankFrame",
+	"WardrobeFrame",
+	"DressUpFrame",
+	"MailFrame",
+	"OpenMailFrame",
+	"AuctionHouseFrame",
+	"AuctionFrame",
+	"AnimaDiversionFrame",
+	"CovenantSanctumFrame",
+	"SoulbindViewer",
+	"GarrisonLandingPage",
+	"PlayerChoiceFrame",
+	"WorldStateScoreFrame",
+	"ItemTextFrame",
+	"ExpansionLandingPage",
+	"MajorFactionRenownFrame",
+	"GenericTraitFrame",
+	"FlightMapFrame",
+	"ItemUpgradeFrame",
+	"ProfessionsFrame",
+	"CommunitiesFrame",
+	"CollectionsJournal",
+	"CovenantRenownFrame",
+	"ChallengesKeystoneFrame",	
+}
+
+for i = 1, 20 do
+	if _G["ContainerFrame" .. i] then
+		if not tContains( MAFRAMES, "ContainerFrame" .. i ) then
+			tinsert( MAFRAMES, "ContainerFrame" .. i )
+		end
+	end
+end
 
 local currentFrame = nil
 local currentFrameName = nil
@@ -56,12 +125,8 @@ local frameinit = {}
 function MoveAny:MoveFrames()
 	if not InCombatLockdown() then
 		local allsetup = true
-		for i, mf in pairs( MAFRAMES ) do
-			local name = mf[1]
+		for i, name in pairs( MAFRAMES ) do
 			local frame = _G[name]
-			local scale = mf[2]
-			local dontscale = mf[3]
-			local manparent = mf[4]
 			if frame and frameinit[name] == nil then
 				frameinit[name] = true
 
@@ -97,13 +162,7 @@ function MoveAny:MoveFrames()
 						end
 					end
 				end
-				
-				if scale ~= 1 then
-					if scale > 0 then
-						frame:SetScale( scale )
-					end
-				end
-				
+								
 				frame:SetClampedToScreen( true )
 
 				frame:SetScript( "OnMouseDown", function( self, btn )
@@ -178,32 +237,30 @@ function MoveAny:MoveFrames()
 					self.maframesetpoint = false
 				end )
 
-				if not dontscale then
-					hooksecurefunc( frame, "SetScale", function( self, scale )
-						if self.masetscale then return end
-						self.masetscale = true
-						
-						if MoveAny:GetFrameScale( name ) or scale then
-							local sca = MoveAny:GetFrameScale( name ) or scale
-							if sca > 0 then
-								self:SetScale( sca )
-							end
+				hooksecurefunc( frame, "SetScale", function( self, scale )
+					if self.masetscale then return end
+					self.masetscale = true
+					
+					if MoveAny:GetFrameScale( name ) or scale then
+						local sca = MoveAny:GetFrameScale( name ) or scale
+						if sca > 0 then
+							self:SetScale( sca )
 						end
-						self.masetscale = false
-					end )
-					if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
-						if frame:GetHeight() * MoveAny:GetFrameScale( name ) > GetScreenHeight() then
-							if GetScreenHeight() / frame:GetHeight() > 0 then
-								MoveAny:SetFrameScale( name, GetScreenHeight() / frame:GetHeight() )
-							end
-							frame:SetScale( MoveAny:GetFrameScale( name ) )
-						end
-						if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
-							frame:SetScale( MoveAny:GetFrameScale( name ) )
-						end
-					else
-						frame:SetScale( frame:GetScale() )
 					end
+					self.masetscale = false
+				end )
+				if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
+					if frame:GetHeight() * MoveAny:GetFrameScale( name ) > GetScreenHeight() then
+						if GetScreenHeight() / frame:GetHeight() > 0 then
+							MoveAny:SetFrameScale( name, GetScreenHeight() / frame:GetHeight() )
+						end
+						frame:SetScale( MoveAny:GetFrameScale( name ) )
+					end
+					if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
+						frame:SetScale( MoveAny:GetFrameScale( name ) )
+					end
+				else
+					frame:SetScale( frame:GetScale() )
 				end
 
 				if frame.GetPoint and frame:GetPoint() then
@@ -239,254 +296,3 @@ function MoveAny:MoveFrames()
 		C_Timer.After( 0.2, MoveAny.MoveFrames )
 	end
 end
-
-tinsert( MAFRAMES, {
-	"StaticPopup1",
-	1
-} )
-tinsert( MAFRAMES, {
-	"StaticPopup2",
-	1
-} )
-tinsert( MAFRAMES, {
-	"GameMenuFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"InterfaceOptionsFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"QuickKeybindFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"VideoOptionsFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"KeyBindingFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"MacroFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"AddonList",
-	1
-} )
-
-tinsert( MAFRAMES, {
-	"ContainerFrame" .. 1,
-	1,
-	true,
-	nil,
-	true
-} )
-for i = 2, 20 do
-	if _G["ContainerFrame" .. i] then
-		tinsert( MAFRAMES, {
-			"ContainerFrame" .. i,
-			1,
-			true,
-			"ContainerFrame" .. i - 1,
-			true
-		} )
-	end
-end
-tinsert( MAFRAMES, {
-	"ContainerFrameCombinedBags",
-	1
-} )
-tinsert( MAFRAMES, {
-	"LFGParentFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"LootFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"CharacterFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"InspectFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"SpellBookFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"PlayerTalentFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ClassTalentFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"FriendsFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"HelpFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"TradeSkillFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"QuestLogFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"WorldMapFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ChallengesKeystoneFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"CovenantMissionFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"OrderHallMissionFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"PVPMatchScoreboard",
-	1
-} )
-tinsert( MAFRAMES, {
-	"GossipFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"MerchantFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"PetStableFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"QuestFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ClassTrainerFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"AchievementFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"PVEFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"EncounterJournal",
-	1
-} )
-tinsert( MAFRAMES, {
-	"WeeklyRewardsFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"BankFrame",
-	1
-} )
-if MABUILD ~= "RETAIL" then
-	tinsert( MAFRAMES, {
-		"WardrobeFrame",
-		1
-	} )
-end
-tinsert( MAFRAMES, {
-	"DressUpFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"MailFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"OpenMailFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"AuctionHouseFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"AuctionFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"AnimaDiversionFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"CovenantSanctumFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"SoulbindViewer",
-	1
-} )
-tinsert( MAFRAMES, {
-	"GarrisonLandingPage",
-	1
-} )
-tinsert( MAFRAMES, {
-	"PlayerChoiceFrame",
-	1,
-	true
-} )
-tinsert( MAFRAMES, {
-	"WorldStateScoreFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ItemTextFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ExpansionLandingPage",
-	1
-} )
-tinsert( MAFRAMES, {
-	"MajorFactionRenownFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"GenericTraitFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"FlightMapFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ItemUpgradeFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"ProfessionsFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"CommunitiesFrame",
-	1
-} )
-tinsert( MAFRAMES, {
-	"CollectionsJournal",
-	1
-} )
