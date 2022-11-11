@@ -64,37 +64,67 @@ function MoveAny:MoveFrames()
 			local manparent = mf[4]
 			if frame and frameinit[name] == nil then
 				frameinit[name] = true
+
+				local fm = _G[name .. "Move"]
+				if fm == nil then
+					fm = CreateFrame( "FRAME", name .. "Move", UIParent )
+					fm:SetMovable( true )
+					fm:SetUserPlaced( false )
+					fm:SetClampedToScreen( true )
+					fm:RegisterForDrag( "LeftButton", "RightButton", "MiddleButton" )
+					fm:EnableMouse( false )
+
+					hooksecurefunc( frame, "SetScale", function( self, scale )
+						fm:SetScale( scale )
+					end )
+
+					function fm:UpdatePreview()
+						local fm = _G[name .. "Move"]
+						if fm and fm.ismoving then
+							if fm:GetLeft() then
+								fm.x = fm:GetLeft() 
+								fm.y = (fm:GetTop() - fm:GetHeight()) 
+	
+								MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fm.x, fm.y )
+								
+								local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
+								if dbp1 and dbp3 then
+									frame:ClearAllPoints()
+									frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+								end
+							end
+							C_Timer.After( 0.01, fm.UpdatePreview )
+						end
+					end
+				end
+				
 				if scale ~= 1 then
 					if scale > 0 then
 						frame:SetScale( scale )
 					end
 				end
 				
-				frame:SetMovable( true )
-				frame:SetUserPlaced( false )
-				frame:EnableMouse( true )
 				frame:SetClampedToScreen( true )
-				frame:RegisterForDrag("LeftButton", "RightButton", "MiddleButton")
-			
-				frame:SetScript( "OnDragStart", function(self, btn)
-					frame:SetUserPlaced( false )
+
+				frame:SetScript( "OnMouseDown", function( self, btn )
+					if frame:GetPoint() then
+						fm:SetSize( frame:GetSize() )
+						fm:ClearAllPoints()
+						fm:SetPoint( frame:GetPoint() )
+					end
 
 					if (MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and btn == "RightButton") then
-						frame.iscaling = true
-						
 						currentFrame = frame
 						currentFrameName = name
-
-						frame.prevMouseX = nil
-						frame.prevMouseY = nil
 						
 						GameTooltip:Hide()
 					elseif (MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and IsShiftKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and btn == "LeftButton") then
-						frame.ismoving = true
+						fm.ismoving = true
 						if not InCombatLockdown() then
-							self:StartMoving()
-							frame:SetUserPlaced( false )
+							fm:StartMoving()
+							fm:SetUserPlaced( false )
 						end
+						fm:UpdatePreview()
 					elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) and IsShiftKeyDown() and btn == "MiddleButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and btn == "MiddleButton") then
 						MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
 						MoveAny:SetFrameScale( name, nil )
@@ -115,50 +145,28 @@ function MoveAny:MoveFrames()
 							end
 						end
 					end
-				end)
+				end )
 
-				function frame:UpdateValues()
-					if not InCombatLockdown() then
-						if frame:GetLeft() then
-							frame.x = frame:GetLeft() 
-							frame.y = (frame:GetTop() - frame:GetHeight()) 
+				frame:SetScript( "OnMouseUp", function( self )
+					local fm = _G[name .. "Move"]
+					if fm.ismoving then
+						fm.ismoving = false
+						fm:StopMovingOrSizing()
 
-							MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", frame.x, frame.y )
-							
-							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
-							if dbp1 and dbp3 then
-								frame:ClearAllPoints()
-								frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-							end
-						else
-							C_Timer.After( 0.1, frame.UpdateValues )
-						end
-					end
-				end
-
-				frame:SetScript("OnDragStop", function(self)
-					if frame.ismoving then
-						frame.ismoving = false
-						frame:StopMovingOrSizing()
-						frame:UpdateValues()
-
-						frame:SetUserPlaced( false )
-					end
-					if frame.isscaling then
-						frame.isscaling = false
+						fm:SetUserPlaced( false )
 					end
 					currentFrame = nil
 					currentFrameName = nil
-				end)
+				end )
 
-				hooksecurefunc(frame, "SetPoint", function( self, ... )
-					if self.framesetpoint then return end
-					self.framesetpoint = true
+				hooksecurefunc( frame, "SetPoint", function( self, ... )
+					if self.maframesetpoint then return end
+					self.maframesetpoint = true
 					
-					self:SetMovable( true )
-					if self.SetUserPlaced and self:IsMovable() then
+					--self:SetMovable( true )
+					--[[if self.SetUserPlaced and self:IsMovable() then
 						self:SetUserPlaced( false )
-					end
+					end]]
 
 					if not InCombatLockdown() then
 						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
@@ -167,13 +175,14 @@ function MoveAny:MoveFrames()
 							self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 						end
 					end
-					self.framesetpoint = false
+					self.maframesetpoint = false
 				end )
 
 				if not dontscale then
 					hooksecurefunc( frame, "SetScale", function( self, scale )
 						if self.masetscale then return end
 						self.masetscale = true
+						
 						if MoveAny:GetFrameScale( name ) or scale then
 							local sca = MoveAny:GetFrameScale( name ) or scale
 							if sca > 0 then
@@ -193,12 +202,12 @@ function MoveAny:MoveFrames()
 							frame:SetScale( MoveAny:GetFrameScale( name ) )
 						end
 					else
-						frame:SetScale( 1 )
+						frame:SetScale( frame:GetScale() )
 					end
 				end
 
-				local p1, p2, p3, p4, p5 = frame:GetPoint()
 				if frame.GetPoint and frame:GetPoint() then
+					local p1, p2, p3, p4, p5 = frame:GetPoint()
 					if not tContains( MASECUREFRAMES, frame ) then
 						frame:ClearAllPoints()
 						frame:SetPoint( p1, p2, p3, p4, p5 )
@@ -477,9 +486,7 @@ tinsert( MAFRAMES, {
 	"CommunitiesFrame",
 	1
 } )
-
---[[tinsert( MAFRAMES, {
+tinsert( MAFRAMES, {
 	"CollectionsJournal",
 	1
-} )]]
-
+} )
