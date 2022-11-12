@@ -121,6 +121,32 @@ scaler:SetScript( "OnUpdate", function()
 	end
 end )
 
+function MoveAny:FrameDragInfo( c )
+	if c > 0 then
+		if IsMouseButtonDown( "RightButton" ) or
+		IsMouseButtonDown( "LeftButton" ) or
+		IsMouseButtonDown( "MiddleButton" ) then
+			C_Timer.After( 0.01, function()
+				MoveAny:FrameDragInfo( c - 1 )
+			end )
+		end
+	else
+		if IsMouseButtonDown( "RightButton" ) then
+			if MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) then
+				MoveAny:MSG( MAGT( "FRAMESSHIFTSCALE" ) .. "." )
+			end
+		elseif IsMouseButtonDown( "LeftButton" ) then
+			if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
+				MoveAny:MSG( MAGT( "FRAMESSHIFTDRAG" ) .. "." )
+			end
+		elseif IsMouseButtonDown( "MiddleButton" ) then
+			if MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) then
+				MoveAny:MSG( MAGT( "FRAMESSHIFTRESET" ) .. "." )
+			end
+		end
+	end
+end
+
 local frameinit = {}
 function MoveAny:MoveFrames()
 	if not InCombatLockdown() then
@@ -190,19 +216,7 @@ function MoveAny:MoveFrames()
 
 						MoveAny:MSG( "[" .. name .. "] is reset, reopen the frame." )
 					else
-						if btn == "RightButton" then
-							if MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) then
-								MoveAny:MSG( MAGT( "FRAMESSHIFTSCALE" ) .. "." )
-							end
-						elseif btn == "LeftButton" then
-							if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
-								MoveAny:MSG( MAGT( "FRAMESSHIFTDRAG" ) .. "." )
-							end
-						elseif btn == "MiddleButton" then
-							if MoveAny:IsEnabled( "FRAMESSHIFTRESET", true ) then
-								MoveAny:MSG( MAGT( "FRAMESSHIFTRESET" ) .. "." )
-							end
-						end
+						MoveAny:FrameDragInfo( 25 )
 					end
 				end )
 
