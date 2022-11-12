@@ -78,6 +78,7 @@ function MALang_deDE()
 		["DURABILITY"] = "Haltbarkeitspuppe",
 		["MONEYBAR"] = "Geldleiste",
 		["TOKENBAR"] = "Token-Leiste",
+		["IAILVLBAR"] = "Gegenstandsstufe-Leiste (ItemLevel)",
 		["CASTINGBAR"] = "Zauberleiste",
 		["TALKINGHEAD"] = "Redekopf-Dialog",
 		["ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)",

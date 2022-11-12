@@ -49,6 +49,9 @@ function MAUpdateBags()
 				bb:SetParent( MABagBar )
 				bb:ClearAllPoints()
 				bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", x, -(sh / 2 - h / 2) )
+				function bb:GetMAEle()
+					return MABagBar
+				end
 				x = x + w
 			end
 		end

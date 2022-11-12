@@ -3,6 +3,7 @@ local AddOnName, MoveAny = ...
 
 MADragFrames = MADragFrames or {}
 MAEleFrames = MAEleFrames or {}
+MAAlphaEles = MAAlphaEles or {}
 
 local framelevel = 100
 
@@ -505,9 +506,15 @@ function MoveAny:RegisterWidget( tab, debug )
 			frame:SetClampRectInsets( l, r, t, b )
 		end
 	end
-			
 
 	tinsert( MAEleFrames, frame )
+	tinsert( MAAlphaEles, frame )
+
+	for i, btn in pairs( { frame:GetChildren() } ) do
+		function btn:GetMAEle()
+			return frame
+		end
+	end
 
 	frame.ignoreFramePositionManager = true
 
@@ -661,24 +668,20 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	if lastSize ~= getn( MAEleFrames ) then
-		lastSize = getn( MAEleFrames )
+	if lastSize ~= getn( MAAlphaEles ) then
+		lastSize = getn( MAAlphaEles )
 		MoveAny:UpdateAlphas()
 	end
 
 	local ele = GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
-		if tContains( MAEleFrames, ele ) then
-			ele:SetAlpha(1)
+		if tContains( MAAlphaEles, ele ) then
+			ele:SetAlpha( 1 )
 			MoveAny:SetMouseEleAlpha( ele )
-		elseif ele.GetParent and ele:GetParent() then
-			if tContains( MAEleFrames, ele:GetParent() ) then
-				ele:GetParent():SetAlpha(1)
-				MoveAny:SetMouseEleAlpha( ele:GetParent() )
-			elseif ele:GetParent().GetParent and ele:GetParent():GetParent() and tContains( MAEleFrames, ele:GetParent():GetParent() ) then
-				ele:GetParent():GetParent():SetAlpha(1)
-				MoveAny:SetMouseEleAlpha( ele:GetParent():GetParent() )
-			end
+		elseif ele.GetMAEle then
+			ele = ele:GetMAEle()
+			ele:SetAlpha( 1 )
+			MoveAny:SetMouseEleAlpha( ele )
 		elseif lastEle then
 			lastEle = nil
 			MoveAny:UpdateAlphas()
@@ -1082,6 +1085,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "TOKENBAR"
 		} )
 	end
+	if IAILVLBar and MoveAny:IsEnabled( "IAILVLBAR", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "IAILVLBar",
+			["lstr"] = "IAILVLBAR"
+		} )
+	end
 	
 	local gtp4 = nil
 	local gtp5 = nil
@@ -1303,6 +1312,8 @@ function MoveAny:Event( event, ... )
 
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
+			StatusTrackingBarManager:EnableMouse( true )
+
 			local sw, sh = StatusTrackingBarManager:GetSize()
 			MoveAny:RegisterWidget( {
 				["name"] = "StatusTrackingBarManager",
@@ -1394,6 +1405,9 @@ function MoveAny:Event( event, ... )
 					["lstr"] = "CHAT",
 					["lstri"] = i
 				} )
+				if _G["ChatFrame" .. i] then
+					_G["ChatFrame" .. i]:EnableMouse( true )
+				end
 			end
 			if i > 1 then
 				if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
@@ -1428,10 +1442,23 @@ function MoveAny:Event( event, ... )
 		end
 	end
 	if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
+		local cbf = _G["ChatFrame" .. 1 .. "ButtonFrame"]
+		cbf:EnableMouse( true )
+
 		MoveAny:RegisterWidget( {
 			["name"] = "ChatFrame" .. 1 .. "ButtonFrame",
 			["lstr"] = "CHATBUTTONFRAME",
 		} )
+		if ChatFrameMenuButton then
+			function ChatFrameMenuButton:GetMAEle()
+				return cbf
+			end
+		end
+		if ChatFrameChannelButton then
+			function ChatFrameChannelButton:GetMAEle()
+				return cbf
+			end
+		end
 	end
 	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
 		local eb = _G["ChatFrame" .. 1 .. "EditBox"]
@@ -1494,6 +1521,7 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitMicroMenu()
 	MoveAny:InitBags()
 	MoveAny:InitMAFPSFrame()
+	MoveAny:InitMultiCastActionBar()
 	
 	if MoveAny.MoveFrames then
 		MoveAny:MoveFrames()

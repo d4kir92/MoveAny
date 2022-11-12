@@ -52,6 +52,10 @@ function MoveAny:InitMicroMenu()
 			for i, mbname in pairs( MBTNS ) do
 				local mb = _G[mbname] 
 
+				function mb:GetMAEle()
+					return MAMenuBar
+				end
+
 				local sw, sh = mb:GetSize()
 				if MABUILD ~= "RETAIL" then
 					sw = sw - 2

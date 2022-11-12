@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.16" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.17" )
 }
 
 local PREFIX = "MOAN"
@@ -211,7 +211,9 @@ function MoveAny:InitMALock()
 		if IATokenBar then
 			AddCheckBox( 4, "TOKENBAR", true )
 		end
-		
+		if IAILVLBar then
+			AddCheckBox( 4, "IAILVLBAR", true )
+		end
 
 
 		AddCategory( "BOTTOM" )

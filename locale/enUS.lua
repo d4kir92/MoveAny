@@ -86,6 +86,7 @@ function MALang_enUS()
 		["DURABILITY"] = "Durability Doll",
 		["MONEYBAR"] = "Money Bar",
 		["TOKENBAR"] = "Token Bar",
+		["IAILVLBAR"] = "ItemLevel Bar",
 		["CASTINGBAR"] = "Casting Bar",
 		["TALKINGHEAD"] = "Talking Head Dialog",
 		["ACTIONBAR1"] = "Actionbar 1 (Main Bar)",
