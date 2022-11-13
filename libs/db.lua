@@ -212,6 +212,14 @@ function MoveAny:GetTab()
 	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
+function MoveAny:GV( key, val )
+	return MATAB[key] or val
+end
+
+function MoveAny:SV( key, val )
+	MATAB[key] = val
+end
+
 function MoveAny:FixTable( tab )
 	for i, v in pairs( tab ) do
 		local typ = type( v )
@@ -459,4 +467,8 @@ function MoveAny:GetMinimapTable()
 	MoveAny:GetTab()["MMICON"] = MoveAny:GetTab()["MMICON"] or {}
 
 	return MoveAny:GetTab()["MMICON"]
+end
+
+function MoveAny:GetGridSize()
+	return MoveAny:GV( "GRIDSIZE", 10 )
 end

@@ -7,6 +7,7 @@ function MALang_deDE()
 
 		["GENERAL"] = "Allgemein",
 		["SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
+		["GRIDSIZE"] = "Rastergröße (Grid)",
 		["MOVEFRAMES"] = "Fenster bewegen",
 		["FRAMESSHIFTDRAG"] = "Fenster mit Shift + Linksklick-ziehen bewegen",
 		["FRAMESSHIFTSCALE"] = "Fenster mit Shift + Rechtsklick-ziehen skalieren",

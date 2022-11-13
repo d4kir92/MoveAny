@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.21" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.22" )
 }
 
 local PREFIX = "MOAN"
@@ -20,6 +20,7 @@ local sh = 520
 local posy = -4
 local cas = {}
 local cbs = {}
+local sls = {}
 
 local function AddCategory( key )
 	if cas[key] == nil then
@@ -33,7 +34,7 @@ local function AddCategory( key )
 	end
 
 	cas[key]:ClearAllPoints()
-	if strfind( strlower( key ), strlower( searchStr ) ) then
+	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MAGT( key ) ), strlower( searchStr ) ) then
 		cas[key]:Show()
 
 		if posy < -4 then
@@ -91,6 +92,54 @@ local function AddCheckBox( x, key, val, func, id )
 	end
 end
 
+local function AddSlider( x, key, val, func, vmin, vmax, steps )
+	if sls[key] == nil then
+		sls[key] = CreateFrame( "Slider", "sls[" .. key .. "]", MALock.SC, "OptionsSliderTemplate" )
+
+		sls[key]:SetWidth( MALock.SC:GetWidth() - 30 - x )
+		sls[key]:SetPoint( "TOPLEFT", MALock.SC, "TOPLEFT", x + 5, posy )
+
+		sls[key].Low:SetText(vmin)
+		sls[key].High:SetText(vmax)
+
+		sls[key].Text:SetText( MAGT(key) .. ": " .. MoveAny:GV( key, val ) )
+
+		sls[key]:SetMinMaxValues(vmin, vmax)
+		sls[key]:SetObeyStepOnDrag(true)
+		sls[key]:SetValueStep(steps)
+
+		sls[key]:SetValue( MoveAny:GV( key, val ) )
+
+		sls[key]:SetScript("OnValueChanged", function(self, val)
+			--val = val - val % steps
+			val = tonumber( string.format( "%" .. steps .. "f", val ) )
+			if val and val ~= MoveAny:GV( key ) then
+				MoveAny:SV( key, val )
+				sls[key].Text:SetText( MAGT( key ) .. ": " .. val )
+
+				if func then
+					func()
+				end
+
+				if MALock.save then
+					MALock.save:Enable()
+				end
+			end
+		end)
+		posy = posy - 10
+	end
+
+	sls[key]:ClearAllPoints()
+	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MAGT( key ) ), strlower( searchStr ) ) then
+		sls[key]:Show()
+
+		sls[key]:SetPoint( "TOPLEFT", MALock.SC, "TOPLEFT", x, posy )
+		posy = posy - 24
+	else
+		sls[key]:Hide()
+	end
+end
+
 function MoveAny:InitMALock()
 	MALock = CreateFrame( "Frame", "MALock", UIParent, "BasicFrameTemplate" )
 	MALock:SetSize( sw, sh )
@@ -129,6 +178,8 @@ function MoveAny:InitMALock()
 
 		AddCategory( "GENERAL" )
 		AddCheckBox( 4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton )
+		--AddSlider( x, key, val, func, vmin, vmax, steps )
+		AddSlider( 24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1 )
 		AddCheckBox( 4, "MOVEFRAMES", true )
 		AddCheckBox( 24, "FRAMESSHIFTDRAG", false )
 		AddCheckBox( 24, "FRAMESSHIFTSCALE", false )
@@ -354,47 +405,8 @@ function MoveAny:InitMALock()
 	MAGridFrame.ver:SetSize( 1, GetScreenHeight() )
 	MAGridFrame.ver:SetColorTexture( 1, 1, 1, 1 )
 
-	for x = 0, GetScreenWidth() / 2, 10 do
-		local line = MAGridFrame:CreateTexture()
-		line:SetPoint( "CENTER", 0.5 + x, 0 )
-		line:SetSize( 1.09, GetScreenHeight() )
-		if x % 50 == 0 then
-			line:SetColorTexture( 1, 1, 0.5, 0.25 )
-		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
-		end
-	end
-	for x = 0, -GetScreenWidth() / 2, -10 do
-		local line = MAGridFrame:CreateTexture()
-		line:SetPoint( "CENTER", 0.5 + x, 0 )
-		line:SetSize( 1.09, GetScreenHeight() )
-		if x % 50 == 0 then
-			line:SetColorTexture( 1, 1, 0.5, 0.25 )
-		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
-		end
-	end
-	for y = 0, GetScreenHeight() / 2, 10 do
-		local line = MAGridFrame:CreateTexture()
-		line:SetPoint( "CENTER", 0, 0.5 + y )
-		line:SetSize( GetScreenWidth(), 1.09, GetScreenHeight() )
-		if y % 50 == 0 then
-			line:SetColorTexture( 1, 1, 0.5, 0.25 )
-		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
-		end
-	end
-	for y = 0, -GetScreenHeight() / 2, -10 do
-		local line = MAGridFrame:CreateTexture()
-		line:SetPoint( "CENTER", 0, 0.5 + y )
-		line:SetSize( GetScreenWidth(), 1.09 )
-		if y % 50 == 0 then
-			line:SetColorTexture( 1, 1, 0.5, 0.25 )
-		else
-			line:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
-		end
-	end
-
+	MoveAny:UpdateGrid()
+	
 	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( "MALock" )
 	if dbp1 and dbp3 then
 		MALock:ClearAllPoints()
@@ -402,6 +414,63 @@ function MoveAny:InitMALock()
 	end
 
 	MoveAny:HideMALock()
+end
+
+function MoveAny:UpdateGrid()
+	local id = 0
+	MAGridFrame.lines = MAGridFrame.lines or {}
+	for i, v in pairs( MAGridFrame.lines ) do
+		v:Hide()
+	end
+
+	for x = 0, GetScreenWidth() / 2, MoveAny:GetGridSize() do
+		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
+		MAGridFrame.lines[id]:SetPoint( "CENTER", 0.5 + x, 0 )
+		MAGridFrame.lines[id]:SetSize( 1.09, GetScreenHeight() )
+		if x % 50 == 0 then
+			MAGridFrame.lines[id]:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			MAGridFrame.lines[id]:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
+		end
+		MAGridFrame.lines[id]:Show()
+		id = id + 1
+	end
+	for x = 0, -GetScreenWidth() / 2, -MoveAny:GetGridSize() do
+		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
+		MAGridFrame.lines[id]:SetPoint( "CENTER", 0.5 + x, 0 )
+		MAGridFrame.lines[id]:SetSize( 1.09, GetScreenHeight() )
+		if x % 50 == 0 then
+			MAGridFrame.lines[id]:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			MAGridFrame.lines[id]:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
+		end
+		MAGridFrame.lines[id]:Show()
+		id = id + 1
+	end
+	for y = 0, GetScreenHeight() / 2, MoveAny:GetGridSize() do
+		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
+		MAGridFrame.lines[id]:SetPoint( "CENTER", 0, 0.5 + y )
+		MAGridFrame.lines[id]:SetSize( GetScreenWidth(), 1.09, GetScreenHeight() )
+		if y % 50 == 0 then
+			MAGridFrame.lines[id]:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			MAGridFrame.lines[id]:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
+		end
+		MAGridFrame.lines[id]:Show()
+		id = id + 1
+	end
+	for y = 0, -GetScreenHeight() / 2, -MoveAny:GetGridSize() do
+		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
+		MAGridFrame.lines[id]:SetPoint( "CENTER", 0, 0.5 + y )
+		MAGridFrame.lines[id]:SetSize( GetScreenWidth(), 1.09 )
+		if y % 50 == 0 then
+			MAGridFrame.lines[id]:SetColorTexture( 1, 1, 0.5, 0.25 )
+		else
+			MAGridFrame.lines[id]:SetColorTexture( 0.5, 0.5, 0.5, 0.25 )
+		end
+		MAGridFrame.lines[id]:Show()
+		id = id + 1
+	end
 end
 
 function MoveAny:ShowProfiles()

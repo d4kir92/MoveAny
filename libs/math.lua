@@ -26,12 +26,13 @@ function MAMathR( val, dec )
 	return tonumber( string.format( "%0." .. dec .. "f", val ) )
 end
 
-function MAGrid( n )
+function MAGrid( n, snap )
 	n = n or 0
+	snap = snap or MoveAny:GetGridSize()
 
-	local mod = n % 5
-	if mod > 2.5 then
-		return n - mod + 5
+	local mod = n % snap
+	if mod > ( snap / 2 ) then
+		return n - mod + snap
 	else
 		return n - mod
 	end
