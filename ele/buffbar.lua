@@ -191,7 +191,9 @@ function MoveAny:InitBuffBar()
 
 			MAUpdateBuffDirections()
 
-			ConsolidatedBuffs:SetParent( MABuffBar )
+			if ConsolidatedBuffs then
+				ConsolidatedBuffs:SetParent( MABuffBar )
+			end
 
 			if TempEnchant1 then
 				TempEnchant1:SetPoint( "CENTER", 0, 0 )
