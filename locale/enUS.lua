@@ -131,6 +131,10 @@ function MALang_enUS()
 		["ALPHAINCOMBAT"] = "Alpha (in Combat)",
 		["ALPHANOTINCOMBAT"] = "Alpha (not in Combat)",
 		["ALPHAINVEHICLE"] = "Alpha (in Vehicle)",
+
+		["MABUFFLIMIT"] = "Buff limit",
+		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
+		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
 	}
 
 	MAUpdateLanguageTab( tab )

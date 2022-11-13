@@ -3,6 +3,10 @@ local AddOnName, MoveAny = ...
 
 local btnsize = 36
 
+MABUFFLIMIT = 10
+MABUFFSPACINGX = 4
+MABUFFSPACINGY = 10
+
 function MoveAny:InitBuffBar()
 	if MoveAny:IsEnabled( "BUFFS", true ) then
 		MABuffBar = CreateFrame( "Frame", "MABuffBar", UIParent )
@@ -92,10 +96,10 @@ function MoveAny:InitBuffBar()
 				end
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, x * -(30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * -(30 + MABUFFSPACINGX), 0 )
 				else
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, x * (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * (30 + MABUFFSPACINGX), 0 )
 				end
 
 				self.setpoint_te1 = false
@@ -118,12 +122,17 @@ function MoveAny:InitBuffBar()
 				if GetCVarBool( "consolidateBuffs" ) then
 					x = x + 1
 				end
+
+				local posy = 0
+				if MABUFFLIMIT == 1 then
+					posy = -30 - MABUFFSPACINGY
+				end
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, x * -(30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * -(30 + MABUFFSPACINGX), posy )
 				else
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, x * (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * (30 + MABUFFSPACINGX), 0 )
 				end
 
 
@@ -149,10 +158,10 @@ function MoveAny:InitBuffBar()
 				end
 				if dirH == "LEFT" then
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, -x * (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, -x * (30 + MABUFFSPACINGX), 0 )
 				else
 					self:ClearAllPoints()
-					self:SetPoint( p1, MABuffBar, p3, x * (30 + 4), 0 )
+					self:SetPoint( p1, MABuffBar, p3, x * (30 + MABUFFSPACINGX), 0 )
 				end
 
 
@@ -176,6 +185,10 @@ function MoveAny:InitBuffBar()
 		end
 
 		function MAUpdateBuffs()
+			MABUFFLIMIT = MoveAny:GetEleOption( "MABuffBar", "MABUFFLIMIT", 10 )
+			MABUFFSPACINGX = MoveAny:GetEleOption( "MABuffBar", "MABUFFSPACINGX", 4 )
+			MABUFFSPACINGY = MoveAny:GetEleOption( "MABuffBar", "MABUFFSPACINGY", 10 )
+
 			MAUpdateBuffDirections()
 
 			ConsolidatedBuffs:SetParent( MABuffBar )
@@ -223,30 +236,40 @@ function MoveAny:InitBuffBar()
 								count = count + 1
 							end
 							local id = numBuffs + count
-							local caly = (id - 0.1) / 10
+							local caly = (id - 0.1) / MABUFFLIMIT
 							local cy = caly - caly % 1
-
 							
 							if bbtn:GetParent() == BuffFrame then
 								self:ClearAllPoints()
 								if numBuffs == 1 then
+									local posx = 0
 									if rel == "RIGHT" then
-										self:SetPoint( p1, MABuffBar, p3, -count * (sw + 4), 0 )
+										posx = -count * (sw + MABUFFSPACINGX)
 									else
-										self:SetPoint( p1, MABuffBar, p3, count * (sw + 4), 0 )
+										posx = count * (sw + MABUFFSPACINGX)
 									end
-								else
-									if id % 10 == 1 then
+									local posy = 0
+									if MABUFFLIMIT == 1 then
+										posx = 0
 										if dirV == "BOTTOM" then
-											self:SetPoint( p1, MABuffBar, p3, 0, -cy * (sh + 10) )
+											posy = -30 - MABUFFSPACINGY
 										else
-											self:SetPoint( p1, MABuffBar, p3, 0, cy * (sh + 10) )
+											posy = 30 + MABUFFSPACINGY
+										end
+									end
+									self:SetPoint( p1, MABuffBar, p3, posx, posy )
+								else
+									if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
+										if dirV == "BOTTOM" then
+											self:SetPoint( p1, MABuffBar, p3, 0, -cy * (sh + MABUFFSPACINGY) )
+										else
+											self:SetPoint( p1, MABuffBar, p3, 0, cy * (sh + MABUFFSPACINGY) )
 										end
 									elseif prevBuff then
 										if rel == "RIGHT" then
-											self:SetPoint( rel, prevBuff, dirH, -4, 0 )
+											self:SetPoint( rel, prevBuff, dirH, -MABUFFSPACINGX, 0 )
 										else
-											self:SetPoint( rel, prevBuff, dirH, 4, 0 )
+											self:SetPoint( rel, prevBuff, dirH, MABUFFSPACINGX, 0 )
 										end
 									end
 								end

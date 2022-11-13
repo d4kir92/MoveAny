@@ -123,6 +123,10 @@ function MALang_deDE()
 		["ALPHAINCOMBAT"] = "Sichtbarkeit (im Kampf)",
 		["ALPHANOTINCOMBAT"] = "Sichtbarkeit (Nicht im Kampf)",
 		["ALPHAINVEHICLE"] = "Sichtbarkeit (im Fahrzeug)",
+
+		["MABUFFLIMIT"] = "Stärkungszauber Grenze",
+		["MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
+		["MABUFFSPACINGY"] = "Stärkungszauber Abstand Vertikal",
 	}
 
 	MAUpdateLanguageTab( tab )

@@ -77,17 +77,17 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	return btn
 end
 
-function MACreateSlider( parent, x, y, name, key, steps, vmin, vmax, func )
+function MACreateSlider( parent, x, y, name, key, value, steps, vmin, vmax, func )
 	local slider = CreateFrame( "Slider", nil, parent, "OptionsSliderTemplate" )
 	slider:SetWidth( parent:GetWidth() - 20 )
 	slider:SetPoint( "TOPLEFT", parent, "TOPLEFT", x, y );
 	slider.Low:SetText( vmin )
 	slider.High:SetText( vmax )
-	slider.Text:SetText( MAGT( key ) .. ": " .. MoveAny:GetEleOption( name, key, 1 ) )
+	slider.Text:SetText( MAGT( key ) .. ": " .. MoveAny:GetEleOption( name, key, value ) )
 	slider:SetMinMaxValues( vmin, vmax )
 	slider:SetObeyStepOnDrag( true )
 	slider:SetValueStep( steps )
-	slider:SetValue( MoveAny:GetEleOption( name, key, 1 ) )
+	slider:SetValue( MoveAny:GetEleOption( name, key, value ) )
 	slider:SetScript( "OnValueChanged", function(self, val)
 		val = tonumber( string.format( "%" .. steps .. "f", val ) )
 		if val then
@@ -114,6 +114,10 @@ function MAMenuOptions( opt, frame )
 
 	if string.find( name, "MAActionBar" ) or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" then
 		table.insert( tabs, ACTIONBARS_LABEL )
+	end
+
+	if string.find( name, "MABuffBar" ) then
+		table.insert( tabs, MAGT( "BUFFS" ) )
 	end
 
 	local contents = CreateTabs( opt, tabs )
@@ -208,9 +212,9 @@ function MAMenuOptions( opt, frame )
 			hide.text:SetPoint( "LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText( getglobal("HIDE") )
 
-			MACreateSlider( content, 10, -210, name, "ALPHAINCOMBAT", 0.1, 0, 1, MoveAny.UpdateAlphas )
-			MACreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 0.1, 0, 1, MoveAny.UpdateAlphas )
-			MACreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MACreateSlider( content, 10, -210, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MACreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MACreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
 			local max = getn( frame.btns )
 			local items = {}
@@ -283,6 +287,10 @@ function MAMenuOptions( opt, frame )
 					MAUpdateActionBar( frame )
 				end
 			end )
+		elseif string.find( content.name, MAGT( "BUFFS" ) ) then
+			MACreateSlider( content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MAUpdateBuffs )
+			MACreateSlider( content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MAUpdateBuffs )
+			MACreateSlider( content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MAUpdateBuffs )
 		end
 	end
 end
