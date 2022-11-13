@@ -15,6 +15,7 @@ function MALang_enUS()
 
 		["GENERAL"] = "General",
 		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
+		["MOVEFRAMES"] = "Move Frames/Windows",
 		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
 		["FRAMESSHIFTSCALE"] = "Scale Frame with Shift + Rightclick-drag",
 		["FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",
