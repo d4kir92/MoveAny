@@ -1430,20 +1430,72 @@ function MoveAny:Event( event, ... )
 							end
 					
 							self.cbfsetpoint = true
+							C_Timer.After( 0.0, function()
+								local sw, sh = _G["ChatFrame" .. 1 .. "ButtonFrame"]:GetSize()
+								self:SetSize( sw, sw * 6 )
+								self:ClearAllPoints()
+								self:SetPoint( "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0 )
 
-							self:ClearAllPoints()
-							self:SetPoint( "CENTER", _G["ChatFrame" .. 1 .. "ButtonFrame"], "CENTER", 0, 0 )
-
-							self.cbfsetpoint = false
+								self.cbfsetpoint = false
+							end )
 						end )
 
 						cbf:SetMovable( true )
 						if cbf.SetUserPlaced and cbf:IsMovable() then
 							cbf:SetUserPlaced( true )
 						end
-
+						
 						cbf:ClearAllPoints()
-						cbf:SetPoint( "CENTER", _G["ChatFrame" .. 1 .. "ButtonFrame"], "CENTER", 0, 0 )
+						cbf:SetPoint( "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0 )
+					end
+
+					function MoveAny:UpdateActiveTab()
+						local selectedId = 1
+						if SELECTED_CHAT_FRAME then
+							selectedId = SELECTED_CHAT_FRAME:GetID()
+						end
+						for i = 1, 10 do
+							local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
+							if cbf then
+								if i == selectedId then
+									cbf:Show()
+								else
+									cbf:Hide()
+								end
+							end							
+						end
+						C_Timer.After( 0.1, MoveAny.UpdateActiveTab )
+					end
+					MoveAny:UpdateActiveTab()
+				end
+				if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
+					local ceb = _G["ChatFrame" .. i .. "EditBox"]
+					if ceb then
+						hooksecurefunc( ceb, "SetPoint", function( self, ... )
+							if self.cebsetpoint then return end
+							
+							self:SetMovable( true )
+							if self.SetUserPlaced and self:IsMovable() then
+								self:SetUserPlaced( true )
+							end
+					
+							self.cebsetpoint = true
+							if _G["ChatFrame" .. 1 .. "EditBox"] then
+								self:SetSize( _G["ChatFrame" .. 1 .. "EditBox"]:GetSize() )
+								self:ClearAllPoints()
+								self:SetPoint( "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0 )
+							end
+
+							self.cebsetpoint = false
+						end )
+
+						ceb:SetMovable( true )
+						if ceb.SetUserPlaced and ceb:IsMovable() then
+							ceb:SetUserPlaced( true )
+						end
+
+						ceb:ClearAllPoints()
+						ceb:SetPoint( "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0 )
 					end
 				end
 			end
@@ -1469,16 +1521,16 @@ function MoveAny:Event( event, ... )
 		end
 	end
 	if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
-		local eb = _G["ChatFrame" .. 1 .. "EditBox"]
-		if eb then
-			local sw, sh = eb:GetSize()
-			hooksecurefunc( eb, "SetClampRectInsets", function( self )
+		local ceb = _G["ChatFrame" .. 1 .. "EditBox"]
+		if ceb then
+			local sw, sh = ceb:GetSize()
+			hooksecurefunc( ceb, "SetClampRectInsets", function( self )
 				if self.setclamprectinsets_ma then return end
 				self.setclamprectinsets_ma = true
 				self:SetClampRectInsets( 2, 2, 2, 2 )
 				self.setclamprectinsets_ma = false
 			end )
-			eb:SetClampRectInsets( 2, 2, 2, 2 )
+			ceb:SetClampRectInsets( 2, 2, 2, 2 )
 		end
 		MoveAny:RegisterWidget( {
 			["name"] = "ChatFrame" .. 1 .. "EditBox",
