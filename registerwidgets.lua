@@ -764,22 +764,18 @@ function MoveAny:Event( event, ... )
 
 
 	-- TOPLEFT
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "PLAYERFRAME", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "PlayerFrame",
-				["lstr"] = "PLAYERFRAME",
-				["userplaced"] = true
-			} )
-		end
-	end
-	if MoveAny:IsEnabled( "PETFRAME", false ) then
+	if MoveAny:IsEnabled( "PLAYERFRAME", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "PetFrame",
-			["lstr"] = "PETFRAME",
+			["name"] = "PlayerFrame",
+			["lstr"] = "PLAYERFRAME",
 			["userplaced"] = true
 		} )
 	end
+	MoveAny:RegisterWidget( {
+		["name"] = "PetFrame",
+		["lstr"] = "PETFRAME",
+		["userplaced"] = true
+	} )
 	if RuneFrame and MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
 		MoveAny:RegisterWidget( {
 			["name"] = "RuneFrame",
@@ -810,14 +806,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAGEARCANECHARGESFRAME"
 		} )
 	end
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "TARGETFRAME", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "TargetFrame",
-				["lstr"] = "TARGETFRAME",
-				["userplaced"] = true
-			} )
-		end
+	if MoveAny:IsEnabled( "TARGETFRAME", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "TargetFrame",
+			["lstr"] = "TARGETFRAME",
+			["userplaced"] = true
+		} )
 	end
 	if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
 		MoveAny:RegisterWidget( {
@@ -825,14 +819,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "TARGETFRAMESPELLBAR"
 		} )
 	end
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "FOCUSFRAME", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "FocusFrame",
-				["lstr"] = "FOCUSFRAME",
-				["userplaced"] = true
-			} )
-		end
+	if MoveAny:IsEnabled( "FOCUSFRAME", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "FocusFrame",
+			["lstr"] = "FOCUSFRAME",
+			["userplaced"] = true
+		} )
 	end
 	if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
 		MoveAny:RegisterWidget( {
@@ -938,104 +930,101 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "MINIMAP", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "Minimap",
-				["lstr"] = "MINIMAP"
-			} )
-		end
-		if MoveAny:IsEnabled( "BUFFS", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MABuffBar",
-				["lstr"] = "BUFFS"
-			} )
-		end
-		if MoveAny:IsEnabled( "DEBUFFS", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MADebuffBar",
-				["lstr"] = "DEBUFFS"
-			} )
-		end
-		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
-			if ObjectiveTrackerFrame == nil then
-				ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
-				ObjectiveTrackerFrame:SetSize( 224, 600 )
-				ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
-			
-				if QuestWatchFrame then
-					hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
-						if self.qwfsetpoint then return end
-						self.qwfsetpoint = true
+	if MoveAny:IsEnabled( "MINIMAP", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "Minimap",
+			["lstr"] = "MINIMAP"
+		} )
+	end
+	if MoveAny:IsEnabled( "BUFFS", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MABuffBar",
+			["lstr"] = "BUFFS"
+		} )
+	end
+	if MoveAny:IsEnabled( "DEBUFFS", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MADebuffBar",
+			["lstr"] = "DEBUFFS"
+		} )
+	end
+	if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
+		if ObjectiveTrackerFrame == nil then
+			ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
+			ObjectiveTrackerFrame:SetSize( 224, 600 )
+			ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
+		
+			if QuestWatchFrame then
+				hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
+					if self.qwfsetpoint then return end
+					self.qwfsetpoint = true
 
-						self:SetMovable( true )
-						if self.SetUserPlaced and self:IsMovable() then
-							self:SetUserPlaced( false )
-						end
-
-						self:SetParent( ObjectiveTrackerFrame )
-
-						self:ClearAllPoints()
-						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-						self.qwfsetpoint = false
-					end )
-
-					QuestWatchFrame:SetMovable( true )
-					if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
-						QuestWatchFrame:SetUserPlaced( false )
+					self:SetMovable( true )
+					if self.SetUserPlaced and self:IsMovable() then
+						self:SetUserPlaced( false )
 					end
+
 					self:SetParent( ObjectiveTrackerFrame )
-					QuestWatchFrame:ClearAllPoints()
-					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 
-					QuestWatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
+					self:ClearAllPoints()
+					self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+					self.qwfsetpoint = false
+				end )
+
+				QuestWatchFrame:SetMovable( true )
+				if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
+					QuestWatchFrame:SetUserPlaced( false )
 				end
+				self:SetParent( ObjectiveTrackerFrame )
+				QuestWatchFrame:ClearAllPoints()
+				QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
 
-				if WatchFrame then
-					hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
-						if self.wfsetpoint then return end
-						self.wfsetpoint = true
-
-						self:SetMovable( true )
-						if self.SetUserPlaced and self:IsMovable() then
-							self:SetUserPlaced( false )
-						end
-						
-						self:SetParent( ObjectiveTrackerFrame )
-
-						self:ClearAllPoints()
-						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-						self.wfsetpoint = false
-					end )
-
-					WatchFrame:SetMovable( true )
-					if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
-						WatchFrame:SetUserPlaced( false )
-					end
-					WatchFrame:SetParent( ObjectiveTrackerFrame )
-					WatchFrame:ClearAllPoints()
-					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-
-					WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
-				end
+				QuestWatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
 			end
-			if ObjectiveTrackerFrame then
-				ObjectiveTrackerFrame:SetHeight( 600 )
-				MoveAny:RegisterWidget( {
-					["name"] = "ObjectiveTrackerFrame",
-					["lstr"] = "QUESTTRACKER",
-					["sh"] = 600,
-					["userplaced"] = true
-				} )
+
+			if WatchFrame then
+				hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
+					if self.wfsetpoint then return end
+					self.wfsetpoint = true
+
+					self:SetMovable( true )
+					if self.SetUserPlaced and self:IsMovable() then
+						self:SetUserPlaced( false )
+					end
+					
+					self:SetParent( ObjectiveTrackerFrame )
+
+					self:ClearAllPoints()
+					self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+					self.wfsetpoint = false
+				end )
+
+				WatchFrame:SetMovable( true )
+				if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
+					WatchFrame:SetUserPlaced( false )
+				end
+				WatchFrame:SetParent( ObjectiveTrackerFrame )
+				WatchFrame:ClearAllPoints()
+				WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+
+				WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
 			end
 		end
-	else
-		if MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
+		if ObjectiveTrackerFrame then
+			ObjectiveTrackerFrame:SetHeight( 600 )
 			MoveAny:RegisterWidget( {
-				["name"] = "QueueStatusButton",
-				["lstr"] = "QUEUESTATUSBUTTON"
+				["name"] = "ObjectiveTrackerFrame",
+				["lstr"] = "QUESTTRACKER",
+				["sh"] = 600,
+				["userplaced"] = true
 			} )
 		end
+	end
+	if MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "QueueStatusButton",
+			["lstr"] = "QUEUESTATUSBUTTON"
+		} )
 	end
 	if BNToastFrame and MoveAny:IsEnabled( "BATTLENETFRIENDSNOTIFICATION", true ) then
 		MoveAny:RegisterWidget( {
@@ -1162,38 +1151,36 @@ function MoveAny:Event( event, ... )
 	GameTooltip:SetMovable( true )
 	GameTooltip:SetUserPlaced( false )
 
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
-			MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
-			MAGameTooltip:SetSize( 100, 100 )
-			MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
-			
-			hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
-				if self.gtsetpoint then return end
-				self.gtsetpoint = true
+	if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
+		MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
+		MAGameTooltip:SetSize( 100, 100 )
+		MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
+		
+		hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
+			if self.gtsetpoint then return end
+			self.gtsetpoint = true
 
-				self:SetMovable( true )
-				self:SetUserPlaced( false )
+			self:SetMovable( true )
+			self:SetUserPlaced( false )
 
-				local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
+			local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
 
-				if MAGameTooltipOnDefaultPosition() then
-					if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == false then
-						self:ClearAllPoints()
-						self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
-					end
+			if MAGameTooltipOnDefaultPosition() then
+				if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == false then
+					self:ClearAllPoints()
+					self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
 				end
-	
-				self.gtsetpoint = false
-			end )
-		end
+			end
 
-		if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MAGameTooltip",
-				["lstr"] = "GAMETOOLTIP"
-			} )
-		end
+			self.gtsetpoint = false
+		end )
+	end
+
+	if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MAGameTooltip",
+			["lstr"] = "GAMETOOLTIP"
+		} )
 	end
 
 
@@ -1228,13 +1215,13 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "PETBAR"
 			} )
 		end
+	end
 
-		if MoveAny:IsEnabled( "POSSESSBAR", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "PossessBarFrame",
-				["lstr"] = "POSSESSBAR"
-			} )
-		end
+	if MoveAny:IsEnabled( "POSSESSBAR", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "PossessBarFrame",
+			["lstr"] = "POSSESSBAR"
+		} )
 	end
 
 	if ZoneAbilityFrame and MoveAny:IsEnabled( "ZONEABILITYFRAME", true ) then
@@ -1282,40 +1269,36 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
-	if MABUILDNR < 100000 then
-		if ExtraAbilityContainer then
-			ExtraAbilityContainer:SetSize( 180, 100 )
-			ExtraAbilityContainer:ClearAllPoints()
-			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-		
-			MoveAny:RegisterWidget( {
-				["name"] = "ExtraAbilityContainer",
-				["lstr"] = "EXTRAABILITYCONTAINER",
-				["userplaced"] = true
-			} )
-		end
+	if ExtraAbilityContainer then
+		ExtraAbilityContainer:SetSize( 180, 100 )
+		ExtraAbilityContainer:ClearAllPoints()
+		ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+	
+		MoveAny:RegisterWidget( {
+			["name"] = "ExtraAbilityContainer",
+			["lstr"] = "EXTRAABILITYCONTAINER",
+			["userplaced"] = true
+		} )
 	end
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
-			if MainMenuExpBar then
-				MainMenuExpBar:ClearAllPoints()
-				MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
-			end
-			MoveAny:RegisterWidget( {
-				["name"] = "MainMenuExpBar",
-				["lstr"] = "MAINMENUEXPBAR"
-			} )
+	if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
+		if MainMenuExpBar then
+			MainMenuExpBar:ClearAllPoints()
+			MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
 		end
-		if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
-			if ReputationWatchBar then
-				ReputationWatchBar:ClearAllPoints()
-				ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
-			end
-			MoveAny:RegisterWidget( {
-				["name"] = "ReputationWatchBar",
-				["lstr"] = "REPUTATIONWATCHBAR"
-			} )
+		MoveAny:RegisterWidget( {
+			["name"] = "MainMenuExpBar",
+			["lstr"] = "MAINMENUEXPBAR"
+		} )
+	end
+	if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
+		if ReputationWatchBar then
+			ReputationWatchBar:ClearAllPoints()
+			ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
 		end
+		MoveAny:RegisterWidget( {
+			["name"] = "ReputationWatchBar",
+			["lstr"] = "REPUTATIONWATCHBAR"
+		} )
 	end
 
 	if StatusTrackingBarManager then
@@ -1347,32 +1330,28 @@ function MoveAny:Event( event, ... )
 			} )
 		end )
 	end
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "LEAVEVEHICLE", true ) then
-			if MainMenuBarVehicleLeaveButton then
-				MainMenuBarVehicleLeaveButton:SetParent( UIParent )
-			end
-			MoveAny:RegisterWidget( {
-				["name"] = "MainMenuBarVehicleLeaveButton",
-				["lstr"] = "LEAVEVEHICLE"
-			} )
+	if MoveAny:IsEnabled( "LEAVEVEHICLE", true ) then
+		if MainMenuBarVehicleLeaveButton then
+			MainMenuBarVehicleLeaveButton:SetParent( UIParent )
 		end
+		MoveAny:RegisterWidget( {
+			["name"] = "MainMenuBarVehicleLeaveButton",
+			["lstr"] = "LEAVEVEHICLE"
+		} )
 	end
-	if MABUILDNR < 100000 then
-		if MoveAny:IsEnabled( "CASTINGBAR", true ) then
+	if MoveAny:IsEnabled( "CASTINGBAR", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "CastingBarFrame",
+			["lstr"] = "CASTINGBAR"
+		} )
+	end
+	if TalkingHeadFrame then
+		if MoveAny:IsEnabled( "TALKINGHEAD", true ) then
 			MoveAny:RegisterWidget( {
-				["name"] = "CastingBarFrame",
-				["lstr"] = "CASTINGBAR"
+				["name"] = "TalkingHeadFrame",
+				["lstr"] = "TALKINGHEAD",
+				["secure"] = true
 			} )
-		end
-		if TalkingHeadFrame then
-			if MoveAny:IsEnabled( "TALKINGHEAD", true ) then
-				MoveAny:RegisterWidget( {
-					["name"] = "TalkingHeadFrame",
-					["lstr"] = "TALKINGHEAD",
-					["secure"] = true
-				} )
-			end
 		end
 	end
 	if AlertFrame and MoveAny:IsEnabled( "ALERTFRAME", true ) then
@@ -1572,12 +1551,10 @@ function MoveAny:Event( event, ... )
 	
 	MoveAny:InitMALock()
 	MoveAny:InitMAVehicleSeatIndicator()
-	if MABUILDNR < 100000 then
-		MoveAny:InitStanceBar()
-		MoveAny:InitMinimap()
-		MoveAny:InitBuffBar()
-		MoveAny:InitDebuffBar()
-	end
+	MoveAny:InitStanceBar()
+	MoveAny:InitMinimap()
+	MoveAny:InitBuffBar()
+	MoveAny:InitDebuffBar()
 	MoveAny:InitMicroMenu()
 	MoveAny:InitBags()
 	MoveAny:InitMAFPSFrame()

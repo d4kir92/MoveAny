@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.24" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.25" )
 }
 
 local PREFIX = "MOAN"
@@ -188,18 +188,13 @@ function MoveAny:InitMALock()
 
 
 		AddCategory( "TOPLEFT" )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "PLAYERFRAME", true )
-		end
+		AddCheckBox( 4, "PLAYERFRAME", true )
+
 		AddCheckBox( 4, "PETFRAME", true )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "TARGETFRAME", true )
-		end
+		AddCheckBox( 4, "TARGETFRAME", true )
 		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
 		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "FOCUSFRAME", true )
-		end
+		AddCheckBox( 4, "FOCUSFRAME", true )
 		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
 		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
 		if IASkills and MABUILD ~= "RETAIL" then
@@ -231,31 +226,25 @@ function MoveAny:InitMALock()
 
 
 		AddCategory( "TOPRIGHT" )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "MINIMAP", true )
-			AddCheckBox( 4, "BUFFS", true )
-			AddCheckBox( 24, "DEBUFFS", false )
-		end
+		AddCheckBox( 4, "MINIMAP", true )
+		AddCheckBox( 4, "BUFFS", true )
+		AddCheckBox( 24, "DEBUFFS", false )
+
 		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
 		AddCheckBox( 4, "DURABILITY", true )
 
 
 
 		AddCategory( "RIGHT" )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "QUESTTRACKER", true )
-		end
+		AddCheckBox( 4, "QUESTTRACKER", true )
 
 
 
 		AddCategory( "BOTTOMRIGHT" )
 		AddCheckBox( 4, "MICROMENU", true )
 		AddCheckBox( 4, "BAGS", true )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "GAMETOOLTIP", true )
-		else
-			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
-		end
+		AddCheckBox( 4, "GAMETOOLTIP", true )
+		AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
 		if IAMoneyBar then
 			AddCheckBox( 4, "MONEYBAR", true )
@@ -281,25 +270,16 @@ function MoveAny:InitMALock()
 		if MABUILD == "WRATH" and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMBAR", true )
 		end
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "POSSESSBAR", true )
-			AddCheckBox( 4, "LEAVEVEHICLE", true )
-		end
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "MAINMENUEXPBAR", true )
-			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
-		else
-			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
-		end
+		AddCheckBox( 4, "POSSESSBAR", true )
+		AddCheckBox( 4, "LEAVEVEHICLE", true )
+		AddCheckBox( 4, "MAINMENUEXPBAR", true )
+		AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
+		AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
 		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "CASTINGBAR", true )
-			AddCheckBox( 4, "TALKINGHEAD", true )
-		end
+		AddCheckBox( 4, "CASTINGBAR", true )
+		AddCheckBox( 4, "TALKINGHEAD", true )
 		AddCheckBox( 4, "MAFPSFrame", true )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "EXTRAABILITYCONTAINER", true )
-		end
+		AddCheckBox( 4, "EXTRAABILITYCONTAINER", true )
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ALERTFRAME", true )
