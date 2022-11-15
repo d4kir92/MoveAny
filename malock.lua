@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.29" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.30" )
 }
 
 local PREFIX = "MOAN"
@@ -238,10 +238,10 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "PLAYERFRAME", true )
 
 		AddCheckBox( 4, "PETFRAME", true )
-		AddCheckBox( 4, "TARGETFRAME", true, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( 4, "TARGETFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
 		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
 		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
-		AddCheckBox( 4, "FOCUSFRAME", true, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( 4, "FOCUSFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
 		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
 		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
 		if IASkills and MABUILD ~= "RETAIL" then
@@ -272,7 +272,7 @@ function MoveAny:InitMALock()
 
 		AddCategory( "TOPRIGHT" )
 		AddCheckBox( 4, "MINIMAP", true )
-		AddCheckBox( 4, "BUFFS", true, nil, nil, "ShowBuffFrame" )
+		AddCheckBox( 4, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
 		AddCheckBox( 24, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
 
 		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
@@ -291,7 +291,7 @@ function MoveAny:InitMALock()
 		AddCategory( "BOTTOMRIGHT" )
 		AddCheckBox( 4, "MICROMENU", true )
 		AddCheckBox( 4, "BAGS", true )
-		AddCheckBox( 4, "GAMETOOLTIP", true, nil, nil, "ShowHudTooltip" )
+		AddCheckBox( 4, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
 		AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
 		if IAMoneyBar then
@@ -307,19 +307,19 @@ function MoveAny:InitMALock()
 
 		AddCategory( "BOTTOM" )
 		if MABUILD ~= "RETAIL" then
-			AddCheckBox( 4, "ACTIONBARS", false )
+			AddCheckBox( 4, "ACTIONBARS", MABUILDNR < 100000 )
 			AddCheckBox( 4, "ACTIONBAR7", false )
 			AddCheckBox( 4, "ACTIONBAR8", false )
 			AddCheckBox( 4, "ACTIONBAR9", false )
 			AddCheckBox( 4, "ACTIONBAR10", false )
 		end
-		AddCheckBox( 4, "PETBAR", false, nil, nil, "ShowPetActionBar" )
-		AddCheckBox( 4, "STANCEBAR", false, nil, nil, "ShowStanceBar" )
+		AddCheckBox( 4, "PETBAR", MABUILDNR < 100000, nil, nil, "ShowPetActionBar" )
+		AddCheckBox( 4, "STANCEBAR", MABUILDNR < 100000, nil, nil, "ShowStanceBar" )
 		if MABUILD == "WRATH" and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMBAR", true )
 		end
 		AddCheckBox( 4, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
-		AddCheckBox( 4, "LEAVEVEHICLE", true, nil, nil, "ShowVehicleLeaveButton" )
+		AddCheckBox( 4, "LEAVEVEHICLE", MABUILDNR < 100000, nil, nil, "ShowVehicleLeaveButton" )
 		if StatusTrackingBarManager then
 			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
 		else
@@ -327,10 +327,10 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
 		end
 		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
-		AddCheckBox( 4, "CASTINGBAR", true, nil, nil, "ShowCastBar" )
-		AddCheckBox( 4, "TALKINGHEAD", true, nil, nil, "ShowTalkingHeadFrame" )
+		AddCheckBox( 4, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
+		AddCheckBox( 4, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
 		AddCheckBox( 4, "MAFPSFrame", true )
-		AddCheckBox( 4, "EXTRAABILITYCONTAINER", true, nil, nil, "ShowExtraAbilities" )
+		AddCheckBox( 4, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ALERTFRAME", true )
