@@ -181,8 +181,10 @@ function MoveAny:MoveFrames()
 									
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 									if dbp1 and dbp3 then
-										frame:ClearAllPoints()
-										frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+										if not InCombatLockdown() then
+											frame:ClearAllPoints()
+											frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+										end
 									end
 								end
 								C_Timer.After( 0.01, fm.UpdatePreview )
@@ -245,10 +247,12 @@ function MoveAny:MoveFrames()
 						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 						if dbp1 and dbp3 then
 							local w, h = self:GetSize()
-							self:ClearAllPoints()
-							self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-							if w and h then
-								self:SetSize( w, h )
+							if not InCombatLockdown() then
+								self:ClearAllPoints()
+								self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+								if w and h then
+									self:SetSize( w, h )
+								end
 							end
 						end
 						self.maframesetpoint = false
@@ -282,24 +286,19 @@ function MoveAny:MoveFrames()
 
 					if frame.GetPoint and frame:GetPoint() then
 						local p1, p2, p3, p4, p5 = frame:GetPoint()
-						if not tContains( MASECUREFRAMES, frame ) then
+						if not InCombatLockdown() then
 							frame:ClearAllPoints()
 							frame:SetPoint( p1, p2, p3, p4, p5 )
-						elseif tContains( MASECUREFRAMES, frame ) then
-							if not InCombatLockdown() then
-								frame:ClearAllPoints()
-								frame:SetPoint( p1, p2, p3, p4, p5 )
-							else
-								local function Test()
-									if not InCombatLockdown() then
-										frame:ClearAllPoints()
-										frame:SetPoint( p1, p2, p3, p4, p5 )
-									else
-										C_Timer.After( 0.1, Test )
-									end
+						else
+							local function Test()
+								if not InCombatLockdown() then
+									frame:ClearAllPoints()
+									frame:SetPoint( p1, p2, p3, p4, p5 )
+								else
+									C_Timer.After( 0.1, Test )
 								end
-								Test()
 							end
+							Test()
 						end
 					end
 				else

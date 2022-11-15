@@ -501,9 +501,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	
 	if frame == nil then
 		C_Timer.After( tab.delay or 0.2, function()
-			--if tab.delay < 1 then
-				MoveAny:RegisterWidget( tab )
-			--end
+			MoveAny:RegisterWidget( tab )
 		end )
 		return false
 	end

@@ -20,10 +20,10 @@ function MoveAny:InitArenaEnemyFrames()
 		ArenaEnemyFrames:SetPoint( "CENTER", MAArenaEnemyFrames, "CENTER", 0, 0 )
 
 		function ArenaEnemyFrames:ClearAllPoints()
-			--
+			
 		end
 		function ArenaEnemyFrames:SetPoint( ... )
-			--
+			
 		end
 
 		if false then
@@ -68,10 +68,10 @@ function MoveAny:InitArenaPrepFrames()
 		ArenaPrepFrames:SetPoint( "CENTER", MAArenaPrepFrames, "CENTER", 0, 0 )
 
 		function ArenaPrepFrames:ClearAllPoints()
-			--
+			
 		end
 		function ArenaPrepFrames:SetPoint( ... )
-			--
+			
 		end
 		
 

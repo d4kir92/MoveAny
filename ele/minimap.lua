@@ -98,7 +98,7 @@ function MoveAny:InitMinimap()
 
 	if TimeManagerClockButton then
 		if MABUILD == "RETAIL" then
-			-- 
+			
 		else
 			TimeManagerClockButton:ClearAllPoints()
 			TimeManagerClockButton:SetPoint( "BOTTOM", Minimap, "BOTTOM", 0, -18 )
@@ -122,7 +122,7 @@ function MoveAny:InitMinimap()
 
 	if GameTimeFrame then
 		if MABUILD == "RETAIL" then
-			-- 
+			
 		else
 			GameTimeFrame:ClearAllPoints()
 			GameTimeFrame:SetPoint( "TOPRIGHT", Minimap, "TOPRIGHT", 20, -10 )

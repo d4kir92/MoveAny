@@ -230,9 +230,9 @@ function MoveAny:FixTable( tab )
 		elseif typ == "table" then
 			MoveAny:FixTable( v )
 		elseif typ == "number" then
-			--
+			
 		elseif typ == "boolean" then
-			--
+			
 		else
 			MoveAny:MSG( "Missing typ", typ )
 		end
