@@ -290,15 +290,19 @@ function MoveAny:MoveFrames()
 							frame:ClearAllPoints()
 							frame:SetPoint( p1, p2, p3, p4, p5 )
 						else
-							local function Test()
+							function frame:MAUpdatePos()
+								frame.maupdatepos = true
 								if not InCombatLockdown() then
 									frame:ClearAllPoints()
 									frame:SetPoint( p1, p2, p3, p4, p5 )
+									frame.maupdatepos = nil
 								else
-									C_Timer.After( 0.1, Test )
+									C_Timer.After( 0.03, frame.MAUpdatePos )
 								end
 							end
-							Test()
+							if frame.maupdatepos == nil then
+								frame:MAUpdatePos()
+							end
 						end
 					end
 				else

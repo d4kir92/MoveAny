@@ -1292,11 +1292,11 @@ function MoveAny:Event( event, ... )
 					end )
 
 					hooksecurefunc( GroupLootFrame1, "SetScale", function( self, scale )
-						self:SetScale( scale )
+						glf:SetScale( scale )
 					end )
 
 					hooksecurefunc( GroupLootFrame1, "SetAlpha", function( self, alpha )
-						self:SetAlpha( alpha )
+						glf:SetAlpha( alpha )
 					end )
 				end
 			end
@@ -1313,16 +1313,18 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
-	if ExtraAbilityContainer then
-		ExtraAbilityContainer:SetSize( 180, 100 )
-		ExtraAbilityContainer:ClearAllPoints()
-		ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-	
-		MoveAny:RegisterWidget( {
-			["name"] = "ExtraAbilityContainer",
-			["lstr"] = "EXTRAABILITYCONTAINER",
-			["userplaced"] = true
-		} )
+	if MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MABUILDNR < 100000 ) then
+		if ExtraAbilityContainer then
+			ExtraAbilityContainer:SetSize( 180, 100 )
+			ExtraAbilityContainer:ClearAllPoints()
+			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+		
+			MoveAny:RegisterWidget( {
+				["name"] = "ExtraAbilityContainer",
+				["lstr"] = "EXTRAABILITYCONTAINER",
+				["userplaced"] = true
+			} )
+		end
 	end
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
@@ -1370,7 +1372,8 @@ function MoveAny:Event( event, ... )
 			MoveAny:RegisterWidget( {
 				["name"] = "MultiCastActionBarFrame",
 				["lstr"] = "TOTEMBAR",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["secure"] = true
 			} )
 		end )
 	end
