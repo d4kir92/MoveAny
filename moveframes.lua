@@ -242,11 +242,13 @@ function MoveAny:MoveFrames()
 							self:SetUserPlaced( false )
 						end
 
-						if not InCombatLockdown() then
-							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
-							if dbp1 and dbp3 then
-								self:ClearAllPoints()
-								self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
+						if dbp1 and dbp3 then
+							local w, h = self:GetSize()
+							self:ClearAllPoints()
+							self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+							if w and h then
+								self:SetSize( w, h )
 							end
 						end
 						self.maframesetpoint = false

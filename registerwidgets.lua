@@ -884,10 +884,12 @@ function MoveAny:Event( event, ... )
 		end )
 
 		CompactRaidFrameManagerToggleButton:HookScript( "OnClick", function( self, ... )
-			if CompactRaidFrameManager.collapsed then
-				MACompactRaidFrameManager:SetSize( 20, 135 )
-			else
-				MACompactRaidFrameManager:SetSize( 200, 135 )
+			if not InCombatLockdown() then
+				if CompactRaidFrameManager.collapsed then
+					MACompactRaidFrameManager:SetSize( 20, 135 )
+				else
+					MACompactRaidFrameManager:SetSize( 200, 135 )
+				end
 			end
 		end )
 
@@ -1290,9 +1292,18 @@ function MoveAny:Event( event, ... )
 						
 						self.glfsetpoint = false
 					end )
+
+					hooksecurefunc( GroupLootFrame1, "SetScale", function( self, scale )
+						self:SetScale( scale )
+					end )
+
+					hooksecurefunc( GroupLootFrame1, "SetAlpha", function( self, alpha )
+						self:SetAlpha( alpha )
+					end )
 				end
 			end
 		end
+
 		MoveAny:RegisterWidget( {
 			["name"] = "GroupLootFrame1",
 			["lstr"] = "GROUPLOOTCONTAINER",
