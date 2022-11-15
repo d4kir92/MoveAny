@@ -36,9 +36,11 @@ function MALang_deDE()
 		["BUFFS"] = "Stärkungszauber",
 		["DEBUFFS"] = "Schwächungszauber",
 		["VEHICLESEATINDICATOR"] = "Fahrzeugsitzanzeige",
+		["ARENAENEMYFRAMES"] = "Arena Gegner Fenster",
+		["ARENAPREPFRAMES"] = "Arena Vorbereitungs Fenster",
+		["QUESTTRACKER"] = "Questverfolgung",
 
 		["RIGHT"] = "Rechts",
-		["QUESTTRACKER"] = "Questverfolgung",
 
 		["BOTTOMRIGHT"] = "Unten Rechts",
 		["MICROMENU"] = "Mikro Menü",
@@ -128,6 +130,7 @@ function MALang_deDE()
 		["MABUFFLIMIT"] = "Stärkungszauber Grenze",
 		["MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
 		["MABUFFSPACINGY"] = "Stärkungszauber Abstand Vertikal",
+		["ISENABLEDINEDITMODE"] = "(Ist im Bearbeitungsmodus aktiviert)",
 	}
 
 	MAUpdateLanguageTab( tab )

@@ -44,10 +44,12 @@ function MALang_enUS()
 		["BUFFS"] = "Buffs",
 		["DEBUFFS"] = "Debuffs",
 		["VEHICLESEATINDICATOR"] = "Vehicle Seat Indicator",
-
-		["RIGHT"] = "Right",
+		["ARENAENEMYFRAMES"] = "Arena Enemy Frames",
+		["ARENAPREPFRAMES"] = "Arena Prep Frames",
 		["QUESTTRACKER"] = "Questtracker",
 
+		["RIGHT"] = "Right",
+	
 		["BOTTOMRIGHT"] = "Bottom Right",
 		["MICROMENU"] = "Micro Menu",
 		["BAGS"] = "Bags",
@@ -136,6 +138,7 @@ function MALang_enUS()
 		["MABUFFLIMIT"] = "Buff limit",
 		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
 		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
+		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 	}
 
 	MAUpdateLanguageTab( tab )

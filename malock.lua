@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.26" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.27" )
 }
 
 local PREFIX = "MOAN"
@@ -21,6 +21,45 @@ local posy = -4
 local cas = {}
 local cbs = {}
 local sls = {}
+
+local EMMapForced = {}
+EMMapForced["Minimap"] = true
+
+local EMMap = {}
+EMMap["MAPetBar"] = "ShowPetActionBar"
+EMMap["MAGameTooltip"] = "ShowHudTooltip"
+EMMap["TalkingHeadFrame"] = "ShowTalkingHeadFrame"
+EMMap["MABuffBar"] = "ShowBuffFrame"
+EMMap["MADebuffBar"] = "ShowDebuffFrame"
+EMMap["TargetFrame"] = "ShowTargetAndFocus"
+EMMap["FocusFrame"] = "ShowTargetAndFocus"
+EMMap["ExtraAbilityFrame"] = "ShowExtraAbility"
+EMMap["PossessActionBar"] = "ShowPossessActionBar"
+EMMap["PossessBarFrame"] = "ShowPossessActionBar"
+EMMap["MainMenuBarVehicleLeaveButton"] = "ShowVehicleLeaveButton"
+EMMap["PlayerCastingBarFrame"] = "ShowCastBar"
+function MoveAny:IsInEditModeEnabled( val )
+	local editModeEnum = nil
+
+	if EMMapForced[val] then
+		return true
+	end
+	if EMMap[val] and Enum and Enum.EditModeAccountSetting then
+		editModeEnum = Enum.EditModeAccountSetting[EMMap[val]]
+		if editModeEnum == nil then
+			for i, v in pairs( Enum.EditModeAccountSetting ) do
+				MoveAny:MSG( "ENUM i: " .. tostring( i ) .. " v: " .. tostring( v ) )
+			end
+		end
+	end
+
+	if editModeEnum and EditModeManagerFrame then
+		if EditModeManagerFrame:GetAccountSettingValueBool( editModeEnum ) then
+			return true
+		end
+	end
+	return false
+end
 
 local function AddCategory( key )
 	if cas[key] == nil then
@@ -47,15 +86,23 @@ local function AddCategory( key )
 	end
 end
 
-local function AddCheckBox( x, key, val, func, id )
+local function AddCheckBox( x, key, val, func, id, editModeEnum )
 	if val == nil then
 		MoveAny:MSG( "Missing Value For: " .. tostring( key ) )
 		val = true
 	end
-	local lstr = MAGT( key )
+	local lstr = "|cFFFFFFFF" .. MAGT( key )
 	if id then
 		lstr = format( lstr, id )
 	end
+
+	if editModeEnum and EditModeManagerFrame then
+		editModeEnum = Enum.EditModeAccountSetting[editModeEnum]
+		if editModeEnum and EditModeManagerFrame:GetAccountSettingValueBool( editModeEnum ) then
+			lstr = lstr .. " |cFFFFFF00" .. MAGT( "ISENABLEDINEDITMODE" )
+		end
+	end
+
 	if id then
 		key = key .. id
 	end
@@ -101,7 +148,7 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 
 		sls[key].Low:SetText(vmin)
 		sls[key].High:SetText(vmax)
-
+		
 		sls[key].Text:SetText( MAGT(key) .. ": " .. MoveAny:GV( key, val ) )
 
 		sls[key]:SetMinMaxValues(vmin, vmax)
@@ -191,10 +238,10 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "PLAYERFRAME", true )
 
 		AddCheckBox( 4, "PETFRAME", true )
-		AddCheckBox( 4, "TARGETFRAME", true )
+		AddCheckBox( 4, "TARGETFRAME", true, nil, nil, "ShowTargetAndFocus" )
 		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
 		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
-		AddCheckBox( 4, "FOCUSFRAME", true )
+		AddCheckBox( 4, "FOCUSFRAME", true, nil, nil, "ShowTargetAndFocus" )
 		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
 		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
 		if IASkills and MABUILD ~= "RETAIL" then
@@ -223,15 +270,16 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "UIWIDGETTOPCENTER", true )
 		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP", true )
 
-
-
 		AddCategory( "TOPRIGHT" )
 		AddCheckBox( 4, "MINIMAP", true )
-		AddCheckBox( 4, "BUFFS", true )
-		AddCheckBox( 24, "DEBUFFS", false )
+		AddCheckBox( 4, "BUFFS", true, nil, nil, "ShowBuffFrame" )
+		AddCheckBox( 24, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
 
 		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
 		AddCheckBox( 4, "DURABILITY", true )
+
+		AddCheckBox( 4, "ARENAENEMYFRAMES", false )
+		AddCheckBox( 4, "ARENAPREPFRAMES", false )
 
 
 
@@ -243,7 +291,7 @@ function MoveAny:InitMALock()
 		AddCategory( "BOTTOMRIGHT" )
 		AddCheckBox( 4, "MICROMENU", true )
 		AddCheckBox( 4, "BAGS", true )
-		AddCheckBox( 4, "GAMETOOLTIP", true )
+		AddCheckBox( 4, "GAMETOOLTIP", true, nil, nil, "ShowHudTooltip" )
 		AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
 		if IAMoneyBar then
@@ -265,13 +313,13 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "ACTIONBAR9", false )
 			AddCheckBox( 4, "ACTIONBAR10", false )
 		end
-		AddCheckBox( 4, "PETBAR", false )
-		AddCheckBox( 4, "STANCEBAR", false )
+		AddCheckBox( 4, "PETBAR", false, nil, nil, "ShowPetActionBar" )
+		AddCheckBox( 4, "STANCEBAR", false, nil, nil, "ShowStanceBar" )
 		if MABUILD == "WRATH" and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMBAR", true )
 		end
-		AddCheckBox( 4, "POSSESSBAR", false )
-		AddCheckBox( 4, "LEAVEVEHICLE", true )
+		AddCheckBox( 4, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
+		AddCheckBox( 4, "LEAVEVEHICLE", true, nil, nil, "ShowVehicleLeaveButton" )
 		if StatusTrackingBarManager then
 			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
 		else
@@ -279,10 +327,10 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
 		end
 		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
-		AddCheckBox( 4, "CASTINGBAR", true )
-		AddCheckBox( 4, "TALKINGHEAD", true )
+		AddCheckBox( 4, "CASTINGBAR", true, nil, nil, "ShowCastBar" )
+		AddCheckBox( 4, "TALKINGHEAD", true, nil, nil, "ShowTalkingHeadFrame" )
 		AddCheckBox( 4, "MAFPSFrame", true )
-		AddCheckBox( 4, "EXTRAABILITYCONTAINER", true )
+		AddCheckBox( 4, "EXTRAABILITYCONTAINER", true, nil, nil, "ShowExtraAbilities" )
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ALERTFRAME", true )

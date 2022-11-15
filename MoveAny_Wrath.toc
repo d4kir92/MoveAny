@@ -1,5 +1,5 @@
 ## Interface: 30400
-## Version: 0.8.26
+## Version: 0.8.27
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -27,6 +27,7 @@ locale/zhCN.lua
 libs/lang.lua
 
 ele/actionbars.lua
+ele/arenaenemyframes.lua
 ele/bagbar.lua
 ele/buffbar.lua
 ele/debuffbar.lua

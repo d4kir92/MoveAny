@@ -417,6 +417,9 @@ function MoveAny:RegisterWidget( tab, debug )
 			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
 			local font, fontSize, fontFlags = dragframe.name:GetFont()
 			dragframe.name:SetFont( font, 15, fontFlags )
+			if MoveAny:IsInEditModeEnabled( name ) then
+				lstr = lstr .. " |cFFFFFF00" .. MAGT( "ISENABLEDINEDITMODE" )
+			end
 			dragframe.name:SetText( lstr )
 			dragframe.name:Hide()
 
@@ -765,7 +768,9 @@ function MoveAny:Event( event, ... )
 	end
 	MoveAny:InitStanceBar()
 	MoveAny:InitPetBar()
-	
+
+	MoveAny:InitArenaEnemyFrames()
+	MoveAny:InitArenaPrepFrames()
 
 
 	-- TOPLEFT
@@ -776,11 +781,13 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "PetFrame",
-		["lstr"] = "PETFRAME",
-		["userplaced"] = true
-	} )
+	if MoveAny:IsEnabled( "PETFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "PetFrame",
+			["lstr"] = "PETFRAME",
+			["userplaced"] = true
+		} )
+	end
 	if RuneFrame and MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
 		MoveAny:RegisterWidget( {
 			["name"] = "RuneFrame",
@@ -1053,6 +1060,18 @@ function MoveAny:Event( event, ... )
 			["name"] = "DurabilityFrame",
 			["lstr"] = "DURABILITY",
 			["userplaced"] = true
+		} )
+	end
+	if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "ArenaEnemyFrames",
+			["lstr"] = "ARENAENEMYFRAMES",
+		} )
+	end
+	if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "ArenaPrepFrames",
+			["lstr"] = "ARENAPREPFRAMES",
 		} )
 	end
 
