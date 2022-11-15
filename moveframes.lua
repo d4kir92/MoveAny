@@ -237,10 +237,10 @@ function MoveAny:MoveFrames()
 						if self.maframesetpoint then return end
 						self.maframesetpoint = true
 						
-						--self:SetMovable( true )
-						--[[if self.SetUserPlaced and self:IsMovable() then
+						self:SetMovable( true )
+						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )
-						end]]
+						end
 
 						if not InCombatLockdown() then
 							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )

@@ -98,7 +98,7 @@ function MAUpdateActionBar( frame )
 		end
 		local id = 1
 		for i, abtn in pairs( frame.btns ) do
-			if abtn:GetParent() ~= MAHIDDEN then
+			if abtn:GetParent() ~= MAHIDDEN and not InCombatLockdown() then
 				abtn:ClearAllPoints()
 				abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
 				id = id + 1

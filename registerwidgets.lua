@@ -588,7 +588,7 @@ function MoveAny:RegisterWidget( tab, debug )
 		if self.SetUserPlaced and self:IsMovable() then
 			self:SetUserPlaced( userplaced or false )
 		end
-
+		
 		if not self.ma_secure then
 			self.elesetpoint = true
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
@@ -1064,14 +1064,18 @@ function MoveAny:Event( event, ... )
 	end
 	if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "ArenaEnemyFrames",
+			["name"] = "MAArenaEnemyFrames",
 			["lstr"] = "ARENAENEMYFRAMES",
+			["userplaced"] = true,
+			["secure"] = true
 		} )
 	end
 	if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "ArenaPrepFrames",
+			["name"] = "MAArenaPrepFrames",
 			["lstr"] = "ARENAPREPFRAMES",
+			["userplaced"] = true,
+			["secure"] = true
 		} )
 	end
 

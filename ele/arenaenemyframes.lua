@@ -12,6 +12,20 @@ function MoveAny:InitArenaEnemyFrames()
 			ArenaEnemyFrames:SetSize( sw, sh * 5 + 4 * 21 )
 		end
 
+		MAArenaEnemyFrames = CreateFrame( "FRAME", "MAArenaEnemyFrames", UIParent )
+		MAArenaEnemyFrames:SetSize( ArenaEnemyFrames:GetSize() )
+		MAArenaEnemyFrames:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", 100, 100 )
+
+		ArenaEnemyFrames:ClearAllPoints()
+		ArenaEnemyFrames:SetPoint( "CENTER", MAArenaEnemyFrames, "CENTER", 0, 0 )
+
+		function ArenaEnemyFrames:ClearAllPoints()
+			--
+		end
+		function ArenaEnemyFrames:SetPoint( ... )
+			--
+		end
+
 		if false then
 
 			hooksecurefunc( ArenaEnemyFrames, "Hide", function( self )
@@ -45,6 +59,22 @@ function MoveAny:InitArenaPrepFrames()
 			local sw, sh = _G["ArenaPrepFrame" .. 1]:GetSize()
 			ArenaPrepFrames:SetSize( sw, sh * 5 + 4 * 21 )
 		end
+
+		MAArenaPrepFrames = CreateFrame( "FRAME", "MAArenaPrepFrames", UIParent )
+		MAArenaPrepFrames:SetSize( ArenaPrepFrames:GetSize() )
+		MAArenaPrepFrames:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", 100, 100 )
+		
+		ArenaPrepFrames:ClearAllPoints()
+		ArenaPrepFrames:SetPoint( "CENTER", MAArenaPrepFrames, "CENTER", 0, 0 )
+
+		function ArenaPrepFrames:ClearAllPoints()
+			--
+		end
+		function ArenaPrepFrames:SetPoint( ... )
+			--
+		end
+		
+
 		
 		if false then
 
