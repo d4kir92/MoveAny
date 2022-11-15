@@ -5,7 +5,7 @@ function MoveAny:InitMinimap()
 	if MoveAny:IsEnabled( "MINIMAP", true ) == false then
 		return
 	end
-	
+
 	if ElvUI then
 		return
 	end

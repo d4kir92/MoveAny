@@ -772,7 +772,7 @@ function MoveAny:Event( event, ... )
 
 
 	-- TOPLEFT
-	if MoveAny:IsEnabled( "PLAYERFRAME", true ) then
+	if MoveAny:IsEnabled( "PLAYERFRAME", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "PlayerFrame",
 			["lstr"] = "PLAYERFRAME",
@@ -816,7 +816,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAGEARCANECHARGESFRAME"
 		} )
 	end
-	if MoveAny:IsEnabled( "TARGETFRAME", true ) then
+	if MoveAny:IsEnabled( "TARGETFRAME", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TargetFrame",
 			["lstr"] = "TARGETFRAME",
@@ -829,7 +829,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "TARGETFRAMESPELLBAR"
 		} )
 	end
-	if MoveAny:IsEnabled( "FOCUSFRAME", true ) then
+	if MoveAny:IsEnabled( "FOCUSFRAME", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "FocusFrame",
 			["lstr"] = "FOCUSFRAME",
@@ -942,13 +942,13 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "MINIMAP", true ) then
+	if MoveAny:IsEnabled( "MINIMAP", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "Minimap",
 			["lstr"] = "MINIMAP"
 		} )
 	end
-	if MoveAny:IsEnabled( "BUFFS", true ) then
+	if MoveAny:IsEnabled( "BUFFS", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MABuffBar",
 			["lstr"] = "BUFFS"
@@ -1032,7 +1032,7 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 	end
-	if MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
+	if QueueStatusButton and MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "QueueStatusButton",
 			["lstr"] = "QUEUESTATUSBUTTON"
@@ -1179,7 +1179,7 @@ function MoveAny:Event( event, ... )
 	GameTooltip:SetMovable( true )
 	GameTooltip:SetUserPlaced( false )
 
-	if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
+	if MoveAny:IsEnabled( "GAMETOOLTIP", MABUILDNR < 100000 ) or MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) then
 		MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
 		MAGameTooltip:SetSize( 100, 100 )
 		MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
@@ -1204,7 +1204,7 @@ function MoveAny:Event( event, ... )
 		end )
 	end
 
-	if MoveAny:IsEnabled( "GAMETOOLTIP", true ) then
+	if MoveAny:IsEnabled( "GAMETOOLTIP", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAGameTooltip",
 			["lstr"] = "GAMETOOLTIP"
@@ -1221,7 +1221,7 @@ function MoveAny:Event( event, ... )
 		if MoveAny:AnyActionbarEnabled()then
 			for i = 1, 10 do
 				if i ~= 2 then
-					if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", false ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+					if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MABUILDNR < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 						MoveAny:RegisterWidget( {
 							["name"] = "MAActionBar" .. i,
 							["lstr"] = "ACTIONBAR" .. i
@@ -1231,14 +1231,14 @@ function MoveAny:Event( event, ... )
 			end
 		end
 	end
-	if MoveAny:IsEnabled( "STANCEBAR", false ) then
+	if MoveAny:IsEnabled( "STANCEBAR", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAStanceBar",
 			["lstr"] = "STANCEBAR",
 			["secure"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "PETBAR", trfalseue ) then
+	if MoveAny:IsEnabled( "PETBAR", MABUILDNR < 100000 ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAPetBar",
 			["lstr"] = "PETBAR"
@@ -1313,18 +1313,16 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
-	if MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MABUILDNR < 100000 ) then
-		if ExtraAbilityContainer then
-			ExtraAbilityContainer:SetSize( 180, 100 )
-			ExtraAbilityContainer:ClearAllPoints()
-			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-		
-			MoveAny:RegisterWidget( {
-				["name"] = "ExtraAbilityContainer",
-				["lstr"] = "EXTRAABILITYCONTAINER",
-				["userplaced"] = true
-			} )
-		end
+	if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MABUILDNR < 100000 ) then
+		ExtraAbilityContainer:SetSize( 180, 100 )
+		ExtraAbilityContainer:ClearAllPoints()
+		ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+	
+		MoveAny:RegisterWidget( {
+			["name"] = "ExtraAbilityContainer",
+			["lstr"] = "EXTRAABILITYCONTAINER",
+			["userplaced"] = true
+		} )
 	end
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
@@ -1368,16 +1366,14 @@ function MoveAny:Event( event, ... )
 	end
 	
 	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MABUILD == "WRATH" and class == "SHAMAN" then
-		C_Timer.After( 4, function()
-			MoveAny:RegisterWidget( {
-				["name"] = "MultiCastActionBarFrame",
-				["lstr"] = "TOTEMBAR",
-				["userplaced"] = true,
-				["secure"] = true
-			} )
-		end )
+		MoveAny:RegisterWidget( {
+			["name"] = "MultiCastActionBarFrame",
+			["lstr"] = "TOTEMBAR",
+			["userplaced"] = true,
+			["secure"] = true
+		} )
 	end
-	if MoveAny:IsEnabled( "LEAVEVEHICLE", true ) then
+	if MoveAny:IsEnabled( "LEAVEVEHICLE", MABUILDNR < 100000 ) then
 		if MainMenuBarVehicleLeaveButton then
 			MainMenuBarVehicleLeaveButton:SetParent( UIParent )
 		end
@@ -1387,14 +1383,14 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 	if PlayerCastingBarFrame then
-		if MoveAny:IsEnabled( "CASTINGBAR", true ) then
+		if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "PlayerCastingBarFrame",
 				["lstr"] = "CASTINGBAR"
 			} )
 		end
 	else
-		if MoveAny:IsEnabled( "CASTINGBAR", true ) then
+		if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "CastingBarFrame",
 				["lstr"] = "CASTINGBAR"
@@ -1402,7 +1398,7 @@ function MoveAny:Event( event, ... )
 		end
 	end
 	if TalkingHeadFrame then
-		if MoveAny:IsEnabled( "TALKINGHEAD", true ) then
+		if MoveAny:IsEnabled( "TALKINGHEAD", MABUILDNR < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "TalkingHeadFrame",
 				["lstr"] = "TALKINGHEAD",

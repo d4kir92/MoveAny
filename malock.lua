@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.32" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.33" )
 }
 
 local PREFIX = "MOAN"
@@ -24,6 +24,17 @@ local sls = {}
 
 local EMMapForced = {}
 EMMapForced["Minimap"] = true
+EMMapForced["MINIMAP"] = true
+EMMapForced["PlayerFrame"] = true
+EMMapForced["PLAYERFRAME"] = true
+EMMapForced["ObjectiveTrackerFrame"] = true
+EMMapForced["QUESTTRACKER"] = true
+EMMapForced["ChatFrame1"] = true
+EMMapForced["CHAT"] = true
+EMMapForced["ChatFrame1ButtonFrame"] = true
+EMMapForced["CHATBUTTONFRAME"] = true
+EMMapForced["ChatFrame1EditBox"] = true
+EMMapForced["CHATEDITBOX"] = true
 
 local EMMap = {}
 EMMap["MAPetBar"] = "ShowPetActionBar"
@@ -96,11 +107,8 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 		lstr = format( lstr, id )
 	end
 
-	if editModeEnum and EditModeManagerFrame then
-		editModeEnum = Enum.EditModeAccountSetting[editModeEnum]
-		if editModeEnum and EditModeManagerFrame:GetAccountSettingValueBool( editModeEnum ) then
-			lstr = lstr .. " |cFFFFFF00" .. MAGT( "ISENABLEDINEDITMODE" )
-		end
+	if MoveAny:IsInEditModeEnabled( editModeEnum ) or MoveAny:IsInEditModeEnabled( key ) then
+		lstr = lstr .. " |cFFFFFF00" .. MAGT( "ISENABLEDINEDITMODE" )
 	end
 
 	if id then
@@ -269,7 +277,7 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP", true )
 
 		AddCategory( "TOPRIGHT" )
-		AddCheckBox( 4, "MINIMAP", true )
+		AddCheckBox( 4, "MINIMAP", MABUILDNR < 100000 )
 		AddCheckBox( 4, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
 		AddCheckBox( 24, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
 
@@ -290,7 +298,9 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "MICROMENU", true )
 		AddCheckBox( 4, "BAGS", true )
 		AddCheckBox( 4, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
-		AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
+		if QueueStatusButton then
+			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
+		end
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
 		if IAMoneyBar then
 			AddCheckBox( 4, "MONEYBAR", true )
@@ -328,7 +338,9 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
 		AddCheckBox( 4, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
 		AddCheckBox( 4, "MAFPSFrame", true )
-		AddCheckBox( 4, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
+		if ExtraAbilityContainer then
+			AddCheckBox( 4, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
+		end
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ALERTFRAME", true )
