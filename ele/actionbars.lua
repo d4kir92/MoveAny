@@ -108,7 +108,7 @@ function MAUpdateActionBar( frame )
 end
 
 function MoveAny:CustomBars()
-	if MoveAny:IsEnabled( "ACTIONBARS", true ) then
+	if MABUILD ~= "RETAIL" and MoveAny:IsEnabled( "ACTIONBARS", true ) then
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
 			if texture then
@@ -170,9 +170,11 @@ function MoveAny:CustomBars()
 	end
 
 	local id = 1
-	for i = 7, MAMaxAB do
-		for x = 1, 12 do
-			_G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] = _G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] or "Actionbar " .. i .. " Button " .. x
+	if MABUILD ~= "RETAIL" then
+		for i = 7, MAMaxAB do
+			for x = 1, 12 do
+				_G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] = _G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] or "Actionbar " .. i .. " Button " .. x
+			end
 		end
 	end
 	for i = 1, MAMaxAB do
@@ -242,34 +244,36 @@ function MoveAny:CustomBars()
 end
 
 function MoveAny:UpdateABs()
-	local cvar = tonumber( GetCVar( "alwaysShowActionBars" ) )
-	if cvar ~= oldcvar then
-		oldcvar = cvar
-		for name, bar in pairs( abs ) do
-			local ab = bar
-			if ab and ab.btns then
-				for id, abtn in pairs( ab.btns ) do
-					local btnname = abtn:GetName()
-					if btnname and _G[btnname .. "FloatingBG"] then
-						_G[btnname .. "FloatingBG"]:Show()
-					end
-					if btnname and _G[btnname .. "NormalTexture"] then
-						if cvar == 1 then
-							_G[btnname]:SetAttribute( "showgrid", 1 )
-							_G[btnname .. "NormalTexture"]:Show()
-							_G[btnname]:Show()
-						elseif cvar == 0 then
-							_G[btnname]:SetAttribute( "showgrid", 0 )
-							_G[btnname .. "NormalTexture"]:Hide()
+	if MABUILD ~= "RETAIL" then
+		local cvar = tonumber( GetCVar( "alwaysShowActionBars" ) )
+		if cvar ~= oldcvar then
+			oldcvar = cvar
+			for name, bar in pairs( abs ) do
+				local ab = bar
+				if ab and ab.btns then
+					for id, abtn in pairs( ab.btns ) do
+						local btnname = abtn:GetName()
+						if btnname and _G[btnname .. "FloatingBG"] then
+							_G[btnname .. "FloatingBG"]:Show()
 						end
-					else
-						MoveAny:MSG( "NOT FOUND: " .. tostring( btnname ) )
+						if btnname and _G[btnname .. "NormalTexture"] then
+							if cvar == 1 then
+								_G[btnname]:SetAttribute( "showgrid", 1 )
+								_G[btnname .. "NormalTexture"]:Show()
+								_G[btnname]:Show()
+							elseif cvar == 0 then
+								_G[btnname]:SetAttribute( "showgrid", 0 )
+								_G[btnname .. "NormalTexture"]:Hide()
+							end
+						else
+							MoveAny:MSG( "NOT FOUND: " .. tostring( btnname ) )
+						end
 					end
 				end
 			end
 		end
+		C_Timer.After( 0.5, MoveAny.UpdateABs )
 	end
-	C_Timer.After( 0.5, MoveAny.UpdateABs )
 end
 
 local f = CreateFrame( "Frame" )
@@ -278,86 +282,88 @@ f:RegisterEvent( "UPDATE_BONUS_ACTIONBAR" )
 f:RegisterEvent( "ACTIONBAR_PAGE_CHANGED" )
 f:RegisterEvent( "UPDATE_SHAPESHIFT_FORM" )
 f:SetScript( "OnEvent", function( self, event )
-	if ( event == "PLAYER_ENTERING_WORLD"
-		or event == "UPDATE_BONUS_ACTIONBAR" 
-		or event == "UPDATE_VEHICLE_ACTIONBAR" 
-		or event == "UPDATE_OVERRIDE_ACTIONBAR"
-		or event == "ACTIONBAR_PAGE_CHANGED"
-		or event == "UPDATE_SHAPESHIFT_FORM" ) then
-			local frame = _G["MAActionBar" .. 1]
-			if frame then
-				if frame.init == nil then
-					frame.init = true
+	if MABUILD ~= "RETAIL" then
+		if ( event == "PLAYER_ENTERING_WORLD"
+			or event == "UPDATE_BONUS_ACTIONBAR" 
+			or event == "UPDATE_VEHICLE_ACTIONBAR" 
+			or event == "UPDATE_OVERRIDE_ACTIONBAR"
+			or event == "ACTIONBAR_PAGE_CHANGED"
+			or event == "UPDATE_SHAPESHIFT_FORM" ) then
+				local frame = _G["MAActionBar" .. 1]
+				if frame then
+					if frame.init == nil then
+						frame.init = true
 
-					frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
-						self:SetAttribute( "actionpage", newstate );
-					]] );
-					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
+						frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
+							self:SetAttribute( "actionpage", newstate );
+						]] );
+						RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
 
-					local _onAttributeChanged = [[
-						if name == 'statehidden' then
-							if (HasOverrideActionBar() or HasVehicleActionBar()) then
-								for i = 1, 12 do
-									if i < 7 then
-										if overridebuttons[i]:GetAttribute('statehidden') then
+						local _onAttributeChanged = [[
+							if name == 'statehidden' then
+								if (HasOverrideActionBar() or HasVehicleActionBar()) then
+									for i = 1, 12 do
+										if i < 7 then
+											if overridebuttons[i]:GetAttribute('statehidden') then
+												buttons[i]:SetAttribute('statehidden', true)
+												buttons[i]:Hide()
+											else
+												buttons[i]:SetAttribute('statehidden', false)
+												buttons[i]:Show()
+											end
+										else
 											buttons[i]:SetAttribute('statehidden', true)
 											buttons[i]:Hide()
-										else
-											buttons[i]:SetAttribute('statehidden', false)
-											buttons[i]:Show()
 										end
-									else
-										buttons[i]:SetAttribute('statehidden', true)
-										buttons[i]:Hide()
+									end
+								else
+									for i = 1, 12 do
+										buttons[i]:SetAttribute('statehidden', false)
+										buttons[i]:Show()
 									end
 								end
-							else
+							end
+						]]
+						if MABUILD == "CLASSIC" then
+							_onAttributeChanged = [[
+							if name == 'statehidden' then
 								for i = 1, 12 do
 									buttons[i]:SetAttribute('statehidden', false)
 									buttons[i]:Show()
 								end
 							end
+						]]
 						end
-					]]
-					if MABUILD == "CLASSIC" then
-						_onAttributeChanged = [[
-						if name == 'statehidden' then
-							for i = 1, 12 do
-								buttons[i]:SetAttribute('statehidden', false)
-								buttons[i]:Show()
+
+						local AttributeChangedFrame = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
+						for i = 1, 12 do
+							local button = _G['ActionButton'..i]
+							AttributeChangedFrame:SetFrameRef('ActionButton'..i, button)
+						end
+						
+						for i = 1, 6 do
+							local overrideButton = _G['OverrideActionBarButton'..i]
+							if overrideButton then
+								AttributeChangedFrame:SetFrameRef('OverrideActionBarButton'..i, overrideButton)
 							end
 						end
-					]]
+						
+						AttributeChangedFrame:Execute([[
+							buttons = table.new()
+							for i = 1, 12 do
+								buttons[i] = self:GetFrameRef('ActionButton'..i)
+							end
+						
+							overridebuttons = table.new()
+							for j = 1, 6 do
+								overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
+							end
+						]])
+						
+						AttributeChangedFrame:SetAttribute('_onattributechanged', _onAttributeChanged)
+						RegisterStateDriver(AttributeChangedFrame, 'visibility', '[overridebar][shapeshift][vehicleui][possessbar] show; hide')
 					end
-
-					local AttributeChangedFrame = CreateFrame('Frame', nil, UIParent, 'SecureHandlerAttributeTemplate')
-					for i = 1, 12 do
-						local button = _G['ActionButton'..i]
-						AttributeChangedFrame:SetFrameRef('ActionButton'..i, button)
-					end
-					
-					for i = 1, 6 do
-						local overrideButton = _G['OverrideActionBarButton'..i]
-						if overrideButton then
-							AttributeChangedFrame:SetFrameRef('OverrideActionBarButton'..i, overrideButton)
-						end
-					end
-					
-					AttributeChangedFrame:Execute([[
-						buttons = table.new()
-						for i = 1, 12 do
-							buttons[i] = self:GetFrameRef('ActionButton'..i)
-						end
-					
-						overridebuttons = table.new()
-						for j = 1, 6 do
-							overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
-						end
-					]])
-					
-					AttributeChangedFrame:SetAttribute('_onattributechanged', _onAttributeChanged)
-					RegisterStateDriver(AttributeChangedFrame, 'visibility', '[overridebar][shapeshift][vehicleui][possessbar] show; hide')
 				end
-			end
+		end
 	end
 end )

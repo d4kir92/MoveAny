@@ -13,17 +13,36 @@ function MoveAny:InitMinimap()
 	if MinimapToggleButton then
 		MinimapToggleButton:SetParent( MAHIDDEN )
 	end
-	MinimapCluster:SetParent( MAHIDDEN )
-	MinimapBackdrop:SetParent( MAHIDDEN )
-	for i, v in pairs({MinimapCluster:GetChildren()}) do
-		if v ~= Minimap then
-			v:SetParent( Minimap )
+	
+	if MinimapCluster then
+		for i, v in pairs({MinimapCluster:GetChildren()}) do
+			if v ~= Minimap then
+				v:SetParent( Minimap )
+			end
+		end
+		MinimapCluster:SetParent( MAHIDDEN )
+	end
+
+	if MinimapBackdrop then
+		for i, v in pairs({MinimapBackdrop:GetChildren()}) do
+			if v ~= Minimap then
+				v:SetParent( Minimap )
+			end
+		end
+		MinimapBackdrop:SetParent( MAHIDDEN )
+	end
+
+	local zoneTextBG = nil
+	for i, v in pairs( {Minimap:GetChildren()} ) do
+		for x, w in pairs( v ) do
+			if x == "layoutTextureKit" then
+				zoneTextBG = v
+			end
 		end
 	end
-	for i, v in pairs({MinimapBackdrop:GetChildren()}) do
-		if v ~= Minimap then
-			v:SetParent( Minimap )
-		end
+	if zoneTextBG then
+		zoneTextBG:ClearAllPoints()
+		zoneTextBG:SetPoint( "TOP", Minimap, "TOP", 0, 32 )
 	end
 	Minimap:SetParent( UIParent )
 	
@@ -78,8 +97,12 @@ function MoveAny:InitMinimap()
 	end
 
 	if TimeManagerClockButton then
-		TimeManagerClockButton:ClearAllPoints()
-		TimeManagerClockButton:SetPoint( "BOTTOM", Minimap, "BOTTOM", 0, -18 )
+		if MABUILD == "RETAIL" then
+			-- 
+		else
+			TimeManagerClockButton:ClearAllPoints()
+			TimeManagerClockButton:SetPoint( "BOTTOM", Minimap, "BOTTOM", 0, -18 )
+		end
 	end
 
 	if MinimapZoneTextButton then
@@ -98,10 +121,14 @@ function MoveAny:InitMinimap()
 	end
 
 	if GameTimeFrame then
-		GameTimeFrame:ClearAllPoints()
-		GameTimeFrame:SetPoint( "TOPRIGHT", Minimap, "TOPRIGHT", 20, -10 )
+		if MABUILD == "RETAIL" then
+			-- 
+		else
+			GameTimeFrame:ClearAllPoints()
+			GameTimeFrame:SetPoint( "TOPRIGHT", Minimap, "TOPRIGHT", 20, -10 )
+		end
 	end
-	
+
 	if MiniMapWorldMapButton then
 		MiniMapWorldMapButton:ClearAllPoints()
 		MiniMapWorldMapButton:SetPoint( "TOPRIGHT", Minimap, "TOPRIGHT", -6, 6 )

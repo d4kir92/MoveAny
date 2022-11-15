@@ -718,7 +718,11 @@ function MoveAny:UpdateAlphas()
 end
 
 function MoveAny:AnyActionbarEnabled()
-	return MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR7", true ) or MoveAny:IsEnabled( "ACTIONBAR8", true ) or MoveAny:IsEnabled( "ACTIONBAR9", true ) or MoveAny:IsEnabled( "ACTIONBAR10", true )
+	if MABUILD ~= "RETAIL" then
+		return MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR7", true ) or MoveAny:IsEnabled( "ACTIONBAR8", true ) or MoveAny:IsEnabled( "ACTIONBAR9", true ) or MoveAny:IsEnabled( "ACTIONBAR10", true )
+	else
+		return false
+	end
 end
 
 function MoveAny:Event( event, ... )
@@ -735,7 +739,7 @@ function MoveAny:Event( event, ... )
 
 	MoveAny:InitDB()
 
-	if MABUILDNR < 100000 then
+	if MABUILD ~= "RETAIL" then
 		if MoveAny:IsEnabled( "ACTIONBARS", true ) then
 			if UIPARENT_MANAGED_FRAME_POSITIONS then
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
@@ -754,12 +758,13 @@ function MoveAny:Event( event, ... )
 				end
 			end
 		end
-		if MoveAny:AnyActionbarEnabled() then
-			MoveAny:CustomBars()
-			MoveAny:UpdateABs()
-		end
-		MoveAny:InitPetBar()
 	end
+	if MoveAny:AnyActionbarEnabled() then
+		MoveAny:CustomBars()
+		MoveAny:UpdateABs()
+	end
+	MoveAny:InitStanceBar()
+	MoveAny:InitPetBar()
 	
 
 
@@ -1189,11 +1194,11 @@ function MoveAny:Event( event, ... )
 	if MainMenuBarPerformanceBarFrame then
 		MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
 	end
-	if MABUILDNR < 100000 then
+	if MABUILD ~= "RETAIL" then
 		if MoveAny:AnyActionbarEnabled()then
 			for i = 1, 10 do
 				if i ~= 2 then
-					if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+					if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", false ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 						MoveAny:RegisterWidget( {
 							["name"] = "MAActionBar" .. i,
 							["lstr"] = "ACTIONBAR" .. i
@@ -1202,28 +1207,35 @@ function MoveAny:Event( event, ... )
 				end
 			end
 		end
-		if MoveAny:IsEnabled( "STANCEBAR", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MAStanceBar",
-				["lstr"] = "STANCEBAR",
-				["secure"] = true
-			} )
-		end
-		if MoveAny:IsEnabled( "PETBAR", true ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MAPetBar",
-				["lstr"] = "PETBAR"
-			} )
-		end
 	end
-
-	if MoveAny:IsEnabled( "POSSESSBAR", true ) then
+	if MoveAny:IsEnabled( "STANCEBAR", false ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "PossessBarFrame",
-			["lstr"] = "POSSESSBAR"
+			["name"] = "MAStanceBar",
+			["lstr"] = "STANCEBAR",
+			["secure"] = true
 		} )
 	end
-
+	if MoveAny:IsEnabled( "PETBAR", trfalseue ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MAPetBar",
+			["lstr"] = "PETBAR"
+		} )
+	end
+	if PossessActionBar then
+		if MoveAny:IsEnabled( "POSSESSBAR", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "PossessActionBar",
+				["lstr"] = "POSSESSBAR"
+			} )
+		end
+	else
+		if MoveAny:IsEnabled( "POSSESSBAR", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "PossessBarFrame",
+				["lstr"] = "POSSESSBAR"
+			} )
+		end
+	end
 	if ZoneAbilityFrame and MoveAny:IsEnabled( "ZONEABILITYFRAME", true ) then
 		ZoneAbilityFrame:SetParent( UIParent )
 		ZoneAbilityFrame:ClearAllPoints()
@@ -1280,27 +1292,6 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
-		if MainMenuExpBar then
-			MainMenuExpBar:ClearAllPoints()
-			MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
-		end
-		MoveAny:RegisterWidget( {
-			["name"] = "MainMenuExpBar",
-			["lstr"] = "MAINMENUEXPBAR"
-		} )
-	end
-	if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
-		if ReputationWatchBar then
-			ReputationWatchBar:ClearAllPoints()
-			ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
-		end
-		MoveAny:RegisterWidget( {
-			["name"] = "ReputationWatchBar",
-			["lstr"] = "REPUTATIONWATCHBAR"
-		} )
-	end
-
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
 			StatusTrackingBarManager:EnableMouse( true )
@@ -1317,6 +1308,27 @@ function MoveAny:Event( event, ... )
 				["cbottom"] = 4,
 				["posx"] = 1,
 				["posy"] = 4,
+			} )
+		end
+	else
+		if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
+			if MainMenuExpBar then
+				MainMenuExpBar:ClearAllPoints()
+				MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
+			end
+			MoveAny:RegisterWidget( {
+				["name"] = "MainMenuExpBar",
+				["lstr"] = "MAINMENUEXPBAR"
+			} )
+		end
+		if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
+			if ReputationWatchBar then
+				ReputationWatchBar:ClearAllPoints()
+				ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
+			end
+			MoveAny:RegisterWidget( {
+				["name"] = "ReputationWatchBar",
+				["lstr"] = "REPUTATIONWATCHBAR"
 			} )
 		end
 	end
@@ -1339,11 +1351,20 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LEAVEVEHICLE"
 		} )
 	end
-	if MoveAny:IsEnabled( "CASTINGBAR", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "CastingBarFrame",
-			["lstr"] = "CASTINGBAR"
-		} )
+	if PlayerCastingBarFrame then
+		if MoveAny:IsEnabled( "CASTINGBAR", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "PlayerCastingBarFrame",
+				["lstr"] = "CASTINGBAR"
+			} )
+		end
+	else
+		if MoveAny:IsEnabled( "CASTINGBAR", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "CastingBarFrame",
+				["lstr"] = "CASTINGBAR"
+			} )
+		end
 	end
 	if TalkingHeadFrame then
 		if MoveAny:IsEnabled( "TALKINGHEAD", true ) then
@@ -1551,7 +1572,6 @@ function MoveAny:Event( event, ... )
 	
 	MoveAny:InitMALock()
 	MoveAny:InitMAVehicleSeatIndicator()
-	MoveAny:InitStanceBar()
 	MoveAny:InitMinimap()
 	MoveAny:InitBuffBar()
 	MoveAny:InitDebuffBar()

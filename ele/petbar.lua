@@ -22,14 +22,21 @@ function MoveAny:UpdatePetBar()
 		end
 	end
 
+	MAUpdateActionBar( MAPetBar )
+
 	C_Timer.After( 0.4, MoveAny.UpdatePetBar )
 end
 
 function MoveAny:InitPetBar()
-	if MoveAny:IsEnabled( "PETBAR", true ) then
+	if MoveAny:IsEnabled( "PETBAR", false ) then
 		MAPetBar = CreateFrame( "Frame", "MAPetBar", UIParent )
 		MAPetBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 110 )
 		MAPetBar.btns = {}
+
+		if _G["PetActionButton" .. 1] then
+			btnsize = _G["PetActionButton" .. 1]:GetSize()
+		end
+
 		for i = 1, 10 do
 			local bb = _G["PetActionButton" .. i]
 			if bb then

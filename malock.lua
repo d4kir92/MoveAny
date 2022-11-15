@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.25" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.26" )
 }
 
 local PREFIX = "MOAN"
@@ -258,23 +258,26 @@ function MoveAny:InitMALock()
 
 
 		AddCategory( "BOTTOM" )
-		if MABUILDNR < 100000 then
-			AddCheckBox( 4, "ACTIONBARS", true )
+		if MABUILD ~= "RETAIL" then
+			AddCheckBox( 4, "ACTIONBARS", false )
 			AddCheckBox( 4, "ACTIONBAR7", false )
 			AddCheckBox( 4, "ACTIONBAR8", false )
 			AddCheckBox( 4, "ACTIONBAR9", false )
 			AddCheckBox( 4, "ACTIONBAR10", false )
-			AddCheckBox( 4, "PETBAR", true )
-			AddCheckBox( 4, "STANCEBAR", true )
 		end
+		AddCheckBox( 4, "PETBAR", false )
+		AddCheckBox( 4, "STANCEBAR", false )
 		if MABUILD == "WRATH" and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMBAR", true )
 		end
-		AddCheckBox( 4, "POSSESSBAR", true )
+		AddCheckBox( 4, "POSSESSBAR", false )
 		AddCheckBox( 4, "LEAVEVEHICLE", true )
-		AddCheckBox( 4, "MAINMENUEXPBAR", true )
-		AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
-		AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
+		if StatusTrackingBarManager then
+			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
+		else
+			AddCheckBox( 4, "MAINMENUEXPBAR", true )
+			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
+		end
 		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
 		AddCheckBox( 4, "CASTINGBAR", true )
 		AddCheckBox( 4, "TALKINGHEAD", true )
