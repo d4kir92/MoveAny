@@ -2,8 +2,8 @@
 local AddOnName, MoveAny = ...
 
 function MoveAny:InitArenaEnemyFrames()
-	if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) then
-		if _G["ArenaEnemyFrame" .. 1] == nil then
+	if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) and Arena_LoadUI then
+		if _G["ArenaEnemyFrame" .. 1] == nil and Arena_LoadUI then
 			Arena_LoadUI()
 		end
 
@@ -25,6 +25,13 @@ function MoveAny:InitArenaEnemyFrames()
 		function ArenaEnemyFrames:SetPoint( ... )
 			
 		end
+
+		hooksecurefunc( MAArenaEnemyFrames, "SetScale", function( self, scale )
+			ArenaEnemyFrames:SetScale( scale )
+		end )
+		hooksecurefunc( MAArenaEnemyFrames, "SetAlpha", function( self, alpha )
+			ArenaEnemyFrames:SetAlpha( alpha )
+		end )
 
 		if false then
 
@@ -50,8 +57,8 @@ function MoveAny:InitArenaEnemyFrames()
 end
 
 function MoveAny:InitArenaPrepFrames()
-	if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) then
-		if _G["ArenaPrepFrame" .. 1] == nil then
+	if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) and Arena_LoadUI then
+		if _G["ArenaPrepFrame" .. 1] == nil and Arena_LoadUI then
 			Arena_LoadUI()
 		end
 
@@ -74,7 +81,12 @@ function MoveAny:InitArenaPrepFrames()
 			
 		end
 		
-
+		hooksecurefunc( MAArenaPrepFrames, "SetScale", function( self, scale )
+			ArenaPrepFrames:SetScale( scale )
+		end )
+		hooksecurefunc( MAArenaPrepFrames, "SetAlpha", function( self, alpha )
+			ArenaPrepFrames:SetAlpha( alpha )
+		end )
 		
 		if false then
 

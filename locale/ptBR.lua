@@ -2,23 +2,53 @@
 
 function MALang_ptBR()
 	local tab = {
+		["MMBTNLEFT"] = "Clique esquerdo => Bloqueios/Desbloqueio + Opções",
+		["MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
+
+		["GERAL"] = "Geral",
+		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
+		["GRIDSIZE"] = "Gridsize",
+		["MOVEFRAMES"] = "Move Frames/Windows",
+		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
+		["FRAMESSHIFTSCALE"] = "Balança com Turno + Arrastar com o Botão Direito",
+		["FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",
+
 		["TOPLEFT"] = "Top Left",
-		["PLAYERFRAME"] = "Playerframe",
-		["TARGETFRAME"] = "Targetframe",
-		["FOCUSFRAME"] = "Focusframe",
-		["RUNEFRAME"] = "Deathknight - RunesFrame",
+		["PLAYERFRAME"] = "Player Frame",
+		["PETFRAME"] = "Pet Frame",
+		["TARGETFRAME"] = "Target Frame",
+		["TARGETOFTARGETFRAME"] = "Target of Target Frame",
+		["TARGETFRAMESPELLBAR"] = "Castbar from Target",
+		["FOCUSFRAME"] = "Focus Frame",
+		["FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
+		["TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
+		["RUNEFRAME"] = "Deathknight - Runes Frame",
+		["TOTEMFRAME"] = "Totem Timers",
+		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
+		["MONKHARMONYBARFRAME"] = "Monk Harmony frame",
+		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
+		["ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
+		["MAFPSFrame"] = "FPS",
+
+		["TOP"] = "Top",
 
 		["TOPRIGHT"] = "Top Right",
 		["MINIMAP"] = "Mini Mapa",
 		["BUFFS"] = "Buffs",
-
-		["DIREITO"] = "Certo",
+		["DEBUFFS"] = "Debuffs",
+		["VEHICLESEATINDICATOR"] = "Vehicle Seat Indicator",
+		["ARENAENEMYFRAMES"] = "Arena Enemy Frames",
+		["ARENAPREPFRAMES"] = "Arena Prep Frames",
 		["QUESTTRACKER"] = "Questtracker",
 
+		["DIREITO"] = "Certo",
+	
 		["BOTTOMRIGHT"] = "Bottom Right",
 		["MICROMENU"] = "Micro Menu",
 		["BAGS"] = "Bags",
 		["GAMETOOLTIP"] = "Tooltip",
+		["GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
+		["QUEUESTATUSBUTTON"] = "LFG Status",
 
 		["BOTTOM"] = "Bottom",
 		["ACTIONBARS"] = "Actionbars 1-6",
@@ -31,12 +61,18 @@ function MALang_ptBR()
 		["TOTEMBAR"] = "Shaman - Barra Totem",
 		["LEAVEVEHICLE"] = "Leave Vehicle Button",
 		["GROUPLOOTCONTAINER"] = "Loot Roll frame",
+		["STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
+		["ALERTFRAME"] = "Alert Frame (Bonus Loot, Achiements, ...)",
 
 		["BOTTOMLEFT"] = "Bottom Left",
 		["CHAT"] = "Chatframe %d",
+		["CHATBUTTONFRAME"] = "Botões de Chat",
+		["CHATQUICKJOIN"] = "Chat Quick Join",
+		["CHATEDITBOX"] = "Chat Inputbox",
 
 		["ESQUERDA"] = "Esquerda",
 		["COMPACTRAIDFRAMEMANAGER"] = "Gerente de Raid",
+		["BATTLENETFRIENDSNOTIFICATION"] = "Battlenet Friends Notifications",
 
 
 
@@ -47,6 +83,7 @@ function MALang_ptBR()
 		["DURABILIDADE"] = "Boneca de Durabilidade",
 		["MONEYBAR"] = "Money Bar",
 		["TOKENBAR"] = "Token Bar",
+		["IAILVLBAR"] = "ItemLevel Bar",
 		["CASTINGBAR"] = "Casting Bar",
 		["TALKINGHEAD"] = "Talking Head Dialog",
 		["ACTIONBAR1"] = "Barra de ação 1 (Barra principal)",
@@ -61,6 +98,40 @@ function MALang_ptBR()
 		["MAINMENUEXPBAR"] = "Exp Bar",
 		["REPUTATIONWATCHBAR"] = "Barra de Reputação",
 		["UIWIDGETPOWERBAR"] = "Barra de alimentação",
+
+		["ROWS"] = "Linhas",
+		["SPACING"] = "Espaçamento",
+		
+		
+
+		["PERFIL"] = "Perfil",
+		["PERFILES"] = "Profiles",
+		["ADDPROFILE"] = "Adicionar Perfil",
+		["CORRENTE"] = "Atual",
+		["SHARE"] = "Compartilhar",
+		["SHAREPROFILE"] = "Share Profile",
+		["GETPROFILE"] = "Get Profile",
+		["INHERITFROM"] = "Herdar de",
+		["ADD"] = "Adicionar",
+		["REMOVER"] = "Remover",
+		["RENAME"] = "Renomear",
+		["PLAYER"] = "Jogador",
+		["DOWNLOAD"] = "Download",
+		["UPLOAD"] = "Upload",
+		["STATUS"] = "Status",
+		["FEITO"] = "Feito",
+		["ESPERANDO DO PROPRIETÁRIO"] = "Esperando pelo Proprietário",
+		["WAITFORPLAYERPROFILE"] = "Aguarde que outro jogador pressione \"Obter Perfis\"",
+		["WAITFORPLAYERPROFILE2"] = "Aguarde que outro jogador pressione \"Compartilhe\"",
+
+		["ALPHAINCOMBAT"] = "Alpha (in Combat)",
+		["ALPHANOTINCOMBAT"] = "Alpha (não em Combate)",
+		["ALPHAINVEHICLE"] = "Alfa (no veículo)",
+
+		["MABUFFLIMIT"] = "Buff limit",
+		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
+		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
+		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 	}
 
 	MAUpdateLanguageTab( tab )

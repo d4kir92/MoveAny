@@ -27,6 +27,7 @@ function MALang_deDE()
 		["WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster",
 		["MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster",
 		["MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
+		["ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Oben",
@@ -73,7 +74,10 @@ function MALang_deDE()
 		["COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",
 		["BATTLENETFRIENDSNOTIFICATION"] = "Benachrichtigungen von Battlenet Freunden",
 
+		["CENTER"] = "Center",
+		["SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",
 
+		
 
 		["ZONETEXTFRAME"] = "Zonentext",
 		["UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status bei BGs/Dungeons)",

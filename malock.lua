@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.34" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.35" )
 }
 
 local PREFIX = "MOAN"
@@ -268,6 +268,9 @@ function MoveAny:InitMALock()
 		if MageArcaneChargesFrame and class == "MAGE" then
 			AddCheckBox( 4, "MAGEARCANECHARGESFRAME", false )
 		end
+		if EssencePlayerFrame and class == "EVOKER" then
+			AddCheckBox( 4, "ESSENCEPLAYERFRAME", false )
+		end
 
 
 
@@ -368,6 +371,12 @@ function MoveAny:InitMALock()
 		if BNToastFrame then
 			AddCheckBox( 4, "BATTLENETFRIENDSNOTIFICATION", true )
 		end
+
+
+		AddCategory( "CENTER" )
+		if SpellActivationOverlayFrame then
+			AddCheckBox( 4, "SPELLACTIVATIONOVERLAYFRAME", false )
+		end
 	end
 
 	MALock.Search = CreateFrame( "EditBox", "MALock_Search", MALock, "InputBoxTemplate" )
@@ -425,7 +434,7 @@ function MoveAny:InitMALock()
 	MALock.DISCORD = CreateFrame( "EditBox", "MALock" .. ".DISCORD", MALock, "InputBoxTemplate" )
 	MALock.DISCORD:SetText( "discord.gg/pRjC7cbqYW" )
 	MALock.DISCORD:SetSize( 160, 24 )
-	MALock.DISCORD:SetPoint("TOPLEFT", MALock, "TOPLEFT", MALock:GetWidth() - 160 - 4, -MALock:GetHeight() + 24 + 4 )
+	MALock.DISCORD:SetPoint("TOPLEFT", MALock, "TOPLEFT", MALock:GetWidth() - 160 - 8, -MALock:GetHeight() + 24 + 4 )
 	MALock.DISCORD:SetAutoFocus( false )
 
 

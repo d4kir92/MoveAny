@@ -35,6 +35,7 @@ function MALang_enUS()
 		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
 		["MONKHARMONYBARFRAME"] = "Monk Harmony frame",
 		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
+		["ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Top",
@@ -81,8 +82,11 @@ function MALang_enUS()
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
 		["BATTLENETFRIENDSNOTIFICATION"] = "Battlenet Friends Notifications",
 
+		["CENTER"] = "Center",
+		["SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",
 
 
+		
 		["ZONETEXTFRAME"] = "Zone Text",
 		["UIWIDGETTOPCENTER"] = "Widget Top Center (Status on BGs/Dungeons)",
 		["IASKILLS"] = "Skillbars",

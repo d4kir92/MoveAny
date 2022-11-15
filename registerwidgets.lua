@@ -767,9 +767,10 @@ function MoveAny:Event( event, ... )
 	MoveAny:InitStanceBar()
 	MoveAny:InitPetBar()
 
-	MoveAny:InitArenaEnemyFrames()
-	MoveAny:InitArenaPrepFrames()
-
+	if Arena_LoadUI then
+		MoveAny:InitArenaEnemyFrames()
+		MoveAny:InitArenaPrepFrames()
+	end
 
 	-- TOPLEFT
 	if MoveAny:IsEnabled( "PLAYERFRAME", MABUILDNR < 100000 ) then
@@ -814,6 +815,12 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "MageArcaneChargesFrame",
 			["lstr"] = "MAGEARCANECHARGESFRAME"
+		} )
+	end
+	if EssencePlayerFrame and MoveAny:IsEnabled( "ESSENCEPLAYERFRAME", false ) and class == "EVOKER" then
+		MoveAny:RegisterWidget( {
+			["name"] = "EssencePlayerFrame",
+			["lstr"] = "ESSENCEPLAYERFRAME"
 		} )
 	end
 	if MoveAny:IsEnabled( "TARGETFRAME", MABUILDNR < 100000 ) then
@@ -1062,24 +1069,26 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAArenaEnemyFrames",
-			["lstr"] = "ARENAENEMYFRAMES",
-			["userplaced"] = true,
-			["secure"] = true
-		} )
-	end
-	if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAArenaPrepFrames",
-			["lstr"] = "ARENAPREPFRAMES",
-			["userplaced"] = true,
-			["secure"] = true
-		} )
+	if Arena_LoadUI then
+		if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAArenaEnemyFrames",
+				["lstr"] = "ARENAENEMYFRAMES",
+				["userplaced"] = true,
+				["secure"] = true
+			} )
+		end
+		if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAArenaPrepFrames",
+				["lstr"] = "ARENAPREPFRAMES",
+				["userplaced"] = true,
+				["secure"] = true
+			} )
+		end
 	end
 
-
+	
 
 	-- RIGHT
 
@@ -1582,12 +1591,10 @@ function MoveAny:Event( event, ... )
 
 
 	-- CENTER
-	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled( "UIWIDGETPOWERBAR", false ) then
+	if SpellActivationOverlayFrame and MoveAny:IsEnabled( "SPELLACTIVATIONOVERLAYFRAME", false ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "UIWidgetPowerBarContainerFrame",
-			["lstr"] = "UIWIDGETPOWERBAR",
-			["sw"] = 36 * 6,
-			["sh"] = 36 * 1
+			["name"] = "SpellActivationOverlayFrame",
+			["lstr"] = "SPELLACTIVATIONOVERLAYFRAME"
 		} )
 	end
 
