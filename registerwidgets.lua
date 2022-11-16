@@ -445,7 +445,8 @@ function MoveAny:RegisterWidget( tab, debug )
 
 					dragframe.opt:SetFrameStrata( "HIGH" )
 					dragframe.opt:SetFrameLevel( framelevel )
-					framelevel = framelevel + 1
+
+					framelevel = framelevel + 510 -- 509 <- closebutton height
 
 					dragframe.opt:SetSize( 300, 370 )
 					dragframe.opt:SetPoint( "CENTER" )
