@@ -143,6 +143,8 @@ function MALang_enUS()
 		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
 		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
 		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
+
+		["HELPTEXT"] = "%s is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
 	}
 
 	MAUpdateLanguageTab( tab )

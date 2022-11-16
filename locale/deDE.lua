@@ -135,6 +135,8 @@ function MALang_deDE()
 		["MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
 		["MABUFFSPACINGY"] = "Stärkungszauber Abstand Vertikal",
 		["ISENABLEDINEDITMODE"] = "(Ist im Bearbeitungsmodus aktiviert)",
+
+		["HELPTEXT"] = "%s ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
 	}
 
 	MAUpdateLanguageTab( tab )

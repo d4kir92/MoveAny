@@ -198,7 +198,7 @@ function MoveAny:MoveFrames()
 						if frame:GetPoint() then
 							fm:SetSize( frame:GetSize() )
 							fm:ClearAllPoints()
-							fm:SetPoint( frame:GetPoint() )
+							fm:SetAllPoints( frame )
 						end
 
 						if (MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and btn == "RightButton") then
@@ -216,6 +216,8 @@ function MoveAny:MoveFrames()
 						elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and IsShiftKeyDown() and btn == "MiddleButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and btn == "MiddleButton") then
 							MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
 							MoveAny:SetFrameScale( name, nil )
+
+							frame:ClearAllPoints()
 
 							MoveAny:MSG( "[" .. name .. "] is reset, reopen the frame." )
 						else
@@ -235,6 +237,19 @@ function MoveAny:MoveFrames()
 						currentFrameName = nil
 					end )
 
+					function frame:MARetrySetPoint()
+						frame.maretrysetpoint = true
+						if not InCombatLockdown() then
+							if frame:GetPoint() then
+								frame:SetPoint( frame:GetPoint() )
+							else
+								frame:SetPoint( "CENTER" )
+							end
+						else
+							C_Timer.After( 0.01, frame.MARetrySetPoint )
+						end
+					end
+
 					hooksecurefunc( frame, "SetPoint", function( self, ... )
 						if self.maframesetpoint then return end
 						self.maframesetpoint = true
@@ -243,16 +258,19 @@ function MoveAny:MoveFrames()
 						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )
 						end
-
+						
 						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 						if dbp1 and dbp3 then
-							local w, h = self:GetSize()
 							if not InCombatLockdown() then
+								self.maretrysetpoint = nil
+								local w, h = self:GetSize()
 								self:ClearAllPoints()
 								self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-								if w and h then
+								if self:GetNumPoints() > 1 then
 									self:SetSize( w, h )
 								end
+							elseif self.maretrysetpoint == nil then
+								frame:MARetrySetPoint()
 							end
 						end
 						self.maframesetpoint = false

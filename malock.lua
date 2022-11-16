@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.8.35" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.0" )
 }
 
 local PREFIX = "MOAN"
@@ -23,18 +23,18 @@ local cbs = {}
 local sls = {}
 
 local EMMapForced = {}
-EMMapForced["Minimap"] = true
-EMMapForced["MINIMAP"] = true
-EMMapForced["PlayerFrame"] = true
-EMMapForced["PLAYERFRAME"] = true
-EMMapForced["ObjectiveTrackerFrame"] = true
-EMMapForced["QUESTTRACKER"] = true
-EMMapForced["ChatFrame1"] = true
-EMMapForced["CHAT"] = true
-EMMapForced["ChatFrame1ButtonFrame"] = true
-EMMapForced["CHATBUTTONFRAME"] = true
-EMMapForced["ChatFrame1EditBox"] = true
-EMMapForced["CHATEDITBOX"] = true
+EMMapForced["Minimap"] = false
+EMMapForced["MINIMAP"] = false
+EMMapForced["PlayerFrame"] = false
+EMMapForced["PLAYERFRAME"] = false
+EMMapForced["ObjectiveTrackerFrame"] = false
+EMMapForced["QUESTTRACKER"] = false
+EMMapForced["ChatFrame1"] = false
+EMMapForced["CHAT"] = false
+EMMapForced["ChatFrame1ButtonFrame"] = false
+EMMapForced["CHATBUTTONFRAME"] = false
+EMMapForced["ChatFrame1EditBox"] = false
+EMMapForced["CHATEDITBOX"] = false
 
 local EMMap = {}
 EMMap["MAPetBar"] = "ShowPetActionBar"
@@ -49,15 +49,31 @@ EMMap["PossessActionBar"] = "ShowPossessActionBar"
 EMMap["PossessBarFrame"] = "ShowPossessActionBar"
 EMMap["MainMenuBarVehicleLeaveButton"] = "ShowVehicleLeaveButton"
 EMMap["PlayerCastingBarFrame"] = "ShowCastBar"
+
+function MoveAny:IsBlizEditModeEnabled()
+	if EditModeManagerFrame then
+		return true
+	end
+	return false
+end
+
 function MoveAny:IsInEditModeEnabled( val )
 	local editModeEnum = nil
+
+	if not MoveAny:IsBlizEditModeEnabled() then
+		return false
+	end
 
 	if EMMapForced[val] then
 		return true
 	end
-	if EMMap[val] and Enum and Enum.EditModeAccountSetting then
-		editModeEnum = Enum.EditModeAccountSetting[EMMap[val]]
-		if editModeEnum == nil then
+	if Enum and Enum.EditModeAccountSetting then
+		if EMMap[val] then
+			editModeEnum = Enum.EditModeAccountSetting[EMMap[val]]
+		else
+			editModeEnum = Enum.EditModeAccountSetting[val]
+		end
+		if EMMap[val] and editModeEnum == nil then
 			for i, v in pairs( Enum.EditModeAccountSetting ) do
 				MoveAny:MSG( "ENUM i: " .. tostring( i ) .. " v: " .. tostring( v ) )
 			end

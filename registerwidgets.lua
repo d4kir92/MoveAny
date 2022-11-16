@@ -295,13 +295,6 @@ function MAMenuOptions( opt, frame )
 	end
 end
 
-function MoveAny:IsBlizEditModeEnabled()
-	if EditModeManagerFrame and EditModeManagerFrame:IsShown() then
-		return true
-	end
-	return false
-end
-
 function MoveAny:UpdateMinimapButton()
 	if MAMMBTN then
 		if MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) then
@@ -376,6 +369,11 @@ function MoveAny:RegisterWidget( tab, debug )
 	tab.delay = tab.delay or 0.2
 	if tab.delay < 2 then
 		tab.delay = tab.delay + 0.2
+	end
+
+	if MoveAny:IsInEditModeEnabled( name ) or MoveAny:IsInEditModeEnabled( lstr ) then
+		MoveAny:MSG( format( MAGT( "HELPTEXT" ), lstr ) )
+		return
 	end
 
 	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
@@ -1162,7 +1160,7 @@ function MoveAny:Event( event, ... )
 	end
 
 	function MAThinkGameTooltip()
-		if MoveAny:IsBlizEditModeEnabled() then
+		if EditModeManagerFrame and EditModeManagerFrame:IsShown() then
 			C_Timer.After( 0.1, MAThinkGameTooltip )
 			return
 		end
@@ -1276,6 +1274,14 @@ function MoveAny:Event( event, ... )
 			["name"] = "ZoneAbilityFrame",
 			["lstr"] = "ZONEABILITYFRAME",
 			["userplaced"] = true
+		} )
+	end
+	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled( "UIWIDGETPOWERBAR", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "UIWidgetPowerBarContainerFrame",
+			["lstr"] = "UIWIDGETPOWERBAR",
+			["sw"] = 36 * 6,
+			["sh"] = 36 * 1
 		} )
 	end
 	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then

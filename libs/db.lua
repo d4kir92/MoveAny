@@ -312,6 +312,7 @@ function MoveAny:SetEnabled( element, value )
 		MoveAny:MSG_Error( "[SetEnabled] Missing Value" )
 		return false
 	end
+
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 end
@@ -321,6 +322,11 @@ function MoveAny:IsEnabled( element, value )
 		MoveAny:MSG_Error( "[IsEnabled] Missing Name" )
 		return false
 	end
+
+	if MoveAny:IsInEditModeEnabled( element ) then
+		return false
+	end
+
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
 		MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
