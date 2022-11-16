@@ -263,14 +263,14 @@ function MAMenuOptions( opt, frame )
 				end
 			}
 			local ddrows = MACreateDropdown( rows )
-			ddrows:SetPoint( "TOPLEFT", content, "TOPLEFT", 0, -26 );
+			ddrows:SetPoint( "TOPLEFT", content, "TOPLEFT", 0, -10 );
 
 
 
 			opts["SPACING"] = opts["SPACING"] or 4
 			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			slider:SetWidth( content:GetWidth() - 110 )
-			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 100, -26 );
+			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -56 );
 			slider.Low:SetText( 0 )
 			slider.High:SetText( 16 )
 			slider.Text:SetText( MAGT("SPACING") .. ": " .. opts["SPACING"] )
