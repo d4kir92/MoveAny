@@ -2,7 +2,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MoveAny:Lang_frFR()
+function MoveAny:LangfrFR()
 	local tab = {
 		["MMBTNLEFT"] = "Clic gauche => Verrouillage/Déverrouillage + Options",
 		["MMBTNRIGHT"] = "Shift + Clic droit => Bouton Masquer la Minimap",

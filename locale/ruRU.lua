@@ -2,7 +2,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MoveAny:Lang_ruRU()
+function MoveAny:LangruRU()
 	local tab = {
 		["MMBTNLEFT"] = "Левый клик => блокировка/разблокировка + опции",
 		["MMBTNRIGHT"] = "Shift + правый клик => скрыть кнопку мини-картинки",

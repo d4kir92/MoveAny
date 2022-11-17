@@ -8,7 +8,7 @@ function MoveAny:UpdateLanguageTab( tab )
 	end
 end
 
-function MoveAny:Lang_enUS()
+function MoveAny:LangenUS()
 	local tab = {
 		["MMBTNLEFT"] = "Left Click => Locks/Unlocks + Options",
 		["MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",

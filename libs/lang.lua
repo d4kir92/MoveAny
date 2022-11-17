@@ -17,23 +17,23 @@ function MoveAny:GT( str )
 end
 
 function MoveAny:UpdateLanguage()
-	MoveAny:Lang_enUS()
+	MoveAny:LangenUS()
 	if GetLocale() == "deDE" then
-		MoveAny:Lang_deDE()
+		MoveAny:LangdeDE()
 	elseif GetLocale() == "enUS" then
-		MoveAny:Lang_enUS()
+		MoveAny:LangenUS()
 	elseif GetLocale() == "esES" then
-		MALang_esES()
+		MoveAny:LangesES()
 	elseif GetLocale() == "frFR" then
-		MALang_frFR()
+		MoveAny:LangfrFR()
 	elseif GetLocale() == "itIT" then
-		MALang_frFR()
+		MoveAny:LangfrFR()
 	elseif GetLocale() == "ptBR" then
-		MALang_ptBR()
+		MoveAny:LangptBR()
 	elseif GetLocale() == "ruRU" then
-		MALang_ruRU()
+		MoveAny:LangruRU()
 	elseif GetLocale() == "zhCN" then
-		MALang_zhCN()
+		MoveAny:LangzhCN()
 	end
 end
 MoveAny:UpdateLanguage()

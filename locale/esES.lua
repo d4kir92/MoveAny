@@ -2,7 +2,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MoveAny:Lang_esES()
+function MoveAny:LangesES()
 	local tab = {
 		["MMBTNLEFT"] = "Clic izquierdo => Bloquear/Desbloquear + Opciones",
 		["MMBTNRIGHT"] = "Mayúsculas + Clic derecho => Ocultar botón del minimapa",

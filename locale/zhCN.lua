@@ -2,7 +2,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MoveAny:Lang_zhCN()
+function MoveAny:LangzhCN()
 	local tab = {
 		["MMBTNLEFT"] = "左键 => 锁定/解锁 + 选项",
 		["MMBTNRIGHT"] = "Shift + 右键 => 隐藏迷你地图按钮",

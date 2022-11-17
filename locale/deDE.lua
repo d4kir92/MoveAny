@@ -2,7 +2,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MoveAny:Lang_deDE()
+function MoveAny:LangdeDE()
 	local tab = {
 		["MMBTNLEFT"] = "Linksklick => Sperren/Entsperren + Optionen",
 		["MMBTNRIGHT"] = "Shift + Rechtsklick => Minimapknopf verstecken",

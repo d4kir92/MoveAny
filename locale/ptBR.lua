@@ -2,7 +2,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MoveAny:Lang_ptBR()
+function MoveAny:LangptBR()
 	local tab = {
 		["MMBTNLEFT"] = "Clique esquerdo => Bloqueios/Desbloqueio + Opções",
 		["MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
