@@ -1,9 +1,15 @@
 
 local AddOnName, MoveAny = ...
 
-MADragFrames = MADragFrames or {}
-MAEleFrames = MAEleFrames or {}
-MAAlphaEles = MAAlphaEles or {}
+local MAEF = {}
+function MoveAny:GetEleFrames()
+	return MAEF
+end
+
+local MAAF = {}
+function MoveAny:GetAlphaFrames()
+	return MAAF
+end
 
 local framelevel = 100
 
@@ -77,13 +83,13 @@ local function MAMoveButton( parent, name, ofsx, ofsy, x, y, texNor, texPus )
 	return btn
 end
 
-function MACreateSlider( parent, x, y, name, key, value, steps, vmin, vmax, func )
+function MoveAny:CreateSlider( parent, x, y, name, key, value, steps, vmin, vmax, func )
 	local slider = CreateFrame( "Slider", nil, parent, "OptionsSliderTemplate" )
 	slider:SetWidth( parent:GetWidth() - 20 )
 	slider:SetPoint( "TOPLEFT", parent, "TOPLEFT", x, y );
 	slider.Low:SetText( vmin )
 	slider.High:SetText( vmax )
-	slider.Text:SetText( MAGT( key ) .. ": " .. MoveAny:GetEleOption( name, key, value ) )
+	slider.Text:SetText( MoveAny:GT( key ) .. ": " .. MoveAny:GetEleOption( name, key, value ) )
 	slider:SetMinMaxValues( vmin, vmax )
 	slider:SetObeyStepOnDrag( true )
 	slider:SetValueStep( steps )
@@ -92,7 +98,7 @@ function MACreateSlider( parent, x, y, name, key, value, steps, vmin, vmax, func
 		val = tonumber( string.format( "%" .. steps .. "f", val ) )
 		if val then
 			MoveAny:SetEleOption( name, key, val )
-			slider.Text:SetText( MAGT( key ) .. ": " .. val )
+			slider.Text:SetText( MoveAny:GT( key ) .. ": " .. val )
 
 			if func then
 				func()
@@ -102,7 +108,7 @@ function MACreateSlider( parent, x, y, name, key, value, steps, vmin, vmax, func
 	return slider
 end
 
-function MAMenuOptions( opt, frame )
+function MoveAny:MenuOptions( opt, frame )
 	if frame == nil then
 		MoveAny:MSG( "FRAME NOT FOUND" )
 	end
@@ -117,7 +123,7 @@ function MAMenuOptions( opt, frame )
 	end
 
 	if string.find( name, "MABuffBar" ) then
-		table.insert( tabs, MAGT( "BUFFS" ) )
+		table.insert( tabs, MoveAny:GT( "BUFFS" ) )
 	end
 
 	local contents = CreateTabs( opt, tabs )
@@ -212,9 +218,9 @@ function MAMenuOptions( opt, frame )
 			hide.text:SetPoint( "LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText( getglobal("HIDE") )
 
-			MACreateSlider( content, 10, -210, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
-			MACreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
-			MACreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -210, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
 			local max = getn( frame.btns )
 			local items = {}
@@ -252,17 +258,17 @@ function MAMenuOptions( opt, frame )
 			local rows = {
 				["name"] = "raid",
 				["parent"]= content,
-				["title"] = MAGT( "ROWS" ),
+				["title"] = MoveAny:GT( "ROWS" ),
 				["items"]= items,
 				["defaultVal"] = opts["ROWS"], 
 				["changeFunc"] = function( dropdown_frame, dropdown_val )
 					dropdown_val = tonumber( dropdown_val )
 					opts["ROWS"] = dropdown_val
 
-					MAUpdateActionBar( frame )
+					MoveAny:UpdateActionBar( frame )
 				end
 			}
-			local ddrows = MACreateDropdown( rows )
+			local ddrows = MoveAny:CreateDropdown( rows )
 			ddrows:SetPoint( "TOPLEFT", content, "TOPLEFT", 0, -10 );
 
 
@@ -273,7 +279,7 @@ function MAMenuOptions( opt, frame )
 			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -56 );
 			slider.Low:SetText( 0 )
 			slider.High:SetText( 16 )
-			slider.Text:SetText( MAGT("SPACING") .. ": " .. opts["SPACING"] )
+			slider.Text:SetText( MoveAny:GT("SPACING") .. ": " .. opts["SPACING"] )
 			slider:SetMinMaxValues( 0, 16 )
 			slider:SetObeyStepOnDrag( true )
 			slider:SetValueStep( 1 )
@@ -282,15 +288,15 @@ function MAMenuOptions( opt, frame )
 				val = tonumber( string.format( "%" .. 0 .. "f", val ) )
 				if val and val ~= opts["SPACING"] then
 					opts["SPACING"] = val
-					slider.Text:SetText( MAGT( "SPACING" ) .. ": " .. val )
+					slider.Text:SetText( MoveAny:GT( "SPACING" ) .. ": " .. val )
 
-					MAUpdateActionBar( frame )
+					MoveAny:UpdateActionBar( frame )
 				end
 			end )
-		elseif string.find( content.name, MAGT( "BUFFS" ) ) then
-			MACreateSlider( content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MAUpdateBuffs )
-			MACreateSlider( content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MAUpdateBuffs )
-			MACreateSlider( content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MAUpdateBuffs )
+		elseif string.find( content.name, MoveAny:GT( "BUFFS" ) ) then
+			MoveAny:CreateSlider( content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MAUpdateBuffs )
+			MoveAny:CreateSlider( content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MAUpdateBuffs )
+			MoveAny:CreateSlider( content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MAUpdateBuffs )
 		end
 	end
 end
@@ -350,9 +356,9 @@ function MoveAny:RegisterWidget( tab, debug )
 	local lstr = tab.lstr
 	local lstri = tab.lstri
 	if lstri then
-		lstr = format( MAGT( lstr ), lstri )
+		lstr = format( MoveAny:GT( lstr ), lstri )
 	else
-		lstr = MAGT( lstr )
+		lstr = MoveAny:GT( lstr )
 	end
 	local sw = tab.sw
 	local sh = tab.sh
@@ -372,7 +378,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	if MoveAny:IsInEditModeEnabled( name ) or MoveAny:IsInEditModeEnabled( lstr ) then
-		MoveAny:MSG( format( MAGT( "HELPTEXT" ), lstr ) )
+		MoveAny:MSG( format( MoveAny:GT( "HELPTEXT" ), lstr ) )
 		return
 	end
 
@@ -416,7 +422,7 @@ function MoveAny:RegisterWidget( tab, debug )
 			local font, fontSize, fontFlags = dragframe.name:GetFont()
 			dragframe.name:SetFont( font, 15, fontFlags )
 			if MoveAny:IsInEditModeEnabled( name ) then
-				lstr = lstr .. " |cFFFFFF00" .. MAGT( "ISENABLEDINEDITMODE" )
+				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
 			end
 			dragframe.name:SetText( lstr )
 			dragframe.name:Hide()
@@ -457,7 +463,7 @@ function MoveAny:RegisterWidget( tab, debug )
 					dragframe.opt:SetScript( "OnDragStart", dragframe.opt.StartMoving )
 					dragframe.opt:SetScript( "OnDragStop", dragframe.opt.StopMovingOrSizing )
 
-					MAMenuOptions( dragframe.opt, frame )
+					MoveAny:MenuOptions( dragframe.opt, frame )
 				elseif dragframe.opt then
 					dragframe.opt:Show()
 				end
@@ -473,8 +479,8 @@ function MoveAny:RegisterWidget( tab, debug )
 				dragframe:SetMovable( false )
 
 				local p1, p2, p3, p4, p5 = dragframe:GetPoint()
-				p4 = MAGrid( p4 )
-				p5 = MAGrid( p5 )
+				p4 = MoveAny:Grid( p4 )
+				p5 = MoveAny:Grid( p5 )
 
 				MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
 
@@ -495,7 +501,7 @@ function MoveAny:RegisterWidget( tab, debug )
 			end
 		end)
 
-		tinsert( MADragFrames, dragframe )
+		tinsert( MoveAny:GetDragFrames(), dragframe )
 	end
 	
 	if frame == nil then
@@ -515,8 +521,8 @@ function MoveAny:RegisterWidget( tab, debug )
 		end
 	end
 
-	tinsert( MAEleFrames, frame )
-	tinsert( MAAlphaEles, frame )
+	tinsert( MoveAny:GetEleFrames(), frame )
+	tinsert( MoveAny:GetAlphaFrames(), frame )
 
 	for i, btn in pairs( { frame:GetChildren() } ) do
 		function btn:GetMAEle()
@@ -561,11 +567,11 @@ function MoveAny:RegisterWidget( tab, debug )
 	if MoveAny:GetElePoint( name ) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
 		if (parent == nil or parent == UIParent) and an ~= nil and re ~= nil then
-			MoveAny:SetElePoint( name, an, UIParent, re, MAGrid( px ), MAGrid( py ) ) 
+			MoveAny:SetElePoint( name, an, UIParent, re, MoveAny:Grid( px ), MoveAny:Grid( py ) ) 
 		elseif frame:GetLeft() and frame:GetBottom() then
-			MoveAny:SetElePoint( name, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", MAGrid( frame:GetLeft() ), MAGrid( frame:GetBottom() ) ) 
+			MoveAny:SetElePoint( name, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", MoveAny:Grid( frame:GetLeft() ), MoveAny:Grid( frame:GetBottom() ) ) 
 		elseif parent ~= nil then
-			MoveAny:SetElePoint( name, an, UIParent, re, MAGrid( parent:GetLeft() ), MAGrid( parent:GetBottom() ) ) 
+			MoveAny:SetElePoint( name, an, UIParent, re, MoveAny:Grid( parent:GetLeft() ), MoveAny:Grid( parent:GetBottom() ) ) 
 		else
 			local an = tab.an or "CENTER" 
 			local re = tab.re or "CENTER" 
@@ -676,14 +682,14 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	if lastSize ~= getn( MAAlphaEles ) then
-		lastSize = getn( MAAlphaEles )
+	if lastSize ~= getn( MoveAny:GetAlphaFrames() ) then
+		lastSize = getn( MoveAny:GetAlphaFrames() )
 		MoveAny:UpdateAlphas()
 	end
 
 	local ele = GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
-		if tContains( MAAlphaEles, ele ) then
+		if tContains( MoveAny:GetAlphaFrames(), ele ) then
 			ele:SetAlpha( 1 )
 			MoveAny:SetMouseEleAlpha( ele )
 		elseif ele.GetMAEle then
@@ -703,7 +709,7 @@ function MoveAny:CheckAlphas()
 end
 
 function MoveAny:UpdateAlphas()
-	for i, ele in pairs( MAEleFrames ) do
+	for i, ele in pairs( MoveAny:GetEleFrames() ) do
 		local alphaInVehicle = MoveAny:GetEleOption( ele:GetName(), "ALPHAINVEHICLE", 1 )
 		local alphaInCombat = MoveAny:GetEleOption( ele:GetName(), "ALPHAINCOMBAT", 1 )
 		local alphaNotInCombat = MoveAny:GetEleOption( ele:GetName(), "ALPHANOTINCOMBAT", 1 )
@@ -1643,8 +1649,8 @@ function MoveAny:Event( event, ... )
 		OnTooltipShow = function(tooltip)
 			if not tooltip or not tooltip.AddLine then return end
 			tooltip:AddLine( "MoveAny")
-			tooltip:AddLine( MAGT( "MMBTNLEFT" ) )
-			tooltip:AddLine( MAGT( "MMBTNRIGHT" ) )
+			tooltip:AddLine( MoveAny:GT( "MMBTNLEFT" ) )
+			tooltip:AddLine( MoveAny:GT( "MMBTNRIGHT" ) )
 		end,
 	})
 	if MoveAnyMinimapIcon then

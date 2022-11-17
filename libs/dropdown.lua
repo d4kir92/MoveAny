@@ -1,9 +1,9 @@
 
-local AddOnName, ImproveAny = ...
+local AddOnName, MoveAny = ...
 
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
-function MACreateDropdown( opts )
+function MoveAny:CreateDropdown( opts )
 	local CB = LibDD:Create_UIDropDownMenu( opts.name, opts.parent )
 	LibDD:UIDropDownMenu_SetWidth( CB, 120 )
 	LibDD:UIDropDownMenu_SetText( CB, opts.defaultVal )
@@ -27,7 +27,7 @@ function MACreateDropdown( opts )
 	local text = CB:CreateFontString(nil, "ARTWORK")
 	text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
 	text:SetPoint("LEFT", CB, "RIGHT", 0, 4)
-	text:SetText(MAGT(opts.title))
+	text:SetText(MoveAny:GT(opts.title))
 
     return CB
 end

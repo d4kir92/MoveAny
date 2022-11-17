@@ -1,10 +1,13 @@
 
 local AddOnName, MoveAny = ...
 
-LANG_MA = LANG_MA or {}
+local ltab = {}
+function MoveAny:GetLangTab()
+	return ltab
+end
 
-function MAGT( str )
-	local result = LANG_MA[str]
+function MoveAny:GT( str )
+	local result = MoveAny:GetLangTab()[str]
 	if result ~= nil then
 		return result
 	else
@@ -13,12 +16,12 @@ function MAGT( str )
 	end
 end
 
-function MAUpdateLanguage()
-	MALang_enUS()
+function MoveAny:UpdateLanguage()
+	MoveAny:Lang_enUS()
 	if GetLocale() == "deDE" then
-		MALang_deDE()
+		MoveAny:Lang_deDE()
 	elseif GetLocale() == "enUS" then
-		MALang_enUS()
+		MoveAny:Lang_enUS()
 	elseif GetLocale() == "esES" then
 		MALang_esES()
 	elseif GetLocale() == "frFR" then
@@ -33,4 +36,4 @@ function MAUpdateLanguage()
 		MALang_zhCN()
 	end
 end
-MAUpdateLanguage()
+MoveAny:UpdateLanguage()

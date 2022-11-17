@@ -1,6 +1,8 @@
 -- esES Spanish
 
-function MALang_esES()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_esES()
 	local tab = {
 		["MMBTNLEFT"] = "Clic izquierdo => Bloquear/Desbloquear + Opciones",
 		["MMBTNRIGHT"] = "Mayúsculas + Clic derecho => Ocultar botón del minimapa",
@@ -134,5 +136,5 @@ function MALang_esES()
 		["ISENABLEDINEDITMODE"] = "(Está habilitado en el modo de edición)",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

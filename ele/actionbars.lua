@@ -1,7 +1,7 @@
 
 local AddOnName, MoveAny = ...
 
-MAMaxAB = 10
+local MAMaxAB = 10
 local btnsize = 36
 local btns = {}
 local abpoints = {}
@@ -37,7 +37,7 @@ MASetPoint( 8, "CENTER", UIParent, "CENTER", -360, 0 * 36, 1 )
 MASetPoint( 9, "CENTER", UIParent, "CENTER", -360, 1 * 36, 1 )
 MASetPoint( 10, "CENTER", UIParent, "CENTER", -360, 2 * 36, 1 )
 
-function MAUpdateActionBar( frame )
+function MoveAny:UpdateActionBar( frame )
 	local name = frame:GetName()
 	local opts = MoveAny:GetEleOptions( name )
 
@@ -86,6 +86,11 @@ function MAUpdateActionBar( frame )
 		maxbtns = 1
 	end
 	local cols = maxbtns / rows
+
+	if cols % 1 ~= 0 then
+		rows = maxbtns
+		cols = maxbtns / rows
+	end
 
 	local spacing = opts["SPACING"]
 	spacing = tonumber( spacing )
@@ -237,7 +242,7 @@ function MoveAny:CustomBars()
 					tinsert( bar.btns, btn )
 				end
 
-				MAUpdateActionBar( _G[name] )
+				MoveAny:UpdateActionBar( _G[name] )
 			end
 		end
 	end

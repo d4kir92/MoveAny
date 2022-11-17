@@ -1,12 +1,12 @@
 
 local AddOnName, MoveAny = ...
 
-MASECUREFRAMES = {
+local MASECUREFRAMES = {
 	"StaticPopup1",
 	"StaticPopup2"
 }
 
-MAFRAMES = MAFRAMES or {
+local MAFRAMES = {
 	"StaticPopup1",
 	"StaticPopup2",
 	"GameMenuFrame",
@@ -133,15 +133,15 @@ function MoveAny:FrameDragInfo( c )
 	else
 		if IsMouseButtonDown( "RightButton" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) then
-				MoveAny:MSG( MAGT( "FRAMESSHIFTSCALE" ) .. "." )
+				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTSCALE" ) .. "." )
 			end
 		elseif IsMouseButtonDown( "LeftButton" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
-				MoveAny:MSG( MAGT( "FRAMESSHIFTDRAG" ) .. "." )
+				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTDRAG" ) .. "." )
 			end
 		elseif IsMouseButtonDown( "MiddleButton" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) then
-				MoveAny:MSG( MAGT( "FRAMESSHIFTRESET" ) .. "." )
+				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTRESET" ) .. "." )
 			end
 		end
 	end

@@ -1,6 +1,8 @@
 -- zhTW Simplified Chinese
 
-function MALang_zhCN()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_zhCN()
 	local tab = {
 		["MMBTNLEFT"] = "左键 => 锁定/解锁 + 选项",
 		["MMBTNRIGHT"] = "Shift + 右键 => 隐藏迷你地图按钮",
@@ -134,5 +136,5 @@ function MALang_zhCN()
 		["ISENABLEDINEDITMODE"] = "(在编辑模式下启用)",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

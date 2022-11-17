@@ -1,6 +1,8 @@
 -- itIT Italien
 
-function MALang_itIT()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_itIT()
 	local tab = {
 		["MMBTNLEFT"] = "Click sinistro => Blocca/Sblocca + Opzioni",
 		["MMBTNRIGHT"] = "Maiusc + clic destro => Nascondi pulsante Minimap",
@@ -134,5 +136,5 @@ function MALang_itIT()
 		["ISENABLEDINEDITMODE"] = "(è abilitato in modalità di modifica)",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

@@ -1,6 +1,8 @@
 -- ptBR Brazilian Portuguese
 
-function MALang_ptBR()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_ptBR()
 	local tab = {
 		["MMBTNLEFT"] = "Clique esquerdo => Bloqueios/Desbloqueio + Opções",
 		["MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
@@ -134,5 +136,5 @@ function MALang_ptBR()
 		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

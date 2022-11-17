@@ -1,6 +1,8 @@
 -- frFR French
 
-function MALang_frFR()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_frFR()
 	local tab = {
 		["MMBTNLEFT"] = "Clic gauche => Verrouillage/Déverrouillage + Options",
 		["MMBTNRIGHT"] = "Shift + Clic droit => Bouton Masquer la Minimap",
@@ -134,5 +136,5 @@ function MALang_frFR()
 		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

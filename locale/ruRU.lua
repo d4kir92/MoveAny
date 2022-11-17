@@ -1,6 +1,8 @@
 -- ruRU Russian
 
-function MALang_ruRU()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_ruRU()
 	local tab = {
 		["MMBTNLEFT"] = "Левый клик => блокировка/разблокировка + опции",
 		["MMBTNRIGHT"] = "Shift + правый клик => скрыть кнопку мини-картинки",
@@ -134,5 +136,5 @@ function MALang_ruRU()
 		["ISENABLEDINEDITMODE"] = "(Включено в режиме редактирования)",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

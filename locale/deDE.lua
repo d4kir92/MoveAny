@@ -1,6 +1,8 @@
 -- deDE German Deutsch
 
-function MALang_deDE()
+local AddOnName, MoveAny = ...
+
+function MoveAny:Lang_deDE()
 	local tab = {
 		["MMBTNLEFT"] = "Linksklick => Sperren/Entsperren + Optionen",
 		["MMBTNRIGHT"] = "Shift + Rechtsklick => Minimapknopf verstecken",
@@ -139,5 +141,5 @@ function MALang_deDE()
 		["HELPTEXT"] = "%s ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

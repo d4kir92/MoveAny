@@ -119,6 +119,6 @@ function MoveAny:InitMicroMenu()
 			end
 		end
 
-		MAUpdateActionBar( MAMenuBar )
+		MoveAny:UpdateActionBar( MAMenuBar )
 	end
 end

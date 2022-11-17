@@ -8,7 +8,7 @@ local BAGS = {
 	"CharacterBag0Slot"
 }
 
-function MABAGSTryAdd( fra, index )
+function MoveAny:BAGSTryAdd( fra, index )
 	if _G[fra] == nil then
 		return
 	end
@@ -21,12 +21,12 @@ function MABAGSTryAdd( fra, index )
 	end
 end
 
-function MAUpdateBags()
-	MABAGSTryAdd( "CharacterReagentBag0Slot", 1 )
-	MABAGSTryAdd( "KeyRingButton", 1 )
-	MABAGSTryAdd( "BagBarExpandToggle", #BAGS + 1 )
-	MABAGSTryAdd( "BagToggle", #BAGS )
-	MABAGSTryAdd( "MainMenuBarBackpackButton" )
+function MoveAny:UpdateBags()
+	MoveAny:BAGSTryAdd( "CharacterReagentBag0Slot", 1 )
+	MoveAny:BAGSTryAdd( "KeyRingButton", 1 )
+	MoveAny:BAGSTryAdd( "BagBarExpandToggle", #BAGS + 1 )
+	MoveAny:BAGSTryAdd( "BagToggle", #BAGS )
+	MoveAny:BAGSTryAdd( "MainMenuBarBackpackButton" )
 
 	local sw, sh = 0, 0
 	for i, mbname in pairs( BAGS ) do
@@ -108,6 +108,6 @@ function MoveAny:InitBags()
 			end
 		end
 
-		MAUpdateBags()
+		MoveAny:UpdateBags()
 	end
 end

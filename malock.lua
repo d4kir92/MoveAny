@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.2" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.3" )
 }
 
 local PREFIX = "MOAN"
@@ -96,11 +96,11 @@ local function AddCategory( key )
 
 		ca.f = ca:CreateFontString( nil, nil, "GameFontNormal" )
 		ca.f:SetPoint( "LEFT", ca, "LEFT", 0, 0 )
-		ca.f:SetText( MAGT( key ) )
+		ca.f:SetText( MoveAny:GT( key ) )
 	end
 
 	cas[key]:ClearAllPoints()
-	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MAGT( key ) ), strlower( searchStr ) ) then
+	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MoveAny:GT( key ) ), strlower( searchStr ) ) then
 		cas[key]:Show()
 
 		if posy < -4 then
@@ -118,13 +118,13 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 		MoveAny:MSG( "Missing Value For: " .. tostring( key ) )
 		val = true
 	end
-	local lstr = "|cFFFFFFFF" .. MAGT( key )
+	local lstr = "|cFFFFFFFF" .. MoveAny:GT( key )
 	if id then
 		lstr = format( lstr, id )
 	end
 
 	if MoveAny:IsInEditModeEnabled( editModeEnum ) or MoveAny:IsInEditModeEnabled( key ) then
-		lstr = lstr .. " |cFFFFFF00" .. MAGT( "ISENABLEDINEDITMODE" )
+		lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
 	end
 
 	if id then
@@ -173,7 +173,7 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 		sls[key].Low:SetText(vmin)
 		sls[key].High:SetText(vmax)
 		
-		sls[key].Text:SetText( MAGT(key) .. ": " .. MoveAny:GV( key, val ) )
+		sls[key].Text:SetText( MoveAny:GT(key) .. ": " .. MoveAny:GV( key, val ) )
 
 		sls[key]:SetMinMaxValues(vmin, vmax)
 		sls[key]:SetObeyStepOnDrag(true)
@@ -185,7 +185,7 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 			val = tonumber( string.format( "%" .. steps .. "f", val ) )
 			if val and val ~= MoveAny:GV( key ) then
 				MoveAny:SV( key, val )
-				sls[key].Text:SetText( MAGT( key ) .. ": " .. val )
+				sls[key].Text:SetText( MoveAny:GT( key ) .. ": " .. val )
 
 				if func then
 					func()
@@ -200,7 +200,7 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 	end
 
 	sls[key]:ClearAllPoints()
-	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MAGT( key ) ), strlower( searchStr ) ) then
+	if strfind( strlower( key ), strlower( searchStr ) ) or strfind( strlower( MoveAny:GT( key ) ), strlower( searchStr ) ) then
 		sls[key]:Show()
 
 		sls[key]:SetPoint( "TOPLEFT", MALock.SC, "TOPLEFT", x, posy )
@@ -227,8 +227,8 @@ function MoveAny:InitMALock()
 		MALock:StopMovingOrSizing()
 
 		local p1, p2, p3, p4, p5 = MALock:GetPoint()
-		p4 = MAGrid( p4 )
-		p5 = MAGrid( p5 )
+		p4 = MoveAny:Grid( p4 )
+		p5 = MoveAny:Grid( p5 )
 		MoveAny:SetElePoint( "MALock", p1, _, p3, p4, p5 )
 	end )
 
@@ -407,7 +407,7 @@ function MoveAny:InitMALock()
 	MALock.Profiles = CreateFrame( "Button", "MALock_Profiles", MALock, "UIPanelButtonTemplate" )
 	MALock.Profiles:SetPoint( "TOPLEFT", MALock, "TOPLEFT", sw - 100 - br, -26 )
 	MALock.Profiles:SetSize( 100, 24 )
-	MALock.Profiles:SetText( MAGT( "PROFILES" ) )
+	MALock.Profiles:SetText( MoveAny:GT( "PROFILES" ) )
 	MALock.Profiles:SetScript( "OnClick", function()
 		MoveAny:SetEnabled( "MALOCK", false )
 		MoveAny:HideMALock()
@@ -563,8 +563,8 @@ function MoveAny:ShowProfiles()
 			MAProfiles:StopMovingOrSizing()
 
 			local p1, p2, p3, p4, p5 = MAProfiles:GetPoint()
-			p4 = MAGrid( p4 )
-			p5 = MAGrid( p5 )
+			p4 = MoveAny:Grid( p4 )
+			p5 = MoveAny:Grid( p5 )
 			MoveAny:SetElePoint( "MALock", p1, _, p3, p4, p5 )
 		end )
 
@@ -599,7 +599,7 @@ function MoveAny:ShowProfiles()
 		MAProfiles.AddProfile = CreateFrame( "Button", "MAProfiles_AddProfile", MAProfiles, "UIPanelButtonTemplate" )
 		MAProfiles.AddProfile:SetPoint( "TOPLEFT", MAProfiles, "TOPLEFT", br, -26 )
 		MAProfiles.AddProfile:SetSize( 160, 24 )
-		MAProfiles.AddProfile:SetText( MAGT( "ADDPROFILE" ) )
+		MAProfiles.AddProfile:SetText( MoveAny:GT( "ADDPROFILE" ) )
 		MAProfiles.AddProfile:SetScript( "OnClick", function()
 			if MAAddProfile == nil then
 				MAAddProfile = CreateFrame( "Frame", "MAAddProfile", UIParent, "BasicFrameTemplate" )
@@ -618,7 +618,7 @@ function MoveAny:ShowProfiles()
 				MAAddProfile.name = "NEW"
 				MAAddProfile.inheritFrom = ""
 
-				MAAddProfile.TitleText:SetText( MAGT( "ADDPROFILE" ) )
+				MAAddProfile.TitleText:SetText( MoveAny:GT( "ADDPROFILE" ) )
 
 				MAAddProfile.CloseButton:SetScript( "OnClick", function()
 					MAAddProfile:Hide()
@@ -642,7 +642,7 @@ function MoveAny:ShowProfiles()
 				local profiles = {
 					["name"] = "profiles",
 					["parent"]= MAAddProfile,
-					["title"] = MAGT( "INHERITFROM" ),
+					["title"] = MoveAny:GT( "INHERITFROM" ),
 					["items"]= profileNames,
 					["defaultVal"] = "", 
 					["changeFunc"] = function( dropdown_frame, dropdown_val )
@@ -650,13 +650,13 @@ function MoveAny:ShowProfiles()
 					end
 				}
 	
-				local ddprofiles = MACreateDropdown( profiles )
+				local ddprofiles = MoveAny:CreateDropdown( profiles )
 				ddprofiles:SetPoint( "TOPLEFT", MAAddProfile, "TOPLEFT", 0, -26 - 30 - br )
 
 				MAAddProfile.AddProfile = CreateFrame( "Button", "MAAddProfile_Profiles", MAAddProfile, "UIPanelButtonTemplate" )
 				MAAddProfile.AddProfile:SetPoint( "TOPLEFT", MAAddProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br )
 				MAAddProfile.AddProfile:SetSize( 160, 24 )
-				MAAddProfile.AddProfile:SetText( MAGT( "ADD" ) )
+				MAAddProfile.AddProfile:SetText( MoveAny:GT( "ADD" ) )
 				MAAddProfile.AddProfile:SetScript( "OnClick", function()
 					MoveAny:AddProfile( MAAddProfile.name, MAAddProfile.inheritFrom )
 					C_UI.Reload()
@@ -669,7 +669,7 @@ function MoveAny:ShowProfiles()
 		MAProfiles.GetProfile = CreateFrame( "Button", "MAProfiles_GetProfile", MAProfiles, "UIPanelButtonTemplate" )
 		MAProfiles.GetProfile:SetPoint( "TOPLEFT", MAProfiles, "TOPLEFT", br + 160 + br, -26 )
 		MAProfiles.GetProfile:SetSize( 160, 24 )
-		MAProfiles.GetProfile:SetText( MAGT( "GETPROFILE" ) )
+		MAProfiles.GetProfile:SetText( MoveAny:GT( "GETPROFILE" ) )
 		MAProfiles.GetProfile:SetScript( "OnClick", function()
 			if MAGetProfile == nil then
 				MAGetProfile = CreateFrame( "Frame", "MAGetProfile", UIParent, "BasicFrameTemplate" )
@@ -686,7 +686,7 @@ function MoveAny:ShowProfiles()
 				MAGetProfile:SetScript( "OnDragStart", MAGetProfile.StartMoving )
 				MAGetProfile:SetScript( "OnDragStop", MAGetProfile.StopMovingOrSizing )
 				
-				MAGetProfile.TitleText:SetText( MAGT( "GETPROFILE" ) )
+				MAGetProfile.TitleText:SetText( MoveAny:GT( "GETPROFILE" ) )
 
 				MAGetProfile.CloseButton:SetScript( "OnClick", function()
 					MAGetProfile:Hide()
@@ -694,11 +694,11 @@ function MoveAny:ShowProfiles()
 
 				MAGetProfile.f = MAGetProfile:CreateFontString( nil, nil, "GameFontNormal" )
 				MAGetProfile.f:SetPoint( "TOPLEFT", MAGetProfile, "TOPLEFT", 6, -26 )
-				MAGetProfile.f:SetText( MAGT( "GETPROFILE" ) )
+				MAGetProfile.f:SetText( MoveAny:GT( "GETPROFILE" ) )
 
 				MAGetProfile.f2 = MAGetProfile:CreateFontString( nil, nil, "GameFontNormal" )
 				MAGetProfile.f2:SetPoint( "BOTTOMLEFT", MAGetProfile, "BOTTOMLEFT", 6, 6 )
-				MAGetProfile.f2:SetText( MAGT( "WAITFORPLAYERPROFILE2" ) )
+				MAGetProfile.f2:SetText( MoveAny:GT( "WAITFORPLAYERPROFILE2" ) )
 
 				MAGetProfile.SF = CreateFrame( "ScrollFrame", "MAGetProfile_SF", MAGetProfile, "UIPanelScrollFrameTemplate" )
 				MAGetProfile.SF:SetPoint( "TOPLEFT", MAGetProfile, br, -30 - 24 )
@@ -716,7 +716,7 @@ function MoveAny:ShowProfiles()
 			else
 				MAGetProfile:Show()
 			end
-			MAGetProfile.f:SetText( MAGT( "PROFILES" ) .. ":" )
+			MAGetProfile.f:SetText( MoveAny:GT( "PROFILES" ) .. ":" )
 
 			IASendProfiles = {} -- Reset
 
@@ -737,7 +737,7 @@ function MoveAny:ShowProfiles()
 					MAGetProfile.lines[id].btn = CreateFrame( "Button", name, MAGetProfile.lines[id], "UIPanelButtonTemplate" )
 					MAGetProfile.lines[id].btn:SetPoint( "LEFT", MAGetProfile.lines[id], "LEFT", 450, 0 )
 					MAGetProfile.lines[id].btn:SetSize( 100, 24 )
-					MAGetProfile.lines[id].btn:SetText( MAGT( "DOWNLOAD" ) )
+					MAGetProfile.lines[id].btn:SetText( MoveAny:GT( "DOWNLOAD" ) )
 					MAGetProfile.lines[id].btn:SetScript( "OnClick", function()
 						MAGetProfile:Hide()
 						WebOwner = source
@@ -760,7 +760,7 @@ function MoveAny:ShowProfiles()
 							MADownloadProfile:SetScript( "OnDragStart", MADownloadProfile.StartMoving )
 							MADownloadProfile:SetScript( "OnDragStop", MADownloadProfile.StopMovingOrSizing )
 							
-							MADownloadProfile.TitleText:SetText( MAGT( "DOWNLOAD" ) )
+							MADownloadProfile.TitleText:SetText( MoveAny:GT( "DOWNLOAD" ) )
 
 							MADownloadProfile.name = MADownloadProfile:CreateFontString( nil, nil, "GameFontNormal" )
 							MADownloadProfile.name:SetPoint( "TOPLEFT", MADownloadProfile, "TOPLEFT", 12, -26 )
@@ -776,7 +776,7 @@ function MoveAny:ShowProfiles()
 							MADownloadProfile.btn = CreateFrame( "Button", name, MADownloadProfile, "UIPanelButtonTemplate" )
 							MADownloadProfile.btn:SetPoint( "TOPLEFT", MADownloadProfile, "TOPLEFT", 12, -78 )
 							MADownloadProfile.btn:SetSize( 100, 24 )
-							MADownloadProfile.btn:SetText( MAGT( "ADD" ) )
+							MADownloadProfile.btn:SetText( MoveAny:GT( "ADD" ) )
 							MADownloadProfile.btn:SetScript( "OnClick", function()
 								local profileName = MADownloadProfile.ProfileName:GetText()
 								if MATAB["PROFILES"][profileName] == nil then 
@@ -791,13 +791,13 @@ function MoveAny:ShowProfiles()
 
 							function MADownloadProfile:UpdateStatus()
 								if WebStatus == 0 then
-									MADownloadProfile.name:SetText( MAGT( "WAITINGFOROWNER" ) )
+									MADownloadProfile.name:SetText( MoveAny:GT( "WAITINGFOROWNER" ) )
 									MADownloadProfile.btn:SetEnabled( false )
 								elseif WebStatus == 100 then
-									MADownloadProfile.name:SetText( MAGT( "DONE" ) )
+									MADownloadProfile.name:SetText( MoveAny:GT( "DONE" ) )
 									MADownloadProfile.btn:SetEnabled( true )
 								else
-									MADownloadProfile.name:SetText( MAGT( "STATUS" ) .. ": " .. WebStatus .. "%")
+									MADownloadProfile.name:SetText( MoveAny:GT( "STATUS" ) .. ": " .. WebStatus .. "%")
 									MADownloadProfile.btn:SetEnabled( false )
 								end
 								C_Timer.After( 0.1, MADownloadProfile.UpdateStatus )
@@ -815,8 +815,8 @@ function MoveAny:ShowProfiles()
 					end )
 				end
 
-				MAGetProfile.lines[id].name:SetText( MAGT( "PLAYER" ) .. ": " .. source )
-				MAGetProfile.lines[id].profile:SetText( MAGT( "PROFILE" ) .. ": " .. profile )
+				MAGetProfile.lines[id].name:SetText( MoveAny:GT( "PLAYER" ) .. ": " .. source )
+				MAGetProfile.lines[id].profile:SetText( MoveAny:GT( "PROFILE" ) .. ": " .. profile )
 			end
 
 			local function GetProfiles()
@@ -839,7 +839,7 @@ function MoveAny:ShowProfiles()
 			btn:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 40 - br )
 			btn:SetSize( 160, 24 )
 			if name == MoveAny:GetCP() then
-				btn:SetText( "(" .. MAGT( "CURRENT" ) .. ") " .. name )
+				btn:SetText( "(" .. MoveAny:GT( "CURRENT" ) .. ") " .. name )
 			else
 				btn:SetText( name )
 			end
@@ -851,7 +851,7 @@ function MoveAny:ShowProfiles()
 			btnShare = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
 			btnShare:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160  + br, -index * 40 - br )
 			btnShare:SetSize( 80, 24 )
-			btnShare:SetText( MAGT( "SHARE" ) )
+			btnShare:SetText( MoveAny:GT( "SHARE" ) )
 			btnShare:SetScript( "OnClick", function()
 				if MAShareProfile == nil then
 					MAShareProfile = CreateFrame( "Frame", "MAShareProfile", UIParent, "BasicFrameTemplate" )
@@ -868,7 +868,7 @@ function MoveAny:ShowProfiles()
 					MAShareProfile:SetScript( "OnDragStart", MAShareProfile.StartMoving )
 					MAShareProfile:SetScript( "OnDragStop", MAShareProfile.StopMovingOrSizing )
 					
-					MAShareProfile.TitleText:SetText( MAGT( "SHAREPROFILE" ) )
+					MAShareProfile.TitleText:SetText( MoveAny:GT( "SHAREPROFILE" ) )
 
 					MAShareProfile.CloseButton:SetScript( "OnClick", function()
 						MAShareProfile:Hide()
@@ -876,11 +876,11 @@ function MoveAny:ShowProfiles()
 
 					MAShareProfile.f = MAShareProfile:CreateFontString( nil, nil, "GameFontNormal" )
 					MAShareProfile.f:SetPoint( "TOPLEFT", MAShareProfile, "TOPLEFT", 6, -26 )
-					MAShareProfile.f:SetText( MAGT( "PROFILE" ) .. ": " .. name )
+					MAShareProfile.f:SetText( MoveAny:GT( "PROFILE" ) .. ": " .. name )
 
 					MAShareProfile.f2 = MAShareProfile:CreateFontString( nil, nil, "GameFontNormal" )
 					MAShareProfile.f2:SetPoint( "BOTTOMLEFT", MAShareProfile, "BOTTOMLEFT", 6, 6 )
-					MAShareProfile.f2:SetText( MAGT( "WAITFORPLAYERPROFILE" ) )
+					MAShareProfile.f2:SetText( MoveAny:GT( "WAITFORPLAYERPROFILE" ) )
 
 					MAShareProfile.SF = CreateFrame( "ScrollFrame", "MAShareProfile_SF", MAShareProfile, "UIPanelScrollFrameTemplate" )
 					MAShareProfile.SF:SetPoint( "TOPLEFT", MAShareProfile, br, -30 - 24 )
@@ -898,7 +898,7 @@ function MoveAny:ShowProfiles()
 				else
 					MAShareProfile:Show()
 				end
-				MAShareProfile.f:SetText( MAGT( "PROFILE" ) .. ": " .. name )
+				MAShareProfile.f:SetText( MoveAny:GT( "PROFILE" ) .. ": " .. name )
 
 				IAWantProfiles = {} -- Reset
 
@@ -916,7 +916,7 @@ function MoveAny:ShowProfiles()
 						MAShareProfile.lines[id].btn = CreateFrame( "Button", profile, MAShareProfile.lines[id], "UIPanelButtonTemplate" )
 						MAShareProfile.lines[id].btn:SetPoint( "LEFT", MAShareProfile.lines[id], "LEFT", 450, 0 )
 						MAShareProfile.lines[id].btn:SetSize( 100, 24 )
-						MAShareProfile.lines[id].btn:SetText( MAGT( "UPLOAD" ) )
+						MAShareProfile.lines[id].btn:SetText( MoveAny:GT( "UPLOAD" ) )
 						MAShareProfile.lines[id].btn:SetScript( "OnClick", function()
 							local delay = 0.01
 							C_ChatInfo.SendAddonMessage( PREFIX, "UP;" .. profile .. ";0", "WHISPER", source )
@@ -1046,7 +1046,7 @@ function MoveAny:ShowProfiles()
 								MAUploadProfile:SetScript( "OnDragStart", MAUploadProfile.StartMoving )
 								MAUploadProfile:SetScript( "OnDragStop", MAUploadProfile.StopMovingOrSizing )
 								
-								MAUploadProfile.TitleText:SetText( MAGT( "DOWNLOAD" ) )
+								MAUploadProfile.TitleText:SetText( MoveAny:GT( "DOWNLOAD" ) )
 
 								MAUploadProfile.CloseButton:SetScript( "OnClick", function()
 									MAUploadProfile:Hide()
@@ -1065,13 +1065,13 @@ function MoveAny:ShowProfiles()
 
 								function MAUploadProfile:UpdateStatus()
 									if WebStatus == 0 or WebStatus == 0.0 then
-										MAUploadProfile.name:SetText( MAGT( "WAITINGFOROWNER" ) )
+										MAUploadProfile.name:SetText( MoveAny:GT( "WAITINGFOROWNER" ) )
 										MAUploadProfile.btn:SetEnabled( false )
 									elseif WebStatus == 100 or WebStatus == 100.0 then
-										MAUploadProfile.name:SetText( MAGT( "DONE" ) )
+										MAUploadProfile.name:SetText( MoveAny:GT( "DONE" ) )
 										MAUploadProfile.btn:SetEnabled( true )
 									else
-										MAUploadProfile.name:SetText( MAGT( "STATUS" ) .. ": " .. WebStatus .. "%")
+										MAUploadProfile.name:SetText( MoveAny:GT( "STATUS" ) .. ": " .. WebStatus .. "%")
 										MAUploadProfile.btn:SetEnabled( false )
 									end
 									C_Timer.After( 0.1, MAUploadProfile.UpdateStatus )
@@ -1087,7 +1087,7 @@ function MoveAny:ShowProfiles()
 						end )
 					end
 
-					MAShareProfile.lines[id].name:SetText( MAGT( "PLAYER" ) .. ": " .. source )
+					MAShareProfile.lines[id].name:SetText( MoveAny:GT( "PLAYER" ) .. ": " .. source )
 				end
 				
 				-- Receive Buyers
@@ -1119,7 +1119,7 @@ function MoveAny:ShowProfiles()
 				btnRen = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
 				btnRen:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 40 - br )
 				btnRen:SetSize( 100, 24 )
-				btnRen:SetText( MAGT( "RENAME" ) )
+				btnRen:SetText( MoveAny:GT( "RENAME" ) )
 				btnRen:SetScript( "OnClick", function()
 					if MARenameProfile == nil then
 						MARenameProfile = CreateFrame( "Frame", "MARenameProfile", UIParent, "BasicFrameTemplate" )
@@ -1136,7 +1136,7 @@ function MoveAny:ShowProfiles()
 						MARenameProfile:SetScript( "OnDragStart", MARenameProfile.StartMoving )
 						MARenameProfile:SetScript( "OnDragStop", MARenameProfile.StopMovingOrSizing )
 						
-						MARenameProfile.TitleText:SetText( MAGT( "RENAMEROFILE" ) )
+						MARenameProfile.TitleText:SetText( MoveAny:GT( "RENAMEROFILE" ) )
 
 						MARenameProfile.CloseButton:SetScript( "OnClick", function()
 							MARenameProfile:Hide()
@@ -1153,7 +1153,7 @@ function MoveAny:ShowProfiles()
 						MARenameProfile.RenameProfile = CreateFrame( "Button", "MARenameProfile_Profiles", MARenameProfile, "UIPanelButtonTemplate" )
 						MARenameProfile.RenameProfile:SetPoint( "TOPLEFT", MARenameProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br )
 						MARenameProfile.RenameProfile:SetSize( 160, 24 )
-						MARenameProfile.RenameProfile:SetText( MAGT( "RENAME" ) )
+						MARenameProfile.RenameProfile:SetText( MoveAny:GT( "RENAME" ) )
 						MARenameProfile.RenameProfile:SetScript( "OnClick", function()
 							if MARenameProfile.oldname ~= MARenameProfile.name then
 								MoveAny:RenameProfile( MARenameProfile.oldname, MARenameProfile.name )
@@ -1174,7 +1174,7 @@ function MoveAny:ShowProfiles()
 				btnRem = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
 				btnRem:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br )
 				btnRem:SetSize( 100, 24 )
-				btnRem:SetText( MAGT( "REMOVE" ) )
+				btnRem:SetText( MoveAny:GT( "REMOVE" ) )
 				btnRem:SetScript( "OnClick", function()
 					MoveAny:RemoveProfile( name )
 					C_UI.Reload()

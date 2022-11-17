@@ -21,7 +21,10 @@ SlashCmdList["MOVEANY"] = function(msg)
 	MoveAny:ToggleMALock()
 end
 
-MADragFrames = MADragFrames or {}
+local MADF = {}
+function MoveAny:GetDragFrames()
+	return MADF
+end
 
 
 
@@ -41,7 +44,7 @@ end
 
 function MoveAny:ShowMALock()
 	if MoveAny:IsEnabled( "MALOCK", false ) then
-		for i, df in pairs( MADragFrames ) do
+		for i, df in pairs( MoveAny:GetDragFrames() ) do
 			df:EnableMouse( true )
 			df:SetAlpha( 1 )
 		end
@@ -54,7 +57,7 @@ end
 
 function MoveAny:HideMALock()
 	if not MoveAny:IsEnabled( "MALOCK", false ) then
-		for i, df in pairs( MADragFrames ) do
+		for i, df in pairs( MoveAny:GetDragFrames() ) do
 			df:EnableMouse( false )
 			df:SetAlpha( 0 )
 		end

@@ -115,7 +115,7 @@ function MoveAny:GetProfiles()
 	return MATAB["PROFILES"]
 end
 
-function MoveAny:MAIImportPointValue( profileName, n, t, key, dbKey )
+function MoveAny:IImportPointValue( profileName, n, t, key, dbKey )
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
@@ -145,7 +145,7 @@ function MoveAny:MAIImportPointValue( profileName, n, t, key, dbKey )
 	end
 end
 
-function MoveAny:MAIImportSizesValue( profileName, n, t, key, dbKey )
+function MoveAny:IImportSizesValue( profileName, n, t, key, dbKey )
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
@@ -175,7 +175,7 @@ function MoveAny:MAIImportSizesValue( profileName, n, t, key, dbKey )
 	end
 end
 
-function MoveAny:MAIImportOptionValue( profileName, n, t, key, dbKey )
+function MoveAny:IImportOptionValue( profileName, n, t, key, dbKey )
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:MSG( "[MAIImportValue] Missing Default Profile" )
@@ -285,14 +285,14 @@ function MoveAny:InitDB()
 				MoveAny:MSG( "Importing Profile: " .. name )
 				MoveAny:AddProfile( newName, nil, true )
 				for n, t in pairs( tab ) do
-					MoveAny:MAIImportPointValue( newName, n, t, "point", "AN" )
-					MoveAny:MAIImportPointValue( newName, n, t, "relativePoint", "RE" )
-					MoveAny:MAIImportPointValue( newName, n, t, "ofsx", "PX" )
-					MoveAny:MAIImportPointValue( newName, n, t, "ofsy", "PY" )
+					MoveAny:IImportPointValue( newName, n, t, "point", "AN" )
+					MoveAny:IImportPointValue( newName, n, t, "relativePoint", "RE" )
+					MoveAny:IImportPointValue( newName, n, t, "ofsx", "PX" )
+					MoveAny:IImportPointValue( newName, n, t, "ofsy", "PY" )
 
-					MoveAny:MAIImportSizesValue( newName, n, t, "scale", "SCALE" )
-					MoveAny:MAIImportOptionValue( newName, n, t, "rows", "ROWS" )
-					MoveAny:MAIImportOptionValue( newName, n, t, "spacing", "SPACING" )
+					MoveAny:IImportSizesValue( newName, n, t, "scale", "SCALE" )
+					MoveAny:IImportOptionValue( newName, n, t, "rows", "ROWS" )
+					MoveAny:IImportOptionValue( newName, n, t, "spacing", "SPACING" )
 				end
 			else
 				MoveAny:MSG( "Already Imported Profile: " .. name )

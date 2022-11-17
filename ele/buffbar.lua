@@ -3,9 +3,9 @@ local AddOnName, MoveAny = ...
 
 local btnsize = 36
 
-MABUFFLIMIT = 10
-MABUFFSPACINGX = 4
-MABUFFSPACINGY = 10
+local MABUFFLIMIT = 10
+local MABUFFSPACINGX = 4
+local MABUFFSPACINGY = 10
 
 function MoveAny:InitBuffBar()
 	if MoveAny:IsEnabled( "BUFFS", true ) then

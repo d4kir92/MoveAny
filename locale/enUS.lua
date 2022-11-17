@@ -1,14 +1,14 @@
 -- enUS English
 
-LANG_MA = LANG_MA or {}
+local AddOnName, MoveAny = ...
 
-function MAUpdateLanguageTab( tab )
+function MoveAny:UpdateLanguageTab( tab )
 	for i, v in pairs( tab ) do
-		LANG_MA[i] = v
+		MoveAny:GetLangTab()[i] = v
 	end
 end
 
-function MALang_enUS()
+function MoveAny:Lang_enUS()
 	local tab = {
 		["MMBTNLEFT"] = "Left Click => Locks/Unlocks + Options",
 		["MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
@@ -147,5 +147,5 @@ function MALang_enUS()
 		["HELPTEXT"] = "%s is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
 	}
 
-	MAUpdateLanguageTab( tab )
+	MoveAny:UpdateLanguageTab( tab )
 end

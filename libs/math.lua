@@ -1,7 +1,7 @@
 
 local AddOnName, MoveAny = ...
 
-function MAMathC( val, vmin, vmax )
+function MoveAny:MathC( val, vmin, vmax )
 	if val == nil then
 		return 0
 	end
@@ -20,13 +20,13 @@ function MAMathC( val, vmin, vmax )
 	end
 end
 
-function MAMathR( val, dec )
+function MoveAny:MathR( val, dec )
 	val = val or 0
 	dec = dec or 0
 	return tonumber( string.format( "%0." .. dec .. "f", val ) )
 end
 
-function MAGrid( n, snap )
+function MoveAny:Grid( n, snap )
 	n = n or 0
 	snap = snap or MoveAny:GetGridSize()
 
