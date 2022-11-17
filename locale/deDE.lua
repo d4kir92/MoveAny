@@ -25,11 +25,12 @@ function MoveAny:Lang_deDE()
 		["FOCUSFRAMESPELLBAR"] = "Zauberleiste vom Fokus",
 		["TARGETOFFOCUSFRAME"] = "Ziel des Fokusfenster",
 		["RUNEFRAME"] = "Todesritter - Runen Fenster",
-		["TOTEMFRAME"] = "Totem Zähler",
+		["TOTEMFRAME"] = "Totem Zähler (Auch von anderen Klassen benutzt)",
 		["WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster",
 		["MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster",
 		["MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
 		["ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
+		["PALADINPOWERBARFRAME"] = "Paladin Machtleiste",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Oben",
@@ -139,6 +140,13 @@ function MoveAny:Lang_deDE()
 		["ISENABLEDINEDITMODE"] = "(Ist im Bearbeitungsmodus aktiviert)",
 
 		["HELPTEXT"] = "%s ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
+	
+		["BUILTIN"] = "Eingebaut",
+		["EDITMODE"] = "Bearbeitungsmodus",
+		["NORMAL"] = "Normal",
+		["CLASSSPECIFIC"] = "Klassenspezifisch",
+		["ADVANCED"] = "Erweitert",
+		["ImproveAny"] = "ImproveAny",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

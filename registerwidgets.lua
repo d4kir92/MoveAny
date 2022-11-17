@@ -377,9 +377,17 @@ function MoveAny:RegisterWidget( tab, debug )
 		tab.delay = tab.delay + 0.2
 	end
 
-	if MoveAny:IsInEditModeEnabled( name ) or MoveAny:IsInEditModeEnabled( lstr ) then
-		MoveAny:MSG( format( MoveAny:GT( "HELPTEXT" ), lstr ) )
-		return
+	local enabled1, forced1 = MoveAny:IsInEditModeEnabled( name )
+	local enabled2, forced2 = MoveAny:IsInEditModeEnabled( lstr )
+	if enabled1 or enabled2 then
+		if not MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+			MoveAny:MSG( "YOU NEED EDITMODE IN MOVEANY ENABLED" )
+			return
+		end
+		if not forced1 and not forced2 then
+			MoveAny:MSG( format( MoveAny:GT( "HELPTEXT" ), lstr ) )
+			return
+		end
 	end
 
 	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
@@ -421,8 +429,11 @@ function MoveAny:RegisterWidget( tab, debug )
 			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
 			local font, fontSize, fontFlags = dragframe.name:GetFont()
 			dragframe.name:SetFont( font, 15, fontFlags )
-			if MoveAny:IsInEditModeEnabled( name ) then
-				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+			local enab, forc = MoveAny:IsInEditModeEnabled( name )
+			if enab then
+				if not forc then
+					lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+				end
 			end
 			dragframe.name:SetText( lstr )
 			dragframe.name:Hide()
@@ -778,12 +789,222 @@ function MoveAny:Event( event, ... )
 	end
 
 	-- TOPLEFT
-	if MoveAny:IsEnabled( "PLAYERFRAME", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "PlayerFrame",
-			["lstr"] = "PLAYERFRAME",
-			["userplaced"] = true
-		} )
+	if MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "PLAYERFRAME", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "PlayerFrame",
+				["lstr"] = "PLAYERFRAME",
+				["userplaced"] = true
+			} )
+		end
+		if MoveAny:IsEnabled( "TARGETFRAME", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "TargetFrame",
+				["lstr"] = "TARGETFRAME",
+				["userplaced"] = true
+			} )
+		end
+		if MoveAny:IsEnabled( "FOCUSFRAME", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "FocusFrame",
+				["lstr"] = "FOCUSFRAME",
+				["userplaced"] = true
+			} )
+		end
+		if MoveAny:IsEnabled( "BUFFS", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MABuffBar",
+				["lstr"] = "BUFFS"
+			} )
+		end
+		if MoveAny:IsEnabled( "DEBUFFS", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MADebuffBar",
+				["lstr"] = "DEBUFFS"
+			} )
+		end
+		if MoveAny:IsEnabled( "GAMETOOLTIP", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAGameTooltip",
+				["lstr"] = "GAMETOOLTIP"
+			} )
+		end
+		if MoveAny:IsEnabled( "PETBAR", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAPetBar",
+				["lstr"] = "PETBAR"
+			} )
+		end
+		if MoveAny:IsEnabled( "STANCEBAR", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "MAStanceBar",
+				["lstr"] = "STANCEBAR",
+				["secure"] = true
+			} )
+		end
+		if PossessActionBar then
+			if MoveAny:IsEnabled( "POSSESSBAR", false ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "PossessActionBar",
+					["lstr"] = "POSSESSBAR"
+				} )
+			end
+		else
+			if MoveAny:IsEnabled( "POSSESSBAR", false ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "PossessBarFrame",
+					["lstr"] = "POSSESSBAR"
+				} )
+			end
+		end
+		if MoveAny:IsEnabled( "LEAVEVEHICLE", MABUILDNR < 100000 ) then
+			if MainMenuBarVehicleLeaveButton then
+				MainMenuBarVehicleLeaveButton:SetParent( UIParent )
+			end
+			MoveAny:RegisterWidget( {
+				["name"] = "MainMenuBarVehicleLeaveButton",
+				["lstr"] = "LEAVEVEHICLE"
+			} )
+		end
+		if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MABUILDNR < 100000 ) then
+			ExtraAbilityContainer:SetSize( 180, 100 )
+			ExtraAbilityContainer:ClearAllPoints()
+			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+		
+			MoveAny:RegisterWidget( {
+				["name"] = "ExtraAbilityContainer",
+				["lstr"] = "EXTRAABILITYCONTAINER",
+				["userplaced"] = true
+			} )
+		end
+		if PlayerCastingBarFrame then
+			if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "PlayerCastingBarFrame",
+					["lstr"] = "CASTINGBAR"
+				} )
+			end
+		else
+			if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "CastingBarFrame",
+					["lstr"] = "CASTINGBAR"
+				} )
+			end
+		end
+		if TalkingHeadFrame then
+			if MoveAny:IsEnabled( "TALKINGHEAD", MABUILDNR < 100000 ) then
+				MoveAny:RegisterWidget( {
+					["name"] = "TalkingHeadFrame",
+					["lstr"] = "TALKINGHEAD",
+					["secure"] = true
+				} )
+			end
+		end
+		if MABUILD ~= "RETAIL" then
+			if MoveAny:AnyActionbarEnabled()then
+				for i = 1, 10 do
+					if i ~= 2 then
+						if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MABUILDNR < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+							MoveAny:RegisterWidget( {
+								["name"] = "MAActionBar" .. i,
+								["lstr"] = "ACTIONBAR" .. i
+							}, true )
+						end
+					end
+				end
+			end
+		end
+		for i = 1, 5 do
+			local cf = _G["ChatFrame" .. i]
+			if cf then	
+				if MoveAny:IsEnabled( "CHAT" .. i, false ) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
+					MoveAny:RegisterWidget( {
+						["name"] = "ChatFrame" .. i,
+						["lstr"] = "CHAT",
+						["lstri"] = i
+					} )
+				end
+			end
+		end
+		if MoveAny:IsEnabled( "MINIMAP", MABUILDNR < 100000 ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "Minimap",
+				["lstr"] = "MINIMAP"
+			} )
+		end
+		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
+			if ObjectiveTrackerFrame == nil then
+				ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
+				ObjectiveTrackerFrame:SetSize( 224, 600 )
+				ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
+			
+				if QuestWatchFrame then
+					hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
+						if self.qwfsetpoint then return end
+						self.qwfsetpoint = true
+	
+						self:SetMovable( true )
+						if self.SetUserPlaced and self:IsMovable() then
+							self:SetUserPlaced( false )
+						end
+	
+						self:SetParent( ObjectiveTrackerFrame )
+	
+						self:ClearAllPoints()
+						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+						self.qwfsetpoint = false
+					end )
+	
+					QuestWatchFrame:SetMovable( true )
+					if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
+						QuestWatchFrame:SetUserPlaced( false )
+					end
+					self:SetParent( ObjectiveTrackerFrame )
+					QuestWatchFrame:ClearAllPoints()
+					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+	
+					QuestWatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
+				end
+	
+				if WatchFrame then
+					hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
+						if self.wfsetpoint then return end
+						self.wfsetpoint = true
+	
+						self:SetMovable( true )
+						if self.SetUserPlaced and self:IsMovable() then
+							self:SetUserPlaced( false )
+						end
+						
+						self:SetParent( ObjectiveTrackerFrame )
+	
+						self:ClearAllPoints()
+						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+						self.wfsetpoint = false
+					end )
+	
+					WatchFrame:SetMovable( true )
+					if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
+						WatchFrame:SetUserPlaced( false )
+					end
+					WatchFrame:SetParent( ObjectiveTrackerFrame )
+					WatchFrame:ClearAllPoints()
+					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+	
+					WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
+				end
+			end
+			if ObjectiveTrackerFrame then
+				ObjectiveTrackerFrame:SetHeight( 600 )
+				MoveAny:RegisterWidget( {
+					["name"] = "ObjectiveTrackerFrame",
+					["lstr"] = "QUESTTRACKER",
+					["sh"] = 600,
+					["userplaced"] = true
+				} )
+			end
+		end
 	end
 	if MoveAny:IsEnabled( "PETFRAME", false ) then
 		MoveAny:RegisterWidget( {
@@ -798,7 +1019,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "RUNEFRAME"
 		} )
 	end
-	if TotemFrame and MoveAny:IsEnabled( "TOTEMFRAME", false ) and class == "SHAMAN" then
+	if TotemFrame and MoveAny:IsEnabled( "TOTEMFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TotemFrame",
 			["lstr"] = "TOTEMFRAME"
@@ -828,24 +1049,16 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "ESSENCEPLAYERFRAME"
 		} )
 	end
-	if MoveAny:IsEnabled( "TARGETFRAME", MABUILDNR < 100000 ) then
+	if PaladinPowerBarFrame and MoveAny:IsEnabled( "PALADINPOWERBARFRAME", false ) and class == "PALADIN" then
 		MoveAny:RegisterWidget( {
-			["name"] = "TargetFrame",
-			["lstr"] = "TARGETFRAME",
-			["userplaced"] = true
+			["name"] = "PaladinPowerBarFrame",
+			["lstr"] = "PALADINPOWERBARFRAME"
 		} )
 	end
 	if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TargetFrameSpellBar",
 			["lstr"] = "TARGETFRAMESPELLBAR"
-		} )
-	end
-	if MoveAny:IsEnabled( "FOCUSFRAME", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "FocusFrame",
-			["lstr"] = "FOCUSFRAME",
-			["userplaced"] = true
 		} )
 	end
 	if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
@@ -953,96 +1166,6 @@ function MoveAny:Event( event, ... )
 			["sh"] = 36 * 2,
 			["userplaced"] = true
 		} )
-	end
-	if MoveAny:IsEnabled( "MINIMAP", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "Minimap",
-			["lstr"] = "MINIMAP"
-		} )
-	end
-	if MoveAny:IsEnabled( "BUFFS", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MABuffBar",
-			["lstr"] = "BUFFS"
-		} )
-	end
-	if MoveAny:IsEnabled( "DEBUFFS", false ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MADebuffBar",
-			["lstr"] = "DEBUFFS"
-		} )
-	end
-	if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
-		if ObjectiveTrackerFrame == nil then
-			ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
-			ObjectiveTrackerFrame:SetSize( 224, 600 )
-			ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
-		
-			if QuestWatchFrame then
-				hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
-					if self.qwfsetpoint then return end
-					self.qwfsetpoint = true
-
-					self:SetMovable( true )
-					if self.SetUserPlaced and self:IsMovable() then
-						self:SetUserPlaced( false )
-					end
-
-					self:SetParent( ObjectiveTrackerFrame )
-
-					self:ClearAllPoints()
-					self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-					self.qwfsetpoint = false
-				end )
-
-				QuestWatchFrame:SetMovable( true )
-				if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
-					QuestWatchFrame:SetUserPlaced( false )
-				end
-				self:SetParent( ObjectiveTrackerFrame )
-				QuestWatchFrame:ClearAllPoints()
-				QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-
-				QuestWatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
-			end
-
-			if WatchFrame then
-				hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
-					if self.wfsetpoint then return end
-					self.wfsetpoint = true
-
-					self:SetMovable( true )
-					if self.SetUserPlaced and self:IsMovable() then
-						self:SetUserPlaced( false )
-					end
-					
-					self:SetParent( ObjectiveTrackerFrame )
-
-					self:ClearAllPoints()
-					self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-					self.wfsetpoint = false
-				end )
-
-				WatchFrame:SetMovable( true )
-				if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
-					WatchFrame:SetUserPlaced( false )
-				end
-				WatchFrame:SetParent( ObjectiveTrackerFrame )
-				WatchFrame:ClearAllPoints()
-				WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-
-				WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
-			end
-		end
-		if ObjectiveTrackerFrame then
-			ObjectiveTrackerFrame:SetHeight( 600 )
-			MoveAny:RegisterWidget( {
-				["name"] = "ObjectiveTrackerFrame",
-				["lstr"] = "QUESTTRACKER",
-				["sh"] = 600,
-				["userplaced"] = true
-			} )
-		end
 	end
 	if QueueStatusButton and MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
 		MoveAny:RegisterWidget( {
@@ -1218,60 +1341,11 @@ function MoveAny:Event( event, ... )
 		end )
 	end
 
-	if MoveAny:IsEnabled( "GAMETOOLTIP", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAGameTooltip",
-			["lstr"] = "GAMETOOLTIP"
-		} )
-	end
-
 
 
 	-- BOTTOM
 	if MainMenuBarPerformanceBarFrame then
 		MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
-	end
-	if MABUILD ~= "RETAIL" then
-		if MoveAny:AnyActionbarEnabled()then
-			for i = 1, 10 do
-				if i ~= 2 then
-					if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MABUILDNR < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
-						MoveAny:RegisterWidget( {
-							["name"] = "MAActionBar" .. i,
-							["lstr"] = "ACTIONBAR" .. i
-						}, true )
-					end
-				end
-			end
-		end
-	end
-	if MoveAny:IsEnabled( "STANCEBAR", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAStanceBar",
-			["lstr"] = "STANCEBAR",
-			["secure"] = true
-		} )
-	end
-	if MoveAny:IsEnabled( "PETBAR", MABUILDNR < 100000 ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MAPetBar",
-			["lstr"] = "PETBAR"
-		} )
-	end
-	if PossessActionBar then
-		if MoveAny:IsEnabled( "POSSESSBAR", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "PossessActionBar",
-				["lstr"] = "POSSESSBAR"
-			} )
-		end
-	else
-		if MoveAny:IsEnabled( "POSSESSBAR", false ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "PossessBarFrame",
-				["lstr"] = "POSSESSBAR"
-			} )
-		end
 	end
 	if ZoneAbilityFrame and MoveAny:IsEnabled( "ZONEABILITYFRAME", true ) then
 		ZoneAbilityFrame:SetParent( UIParent )
@@ -1335,17 +1409,6 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
-	if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MABUILDNR < 100000 ) then
-		ExtraAbilityContainer:SetSize( 180, 100 )
-		ExtraAbilityContainer:ClearAllPoints()
-		ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-	
-		MoveAny:RegisterWidget( {
-			["name"] = "ExtraAbilityContainer",
-			["lstr"] = "EXTRAABILITYCONTAINER",
-			["userplaced"] = true
-		} )
-	end
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
 			StatusTrackingBarManager:EnableMouse( true )
@@ -1395,39 +1458,6 @@ function MoveAny:Event( event, ... )
 			["secure"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "LEAVEVEHICLE", MABUILDNR < 100000 ) then
-		if MainMenuBarVehicleLeaveButton then
-			MainMenuBarVehicleLeaveButton:SetParent( UIParent )
-		end
-		MoveAny:RegisterWidget( {
-			["name"] = "MainMenuBarVehicleLeaveButton",
-			["lstr"] = "LEAVEVEHICLE"
-		} )
-	end
-	if PlayerCastingBarFrame then
-		if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "PlayerCastingBarFrame",
-				["lstr"] = "CASTINGBAR"
-			} )
-		end
-	else
-		if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "CastingBarFrame",
-				["lstr"] = "CASTINGBAR"
-			} )
-		end
-	end
-	if TalkingHeadFrame then
-		if MoveAny:IsEnabled( "TALKINGHEAD", MABUILDNR < 100000 ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "TalkingHeadFrame",
-				["lstr"] = "TALKINGHEAD",
-				["secure"] = true
-			} )
-		end
-	end
 	if AlertFrame and MoveAny:IsEnabled( "ALERTFRAME", true ) then
 		local afsw, afsh = 276, 68
 		MoveAny:RegisterWidget( {
@@ -1460,16 +1490,6 @@ function MoveAny:Event( event, ... )
 			end )
 			cf:SetClampRectInsets( left, 25, 25, bottom )
 			
-			if MoveAny:IsEnabled( "CHAT" .. i, false ) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
-				MoveAny:RegisterWidget( {
-					["name"] = "ChatFrame" .. i,
-					["lstr"] = "CHAT",
-					["lstri"] = i
-				} )
-				if _G["ChatFrame" .. i] then
-					_G["ChatFrame" .. i]:EnableMouse( true )
-				end
-			end
 			if i > 1 then
 				if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
 					local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]

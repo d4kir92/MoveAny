@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.3" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.4" )
 }
 
 local PREFIX = "MOAN"
@@ -23,18 +23,14 @@ local cbs = {}
 local sls = {}
 
 local EMMapForced = {}
-EMMapForced["Minimap"] = false
-EMMapForced["MINIMAP"] = false
-EMMapForced["PlayerFrame"] = false
-EMMapForced["PLAYERFRAME"] = false
-EMMapForced["ObjectiveTrackerFrame"] = false
-EMMapForced["QUESTTRACKER"] = false
-EMMapForced["ChatFrame1"] = false
-EMMapForced["CHAT"] = false
-EMMapForced["ChatFrame1ButtonFrame"] = false
-EMMapForced["CHATBUTTONFRAME"] = false
-EMMapForced["ChatFrame1EditBox"] = false
-EMMapForced["CHATEDITBOX"] = false
+EMMapForced["Minimap"] = true
+EMMapForced["MINIMAP"] = true
+EMMapForced["PlayerFrame"] = true
+EMMapForced["PLAYERFRAME"] = true
+EMMapForced["ObjectiveTrackerFrame"] = true
+EMMapForced["QUESTTRACKER"] = true
+EMMapForced["ChatFrame1"] = true
+EMMapForced["CHAT"] = true
 
 local EMMap = {}
 EMMap["MAPetBar"] = "ShowPetActionBar"
@@ -61,11 +57,11 @@ function MoveAny:IsInEditModeEnabled( val )
 	local editModeEnum = nil
 
 	if not MoveAny:IsBlizEditModeEnabled() then
-		return false
+		return false, false
 	end
 
 	if EMMapForced[val] then
-		return true
+		return true, true
 	end
 	if Enum and Enum.EditModeAccountSetting then
 		if EMMap[val] then
@@ -82,10 +78,10 @@ function MoveAny:IsInEditModeEnabled( val )
 
 	if editModeEnum and EditModeManagerFrame then
 		if EditModeManagerFrame:GetAccountSettingValueBool( editModeEnum ) then
-			return true
+			return true, false
 		end
 	end
-	return false
+	return false, false
 end
 
 local function AddCategory( key )
@@ -122,9 +118,15 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 	if id then
 		lstr = format( lstr, id )
 	end
-
-	if MoveAny:IsInEditModeEnabled( editModeEnum ) or MoveAny:IsInEditModeEnabled( key ) then
-		lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+	
+	local enabled1, forced1 = MoveAny:IsInEditModeEnabled( key )
+	local enabled2, forced2 = MoveAny:IsInEditModeEnabled( editModeEnum )
+	if enabled1 or enabled2 then
+		if forced1 or forced2 then
+			lstr = lstr .. " |cFFFF0000" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+		else
+			lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+		end
 	end
 
 	if id then
@@ -244,8 +246,6 @@ function MoveAny:InitMALock()
 		local sh = 24
 		posy = -4
 
-
-
 		AddCategory( "GENERAL" )
 		AddCheckBox( 4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton )
 		AddSlider( 24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1 )
@@ -254,26 +254,79 @@ function MoveAny:InitMALock()
 		AddCheckBox( 24, "FRAMESSHIFTSCALE", false )
 		AddCheckBox( 24, "FRAMESSHIFTRESET", false )
 
-
-
-		AddCategory( "TOPLEFT" )
-		AddCheckBox( 4, "PLAYERFRAME", true )
-
-		AddCheckBox( 4, "PETFRAME", true )
-		AddCheckBox( 4, "TARGETFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
-		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
-		AddCheckBox( 4, "FOCUSFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
-		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
-		if IASkills and MABUILD ~= "RETAIL" then
-			AddCheckBox( 4, "IASKILLS", true )
+		AddCategory( "BUILTIN" )
+		AddCheckBox( 4, "EDITMODE", MABUILDNR < 100000 )
+		AddCheckBox( 24, "PLAYERFRAME", MABUILDNR < 100000 )
+		AddCheckBox( 24, "TARGETFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( 24, "FOCUSFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( 24, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
+		AddCheckBox( 24, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
+		AddCheckBox( 24, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
+		AddCheckBox( 24, "PETBAR", MABUILDNR < 100000, nil, nil, "ShowPetActionBar" )
+		AddCheckBox( 24, "STANCEBAR", MABUILDNR < 100000, nil, nil, "ShowStanceBar" )
+		AddCheckBox( 24, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
+		AddCheckBox( 24, "LEAVEVEHICLE", MABUILDNR < 100000, nil, nil, "ShowVehicleLeaveButton" )
+		if ExtraAbilityContainer then
+			AddCheckBox( 24, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
 		end
+		AddCheckBox( 24, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
+		AddCheckBox( 24, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
+		if MABUILD ~= "RETAIL" then
+			AddCheckBox( 24, "ACTIONBARS", MABUILDNR < 100000 )
+		end
+		for i = 1, 5 do
+			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
+				AddCheckBox( 24, "CHAT", true, nil, i )
+			end
+		end
+		AddCheckBox( 24, "MINIMAP", MABUILDNR < 100000 )
+		AddCheckBox( 24, "QUESTTRACKER", true )
+		
+		AddCategory( "NORMAL" )
+		AddCheckBox( 4, "PETFRAME", true )
+		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
+		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
+		AddCheckBox( 4, "ZONETEXTFRAME", true )
+		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
+		AddCheckBox( 4, "DURABILITY", true )
+		AddCheckBox( 4, "MICROMENU", true )
+		AddCheckBox( 4, "BAGS", true )
+		if QueueStatusButton then
+			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
+		end
+
+		if MABUILD ~= "RETAIL" then
+			AddCheckBox( 4, "ACTIONBAR7", false )
+			AddCheckBox( 4, "ACTIONBAR8", false )
+			AddCheckBox( 4, "ACTIONBAR9", false )
+			AddCheckBox( 4, "ACTIONBAR10", false )
+		end
+		if StatusTrackingBarManager then
+			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
+		else
+			AddCheckBox( 4, "MAINMENUEXPBAR", true )
+			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
+		end
+		
+		AddCheckBox( 4, "MAFPSFrame", true )
+		AddCheckBox( 4, "ZONEABILITYFRAME", true )
+		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
+
+		if QuickJoinToastButton then
+			AddCheckBox( 4, "CHATQUICKJOIN", false )
+		end
+
+		
+		if SpellActivationOverlayFrame then
+			AddCheckBox( 4, "SPELLACTIVATIONOVERLAYFRAME", false )
+		end
+
+		AddCategory( "CLASSSPECIFIC" )
 		if RuneFrame and class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME", false )
 		end
-		if TotemFrame and class == "SHAMAN" then
-			AddCheckBox( 4, "TOTEMFRAME", false )
+		if MABUILD == "WRATH" and class == "SHAMAN" then
+			AddCheckBox( 4, "TOTEMBAR", true )
 		end
 		if WarlockPowerFrame and class == "WARLOCK" then
 			AddCheckBox( 4, "WARLOCKPOWERFRAME", false )
@@ -287,111 +340,44 @@ function MoveAny:InitMALock()
 		if EssencePlayerFrame and class == "EVOKER" then
 			AddCheckBox( 4, "ESSENCEPLAYERFRAME", false )
 		end
+		if PaladinPowerBarFrame and class == "PALADIN" then
+			AddCheckBox( 4, "PALADINPOWERBARFRAME", false )
+		end
 
-
-
-		AddCategory( "TOP" )
-		AddCheckBox( 4, "ZONETEXTFRAME", true )
+		AddCategory( "ADVANCED" )
+		if TotemFrame then
+			AddCheckBox( 4, "TOTEMFRAME", false )
+		end
+		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
+		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
 		AddCheckBox( 4, "UIWIDGETTOPCENTER", true )
 		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP", true )
-
-		AddCategory( "TOPRIGHT" )
-		AddCheckBox( 4, "MINIMAP", MABUILDNR < 100000 )
-		AddCheckBox( 4, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
-		AddCheckBox( 24, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
-
-		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
-		AddCheckBox( 4, "DURABILITY", true )
-
 		AddCheckBox( 4, "ARENAENEMYFRAMES", false )
 		AddCheckBox( 4, "ARENAPREPFRAMES", false )
-
-
-
-		AddCategory( "RIGHT" )
-		AddCheckBox( 4, "QUESTTRACKER", true )
-
-
-
-		AddCategory( "BOTTOMRIGHT" )
-		AddCheckBox( 4, "MICROMENU", true )
-		AddCheckBox( 4, "BAGS", true )
-		AddCheckBox( 4, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
-		if QueueStatusButton then
-			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
-		end
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
-		if IAMoneyBar then
-			AddCheckBox( 4, "MONEYBAR", true )
-		end
-		if IATokenBar then
-			AddCheckBox( 4, "TOKENBAR", true )
-		end
-		if IAILVLBar then
-			AddCheckBox( 4, "IAILVLBAR", true )
-		end
-
-
-		AddCategory( "BOTTOM" )
-		if MABUILD ~= "RETAIL" then
-			AddCheckBox( 4, "ACTIONBARS", MABUILDNR < 100000 )
-			AddCheckBox( 4, "ACTIONBAR7", false )
-			AddCheckBox( 4, "ACTIONBAR8", false )
-			AddCheckBox( 4, "ACTIONBAR9", false )
-			AddCheckBox( 4, "ACTIONBAR10", false )
-		end
-		AddCheckBox( 4, "PETBAR", MABUILDNR < 100000, nil, nil, "ShowPetActionBar" )
-		AddCheckBox( 4, "STANCEBAR", MABUILDNR < 100000, nil, nil, "ShowStanceBar" )
-		if MABUILD == "WRATH" and class == "SHAMAN" then
-			AddCheckBox( 4, "TOTEMBAR", true )
-		end
-		AddCheckBox( 4, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
-		AddCheckBox( 4, "LEAVEVEHICLE", MABUILDNR < 100000, nil, nil, "ShowVehicleLeaveButton" )
-		if StatusTrackingBarManager then
-			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
-		else
-			AddCheckBox( 4, "MAINMENUEXPBAR", true )
-			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
-		end
 		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
-		AddCheckBox( 4, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
-		AddCheckBox( 4, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
-		AddCheckBox( 4, "MAFPSFrame", true )
-		if ExtraAbilityContainer then
-			AddCheckBox( 4, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
-		end
-		AddCheckBox( 4, "ZONEABILITYFRAME", true )
-		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ALERTFRAME", true )
-
-
-
-		AddCategory( "BOTTOMLEFT" )
-
-		for i = 1, 5 do
-			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
-				AddCheckBox( 4, "CHAT", true, nil, i )
-			end
-		end
 		AddCheckBox( 4, "CHATBUTTONFRAME", false )
 		AddCheckBox( 4, "CHATEDITBOX", false )
-
-		if QuickJoinToastButton then
-			AddCheckBox( 4, "CHATQUICKJOIN", false )
-		end
-		
-
-
-		AddCategory( "LEFT" )
-		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", true )
 		if BNToastFrame then
 			AddCheckBox( 4, "BATTLENETFRIENDSNOTIFICATION", true )
 		end
+		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", true )
 
-
-		AddCategory( "CENTER" )
-		if SpellActivationOverlayFrame then
-			AddCheckBox( 4, "SPELLACTIVATIONOVERLAYFRAME", false )
+		if IsAddOnLoaded( "ImproveAny" ) then
+			AddCategory( "ImproveAny" )
+			if IASkills and MABUILD ~= "RETAIL" then
+				AddCheckBox( 4, "IASKILLS", true )
+			end
+			if IAMoneyBar then
+				AddCheckBox( 4, "MONEYBAR", true )
+			end
+			if IATokenBar then
+				AddCheckBox( 4, "TOKENBAR", true )
+			end
+			if IAILVLBar then
+				AddCheckBox( 4, "IAILVLBAR", true )
+			end
 		end
 	end
 

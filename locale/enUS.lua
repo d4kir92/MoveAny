@@ -31,11 +31,12 @@ function MoveAny:Lang_enUS()
 		["FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
 		["TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
 		["RUNEFRAME"] = "Deathknight - Runes Frame",
-		["TOTEMFRAME"] = "Totem Timers",
+		["TOTEMFRAME"] = "Totem Timers (Also used by other classes)",
 		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
 		["MONKHARMONYBARFRAME"] = "Monk Harmony frame",
 		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
 		["ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
+		["PALADINPOWERBARFRAME"] = "Paladin Power Bar",
 		["MAFPSFrame"] = "FPS",
 
 		["TOP"] = "Top",
@@ -145,6 +146,13 @@ function MoveAny:Lang_enUS()
 		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 
 		["HELPTEXT"] = "%s is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
+	
+		["BUILTIN"] = "Built-In",
+		["EDITMODE"] = "Editmode",
+		["NORMAL"] = "Normal",
+		["CLASSSPECIFIC"] = "Class Specific",
+		["ADVANCED"] = "Advanced",
+		["ImproveAny"] = "ImproveAny",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )
