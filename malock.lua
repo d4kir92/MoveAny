@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.9" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.10" )
 }
 
 local PREFIX = "MOAN"
@@ -656,7 +656,7 @@ function MoveAny:ShowProfiles()
 				local profiles = {
 					["name"] = "profiles",
 					["parent"]= MAAddProfile,
-					["title"] = MoveAny:GT( "INHERITFROM" ),
+					["title"] = "INHERITFROM",
 					["items"]= profileNames,
 					["defaultVal"] = "", 
 					["changeFunc"] = function( dropdown_frame, dropdown_val )

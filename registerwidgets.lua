@@ -258,7 +258,7 @@ function MoveAny:MenuOptions( opt, frame )
 			local rows = {
 				["name"] = "raid",
 				["parent"]= content,
-				["title"] = MoveAny:GT( "ROWS" ),
+				["title"] = "ROWS",
 				["items"]= items,
 				["defaultVal"] = opts["ROWS"], 
 				["changeFunc"] = function( dropdown_frame, dropdown_val )

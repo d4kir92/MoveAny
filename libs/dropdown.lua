@@ -27,7 +27,7 @@ function MoveAny:CreateDropdown( opts )
 	local text = CB:CreateFontString(nil, "ARTWORK")
 	text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
 	text:SetPoint("LEFT", CB, "RIGHT", 0, 4)
-	text:SetText(MoveAny:GT(opts.title))
+	text:SetText( MoveAny:GT(opts.title) )
 
     return CB
 end
