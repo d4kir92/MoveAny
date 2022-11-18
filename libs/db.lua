@@ -323,7 +323,8 @@ function MoveAny:IsEnabled( element, value )
 		return false
 	end
 
-	if MoveAny:IsInEditModeEnabled( element ) then
+	local enabled, forced = MoveAny:IsInEditModeEnabled( element )
+	if enabled and not forced then
 		return false
 	end
 
