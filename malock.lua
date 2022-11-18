@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.8" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.9" )
 }
 
 local PREFIX = "MOAN"
@@ -23,28 +23,45 @@ local cbs = {}
 local sls = {}
 
 local EMMapForced = {}
-EMMapForced["Minimap"] = true
-EMMapForced["MINIMAP"] = true
-EMMapForced["PlayerFrame"] = true
-EMMapForced["PLAYERFRAME"] = true
-EMMapForced["ObjectiveTrackerFrame"] = true
-EMMapForced["QUESTTRACKER"] = true
-EMMapForced["ChatFrame1"] = true
-EMMapForced["CHAT"] = true
+function MoveAny:AddToEMMapForced( key )
+	EMMapForced[key] = true
+	EMMapForced[strupper(key)] = true
+end
+MoveAny:AddToEMMapForced( "Minimap" )
+MoveAny:AddToEMMapForced( "PlayerFrame" )
+MoveAny:AddToEMMapForced( "ObjectiveTrackerFrame" )
+MoveAny:AddToEMMapForced( "QuestTracker" )
+MoveAny:AddToEMMapForced( "ChatFrame1" )
+MoveAny:AddToEMMapForced( "Chat" )
+MoveAny:AddToEMMapForced( "Buffs" )
+MoveAny:AddToEMMapForced( "Debuffs" )
+MoveAny:AddToEMMapForced( "GameTooltip" )
+MoveAny:AddToEMMapForced( "Castingbar" )
 
 local EMMap = {}
-EMMap["MAPetBar"] = "ShowPetActionBar"
-EMMap["MAGameTooltip"] = "ShowHudTooltip"
-EMMap["TalkingHeadFrame"] = "ShowTalkingHeadFrame"
-EMMap["MABuffBar"] = "ShowBuffFrame"
-EMMap["MADebuffBar"] = "ShowDebuffFrame"
-EMMap["TargetFrame"] = "ShowTargetAndFocus"
-EMMap["FocusFrame"] = "ShowTargetAndFocus"
-EMMap["ExtraAbilityFrame"] = "ShowExtraAbility"
-EMMap["PossessActionBar"] = "ShowPossessActionBar"
-EMMap["PossessBarFrame"] = "ShowPossessActionBar"
-EMMap["MainMenuBarVehicleLeaveButton"] = "ShowVehicleLeaveButton"
-EMMap["PlayerCastingBarFrame"] = "ShowCastBar"
+function MoveAny:AddToEMMap( key, value )
+	EMMap[key] = value
+	EMMap[strupper(key)] = value
+end
+MoveAny:AddToEMMap( "MAPetBar", "ShowPetActionBar" )
+MoveAny:AddToEMMap( "PetBar", "ShowPetActionBar" )
+MoveAny:AddToEMMap( "MAStanceBar", "ShowStanceBar" )
+MoveAny:AddToEMMap( "StanceBar", "ShowStanceBar" )
+MoveAny:AddToEMMap( "MAGameTooltip", "ShowHudTooltip" )
+MoveAny:AddToEMMap( "TalkingHeadFrame", "ShowTalkingHeadFrame" )
+MoveAny:AddToEMMap( "TalkingHead", "ShowTalkingHeadFrame" )
+MoveAny:AddToEMMap( "MABuffBar", "ShowBuffFrame" )
+MoveAny:AddToEMMap( "MADebuffBar", "ShowDebuffFrame" )
+MoveAny:AddToEMMap( "TargetFrame", "ShowTargetAndFocus" )
+MoveAny:AddToEMMap( "FocusFrame", "ShowTargetAndFocus" )
+MoveAny:AddToEMMap( "ExtraAbilityFrame", "ShowExtraAbilities" )
+MoveAny:AddToEMMap( "ExtraAbilityContainer", "ShowExtraAbilities" )
+MoveAny:AddToEMMap( "PossessActionBar", "ShowPossessActionBar" )
+MoveAny:AddToEMMap( "PossessBarFrame", "ShowPossessActionBar" )
+MoveAny:AddToEMMap( "PossessBar", "ShowPossessActionBar" )
+MoveAny:AddToEMMap( "MainMenuBarVehicleLeaveButton", "ShowVehicleLeaveButton" )
+MoveAny:AddToEMMap( "LeaveVehicle", "ShowVehicleLeaveButton" )
+MoveAny:AddToEMMap( "PlayerCastingBarFrame", "ShowCastBar" )
 
 function MoveAny:IsBlizEditModeEnabled()
 	if EditModeManagerFrame then
@@ -70,6 +87,7 @@ function MoveAny:IsInEditModeEnabled( val )
 			editModeEnum = Enum.EditModeAccountSetting[val]
 		end
 		if EMMap[val] and editModeEnum == nil then
+			MoveAny:MSG( "MISSING ENUM FOR val: " .. tostring( val ) )
 			for i, v in pairs( Enum.EditModeAccountSetting ) do
 				MoveAny:MSG( "ENUM i: " .. tostring( i ) .. " v: " .. tostring( v ) )
 			end
@@ -126,6 +144,12 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 			lstr = lstr .. " |cFFFF0000" .. MoveAny:GT( "CANBREAKBECAUSEOFEDITMODE" )
 		else
 			lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+		end
+	end
+
+	if EMMap[key] or EMMapForced[key] then
+		if MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+			lstr = format( MoveAny:GT( "MISSINGREQUIREMENT" ), MoveAny:GT( "EDITMODE" ) ) .. " " .. lstr
 		end
 	end
 
@@ -255,32 +279,36 @@ function MoveAny:InitMALock()
 		AddCheckBox( 24, "FRAMESSHIFTRESET", false )
 
 		AddCategory( "BUILTIN" )
-		AddCheckBox( 4, "EDITMODE", MABUILDNR < 100000 )
-		AddCheckBox( 24, "PLAYERFRAME", MABUILDNR < 100000 )
-		AddCheckBox( 24, "TARGETFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( 24, "FOCUSFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( 24, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
-		AddCheckBox( 24, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
-		AddCheckBox( 24, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
-		AddCheckBox( 24, "PETBAR", MABUILDNR < 100000, nil, nil, "ShowPetActionBar" )
-		AddCheckBox( 24, "STANCEBAR", MABUILDNR < 100000, nil, nil, "ShowStanceBar" )
-		AddCheckBox( 24, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
-		AddCheckBox( 24, "LEAVEVEHICLE", MABUILDNR < 100000, nil, nil, "ShowVehicleLeaveButton" )
-		if ExtraAbilityContainer then
-			AddCheckBox( 24, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
+		local posx = 4
+		if MoveAny:IsBlizEditModeEnabled() then
+			AddCheckBox( 4, "EDITMODE", MABUILDNR < 100000 )
+			posx = 24
 		end
-		AddCheckBox( 24, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
-		AddCheckBox( 24, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
+		AddCheckBox( posx, "PLAYERFRAME", MABUILDNR < 100000 )
+		AddCheckBox( posx, "TARGETFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( posx, "FOCUSFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( posx, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
+		AddCheckBox( posx, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
+		AddCheckBox( posx, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
+		AddCheckBox( posx, "PETBAR", MABUILDNR < 100000, nil, nil, "ShowPetActionBar" )
+		AddCheckBox( posx, "STANCEBAR", MABUILDNR < 100000, nil, nil, "ShowStanceBar" )
+		AddCheckBox( posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
+		AddCheckBox( posx, "LEAVEVEHICLE", MABUILDNR < 100000, nil, nil, "ShowVehicleLeaveButton" )
+		if ExtraAbilityContainer then
+			AddCheckBox( posx, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
+		end
+		AddCheckBox( posx, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
+		AddCheckBox( posx, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
 		if MABUILD ~= "RETAIL" then
-			AddCheckBox( 24, "ACTIONBARS", MABUILDNR < 100000 )
+			AddCheckBox( posx, "ACTIONBARS", MABUILDNR < 100000 )
 		end
 		for i = 1, 5 do
 			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
-				AddCheckBox( 24, "CHAT", true, nil, i )
+				AddCheckBox( posx, "CHAT", true, nil, i )
 			end
 		end
-		AddCheckBox( 24, "MINIMAP", MABUILDNR < 100000 )
-		AddCheckBox( 24, "QUESTTRACKER", true )
+		AddCheckBox( posx, "MINIMAP", MABUILDNR < 100000 )
+		AddCheckBox( posx, "QUESTTRACKER", true )
 		
 		AddCategory( "NORMAL" )
 		AddCheckBox( 4, "PETFRAME", true )

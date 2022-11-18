@@ -154,6 +154,8 @@ function MoveAny:LangenUS()
 		["CLASSSPECIFIC"] = "Class Specific",
 		["ADVANCED"] = "Advanced",
 		["ImproveAny"] = "ImproveAny",
+
+		["MISSINGREQUIREMENT"] = "Missing Requirement: %s",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

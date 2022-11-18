@@ -148,6 +148,8 @@ function MoveAny:LangdeDE()
 		["CLASSSPECIFIC"] = "Klassenspezifisch",
 		["ADVANCED"] = "Erweitert",
 		["ImproveAny"] = "ImproveAny",
+
+		["MISSINGREQUIREMENT"] = "Fehlende Anforderung: %s",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )
