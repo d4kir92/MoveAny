@@ -144,6 +144,7 @@ function MoveAny:LangenUS()
 		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
 		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
 		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
+		["CANBREAKBECAUSEOFEDITMODE"] = "(May cause error due to edit mode)",
 
 		["HELPTEXT"] = "%s is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
 	

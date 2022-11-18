@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.7" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.8" )
 }
 
 local PREFIX = "MOAN"
@@ -123,7 +123,7 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled( editModeEnum )
 	if enabled1 or enabled2 then
 		if forced1 or forced2 then
-			lstr = lstr .. " |cFFFF0000" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+			lstr = lstr .. " |cFFFF0000" .. MoveAny:GT( "CANBREAKBECAUSEOFEDITMODE" )
 		else
 			lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
 		end
