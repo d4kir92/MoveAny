@@ -1,13 +1,13 @@
 
 local AddOnName, MoveAny = ...
 
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+--[[local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 function MoveAny:CreateDropdown( opts )
 	local CB = LibDD:Create_UIDropDownMenu( opts.name, opts.parent )
 	LibDD:UIDropDownMenu_SetWidth( CB, 120 )
 	LibDD:UIDropDownMenu_SetText( CB, opts.defaultVal )
-	LibDD:UIDropDownMenu_Initialize(CB, function(self, level, menuList)
+	LibDD:UIDropDownMenu_Initialize( CB, function( self, level, menuList )
 		local tab = {}
 		for i, v in pairs( opts.items ) do
 			local info = LibDD:UIDropDownMenu_CreateInfo()
@@ -30,4 +30,4 @@ function MoveAny:CreateDropdown( opts )
 	text:SetText(MoveAny:GT(opts.title))
 
     return CB
-end
+end]]

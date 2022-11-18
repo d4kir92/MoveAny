@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.5" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.6" )
 }
 
 local PREFIX = "MOAN"
@@ -1156,16 +1156,14 @@ function MoveAny:ShowProfiles()
 				end )
 			end
 
-			if name ~= "DEFAULT" then
-				btnRem = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
-				btnRem:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br )
-				btnRem:SetSize( 100, 24 )
-				btnRem:SetText( MoveAny:GT( "REMOVE" ) )
-				btnRem:SetScript( "OnClick", function()
-					MoveAny:RemoveProfile( name )
-					C_UI.Reload()
-				end )
-			end
+			btnRem = CreateFrame( "Button", name, MAProfiles.SC, "UIPanelButtonTemplate" )
+			btnRem:SetPoint( "TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br )
+			btnRem:SetSize( 100, 24 )
+			btnRem:SetText( MoveAny:GT( "REMOVE" ) )
+			btnRem:SetScript( "OnClick", function()
+				MoveAny:RemoveProfile( name )
+				C_UI.Reload()
+			end )
 
 			index = index + 1
 		end
