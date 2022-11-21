@@ -1696,7 +1696,10 @@ function MoveAny:Event( event, ... )
 	end
 
 	MoveAny:CheckAlphas()
+
+	SetCVar( "ScriptErrors", 1 )
 end
+SetCVar( "ScriptErrors", 1 )
 
 local f = CreateFrame( "Frame" )
 f:SetScript( "OnEvent", MoveAny.Event )
