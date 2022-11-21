@@ -1643,9 +1643,11 @@ function MoveAny:Event( event, ... )
 	
 	MoveAny:InitMALock()
 	MoveAny:InitMAVehicleSeatIndicator()
-	MoveAny:InitMinimap()
-	MoveAny:InitBuffBar()
-	MoveAny:InitDebuffBar()
+	if MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+		MoveAny:InitMinimap()
+		MoveAny:InitBuffBar()
+		MoveAny:InitDebuffBar()
+	end
 	MoveAny:InitMicroMenu()
 	MoveAny:InitBags()
 	MoveAny:InitMAFPSFrame()
