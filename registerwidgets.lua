@@ -915,7 +915,7 @@ function MoveAny:Event( event, ... )
 				end
 			end
 		end
-		for i = 1, 5 do
+		for i = 1, 10 do
 			local cf = _G["ChatFrame" .. i]
 			if cf then	
 				if MoveAny:IsEnabled( "CHAT" .. i, false ) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
@@ -1471,7 +1471,7 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOMLEFT
-	for i = 1, 5 do
+	for i = 1, 10 do
 		local cf = _G["ChatFrame" .. i]
 		if cf then	
 			local left = -35

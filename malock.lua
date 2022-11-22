@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.12" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.13" )
 }
 
 local PREFIX = "MOAN"
@@ -302,7 +302,7 @@ function MoveAny:InitMALock()
 		if MABUILD ~= "RETAIL" then
 			AddCheckBox( posx, "ACTIONBARS", MABUILDNR < 100000 )
 		end
-		for i = 1, 5 do
+		for i = 1, 10 do
 			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
 				AddCheckBox( posx, "CHAT", true, nil, i )
 			end
