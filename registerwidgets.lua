@@ -32,7 +32,7 @@ local function CreateTabs( frame, args )
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
-		if MABUILD == "RETAIL" then
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			template = "PanelTabButtonTemplate"
 		end
 		local tab = CreateFrame( "Button", frame:GetName() .. "Tab" .. i, frame, template )
@@ -380,7 +380,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled( name )
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled( lstr )
 	if enabled1 or enabled2 then
-		if not MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+		if not MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:MSG( "YOU NEED EDITMODE IN MOVEANY ENABLED" )
 			return
 		end
@@ -389,7 +389,7 @@ function MoveAny:RegisterWidget( tab, debug )
 			return
 		end
 	end
-
+	
 	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
 		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil 
 	end
@@ -735,7 +735,7 @@ function MoveAny:UpdateAlphas()
 end
 
 function MoveAny:AnyActionbarEnabled()
-	if MABUILD ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		return MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR7", true ) or MoveAny:IsEnabled( "ACTIONBAR8", true ) or MoveAny:IsEnabled( "ACTIONBAR9", true ) or MoveAny:IsEnabled( "ACTIONBAR10", true )
 	else
 		return false
@@ -756,7 +756,7 @@ function MoveAny:Event( event, ... )
 
 	MoveAny:InitDB()
 
-	if MABUILD ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		if MoveAny:IsEnabled( "ACTIONBARS", true ) then
 			if UIPARENT_MANAGED_FRAME_POSITIONS then
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
@@ -789,29 +789,29 @@ function MoveAny:Event( event, ... )
 	end
 
 	-- TOPLEFT
-	if MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
-		if MoveAny:IsEnabled( "PLAYERFRAME", MABUILDNR < 100000 ) then
+	if MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
+		if MoveAny:IsEnabled( "PLAYERFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "PlayerFrame",
 				["lstr"] = "PLAYERFRAME",
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "TARGETFRAME", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "TARGETFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "TargetFrame",
 				["lstr"] = "TARGETFRAME",
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "FOCUSFRAME", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
 				["lstr"] = "FOCUSFRAME",
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "BUFFS", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "BUFFS", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MABuffBar",
 				["lstr"] = "BUFFS"
@@ -823,19 +823,19 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "DEBUFFS"
 			} )
 		end
-		if MoveAny:IsEnabled( "GAMETOOLTIP", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "GAMETOOLTIP", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAGameTooltip",
 				["lstr"] = "GAMETOOLTIP"
 			} )
 		end
-		if MoveAny:IsEnabled( "PETBAR", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "PETBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAPetBar",
 				["lstr"] = "PETBAR"
 			} )
 		end
-		if MoveAny:IsEnabled( "STANCEBAR", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "STANCEBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAStanceBar",
 				["lstr"] = "STANCEBAR",
@@ -857,7 +857,7 @@ function MoveAny:Event( event, ... )
 				} )
 			end
 		end
-		if MoveAny:IsEnabled( "LEAVEVEHICLE", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "LEAVEVEHICLE", MoveAny:GetWoWBuildNr() < 100000 ) then
 			if MainMenuBarVehicleLeaveButton then
 				MainMenuBarVehicleLeaveButton:SetParent( UIParent )
 			end
@@ -866,7 +866,7 @@ function MoveAny:Event( event, ... )
 				["lstr"] = "LEAVEVEHICLE"
 			} )
 		end
-		if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MABUILDNR < 100000 ) then
+		if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MoveAny:GetWoWBuildNr() < 100000 ) then
 			ExtraAbilityContainer:SetSize( 180, 100 )
 			ExtraAbilityContainer:ClearAllPoints()
 			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
@@ -878,14 +878,14 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 		if PlayerCastingBarFrame then
-			if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
+			if MoveAny:IsEnabled( "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "PlayerCastingBarFrame",
 					["lstr"] = "CASTINGBAR"
 				} )
 			end
 		else
-			if MoveAny:IsEnabled( "CASTINGBAR", MABUILDNR < 100000 ) then
+			if MoveAny:IsEnabled( "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "CastingBarFrame",
 					["lstr"] = "CASTINGBAR"
@@ -893,7 +893,7 @@ function MoveAny:Event( event, ... )
 			end
 		end
 		if TalkingHeadFrame then
-			if MoveAny:IsEnabled( "TALKINGHEAD", MABUILDNR < 100000 ) then
+			if MoveAny:IsEnabled( "TALKINGHEAD", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "TalkingHeadFrame",
 					["lstr"] = "TALKINGHEAD",
@@ -901,11 +901,11 @@ function MoveAny:Event( event, ... )
 				} )
 			end
 		end
-		if MABUILD ~= "RETAIL" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			if MoveAny:AnyActionbarEnabled()then
 				for i = 1, 10 do
 					if i ~= 2 then
-						if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MABUILDNR < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+						if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 							MoveAny:RegisterWidget( {
 								["name"] = "MAActionBar" .. i,
 								["lstr"] = "ACTIONBAR" .. i
@@ -927,7 +927,7 @@ function MoveAny:Event( event, ... )
 				end
 			end
 		end
-		if MoveAny:IsEnabled( "MINIMAP", MABUILDNR < 100000 ) then
+		if MoveAny:IsEnabled( "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "Minimap",
 				["lstr"] = "MINIMAP"
@@ -1127,7 +1127,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAFPSFrame"
 		} )
 	end
-	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) and MABUILD ~= "RETAIL" then
+	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) and MoveAny:GetWoWBuild() ~= "RETAIL" then
 		MoveAny:RegisterWidget( {
 			["name"] = "IASkills",
 			["lstr"] = "IASKILLS"
@@ -1316,7 +1316,7 @@ function MoveAny:Event( event, ... )
 	GameTooltip:SetMovable( true )
 	GameTooltip:SetUserPlaced( false )
 
-	if MoveAny:IsEnabled( "GAMETOOLTIP", MABUILDNR < 100000 ) or MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) then
+	if MoveAny:IsEnabled( "GAMETOOLTIP", MoveAny:GetWoWBuildNr() < 100000 ) or MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) then
 		MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
 		MAGameTooltip:SetSize( 100, 100 )
 		MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
@@ -1363,6 +1363,22 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "UIWIDGETPOWERBAR",
 			["sw"] = 36 * 6,
 			["sh"] = 36 * 1
+		} )
+	end
+	
+	if MoveAny:GetWoWBuild() == "RETAIL" then
+		LoadAddOn("Blizzard_ArchaeologyUI")
+	end
+	if ArcheologyDigsiteProgressBar and MoveAny:IsEnabled( "ARCHEOLOGYDIGSITEPROGRESSBAR", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "ArcheologyDigsiteProgressBar",
+			["lstr"] = "ARCHEOLOGYDIGSITEPROGRESSBAR",
+		} )
+	end
+	if UIErrorsFrame and MoveAny:IsEnabled( "UIERRORSFRAME", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "UIErrorsFrame",
+			["lstr"] = "UIERRORSFRAME",
 		} )
 	end
 	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
@@ -1450,7 +1466,7 @@ function MoveAny:Event( event, ... )
 		end
 	end
 	
-	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MABUILD == "WRATH" and class == "SHAMAN" then
+	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MultiCastActionBarFrame",
 			["lstr"] = "TOTEMBAR",
@@ -1643,7 +1659,7 @@ function MoveAny:Event( event, ... )
 	
 	MoveAny:InitMALock()
 	MoveAny:InitMAVehicleSeatIndicator()
-	if MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+	if MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
 		MoveAny:InitMinimap()
 		MoveAny:InitBuffBar()
 		MoveAny:InitDebuffBar()

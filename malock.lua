@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.13" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.14" )
 }
 
 local PREFIX = "MOAN"
@@ -148,7 +148,7 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 	end
 
 	if EMMap[key] or EMMapForced[key] then
-		if MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled( "EDITMODE", MABUILDNR < 100000 ) then
+		if MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
 			lstr = format( MoveAny:GT( "MISSINGREQUIREMENT" ), MoveAny:GT( "EDITMODE" ) ) .. " " .. lstr
 		end
 	end
@@ -281,33 +281,33 @@ function MoveAny:InitMALock()
 		AddCategory( "BUILTIN" )
 		local posx = 4
 		if MoveAny:IsBlizEditModeEnabled() then
-			AddCheckBox( 4, "EDITMODE", MABUILDNR < 100000 )
+			AddCheckBox( 4, "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 )
 			posx = 24
 		end
-		AddCheckBox( posx, "PLAYERFRAME", MABUILDNR < 100000 )
-		AddCheckBox( posx, "TARGETFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( posx, "FOCUSFRAME", MABUILDNR < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( posx, "BUFFS", MABUILDNR < 100000, nil, nil, "ShowBuffFrame" )
+		AddCheckBox( posx, "PLAYERFRAME", MoveAny:GetWoWBuildNr() < 100000 )
+		AddCheckBox( posx, "TARGETFRAME", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( posx, "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTargetAndFocus" )
+		AddCheckBox( posx, "BUFFS", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowBuffFrame" )
 		AddCheckBox( posx, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
-		AddCheckBox( posx, "GAMETOOLTIP", MABUILDNR < 100000, nil, nil, "ShowHudTooltip" )
-		AddCheckBox( posx, "PETBAR", MABUILDNR < 100000, nil, nil, "ShowPetActionBar" )
-		AddCheckBox( posx, "STANCEBAR", MABUILDNR < 100000, nil, nil, "ShowStanceBar" )
+		AddCheckBox( posx, "GAMETOOLTIP", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowHudTooltip" )
+		AddCheckBox( posx, "PETBAR", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowPetActionBar" )
+		AddCheckBox( posx, "STANCEBAR", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowStanceBar" )
 		AddCheckBox( posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
-		AddCheckBox( posx, "LEAVEVEHICLE", MABUILDNR < 100000, nil, nil, "ShowVehicleLeaveButton" )
+		AddCheckBox( posx, "LEAVEVEHICLE", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowVehicleLeaveButton" )
 		if ExtraAbilityContainer then
-			AddCheckBox( posx, "EXTRAABILITYCONTAINER", MABUILDNR < 100000, nil, nil, "ShowExtraAbilities" )
+			AddCheckBox( posx, "EXTRAABILITYCONTAINER", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowExtraAbilities" )
 		end
-		AddCheckBox( posx, "CASTINGBAR", MABUILDNR < 100000, nil, nil, "ShowCastBar" )
-		AddCheckBox( posx, "TALKINGHEAD", MABUILDNR < 100000, nil, nil, "ShowTalkingHeadFrame" )
-		if MABUILD ~= "RETAIL" then
-			AddCheckBox( posx, "ACTIONBARS", MABUILDNR < 100000 )
+		AddCheckBox( posx, "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowCastBar" )
+		AddCheckBox( posx, "TALKINGHEAD", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTalkingHeadFrame" )
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			AddCheckBox( posx, "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 )
 		end
 		for i = 1, 10 do
 			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
 				AddCheckBox( posx, "CHAT", true, nil, i )
 			end
 		end
-		AddCheckBox( posx, "MINIMAP", MABUILDNR < 100000 )
+		AddCheckBox( posx, "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 )
 		AddCheckBox( posx, "QUESTTRACKER", true )
 		
 		AddCategory( "NORMAL" )
@@ -323,7 +323,7 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
 		end
 
-		if MABUILD ~= "RETAIL" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox( 4, "ACTIONBAR7", false )
 			AddCheckBox( 4, "ACTIONBAR8", false )
 			AddCheckBox( 4, "ACTIONBAR9", false )
@@ -339,6 +339,8 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "MAFPSFrame", true )
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
+		AddCheckBox( 4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false )
+		AddCheckBox( 4, "UIERRORSFRAME", false )
 
 		if QuickJoinToastButton then
 			AddCheckBox( 4, "CHATQUICKJOIN", false )
@@ -353,7 +355,7 @@ function MoveAny:InitMALock()
 		if RuneFrame and class == "DEATHKNIGHT" then
 			AddCheckBox( 4, "RUNEFRAME", false )
 		end
-		if MABUILD == "WRATH" and class == "SHAMAN" then
+		if MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 			AddCheckBox( 4, "TOTEMBAR", true )
 		end
 		if WarlockPowerFrame and class == "WARLOCK" then
@@ -394,7 +396,7 @@ function MoveAny:InitMALock()
 
 		if IsAddOnLoaded( "ImproveAny" ) then
 			AddCategory( "ImproveAny" )
-			if IASkills and MABUILD ~= "RETAIL" then
+			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox( 4, "IASKILLS", true )
 			end
 			if IAMoneyBar then

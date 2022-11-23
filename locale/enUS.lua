@@ -156,6 +156,8 @@ function MoveAny:LangenUS()
 		["ImproveAny"] = "ImproveAny",
 
 		["MISSINGREQUIREMENT"] = "Missing Requirement: %s",
+		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
+		["UIERRORSFRAME"] = "Ui Error Messages",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )
