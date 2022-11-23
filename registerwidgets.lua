@@ -256,7 +256,7 @@ function MoveAny:MenuOptions( opt, frame )
 
 			opts["ROWS"] = opts["ROWS"] or 1
 			local rows = {
-				["name"] = "raid",
+				["name"] = "rows",
 				["parent"]= content,
 				["title"] = "ROWS",
 				["items"]= items,

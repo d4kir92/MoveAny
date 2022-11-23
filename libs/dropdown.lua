@@ -35,13 +35,13 @@ end]]
 function MoveAny:CreateDropdown( opts )
     local dropdown_name = '$parent_' .. opts['name'] .. '_dropdown'
     local menu_items = opts['items'] or {}
-    local title_text = opts['title'] or ''
+    local title_text = MoveAny:GT( opts['title'] ) or ''
     local dropdown_width = 0
     local default_val = opts['defaultVal'] or ''
     local change_func = opts['changeFunc'] or function (dropdown_val) end
 
     local dropdown = CreateFrame("Frame", dropdown_name, opts['parent'], 'UIDropDownMenuTemplate')
-    local dd_title = dropdown:CreateFontString(dropdown, 'OVERLAY', 'GameFontNormal')
+	local dd_title = dropdown:CreateFontString(dropdown_name, 'OVERLAY', 'GameFontNormal')
     dd_title:SetPoint("TOPLEFT", 20, 10)
 
     for _, item in pairs(menu_items) do -- Sets the dropdown width to the largest item string width.
