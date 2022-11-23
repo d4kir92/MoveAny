@@ -68,20 +68,20 @@ function MoveAny:InitBags()
 
 		if MicroButtonAndBagsBar then
 			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
-		elseif MABUILD ~= "RETAIL" then
+		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
 			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
 		else
 			MABagBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 		end
 
-		if MABUILD ~= "RETAIL" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			MainMenuBarBackpackButtonNormalTexture:Hide()
 		end
 
 		for i, mbname in pairs( BAGS ) do
 			local bb = _G[mbname]
 
-			if bb and MABUILD ~= "RETAIL" then
+			if bb and MoveAny:GetWoWBuild() ~= "RETAIL" then
 				hooksecurefunc( bb, "Hide", function( self )
 					if self.mashow then return end
 					self.mashow = true

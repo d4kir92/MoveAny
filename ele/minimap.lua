@@ -97,7 +97,7 @@ function MoveAny:InitMinimap()
 	end
 
 	if TimeManagerClockButton then
-		if MABUILD == "RETAIL" then
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			
 		else
 			TimeManagerClockButton:ClearAllPoints()
@@ -121,7 +121,7 @@ function MoveAny:InitMinimap()
 	end
 
 	if GameTimeFrame then
-		if MABUILD == "RETAIL" then
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			
 		else
 			GameTimeFrame:ClearAllPoints()

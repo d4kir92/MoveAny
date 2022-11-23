@@ -26,7 +26,7 @@ function MoveAny:InitMicroMenu()
 		end
 
 		local sw, sh = CharacterMicroButton:GetSize()
-		if MABUILD ~= "RETAIL" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			sh = sh - 21
 		end
 		local mbc = 11
@@ -41,7 +41,7 @@ function MoveAny:InitMicroMenu()
 		if MicroButtonAndBagsBar then
 			local p1, p2, p3, p4, p5 = MicroButtonAndBagsBar:GetPoint()
 			MAMenuBar:SetPoint( p1, UIParent, p3, p4, p5 )
-		elseif MABUILD ~= "RETAIL" then
+		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
 			MAMenuBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0 )
 		else
 			MAMenuBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
@@ -57,7 +57,7 @@ function MoveAny:InitMicroMenu()
 				end
 
 				local sw, sh = mb:GetSize()
-				if MABUILD ~= "RETAIL" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" then
 					sw = sw - 2
 					sh = sh - 24
 				end
@@ -84,7 +84,7 @@ function MoveAny:InitMicroMenu()
 
 					mb:ClearAllPoints()
 					mb:SetParent( hb )
-					if MABUILD == "RETAIL" then
+					if MoveAny:GetWoWBuild() == "RETAIL" then
 						mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 					else
 						mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
@@ -100,7 +100,7 @@ function MoveAny:InitMicroMenu()
 
 				mb:ClearAllPoints()
 				mb:SetParent( hb )
-				if MABUILD == "RETAIL" then
+				if MoveAny:GetWoWBuild() == "RETAIL" then
 					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 				else
 					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )

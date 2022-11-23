@@ -1,14 +1,22 @@
 
 local AddOnName, MoveAny = ...
 
-MABUILDNR = select(4, GetBuildInfo())
-MABUILD = "CLASSIC"
-if MABUILDNR >= 100000 then
-	MABUILD = "RETAIL"
-elseif MABUILDNR > 29999 then
-	MABUILD = "WRATH"
-elseif MABUILDNR > 19999 then
-	MABUILD = "TBC"
+local BuildNr = select(4, GetBuildInfo())
+local Build = "CLASSIC"
+if BuildNr >= 100000 then
+	Build = "RETAIL"
+elseif BuildNr > 29999 then
+	Build = "WRATH"
+elseif BuildNr > 19999 then
+	Build = "TBC"
+end
+
+function MoveAny:GetWoWBuildNr()
+	return BuildNr
+end
+
+function MoveAny:GetWoWBuild()
+	return Build
 end
 
 SLASH_RL1 = "/rl"

@@ -113,7 +113,7 @@ function MoveAny:UpdateActionBar( frame )
 end
 
 function MoveAny:CustomBars()
-	if MABUILD ~= "RETAIL" and MoveAny:IsEnabled( "ACTIONBARS", true ) then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled( "ACTIONBARS", true ) then
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
 			if texture then
@@ -175,7 +175,7 @@ function MoveAny:CustomBars()
 	end
 
 	local id = 1
-	if MABUILD ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		for i = 7, MAMaxAB do
 			for x = 1, 12 do
 				_G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] = _G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] or "Actionbar " .. i .. " Button " .. x
@@ -249,7 +249,7 @@ function MoveAny:CustomBars()
 end
 
 function MoveAny:UpdateABs()
-	if MABUILD ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		local cvar = tonumber( GetCVar( "alwaysShowActionBars" ) )
 		if cvar ~= oldcvar then
 			oldcvar = cvar
@@ -287,7 +287,7 @@ f:RegisterEvent( "UPDATE_BONUS_ACTIONBAR" )
 f:RegisterEvent( "ACTIONBAR_PAGE_CHANGED" )
 f:RegisterEvent( "UPDATE_SHAPESHIFT_FORM" )
 f:SetScript( "OnEvent", function( self, event )
-	if MABUILD ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		local frame = _G["MAActionBar" .. 1]
 		if frame then
 			if frame.init == nil then
@@ -323,7 +323,7 @@ f:SetScript( "OnEvent", function( self, event )
 						end
 					end
 				]]
-				if MABUILD == "CLASSIC" then
+				if MoveAny:GetWoWBuild() == "CLASSIC" then
 					_onAttributeChanged = [[
 					if name == 'statehidden' then
 						for i = 1, 12 do
