@@ -111,6 +111,7 @@ end
 function MoveAny:MenuOptions( opt, frame )
 	if frame == nil then
 		MoveAny:MSG( "FRAME NOT FOUND" )
+		return
 	end
 
 	local name = frame:GetName()
@@ -1081,7 +1082,7 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "COMPACTRAIDFRAMEMANAGER", true ) then
+	if CompactRaidFrameManager and MoveAny:IsEnabled( "COMPACTRAIDFRAMEMANAGER", true ) then
 		MACompactRaidFrameManager = CreateFrame( "Frame", "MACompactRaidFrameManager", UIParent )
 		MACompactRaidFrameManager:SetSize( 20, 135 )
 		MACompactRaidFrameManager:SetPoint( "TOPLEFT", UIParent, "TOPLEFT", 0, -250 )
@@ -1375,7 +1376,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "ARCHEOLOGYDIGSITEPROGRESSBAR",
 		} )
 	end
-	if UIErrorsFrame and MoveAny:IsEnabled( "UIERRORSFRAME", true ) then
+	if UIErrorsFrame and MoveAny:IsEnabled( "UIERRORSFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "UIErrorsFrame",
 			["lstr"] = "UIERRORSFRAME",
