@@ -66,8 +66,16 @@ local MAFRAMES = {
 	"CommunitiesFrame",
 	"CollectionsJournal",
 	"CovenantRenownFrame",
-	"ChallengesKeystoneFrame",	
+	"ChallengesKeystoneFrame",
+	"ScriptErrorsFrame",
 }
+
+if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
+	hooksecurefunc( ScriptErrorsFrame.DragArea, "SetParent", function( self )
+		self:SetParent( MAHIDDEN )
+	end )
+	ScriptErrorsFrame.DragArea:SetParent( MAHIDDEN )
+end
 
 for i = 1, 20 do
 	if _G["ContainerFrame" .. i] then
@@ -154,7 +162,7 @@ function MoveAny:MoveFrames()
 		if not InCombatLockdown() then
 			local allsetup = true
 			for i, name in pairs( MAFRAMES ) do
-				local frame = _G[name]
+				local frame = MoveAny:GetFrame( _G[name], name )
 				if frame and frameinit[name] == nil then
 					frameinit[name] = true
 
@@ -203,11 +211,17 @@ function MoveAny:MoveFrames()
 									
 					frame:SetClampedToScreen( true )
 
-					frame:SetScript( "OnMouseDown", function( self, btn )
+					frame:HookScript( "OnMouseDown", function( self, btn )
 						if frame:GetPoint() then
 							fm:SetSize( frame:GetSize() )
 							fm:ClearAllPoints()
-							fm:SetAllPoints( frame )
+							if frame:GetLeft() then
+								local x = frame:GetLeft() 
+								local y = (frame:GetTop() - frame:GetHeight()) 
+								fm:SetPoint( "BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y )
+							else
+								fm:SetAllPoints( frame )
+							end
 						end
 
 						if (MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and btn == "RightButton") then
@@ -216,10 +230,10 @@ function MoveAny:MoveFrames()
 							
 							GameTooltip:Hide()
 						elseif (MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and IsShiftKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) and btn == "LeftButton") then
-							fm.ismoving = true
 							if not InCombatLockdown() then
 								fm:StartMoving()
 								fm:SetUserPlaced( false )
+								fm.ismoving = true
 							end
 							fm:UpdatePreview()
 						elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and IsShiftKeyDown() and btn == "MiddleButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and btn == "MiddleButton") then
@@ -234,7 +248,7 @@ function MoveAny:MoveFrames()
 						end
 					end )
 
-					frame:SetScript( "OnMouseUp", function( self )
+					frame:HookScript( "OnMouseUp", function( self )
 						local fm = _G[name .. "Move"]
 						if fm.ismoving then
 							fm.ismoving = false
