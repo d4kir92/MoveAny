@@ -50,6 +50,7 @@ local MAFRAMES = {
 	"OpenMailFrame",
 	"AuctionHouseFrame",
 	"AuctionFrame",
+	"ProfessionsCustomerOrdersFrame",
 	"AnimaDiversionFrame",
 	"CovenantSanctumFrame",
 	"SoulbindViewer",
