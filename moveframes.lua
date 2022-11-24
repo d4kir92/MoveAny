@@ -72,7 +72,10 @@ local MAFRAMES = {
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
 	hooksecurefunc( ScriptErrorsFrame.DragArea, "SetParent", function( self )
+		if self.ma_setparent then return end
+		self.ma_setparent = true
 		self:SetParent( MAHIDDEN )
+		self.ma_setparent = false
 	end )
 	ScriptErrorsFrame.DragArea:SetParent( MAHIDDEN )
 end
