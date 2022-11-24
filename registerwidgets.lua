@@ -948,7 +948,7 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
-			if ObjectiveTrackerFrame == nil and false then
+			if ObjectiveTrackerFrame == nil then
 				ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
 				ObjectiveTrackerFrame:SetSize( 224, 600 )
 				ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
