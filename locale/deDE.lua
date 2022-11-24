@@ -143,7 +143,7 @@ function MoveAny:LangdeDE()
 		["HELPTEXT"] = "%s ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
 	
 		["BUILTIN"] = "Eingebaut",
-		["EDITMODE"] = "Bearbeitungsmodus",
+		["EDITMODE"] = "Bearbeitungsmodus überschreiben",
 		["NORMAL"] = "Normal",
 		["CLASSSPECIFIC"] = "Klassenspezifisch",
 		["ADVANCED"] = "Erweitert",

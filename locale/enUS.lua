@@ -149,13 +149,13 @@ function MoveAny:LangenUS()
 		["HELPTEXT"] = "%s is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
 	
 		["BUILTIN"] = "Built-In",
-		["EDITMODE"] = "Editmode",
+		["EDITMODE"] = "Overwrite Edit Mode",
 		["NORMAL"] = "Normal",
 		["CLASSSPECIFIC"] = "Class Specific",
 		["ADVANCED"] = "Advanced",
 		["ImproveAny"] = "ImproveAny",
 
-		["MISSINGREQUIREMENT"] = "Missing Requirement: %s",
+		["MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
 		["UIERRORSFRAME"] = "Ui Error Messages",
 	}

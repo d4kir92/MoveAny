@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.17" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.18" )
 }
 
 local PREFIX = "MOAN"
@@ -470,6 +470,8 @@ function MoveAny:InitMALock()
 	MALock.showerrors:SetScript("OnClick", function()
 		if GetCVar( "ScriptErrors" ) == "0" then
 			SetCVar( "ScriptErrors", 1 )
+
+			C_UI.Reload()
 		end
 		MALock:UpdateShowErrors()
 	end)
