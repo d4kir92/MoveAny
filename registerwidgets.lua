@@ -266,7 +266,9 @@ function MoveAny:MenuOptions( opt, frame )
 					dropdown_val = tonumber( dropdown_val )
 					opts["ROWS"] = dropdown_val
 
-					MoveAny:UpdateActionBar( frame )
+					if MoveAny.UpdateActionBar then
+						MoveAny:UpdateActionBar( frame )
+					end
 				end
 			}
 			local ddrows = MoveAny:CreateDropdown( rows )
@@ -291,7 +293,9 @@ function MoveAny:MenuOptions( opt, frame )
 					opts["SPACING"] = val
 					slider.Text:SetText( MoveAny:GT( "SPACING" ) .. ": " .. val )
 
-					MoveAny:UpdateActionBar( frame )
+					if MoveAny.UpdateActionBar then
+						MoveAny:UpdateActionBar( frame )
+					end
 				end
 			end )
 		elseif string.find( content.name, MoveAny:GT( "BUFFS" ) ) then
@@ -781,13 +785,22 @@ function MoveAny:Event( event, ... )
 		MoveAny:CustomBars()
 		MoveAny:UpdateABs()
 	end
-	MoveAny:InitStanceBar()
-	MoveAny:InitPetBar()
+	if MoveAny.InitStanceBar then
+		MoveAny:InitStanceBar()
+	end
+	if MoveAny.InitPetBar then
+		MoveAny:InitPetBar()
+	end
 
 	if Arena_LoadUI then
-		MoveAny:InitArenaEnemyFrames()
-		MoveAny:InitArenaPrepFrames()
+		if MoveAny.InitArenaEnemyFrames then
+			MoveAny:InitArenaEnemyFrames()
+		end
+		if MoveAny.InitArenaPrepFrames then
+			MoveAny:InitArenaPrepFrames()
+		end
 	end
+
 
 	-- TOPLEFT
 	if MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
@@ -935,7 +948,7 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
-			if ObjectiveTrackerFrame == nil then
+			if ObjectiveTrackerFrame == nil and false then
 				ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
 				ObjectiveTrackerFrame:SetSize( 224, 600 )
 				ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
@@ -1659,17 +1672,33 @@ function MoveAny:Event( event, ... )
 
 	
 	MoveAny:InitMALock()
-	MoveAny:InitMAVehicleSeatIndicator()
-	if MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
-		MoveAny:InitMinimap()
-		MoveAny:InitBuffBar()
-		MoveAny:InitDebuffBar()
+	if MoveAny.InitMAVehicleSeatIndicator then
+		MoveAny:InitMAVehicleSeatIndicator()
 	end
-	MoveAny:InitMicroMenu()
-	MoveAny:InitBags()
-	MoveAny:InitMAFPSFrame()
-	MoveAny:InitMultiCastActionBar()
-	
+	if MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
+		if MoveAny.InitMinimap then
+			MoveAny:InitMinimap()
+		end
+		if MoveAny.InitBuffBar then
+			MoveAny:InitBuffBar()
+		end
+		if MoveAny.InitDebuffBar then
+			MoveAny:InitDebuffBar()
+		end
+	end
+	if MoveAny.InitMicroMenu then
+		MoveAny:InitMicroMenu()
+	end
+	if MoveAny.InitBags then
+		MoveAny:InitBags()
+	end
+	if MoveAny.InitMAFPSFrame then
+		MoveAny:InitMAFPSFrame()
+	end
+	if MoveAny.InitMultiCastActionBar then
+		MoveAny:InitMultiCastActionBar()
+	end
+
 	if MoveAny.MoveFrames then
 		MoveAny:MoveFrames()
 	end
@@ -1715,10 +1744,8 @@ function MoveAny:Event( event, ... )
 	end
 
 	MoveAny:CheckAlphas()
-
-	SetCVar( "ScriptErrors", 1 )
 end
-SetCVar( "ScriptErrors", 1 )
+
 
 local f = CreateFrame( "Frame" )
 f:SetScript( "OnEvent", MoveAny.Event )

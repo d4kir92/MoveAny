@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.16" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.17" )
 }
 
 local PREFIX = "MOAN"
@@ -15,7 +15,7 @@ local WebProfileData = {}
 
 local searchStr = ""
 local br = 8
-local sw = 520
+local sw = 550
 local sh = 520
 local posy = -4
 local cas = {}
@@ -94,7 +94,7 @@ function MoveAny:IsInEditModeEnabled( val )
 		end
 	end
 
-	if editModeEnum and EditModeManagerFrame then
+	if editModeEnum and EditModeManagerFrame and tContains( Enum.EditModeAccountSetting, editModeEnum ) and EditModeManagerFrame.accountSettingMap then
 		if EditModeManagerFrame:GetAccountSettingValueBool( editModeEnum ) then
 			return true, false
 		end
@@ -462,6 +462,26 @@ function MoveAny:InitMALock()
 	MALock.reload:SetScript("OnClick", function()
 		C_UI.Reload()
 	end)
+
+	MALock.showerrors = CreateFrame( "BUTTON", "MALock" .. ".showerrors", MALock, "UIPanelButtonTemplate" )
+	MALock.showerrors:SetSize( 120, 24 )
+	MALock.showerrors:SetPoint( "TOPLEFT", MALock, "TOPLEFT", 4 + 120 + 4 + 120 + 4, -MALock:GetHeight() + 24 + 4 )
+	MALock.showerrors:SetText( "Show Errors" )
+	MALock.showerrors:SetScript("OnClick", function()
+		if GetCVar( "ScriptErrors" ) == "0" then
+			SetCVar( "ScriptErrors", 1 )
+		end
+		MALock:UpdateShowErrors()
+	end)
+
+	function MALock:UpdateShowErrors()
+		if GetCVar( "ScriptErrors" ) == "0" then
+			MALock.showerrors:Show()
+		else
+			MALock.showerrors:Hide()
+		end
+	end
+	MALock:UpdateShowErrors()
 
 	MALock.DISCORD = CreateFrame( "EditBox", "MALock" .. ".DISCORD", MALock, "InputBoxTemplate" )
 	MALock.DISCORD:SetText( "discord.gg/pRjC7cbqYW" )

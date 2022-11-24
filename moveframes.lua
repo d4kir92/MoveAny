@@ -3,7 +3,8 @@ local AddOnName, MoveAny = ...
 
 local MASECUREFRAMES = {
 	"StaticPopup1",
-	"StaticPopup2"
+	"StaticPopup2",
+	"LootFrame"
 }
 
 local MAFRAMES = {
@@ -176,9 +177,17 @@ function MoveAny:MoveFrames()
 								if fm:GetLeft() then
 									fm.x = fm:GetLeft() 
 									fm.y = (fm:GetTop() - fm:GetHeight()) 
-		
-									MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fm.x, fm.y )
 									
+									if not tContains( MASECUREFRAMES, name ) then
+										MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fm.x, fm.y )
+									else
+										MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
+										MoveAny:SetFrameScale( name, nil )
+
+										frame:ClearAllPoints()
+										frame:SetPoint( "BOTTOMLEFT", UIParent, "BOTTOMLEFT", fm.x, fm.y )
+									end
+
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 									if dbp1 and dbp3 then
 										if not InCombatLockdown() then

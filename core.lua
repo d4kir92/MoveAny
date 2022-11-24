@@ -59,6 +59,8 @@ function MoveAny:ShowMALock()
 		if MALock then
 			MALock:Show()
 			MAGridFrame:Show()
+
+			MALock:UpdateShowErrors()
 		end
 	end
 end
@@ -72,6 +74,8 @@ function MoveAny:HideMALock()
 		if MALock then
 			MALock:Hide()
 			MAGridFrame:Hide()
+
+			MALock:UpdateShowErrors()
 		end
 	end
 end

@@ -7,9 +7,13 @@ local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
 
+MABuffBar = CreateFrame( "Frame", "MABuffBar", UIParent )
+local sw, sh = BuffFrame:GetSize()
+MABuffBar:SetSize( sw, sh )
+MABuffBar:SetPoint( BuffFrame:GetPoint() )
+
 function MoveAny:InitBuffBar()
-	if MoveAny:IsEnabled( "BUFFS", true ) then
-		MABuffBar = CreateFrame( "Frame", "MABuffBar", UIParent )
+	if MoveAny:IsEnabled( "BUFFS", true ) and false then
 		if BuffFrame then
 			MABuffBar:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -165, -32 )
 		else

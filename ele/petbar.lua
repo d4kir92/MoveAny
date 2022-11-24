@@ -22,8 +22,10 @@ function MoveAny:UpdatePetBar()
 		end
 	end
 
-	MoveAny:UpdateActionBar( MAPetBar )
-
+	if MoveAny.UpdateActionBar then
+		MoveAny:UpdateActionBar( MAPetBar )
+	end
+	
 	C_Timer.After( 0.4, MoveAny.UpdatePetBar )
 end
 

@@ -42,7 +42,9 @@ function MoveAny:UpdateStanceBar()
 			end
 			MAStanceBar:SetSize( cou * btnsize, btnsize )
 
-			MoveAny:UpdateActionBar( MAStanceBar )
+			if MoveAny.UpdateActionBar then
+				MoveAny:UpdateActionBar( MAStanceBar )
+			end
 		end
 	end
 
