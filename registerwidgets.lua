@@ -423,35 +423,33 @@ function MoveAny:RegisterWidget( tab, debug )
 		dragframe:SetPoint( "CENTER", frame, "CENTER", 0, 0 )
 
 		dragframe:SetToplevel( true )
+		
+		dragframe.t = dragframe:CreateTexture( name .. "_DRAG.t", "BACKGROUND", nil, 1 )
+		dragframe.t:SetAllPoints( dragframe )
+		dragframe.t:SetColorTexture( MoveAny:GetColor( "el" ) )
+		dragframe.t:SetAlpha( 0.33 )
 
-		if true then
-			dragframe.t = dragframe:CreateTexture( name .. "_DRAG.t", "BACKGROUND", nil, 1 )
-			dragframe.t:SetAllPoints( dragframe )
-			dragframe.t:SetColorTexture( MoveAny:GetColor( "el" ) )
-			dragframe.t:SetAlpha( 0.33 )
-
-			dragframe.name = dragframe:CreateFontString( nil, nil, "GameFontHighlightLarge" )
-			dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
-			local font, fontSize, fontFlags = dragframe.name:GetFont()
-			dragframe.name:SetFont( font, 15, fontFlags )
-			local enab, forc = MoveAny:IsInEditModeEnabled( name )
-			if enab then
-				if not forc then
-					lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
-				end
+		dragframe.name = dragframe:CreateFontString( nil, nil, "GameFontHighlightLarge" )
+		dragframe.name:SetPoint( "CENTER", dragframe, "CENTER", 0, 0 )
+		local font, fontSize, fontFlags = dragframe.name:GetFont()
+		dragframe.name:SetFont( font, 15, fontFlags )
+		local enab, forc = MoveAny:IsInEditModeEnabled( name )
+		if enab then
+			if not forc then
+				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
 			end
-			dragframe.name:SetText( lstr )
-			dragframe.name:Hide()
-
-			dragframe:SetScript( "OnEnter", function()
-				dragframe.name:Show()
-				dragframe.t:SetAlpha( 0.66 )
-			end )
-			dragframe:SetScript( "OnLeave", function()
-				dragframe.name:Hide()
-				dragframe.t:SetAlpha( 0.33 )
-			end )
 		end
+		dragframe.name:SetText( lstr )
+		dragframe.name:Hide()
+
+		dragframe:SetScript( "OnEnter", function()
+			dragframe.name:Show()
+			dragframe.t:SetAlpha( 0.66 )
+		end )
+		dragframe:SetScript( "OnLeave", function()
+			dragframe.name:Hide()
+			dragframe.t:SetAlpha( 0.33 )
+		end )
 
 		dragframe:SetScript("OnMouseDown", function( self, btn )
 			local frame = _G[name]
@@ -948,76 +946,78 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
-			if ObjectiveTrackerFrame == nil then
-				ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
-				ObjectiveTrackerFrame:SetSize( 224, 600 )
-				ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
-			
-				if QuestWatchFrame then
-					hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
-						if self.qwfsetpoint then return end
-						self.qwfsetpoint = true
-	
-						self:SetMovable( true )
-						if self.SetUserPlaced and self:IsMovable() then
-							self:SetUserPlaced( false )
+			C_Timer.After( 0, function()
+				if ObjectiveTrackerFrame == nil then
+					ObjectiveTrackerFrame = CreateFrame( "Frame", "ObjectiveTrackerFrame", UIParent )
+					ObjectiveTrackerFrame:SetSize( 224, 600 )
+					ObjectiveTrackerFrame:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -85, -180 )
+				
+					if QuestWatchFrame then
+						hooksecurefunc( QuestWatchFrame, "SetPoint", function( self, ... )
+							if self.qwfsetpoint then return end
+							self.qwfsetpoint = true
+		
+							self:SetMovable( true )
+							if self.SetUserPlaced and self:IsMovable() then
+								self:SetUserPlaced( false )
+							end
+		
+							self:SetParent( ObjectiveTrackerFrame )
+		
+							self:ClearAllPoints()
+							self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+							self.qwfsetpoint = false
+						end )
+		
+						QuestWatchFrame:SetMovable( true )
+						if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
+							QuestWatchFrame:SetUserPlaced( false )
 						end
-	
 						self:SetParent( ObjectiveTrackerFrame )
-	
-						self:ClearAllPoints()
-						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-						self.qwfsetpoint = false
-					end )
-	
-					QuestWatchFrame:SetMovable( true )
-					if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
-						QuestWatchFrame:SetUserPlaced( false )
+						QuestWatchFrame:ClearAllPoints()
+						QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+		
+						QuestWatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
 					end
-					self:SetParent( ObjectiveTrackerFrame )
-					QuestWatchFrame:ClearAllPoints()
-					QuestWatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-	
-					QuestWatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
-				end
-	
-				if WatchFrame then
-					hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
-						if self.wfsetpoint then return end
-						self.wfsetpoint = true
-	
-						self:SetMovable( true )
-						if self.SetUserPlaced and self:IsMovable() then
-							self:SetUserPlaced( false )
+		
+					if WatchFrame then
+						hooksecurefunc( WatchFrame, "SetPoint", function( self, ... )
+							if self.wfsetpoint then return end
+							self.wfsetpoint = true
+		
+							self:SetMovable( true )
+							if self.SetUserPlaced and self:IsMovable() then
+								self:SetUserPlaced( false )
+							end
+							
+							self:SetParent( ObjectiveTrackerFrame )
+		
+							self:ClearAllPoints()
+							self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+							self.wfsetpoint = false
+						end )
+		
+						WatchFrame:SetMovable( true )
+						if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
+							WatchFrame:SetUserPlaced( false )
 						end
-						
-						self:SetParent( ObjectiveTrackerFrame )
-	
-						self:ClearAllPoints()
-						self:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-						self.wfsetpoint = false
-					end )
-	
-					WatchFrame:SetMovable( true )
-					if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
-						WatchFrame:SetUserPlaced( false )
+						WatchFrame:SetParent( ObjectiveTrackerFrame )
+						WatchFrame:ClearAllPoints()
+						WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
+		
+						WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
 					end
-					WatchFrame:SetParent( ObjectiveTrackerFrame )
-					WatchFrame:ClearAllPoints()
-					WatchFrame:SetPoint( "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0 )
-	
-					WatchFrame:SetSize( ObjectiveTrackerFrame:GetSize() )
 				end
-			end
-			if ObjectiveTrackerFrame then
-				ObjectiveTrackerFrame:SetHeight( 600 )
-				MoveAny:RegisterWidget( {
-					["name"] = "ObjectiveTrackerFrame",
-					["lstr"] = "QUESTTRACKER",
-					["sh"] = 600,
-					["userplaced"] = true
-				} )
-			end
+				if ObjectiveTrackerFrame then
+					ObjectiveTrackerFrame:SetHeight( 600 )
+					MoveAny:RegisterWidget( {
+						["name"] = "ObjectiveTrackerFrame",
+						["lstr"] = "QUESTTRACKER",
+						["sh"] = 600,
+						["userplaced"] = true
+					} )
+				end
+			end )
 		end
 	end
 	if MoveAny:IsEnabled( "PETFRAME", false ) then
@@ -1055,6 +1055,12 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "MageArcaneChargesFrame",
 			["lstr"] = "MAGEARCANECHARGESFRAME"
+		} )
+	end
+	if ComboPointPlayerFrame and MoveAny:IsEnabled( "COMBOPOINTPLAYERFRAME", false ) and (class == "ROGUE" or class == "DRUID") then
+		MoveAny:RegisterWidget( {
+			["name"] = "ComboPointPlayerFrame",
+			["lstr"] = "COMBOPOINTPLAYERFRAME"
 		} )
 	end
 	if EssencePlayerFrame and MoveAny:IsEnabled( "ESSENCEPLAYERFRAME", false ) and class == "EVOKER" then
@@ -1309,7 +1315,7 @@ function MoveAny:Event( event, ... )
 			return
 		end
 
-		if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == true then
+		if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) then
 			local point, parent, relativePoint, ofsx, ofsy = GameTooltip:GetPoint()
 			local owner = GameTooltip:GetOwner()
 			if owner and owner == UIParent then
@@ -1345,7 +1351,7 @@ function MoveAny:Event( event, ... )
 			local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
 
 			if MAGameTooltipOnDefaultPosition() then
-				if MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) == false then
+				if not MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) then
 					self:ClearAllPoints()
 					self:SetPoint( p1, MAGameTooltip, p3, 0, 0 )
 				end

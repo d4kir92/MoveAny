@@ -152,6 +152,7 @@ function MoveAny:LangdeDE()
 		["MISSINGREQUIREMENT"] = "Fehlende Anforderung: %s",
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Fortschrittsanzeige der archäologischen Ausgrabungsstätte",
 		["UIERRORSFRAME"] = "Ui-Fehler Meldungen",
+		["COMBOPOINTPLAYERFRAME"] = "Kombopunkte",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

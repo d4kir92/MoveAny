@@ -67,7 +67,7 @@ function MoveAny:InitMicroMenu()
 				hb:SetSize( sw, sh )
 				hb:SetPoint( "TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0 )
 
-				if false then
+				if MoveAny:DEBUG() then
 					hb.t = hb:CreateTexture( "hb_debug" .. i, "BACKGROUND", nil, 1 )
 					hb.t:SetAllPoints( hb )
 					hb.t:SetColorTexture( 0, 1, 0, 0.5 )

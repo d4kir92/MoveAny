@@ -33,8 +33,7 @@ function MoveAny:InitArenaEnemyFrames()
 			ArenaEnemyFrames:SetAlpha( alpha )
 		end )
 
-		if false then
-
+		if MoveAny:DEBUG() then
 			hooksecurefunc( ArenaEnemyFrames, "Hide", function( self )
 				if self.mahide then return end
 				self.mahide = true
@@ -88,8 +87,7 @@ function MoveAny:InitArenaPrepFrames()
 			ArenaPrepFrames:SetAlpha( alpha )
 		end )
 		
-		if false then
-
+		if MoveAny:DEBUG() then
 			hooksecurefunc( ArenaPrepFrames, "Hide", function( self )
 				if self.mahide then return end
 				self.mahide = true

@@ -19,7 +19,7 @@ function MoveAny:InitBuffBar()
 		else
 			MABuffBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 		end
-		if MoveAny:IsEnabled( "DEBUFFS", false ) == true then
+		if MoveAny:IsEnabled( "DEBUFFS", false ) then
 			MABuffBar:SetSize( btnsize * 10, btnsize * 3 )
 		else
 			MABuffBar:SetSize( btnsize * 10, btnsize * 6 )	
@@ -43,7 +43,7 @@ function MoveAny:InitBuffBar()
 		BuffFrame:ClearAllPoints()
 		BuffFrame:SetPoint( "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0 )
 
-		if false then
+		if MoveAny:DEBUG() then
 			BuffFrame.t = BuffFrame:CreateTexture()
 			BuffFrame.t:SetAllPoints( BuffFrame )
 			BuffFrame.t:SetColorTexture( 0, 1, 1, 1 )

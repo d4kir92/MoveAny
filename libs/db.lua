@@ -4,6 +4,11 @@ local AddOnName, MoveAny = ...
 local COL_R = "|cFFFF0000"
 local COL_Y = "|cFFFFFF00"
 
+local MADEBUG = false
+function MoveAny:DEBUG()
+	return MADEBUG
+end
+
 function MoveAny:HR()
 	print( COL_Y .. "----------------------------------------------------------------------" )
 end

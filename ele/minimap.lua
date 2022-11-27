@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 function MoveAny:InitMinimap()
-	if MoveAny:IsEnabled( "MINIMAP", true ) == false then
+	if not MoveAny:IsEnabled( "MINIMAP", true ) then
 		return
 	end
 

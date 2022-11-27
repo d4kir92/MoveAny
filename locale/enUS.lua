@@ -158,6 +158,7 @@ function MoveAny:LangenUS()
 		["MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
 		["UIERRORSFRAME"] = "Ui Error Messages",
+		["COMBOPOINTPLAYERFRAME"] = "Combo Points",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

@@ -66,7 +66,7 @@ function MoveAny:InitDebuffBar()
 		end
 		IALoadDebuff()
 
-		if false then
+		if MoveAny:DEBUG() then
 			DebuffButton1.t = DebuffButton1:CreateTexture()
 			DebuffButton1.t:SetAllPoints( DebuffButton1 )
 			DebuffButton1.t:SetColorTexture( 0, 1, 1, 1 )
