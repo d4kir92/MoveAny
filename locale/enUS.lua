@@ -146,7 +146,7 @@ function MoveAny:LangenUS()
 		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 		["CANBREAKBECAUSEOFEDITMODE"] = "(May cause error due to edit mode)",
 
-		["HELPTEXT"] = "%s is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
+		["HELPTEXT"] = "\"%s\" is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
 	
 		["BUILTIN"] = "Built-In",
 		["EDITMODE"] = "Overwrite Edit Mode",
@@ -159,6 +159,9 @@ function MoveAny:LangenUS()
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
 		["UIERRORSFRAME"] = "Ui Error Messages",
 		["COMBOPOINTPLAYERFRAME"] = "Combo Points",
+
+		["PARTYFRAME"] = "Party Frame",
+		["PARTYMEMBERFRAME"] = "Party Member Frame %s",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

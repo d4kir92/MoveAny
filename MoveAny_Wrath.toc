@@ -1,5 +1,5 @@
 ## Interface: 30400
-## Version: 0.9.24
+## Version: 0.9.25
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -38,6 +38,7 @@ ele/mavehicleseatindicator.lua
 ele/micromenu.lua
 ele/minimap.lua
 ele/multicastactionbar.lua
+ele/partyframe.lua
 ele/petbar.lua
 ele/stancebar.lua
 

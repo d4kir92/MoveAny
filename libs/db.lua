@@ -322,14 +322,15 @@ function MoveAny:SetEnabled( element, value )
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 end
 
-function MoveAny:IsEnabled( element, value )
+function MoveAny:IsEnabled( element, value, settings )
 	if element == nil then
 		MoveAny:MSG_Error( "[IsEnabled] Missing Name" )
 		return false
 	end
 
 	local enabled, forced = MoveAny:IsInEditModeEnabled( element )
-	if enabled and not forced then
+	if value and enabled and not forced and not settings then
+		MoveAny:MSG( format( MoveAny:GT( "HELPTEXT" ), MoveAny:GT( element ) ) )
 		return false
 	end
 

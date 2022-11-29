@@ -1019,6 +1019,25 @@ function MoveAny:Event( event, ... )
 				end
 			end )
 		end
+
+		if MoveAny:IsEnabled( "PARTYFRAME", false ) then
+			if PartyFrame then
+				MoveAny:RegisterWidget( {
+					["name"] = "PartyFrame",
+					["lstr"] = "PARTYFRAME",
+					["sw"] = 120,
+					["sh"] = 244
+				} )
+			else
+				for i = 1, 4 do
+					MoveAny:RegisterWidget( {
+						["name"] = "PartyMemberFrame",
+						["lstr"] = "PARTYMEMBERFRAME",
+						["lstri"] = i
+					} )
+				end
+			end
+		end
 	end
 	if MoveAny:IsEnabled( "PETFRAME", false ) then
 		MoveAny:RegisterWidget( {
@@ -1703,6 +1722,9 @@ function MoveAny:Event( event, ... )
 	end
 	if MoveAny.InitMultiCastActionBar then
 		MoveAny:InitMultiCastActionBar()
+	end
+	if MoveAny.InitPartyFrame then
+		MoveAny:InitPartyFrame()
 	end
 
 	if MoveAny.MoveFrames then

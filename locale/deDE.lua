@@ -140,7 +140,7 @@ function MoveAny:LangdeDE()
 		["ISENABLEDINEDITMODE"] = "(Ist im Bearbeitungsmodus aktiviert)",
 		["CANBREAKBECAUSEOFEDITMODE"] = "(Kann Error verursachen, wegen Bearbeitungsmodus)",
 
-		["HELPTEXT"] = "%s ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
+		["HELPTEXT"] = "\"%s\" ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
 	
 		["BUILTIN"] = "Eingebaut",
 		["EDITMODE"] = "Bearbeitungsmodus überschreiben",
@@ -153,6 +153,9 @@ function MoveAny:LangdeDE()
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Fortschrittsanzeige der archäologischen Ausgrabungsstätte",
 		["UIERRORSFRAME"] = "Ui-Fehler Meldungen",
 		["COMBOPOINTPLAYERFRAME"] = "Kombopunkte",
+
+		["PARTYFRAME"] = "Gruppenfenster",
+		["PARTYMEMBERFRAME"] = "Gruppenmitgliedfenster %s",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

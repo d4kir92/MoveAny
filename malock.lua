@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.24" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.25" )
 }
 
 local PREFIX = "MOAN"
@@ -62,6 +62,7 @@ MoveAny:AddToEMMap( "PossessBar", "ShowPossessActionBar" )
 MoveAny:AddToEMMap( "MainMenuBarVehicleLeaveButton", "ShowVehicleLeaveButton" )
 MoveAny:AddToEMMap( "LeaveVehicle", "ShowVehicleLeaveButton" )
 MoveAny:AddToEMMap( "PlayerCastingBarFrame", "ShowCastBar" )
+MoveAny:AddToEMMap( "PartyFrame", "ShowPartyFrames" )
 
 function MoveAny:IsBlizEditModeEnabled()
 	if EditModeManagerFrame then
@@ -160,7 +161,7 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 		cbs[key] = CreateFrame( "CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate" )
 		local cb = cbs[key]
 		cb:SetSize( 24, 24 )
-		cb:SetChecked( MoveAny:IsEnabled( key, val ) )
+		cb:SetChecked( MoveAny:IsEnabled( key, val, true ) )
 		cb:SetScript( "OnClick", function( self )
 			MoveAny:SetEnabled( key, self:GetChecked() )
 
@@ -304,11 +305,12 @@ function MoveAny:InitMALock()
 		end
 		for i = 1, 10 do
 			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
-				AddCheckBox( posx, "CHAT", true, nil, i )
+				AddCheckBox( posx, "CHAT", false, nil, i )
 			end
 		end
 		AddCheckBox( posx, "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 )
 		AddCheckBox( posx, "QUESTTRACKER", true )
+		AddCheckBox( posx, "PARTYFRAME", false )
 		
 		AddCategory( "NORMAL" )
 		AddCheckBox( 4, "PETFRAME", true )
@@ -346,7 +348,6 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "CHATQUICKJOIN", false )
 		end
 
-		
 		if SpellActivationOverlayFrame then
 			AddCheckBox( 4, "SPELLACTIVATIONOVERLAYFRAME", false )
 		end
