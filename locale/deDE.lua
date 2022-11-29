@@ -151,7 +151,7 @@ function MoveAny:LangdeDE()
 
 		["MISSINGREQUIREMENT"] = "Fehlende Anforderung: %s",
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Fortschrittsanzeige der archäologischen Ausgrabungsstätte",
-		["UIERRORSFRAME"] = "Ui-Fehler Meldungen",
+		["UIERRORSFRAME"] = "Ui-Fehler Meldungen, Quest Fortschritt",
 		["COMBOPOINTPLAYERFRAME"] = "Kombopunkte",
 
 		["PARTYFRAME"] = "Gruppenfenster",

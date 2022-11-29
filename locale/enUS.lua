@@ -157,7 +157,7 @@ function MoveAny:LangenUS()
 
 		["MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
 		["ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
-		["UIERRORSFRAME"] = "Ui Error Messages",
+		["UIERRORSFRAME"] = "Ui Error Messages, Quest Progress",
 		["COMBOPOINTPLAYERFRAME"] = "Combo Points",
 
 		["PARTYFRAME"] = "Party Frame",
