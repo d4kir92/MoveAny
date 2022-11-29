@@ -1031,7 +1031,7 @@ function MoveAny:Event( event, ... )
 			else
 				for i = 1, 4 do
 					MoveAny:RegisterWidget( {
-						["name"] = "PartyMemberFrame",
+						["name"] = "PartyMemberFrame" .. i,
 						["lstr"] = "PARTYMEMBERFRAME",
 						["lstri"] = i
 					} )
