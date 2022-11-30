@@ -100,7 +100,7 @@ function MoveAny:LangdeDE()
 		["ACTIONBAR6"] = "Aktionsleiste 6 (Leiste oben links)",
 		["POSSESSBAR"] = "Besitzleiste (NPC/Fahrzeug steuern)",
 		["ZONEABILITYFRAME"] = "Zonen-Fähigkeit",
-		["EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit",
+		["EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit (Zauber für Quests, Bosse)",
 		["MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["REPUTATIONWATCHBAR"] = "Reputationsleiste",
 		["UIWIDGETPOWERBAR"] = "Machtleiste",

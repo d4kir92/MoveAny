@@ -761,6 +761,10 @@ function MoveAny:Event( event, ... )
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		if MoveAny:IsEnabled( "ACTIONBARS", true ) then
+			if MainMenuBarPerformanceBarFrame then
+				MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
+			end
+			
 			if UIPARENT_MANAGED_FRAME_POSITIONS then
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
 			end
@@ -1383,9 +1387,6 @@ function MoveAny:Event( event, ... )
 
 
 	-- BOTTOM
-	if MainMenuBarPerformanceBarFrame then
-		MainMenuBarPerformanceBarFrame:SetParent( MAHIDDEN )
-	end
 	if ZoneAbilityFrame and MoveAny:IsEnabled( "ZONEABILITYFRAME", true ) then
 		ZoneAbilityFrame:SetParent( UIParent )
 		ZoneAbilityFrame:ClearAllPoints()

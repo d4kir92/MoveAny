@@ -106,7 +106,7 @@ function MoveAny:LangenUS()
 		["ACTIONBAR6"] = "Actionbar 6 (Top Left Bar)",
 		["POSSESSBAR"] = "Possess Bar (Controlling NPC/Vehicle)",
 		["ZONEABILITYFRAME"] = "Zone Ability",
-		["EXTRAABILITYCONTAINER"] = "Extra Ability",
+		["EXTRAABILITYCONTAINER"] = "Extra Ability (Spells for Quest, Boss)",
 		["MAINMENUEXPBAR"] = "Exp Bar",
 		["REPUTATIONWATCHBAR"] = "Reputation Bar",
 		["UIWIDGETPOWERBAR"] = "Power Bar",
