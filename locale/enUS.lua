@@ -109,7 +109,7 @@ function MoveAny:LangenUS()
 		["EXTRAABILITYCONTAINER"] = "Extra Ability (Spells for Quest, Boss)",
 		["MAINMENUEXPBAR"] = "Exp Bar",
 		["REPUTATIONWATCHBAR"] = "Reputation Bar",
-		["UIWIDGETPOWERBAR"] = "Power Bar",
+		["UIWIDGETPOWERBAR"] = "Power Bar (Boss Bar, Vigor Bar, ...)",
 
 		["ROWS"] = "Rows",
 		["SPACING"] = "Spacing",

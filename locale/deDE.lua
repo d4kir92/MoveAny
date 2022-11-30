@@ -103,7 +103,7 @@ function MoveAny:LangdeDE()
 		["EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit (Zauber für Quests, Bosse)",
 		["MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["REPUTATIONWATCHBAR"] = "Reputationsleiste",
-		["UIWIDGETPOWERBAR"] = "Machtleiste",
+		["UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, ...)",
 
 		["ROWS"] = "Reihen",
 		["SPACING"] = "Abstand",
