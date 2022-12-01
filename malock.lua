@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.35" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.36" )
 }
 
 local PREFIX = "MOAN"
@@ -150,7 +150,7 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 
 	if EMMap[key] or EMMapForced[key] then
 		if MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled( "EDITMODE", MoveAny:GetWoWBuildNr() < 100000 ) then
-			lstr = format( MoveAny:GT( "MISSINGREQUIREMENT" ), MoveAny:GT( "EDITMODE" ) ) .. " " .. lstr
+			lstr = "(" .. format( MoveAny:GT( "MISSINGREQUIREMENT" ), MoveAny:GT( "EDITMODE" ) ) .. ") " .. lstr
 		end
 	end
 

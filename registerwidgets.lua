@@ -1340,8 +1340,16 @@ function MoveAny:Event( event, ... )
 						return true
 					end
 				end
+			elseif p2 == GameTooltipDefaultContainer then
+				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+					p4 = floor( p4 )
+					p5 = floor( p5 )
+					if MANearNumber( p4, 0, 1 ) and MANearNumber( p5, 0, 1 ) then
+						return true
+					end
+				end
 			end
-		end
+		end				
 		return false
 	end
 
