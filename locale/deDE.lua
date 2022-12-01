@@ -84,6 +84,7 @@ function MoveAny:LangdeDE()
 
 		["ZONETEXTFRAME"] = "Zonentext",
 		["UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status bei BGs/Dungeons)",
+		["MIRRORTIMER1"] = "Atemleiste",
 		["IASKILLS"] = "Fertigkeitsbalken",
 		["UIWIDGETBELOWMINIMAP"] = "Widget Unterhalb der Minimap (Einnehmen-Status)",
 		["DURABILITY"] = "Haltbarkeitspuppe",

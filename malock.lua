@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.32" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.33" )
 }
 
 local PREFIX = "MOAN"
@@ -384,8 +384,9 @@ function MoveAny:InitMALock()
 		end
 		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
 		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
-		AddCheckBox( 4, "UIWIDGETTOPCENTER", true )
-		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP", true )
+		AddCheckBox( 4, "UIWIDGETTOPCENTER", false )
+		AddCheckBox( 4, "UIWIDGETBELOWMINIMAP", false )
+		AddCheckBox( 4, "MIRRORTIMER1", false )
 		AddCheckBox( 4, "ARENAENEMYFRAMES", false )
 		AddCheckBox( 4, "ARENAPREPFRAMES", false )
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )

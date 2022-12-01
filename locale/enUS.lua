@@ -90,6 +90,7 @@ function MoveAny:LangenUS()
 		
 		["ZONETEXTFRAME"] = "Zone Text",
 		["UIWIDGETTOPCENTER"] = "Widget Top Center (Status on BGs/Dungeons)",
+		["MIRRORTIMER1"] = "Breathbar",
 		["IASKILLS"] = "Skillbars",
 		["UIWIDGETBELOWMINIMAP"] = "Widget Below Minimap (Capture Status)",
 		["DURABILITY"] = "Durability Doll",

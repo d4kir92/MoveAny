@@ -1187,7 +1187,7 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "UIWIDGETTOPCENTER", true ) then
+	if MoveAny:IsEnabled( "UIWIDGETTOPCENTER", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetTopCenterContainerFrame",
 			["lstr"] = "UIWIDGETTOPCENTER",
@@ -1196,11 +1196,17 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	
+	if MoveAny:IsEnabled( "MIRRORTIMER1", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MirrorTimer1",
+			["lstr"] = "MIRRORTIMER1",
+		} )
+	end
+
 
 
 	-- TOPRIGHT
-	if MoveAny:IsEnabled( "UIWIDGETBELOWMINIMAP", true ) then
+	if MoveAny:IsEnabled( "UIWIDGETBELOWMINIMAP", false ) then
 		--UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetBelowMinimapContainerFrame",
