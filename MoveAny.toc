@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: 0.9.33
+## Version: 0.9.34
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -11,6 +11,7 @@
 
 ##libs\!LibUIDropDownMenu\LibStub\LibStub.lua
 ##libs\!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.xml
+libs\LibStub\LibStub.lua
 libs\LibDropDown\embed.xml
 libs\LibDBIcon-1.0\embeds.xml
 libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
