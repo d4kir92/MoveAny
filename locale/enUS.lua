@@ -163,6 +163,7 @@ function MoveAny:LangenUS()
 
 		["PARTYFRAME"] = "Party Frame",
 		["PARTYMEMBERFRAME"] = "Party Member Frame %s",
+		["BOSSTARGETFRAMECONTAINER"] = "Boss Frames",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.38" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.39" )
 }
 
 local PREFIX = "MOAN"
@@ -63,6 +63,7 @@ MoveAny:AddToEMMap( "MainMenuBarVehicleLeaveButton", "ShowVehicleLeaveButton" )
 MoveAny:AddToEMMap( "LeaveVehicle", "ShowVehicleLeaveButton" )
 MoveAny:AddToEMMap( "PlayerCastingBarFrame", "ShowCastBar" )
 MoveAny:AddToEMMap( "PartyFrame", "ShowPartyFrames" )
+MoveAny:AddToEMMap( "BossTargetFrameContainer", "ShowBossFrames" )
 
 function MoveAny:IsBlizEditModeEnabled()
 	if EditModeManagerFrame then
@@ -311,6 +312,7 @@ function MoveAny:InitMALock()
 		AddCheckBox( posx, "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 )
 		AddCheckBox( posx, "QUESTTRACKER", true )
 		AddCheckBox( posx, "PARTYFRAME", false )
+		AddCheckBox( posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames" )
 		
 		AddCategory( "NORMAL" )
 		AddCheckBox( 4, "PETFRAME", true )
@@ -475,7 +477,9 @@ function MoveAny:InitMALock()
 	MALock.showerrors:SetScript("OnClick", function()
 		if GetCVar( "ScriptErrors" ) == "0" then
 			SetCVar( "ScriptErrors", 1 )
-
+			C_UI.Reload()
+		else
+			SetCVar( "ScriptErrors", 0 )
 			C_UI.Reload()
 		end
 		MALock:UpdateShowErrors()
@@ -483,9 +487,9 @@ function MoveAny:InitMALock()
 
 	function MALock:UpdateShowErrors()
 		if GetCVar( "ScriptErrors" ) == "0" then
-			MALock.showerrors:Show()
+			MALock.showerrors:SetText( "Show Errors" )
 		else
-			MALock.showerrors:Hide()
+			MALock.showerrors:SetText( "Hide Errors" )
 		end
 	end
 	MALock:UpdateShowErrors()

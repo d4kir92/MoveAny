@@ -157,6 +157,7 @@ function MoveAny:LangdeDE()
 
 		["PARTYFRAME"] = "Gruppenfenster",
 		["PARTYMEMBERFRAME"] = "Gruppenmitgliedfenster %s",
+		["BOSSTARGETFRAMECONTAINER"] = "Boss Fenster",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

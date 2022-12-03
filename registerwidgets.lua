@@ -1272,8 +1272,14 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 	end
-
-	
+	if MoveAny:IsEnabled( "BOSSTARGETFRAMECONTAINER", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "BossTargetFrameContainer",
+			["lstr"] = "BOSSTARGETFRAMECONTAINER",
+			["userplaced"] = true,
+			["secure"] = true
+		} )
+	end
 
 	-- RIGHT
 
