@@ -33,7 +33,7 @@ function MoveAny:LangenUS()
 		["RUNEFRAME"] = "Deathknight - Runes Frame",
 		["TOTEMFRAME"] = "Totem Timers (Also used by other classes)",
 		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
-		["MONKHARMONYBARFRAME"] = "Monk Harmony frame",
+		["MONKHARMONYBARFRAME"] = "Monk Harmony frame  (Chi)",
 		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
 		["ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
 		["PALADINPOWERBARFRAME"] = "Paladin Power Bar",

@@ -34,7 +34,7 @@ local MAFRAMES = {
 	"CovenantMissionFrame",
 	"OrderHallMissionFrame",
 	"PVPMatchScoreboard",
-	"PVPFrame",
+	--"PVPFrame",
 	"GossipFrame",
 	"MerchantFrame",
 	"PetStableFrame",

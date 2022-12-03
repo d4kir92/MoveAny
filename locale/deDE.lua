@@ -27,7 +27,7 @@ function MoveAny:LangdeDE()
 		["RUNEFRAME"] = "Todesritter - Runen Fenster",
 		["TOTEMFRAME"] = "Totem Zähler (Auch von anderen Klassen benutzt)",
 		["WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster",
-		["MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster",
+		["MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster (Chi)",
 		["MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
 		["ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
 		["PALADINPOWERBARFRAME"] = "Paladin Machtleiste",
