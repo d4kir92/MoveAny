@@ -4,7 +4,7 @@ local AddOnName, MoveAny = ...
 local MASECUREFRAMES = {
 	"StaticPopup1",
 	"StaticPopup2",
-	"LootFrame"
+	--"LootFrame" -- Fixed?
 }
 
 local MAFRAMES = {
@@ -34,7 +34,7 @@ local MAFRAMES = {
 	"CovenantMissionFrame",
 	"OrderHallMissionFrame",
 	"PVPMatchScoreboard",
-	--"PVPFrame",
+	--"PVPFrame", -- BUGGY?
 	"GossipFrame",
 	"MerchantFrame",
 	"PetStableFrame",
