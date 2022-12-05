@@ -34,7 +34,7 @@ local MAFRAMES = {
 	"CovenantMissionFrame",
 	"OrderHallMissionFrame",
 	"PVPMatchScoreboard",
-	--"PVPFrame", -- BUGGY?
+	"PVPParentFrame", -- BUGGY?
 	"GossipFrame",
 	"MerchantFrame",
 	"PetStableFrame",
@@ -361,5 +361,12 @@ function MoveAny:MoveFrames()
 		else
 			C_Timer.After( 0.2, MoveAny.MoveFrames )
 		end
+	end
+
+	if PVPFrame then
+		PVPFrame:EnableMouse( false )
+	end
+	if BattlefieldFrame then
+		BattlefieldFrame:EnableMouse( false )
 	end
 end
