@@ -19,15 +19,21 @@ function MoveAny:GetWoWBuild()
 	return Build
 end
 
-SLASH_RL1 = "/rl"
-SlashCmdList["RL"] = function(msg)
-	C_UI.Reload()
-end
+RegisterNewSlashCommand(
+	function()
+		MoveAny:ToggleMALock()
+	end,
+	"move",
+	"moveany"
+)
 
-SLASH_MOVEANY1, SLASH_MOVEANY2 = "/move", "/moveany"
-SlashCmdList["MOVEANY"] = function(msg)
-	MoveAny:ToggleMALock()
-end
+RegisterNewSlashCommand(
+	function()
+		C_UI.Reload()
+	end,
+	"rl",
+	"rl"
+)
 
 local MADF = {}
 function MoveAny:GetDragFrames()

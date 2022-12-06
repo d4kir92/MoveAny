@@ -27,6 +27,7 @@ local function MASetPoint( id, po, pa, re, px, py, rows )
 	abpoints[name]["ROWS"] = rows
 end
 local dSpacing = 4
+local dFlipped = false
 MASetPoint( 1, "BOTTOM", UIParent, "BOTTOM", 0, 0, 1 )
 MASetPoint( 3, "RIGHT", UIParent, "RIGHT", 0, 0, 12 )
 MASetPoint( 4, "RIGHT", UIParent, "RIGHT", -36, 0, 12 )
@@ -43,6 +44,9 @@ function MoveAny:UpdateActionBar( frame )
 
 	opts["ROWS"] = opts["ROWS"] or nil
 	opts["SPACING"] = opts["SPACING"] or dSpacing
+	opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
+
+	local flipped = opts["FLIPPED"]
 
 	if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then
 		opts["ROWS"] = abpoints[name]["ROWS"]
@@ -101,11 +105,16 @@ function MoveAny:UpdateActionBar( frame )
 		if not InCombatLockdown() then
 			frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
 		end
+
 		local id = 1
 		for i, abtn in pairs( frame.btns ) do
 			if abtn:GetParent() ~= MAHIDDEN and not InCombatLockdown() then
 				abtn:ClearAllPoints()
-				abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
+				if flipped then
+					abtn:SetPoint( "BOTTOMLEFT", frame, "BOTTOMLEFT", ( id - 1 ) % cols * (fSizeW + spacing), (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
+				else
+					abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
+				end
 				id = id + 1
 			end
 		end

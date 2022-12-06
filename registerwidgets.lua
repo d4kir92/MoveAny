@@ -276,10 +276,29 @@ function MoveAny:MenuOptions( opt, frame )
 
 
 
+			local flipped = CreateFrame( "CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate" )
+			flipped:SetSize( btnsize, btnsize )
+			flipped:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -50 )
+			flipped:SetChecked( MoveAny:GetEleOption( name, "FLIPPED", false ) )
+			flipped:SetText( MoveAny:GT( "FLIPPED" ) )
+			flipped:SetScript( "OnClick", function()
+				local checked = flipped:GetChecked()
+				MoveAny:SetEleOption( name, "FLIPPED", checked )
+				if MoveAny.UpdateActionBar then
+					MoveAny:UpdateActionBar( frame )
+				end
+			end )
+			flipped.text = flipped:CreateFontString( nil, "ARTWORK" )
+			flipped.text:SetFont( STANDARD_TEXT_FONT, 12, "THINOUTLINE" )
+			flipped.text:SetPoint( "LEFT", flipped, "RIGHT", 0, 0)
+			flipped.text:SetText( MoveAny:GT( "FLIPPED" ) )
+
+
+
 			opts["SPACING"] = opts["SPACING"] or 4
 			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			slider:SetWidth( content:GetWidth() - 110 )
-			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -56 );
+			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -86 );
 			slider.Low:SetText( 0 )
 			slider.High:SetText( 16 )
 			slider.Text:SetText( MoveAny:GT("SPACING") .. ": " .. opts["SPACING"] )
