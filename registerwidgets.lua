@@ -1107,11 +1107,18 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MAGEARCANECHARGESFRAME"
 		} )
 	end
-	if ComboPointPlayerFrame and MoveAny:IsEnabled( "COMBOPOINTPLAYERFRAME", false ) and (class == "ROGUE" or class == "DRUID") then
-		MoveAny:RegisterWidget( {
-			["name"] = "ComboPointPlayerFrame",
-			["lstr"] = "COMBOPOINTPLAYERFRAME"
-		} )
+	if ComboPointPlayerFrame and MoveAny:IsEnabled( "COMBOPOINTPLAYERFRAME", false ) then
+		if class == "ROGUE" then
+			MoveAny:RegisterWidget( {
+				["name"] = "ComboPointPlayerFrame",
+				["lstr"] = "COMBOPOINTPLAYERFRAME"
+			} )
+		elseif class == "DRUID" then
+			MoveAny:RegisterWidget( {
+				["name"] = "ComboPointDruidPlayerFrame",
+				["lstr"] = "COMBOPOINTPLAYERFRAME"
+			} )
+		end
 	end
 	if EssencePlayerFrame and MoveAny:IsEnabled( "ESSENCEPLAYERFRAME", false ) and class == "EVOKER" then
 		MoveAny:RegisterWidget( {
