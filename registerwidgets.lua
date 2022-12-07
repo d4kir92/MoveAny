@@ -775,7 +775,8 @@ function MoveAny:Event( event, ... )
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG( "DON'T use MoveAndImprove, when you use MoveAny" )
 	end
-
+	
+	MoveAny:InitSlash()
 	MoveAny:InitDB()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

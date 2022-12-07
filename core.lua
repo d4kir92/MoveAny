@@ -19,21 +19,48 @@ function MoveAny:GetWoWBuild()
 	return Build
 end
 
-RegisterNewSlashCommand(
-	function()
-		MoveAny:ToggleMALock()
-	end,
-	"move",
-	"moveany"
-)
 
-RegisterNewSlashCommand(
-	function()
-		C_UI.Reload()
-	end,
-	"rl",
-	"rl"
-)
+
+-- TAINTFREE SLASH COMMANDS --
+local lastMessage = ""
+local cmds = {}
+
+hooksecurefunc( "ChatEdit_ParseText", function( editBox, send, parseIfNoSpace )
+	if send == 0 then
+		lastMessage = editBox:GetText()
+	end
+end )
+
+hooksecurefunc( "ChatFrame_DisplayHelpTextSimple", function( frame )
+	if lastMessage and lastMessage ~= "" then
+		local cmd = string.upper(lastMessage)
+		cmd = strsplit( " ", cmd )
+		if cmds[cmd] ~= nil then
+			local count = 1
+			local numMessages = frame:GetNumMessages()
+			local function predicateFunction( entry )
+				if count == numMessages then
+					if entry == HELP_TEXT_SIMPLE then
+						return true
+					end
+				end
+				count = count + 1
+			end
+			frame:RemoveMessagesByPredicate( predicateFunction )
+			cmds[cmd]()
+		end
+	end
+end )
+
+function MoveAny:InitSlash()
+	cmds["/MOVE"] = MoveAny.ToggleMALock
+	cmds["/MOVEANY"] = MoveAny.ToggleMALock
+	cmds["/RL"] = C_UI.Reload
+	cmds["/REL"] = C_UI.Reload
+end
+-- TAINTFREE SLASH COMMANDS --
+
+
 
 local MADF = {}
 function MoveAny:GetDragFrames()
