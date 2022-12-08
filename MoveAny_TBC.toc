@@ -1,5 +1,5 @@
 ## Interface: 20504
-## Version: 0.9.45
+## Version: 0.9.46
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -9,16 +9,11 @@
 ## X-Curse-Project-ID: 646134
 ## X-Wago-ID: e56n3pK9
 
-##libs\!LibUIDropDownMenu\LibStub\LibStub.lua
-##libs\!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.xml
-libs\LibStub\LibStub.lua
-libs\LibDropDown\embed.xml
 libs\LibDBIcon-1.0\embeds.xml
 libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
 
 libs/math.lua
 libs/db.lua
-libs/dropdown.lua
 
 locale/enUS.lua
 locale/deDE.lua
