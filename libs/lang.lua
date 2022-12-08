@@ -27,7 +27,7 @@ function MoveAny:UpdateLanguage()
 	elseif GetLocale() == "frFR" then
 		MoveAny:LangfrFR()
 	elseif GetLocale() == "itIT" then
-		MoveAny:LangfrFR()
+		MoveAny:LangitIT()
 	elseif GetLocale() == "ptBR" then
 		MoveAny:LangptBR()
 	elseif GetLocale() == "ruRU" then
