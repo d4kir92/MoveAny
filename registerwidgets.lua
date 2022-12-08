@@ -255,28 +255,25 @@ function MoveAny:MenuOptions( opt, frame )
 				items = { "1" }
 			end
 
-			local sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-			sliderRows:SetWidth( content:GetWidth() - 110 )
-			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -20 );
-			sliderRows.Low:SetText( "" )
-			sliderRows.High:SetText( "" )
-			sliderRows.Text:SetText( MoveAny:GT("ROWS") .. ": " .. opts["ROWS"] )
-			sliderRows:SetMinMaxValues( 1, #items )
-			sliderRows:SetObeyStepOnDrag( true )
-			sliderRows:SetValueStep( 1 )
-			sliderRows:SetValue( 1 )
-			sliderRows:SetScript( "OnValueChanged", function(self, val)
-				val = tonumber( string.format( "%" .. 0 .. "f", val ) )
-				local value = items[val]
-				if value and value ~= opts["ROWS"] then
-					opts["ROWS"] = value
-					self.Text:SetText( MoveAny:GT( "ROWS" ) .. ": " .. value )
+			opts["ROWS"] = opts["ROWS"] or 1
+			local rows = {
+				["name"] = "rows",
+				["parent"]= content,
+				["title"] = "ROWS",
+				["items"]= items,
+				["defaultVal"] = opts["ROWS"], 
+				["changeFunc"] = function( dropdown_frame, dropdown_val )
+					dropdown_val = tonumber( dropdown_val )
+					opts["ROWS"] = dropdown_val
 
 					if MoveAny.UpdateActionBar then
 						MoveAny:UpdateActionBar( frame )
 					end
 				end
-			end )
+			}
+			local ddrows = MoveAny:CreateDropdown( rows )
+			ddrows:SetPoint( "TOPLEFT", content, "TOPLEFT", 0, -10 );
+
 
 
 			local flipped = CreateFrame( "CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate" )

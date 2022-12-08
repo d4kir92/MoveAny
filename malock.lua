@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.46" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.45" )
 }
 
 local PREFIX = "MOAN"
@@ -686,24 +686,19 @@ function MoveAny:ShowProfiles()
 					tinsert( profileNames, name )
 				end
 
-				local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "OptionsSliderTemplate")
-				sliderProfiles:SetWidth( MAAddProfile:GetWidth() - 20 )
-				sliderProfiles:SetPoint( "TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br );
-				sliderProfiles.Low:SetText( "" )
-				sliderProfiles.High:SetText( "" )
-				sliderProfiles.Text:SetText( MoveAny:GT("INHERITFROM") .. ": " .. MAAddProfile.inheritFrom )
-				sliderProfiles:SetMinMaxValues( 1, #profileNames )
-				sliderProfiles:SetObeyStepOnDrag( true )
-				sliderProfiles:SetValueStep( 1 )
-				sliderProfiles:SetValue( 1 )
-				sliderProfiles:SetScript( "OnValueChanged", function(self, val)
-					val = tonumber( string.format( "%" .. 0 .. "f", val ) )
-					local value = profileNames[val]
-					if value and value ~= MAAddProfile.inheritFrom then
-						MAAddProfile.inheritFrom = value
-						self.Text:SetText( MoveAny:GT( "INHERITFROM" ) .. ": " .. value )
+				local profiles = {
+					["name"] = "profiles",
+					["parent"]= MAAddProfile,
+					["title"] = "INHERITFROM",
+					["items"]= profileNames,
+					["defaultVal"] = "", 
+					["changeFunc"] = function( dropdown_frame, dropdown_val )
+						MAAddProfile.inheritFrom = dropdown_val
 					end
-				end )
+				}
+	
+				local ddprofiles = MoveAny:CreateDropdown( profiles )
+				ddprofiles:SetPoint( "TOPLEFT", MAAddProfile, "TOPLEFT", 0, -26 - 30 - br )
 
 				MAAddProfile.AddProfile = CreateFrame( "Button", "MAAddProfile_Profiles", MAAddProfile, "UIPanelButtonTemplate" )
 				MAAddProfile.AddProfile:SetPoint( "TOPLEFT", MAAddProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br )
