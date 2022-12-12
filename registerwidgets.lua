@@ -581,7 +581,24 @@ function MoveAny:RegisterWidget( tab, debug )
 	local dragf = _G[name .. "_DRAG"]
 	if MoveAny:GetEleOption( name, "Hide", false ) then
 		frame.oldparent = frame.oldparent or frame:GetParent()
+		
+		hooksecurefunc( frame, "SetParent", function( self, newParent )
+			local pn = newParent
+			if newParent.GetName then
+				pn = newParent:GetName()
+			end
+
+			if self.ma_setparent then return end
+			self.ma_setparent = true
+			if MoveAny:GetEleOption( name, "Hide", false ) then
+				self:SetParent( MAHIDDEN )
+			else
+				self:SetParent( self.oldparent )
+			end
+			self.ma_setparent = false
+		end )
 		frame:SetParent( MAHIDDEN )
+
 		if maframe1 then
 			maframe1.oldparent = maframe1.oldparent or frame:GetParent()
 			maframe1:SetParent( MAHIDDEN )
@@ -909,7 +926,7 @@ function MoveAny:Event( event, ... )
 			ExtraAbilityContainer:SetSize( 180, 100 )
 			ExtraAbilityContainer:ClearAllPoints()
 			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
-		
+
 			MoveAny:RegisterWidget( {
 				["name"] = "ExtraAbilityContainer",
 				["lstr"] = "EXTRAABILITYCONTAINER",
