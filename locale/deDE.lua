@@ -28,6 +28,7 @@ function MoveAny:LangdeDE()
 		["TOTEMFRAME"] = "Totem Zähler (Auch von anderen Klassen benutzt)",
 		["WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster",
 		["MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster (Chi)",
+		["MONKSTAGGERBAR"] = "Monk Staffeln Leiste  (Chi)",
 		["MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
 		["ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
 		["PALADINPOWERBARFRAME"] = "Paladin Machtleiste",

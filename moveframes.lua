@@ -27,6 +27,7 @@ local MAFRAMES = {
 	"ClassTalentFrame",
 	"FriendsFrame",
 	"HelpFrame",
+	"TradeFrame",
 	"TradeSkillFrame",
 	"QuestLogFrame",
 	"WorldMapFrame",

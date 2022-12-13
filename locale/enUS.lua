@@ -34,6 +34,7 @@ function MoveAny:LangenUS()
 		["TOTEMFRAME"] = "Totem Timers (Also used by other classes)",
 		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
 		["MONKHARMONYBARFRAME"] = "Monk Harmony frame  (Chi)",
+		["MONKSTAGGERBAR"] = "Monk Stagger bar  (Chi)",
 		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
 		["ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
 		["PALADINPOWERBARFRAME"] = "Paladin Power Bar",

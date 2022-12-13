@@ -1122,6 +1122,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MONKHARMONYBARFRAME"
 		} )
 	end
+	if MonkStaggerBar and MoveAny:IsEnabled( "MONKSTAGGERBAR", false ) and class == "MONK" then
+		MoveAny:RegisterWidget( {
+			["name"] = "MonkStaggerBar",
+			["lstr"] = "MONKSTAGGERBAR"
+		} )
+	end
 	if MageArcaneChargesFrame and MoveAny:IsEnabled( "MAGEARCANECHARGESFRAME", false ) and class == "MAGE" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MageArcaneChargesFrame",

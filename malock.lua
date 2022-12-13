@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.49" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.50" )
 }
 
 local PREFIX = "MOAN"
@@ -366,6 +366,9 @@ function MoveAny:InitMALock()
 		end
 		if MonkHarmonyBarFrame and class == "MONK" then
 			AddCheckBox( 4, "MONKHARMONYBARFRAME", false )
+		end
+		if MonkStaggerBar and class == "MONK" then
+			AddCheckBox( 4, "MONKSTAGGERBAR", false )
 		end
 		if MageArcaneChargesFrame and class == "MAGE" then
 			AddCheckBox( 4, "MAGEARCANECHARGESFRAME", false )
