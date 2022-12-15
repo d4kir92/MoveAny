@@ -161,6 +161,7 @@ function MoveAny:LangdeDE()
 		["BOSSTARGETFRAMECONTAINER"] = "Boss Fenster",
 
 		["FLIPPED"] = "Umgedreht",
+		["GHOSTFRAME"] = "Geisterfenster (Teleport zum Friedhof)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

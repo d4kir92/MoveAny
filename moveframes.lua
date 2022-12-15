@@ -71,6 +71,8 @@ local MAFRAMES = {
 	"CovenantRenownFrame",
 	"ChallengesKeystoneFrame",
 	"ScriptErrorsFrame",
+	"CalendarFrame",
+	"TimeManagerFrame",
 }
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then

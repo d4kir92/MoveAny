@@ -167,6 +167,7 @@ function MoveAny:LangenUS()
 		["BOSSTARGETFRAMECONTAINER"] = "Boss Frames",
 
 		["FLIPPED"] = "Flipped",
+		["GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

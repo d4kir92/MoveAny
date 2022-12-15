@@ -1768,7 +1768,14 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 
-
+	if MoveAny:IsEnabled( "GHOSTFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "GhostFrame",
+			["lstr"] = "GHOSTFRAME",
+			["sw"] = 130,
+			["sh"] = 45,
+ 		} )
+	end
 
 	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] then
 		ArenaEnemyFrames:SetMovable( true )

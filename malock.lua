@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.50" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.51" )
 }
 
 local PREFIX = "MOAN"
@@ -353,6 +353,7 @@ function MoveAny:InitMALock()
 		if SpellActivationOverlayFrame then
 			AddCheckBox( 4, "SPELLACTIVATIONOVERLAYFRAME", false )
 		end
+		AddCheckBox( 4, "GHOSTFRAME", false )
 
 		AddCategory( "CLASSSPECIFIC" )
 		if RuneFrame and class == "DEATHKNIGHT" then
