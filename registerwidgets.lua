@@ -1611,22 +1611,23 @@ function MoveAny:Event( event, ... )
 	for i = 1, 10 do
 		local cf = _G["ChatFrame" .. i]
 		if cf then	
-			local left = -35
+			local left = nil
 			if  MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
 				left = 0
 			end
-			local bottom = -35
+			local bottom = nil
 			if MoveAny:IsEnabled( "CHATEDITBOX", false ) then
 				bottom = 0
 			end
-			hooksecurefunc( cf, "SetClampRectInsets", function( self )
-				if self.setclamprectinsets_ma then return end
-				self.setclamprectinsets_ma = true
-				self:SetClampRectInsets( left, 25, 25, bottom )
-				self.setclamprectinsets_ma = false
-			end )
-			cf:SetClampRectInsets( left, 25, 25, bottom )
-			
+			if left or bottom then
+				hooksecurefunc( cf, "SetClampRectInsets", function( self )
+					if self.setclamprectinsets_ma then return end
+					self.setclamprectinsets_ma = true
+					self:SetClampRectInsets( left or -35, 25, 25, bottom or -35 )
+					self.setclamprectinsets_ma = false
+				end )
+				cf:SetClampRectInsets( left, 25, 25, bottom )
+			end
 			if i > 1 then
 				if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
 					local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
