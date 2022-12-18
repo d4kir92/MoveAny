@@ -1620,13 +1620,17 @@ function MoveAny:Event( event, ... )
 				bottom = 0
 			end
 			if left or bottom then
-				hooksecurefunc( cf, "SetClampRectInsets", function( self )
+				local l = left or -35
+				local b = bottom or -35
+				hooksecurefunc( cf, "SetClampRectInsets", function( self, oL, oR, oT, oB )
 					if self.setclamprectinsets_ma then return end
 					self.setclamprectinsets_ma = true
-					self:SetClampRectInsets( left or -35, 25, 25, bottom or -35 )
+					local le = left or -35
+					local bo = bottom or -35
+					self:SetClampRectInsets( le, 25, 25, bo )
 					self.setclamprectinsets_ma = false
 				end )
-				cf:SetClampRectInsets( left, 25, 25, bottom )
+				cf:SetClampRectInsets( l, 25, 25, b )
 			end
 			if i > 1 then
 				if MoveAny:IsEnabled( "CHATBUTTONFRAME", false ) then
