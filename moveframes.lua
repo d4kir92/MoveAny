@@ -73,6 +73,7 @@ local MAFRAMES = {
 	"ScriptErrorsFrame",
 	"CalendarFrame",
 	"TimeManagerFrame",
+	"GuildBankFrame",
 }
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
@@ -219,6 +220,22 @@ function MoveAny:MoveFrames()
 									
 					frame:SetClampedToScreen( true )
 
+					function frame:StopMoving()
+						local fm = _G[name .. "Move"]
+						if fm.ismoving then
+							fm.ismoving = false
+							fm:StopMovingOrSizing()
+
+							fm:SetUserPlaced( false )
+						end
+						currentFrame = nil
+						currentFrameName = nil
+					end
+
+					frame:HookScript( "OnHide", function()
+						frame:StopMoving()
+					end )
+
 					frame:HookScript( "OnMouseDown", function( self, btn )
 						if frame:GetPoint() then
 							fm:SetSize( frame:GetSize() )
@@ -257,15 +274,7 @@ function MoveAny:MoveFrames()
 					end )
 
 					frame:HookScript( "OnMouseUp", function( self )
-						local fm = _G[name .. "Move"]
-						if fm.ismoving then
-							fm.ismoving = false
-							fm:StopMovingOrSizing()
-
-							fm:SetUserPlaced( false )
-						end
-						currentFrame = nil
-						currentFrameName = nil
+						frame:StopMoving()
 					end )
 
 					function frame:MARetrySetPoint()
