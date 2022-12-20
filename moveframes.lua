@@ -220,7 +220,7 @@ function MoveAny:MoveFrames()
 									
 					frame:SetClampedToScreen( true )
 
-					function frame:StopMoving()
+					function frame:IAStopMoving()
 						local fm = _G[name .. "Move"]
 						if fm.ismoving then
 							fm.ismoving = false
@@ -233,7 +233,7 @@ function MoveAny:MoveFrames()
 					end
 
 					frame:HookScript( "OnHide", function()
-						frame:StopMoving()
+						frame:IAStopMoving()
 					end )
 
 					frame:HookScript( "OnMouseDown", function( self, btn )
@@ -274,7 +274,7 @@ function MoveAny:MoveFrames()
 					end )
 
 					frame:HookScript( "OnMouseUp", function( self )
-						frame:StopMoving()
+						frame:IAStopMoving()
 					end )
 
 					function frame:MARetrySetPoint()
