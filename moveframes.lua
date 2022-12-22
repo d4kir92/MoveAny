@@ -4,7 +4,9 @@ local AddOnName, MoveAny = ...
 local MAFRAMES = {
 	"StaticPopup1",
 	"StaticPopup2",
-	"ReadyCheckListenerFrame",
+	--"ReadyCheckListenerFrame", Buggy
+	"SettingsPanel",
+	"SplashFrame",
 	"GameMenuFrame",
 	"InterfaceOptionsFrame",
 	"QuickKeybindFrame",
