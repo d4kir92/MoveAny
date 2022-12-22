@@ -17,6 +17,8 @@ function MoveAny:LangenUS()
 		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
 		["GRIDSIZE"] = "Gridsize",
 		["MOVEFRAMES"] = "Move Frames/Windows",
+		["SAVEFRAMEPOSITION"] = "Save Frame Position",
+		["SAVEFRAMESCALE"] = "Save Frame Scale",
 		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
 		["FRAMESSHIFTSCALE"] = "Scale Frame with Shift + Rightclick-drag",
 		["FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",

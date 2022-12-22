@@ -1,15 +1,10 @@
 
 local AddOnName, MoveAny = ...
 
-local MASECUREFRAMES = {
-	"StaticPopup1",
-	"StaticPopup2",
-	--"LootFrame" -- Fixed?
-}
-
 local MAFRAMES = {
 	"StaticPopup1",
 	"StaticPopup2",
+	"ReadyCheckListenerFrame",
 	"GameMenuFrame",
 	"InterfaceOptionsFrame",
 	"QuickKeybindFrame",
@@ -195,16 +190,8 @@ function MoveAny:MoveFrames()
 									fm.x = fm:GetLeft() 
 									fm.y = (fm:GetTop() - fm:GetHeight()) 
 									
-									if not tContains( MASECUREFRAMES, name ) then
-										MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fm.x, fm.y )
-									else
-										MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
-										MoveAny:SetFrameScale( name, nil )
-
-										frame:ClearAllPoints()
-										frame:SetPoint( "BOTTOMLEFT", UIParent, "BOTTOMLEFT", fm.x, fm.y )
-									end
-
+									MoveAny:SetFramePoint( name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fm.x, fm.y )
+		
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint( name )
 									if dbp1 and dbp3 then
 										if not InCombatLockdown() then
@@ -220,7 +207,7 @@ function MoveAny:MoveFrames()
 									
 					frame:SetClampedToScreen( true )
 
-					function frame:IAStopMoving()
+					function frame:MAStopMoving()
 						local fm = _G[name .. "Move"]
 						if fm.ismoving then
 							fm.ismoving = false
@@ -232,8 +219,25 @@ function MoveAny:MoveFrames()
 						currentFrameName = nil
 					end
 
+					function frame:MACheckSave()
+						if not MoveAny:IsEnabled( "SAVEFRAMEPOSITION", true ) then
+							MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
+							frame:SetMovable( true )
+							if frame.SetUserPlaced then
+								frame:SetUserPlaced( false )
+							end
+						end
+						if not MoveAny:IsEnabled( "SAVEFRAMESCALE", true ) then
+							MoveAny:SetFrameScale( name, nil )
+							frame:SetScale( 1 )
+						end
+					end
+					frame:MACheckSave()
+
 					frame:HookScript( "OnHide", function()
-						frame:IAStopMoving()
+						frame:MAStopMoving()
+
+						frame:MACheckSave()
 					end )
 
 					frame:HookScript( "OnMouseDown", function( self, btn )
@@ -274,7 +278,7 @@ function MoveAny:MoveFrames()
 					end )
 
 					frame:HookScript( "OnMouseUp", function( self )
-						frame:IAStopMoving()
+						frame:MAStopMoving()
 					end )
 
 					function frame:MARetrySetPoint()
@@ -293,7 +297,7 @@ function MoveAny:MoveFrames()
 					hooksecurefunc( frame, "SetPoint", function( self, ... )
 						if self.maframesetpoint then return end
 						self.maframesetpoint = true
-						
+
 						self:SetMovable( true )
 						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )
@@ -317,8 +321,8 @@ function MoveAny:MoveFrames()
 					end )
 
 					hooksecurefunc( frame, "SetScale", function( self, scale )
-						if self.masetscale then return end
-						self.masetscale = true
+						if self.masetscale_frame then return end
+						self.masetscale_frame = true
 						
 						if MoveAny:GetFrameScale( name ) or scale then
 							local sca = MoveAny:GetFrameScale( name ) or scale
@@ -326,7 +330,7 @@ function MoveAny:MoveFrames()
 								self:SetScale( sca )
 							end
 						end
-						self.masetscale = false
+						self.masetscale_frame = false
 					end )
 					if MoveAny:GetFrameScale( name ) and MoveAny:GetFrameScale( name ) > 0 then
 						if frame:GetHeight() * MoveAny:GetFrameScale( name ) > GetScreenHeight() then

@@ -2,12 +2,12 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.56" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.57" )
 }
 
 local PREFIX = "MOAN"
-local IASendProfiles = {}
-local IAWantProfiles = {}
+local MASendProfiles = {}
+local MAWantProfiles = {}
 local WebStatus = 0
 local WebProfile = ""
 local WebOwner = ""
@@ -276,6 +276,8 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton )
 		AddSlider( 24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1 )
 		AddCheckBox( 4, "MOVEFRAMES", true )
+		AddCheckBox( 24, "SAVEFRAMEPOSITION", true )
+		AddCheckBox( 24, "SAVEFRAMESCALE", true )
 		AddCheckBox( 24, "FRAMESSHIFTDRAG", false )
 		AddCheckBox( 24, "FRAMESSHIFTSCALE", false )
 		AddCheckBox( 24, "FRAMESSHIFTRESET", false )
@@ -774,7 +776,7 @@ function MoveAny:ShowProfiles()
 			end
 			MAGetProfile.f:SetText( MoveAny:GT( "PROFILES" ) .. ":" )
 
-			IASendProfiles = {} -- Reset
+			MASendProfiles = {} -- Reset
 
 			local function AddLine( id, source, profile )
 				MAGetProfile.lines = MAGetProfile.lines or {}
@@ -879,7 +881,7 @@ function MoveAny:ShowProfiles()
 				if MAGetProfile:IsVisible() then
 					MAGetProfile.lines = MAGetProfile.lines or {}
 					local id = 0
-					for name, tab in pairs( IASendProfiles ) do
+					for name, tab in pairs( MASendProfiles ) do
 						AddLine( id, name, tab.profile )
 						id = id + 1
 					end
@@ -956,7 +958,7 @@ function MoveAny:ShowProfiles()
 				end
 				MAShareProfile.f:SetText( MoveAny:GT( "PROFILE" ) .. ": " .. name )
 
-				IAWantProfiles = {} -- Reset
+				MAWantProfiles = {} -- Reset
 
 				local function AddLine( id, source, profile )
 					MAShareProfile.lines = MAShareProfile.lines or {}
@@ -1151,7 +1153,7 @@ function MoveAny:ShowProfiles()
 					if MAShareProfile:IsVisible() then
 						MAShareProfile.lines = MAShareProfile.lines or {}
 						local id = 0
-						for name, tab in pairs( IAWantProfiles ) do
+						for name, tab in pairs( MAWantProfiles ) do
 							AddLine( id, name, tab.profile )
 							id = id + 1
 						end
@@ -1265,20 +1267,20 @@ local function OnEvent(self, event, ...)
 			
 			if cmd == "SP" then -- SendProfile
 				if source ~= name .. "-" .. realm then
-					if not IASendProfiles[source] then
+					if not MASendProfiles[source] then
 						local ptab = {}
 						ptab.name = source
 						ptab.profile = tab[2]
-						IASendProfiles[source] = ptab
+						MASendProfiles[source] = ptab
 					end
 				end
 			elseif cmd == "WP" then -- WantProfile
 				if source ~= name .. "-" .. realm then
-					if not IAWantProfiles[source] then
+					if not MAWantProfiles[source] then
 						local ptab = {}
 						ptab.name = source
 						ptab.profile = tab[2]
-						IAWantProfiles[source] = ptab
+						MAWantProfiles[source] = ptab
 					end
 				end
 			elseif cmd == "UP" then

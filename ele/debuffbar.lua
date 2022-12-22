@@ -12,7 +12,7 @@ function MoveAny:InitDebuffBar()
 
 		MADebuffBar:SetSize( btnsize * 10, btnsize * 3 )
 
-		function IALoadDebuff()
+		function MALoadDebuff()
 			for i = 1, 32 do
 				local debuffBtn = _G["DebuffButton" .. i]
 				
@@ -62,9 +62,9 @@ function MoveAny:InitDebuffBar()
 				end
 			end
 
-			C_Timer.After( 0.3, IALoadDebuff )
+			C_Timer.After( 0.3, MALoadDebuff )
 		end
-		IALoadDebuff()
+		MALoadDebuff()
 
 		if MoveAny:DEBUG() then
 			DebuffButton1.t = DebuffButton1:CreateTexture()

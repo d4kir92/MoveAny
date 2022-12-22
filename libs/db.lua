@@ -454,6 +454,8 @@ function MoveAny:GetFramePoint( key )
 end
 
 function MoveAny:SetFramePoint( key, p1, p2, p3, p4, p5 )
+	MoveAny:GetTab()["FRAMES"]["POINTS"][key] = MoveAny:GetTab()["FRAMES"]["POINTS"][key] or {}
+	
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["AN"] = p1
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PA"] = nil
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["RE"] = p3
