@@ -1825,6 +1825,14 @@ function MoveAny:Event( event, ... )
 		MoveAny:MoveFrames()
 	end
 
+	if WorldMapFrame then		
+		WorldMapFrame.ScrollContainer.GetCursorPosition = function( f )
+			local x, y = MapCanvasScrollControllerMixin.GetCursorPosition( f )
+			local s = WorldMapFrame:GetScale()
+			return x / s, y / s
+		end
+	end
+
 	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
 		text = "MoveAnyMinimapIcon",

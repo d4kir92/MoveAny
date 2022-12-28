@@ -231,7 +231,7 @@ function MoveAny:MoveFrames()
 						end
 						if not MoveAny:IsEnabled( "SAVEFRAMESCALE", true ) then
 							MoveAny:SetFrameScale( name, nil )
-							frame:SetScale( 1 )
+							frame:SetScale( frame:GetScale() )
 						end
 					end
 					frame:MACheckSave()
