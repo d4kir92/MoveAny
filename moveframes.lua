@@ -61,6 +61,7 @@ local MAFRAMES = {
 	"MajorFactionRenownFrame",
 	"GenericTraitFrame",
 	"FlightMapFrame",
+	"TaxiFrame",
 	"ItemUpgradeFrame",
 	"ProfessionsFrame",
 	"CommunitiesFrame",
