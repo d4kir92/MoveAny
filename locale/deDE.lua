@@ -15,7 +15,7 @@ function MoveAny:LangdeDE()
 		["SAVEFRAMESCALE"] = "Fenster Skalierung abspeichern",
 		["FRAMESSHIFTDRAG"] = "Fenster mit Shift + Linksklick-ziehen bewegen",
 		["FRAMESSHIFTSCALE"] = "Fenster mit Shift + Rechtsklick-ziehen skalieren",
-		["FRAMESSHIFTRESET"] = "Fenster mit Shift + Mausradklick-ziehen resetten",
+		["FRAMESSHIFTRESET"] = "Fenster mit Shift + Mausradklick resetten",
 
 		["TOPLEFT"] = "Oben Links",
 		["PLAYERFRAME"] = "Spielerfenster",

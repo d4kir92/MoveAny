@@ -141,7 +141,7 @@ function MoveAny:FrameDragInfo( c )
 	if c > 0 then
 		if IsMouseButtonDown( "RightButton" ) or
 		IsMouseButtonDown( "LeftButton" ) or
-		IsMouseButtonDown( "MiddleButton" ) then
+		IsMouseButtonDown( "MiddleButton" ) or IsMouseButtonDown( "Button4" ) or IsMouseButtonDown( "Button5" ) then
 			C_Timer.After( 0.01, function()
 				MoveAny:FrameDragInfo( c - 1 )
 			end )
@@ -155,7 +155,7 @@ function MoveAny:FrameDragInfo( c )
 			if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
 				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTDRAG" ) .. "." )
 			end
-		elseif IsMouseButtonDown( "MiddleButton" ) then
+		elseif IsMouseButtonDown( "MiddleButton" ) or IsMouseButtonDown( "Button4" ) or IsMouseButtonDown( "Button5" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) then
 				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTRESET" ) .. "." )
 			end
@@ -179,7 +179,7 @@ function MoveAny:MoveFrames()
 						fm:SetMovable( true )
 						fm:SetUserPlaced( false )
 						fm:SetClampedToScreen( true )
-						fm:RegisterForDrag( "LeftButton", "RightButton", "MiddleButton" )
+						fm:RegisterForDrag( "Any" )
 						fm:EnableMouse( false )
 
 						hooksecurefunc( frame, "SetScale", function( self, scale )
@@ -243,6 +243,11 @@ function MoveAny:MoveFrames()
 						frame:MACheckSave()
 					end )
 
+					function MoveAny:IsResetButtonDown( btn )
+						return btn == "MiddleButton" or btn == "Button4" or btn == "Button5"
+					end
+
+					frame:RegisterForDrag( "Any" )
 					frame:HookScript( "OnMouseDown", function( self, btn )
 						if frame:GetPoint() then
 							fm:SetSize( frame:GetSize() )
@@ -255,7 +260,7 @@ function MoveAny:MoveFrames()
 								fm:SetAllPoints( frame )
 							end
 						end
-
+						
 						if (MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) and btn == "RightButton") then
 							currentFrame = frame
 							currentFrameName = name
@@ -268,7 +273,7 @@ function MoveAny:MoveFrames()
 								fm.ismoving = true
 							end
 							fm:UpdatePreview()
-						elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and IsShiftKeyDown() and btn == "MiddleButton") or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and btn == "MiddleButton") then
+						elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and IsShiftKeyDown() and MoveAny:IsResetButtonDown( btn )) or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and MoveAny:IsResetButtonDown( btn )) then
 							MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
 							MoveAny:SetFrameScale( name, nil )
 
@@ -276,7 +281,11 @@ function MoveAny:MoveFrames()
 
 							MoveAny:MSG( "[" .. name .. "] is reset, reopen the frame." )
 						else
-							MoveAny:FrameDragInfo( 25 )
+							if MoveAny:IsResetButtonDown( btn ) then
+								MoveAny:FrameDragInfo( 0 )
+							else
+								MoveAny:FrameDragInfo( 20 )
+							end
 						end
 					end )
 

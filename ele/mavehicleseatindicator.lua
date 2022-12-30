@@ -7,7 +7,6 @@ function MoveAny:InitMAVehicleSeatIndicator()
 		MAVehicleSeatIndicator:SetSize( 100, 100 )
 
 		MAVehicleSeatIndicator:SetPoint( "TOPRIGHT", UIParent, "TOPRIGHT", -300, -300 )
-
 		hooksecurefunc( MAVehicleSeatIndicator, "SetPoint", function( self, ... )
 			if self.mavsisetpoint then return end
 			self.mavsisetpoint = true
@@ -20,6 +19,13 @@ function MoveAny:InitMAVehicleSeatIndicator()
 			VehicleSeatIndicator:ClearAllPoints()
 			VehicleSeatIndicator:SetPoint( "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0 )
 			self.mavsisetpoint = false
+		end )
+
+		hooksecurefunc( MAVehicleSeatIndicator, "SetScale", function( self, scale )
+			VehicleSeatIndicator:SetScale( scale )
+		end )
+		hooksecurefunc( MAVehicleSeatIndicator, "SetAlpha", function( self, alpha )
+			VehicleSeatIndicator:SetAlpha( alpha )
 		end )
 
 		hooksecurefunc( VehicleSeatIndicator, "SetPoint", function( self, ... )

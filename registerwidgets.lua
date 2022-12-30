@@ -1603,6 +1603,24 @@ function MoveAny:Event( event, ... )
 			["sw"] = afsw,
 			["sh"] = afsh
 		} )
+
+		if AlertFrame and AlertFrame.AddAlertFrame then
+			hooksecurefunc( AlertFrame, "AddAlertFrame", function( self, frame )
+				if frame.ma_setup == nil then
+					frame.ma_setup = true
+
+					hooksecurefunc( AlertFrame, "SetScale", function( self, scale )
+						frame:SetScale( scale )
+					end )
+					frame:SetScale( AlertFrame:GetScale() )
+
+					hooksecurefunc( AlertFrame, "SetAlpha", function( self, alpha )
+						frame:SetAlpha( alpha )
+					end )
+					frame:SetAlpha( AlertFrame:GetAlpha() )
+				end
+			end )
+		end
 	end
 	
 
