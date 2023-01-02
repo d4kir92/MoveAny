@@ -1543,7 +1543,7 @@ function MoveAny:Event( event, ... )
 	end
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
-			StatusTrackingBarManager:EnableMouse( true )
+			-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
 
 			local sw, sh = StatusTrackingBarManager:GetSize()
 			MoveAny:RegisterWidget( {
