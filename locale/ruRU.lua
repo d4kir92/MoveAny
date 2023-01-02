@@ -133,7 +133,6 @@ function MoveAny:LangruRU()
 		["MABUFFLIMIT"] = "Предел баффа",
 		["MABUFFSPACINGX"] = "Горизонтальное расстояние между баффами",
 		["MABUFFSPACINGY"] = "Расстояние между буферами по вертикали",
-		["ISENABLEDINEDITMODE"] = "(Включено в режиме редактирования)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

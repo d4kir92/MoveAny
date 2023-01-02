@@ -133,7 +133,6 @@ function MoveAny:LangitIT()
 		["MABUFFLIMIT"] = "Limite Buff",
 		["MABUFFSPACINGX"] = "Spaziatura orizzontale dei buffer",
 		["MABUFFSPACINGY"] = "Spaziatura buffer verticale",
-		["ISENABLEDINEDITMODE"] = "(è abilitato in modalità di modifica)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

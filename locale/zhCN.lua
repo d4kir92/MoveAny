@@ -133,7 +133,6 @@ function MoveAny:LangzhCN()
 		["MABUFFLIMIT" ] = "缓冲限制",
 		["MABUFFSPACINGX"] = "缓冲间隔水平",
 		["MABUFFSPACINGY"] = "缓冲间隔 垂直",
-		["ISENABLEDINEDITMODE"] = "(在编辑模式下启用)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

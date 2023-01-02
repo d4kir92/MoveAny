@@ -141,7 +141,7 @@ function MoveAny:LangdeDE()
 		["MABUFFLIMIT"] = "Stärkungszauber Grenze",
 		["MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
 		["MABUFFSPACINGY"] = "Stärkungszauber Abstand Vertikal",
-		["ISENABLEDINEDITMODE"] = "(Ist im Bearbeitungsmodus aktiviert)",
+		["ISENABLEDINEDITMODE"] = "(Deaktiviere es im Bearbeitungsmodus)",
 		["CANBREAKBECAUSEOFEDITMODE"] = "(Kann Error verursachen, wegen Bearbeitungsmodus)",
 
 		["HELPTEXT"] = "\"%s\" ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",

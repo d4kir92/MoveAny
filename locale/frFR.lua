@@ -133,7 +133,6 @@ function MoveAny:LangfrFR()
 		["MABUFFLIMIT"] = "Buff limit",
 		["MABUFFSPACINGX"] = "Espacement horizontal des buffs",
 		["MABUFFSPACINGY"] = "Espacement vertical du tampon",
-		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

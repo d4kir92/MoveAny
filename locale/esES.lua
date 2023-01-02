@@ -133,7 +133,6 @@ function MoveAny:LangesES()
 		["MABUFFLIMIT"] = "Límite de buff",
 		["MABUFFSPACINGX"] = "Espacio de buff horizontal",
 		["MABUFFSPACINGY"] = "Espaciado de buff vertical",
-		["ISENABLEDINEDITMODE"] = "(Está habilitado en el modo de edición)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

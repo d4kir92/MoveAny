@@ -53,7 +53,7 @@ local function CreateTabs( frame, args )
 		if i == 1 then
 			tab:SetPoint( "TOPLEFT", frame, "BOTTOMLEFT", 5, 2 )
 		else
-			tab:SetPoint( "TOPLEFT", _G[frame:GetName() .. "Tab" .. (i - 1)], "TOPRIGHT", -14, 0 )
+			tab:SetPoint( "TOPLEFT", _G[frame:GetName() .. "Tab" .. (i - 1)], "TOPRIGHT", 4, 0 )
 		end
 
 		table.insert( tabs, tab )
@@ -255,12 +255,14 @@ function MoveAny:MenuOptions( opt, frame )
 				items = { "1" }
 			end
 
+			local rows = opts["ROWS"] or 1
+
 			local sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			sliderRows:SetWidth( content:GetWidth() - 110 )
 			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -20 );
 			sliderRows.Low:SetText( "" )
 			sliderRows.High:SetText( "" )
-			sliderRows.Text:SetText( MoveAny:GT("ROWS") .. ": " .. opts["ROWS"] )
+			sliderRows.Text:SetText( MoveAny:GT("ROWS") .. ": " .. rows )
 			sliderRows:SetMinMaxValues( 1, #items )
 			sliderRows:SetObeyStepOnDrag( true )
 			sliderRows:SetValueStep( 1 )
@@ -813,13 +815,6 @@ function MoveAny:Event( event, ... )
 					UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
 				end
 				MainMenuBarArtFrame:Hide()
-			end
-			
-			if StatusTrackingBarManager then
-				StatusTrackingBarManager:Hide()
-				if UIPARENT_MANAGED_FRAME_POSITIONS then
-					UIPARENT_MANAGED_FRAME_POSITIONS["StatusTrackingBarManager"] = nil
-				end
 			end
 		end
 	end

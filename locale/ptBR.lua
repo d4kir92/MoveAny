@@ -133,7 +133,6 @@ function MoveAny:LangptBR()
 		["MABUFFLIMIT"] = "Buff limit",
 		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
 		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
-		["ISENABLEDINEDITMODE"] = "(Is Enabled in Edit Mode)",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )
