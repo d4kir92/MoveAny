@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.64" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.65" )
 }
 
 local PREFIX = "MOAN"
@@ -355,6 +355,9 @@ function MoveAny:InitMALock()
 		if SpellActivationOverlayFrame then
 			AddCheckBox( 4, "SPELLACTIVATIONOVERLAYFRAME", false )
 		end
+		if LossOfControlFrame then
+			AddCheckBox( 4, "LOSSOFCONTROLFRAME", false )
+		end
 		AddCheckBox( 4, "GHOSTFRAME", false )
 
 		AddCategory( "CLASSSPECIFIC" )
@@ -398,15 +401,16 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "ARENAENEMYFRAMES", false )
 		AddCheckBox( 4, "ARENAPREPFRAMES", false )
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
-		AddCheckBox( 4, "GROUPLOOTCONTAINER", true )
-		AddCheckBox( 4, "ALERTFRAME", true )
+		AddCheckBox( 4, "GROUPLOOTCONTAINER", false )
+		AddCheckBox( 4, "ALERTFRAME", false )
 		AddCheckBox( 4, "CHATBUTTONFRAME", false )
 		AddCheckBox( 4, "CHATEDITBOX", false )
 		if BNToastFrame then
-			AddCheckBox( 4, "BATTLENETFRIENDSNOTIFICATION", true )
+			AddCheckBox( 4, "BATTLENETFRIENDSNOTIFICATION", false )
 		end
-		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", true )
-
+		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", false )
+		AddCheckBox( 4, "TICKETSTATUSFRAME", false )
+		
 		if IsAddOnLoaded( "ImproveAny" ) then
 			AddCategory( "ImproveAny" )
 			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then

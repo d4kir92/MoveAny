@@ -16,7 +16,7 @@ function MoveAny:LangenUS()
 		["GENERAL"] = "General",
 		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
 		["GRIDSIZE"] = "Gridsize",
-		["MOVEFRAMES"] = "Move Frames/Windows",
+		["MOVEFRAMES"] = "Move Windows",
 		["SAVEFRAMEPOSITION"] = "Save Frame Position",
 		["SAVEFRAMESCALE"] = "Save Frame Scale",
 		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
@@ -170,6 +170,8 @@ function MoveAny:LangenUS()
 
 		["FLIPPED"] = "Flipped",
 		["GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",
+		["TICKETSTATUSFRAME"] = "Ticket Frame",
+		["LOSSOFCONTROLFRAME"] = "Loss of Control Frame",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

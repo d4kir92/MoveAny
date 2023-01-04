@@ -164,6 +164,8 @@ function MoveAny:LangdeDE()
 
 		["FLIPPED"] = "Umgedreht",
 		["GHOSTFRAME"] = "Geisterfenster (Teleport zum Friedhof)",
+		["TICKETSTATUSFRAME"] = "Ticket Fenster",
+		["LOSSOFCONTROLFRAME"] = "Kontrollverlustfenster",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

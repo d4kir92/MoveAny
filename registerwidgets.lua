@@ -1328,7 +1328,14 @@ function MoveAny:Event( event, ... )
 			["secure"] = true
 		} )
 	end
-
+	if MoveAny:IsEnabled( "TICKETSTATUSFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "TicketStatusFrame",
+			["lstr"] = "TICKETSTATUSFRAME",
+			["userplaced"] = true,
+			["secure"] = true
+		} )
+	end
 	-- RIGHT
 
 
@@ -1783,6 +1790,13 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "SpellActivationOverlayFrame",
 			["lstr"] = "SPELLACTIVATIONOVERLAYFRAME"
+		} )
+	end
+	
+	if LossOfControlFrame and MoveAny:IsEnabled( "LOSSOFCONTROLFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "LossOfControlFrame",
+			["lstr"] = "LOSSOFCONTROLFRAME"
 		} )
 	end
 
