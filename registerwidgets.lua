@@ -532,8 +532,13 @@ function MoveAny:RegisterWidget( tab, debug )
 					end
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-					frame:ClearAllPoints()
-					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					if not frame.SetPointBase then
+						frame:ClearAllPoints()
+						frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					else
+						frame:ClearAllPointsOverride()
+						frame:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					end
 				end
 			end
 		end)
@@ -636,30 +641,56 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 	MoveAny:SetEleSize( name, sw, sh )
 
-	hooksecurefunc( frame, "SetPoint", function( self, ... )
-		if self.elesetpoint then
-			return
-		end
-		
-		self:SetMovable( true )
-		if self.SetUserPlaced and self:IsMovable() then
-			self:SetUserPlaced( userplaced or false )
-		end
-		
-		if not self.ma_secure then
-			self.elesetpoint = true
-			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-			self:ClearAllPoints()
-			self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-			self.elesetpoint = false
-		end
-	end )
+	if not frame.SetPointBase then
+		hooksecurefunc( frame, "SetPoint", function( self, ... )
+			if self.elesetpoint then
+				return
+			end
+					
+			if not self.ma_secure then
+				self:SetMovable( true )
+				if self.SetUserPlaced and self:IsMovable() then
+					self:SetUserPlaced( userplaced or false )
+				end
+				
+				self.elesetpoint = true
+				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+				self:ClearAllPoints()
+				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+				self.elesetpoint = false
+			end
+		end )
+	else
+		hooksecurefunc( frame, "SetPointBase", function( self, ... )
+			if self.elesetpoint then
+				return
+			end
+					
+			if not self.ma_secure then
+				self:SetMovable( true )
+				if self.SetUserPlaced and self:IsMovable() then
+					self:SetUserPlaced( userplaced or false )
+				end
+				
+				self.elesetpoint = true
+				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+				self:ClearAllPointsOverride()
+				self:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
+				self.elesetpoint = false
+			end
+		end )
+	end
 
 	if not frame.ma_secure then
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 		if dbp1 and dbp3 then
-			frame:ClearAllPoints()
-			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			if not frame.SetPointBase then
+				frame:ClearAllPoints()
+				frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			else
+				frame:ClearAllPointsOverride()
+				frame:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			end
 		end
 	end
 
