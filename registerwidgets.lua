@@ -969,6 +969,8 @@ function MoveAny:Event( event, ... )
 					MoveAny:RegisterWidget( {
 						["name"] = name,
 						["lstr"] = lstr,
+						["secure"] = true,
+						["userplaced"] = true,
 					} )
 
 					local ab = _G[ name ]
