@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "0.9.65" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.0" )
 }
 
 local PREFIX = "MOAN"
@@ -303,9 +303,7 @@ function MoveAny:InitMALock()
 		end
 		AddCheckBox( posx, "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowCastBar" )
 		AddCheckBox( posx, "TALKINGHEAD", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTalkingHeadFrame" )
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
-			AddCheckBox( posx, "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 )
-		end
+		AddCheckBox( posx, "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 )
 		for i = 1, 10 do
 			if _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
 				AddCheckBox( posx, "CHAT", false, nil, i )
@@ -335,9 +333,17 @@ function MoveAny:InitMALock()
 			AddCheckBox( 4, "ACTIONBAR9", false )
 			AddCheckBox( 4, "ACTIONBAR10", false )
 		end
+
+		if MainStatusTrackingBarContainer then
+			AddCheckBox( 4, "MainStatusTrackingBarContainer", true )
+		end
+		if SecondaryStatusTrackingBarContainer then
+			AddCheckBox( 4, "SecondaryStatusTrackingBarContainer", true )
+		end
 		if StatusTrackingBarManager then
 			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
-		else
+		end
+		if MainMenuExpBar then
 			AddCheckBox( 4, "MAINMENUEXPBAR", true )
 			AddCheckBox( 4, "REPUTATIONWATCHBAR", true )
 		end

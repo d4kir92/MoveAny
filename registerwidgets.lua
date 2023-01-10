@@ -119,7 +119,7 @@ function MoveAny:MenuOptions( opt, frame )
 	
 	local tabs = { GENERAL }
 
-	if string.find( name, "MAActionBar" ) or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" then
+	if string.find( name, "MAActionBar" ) or string.find( name, "MultiBar" ) or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" then
 		table.insert( tabs, ACTIONBARS_LABEL )
 	end
 
@@ -128,10 +128,9 @@ function MoveAny:MenuOptions( opt, frame )
 	end
 
 	local contents = CreateTabs( opt, tabs )
-	
+
 	for i, tab in pairs( contents ) do
 		local content = tab.content
-
 		if string.find( content.name, GENERAL ) then
 			content.pos = content:CreateFontString( nil, nil, "GameFontNormal" )
 			content.pos:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -4 )
@@ -952,6 +951,45 @@ function MoveAny:Event( event, ... )
 				} )
 			end
 		end
+
+		if MoveAny:GetWoWBuild() == "RETAIL" and MoveAny:IsEnabled( "ACTIONBARS", true ) then
+			local ABNames = {}
+			ABNames[1] = "MainMenuBar"
+			ABNames[2] = "MultiBarBottomLeft"
+			ABNames[3] = "MultiBarBottomRight"
+			ABNames[4] = "MultiBarRight"
+			ABNames[5] = "MultiBarLeft"
+			ABNames[6] = "MultiBar" .. 5
+			ABNames[7] = "MultiBar" .. 6
+			ABNames[8] = "MultiBar" .. 7
+			for i = 1, 10 do
+				if ABNames[i] then
+					local name = ABNames[i]
+					local lstr = "ACTIONBAR" .. i .. "R"
+					MoveAny:RegisterWidget( {
+						["name"] = name,
+						["lstr"] = lstr,
+					} )
+
+					local ab = _G[ name ]
+					if ab then
+						for x = 1, 12 do
+							ab.btns = ab.btns or {}
+							local abtn = _G[name .. "Button" .. x]
+							if i == 1 then
+								abtn = _G["ActionButton" .. x]
+							end
+							if abtn then
+								table.insert( ab.btns, abtn )
+							else
+								print("NOT FOUND", name)
+							end
+						end
+					end
+				end
+			end
+		end
+
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			if MoveAny:AnyActionbarEnabled()then
 				for i = 1, 10 do
@@ -1347,7 +1385,13 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "MICROMENU"
 		} )
 	end
-	if MoveAny:IsEnabled( "BAGS", true ) then
+
+	if BagsBar then
+		MoveAny:RegisterWidget( {
+			["name"] = "BagsBar",
+			["lstr"] = "BAGS"
+		} )
+	elseif MoveAny:IsEnabled( "BAGS", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MABagBar",
 			["lstr"] = "BAGS"
@@ -1548,6 +1592,19 @@ function MoveAny:Event( event, ... )
 			["re"] = "BOTTOM"
 		} )
 	end
+
+	if MainStatusTrackingBarContainer and MoveAny:IsEnabled( "MainStatusTrackingBarContainer", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "MainStatusTrackingBarContainer",
+			["lstr"] = "MainStatusTrackingBarContainer",
+		} )
+	end
+	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled( "SecondaryStatusTrackingBarContainer", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "SecondaryStatusTrackingBarContainer",
+			["lstr"] = "SecondaryStatusTrackingBarContainer",
+		} )
+	end
 	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
 			-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
@@ -1566,22 +1623,19 @@ function MoveAny:Event( event, ... )
 				["posy"] = 4,
 			} )
 		end
-	else
+	end
+	if MainMenuExpBar and ReputationWatchBar then
 		if MoveAny:IsEnabled( "MAINMENUEXPBAR", true ) then
-			if MainMenuExpBar then
-				MainMenuExpBar:ClearAllPoints()
-				MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
-			end
+			MainMenuExpBar:ClearAllPoints()
+			MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
 			MoveAny:RegisterWidget( {
 				["name"] = "MainMenuExpBar",
 				["lstr"] = "MAINMENUEXPBAR"
 			} )
 		end
 		if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
-			if ReputationWatchBar then
-				ReputationWatchBar:ClearAllPoints()
-				ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
-			end
+			ReputationWatchBar:ClearAllPoints()
+			ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
 			MoveAny:RegisterWidget( {
 				["name"] = "ReputationWatchBar",
 				["lstr"] = "REPUTATIONWATCHBAR"

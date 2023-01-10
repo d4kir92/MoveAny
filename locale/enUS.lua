@@ -172,6 +172,18 @@ function MoveAny:LangenUS()
 		["GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",
 		["TICKETSTATUSFRAME"] = "Ticket Frame",
 		["LOSSOFCONTROLFRAME"] = "Loss of Control Frame",
+
+		["MainStatusTrackingBarContainer"] = "Exp Bar",
+		["SecondaryStatusTrackingBarContainer"] = "Reputation Bar",
+
+		["ACTIONBAR1R"] = "Actionbar 1 (Main Bar)",
+		["ACTIONBAR2R"] = "Actionbar 2 (Above Main Bar)",
+		["ACTIONBAR3R"] = "Actionbar 3 (Above Second Bar)",
+		["ACTIONBAR4R"] = "Actionbar 4 (Right Bar)",
+		["ACTIONBAR5R"] = "Actionbar 5 (Left Bar)",
+		["ACTIONBAR6R"] = "Actionbar 6",
+		["ACTIONBAR7R"] = "Actionbar 7",
+		["ACTIONBAR8R"] = "Actionbar 8",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

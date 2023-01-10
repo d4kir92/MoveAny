@@ -106,7 +106,7 @@ function MoveAny:LangdeDE()
 		["ZONEABILITYFRAME"] = "Zonen-Fähigkeit",
 		["EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit (Zauber für Quests, Bosse)",
 		["MAINMENUEXPBAR"] = "Erfahrungsleiste",
-		["REPUTATIONWATCHBAR"] = "Reputationsleiste",
+		["REPUTATIONWATCHBAR"] = "Rufleiste",
 		["UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, ...)",
 
 		["ROWS"] = "Reihen",
@@ -166,6 +166,18 @@ function MoveAny:LangdeDE()
 		["GHOSTFRAME"] = "Geisterfenster (Teleport zum Friedhof)",
 		["TICKETSTATUSFRAME"] = "Ticket Fenster",
 		["LOSSOFCONTROLFRAME"] = "Kontrollverlustfenster",
+
+		["MainStatusTrackingBarContainer"] = "Erfahrungsleiste",
+		["SecondaryStatusTrackingBarContainer"] = "Rufleiste",
+
+		["ACTIONBAR1R"] = "Aktionsleiste 1 (Hauptleiste)",
+		["ACTIONBAR2R"] = "Aktionsleiste 2 (Über Hauptleiste)",
+		["ACTIONBAR3R"] = "Aktionsleiste 3 (Über 2. Leiste)",
+		["ACTIONBAR4R"] = "Aktionsleiste 4 (Rechte Leiste)",
+		["ACTIONBAR5R"] = "Aktionsleiste 5 (Linke Leiste)",
+		["ACTIONBAR6R"] = "Aktionsleiste 6",
+		["ACTIONBAR7R"] = "Aktionsleiste 7",
+		["ACTIONBAR8R"] = "Aktionsleiste 8",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )
