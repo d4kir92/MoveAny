@@ -661,7 +661,7 @@ function MoveAny:RegisterWidget( tab, debug )
 			end
 		end )
 	else
-		hooksecurefunc( frame, "SetPointBase", function( self, ... )
+		--[[hooksecurefunc( frame, "SetPointBase", function( self, ... )
 			if self.elesetpoint then
 				return
 			end
@@ -678,7 +678,7 @@ function MoveAny:RegisterWidget( tab, debug )
 				self:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				self.elesetpoint = false
 			end
-		end )
+		end )]]
 	end
 
 	if not frame.ma_secure then
