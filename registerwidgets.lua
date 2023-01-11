@@ -949,8 +949,8 @@ function MoveAny:Event( event, ... )
 		end
 		if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MoveAny:GetWoWBuildNr() < 100000 ) then
 			ExtraAbilityContainer:SetSize( 180, 100 )
-			ExtraAbilityContainer:ClearAllPoints()
-			ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 )
+			--ExtraAbilityContainer:ClearAllPoints() -- breaks position
+			--ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 ) -- breaks position
 
 			MoveAny:RegisterWidget( {
 				["name"] = "ExtraAbilityContainer",
