@@ -532,10 +532,9 @@ function MoveAny:RegisterWidget( tab, debug )
 					end
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-					if not frame.SetPointBase then
-						frame:ClearAllPoints()
-						frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-					else
+					frame:ClearAllPoints()
+					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					if frame.SetPointBase then
 						frame:ClearAllPointsOverride()
 						frame:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
 					end
@@ -684,10 +683,9 @@ function MoveAny:RegisterWidget( tab, debug )
 	if not frame.ma_secure then
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 		if dbp1 and dbp3 then
-			if not frame.SetPointBase then
-				frame:ClearAllPoints()
-				frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-			else
+			frame:ClearAllPoints()
+			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			if frame.SetPointBase then
 				frame:ClearAllPointsOverride()
 				frame:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
 			end
@@ -949,8 +947,6 @@ function MoveAny:Event( event, ... )
 		end
 		if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MoveAny:GetWoWBuildNr() < 100000 ) then
 			ExtraAbilityContainer:SetSize( 180, 100 )
-			--ExtraAbilityContainer:ClearAllPoints() -- breaks position
-			--ExtraAbilityContainer:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 330 ) -- breaks position
 
 			MoveAny:RegisterWidget( {
 				["name"] = "ExtraAbilityContainer",
