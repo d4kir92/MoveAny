@@ -72,6 +72,7 @@ local MAFRAMES = {
 	"CalendarFrame",
 	"TimeManagerFrame",
 	"GuildBankFrame",
+	"ItemSocketingFrame",
 }
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
