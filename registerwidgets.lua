@@ -660,7 +660,8 @@ function MoveAny:RegisterWidget( tab, debug )
 			end
 		end )
 	else
-		--[[hooksecurefunc( frame, "SetPointBase", function( self, ... )
+		--[[
+		--hooksecurefunc( frame, "SetPointBase", function( self, ... )
 			if self.elesetpoint then
 				return
 			end
@@ -677,7 +678,8 @@ function MoveAny:RegisterWidget( tab, debug )
 				self:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				self.elesetpoint = false
 			end
-		end )]]
+		end )
+		]]
 	end
 
 	if not frame.ma_secure then
@@ -909,10 +911,17 @@ function MoveAny:Event( event, ... )
 			} )
 		end
 		if MoveAny:IsEnabled( "PETBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MAPetBar",
-				["lstr"] = "PETBAR"
-			} )
+			if PetActionBar then
+				MoveAny:RegisterWidget( {
+					["name"] = "PetActionBar",
+					["lstr"] = "PETBAR"
+				} )
+			else
+				MoveAny:RegisterWidget( {
+					["name"] = "MAPetBar",
+					["lstr"] = "PETBAR"
+				} )
+			end
 		end
 		if MoveAny:IsEnabled( "STANCEBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
