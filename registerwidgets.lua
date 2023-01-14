@@ -119,7 +119,7 @@ function MoveAny:MenuOptions( opt, frame )
 	
 	local tabs = { GENERAL }
 
-	if string.find( name, "MAActionBar" ) or string.find( name, "MultiBar" ) or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" then
+	if string.find( name, "MAActionBar" ) or string.find( name, "MultiBar" ) or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" or name == "StanceBar" then
 		table.insert( tabs, ACTIONBARS_LABEL )
 	end
 
@@ -273,6 +273,11 @@ function MoveAny:MenuOptions( opt, frame )
 					opts["ROWS"] = value
 					self.Text:SetText( MoveAny:GT( "ROWS" ) .. ": " .. value )
 
+					if frame.UpdateSystemSettingNumRows then
+						frame.numRows = value
+						frame:UpdateSystemSettingNumRows()
+					end
+
 					if MoveAny.UpdateActionBar then
 						MoveAny:UpdateActionBar( frame )
 					end
@@ -299,7 +304,7 @@ function MoveAny:MenuOptions( opt, frame )
 
 
 
-			opts["SPACING"] = opts["SPACING"] or 4
+			opts["SPACING"] = opts["SPACING"] or 2
 			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			slider:SetWidth( content:GetWidth() - 110 )
 			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -86 );
@@ -640,7 +645,7 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 	MoveAny:SetEleSize( name, sw, sh )
 
-	if not frame.SetPointBase then
+	if not frame.SetPointBase or not MoveAny:IsInEditModeEnabled( name ) then
 		hooksecurefunc( frame, "SetPoint", function( self, ... )
 			if self.elesetpoint then
 				return
@@ -660,9 +665,10 @@ function MoveAny:RegisterWidget( tab, debug )
 			end
 		end )
 	else
+		--print(">>>", name)
 		--[[
 		--hooksecurefunc( frame, "SetPointBase", function( self, ... )
-			if self.elesetpoint then
+			if self.elesetpointbase then
 				return
 			end
 					
@@ -672,11 +678,11 @@ function MoveAny:RegisterWidget( tab, debug )
 					self:SetUserPlaced( userplaced or false )
 				end
 				
-				self.elesetpoint = true
+				self.elesetpointbase = true
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 				self:ClearAllPointsOverride()
 				self:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
-				self.elesetpoint = false
+				self.elesetpointbase = false
 			end
 		end )
 		]]
@@ -885,6 +891,13 @@ function MoveAny:Event( event, ... )
 				["userplaced"] = true
 			} )
 		end
+		if TargetFrameNumericalThreat and MoveAny:IsEnabled( "TargetFrameNumericalThreat", false ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "TargetFrameNumericalThreat",
+				["lstr"] = "TargetFrameNumericalThreat",
+				["userplaced"] = true
+			} )
+		end
 		if MoveAny:IsEnabled( "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
@@ -924,11 +937,19 @@ function MoveAny:Event( event, ... )
 			end
 		end
 		if MoveAny:IsEnabled( "STANCEBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "MAStanceBar",
-				["lstr"] = "STANCEBAR",
-				["secure"] = true
-			} )
+			if StanceBar then
+				MoveAny:RegisterWidget( {
+					["name"] = "StanceBar",
+					["lstr"] = "STANCEBAR",
+					["secure"] = true
+				} )
+			else
+				MoveAny:RegisterWidget( {
+					["name"] = "MAStanceBar",
+					["lstr"] = "STANCEBAR",
+					["secure"] = true
+				} )
+			end
 		end
 		if PossessActionBar then
 			if MoveAny:IsEnabled( "POSSESSBAR", false ) then
@@ -1023,6 +1044,20 @@ function MoveAny:Event( event, ... )
 								print("NOT FOUND", name)
 							end
 						end
+					end
+
+					local bar = _G[name]
+					if bar then
+						hooksecurefunc( bar, "SetPoint", function( self, ... )
+							MoveAny:UpdateActionBar( bar )
+						end )
+						hooksecurefunc( bar, "SetSize", function( self, ... )
+							if self.ma_uab_setsize then return end
+							self.ma_uab_setsize = true
+							MoveAny:UpdateActionBar( bar )
+							self.ma_uab_setsize = false
+						end )
+						MoveAny:UpdateActionBar( bar )
 					end
 				end
 			end

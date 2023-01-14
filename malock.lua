@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.7" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.8" )
 }
 
 local PREFIX = "MOAN"
@@ -37,6 +37,14 @@ MoveAny:AddToEMMapForced( "Buffs" )
 MoveAny:AddToEMMapForced( "Debuffs" )
 MoveAny:AddToEMMapForced( "GameTooltip" )
 MoveAny:AddToEMMapForced( "Castingbar" )
+MoveAny:AddToEMMapForced( "MainMenuBar" )
+MoveAny:AddToEMMapForced( "MultiBarBottomLeft" )
+MoveAny:AddToEMMapForced( "MultiBarBottomRight" )
+MoveAny:AddToEMMapForced( "MultiBarRight" )
+MoveAny:AddToEMMapForced( "MultiBarLeft" )
+MoveAny:AddToEMMapForced( "MultiBar5" )
+MoveAny:AddToEMMapForced( "MultiBar6" )
+MoveAny:AddToEMMapForced( "MultiBar7" )
 
 local EMMap = {}
 function MoveAny:AddToEMMap( key, value )
@@ -416,7 +424,9 @@ function MoveAny:InitMALock()
 		end
 		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", false )
 		AddCheckBox( 4, "TICKETSTATUSFRAME", false )
-		
+		if TargetFrame and TargetFrameNumericalThreat then
+			AddCheckBox( 4, "TargetFrameNumericalThreat", false )
+		end
 		if IsAddOnLoaded( "ImproveAny" ) then
 			AddCategory( "ImproveAny" )
 			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then

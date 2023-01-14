@@ -178,6 +178,8 @@ function MoveAny:LangdeDE()
 		["ACTIONBAR6R"] = "Aktionsleiste 6",
 		["ACTIONBAR7R"] = "Aktionsleiste 7",
 		["ACTIONBAR8R"] = "Aktionsleiste 8",
+
+		["TargetFrameNumericalThreat"] = "Bedrohungs Prozente",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )

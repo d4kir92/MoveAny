@@ -3,17 +3,22 @@ local AddOnName, MoveAny = ...
 
 local btnsize = 30
 
-function MoveAny:UpdateStanceBar()
-	if  _G["StanceButton" .. 1] then
-		btnsize =  _G["StanceButton" .. 1]:GetSize()
-	end
-
+function MoveAny:GetStanceBarCount()
 	local cou = 0
 	if GetNumShapeshiftForms() > 0 then
 		cou = GetNumShapeshiftForms()
 	else
 		cou = NUM_STANCE_SLOTS
 	end
+	return cou
+end
+
+function MoveAny:UpdateStanceBar()
+	if  _G["StanceButton" .. 1] then
+		btnsize =  _G["StanceButton" .. 1]:GetSize()
+	end
+
+	local cou = MoveAny:GetStanceBarCount()
 
 	if MAStanceBar and cou then
 		if MAStanceBar.cou ~= cou then
@@ -53,7 +58,15 @@ end
 
 function MoveAny:InitStanceBar()
 	if MoveAny:IsEnabled( "STANCEBAR", false ) then
-		if not InCombatLockdown() then
+		if StanceBar then
+			StanceBar.btns = {}
+			local cou = MoveAny:GetStanceBarCount()
+			for i, v in pairs( StanceBar.actionButtons ) do
+				if i <= cou then
+					tinsert( StanceBar.btns, v )
+				end
+			end
+		elseif not InCombatLockdown() then
 			MAStanceBar = CreateFrame( "Frame", "MAStanceBar", UIParent )
 			MAStanceBar:SetSize( btnsize, btnsize )
 			MAStanceBar.cou = -1

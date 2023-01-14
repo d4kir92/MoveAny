@@ -184,6 +184,8 @@ function MoveAny:LangenUS()
 		["ACTIONBAR6R"] = "Actionbar 6",
 		["ACTIONBAR7R"] = "Actionbar 7",
 		["ACTIONBAR8R"] = "Actionbar 8",
+
+		["TargetFrameNumericalThreat"] = "Threat Percentage",
 	}
 
 	MoveAny:UpdateLanguageTab( tab )
