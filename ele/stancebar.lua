@@ -8,9 +8,9 @@ function MoveAny:GetStanceBarCount()
 	if GetNumShapeshiftForms() > 0 then
 		cou = GetNumShapeshiftForms()
 	else
-		cou = NUM_STANCE_SLOTS
+		cou = NUM_STANCE_SLOTS or 0
 	end
-	return cou
+	return cou or 0
 end
 
 function MoveAny:UpdateStanceBar()

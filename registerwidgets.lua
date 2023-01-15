@@ -2035,7 +2035,6 @@ function MoveAny:Event( event, ... )
 	MoveAny:CheckAlphas()
 end
 
-
 local f = CreateFrame( "Frame" )
 f:SetScript( "OnEvent", MoveAny.Event )
 f:RegisterEvent( "PLAYER_LOGIN" )
