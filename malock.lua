@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.9" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.10" )
 }
 
 local PREFIX = "MOAN"
@@ -558,7 +558,7 @@ function MoveAny:InitMALock()
 		MALock:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 	end
 
-	MoveAny:HideMALock()
+	MoveAny:HideMALock( true )
 end
 
 function MoveAny:UpdateGrid()

@@ -539,10 +539,6 @@ function MoveAny:RegisterWidget( tab, debug )
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 					frame:ClearAllPoints()
 					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-					if frame.SetPointBase then
-						frame:ClearAllPointsOverride()
-						frame:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
-					end
 				end
 			end
 		end)
@@ -645,58 +641,49 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 	MoveAny:SetEleSize( name, sw, sh )
 
-	if not frame.SetPointBase or not MoveAny:IsInEditModeEnabled( name ) then
-		hooksecurefunc( frame, "SetPoint", function( self, ... )
-			if self.elesetpoint then
-				return
-			end
-					
-			if not self.ma_secure then
-				self:SetMovable( true )
-				if self.SetUserPlaced and self:IsMovable() then
-					self:SetUserPlaced( userplaced or false )
-				end
-				
-				self.elesetpoint = true
+	if frame.SetPointBase then
+		--frame.layoutApplyInProgress = true
+
+		frame:HookScript( "OnUpdate", function( self, elapsed )
+			if self.ma_retry_setpoint and not InCombatLockdown() then
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 				self:ClearAllPoints()
 				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-				self.elesetpoint = false
+
+				self.ma_retry_setpoint = false
 			end
 		end )
-	else
-		--print(">>>", name)
-		--[[
-		--hooksecurefunc( frame, "SetPointBase", function( self, ... )
-			if self.elesetpointbase then
-				return
-			end
-					
-			if not self.ma_secure then
-				self:SetMovable( true )
-				if self.SetUserPlaced and self:IsMovable() then
-					self:SetUserPlaced( userplaced or false )
-				end
-				
-				self.elesetpointbase = true
-				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-				self:ClearAllPointsOverride()
-				self:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
-				self.elesetpointbase = false
-			end
-		end )
-		]]
 	end
+	hooksecurefunc( frame, "SetPoint", function( self, ... )
+		if self.elesetpoint then
+			return
+		end
+
+		--self.layoutApplyInProgress = true
+
+		if not self.ma_secure then
+			self:SetMovable( true )
+			if self.SetUserPlaced and self:IsMovable() then
+				self:SetUserPlaced( userplaced or false )
+			end
+			
+			self.elesetpoint = true
+			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+			if not self.SetPointBase then
+				self:ClearAllPoints()
+				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			else
+				self.ma_retry_setpoint = true
+			end
+			self.elesetpoint = false
+		end
+	end )
 
 	if not frame.ma_secure then
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 		if dbp1 and dbp3 then
 			frame:ClearAllPoints()
 			frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-			if frame.SetPointBase then
-				frame:ClearAllPointsOverride()
-				frame:SetPointBase( dbp1, UIParent, dbp3, dbp4, dbp5 )
-			end
 		end
 	end
 
@@ -854,6 +841,8 @@ function MoveAny:Event( event, ... )
 			end
 		end
 	end
+
+	MoveAny:InitActionBarLayouts()
 	if MoveAny:AnyActionbarEnabled() then
 		MoveAny:CustomBars()
 		MoveAny:UpdateABs()
@@ -1041,7 +1030,7 @@ function MoveAny:Event( event, ... )
 							if abtn then
 								table.insert( ab.btns, abtn )
 							else
-								print("NOT FOUND", name)
+								print( "ACTION BUTTON NOT FOUND", name )
 							end
 						end
 					end

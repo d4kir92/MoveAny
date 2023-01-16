@@ -15,9 +15,7 @@ btns[5] = "MultiBarBottomRightButton" --"MultiBarBottomRightButton"
 btns[6] = "MultiBarBottomLeftButton" --"MultiBarBottomLeftButton"
 
 
-local function MASetPoint( id, po, pa, re, px, py, rows )
-	local name = "MAActionBar" .. id
-
+local function MASetPoint( name, po, pa, re, px, py, rows )
 	abpoints[name] = {}
 	abpoints[name]["PO"] = po
 	abpoints[name]["PA"] = pa
@@ -26,17 +24,8 @@ local function MASetPoint( id, po, pa, re, px, py, rows )
 	abpoints[name]["PY"] = py
 	abpoints[name]["ROWS"] = rows
 end
-local dSpacing = 4
+local dSpacing = 2
 local dFlipped = false
-MASetPoint( 1, "BOTTOM", UIParent, "BOTTOM", 0, 0, 1 )
-MASetPoint( 3, "RIGHT", UIParent, "RIGHT", 0, 0, 12 )
-MASetPoint( 4, "RIGHT", UIParent, "RIGHT", -36, 0, 12 )
-MASetPoint( 5, "BOTTOM", UIParent, "BOTTOM", 360, 0, 2 )
-MASetPoint( 6, "BOTTOM", UIParent, "BOTTOM", 0, 36, 1 )
-MASetPoint( 7, "BOTTOM", UIParent, "BOTTOM", -360, 0, 2 )
-MASetPoint( 8, "CENTER", UIParent, "CENTER", -360, 0 * 36, 1 )
-MASetPoint( 9, "CENTER", UIParent, "CENTER", -360, 1 * 36, 1 )
-MASetPoint( 10, "CENTER", UIParent, "CENTER", -360, 2 * 36, 1 )
 
 function MoveAny:UpdateActionBar( frame )
 	local name = frame:GetName()
@@ -118,6 +107,31 @@ function MoveAny:UpdateActionBar( frame )
 				id = id + 1
 			end
 		end
+	end
+end
+
+function MoveAny:InitActionBarLayouts()
+	if MoveAny:GetWoWBuild() == "RETAIL" then
+		MASetPoint( "MainMenuBar", 			"BOTTOM", 	UIParent, "BOTTOM", 	0, 		0, 		1 ) -- MainMenuBar
+		MASetPoint( "MultiBarBottomLeft", 	"BOTTOM", 	UIParent, "BOTTOM", 	0, 		-60, 	1 ) -- MultiBarBottomLeft
+		MASetPoint( "MultiBarBottomRight", 	"BOTTOM", 	UIParent, "BOTTOM", 	0, 		-120, 	1 ) -- MultiBarBottomRight
+		MASetPoint( "MultiBarRight", 		"RIGHT", 	UIParent, "RIGHT", 		0, 		0, 		12 ) -- MultiBarRight
+		MASetPoint( "MultiBarLeft", 		"RIGHT", 	UIParent, "RIGHT", 		-36, 	0, 		12 ) -- MultiBarLeft
+		MASetPoint( "MultiBar" .. 5, 		"BOTTOM", 	UIParent, "BOTTOM",		0, 		0, 		1 ) -- "MultiBar" .. 5
+		MASetPoint( "MultiBar" .. 6, 		"BOTTOM", 	UIParent, "BOTTOM", 	0, 		0, 		1 ) -- "MultiBar" .. 6
+		MASetPoint( "MultiBar" .. 7, 		"CENTER", 	UIParent, "CENTER", 	0, 		0, 		1 ) -- "MultiBar" .. 7
+		MASetPoint( "MultiBar" .. 8, 		"CENTER", 	UIParent, "CENTER", 	-360, 	1 * 36,	1 )
+		MASetPoint( "MultiBar" .. 9, 		"CENTER", 	UIParent, "CENTER", 	-360, 	2 * 36,	1 )
+	else
+		MASetPoint( "MAActionBar" .. 1, 	"BOTTOM", 	UIParent, "BOTTOM", 	0, 		0, 		1 )
+		MASetPoint( "MAActionBar" .. 3, 	"RIGHT", 	UIParent, "RIGHT", 		0, 		0, 		12 )
+		MASetPoint( "MAActionBar" .. 4, 	"RIGHT", 	UIParent, "RIGHT", 		-36, 	0, 		12 )
+		MASetPoint( "MAActionBar" .. 5, 	"BOTTOM", 	UIParent, "BOTTOM",		360, 	0, 		2 )
+		MASetPoint( "MAActionBar" .. 6, 	"BOTTOM", 	UIParent, "BOTTOM", 	0, 		36, 	1 )
+		MASetPoint( "MAActionBar" .. 7, 	"BOTTOM", 	UIParent, "BOTTOM", 	-360, 	0, 		2 )
+		MASetPoint( "MAActionBar" .. 8, 	"CENTER", 	UIParent, "CENTER", 	-360, 	0 * 36,	1 )
+		MASetPoint( "MAActionBar" .. 9, 	"CENTER", 	UIParent, "CENTER", 	-360, 	1 * 36,	1 )
+		MASetPoint( "MAActionBar" .. 10, 	"CENTER", 	UIParent, "CENTER", 	-360, 	2 * 36,	1 )
 	end
 end
 
