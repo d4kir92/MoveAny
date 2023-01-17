@@ -323,6 +323,7 @@ function MoveAny:MoveFrames()
 								local w, h = self:GetSize()
 								self:ClearAllPoints()
 								self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+
 								if self:GetNumPoints() > 1 then
 									self:SetSize( w, h )
 								end

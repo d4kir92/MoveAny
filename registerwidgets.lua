@@ -650,6 +650,11 @@ function MoveAny:RegisterWidget( tab, debug )
 				self:ClearAllPoints()
 				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 
+				if self.Selection then
+					self:ClearAllPoints()
+					self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+				end
+
 				self.ma_retry_setpoint = false
 			end
 		end )
@@ -669,6 +674,11 @@ function MoveAny:RegisterWidget( tab, debug )
 			
 			self.elesetpoint = true
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+
+			if self.Selection then
+				self:ClearAllPoints()
+				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+			end
 			if not self.SetPointBase then
 				self:ClearAllPoints()
 				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
