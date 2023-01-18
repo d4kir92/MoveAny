@@ -942,12 +942,6 @@ function MoveAny:Event( event, ... )
 					["lstr"] = "STANCEBAR",
 					["secure"] = true
 				} )
-			else
-				MoveAny:RegisterWidget( {
-					["name"] = "MAStanceBar",
-					["lstr"] = "STANCEBAR",
-					["secure"] = true
-				} )
 			end
 		end
 		if PossessActionBar then

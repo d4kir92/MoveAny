@@ -19,7 +19,6 @@ function MoveAny:UpdateStanceBar()
 	end
 
 	local cou = MoveAny:GetStanceBarCount()
-
 	if StanceBar and cou then
 		if StanceBar.cou ~= cou then
 			StanceBar.cou = cou
@@ -57,6 +56,14 @@ function MoveAny:UpdateStanceBar()
 end
 
 function MoveAny:InitStanceBar()
+	if not StanceBar then
+		StanceBar = CreateFrame( "Frame", "StanceBar", UIParent )
+		StanceBar:SetSize( btnsize, btnsize )
+		StanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, -120 )
+		StanceBar.cou = -1
+		StanceBar.btns = {}
+	end
+
 	if MoveAny:IsEnabled( "STANCEBAR", false ) then
 		if StanceBar then
 			StanceBar.btns = {}
