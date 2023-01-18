@@ -20,11 +20,11 @@ function MoveAny:UpdateStanceBar()
 
 	local cou = MoveAny:GetStanceBarCount()
 
-	if MAStanceBar and cou then
-		if MAStanceBar.cou ~= cou then
-			MAStanceBar.cou = cou
+	if StanceBar and cou then
+		if StanceBar.cou ~= cou then
+			StanceBar.cou = cou
 
-			MAStanceBar.btns = {}
+			StanceBar.btns = {}
 			
 			if cou ~= 10 then
 				for i = 1, cou do
@@ -38,17 +38,17 @@ function MoveAny:UpdateStanceBar()
 							if bb.SetUserPlaced and bb:IsMovable() then
 								bb:SetUserPlaced( false )
 							end
-							bb:SetParent( MAStanceBar )
+							bb:SetParent( StanceBar )
 						end
 
-						tinsert( MAStanceBar.btns, bb )
+						tinsert( StanceBar.btns, bb )
 					end
 				end
 			end
-			MAStanceBar:SetSize( cou * btnsize, btnsize )
+			StanceBar:SetSize( cou * btnsize, btnsize )
 
 			if MoveAny.UpdateActionBar then
-				MoveAny:UpdateActionBar( MAStanceBar )
+				MoveAny:UpdateActionBar( StanceBar )
 			end
 		end
 	end
@@ -61,28 +61,15 @@ function MoveAny:InitStanceBar()
 		if StanceBar then
 			StanceBar.btns = {}
 			local cou = MoveAny:GetStanceBarCount()
-			for i, v in pairs( StanceBar.actionButtons ) do
-				if i <= cou then
-					tinsert( StanceBar.btns, v )
+			if StanceBar.actionButtons then
+				for i, v in pairs( StanceBar.actionButtons ) do
+					if i <= cou then
+						tinsert( StanceBar.btns, v )
+					end
 				end
-			end
-		elseif not InCombatLockdown() then
-			MAStanceBar = CreateFrame( "Frame", "MAStanceBar", UIParent )
-			MAStanceBar:SetSize( btnsize, btnsize )
-			MAStanceBar.cou = -1
-			MAStanceBar.btns = {}
-
-			local p1, _, p3, p4, p5 = MoveAny:GetElePoint( "MAStanceBar" )
-			if p1 then
-				MAStanceBar:ClearAllPoints()
-				MAStanceBar:SetPoint( p1, UIParent, p3, p4, p5 )
 			else
-				MAStanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 75 )
+				MoveAny:UpdateStanceBar()
 			end
-
-			MoveAny:UpdateStanceBar()
-		else
-			C_Timer.After( 0.1, MoveAny.InitStanceBar )
 		end
 	end
 end

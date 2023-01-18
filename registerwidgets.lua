@@ -119,7 +119,7 @@ function MoveAny:MenuOptions( opt, frame )
 	
 	local tabs = { GENERAL }
 
-	if string.find( name, "MAActionBar" ) or string.find( name, "MultiBar" ) or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "MAStanceBar" or name == "StanceBar" then
+	if string.find( name, "MAActionBar" ) or string.find( name, "MultiBar" ) or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "StanceBar" then
 		table.insert( tabs, ACTIONBARS_LABEL )
 	end
 

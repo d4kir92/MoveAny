@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.12" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.13" )
 }
 
 local PREFIX = "MOAN"
@@ -53,7 +53,6 @@ function MoveAny:AddToEMMap( key, value )
 end
 MoveAny:AddToEMMap( "MAPetBar", "ShowPetActionBar" )
 MoveAny:AddToEMMap( "PetBar", "ShowPetActionBar" )
-MoveAny:AddToEMMap( "MAStanceBar", "ShowStanceBar" )
 MoveAny:AddToEMMap( "StanceBar", "ShowStanceBar" )
 MoveAny:AddToEMMap( "MAGameTooltip", "ShowHudTooltip" )
 MoveAny:AddToEMMap( "TalkingHeadFrame", "ShowTalkingHeadFrame" )
