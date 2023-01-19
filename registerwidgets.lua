@@ -714,10 +714,10 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	hooksecurefunc( frame, "SetSize", function( self, w, h )
-		if w < 10 then
+		if w < sw then
 			w = sw
 		end
-		if h < 10 then
+		if h < sh then
 			h = sh
 		end
 		local df = _G[name .. "_DRAG"]
@@ -1206,7 +1206,11 @@ function MoveAny:Event( event, ... )
 	if TotemFrame and MoveAny:IsEnabled( "TOTEMFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TotemFrame",
-			["lstr"] = "TOTEMFRAME"
+			["lstr"] = "TOTEMFRAME",
+			["sw"] = 32 * 4,
+			["sh"] = 32,
+			["userplaced"] = true,
+			["secure"] = true,
 		} )
 	end
 	if WarlockPowerFrame and MoveAny:IsEnabled( "WARLOCKPOWERFRAME", false ) and class == "WARLOCK" then
