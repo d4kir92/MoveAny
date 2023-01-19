@@ -59,7 +59,7 @@ function MoveAny:InitStanceBar()
 	if not StanceBar then
 		StanceBar = CreateFrame( "Frame", "StanceBar", UIParent )
 		StanceBar:SetSize( btnsize, btnsize )
-		StanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, -120 )
+		StanceBar:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 120 )
 		StanceBar.cou = -1
 		StanceBar.btns = {}
 	end
