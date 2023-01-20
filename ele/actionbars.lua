@@ -319,8 +319,16 @@ f:SetScript( "OnEvent", function( self, event )
 				frame:SetAttribute( "_onstate-page", [[ -- arguments: self, stateid, newstate
 					self:SetAttribute( "actionpage", newstate );
 				]] );
-				RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
-
+				if MoveAny:GetWoWBuild() == "WRATH" then
+					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
+				elseif MoveAny:GetWoWBuild() == "TBC" then
+					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
+				elseif MoveAny:GetWoWBuild() == "CLASSIC" then
+					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
+				else
+					print("MISSING EXPANSION")
+				end
+				
 				local _onAttributeChanged = [[
 					if name == 'statehidden' then
 						if (HasOverrideActionBar() or HasVehicleActionBar()) then
@@ -388,3 +396,12 @@ f:SetScript( "OnEvent", function( self, event )
 		end
 	end
 end )
+
+--[[
+function Loop()
+	if MainMenuBarArtFrame then
+		print(MainMenuBarArtFrame:GetAttribute("actionpage"))
+	end
+	C_Timer.After(1, Loop)
+end
+Loop()]]
