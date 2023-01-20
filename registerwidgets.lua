@@ -651,8 +651,8 @@ function MoveAny:RegisterWidget( tab, debug )
 				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 
 				if self.Selection then
-					self:ClearAllPoints()
-					self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					self.Selection:ClearAllPoints()
+					self.Selection:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				end
 
 				self.ma_retry_setpoint = false
@@ -676,8 +676,8 @@ function MoveAny:RegisterWidget( tab, debug )
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 
 			if self.Selection then
-				self:ClearAllPoints()
-				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+				self.Selection:ClearAllPoints()
+				self.Selection:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 			end
 			if not self.SetPointBase then
 				self:ClearAllPoints()
@@ -897,7 +897,7 @@ function MoveAny:Event( event, ... )
 				["userplaced"] = true
 			} )
 		end
-		if MoveAny:IsEnabled( "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
+		if FocusFrame and MoveAny:IsEnabled( "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
 				["lstr"] = "FOCUSFRAME",
@@ -951,7 +951,7 @@ function MoveAny:Event( event, ... )
 					["lstr"] = "POSSESSBAR"
 				} )
 			end
-		else
+		elseif PossessBarFrame then
 			if MoveAny:IsEnabled( "POSSESSBAR", false ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "PossessBarFrame",
@@ -1281,7 +1281,7 @@ function MoveAny:Event( event, ... )
 			["userplaced"] = true
 		} )
 	end
-	if MoveAny:IsEnabled( "TARGETOFFOCUSFRAME", false ) then
+	if FocusFrameToT and MoveAny:IsEnabled( "TARGETOFFOCUSFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "FocusFrameToT",
 			["lstr"] = "TARGETOFFOCUSFRAME",
@@ -1392,7 +1392,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "BATTLENETFRIENDSNOTIFICATION"
 		} )
 	end
-	if MoveAny:IsEnabled( "VEHICLESEATINDICATOR", true ) then
+	if VehicleSeatIndicator and MoveAny:IsEnabled( "VEHICLESEATINDICATOR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAVehicleSeatIndicator",
 			["lstr"] = "VEHICLESEATINDICATOR"
@@ -1924,7 +1924,7 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 
-	if MoveAny:IsEnabled( "GHOSTFRAME", false ) then
+	if GhostFrame and MoveAny:IsEnabled( "GHOSTFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "GhostFrame",
 			["lstr"] = "GHOSTFRAME",

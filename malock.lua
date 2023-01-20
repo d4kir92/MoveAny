@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.17" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.18" )
 }
 
 local PREFIX = "MOAN"
@@ -297,13 +297,17 @@ function MoveAny:InitMALock()
 		end
 		AddCheckBox( posx, "PLAYERFRAME", MoveAny:GetWoWBuildNr() < 100000 )
 		AddCheckBox( posx, "TARGETFRAME", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTargetAndFocus" )
-		AddCheckBox( posx, "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTargetAndFocus" )
+		if FocusFrame then
+			AddCheckBox( posx, "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTargetAndFocus" )
+		end
 		AddCheckBox( posx, "BUFFS", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowBuffFrame" )
 		AddCheckBox( posx, "DEBUFFS", false, nil, nil, "ShowDebuffFrame" )
 		AddCheckBox( posx, "GAMETOOLTIP", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowHudTooltip" )
 		AddCheckBox( posx, "PETBAR", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowPetActionBar" )
 		AddCheckBox( posx, "STANCEBAR", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowStanceBar" )
-		AddCheckBox( posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
+		if PossessActionBar or PossessBarFrame then
+			AddCheckBox( posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar" )
+		end
 		AddCheckBox( posx, "LEAVEVEHICLE", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowVehicleLeaveButton" )
 		if ExtraAbilityContainer then
 			AddCheckBox( posx, "EXTRAABILITYCONTAINER", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowExtraAbilities" )
@@ -324,9 +328,13 @@ function MoveAny:InitMALock()
 		AddCategory( "NORMAL" )
 		AddCheckBox( 4, "PETFRAME", true )
 		AddCheckBox( 4, "TARGETOFTARGETFRAME", false )
-		AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
+		if FocusFrameToT then
+			AddCheckBox( 4, "TARGETOFFOCUSFRAME", false )
+		end
 		AddCheckBox( 4, "ZONETEXTFRAME", true )
-		AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
+		if VehicleSeatIndicator then
+			AddCheckBox( 4, "VEHICLESEATINDICATOR", true )
+		end
 		AddCheckBox( 4, "DURABILITY", true )
 		AddCheckBox( 4, "MICROMENU", true )
 		AddCheckBox( 4, "BAGS", true )
@@ -371,7 +379,9 @@ function MoveAny:InitMALock()
 		if LossOfControlFrame then
 			AddCheckBox( 4, "LOSSOFCONTROLFRAME", false )
 		end
-		AddCheckBox( 4, "GHOSTFRAME", false )
+		if GhostFrame then
+			AddCheckBox( 4, "GHOSTFRAME", false )
+		end
 
 		AddCategory( "CLASSSPECIFIC" )
 		if RuneFrame and class == "DEATHKNIGHT" then
