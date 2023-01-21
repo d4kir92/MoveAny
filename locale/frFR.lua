@@ -74,7 +74,7 @@ function MoveAny:LangfrFR()
 
 		["LEFT"] = "Left",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Notifications des amis Battlenet",
+		["BNToastFrame"] = "Notifications des amis Battlenet",
 
 
 

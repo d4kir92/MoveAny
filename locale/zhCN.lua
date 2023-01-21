@@ -74,7 +74,7 @@ function MoveAny:LangzhCN()
 
 		["LEFT"] = "左",
 		["COMPACTRAIDFRAMEMANAGER"] = "突击队经理",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Battlenet朋友的通知",
+		["BNToastFrame"] = "Battlenet朋友的通知",
 
 
 

@@ -84,7 +84,7 @@ function MoveAny:LangenUS()
 
 		["LEFT"] = "Left",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Battlenet Friends Notifications",
+		["BNToastFrame"] = "Battlenet Friends Notifications",
 
 		["CENTER"] = "Center",
 		["SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",

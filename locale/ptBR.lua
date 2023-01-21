@@ -74,7 +74,7 @@ function MoveAny:LangptBR()
 
 		["ESQUERDA"] = "Esquerda",
 		["COMPACTRAIDFRAMEMANAGER"] = "Gerente de Raid",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Battlenet Friends Notifications",
+		["BNToastFrame"] = "Battlenet Friends Notifications",
 
 
 

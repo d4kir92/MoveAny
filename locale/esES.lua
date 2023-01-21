@@ -74,7 +74,7 @@ function MoveAny:LangesES()
 
 		["LEFT"] = "Izquierda",
 		["COMPACTRAIDFRAMEMANAGER"] = "Gestor de incursiones",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Notificaciones de amigos de Battlenet",
+		["BNToastFrame"] = "Notificaciones de amigos de Battlenet",
 
 
 

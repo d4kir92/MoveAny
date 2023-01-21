@@ -74,7 +74,7 @@ function MoveAny:LangitIT()
 
 		["LEFT"] = "Sinistra",
 		["COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Notifiche amici Battlenet",
+		["BNToastFrame"] = "Notifiche amici Battlenet",
 
 
 

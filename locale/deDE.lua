@@ -78,7 +78,7 @@ function MoveAny:LangdeDE()
 
 		["LEFT"] = "Links",
 		["COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Benachrichtigungen von Battlenet Freunden",
+		["BNToastFrame"] = "Benachrichtigungen von Battlenet Freunden",
 
 		["CENTER"] = "Center",
 		["SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",

@@ -74,7 +74,7 @@ function MoveAny:LangruRU()
 
 		["LEFT"] = "Слева",
 		["COMPACTRAIDFRAMEMANAGER"] = "Менеджер рейдов",
-		["BATTLENETFRIENDSNOTIFICATION"] = "Уведомления друзей Battlenet",
+		["BNToastFrame"] = "Уведомления друзей Battlenet",
 
 
 

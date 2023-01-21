@@ -1386,10 +1386,10 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "QUEUESTATUSBUTTON"
 		} )
 	end
-	if BNToastFrame and MoveAny:IsEnabled( "BATTLENETFRIENDSNOTIFICATION", true ) then
+	if BNToastFrame and MoveAny:IsEnabled( "BNToastFrame", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "BNToastFrame",
-			["lstr"] = "BATTLENETFRIENDSNOTIFICATION"
+			["lstr"] = "BNToastFrame"
 		} )
 	end
 	if VehicleSeatIndicator and MoveAny:IsEnabled( "VEHICLESEATINDICATOR", true ) then
