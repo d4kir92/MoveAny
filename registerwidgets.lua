@@ -27,15 +27,16 @@ end
 
 local function CreateTabs( frame, args )
 	frame.numTabs = #args
+	frame.tabs = {}
 
-	local tabs = {}
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			template = "PanelTabButtonTemplate"
 		end
-		local tab = CreateFrame( "Button", frame:GetName() .. "Tab" .. i, frame, template )
+		frame.tabs[i] = CreateFrame( "Button", frame:GetName() .. "Tab" .. i, frame, template )
+		local tab = frame.tabs[i]
 		tab:SetID( i )
 		tab:SetText( args[i] )
 		tab:SetScript( "OnClick", function( self )
@@ -55,13 +56,11 @@ local function CreateTabs( frame, args )
 		else
 			tab:SetPoint( "TOPLEFT", _G[frame:GetName() .. "Tab" .. (i - 1)], "TOPRIGHT", 4, 0 )
 		end
-
-		table.insert( tabs, tab )
 	end
 
-	SelectTab( tabs[1] )
+	SelectTab( frame.tabs[1] )
 
-	return tabs
+	return frame.tabs
 end
 
 local btnsize = 24
@@ -127,9 +126,9 @@ function MoveAny:MenuOptions( opt, frame )
 		table.insert( tabs, MoveAny:GT( "BUFFS" ) )
 	end
 
-	local contents = CreateTabs( opt, tabs )
+	CreateTabs( opt, tabs )
 
-	for i, tab in pairs( contents ) do
+	for i, tab in pairs( opt.tabs ) do
 		local content = tab.content
 		if string.find( content.name, GENERAL ) then
 			content.pos = content:CreateFontString( nil, nil, "GameFontNormal" )
@@ -524,7 +523,16 @@ function MoveAny:RegisterWidget( tab, debug )
 				p4 = MoveAny:Grid( p4 )
 				p5 = MoveAny:Grid( p5 )
 
-				MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
+				if frame.Selection then
+					MoveAny:SetElePoint( name, p1, UIParent, p3, p4 * frame:GetScale(), p5 * frame:GetScale() )
+				else
+					MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
+				end
+
+				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
+					local tab = dragframe.opt.tabs[1]
+					tab.content.pos:SetText( format( "Position X: %d Y:%d", p4, p5 ) )
+				end
 
 				dragframe:SetMovable(true)
 
@@ -538,7 +546,11 @@ function MoveAny:RegisterWidget( tab, debug )
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 					frame:ClearAllPoints()
-					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					if frame.Selection then
+						frame:SetPoint( dbp1, UIParent, dbp3, dbp4 / frame:GetScale(), dbp5 / frame:GetScale() )
+					else
+						frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
+					end
 				end
 			end
 		end)
@@ -650,11 +662,6 @@ function MoveAny:RegisterWidget( tab, debug )
 				self:ClearAllPoints()
 				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 
-				if self.Selection then
-					--self.Selection:ClearAllPoints()
-					--self.Selection:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-				end
-
 				self.ma_retry_setpoint = false
 			end
 		end )
@@ -675,10 +682,6 @@ function MoveAny:RegisterWidget( tab, debug )
 			self.elesetpoint = true
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 
-			if self.Selection then
-				--self.Selection:ClearAllPoints()
-				--self.Selection:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-			end
 			if not self.SetPointBase then
 				self:ClearAllPoints()
 				self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
