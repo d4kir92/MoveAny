@@ -523,11 +523,7 @@ function MoveAny:RegisterWidget( tab, debug )
 				p4 = MoveAny:Grid( p4 )
 				p5 = MoveAny:Grid( p5 )
 
-				if frame.Selection then
-					MoveAny:SetElePoint( name, p1, UIParent, p3, p4 * frame:GetScale(), p5 * frame:GetScale() )
-				else
-					MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
-				end
+				MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
 
 				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
 					local tab = dragframe.opt.tabs[1]
@@ -546,11 +542,7 @@ function MoveAny:RegisterWidget( tab, debug )
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
 					frame:ClearAllPoints()
-					if frame.Selection then
-						frame:SetPoint( dbp1, UIParent, dbp3, dbp4 / frame:GetScale(), dbp5 / frame:GetScale() )
-					else
-						frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
-					end
+					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				end
 			end
 		end)
