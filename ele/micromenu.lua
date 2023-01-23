@@ -106,15 +106,16 @@ function MoveAny:InitMicroMenu()
 					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 				end
 
-				hooksecurefunc( mb, "Hide", function( self )
+				--[[hooksecurefunc( mb, "Hide", function( self )
 					mb:Show()
 				end )
 				hooksecurefunc( mb, "SetAlpha", function( self, alpha )
 					if alpha <= 0 then
 						self:SetAlpha( 1 )
 					end
-				end )
+				end )]]
 				mb:Show()
+
 				tinsert( MAMenuBar.btns, hb )
 			end
 		end
