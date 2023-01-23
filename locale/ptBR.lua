@@ -4,136 +4,171 @@ local AddOnName, MoveAny = ...
 
 function MoveAny:LangptBR()
 	local tab = {
-		["MMBTNLEFT"] = "Clique esquerdo => Bloqueios/Desbloqueio + Opções",
-		["MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
+		["LID_MMBTNLEFT"] = "Clique esquerdo => Bloqueios/Desbloqueio + Opções",
+		["LID_MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
 
-		["GERAL"] = "Geral",
-		["SHOWMINIMAPBUTTON"] = "Show Minimap Button",
-		["GRIDSIZE"] = "Gridsize",
-		["MOVEFRAMES"] = "Move Frames/Windows",
-		["FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
-		["FRAMESSHIFTSCALE"] = "Balança com Turno + Arrastar com o Botão Direito",
-		["FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",
+		["LID_GENERAL"] = "Geral",
+		["LID_SHOWMINIMAPBUTTON"] = "Show Minimap Button",
+		["LID_GRIDSIZE"] = "Gridsize",
+		["LID_MOVEFRAMES"] = "Move Frames/Windows",
+		["LID_FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
+		["LID_FRAMESSHIFTSCALE"] = "Balança com Turno + Arrastar com o Botão Direito",
+		["LID_FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",
 
-		["TOPLEFT"] = "Top Left",
-		["PLAYERFRAME"] = "Player Frame",
-		["PETFRAME"] = "Pet Frame",
-		["TARGETFRAME"] = "Target Frame",
-		["TARGETOFTARGETFRAME"] = "Target of Target Frame",
-		["TARGETFRAMESPELLBAR"] = "Castbar from Target",
-		["FOCUSFRAME"] = "Focus Frame",
-		["FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
-		["TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
-		["RUNEFRAME"] = "Deathknight - Runes Frame",
-		["TOTEMFRAME"] = "Totem Timers",
-		["WARLOCKPOWERFRAME"] = "Warlock Power frame",
-		["MONKHARMONYBARFRAME"] = "Monk Harmony frame",
-		["MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
-		["ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
-		["MAFPSFrame"] = "FPS",
+		["LID_PLAYERFRAME"] = "Player Frame",
+		["LID_PETFRAME"] = "Pet Frame",
+		["LID_TARGETFRAME"] = "Target Frame",
+		["LID_TARGETOFTARGETFRAME"] = "Target of Target Frame",
+		["LID_TARGETFRAMESPELLBAR"] = "Castbar from Target",
+		["LID_FOCUSFRAME"] = "Focus Frame",
+		["LID_FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
+		["LID_TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
+		["LID_RUNEFRAME"] = "Deathknight - Runes Frame",
+		["LID_TOTEMFRAME"] = "Totem Timers",
+		["LID_WARLOCKPOWERFRAME"] = "Warlock Power frame",
+		["LID_MONKHARMONYBARFRAME"] = "Monk Harmony frame",
+		["LID_MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
+		["LID_ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
+		["LID_MAFPSFrame"] = "FPS",
 
-		["TOP"] = "Top",
+		["LID_MINIMAP"] = "Mini Mapa",
+		["LID_BUFFS"] = "Buffs",
+		["LID_DEBUFFS"] = "Debuffs",
+		["LID_VEHICLESEATINDICATOR"] = "Vehicle Seat Indicator",
+		["LID_ARENAENEMYFRAMES"] = "Arena Enemy Frames",
+		["LID_ARENAPREPFRAMES"] = "Arena Prep Frames",
+		["LID_QUESTTRACKER"] = "Questtracker",
+		
+		["LID_MICROMENU"] = "Micro Menu",
+		["LID_BAGS"] = "Bags",
+		["LID_GAMETOOLTIP"] = "Tooltip",
+		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
+		["LID_QUEUESTATUSBUTTON"] = "LFG Status",
 
-		["TOPRIGHT"] = "Top Right",
-		["MINIMAP"] = "Mini Mapa",
-		["BUFFS"] = "Buffs",
-		["DEBUFFS"] = "Debuffs",
-		["VEHICLESEATINDICATOR"] = "Vehicle Seat Indicator",
-		["ARENAENEMYFRAMES"] = "Arena Enemy Frames",
-		["ARENAPREPFRAMES"] = "Arena Prep Frames",
-		["QUESTTRACKER"] = "Questtracker",
+		
+		["LID_PETBAR"] = "Pet Bar",
+		["LID_STANCEBAR"] = "Stance Bar",
+		["LID_TOTEMBAR"] = "Shaman - Barra Totem",
+		["LID_LEAVEVEHICLE"] = "Leave Vehicle Button",
+		["LID_GROUPLOOTCONTAINER"] = "Loot Roll frame",
+		["LID_STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
+		["LID_ALERTFRAME"] = "Alert Frame (Bonus Loot, Achiements, ...)",
 
-		["DIREITO"] = "Certo",
+		
+		["LID_CHAT"] = "Chatframe %d",
+		["LID_CHATBUTTONFRAME"] = "Botões de Chat",
+		["LID_CHATQUICKJOIN"] = "Chat Quick Join",
+		["LID_CHATEDITBOX"] = "Chat Inputbox",
+
+		["LID_COMPACTRAIDFRAMEMANAGER"] = "Gerente de Raid",
+		["LID_BNToastFrame"] = "Battlenet Friends Notifications",
+
+
+
+		["LID_ZONETEXTFRAME"] = "Texto da zona",
+		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Status on BGs/Dungeons)",
+		["LID_IASKILLS"] = "Skillbars",
+		["LID_UIWIDGETBELOWMINIMAP"] = "Widget Below Minimap (Capture Status)",
+		["LID_DURABILITY"] = "Boneca de Durabilidade",
+		["LID_MONEYBAR"] = "Money Bar",
+		["LID_TOKENBAR"] = "Token Bar",
+		["LID_IAILVLBAR"] = "ItemLevel Bar",
+		["LID_CASTINGBAR"] = "Casting Bar",
+		["LID_TALKINGHEAD"] = "Talking Head Dialog",
+		["LID_POSSESSBAR"] = "Possess Bar (Controlling NPC/Vehicle)",
+		["LID_ZONEABILITYFRAME"] = "Zone Ability",
+		["LID_EXTRAABILITYCONTAINER"] = "Extra Ability (Capacidade Extra)",
+		["LID_MAINMENUEXPBAR"] = "Exp Bar",
+		["LID_REPUTATIONWATCHBAR"] = "Barra de Reputação",
+		["LID_UIWIDGETPOWERBAR"] = "Barra de alimentação",
+
+		["LID_ROWS"] = "Linhas",
+		["LID_SPACING"] = "Espaçamento",
+		
+		
+
+		["LID_PROFILE"] = "Perfil",
+		["LID_PROFILES"] = "Profiles",
+		["LID_ADDPROFILE"] = "Adicionar Perfil",
+		["LID_CURRENT"] = "Atual",
+		["LID_SHARE"] = "Compartilhar",
+		["LID_SHAREPROFILE"] = "Share Profile",
+		["LID_GETPROFILE"] = "Get Profile",
+		["LID_INHERITFROM"] = "Herdar de",
+		["LID_ADD"] = "Adicionar",
+		["LID_REMOVE"] = "Remover",
+		["LID_RENAME"] = "Renomear",
+		["LID_PLAYER"] = "Jogador",
+		["LID_DOWNLOAD"] = "Download",
+		["LID_UPLOAD"] = "Upload",
+		["LID_STATUS"] = "Status",
+		["LID_DONE"] = "Feito",
+		["LID_WAITINGFOROWNER"] = "Esperando pelo Proprietário",
+		["LID_WAITFORPLAYERPROFILE"] = "Aguarde que outro jogador pressione \"Obter Perfis\"",
+		["LID_WAITFORPLAYERPROFILE2"] = "Aguarde que outro jogador pressione \"Compartilhe\"",
+
+		["LID_ALPHAINCOMBAT"] = "Alpha (in Combat)",
+		["LID_ALPHANOTINCOMBAT"] = "Alpha (não em Combate)",
+		["LID_ALPHAINVEHICLE"] = "Alfa (no veículo)",
+
+		["LID_MABUFFLIMIT"] = "Buff limit",
+		["LID_MABUFFSPACINGX"] = "Buff Spacing Horizontal",
+		["LID_MABUFFSPACINGY"] = "Buff Spacing Vertical",
+
+		["LID_ISENABLEDINEDITMODE"] = "(Desabilitar no Modo EditMode)",
+		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(Pode causar erro devido ao modo de edição)",
+
+		["LID_HELPTEXT"] = "%s já está habilitado em EditMode. Favor desativar em EditMode ou MoveAny",
 	
-		["BOTTOMRIGHT"] = "Bottom Right",
-		["MICROMENU"] = "Micro Menu",
-		["BAGS"] = "Bags",
-		["GAMETOOLTIP"] = "Tooltip",
-		["GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
-		["QUEUESTATUSBUTTON"] = "LFG Status",
+		["LID_BUILTIN"] = "Built-In",
+		["LID_EDITMODE"] = "Overwrite Edit Mode",
+		["LID_NORMAL"] = "Normal",
+		["LID_CLASSSPECIFIC"] = "Classe Específica",
+		["LID_ADVANCED"] = "Avançado",
+		["LID_ImproveAny"] = "LID_ImproveAny",
 
-		["BOTTOM"] = "Bottom",
-		["ACTIONBARS"] = "Actionbars 1-6",
-		["ACTIONBAR7"] = "Barras de Ação Personalizadas 7",
-		["ACTIONBAR8"] = "Barras de Ação Personalizadas 8",
-		["ACTIONBAR9"] = "Barras de Ação Personalizadas 9",
-		["ACTIONBAR10"] = "Barras de Ação Personalizadas 10",
-		["PETBAR"] = "Pet Bar",
-		["STANCEBAR"] = "Stance Bar",
-		["TOTEMBAR"] = "Shaman - Barra Totem",
-		["LEAVEVEHICLE"] = "Leave Vehicle Button",
-		["GROUPLOOTCONTAINER"] = "Loot Roll frame",
-		["STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
-		["ALERTFRAME"] = "Alert Frame (Bonus Loot, Achiements, ...)",
+		["LID_MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
+		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
+		["LID_UIERRORSFRAME"] = "Ui Error Messages, Quest Progress",
+		["LID_COMBOPOINTPLAYERFRAME"] = "Pontos de Combo",
 
-		["BOTTOMLEFT"] = "Bottom Left",
-		["CHAT"] = "Chatframe %d",
-		["CHATBUTTONFRAME"] = "Botões de Chat",
-		["CHATQUICKJOIN"] = "Chat Quick Join",
-		["CHATEDITBOX"] = "Chat Inputbox",
+		["LID_PARTYFRAME"] = "Party Frame",
+		["LID_PARTYMEMBERFRAME"] = "Party Member Frame %s",
+		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Frames",
 
-		["ESQUERDA"] = "Esquerda",
-		["COMPACTRAIDFRAMEMANAGER"] = "Gerente de Raid",
-		["BNToastFrame"] = "Battlenet Friends Notifications",
+		["LID_FLIPPED"] = "Flipped",
+		["LID_GHOSTFRAME"] = "Armação Fantasma (Teletransporte para Cemitério)",
+		["LID_TICKETSTATUSFRAME"] = "Ticket Frame",
+		["LID_LOSSOFCONTROLFRAME"] = "Loss of Control Frame (Perda do Quadro de Controle)",
 
+		["LID_MainStatusTrackingBarContainer"] = "Exp Bar",
+		["LID_SecondaryStatusTrackingBarContainer"] = "Barra de Reputação",
 
-
-		["ZONETEXTFRAME"] = "Texto da zona",
-		["UIWIDGETTOPCENTER"] = "Widget Top Center (Status on BGs/Dungeons)",
-		["IASKILLS"] = "Skillbars",
-		["UIWIDGETBELOWMINIMAP"] = "Widget Below Minimap (Capture Status)",
-		["DURABILIDADE"] = "Boneca de Durabilidade",
-		["MONEYBAR"] = "Money Bar",
-		["TOKENBAR"] = "Token Bar",
-		["IAILVLBAR"] = "ItemLevel Bar",
-		["CASTINGBAR"] = "Casting Bar",
-		["TALKINGHEAD"] = "Talking Head Dialog",
-		["ACTIONBAR1"] = "Barra de ação 1 (Barra principal)",
-		["ACTIONBAR2"] = "Barra de ação 2 (2. Página da barra de ação 1)",
-		["ACTIONBAR3"] = "Barra de ação 3 (Barra direita)",
-		["ACTIONBAR4"] = "Barra de Ação 4 (Barra Esquerda)",
-		["ACTIONBAR5"] = "Barra de ação 5 (Barra superior direita)",
-		["ACTIONBAR6"] = "Barra de ação 6 (Barra superior esquerda)",
-		["POSSESSBAR"] = "Possess Bar (Controlling NPC/Vehicle)",
-		["ZONEABILITYFRAME"] = "Zone Ability",
-		["EXTRAABILITYCONTAINER"] = "Extra Ability (Capacidade Extra)",
-		["MAINMENUEXPBAR"] = "Exp Bar",
-		["REPUTATIONWATCHBAR"] = "Barra de Reputação",
-		["UIWIDGETPOWERBAR"] = "Barra de alimentação",
-
-		["ROWS"] = "Linhas",
-		["SPACING"] = "Espaçamento",
-		
-		
-
-		["PERFIL"] = "Perfil",
-		["PERFILES"] = "Profiles",
-		["ADDPROFILE"] = "Adicionar Perfil",
-		["CORRENTE"] = "Atual",
-		["SHARE"] = "Compartilhar",
-		["SHAREPROFILE"] = "Share Profile",
-		["GETPROFILE"] = "Get Profile",
-		["INHERITFROM"] = "Herdar de",
-		["ADD"] = "Adicionar",
-		["REMOVER"] = "Remover",
-		["RENAME"] = "Renomear",
-		["PLAYER"] = "Jogador",
-		["DOWNLOAD"] = "Download",
-		["UPLOAD"] = "Upload",
-		["STATUS"] = "Status",
-		["FEITO"] = "Feito",
-		["ESPERANDO DO PROPRIETÁRIO"] = "Esperando pelo Proprietário",
-		["WAITFORPLAYERPROFILE"] = "Aguarde que outro jogador pressione \"Obter Perfis\"",
-		["WAITFORPLAYERPROFILE2"] = "Aguarde que outro jogador pressione \"Compartilhe\"",
-
-		["ALPHAINCOMBAT"] = "Alpha (in Combat)",
-		["ALPHANOTINCOMBAT"] = "Alpha (não em Combate)",
-		["ALPHAINVEHICLE"] = "Alfa (no veículo)",
-
-		["MABUFFLIMIT"] = "Buff limit",
-		["MABUFFSPACINGX"] = "Buff Spacing Horizontal",
-		["MABUFFSPACINGY"] = "Buff Spacing Vertical",
+		["LID_TargetFrameNumericalThreat"] = "Percentual de Ameaça",
 	}
+
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		tab["LID_ACTIONBARS"] = "Barra de ação 1-6"
+		tab["LID_ACTIONBAR1"] = "Barra de ação 1 (Barra principal)"
+		tab["LID_ACTIONBAR2"] = "Barra de ação 2 (2. Página da barra de ação 1)"
+		tab["LID_ACTIONBAR3"] = "Barra de ação 3 (barra direita)"
+		tab["LID_ACTIONBAR4"] = "Barra de ação 4 (Barra Esquerda)"
+		tab["LID_ACTIONBAR5"] = "Barra de ação 5 (barra superior direita)"
+		tab["LID_ACTIONBAR6"] = "Barra de ação 6 (Barra superior esquerda)"
+		tab["LID_ACTIONBAR7"] = "Barra de ação 7 (Personalizada)"
+		tab["LID_ACTIONBAR8"] = "Barra de ação 8 (Personalizada)"
+		tab["LID_ACTIONBAR9"] = "Barra de ação 9 (Personalizada)"
+		tab["LID_ACTIONBAR10"] = "Barra de ação 10 (Personalizada)"
+	else
+		tab["LID_ACTIONBAR1"] = "Barra de ação 1 (Barra principal)"
+		tab["LID_ACTIONBAR2"] = "Barra de ação 2 (Acima da barra principal)"
+		tab["LID_ACTIONBAR3"] = "Barra de ação 3 (Acima da segunda barra)"
+		tab["LID_ACTIONBAR4"] = "Barra de ação 4 (Barra da direita)"
+		tab["LID_ACTIONBAR5"] = "Barra de ação 5 (Barra Esquerda)"
+		tab["LID_ACTIONBAR6"] = "Barra de ação 6"
+		tab["LID_ACTIONBAR7"] = "Barra de ação 7"
+		tab["LID_ACTIONBAR8"] = "Barra de ação 8"
+	end
 
 	MoveAny:UpdateLanguageTab( tab )
 end

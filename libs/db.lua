@@ -330,7 +330,7 @@ function MoveAny:IsEnabled( element, value, settings )
 
 	local enabled, forced = MoveAny:IsInEditModeEnabled( element )
 	if value and enabled and not forced and not settings then
-		MoveAny:MSG( format( MoveAny:GT( "HELPTEXT" ), MoveAny:GT( element ) ) )
+		MoveAny:MSG( format( MoveAny:GT( "LID_HELPTEXT" ), MoveAny:GT( element ) ) )
 		return false
 	end
 
@@ -397,8 +397,9 @@ function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
 			frame.systemInfo.anchorInfo.relativePoint = p3
 			frame.systemInfo.anchorInfo.offsetX = p4
 			frame.systemInfo.anchorInfo.offsetY = p5
+			frame.systemInfo.isInDefaultPosition = false
 
-			EditModeSystemMixin.UpdateSystem(frame, frame.systemInfo)
+			EditModeSystemMixin.UpdateSystem( frame, frame.systemInfo )
 		end
 	end
 end

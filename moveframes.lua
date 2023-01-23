@@ -151,15 +151,15 @@ function MoveAny:FrameDragInfo( c )
 	else
 		if IsMouseButtonDown( "RightButton" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTSCALE", false ) then
-				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTSCALE" ) .. "." )
+				MoveAny:MSG( MoveAny:GT( "LID_FRAMESSHIFTSCALE" ) .. "." )
 			end
 		elseif IsMouseButtonDown( "LeftButton" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTDRAG", false ) then
-				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTDRAG" ) .. "." )
+				MoveAny:MSG( MoveAny:GT( "LID_FRAMESSHIFTDRAG" ) .. "." )
 			end
 		elseif IsMouseButtonDown( "MiddleButton" ) or IsMouseButtonDown( "Button4" ) or IsMouseButtonDown( "Button5" ) then
 			if MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) then
-				MoveAny:MSG( MoveAny:GT( "FRAMESSHIFTRESET" ) .. "." )
+				MoveAny:MSG( MoveAny:GT( "LID_FRAMESSHIFTRESET" ) .. "." )
 			end
 		end
 	end

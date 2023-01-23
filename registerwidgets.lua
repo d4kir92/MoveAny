@@ -88,7 +88,7 @@ function MoveAny:CreateSlider( parent, x, y, name, key, value, steps, vmin, vmax
 	slider:SetPoint( "TOPLEFT", parent, "TOPLEFT", x, y );
 	slider.Low:SetText( vmin )
 	slider.High:SetText( vmax )
-	slider.Text:SetText( MoveAny:GT( key ) .. ": " .. MoveAny:GetEleOption( name, key, value ) )
+	slider.Text:SetText( MoveAny:GT( "LID_" .. key ) .. ": " .. MoveAny:GetEleOption( name, key, value ) )
 	slider:SetMinMaxValues( vmin, vmax )
 	slider:SetObeyStepOnDrag( true )
 	slider:SetValueStep( steps )
@@ -97,7 +97,7 @@ function MoveAny:CreateSlider( parent, x, y, name, key, value, steps, vmin, vmax
 		val = tonumber( string.format( "%" .. steps .. "f", val ) )
 		if val then
 			MoveAny:SetEleOption( name, key, val )
-			slider.Text:SetText( MoveAny:GT( key ) .. ": " .. val )
+			slider.Text:SetText( MoveAny:GT( "LID_" .. key ) .. ": " .. val )
 
 			if func then
 				func()
@@ -123,7 +123,7 @@ function MoveAny:MenuOptions( opt, frame )
 	end
 
 	if string.find( name, "MABuffBar" ) then
-		table.insert( tabs, MoveAny:GT( "BUFFS" ) )
+		table.insert( tabs, MoveAny:GT( "LID_BUFFS" ) )
 	end
 
 	CreateTabs( opt, tabs )
@@ -260,7 +260,7 @@ function MoveAny:MenuOptions( opt, frame )
 			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -20 );
 			sliderRows.Low:SetText( "" )
 			sliderRows.High:SetText( "" )
-			sliderRows.Text:SetText( MoveAny:GT("ROWS") .. ": " .. rows )
+			sliderRows.Text:SetText( MoveAny:GT("LID_ROWS") .. ": " .. rows )
 			sliderRows:SetMinMaxValues( 1, #items )
 			sliderRows:SetObeyStepOnDrag( true )
 			sliderRows:SetValueStep( 1 )
@@ -270,7 +270,7 @@ function MoveAny:MenuOptions( opt, frame )
 				local value = items[val]
 				if value and value ~= opts["ROWS"] then
 					opts["ROWS"] = value
-					self.Text:SetText( MoveAny:GT( "ROWS" ) .. ": " .. value )
+					self.Text:SetText( MoveAny:GT( "LID_ROWS" ) .. ": " .. value )
 
 					if frame.UpdateSystemSettingNumRows then
 						frame.numRows = value
@@ -288,7 +288,7 @@ function MoveAny:MenuOptions( opt, frame )
 			flipped:SetSize( btnsize, btnsize )
 			flipped:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -50 )
 			flipped:SetChecked( MoveAny:GetEleOption( name, "FLIPPED", false ) )
-			flipped:SetText( MoveAny:GT( "FLIPPED" ) )
+			flipped:SetText( MoveAny:GT( "LID_FLIPPED" ) )
 			flipped:SetScript( "OnClick", function()
 				local checked = flipped:GetChecked()
 				MoveAny:SetEleOption( name, "FLIPPED", checked )
@@ -299,7 +299,7 @@ function MoveAny:MenuOptions( opt, frame )
 			flipped.text = flipped:CreateFontString( nil, "ARTWORK" )
 			flipped.text:SetFont( STANDARD_TEXT_FONT, 12, "THINOUTLINE" )
 			flipped.text:SetPoint( "LEFT", flipped, "RIGHT", 0, 0)
-			flipped.text:SetText( MoveAny:GT( "FLIPPED" ) )
+			flipped.text:SetText( MoveAny:GT( "LID_FLIPPED" ) )
 
 
 
@@ -309,7 +309,7 @@ function MoveAny:MenuOptions( opt, frame )
 			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -86 );
 			slider.Low:SetText( 0 )
 			slider.High:SetText( 16 )
-			slider.Text:SetText( MoveAny:GT("SPACING") .. ": " .. opts["SPACING"] )
+			slider.Text:SetText( MoveAny:GT("LID_SPACING") .. ": " .. opts["SPACING"] )
 			slider:SetMinMaxValues( 0, 16 )
 			slider:SetObeyStepOnDrag( true )
 			slider:SetValueStep( 1 )
@@ -318,14 +318,14 @@ function MoveAny:MenuOptions( opt, frame )
 				val = tonumber( string.format( "%" .. 0 .. "f", val ) )
 				if val and val ~= opts["SPACING"] then
 					opts["SPACING"] = val
-					slider.Text:SetText( MoveAny:GT( "SPACING" ) .. ": " .. val )
+					slider.Text:SetText( MoveAny:GT( "LID_SPACING" ) .. ": " .. val )
 
 					if MoveAny.UpdateActionBar then
 						MoveAny:UpdateActionBar( frame )
 					end
 				end
 			end )
-		elseif string.find( content.name, MoveAny:GT( "BUFFS" ) ) then
+		elseif string.find( content.name, MoveAny:GT( "LID_BUFFS" ) ) then
 			MoveAny:CreateSlider( content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MAUpdateBuffs )
 			MoveAny:CreateSlider( content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MAUpdateBuffs )
 			MoveAny:CreateSlider( content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MAUpdateBuffs )
@@ -344,7 +344,7 @@ function MoveAny:UpdateMinimapButton()
 end
 
 function MoveAny:ToggleMinimapButton()
-	MoveAny:SetEnabled( "SHOWMINIMAPBUTTON", not MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) )
+	MoveAny:SetEnabled( "LID_SHOWMINIMAPBUTTON", not MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) )
 	if MAMMBTN then
 		if MoveAny:IsEnabled( "SHOWMINIMAPBUTTON", true ) then
 			MAMMBTN:Show("MoveAnyMinimapIcon")
@@ -355,14 +355,14 @@ function MoveAny:ToggleMinimapButton()
 end
 
 function MoveAny:HideMinimapButton()
-	MoveAny:SetEnabled( "SHOWMINIMAPBUTTON", false )
+	MoveAny:SetEnabled( "LID_SHOWMINIMAPBUTTON", false )
 	if MAMMBTN then
 		MAMMBTN:Hide("MoveAnyMinimapIcon")
 	end
 end
 
 function MoveAny:ShowMinimapButton()
-	MoveAny:SetEnabled( "SHOWMINIMAPBUTTON", true )
+	MoveAny:SetEnabled( "LID_SHOWMINIMAPBUTTON", true )
 	if MAMMBTN then
 		MAMMBTN:Show("MoveAnyMinimapIcon")
 	end
@@ -417,7 +417,7 @@ function MoveAny:RegisterWidget( tab, debug )
 			return
 		end
 		if not forced1 and not forced2 then
-			MoveAny:MSG( format( MoveAny:GT( "HELPTEXT" ), lstr ) )
+			MoveAny:MSG( format( MoveAny:GT( "LID_HELPTEXT" ), lstr ) )
 			return
 		end
 	end
@@ -463,7 +463,7 @@ function MoveAny:RegisterWidget( tab, debug )
 		local enab, forc = MoveAny:IsInEditModeEnabled( name )
 		if enab then
 			if not forc then
-				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "ISENABLEDINEDITMODE" )
+				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT( "LID_ISENABLEDINEDITMODE" )
 			end
 		end
 		dragframe.name:SetText( lstr )
@@ -874,59 +874,59 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "PLAYERFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "PlayerFrame",
-				["lstr"] = "PLAYERFRAME",
+				["lstr"] = "LID_PLAYERFRAME",
 				["userplaced"] = true
 			} )
 		end
 		if MoveAny:IsEnabled( "TARGETFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "TargetFrame",
-				["lstr"] = "TARGETFRAME",
+				["lstr"] = "LID_TARGETFRAME",
 				["userplaced"] = true
 			} )
 		end
 		if TargetFrameNumericalThreat and MoveAny:IsEnabled( "TargetFrameNumericalThreat", false ) then
 			MoveAny:RegisterWidget( {
-				["name"] = "TargetFrameNumericalThreat",
-				["lstr"] = "TargetFrameNumericalThreat",
+				["name"] = "LID_TargetFrameNumericalThreat",
+				["lstr"] = "LID_TargetFrameNumericalThreat",
 				["userplaced"] = true
 			} )
 		end
 		if FocusFrame and MoveAny:IsEnabled( "FOCUSFRAME", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "FocusFrame",
-				["lstr"] = "FOCUSFRAME",
+				["lstr"] = "LID_FOCUSFRAME",
 				["userplaced"] = true
 			} )
 		end
 		if MoveAny:IsEnabled( "BUFFS", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MABuffBar",
-				["lstr"] = "BUFFS"
+				["lstr"] = "LID_BUFFS"
 			} )
 		end
 		if MoveAny:IsEnabled( "DEBUFFS", false ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MADebuffBar",
-				["lstr"] = "DEBUFFS"
+				["lstr"] = "LID_DEBUFFS"
 			} )
 		end
 		if MoveAny:IsEnabled( "GAMETOOLTIP", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAGameTooltip",
-				["lstr"] = "GAMETOOLTIP"
+				["lstr"] = "LID_GAMETOOLTIP"
 			} )
 		end
 		if MoveAny:IsEnabled( "PETBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 			if PetActionBar then
 				MoveAny:RegisterWidget( {
 					["name"] = "PetActionBar",
-					["lstr"] = "PETBAR"
+					["lstr"] = "LID_PETBAR"
 				} )
 			else
 				MoveAny:RegisterWidget( {
 					["name"] = "MAPetBar",
-					["lstr"] = "PETBAR"
+					["lstr"] = "LID_PETBAR"
 				} )
 			end
 		end
@@ -934,7 +934,7 @@ function MoveAny:Event( event, ... )
 			if StanceBar then
 				MoveAny:RegisterWidget( {
 					["name"] = "StanceBar",
-					["lstr"] = "STANCEBAR",
+					["lstr"] = "LID_STANCEBAR",
 					["secure"] = true
 				} )
 			end
@@ -943,14 +943,14 @@ function MoveAny:Event( event, ... )
 			if MoveAny:IsEnabled( "POSSESSBAR", false ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "PossessActionBar",
-					["lstr"] = "POSSESSBAR"
+					["lstr"] = "LID_POSSESSBAR"
 				} )
 			end
 		elseif PossessBarFrame then
 			if MoveAny:IsEnabled( "POSSESSBAR", false ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "PossessBarFrame",
-					["lstr"] = "POSSESSBAR"
+					["lstr"] = "LID_POSSESSBAR"
 				} )
 			end
 		end
@@ -960,7 +960,7 @@ function MoveAny:Event( event, ... )
 			end
 			MoveAny:RegisterWidget( {
 				["name"] = "MainMenuBarVehicleLeaveButton",
-				["lstr"] = "LEAVEVEHICLE"
+				["lstr"] = "LID_LEAVEVEHICLE"
 			} )
 		end
 		if ExtraAbilityContainer and MoveAny:IsEnabled( "EXTRAABILITYCONTAINER", MoveAny:GetWoWBuildNr() < 100000 ) then
@@ -968,7 +968,7 @@ function MoveAny:Event( event, ... )
 
 			MoveAny:RegisterWidget( {
 				["name"] = "ExtraAbilityContainer",
-				["lstr"] = "EXTRAABILITYCONTAINER",
+				["lstr"] = "LID_EXTRAABILITYCONTAINER",
 				["userplaced"] = true
 			} )
 		end
@@ -976,14 +976,14 @@ function MoveAny:Event( event, ... )
 			if MoveAny:IsEnabled( "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "PlayerCastingBarFrame",
-					["lstr"] = "CASTINGBAR"
+					["lstr"] = "LID_CASTINGBAR"
 				} )
 			end
 		else
 			if MoveAny:IsEnabled( "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "CastingBarFrame",
-					["lstr"] = "CASTINGBAR"
+					["lstr"] = "LID_CASTINGBAR"
 				} )
 			end
 		end
@@ -991,13 +991,13 @@ function MoveAny:Event( event, ... )
 			if MoveAny:IsEnabled( "TALKINGHEAD", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "TalkingHeadFrame",
-					["lstr"] = "TALKINGHEAD",
+					["lstr"] = "LID_TALKINGHEAD",
 					["secure"] = true
 				} )
 			end
 		end
 
-		if MoveAny:GetWoWBuild() == "RETAIL" and MoveAny:IsEnabled( "ACTIONBARS", true ) then
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			local ABNames = {}
 			ABNames[1] = "MainMenuBar"
 			ABNames[2] = "MultiBarBottomLeft"
@@ -1007,10 +1007,10 @@ function MoveAny:Event( event, ... )
 			ABNames[6] = "MultiBar" .. 5
 			ABNames[7] = "MultiBar" .. 6
 			ABNames[8] = "MultiBar" .. 7
-			for i = 1, 10 do
-				if ABNames[i] then
+			for i = 1, 8 do
+				if ABNames[i] and MoveAny:IsEnabled( "ACTIONBAR" .. i, true ) then
 					local name = ABNames[i]
-					local lstr = "ACTIONBAR" .. i .. "R"
+					local lstr = "LID_ACTIONBAR" .. i
 					MoveAny:RegisterWidget( {
 						["name"] = name,
 						["lstr"] = lstr,
@@ -1058,7 +1058,7 @@ function MoveAny:Event( event, ... )
 						if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 							MoveAny:RegisterWidget( {
 								["name"] = "MAActionBar" .. i,
-								["lstr"] = "ACTIONBAR" .. i
+								["lstr"] = "LID_ACTIONBAR" .. i
 							}, true )
 						end
 					end
@@ -1071,7 +1071,7 @@ function MoveAny:Event( event, ... )
 				if MoveAny:IsEnabled( "CHAT" .. i, false ) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
 					MoveAny:RegisterWidget( {
 						["name"] = "ChatFrame" .. i,
-						["lstr"] = "CHAT",
+						["lstr"] = "LID_CHAT",
 						["lstri"] = i
 					} )
 				end
@@ -1080,7 +1080,7 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "Minimap",
-				["lstr"] = "MINIMAP"
+				["lstr"] = "LID_MINIMAP"
 			} )
 		end
 		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
@@ -1157,7 +1157,7 @@ function MoveAny:Event( event, ... )
 					
 					MoveAny:RegisterWidget( {
 						["name"] = "ObjectiveTrackerFrame",
-						["lstr"] = "QUESTTRACKER",
+						["lstr"] = "LID_QUESTTRACKER",
 						["sh"] = 600,
 						["userplaced"] = true,
 						["secure"] = true,
@@ -1170,7 +1170,7 @@ function MoveAny:Event( event, ... )
 			if PartyFrame then
 				MoveAny:RegisterWidget( {
 					["name"] = "PartyFrame",
-					["lstr"] = "PARTYFRAME",
+					["lstr"] = "LID_PARTYFRAME",
 					["sw"] = 120,
 					["sh"] = 244
 				} )
@@ -1178,7 +1178,7 @@ function MoveAny:Event( event, ... )
 				for i = 1, 4 do
 					MoveAny:RegisterWidget( {
 						["name"] = "PartyMemberFrame" .. i,
-						["lstr"] = "PARTYMEMBERFRAME",
+						["lstr"] = "LID_PARTYMEMBERFRAME",
 						["lstri"] = i
 					} )
 				end
@@ -1188,20 +1188,20 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "PETFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "PetFrame",
-			["lstr"] = "PETFRAME",
+			["lstr"] = "LID_PETFRAME",
 			["userplaced"] = true
 		} )
 	end
 	if RuneFrame and MoveAny:IsEnabled( "RUNEFRAME", false ) and class == "DEATHKNIGHT" then
 		MoveAny:RegisterWidget( {
 			["name"] = "RuneFrame",
-			["lstr"] = "RUNEFRAME"
+			["lstr"] = "LID_RUNEFRAME"
 		} )
 	end
 	if TotemFrame and MoveAny:IsEnabled( "TOTEMFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TotemFrame",
-			["lstr"] = "TOTEMFRAME",
+			["lstr"] = "LID_TOTEMFRAME",
 			["sw"] = 32 * 4,
 			["sh"] = 32,
 			["userplaced"] = true,
@@ -1211,75 +1211,75 @@ function MoveAny:Event( event, ... )
 	if WarlockPowerFrame and MoveAny:IsEnabled( "WARLOCKPOWERFRAME", false ) and class == "WARLOCK" then
 		MoveAny:RegisterWidget( {
 			["name"] = "WarlockPowerFrame",
-			["lstr"] = "WARLOCKPOWERFRAME"
+			["lstr"] = "LID_WARLOCKPOWERFRAME"
 		} )
 	end
 	if MonkHarmonyBarFrame and MoveAny:IsEnabled( "MONKHARMONYBARFRAME", false ) and class == "MONK" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MonkHarmonyBarFrame",
-			["lstr"] = "MONKHARMONYBARFRAME"
+			["lstr"] = "LID_MONKHARMONYBARFRAME"
 		} )
 	end
 	if MonkStaggerBar and MoveAny:IsEnabled( "MONKSTAGGERBAR", false ) and class == "MONK" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MonkStaggerBar",
-			["lstr"] = "MONKSTAGGERBAR"
+			["lstr"] = "LID_MONKSTAGGERBAR"
 		} )
 	end
 	if MageArcaneChargesFrame and MoveAny:IsEnabled( "MAGEARCANECHARGESFRAME", false ) and class == "MAGE" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MageArcaneChargesFrame",
-			["lstr"] = "MAGEARCANECHARGESFRAME"
+			["lstr"] = "LID_MAGEARCANECHARGESFRAME"
 		} )
 	end
 	if ComboPointPlayerFrame and MoveAny:IsEnabled( "COMBOPOINTPLAYERFRAME", false ) then
 		if class == "ROGUE" then
 			MoveAny:RegisterWidget( {
 				["name"] = "ComboPointPlayerFrame",
-				["lstr"] = "COMBOPOINTPLAYERFRAME"
+				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			} )
 		elseif class == "DRUID" then
 			MoveAny:RegisterWidget( {
 				["name"] = "ComboPointDruidPlayerFrame",
-				["lstr"] = "COMBOPOINTPLAYERFRAME"
+				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			} )
 		end
 	end
 	if EssencePlayerFrame and MoveAny:IsEnabled( "ESSENCEPLAYERFRAME", false ) and class == "EVOKER" then
 		MoveAny:RegisterWidget( {
 			["name"] = "EssencePlayerFrame",
-			["lstr"] = "ESSENCEPLAYERFRAME"
+			["lstr"] = "LID_ESSENCEPLAYERFRAME"
 		} )
 	end
 	if PaladinPowerBarFrame and MoveAny:IsEnabled( "PALADINPOWERBARFRAME", false ) and class == "PALADIN" then
 		MoveAny:RegisterWidget( {
 			["name"] = "PaladinPowerBarFrame",
-			["lstr"] = "PALADINPOWERBARFRAME"
+			["lstr"] = "LID_PALADINPOWERBARFRAME"
 		} )
 	end
 	if MoveAny:IsEnabled( "TARGETFRAMESPELLBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TargetFrameSpellBar",
-			["lstr"] = "TARGETFRAMESPELLBAR"
+			["lstr"] = "LID_TARGETFRAMESPELLBAR"
 		} )
 	end
 	if MoveAny:IsEnabled( "FOCUSFRAMESPELLBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "FocusFrameSpellBar",
-			["lstr"] = "FOCUSFRAMESPELLBAR"
+			["lstr"] = "LID_FOCUSFRAMESPELLBAR"
 		} )
 	end
 	if MoveAny:IsEnabled( "TARGETOFTARGETFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TargetFrameToT",
-			["lstr"] = "TARGETOFTARGETFRAME",
+			["lstr"] = "LID_TARGETOFTARGETFRAME",
 			["userplaced"] = true
 		} )
 	end
 	if FocusFrameToT and MoveAny:IsEnabled( "TARGETOFFOCUSFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "FocusFrameToT",
-			["lstr"] = "TARGETOFFOCUSFRAME",
+			["lstr"] = "LID_TARGETOFFOCUSFRAME",
 			["userplaced"] = true
 		} )
 	end
@@ -1320,19 +1320,19 @@ function MoveAny:Event( event, ... )
 
 		MoveAny:RegisterWidget( {
 			["name"] = "MACompactRaidFrameManager",
-			["lstr"] = "COMPACTRAIDFRAMEMANAGER"
+			["lstr"] = "LID_COMPACTRAIDFRAMEMANAGER"
 		} )
 	end
 	if MoveAny:IsEnabled( "MAFPSFrame", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "MAFPSFrame",
-			["lstr"] = "MAFPSFrame"
+			["name"] = "LID_MAFPSFrame",
+			["lstr"] = "LID_MAFPSFrame"
 		} )
 	end
 	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) and MoveAny:GetWoWBuild() ~= "RETAIL" then
 		MoveAny:RegisterWidget( {
 			["name"] = "IASkills",
-			["lstr"] = "IASKILLS"
+			["lstr"] = "LID_IASKILLS"
 		} )
 	end
 
@@ -1342,14 +1342,14 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "ZONETEXTFRAME", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "ZoneTextFrame",
-			["lstr"] = "ZONETEXTFRAME",
+			["lstr"] = "LID_ZONETEXTFRAME",
 			["userplaced"] = true
 		} )
 	end
 	if MoveAny:IsEnabled( "UIWIDGETTOPCENTER", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetTopCenterContainerFrame",
-			["lstr"] = "UIWIDGETTOPCENTER",
+			["lstr"] = "LID_UIWIDGETTOPCENTER",
 			["sw"] = 36 * 5,
 			["sh"] = 36 * 2,
 			["userplaced"] = true
@@ -1358,7 +1358,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "MIRRORTIMER1", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MirrorTimer1",
-			["lstr"] = "MIRRORTIMER1",
+			["lstr"] = "LID_MIRRORTIMER1",
 		} )
 	end
 
@@ -1369,7 +1369,7 @@ function MoveAny:Event( event, ... )
 		--UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetBelowMinimapContainerFrame",
-			["lstr"] = "UIWIDGETBELOWMINIMAP",
+			["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
 			["sw"] = 36 * 5,
 			["sh"] = 36 * 2,
 			["userplaced"] = true
@@ -1378,19 +1378,19 @@ function MoveAny:Event( event, ... )
 	if QueueStatusButton and MoveAny:IsEnabled( "QUEUESTATUSBUTTON", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "QueueStatusButton",
-			["lstr"] = "QUEUESTATUSBUTTON"
+			["lstr"] = "LID_QUEUESTATUSBUTTON"
 		} )
 	end
 	if BNToastFrame and MoveAny:IsEnabled( "BNToastFrame", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "BNToastFrame",
-			["lstr"] = "BNToastFrame"
+			["name"] = "LID_BNToastFrame",
+			["lstr"] = "LID_BNToastFrame"
 		} )
 	end
 	if VehicleSeatIndicator and MoveAny:IsEnabled( "VEHICLESEATINDICATOR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAVehicleSeatIndicator",
-			["lstr"] = "VEHICLESEATINDICATOR"
+			["lstr"] = "LID_VEHICLESEATINDICATOR"
 		} )
 	end
 	if MoveAny:IsEnabled( "DURABILITY", true ) then
@@ -1401,7 +1401,7 @@ function MoveAny:Event( event, ... )
 		end
 		MoveAny:RegisterWidget( {
 			["name"] = "DurabilityFrame",
-			["lstr"] = "DURABILITY",
+			["lstr"] = "LID_DURABILITY",
 			["userplaced"] = true
 		} )
 	end
@@ -1409,7 +1409,7 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "ARENAENEMYFRAMES", false ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAArenaEnemyFrames",
-				["lstr"] = "ARENAENEMYFRAMES",
+				["lstr"] = "LID_ARENAENEMYFRAMES",
 				["userplaced"] = true,
 				["secure"] = true
 			} )
@@ -1417,7 +1417,7 @@ function MoveAny:Event( event, ... )
 		if MoveAny:IsEnabled( "ARENAPREPFRAMES", false ) then
 			MoveAny:RegisterWidget( {
 				["name"] = "MAArenaPrepFrames",
-				["lstr"] = "ARENAPREPFRAMES",
+				["lstr"] = "LID_ARENAPREPFRAMES",
 				["userplaced"] = true,
 				["secure"] = true
 			} )
@@ -1426,7 +1426,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "BOSSTARGETFRAMECONTAINER", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "BossTargetFrameContainer",
-			["lstr"] = "BOSSTARGETFRAMECONTAINER",
+			["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
 			["userplaced"] = true,
 			["secure"] = true
 		} )
@@ -1434,7 +1434,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "TICKETSTATUSFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "TicketStatusFrame",
-			["lstr"] = "TICKETSTATUSFRAME",
+			["lstr"] = "LID_TICKETSTATUSFRAME",
 			["userplaced"] = true,
 			["secure"] = true
 		} )
@@ -1447,37 +1447,37 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "MICROMENU", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MAMenuBar",
-			["lstr"] = "MICROMENU"
+			["lstr"] = "LID_MICROMENU"
 		} )
 	end
 
 	if BagsBar then
 		MoveAny:RegisterWidget( {
 			["name"] = "BagsBar",
-			["lstr"] = "BAGS"
+			["lstr"] = "LID_BAGS"
 		} )
 	elseif MoveAny:IsEnabled( "BAGS", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MABagBar",
-			["lstr"] = "BAGS"
+			["lstr"] = "LID_BAGS"
 		} )
 	end
 	if IAMoneyBar and MoveAny:IsEnabled( "MONEYBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IAMoneyBar",
-			["lstr"] = "MONEYBAR"
+			["lstr"] = "LID_MONEYBAR"
 		} )
 	end
 	if IATokenBar and MoveAny:IsEnabled( "TOKENBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IATokenBar",
-			["lstr"] = "TOKENBAR"
+			["lstr"] = "LID_TOKENBAR"
 		} )
 	end
 	if IAILVLBar and MoveAny:IsEnabled( "IAILVLBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IAILVLBar",
-			["lstr"] = "IAILVLBAR"
+			["lstr"] = "LID_IAILVLBAR"
 		} )
 	end
 	
@@ -1585,14 +1585,14 @@ function MoveAny:Event( event, ... )
 		ZoneAbilityFrame:SetPoint( "BOTTOM", UIParent, "BOTTOM", 0, 200 )
 		MoveAny:RegisterWidget( {
 			["name"] = "ZoneAbilityFrame",
-			["lstr"] = "ZONEABILITYFRAME",
+			["lstr"] = "LID_ZONEABILITYFRAME",
 			["userplaced"] = true
 		} )
 	end
 	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled( "UIWIDGETPOWERBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "UIWidgetPowerBarContainerFrame",
-			["lstr"] = "UIWIDGETPOWERBAR",
+			["lstr"] = "LID_UIWIDGETPOWERBAR",
 			["sw"] = 36 * 6,
 			["sh"] = 36 * 1
 		} )
@@ -1604,13 +1604,13 @@ function MoveAny:Event( event, ... )
 	if ArcheologyDigsiteProgressBar and MoveAny:IsEnabled( "ARCHEOLOGYDIGSITEPROGRESSBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "ArcheologyDigsiteProgressBar",
-			["lstr"] = "ARCHEOLOGYDIGSITEPROGRESSBAR",
+			["lstr"] = "LID_ARCHEOLOGYDIGSITEPROGRESSBAR",
 		} )
 	end
 	if UIErrorsFrame and MoveAny:IsEnabled( "UIERRORSFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "UIErrorsFrame",
-			["lstr"] = "UIERRORSFRAME",
+			["lstr"] = "LID_UIERRORSFRAME",
 		} )
 	end
 	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
@@ -1648,7 +1648,7 @@ function MoveAny:Event( event, ... )
 
 		MoveAny:RegisterWidget( {
 			["name"] = "GroupLootFrame1",
-			["lstr"] = "GROUPLOOTCONTAINER",
+			["lstr"] = "LID_GROUPLOOTCONTAINER",
 			["sw"] = glfsw,
 			["sh"] = glfsh,
 			["px"] = 0,
@@ -1660,14 +1660,14 @@ function MoveAny:Event( event, ... )
 
 	if MainStatusTrackingBarContainer and MoveAny:IsEnabled( "MainStatusTrackingBarContainer", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "MainStatusTrackingBarContainer",
-			["lstr"] = "MainStatusTrackingBarContainer",
+			["name"] = "LID_MainStatusTrackingBarContainer",
+			["lstr"] = "LID_MainStatusTrackingBarContainer",
 		} )
 	end
 	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled( "SecondaryStatusTrackingBarContainer", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "SecondaryStatusTrackingBarContainer",
-			["lstr"] = "SecondaryStatusTrackingBarContainer",
+			["name"] = "LID_SecondaryStatusTrackingBarContainer",
+			["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
 		} )
 	end
 	if StatusTrackingBarManager then
@@ -1677,7 +1677,7 @@ function MoveAny:Event( event, ... )
 			local sw, sh = StatusTrackingBarManager:GetSize()
 			MoveAny:RegisterWidget( {
 				["name"] = "StatusTrackingBarManager",
-				["lstr"] = "STATUSTRACKINGBARMANAGER",
+				["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
 				["sw"] = sw - 6,
 				["sh"] = sh - 8,
 				["cleft"] = 0,
@@ -1695,7 +1695,7 @@ function MoveAny:Event( event, ... )
 			MainMenuExpBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 140 )
 			MoveAny:RegisterWidget( {
 				["name"] = "MainMenuExpBar",
-				["lstr"] = "MAINMENUEXPBAR"
+				["lstr"] = "LID_MAINMENUEXPBAR"
 			} )
 		end
 		if MoveAny:IsEnabled( "REPUTATIONWATCHBAR", true ) then
@@ -1703,7 +1703,7 @@ function MoveAny:Event( event, ... )
 			ReputationWatchBar:SetPoint( "BOTTOM", UIParent , "BOTTOM", 0, 130 )
 			MoveAny:RegisterWidget( {
 				["name"] = "ReputationWatchBar",
-				["lstr"] = "REPUTATIONWATCHBAR"
+				["lstr"] = "LID_REPUTATIONWATCHBAR"
 			} )
 		end
 	end
@@ -1711,7 +1711,7 @@ function MoveAny:Event( event, ... )
 	if MoveAny:IsEnabled( "TOTEMBAR", true ) and MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 		MoveAny:RegisterWidget( {
 			["name"] = "MultiCastActionBarFrame",
-			["lstr"] = "TOTEMBAR",
+			["lstr"] = "LID_TOTEMBAR",
 			["userplaced"] = true,
 			["secure"] = true
 		} )
@@ -1720,7 +1720,7 @@ function MoveAny:Event( event, ... )
 		local afsw, afsh = 276, 68
 		MoveAny:RegisterWidget( {
 			["name"] = "AlertFrame",
-			["lstr"] = "ALERTFRAME",
+			["lstr"] = "LID_ALERTFRAME",
 			["sw"] = afsw,
 			["sh"] = afsh
 		} )
@@ -1861,7 +1861,7 @@ function MoveAny:Event( event, ... )
 
 		MoveAny:RegisterWidget( {
 			["name"] = "ChatFrame" .. 1 .. "ButtonFrame",
-			["lstr"] = "CHATBUTTONFRAME",
+			["lstr"] = "LID_CHATBUTTONFRAME",
 		} )
 		if ChatFrameMenuButton then
 			function ChatFrameMenuButton:GetMAEle()
@@ -1888,13 +1888,13 @@ function MoveAny:Event( event, ... )
 		end
 		MoveAny:RegisterWidget( {
 			["name"] = "ChatFrame" .. 1 .. "EditBox",
-			["lstr"] = "CHATEDITBOX",
+			["lstr"] = "LID_CHATEDITBOX",
 		} )
 	end
 	if QuickJoinToastButton and MoveAny:IsEnabled( "CHATQUICKJOIN", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "QuickJoinToastButton",
-			["lstr"] = "CHATQUICKJOIN"
+			["lstr"] = "LID_CHATQUICKJOIN"
 		} )
 	end
 
@@ -1908,21 +1908,21 @@ function MoveAny:Event( event, ... )
 	if SpellActivationOverlayFrame and MoveAny:IsEnabled( "SPELLACTIVATIONOVERLAYFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "SpellActivationOverlayFrame",
-			["lstr"] = "SPELLACTIVATIONOVERLAYFRAME"
+			["lstr"] = "LID_SPELLACTIVATIONOVERLAYFRAME"
 		} )
 	end
 	
 	if LossOfControlFrame and MoveAny:IsEnabled( "LOSSOFCONTROLFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "LossOfControlFrame",
-			["lstr"] = "LOSSOFCONTROLFRAME"
+			["lstr"] = "LID_LOSSOFCONTROLFRAME"
 		} )
 	end
 
 	if GhostFrame and MoveAny:IsEnabled( "GHOSTFRAME", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "GhostFrame",
-			["lstr"] = "GHOSTFRAME",
+			["lstr"] = "LID_GHOSTFRAME",
 			["sw"] = 130,
 			["sh"] = 45,
  		} )
@@ -1998,8 +1998,8 @@ function MoveAny:Event( event, ... )
 		OnTooltipShow = function(tooltip)
 			if not tooltip or not tooltip.AddLine then return end
 			tooltip:AddLine( "MoveAny")
-			tooltip:AddLine( MoveAny:GT( "MMBTNLEFT" ) )
-			tooltip:AddLine( MoveAny:GT( "MMBTNRIGHT" ) )
+			tooltip:AddLine( MoveAny:GT( "LID_MMBTNLEFT" ) )
+			tooltip:AddLine( MoveAny:GT( "LID_MMBTNRIGHT" ) )
 		end,
 	})
 	if MoveAnyMinimapIcon then
