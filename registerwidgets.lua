@@ -709,15 +709,23 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	hooksecurefunc( frame, "SetSize", function( self, w, h )
+		local isToSmall = false
 		if w < sw then
 			w = sw
+			isToSmall = true
 		end
 		if h < sh then
 			h = sh
+			isToSmall = true
 		end
 		local df = _G[name .. "_DRAG"]
 		df:SetSize( w, h )
+		
+		if isToSmall then
+			self:SetSize( w, h )
+		end
 	end )
+	frame:SetSize( frame:GetSize() )
 
 	if not InCombatLockdown() then
 		frame:SetSize( sw, sh )
