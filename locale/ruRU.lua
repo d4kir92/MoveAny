@@ -115,7 +115,7 @@ function MoveAny:LangruRU()
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Панели действий 1-6"
+		tab["LID_ACTIONBARS"] = "Панели действий 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Панель действий 1 (главная панель)"
 		tab["LID_ACTIONBAR2"] = "Панель действий 2 (2. Страница панели действий 1)"
 		tab["LID_ACTIONBAR3"] = "Панель действий 3 (правая панель)"

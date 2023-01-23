@@ -148,7 +148,7 @@ function MoveAny:LangptBR()
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Barra de ação 1-6"
+		tab["LID_ACTIONBARS"] = "Barra de ação 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Barra de ação 1 (Barra principal)"
 		tab["LID_ACTIONBAR2"] = "Barra de ação 2 (2. Página da barra de ação 1)"
 		tab["LID_ACTIONBAR3"] = "Barra de ação 3 (barra direita)"

@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.24" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.25" )
 }
 
 local PREFIX = "MOAN"
@@ -318,6 +318,8 @@ function MoveAny:InitMALock()
 		AddCheckBox( posx, "TALKINGHEAD", MoveAny:GetWoWBuildNr() < 100000, nil, nil, "ShowTalkingHeadFrame" )
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox( posx, "ACTIONBARS", true )
+			AddCheckBox( 4, "ACTIONBAR3", false )
+			AddCheckBox( 4, "ACTIONBAR4", false )
 			AddCheckBox( 4, "ACTIONBAR7", false )
 			AddCheckBox( 4, "ACTIONBAR8", false )
 			AddCheckBox( 4, "ACTIONBAR9", false )

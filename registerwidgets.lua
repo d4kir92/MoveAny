@@ -808,7 +808,7 @@ end
 
 function MoveAny:AnyActionbarEnabled()
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		return MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR7", true ) or MoveAny:IsEnabled( "ACTIONBAR8", true ) or MoveAny:IsEnabled( "ACTIONBAR9", true ) or MoveAny:IsEnabled( "ACTIONBAR10", true )
+		return MoveAny:IsEnabled( "ACTIONBARS", true ) or MoveAny:IsEnabled( "ACTIONBAR3", true ) or MoveAny:IsEnabled( "ACTIONBAR4", true ) or MoveAny:IsEnabled( "ACTIONBAR7", true ) or MoveAny:IsEnabled( "ACTIONBAR8", true ) or MoveAny:IsEnabled( "ACTIONBAR9", true ) or MoveAny:IsEnabled( "ACTIONBAR10", true )
 	else
 		return false
 	end
@@ -887,7 +887,7 @@ function MoveAny:Event( event, ... )
 		end
 		if TargetFrameNumericalThreat and MoveAny:IsEnabled( "TargetFrameNumericalThreat", false ) then
 			MoveAny:RegisterWidget( {
-				["name"] = "LID_TargetFrameNumericalThreat",
+				["name"] = "TargetFrameNumericalThreat",
 				["lstr"] = "LID_TargetFrameNumericalThreat",
 				["userplaced"] = true
 			} )
@@ -1055,7 +1055,7 @@ function MoveAny:Event( event, ... )
 			if MoveAny:AnyActionbarEnabled()then
 				for i = 1, 10 do
 					if i ~= 2 then
-						if i <= 6 and MoveAny:IsEnabled( "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
+						if ( ( i == 1 or i == 5 or i == 6 ) and MoveAny:IsEnabled( "ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000 ) ) or MoveAny:IsEnabled( "ACTIONBAR" .. i, false ) then
 							MoveAny:RegisterWidget( {
 								["name"] = "MAActionBar" .. i,
 								["lstr"] = "LID_ACTIONBAR" .. i
@@ -1325,7 +1325,7 @@ function MoveAny:Event( event, ... )
 	end
 	if MoveAny:IsEnabled( "MAFPSFrame", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "LID_MAFPSFrame",
+			["name"] = "MAFPSFrame",
 			["lstr"] = "LID_MAFPSFrame"
 		} )
 	end
@@ -1383,7 +1383,7 @@ function MoveAny:Event( event, ... )
 	end
 	if BNToastFrame and MoveAny:IsEnabled( "BNToastFrame", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "LID_BNToastFrame",
+			["name"] = "BNToastFrame",
 			["lstr"] = "LID_BNToastFrame"
 		} )
 	end
@@ -1660,13 +1660,13 @@ function MoveAny:Event( event, ... )
 
 	if MainStatusTrackingBarContainer and MoveAny:IsEnabled( "MainStatusTrackingBarContainer", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "LID_MainStatusTrackingBarContainer",
+			["name"] = "MainStatusTrackingBarContainer",
 			["lstr"] = "LID_MainStatusTrackingBarContainer",
 		} )
 	end
 	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled( "SecondaryStatusTrackingBarContainer", true ) then
 		MoveAny:RegisterWidget( {
-			["name"] = "LID_SecondaryStatusTrackingBarContainer",
+			["name"] = "SecondaryStatusTrackingBarContainer",
 			["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
 		} )
 	end

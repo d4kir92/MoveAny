@@ -153,7 +153,7 @@ function MoveAny:LangdeDE()
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Aktionsleisten 1-6"
+		tab["LID_ACTIONBARS"] = "Aktionsleisten 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)"
 		tab["LID_ACTIONBAR2"] = "Aktionsleiste 2 (2. Seite von Aktionsleiste 1)"
 		tab["LID_ACTIONBAR3"] = "Aktionsleiste 3 (Rechte Leiste)"

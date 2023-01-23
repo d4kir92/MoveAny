@@ -113,7 +113,7 @@ function MoveAny:LangzhCN()
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "动作栏1-6"
+		tab["LID_ACTIONBARS"] = "动作栏1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "动作栏1（主栏）"
 		tab["LID_ACTIONBAR2"] = "动作条2（动作条1的第2页）"
 		tab["LID_ACTIONBAR3"] = "动作栏3（右栏）"
