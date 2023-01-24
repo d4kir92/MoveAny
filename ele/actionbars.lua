@@ -45,26 +45,58 @@ function MoveAny:UpdateActionBar( frame )
 	rows = tonumber( rows )
 
 	if frame == MAMenuBar then
-		if rows == 12 or rows == 6 or rows == 4 or rows == 3 then
-			if HelpMicroButton then
-				HelpMicroButton:GetParent():SetParent( MAMenuBar )
-			end
-			if MainMenuMicroButton then
-				MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
-			end
-		elseif rows == 10 or rows == 2 then
-			if HelpMicroButton then
-				HelpMicroButton:GetParent():SetParent( MAHIDDEN )
-			end
-			if MainMenuMicroButton then
-				MainMenuMicroButton:GetParent():SetParent( MAHIDDEN )
+		if MoveAny:GetWoWBuild() == "RETAIL" then
+			if rows == 3 or rows == 4 or rows == 12 then
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAMenuBar )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+				end
+			elseif rows == 11 or rows == 6 or rows == 4 or rows == 3 or rows == 1 then
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+				end
+			elseif rows == 10 or rows == 5 or rows == 2 then
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
+			else
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+				end
 			end
 		else
-			if HelpMicroButton then
-				HelpMicroButton:GetParent():SetParent( MAHIDDEN )
-			end
-			if MainMenuMicroButton then
-				MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+			if rows == 10 or rows == 5 or rows == 2 or rows == 1 then
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAMenuBar )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+				end
+			elseif rows == 9 or rows == 3 then
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
+				end
+			else
+				if HelpMicroButton then
+					HelpMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
+				if MainMenuMicroButton then
+					MainMenuMicroButton:GetParent():SetParent( MAHIDDEN )
+				end
 			end
 		end
 	end
@@ -75,12 +107,13 @@ function MoveAny:UpdateActionBar( frame )
 			maxbtns = maxbtns + 1
 		end
 	end
+
 	if maxbtns == 0 then
 		maxbtns = 1
 	end
 
 	opts["COUNT"] = opts["COUNT"] or maxbtns
-	
+
 	local count = opts["COUNT"] or maxbtns
 	count = tonumber( count )
 
@@ -92,7 +125,6 @@ function MoveAny:UpdateActionBar( frame )
 	end
 
 	local cols = maxB / rows
-
 	if cols % 1 ~= 0 then
 		rows = maxB
 		cols = maxB / rows
@@ -137,6 +169,14 @@ function MoveAny:UpdateActionBar( frame )
 						abtn:Show()
 					end
 				end
+
+				if frame == MAMenuBar then
+					abtn.hide = false
+					if not abtn:IsShown() then
+						abtn:Show()
+					end
+				end
+
 				id = id + 1
 			end
 		end

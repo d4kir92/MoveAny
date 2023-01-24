@@ -232,12 +232,14 @@ function MoveAny:MenuOptions( opt, frame )
 						end
 					end
 				end
-
-				if maxBtns == 12 then
-					items = { "1", "2", "3", "4", "6", "12" }
-					if frame == MAMenuBar then
-						items = { "1", "2", "3", "4", "6", "10", "11", "12" }
+				if frame == MAMenuBar then
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						items = { "1", "2", "3", "4", "5", "10", "11" }
+					else
+						items = { "1", "2", "3", "4", "5", "8", "9", "10" }
 					end
+				elseif maxBtns == 12 then
+					items = { "1", "2", "3", "4", "6", "12" }
 				elseif maxBtns == 11 then
 					items = { "1", "11" }
 				elseif maxBtns == 10 then

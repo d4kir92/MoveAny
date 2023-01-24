@@ -65,10 +65,7 @@ function MoveAny:LangdeDE()
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",
 		["LID_BNToastFrame"] = "Benachrichtigungen von Battlenet Freunden",
 
-		
-		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",
-
-		
+		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Zauber-Aktivierungs-Overlay",
 
 		["LID_ZONETEXTFRAME"] = "Zonentext",
 		["LID_UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status bei BGs/Dungeons)",

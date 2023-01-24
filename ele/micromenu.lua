@@ -91,10 +91,12 @@ function MoveAny:InitMicroMenu()
 					end
 					self.mmbsetpoint = false
 				end )
-				hooksecurefunc( mb, "SetParent", function( self, ... )
+				hooksecurefunc( mb, "SetParent", function( self, parent )
 					if self.masetparent then return end
 					self.masetparent = true
-					mb:SetParent( hb )
+					if parent ~= hb then
+						self:SetParent( hb )
+					end
 					self.masetparent = false
 				end )
 
@@ -106,14 +108,6 @@ function MoveAny:InitMicroMenu()
 					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 				end
 
-				--[[hooksecurefunc( mb, "Hide", function( self )
-					mb:Show()
-				end )
-				hooksecurefunc( mb, "SetAlpha", function( self, alpha )
-					if alpha <= 0 then
-						self:SetAlpha( 1 )
-					end
-				end )]]
 				mb:Show()
 
 				tinsert( MAMenuBar.btns, hb )
