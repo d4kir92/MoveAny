@@ -242,6 +242,8 @@ function MoveAny:MenuOptions( opt, frame )
 					items = { "1", "11" }
 				elseif maxBtns == 10 then
 					items = { "1", "2", "5", "10" }
+				elseif maxBtns == 9 then
+					items = { "1", "3", "9" }
 				elseif maxBtns == 8 then
 					items = { "1", "2", "4", "8" }
 				elseif maxBtns == 7 then
@@ -291,6 +293,7 @@ function MoveAny:MenuOptions( opt, frame )
 						
 						UpdateRowItems()
 						if slides.sliderRows then
+							slides.sliderRows:SetMinMaxValues( 1, #items )
 							slides.sliderRows:SetValue( slides.sliderRows:GetValue() )
 						end
 
@@ -320,7 +323,7 @@ function MoveAny:MenuOptions( opt, frame )
 				if value and value ~= opts["ROWS"] then
 					opts["ROWS"] = value
 					self.Text:SetText( MoveAny:GT( "LID_ROWS" ) .. ": " .. value )
-
+					
 					if frame.UpdateSystemSettingNumRows then
 						frame.numRows = value
 						frame:UpdateSystemSettingNumRows()
