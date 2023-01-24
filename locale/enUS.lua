@@ -91,6 +91,7 @@ function MoveAny:LangenUS()
 		["LID_REPUTATIONWATCHBAR"] = "Reputation Bar",
 		["LID_UIWIDGETPOWERBAR"] = "Power Bar (Boss Bar, Vigor Bar, ...)",
 
+		["LID_COUNT"] = "Count",
 		["LID_ROWS"] = "Rows",
 		["LID_SPACING"] = "Spacing",
 		

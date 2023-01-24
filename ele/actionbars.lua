@@ -78,11 +78,24 @@ function MoveAny:UpdateActionBar( frame )
 	if maxbtns == 0 then
 		maxbtns = 1
 	end
-	local cols = maxbtns / rows
+
+	opts["COUNT"] = opts["COUNT"] or maxbtns
+	
+	local count = opts["COUNT"] or maxbtns
+	count = tonumber( count )
+
+	local maxB = maxbtns
+	if frame ~= MAMenuBar then
+		if count > 0 then
+			maxB = count
+		end
+	end
+
+	local cols = maxB / rows
 
 	if cols % 1 ~= 0 then
-		rows = maxbtns
-		cols = maxbtns / rows
+		rows = maxB
+		cols = maxB / rows
 	end
 
 	local spacing = opts["SPACING"]
@@ -90,10 +103,6 @@ function MoveAny:UpdateActionBar( frame )
 
 	if frame.btns and frame.btns[1] then
 		local fSizeW, fSizeH = frame.btns[1]:GetSize()
-
-		if not InCombatLockdown() then
-			frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
-		end
 
 		local id = 1
 		for i, abtn in pairs( frame.btns ) do
@@ -104,8 +113,17 @@ function MoveAny:UpdateActionBar( frame )
 				else
 					abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
 				end
+				if count > 0 and i > count then
+					abtn:Hide()
+				else
+					abtn:Show()
+				end
 				id = id + 1
 			end
+		end
+
+		if not InCombatLockdown() then
+			frame:SetSize( cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing )
 		end
 	end
 end

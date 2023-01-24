@@ -221,50 +221,99 @@ function MoveAny:MenuOptions( opt, frame )
 			MoveAny:CreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
 			MoveAny:CreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
-			local max = getn( frame.btns )
+			local slides = {}
 			local items = {}
-			if max == 12 then
-				items = { "1", "2", "3", "4", "6", "12" }
-				if frame == MAMenuBar then
-					items = { "1", "2", "3", "4", "6", "10", "11", "12" }
+			local function UpdateRowItems()
+				local maxBtns = getn( frame.btns )
+				if frame ~= MAMenuBar then
+					if opts["COUNT"] then
+						if opts["COUNT"] > 0 then
+							maxBtns = opts["COUNT"]
+						end
+					end
 				end
-			elseif max == 11 then
-				items = { "1", "11" }
-			elseif max == 10 then
-				items = { "1", "2", "5", "10" }
-			elseif max == 8 then
-				items = { "1", "2", "4", "8" }
-			elseif max == 7 then
-				items = { "1", "7" }
-			elseif max == 6 then
-				items = { "1", "2", "3", "6" }
-			elseif max == 5 then
-				items = { "1", "5" }
-			elseif max == 4 then
-				items = { "1", "2", "4" }
-			elseif max == 3 then
-				items = { "1", "3" }
-			elseif max == 2 then
-				items = { "1", "2" }
-			elseif max == 1 then
-				items = { "1" }
-			else
-				MoveAny:MSG( "FOUND OTHER MAX: " .. max .. " for " .. name )
-				items = { "1" }
-			end
 
+				if maxBtns == 12 then
+					items = { "1", "2", "3", "4", "6", "12" }
+					if frame == MAMenuBar then
+						items = { "1", "2", "3", "4", "6", "10", "11", "12" }
+					end
+				elseif maxBtns == 11 then
+					items = { "1", "11" }
+				elseif maxBtns == 10 then
+					items = { "1", "2", "5", "10" }
+				elseif maxBtns == 8 then
+					items = { "1", "2", "4", "8" }
+				elseif maxBtns == 7 then
+					items = { "1", "7" }
+				elseif maxBtns == 6 then
+					items = { "1", "2", "3", "6" }
+				elseif maxBtns == 5 then
+					items = { "1", "5" }
+				elseif maxBtns == 4 then
+					items = { "1", "2", "4" }
+				elseif maxBtns == 3 then
+					items = { "1", "3" }
+				elseif maxBtns == 2 then
+					items = { "1", "2" }
+				elseif maxBtns == 1 then
+					items = { "1" }
+				else
+					--MoveAny:MSG( "FOUND OTHER MAX: " .. maxBtns .. " for " .. name )
+					items = { "1" }
+				end
+			end
+			UpdateRowItems()
+
+			local max = getn( frame.btns )
+			local count = opts["COUNT"] or max
 			local rows = opts["ROWS"] or 1
 
-			local sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			local PY = -20
+
+			if frame ~= MAMenuBar then
+				slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				local sliderCount = slides.sliderCount
+				sliderCount:SetWidth( content:GetWidth() - 110 )
+				sliderCount:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY );
+				sliderCount.Low:SetText( "" )
+				sliderCount.High:SetText( "" )
+				sliderCount.Text:SetText( MoveAny:GT("LID_COUNT") .. ": " .. count )
+				sliderCount:SetMinMaxValues( 0, max )
+				sliderCount:SetObeyStepOnDrag( true )
+				sliderCount:SetValueStep( 1 )
+				sliderCount:SetValue( count )
+				sliderCount:SetScript( "OnValueChanged", function(self, val)
+					val = tonumber( string.format( "%" .. 0 .. "f", val ) )
+					if val and val ~= opts["ROWS"] then
+						opts["COUNT"] = val
+						self.Text:SetText( MoveAny:GT( "LID_COUNT" ) .. ": " .. val )
+						
+						UpdateRowItems()
+						if slides.sliderRows then
+							slides.sliderRows:SetValue( slides.sliderRows:GetValue() )
+						end
+
+						if MoveAny.UpdateActionBar then
+							MoveAny:UpdateActionBar( frame )
+						end
+					end
+				end )
+
+				PY = PY - 30
+			end
+
+			slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			local sliderRows = slides.sliderRows
 			sliderRows:SetWidth( content:GetWidth() - 110 )
-			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -20 );
+			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY );
 			sliderRows.Low:SetText( "" )
 			sliderRows.High:SetText( "" )
 			sliderRows.Text:SetText( MoveAny:GT("LID_ROWS") .. ": " .. rows )
 			sliderRows:SetMinMaxValues( 1, #items )
 			sliderRows:SetObeyStepOnDrag( true )
 			sliderRows:SetValueStep( 1 )
-			sliderRows:SetValue( 1 )
+			sliderRows:SetValue( rows )
 			sliderRows:SetScript( "OnValueChanged", function(self, val)
 				val = tonumber( string.format( "%" .. 0 .. "f", val ) )
 				local value = items[val]
@@ -283,10 +332,12 @@ function MoveAny:MenuOptions( opt, frame )
 				end
 			end )
 
+			PY = PY - 30
+
 
 			local flipped = CreateFrame( "CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate" )
 			flipped:SetSize( btnsize, btnsize )
-			flipped:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -50 )
+			flipped:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, PY )
 			flipped:SetChecked( MoveAny:GetEleOption( name, "FLIPPED", false ) )
 			flipped:SetText( MoveAny:GT( "LID_FLIPPED" ) )
 			flipped:SetScript( "OnClick", function()
@@ -301,12 +352,14 @@ function MoveAny:MenuOptions( opt, frame )
 			flipped.text:SetPoint( "LEFT", flipped, "RIGHT", 0, 0)
 			flipped.text:SetText( MoveAny:GT( "LID_FLIPPED" ) )
 
+			PY = PY - 40
+
 
 
 			opts["SPACING"] = opts["SPACING"] or 2
 			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			slider:SetWidth( content:GetWidth() - 110 )
-			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, -86 );
+			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY );
 			slider.Low:SetText( 0 )
 			slider.High:SetText( 16 )
 			slider.Text:SetText( MoveAny:GT("LID_SPACING") .. ": " .. opts["SPACING"] )
@@ -522,6 +575,10 @@ function MoveAny:RegisterWidget( tab, debug )
 				local p1, p2, p3, p4, p5 = dragframe:GetPoint()
 				p4 = MoveAny:Grid( p4 )
 				p5 = MoveAny:Grid( p5 )
+				if frame.Selection and frame:GetScale() ~= 1 then
+					p4 = p4 * frame:GetScale()
+					p5 = p5 * frame:GetScale()
+				end
 
 				MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
 
@@ -541,6 +598,10 @@ function MoveAny:RegisterWidget( tab, debug )
 					end
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
+					if frame.Selection and frame:GetScale() ~= 1 then
+						dbp4 = dbp4 / frame:GetScale()
+						dbp5 = dbp5 / frame:GetScale()
+					end
 					frame:ClearAllPoints()
 					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				end
@@ -623,6 +684,11 @@ function MoveAny:RegisterWidget( tab, debug )
 	end
 
 	frame.ma_secure = secure
+
+	local bToSmall = false
+	if sw or sh then
+		bToSmall = true
+	end
 
 	sw = sw or frame:GetWidth()
 	sh = sh or frame:GetHeight()
@@ -710,6 +776,9 @@ function MoveAny:RegisterWidget( tab, debug )
 
 	hooksecurefunc( frame, "SetSize", function( self, w, h )
 		local isToSmall = false
+		local df = _G[name .. "_DRAG"]
+		df:SetSize( w, h )
+		
 		if w < sw then
 			w = sw
 			isToSmall = true
@@ -718,10 +787,9 @@ function MoveAny:RegisterWidget( tab, debug )
 			h = sh
 			isToSmall = true
 		end
-		local df = _G[name .. "_DRAG"]
-		df:SetSize( w, h )
-		
-		if isToSmall then
+
+		if bToSmall and isToSmall then
+			df:SetSize( w, h )
 			self:SetSize( w, h )
 		end
 	end )

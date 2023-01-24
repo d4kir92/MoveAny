@@ -88,6 +88,7 @@ function MoveAny:LangdeDE()
 		["LID_REPUTATIONWATCHBAR"] = "Rufleiste",
 		["LID_UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, ...)",
 
+		["LID_COUNT"] = "Anzahl",
 		["LID_ROWS"] = "Reihen",
 		["LID_SPACING"] = "Abstand",
 
