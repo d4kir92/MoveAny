@@ -116,17 +116,21 @@ function MoveAny:UpdateActionBar( frame )
 				hooksecurefunc( abtn, "Show", function( self )
 					if self.ma_abtn_hide then return end
 					self.ma_abtn_hide = true
-					if self.hide then
+					if self.hide and self:IsShown() then
 						self:Hide()
 					end
 					self.ma_abtn_hide = false
 				end )
 				if count > 0 and i > count then
 					abtn.hide = true
-					abtn:Hide()
+					if abtn:IsShown() then
+						abtn:Hide()
+					end
 				else
 					abtn.hide = false
-					abtn:Show()
+					if not abtn:IsShown() then
+						abtn:Show()
+					end
 				end
 				id = id + 1
 			end
