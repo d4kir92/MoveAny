@@ -114,9 +114,12 @@ function MoveAny:UpdateActionBar( frame )
 					abtn:SetPoint( "TOPLEFT", frame, "TOPLEFT", ( id - 1 ) % cols * (fSizeW + spacing), 1 - (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
 				end
 				hooksecurefunc( abtn, "Show", function( self )
-					if abtn.hide then
-						abtn:Hide()
+					if self.ma_abtn_hide then return end
+					self.ma_abtn_hide = true
+					if self.hide then
+						self:Hide()
 					end
+					self.ma_abtn_hide = false
 				end )
 				if count > 0 and i > count then
 					abtn.hide = true
