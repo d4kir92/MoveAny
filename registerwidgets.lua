@@ -2040,11 +2040,11 @@ function MoveAny:Event( event, ... )
 		MoveAny:MoveFrames()
 	end
 
-	if WorldMapFrame then	
+	if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then	
 		WorldMapFrame.ScrollContainer.GetCursorPosition = function( f )
 			local x, y = MapCanvasScrollControllerMixin.GetCursorPosition( f )
 			local scale = WorldMapFrame:GetScale()
-			if not IsAddOnLoaded( "Mapster" ) or MoveAny:GetWoWBuild() == "RETAIL" then
+			if not IsAddOnLoaded( "Mapster" ) then
 				return x / scale, y / scale
 			else
 				local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale();
