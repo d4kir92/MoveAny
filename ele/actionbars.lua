@@ -409,7 +409,7 @@ f:SetScript( "OnEvent", function( self, event )
 				
 				local _onAttributeChanged = [[
 					if name == 'statehidden' then
-						if HasBonusActionBar() or HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
+						if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
 							for i = 1, 12 do
 								if i < 7 then
 									if overridebuttons[i]:GetAttribute('statehidden') then
