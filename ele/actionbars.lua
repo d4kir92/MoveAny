@@ -397,7 +397,8 @@ f:SetScript( "OnEvent", function( self, event )
 					self:SetAttribute( "actionpage", newstate );
 				]] );
 				if MoveAny:GetWoWBuild() == "WRATH" then
-					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
+					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() ..";[vehicleui]" .. GetVehicleBarIndex() ..";[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
+					RegisterStateDriver( frame, "page", bars )
 				elseif MoveAny:GetWoWBuild() == "TBC" then
 					RegisterStateDriver( frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1" )
 				elseif MoveAny:GetWoWBuild() == "CLASSIC" then
@@ -408,7 +409,7 @@ f:SetScript( "OnEvent", function( self, event )
 				
 				local _onAttributeChanged = [[
 					if name == 'statehidden' then
-						if (HasOverrideActionBar() or HasVehicleActionBar()) then
+						if HasBonusActionBar() or HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
 							for i = 1, 12 do
 								if i < 7 then
 									if overridebuttons[i]:GetAttribute('statehidden') then

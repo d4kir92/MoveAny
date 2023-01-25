@@ -31,27 +31,43 @@ function MoveAny:UpdateBags()
 	local sw, sh = 0, 0
 	for i, mbname in pairs( BAGS ) do
 		local bb = _G[mbname]
-		if bb then
+		if bb and bb:IsShown() then
 			local w, h = bb:GetSize()
+			
 			sw = sw + w
 			if h > sh then
 				sh = h
 			end
 		end
 	end
-	if MABagBar then
-		MABagBar:SetSize( sw, sh )
+	if BagsBar then
+		BagsBar:SetSize( sw, sh )
 		local x = 0
 		for i, mbname in pairs( BAGS ) do
 			local bb = _G[mbname]
-			if bb then
+			if bb and bb:IsShown()then
 				local w, h = bb:GetSize()
-				bb:SetParent( MABagBar )
-				bb:ClearAllPoints()
-				bb:SetPoint( "TOPLEFT", MABagBar, "TOPLEFT", x, -(sh / 2 - h / 2) )
-				function bb:GetMAEle()
-					return MABagBar
+				bb:SetParent( BagsBar )
+				if bb.setup == nil then
+					bb.setup = true
+					hooksecurefunc( bb, "SetPoint", function( self, ... )
+						if self.ma_bags_setpoint then return end
+						self.ma_bags_setpoint = true
+						self:ClearAllPoints()
+						self:SetPoint( "TOPLEFT", BagsBar, "TOPLEFT", self.px, -(self.psh / 2 - self.ph / 2) )
+						self.ma_bags_setpoint = false
+					end )
+
+					function bb:GetMAEle()
+						return BagsBar
+					end
 				end
+				bb.px = x
+				bb.psh = sh
+				bb.ph = h
+				bb:ClearAllPoints()
+				bb:SetPoint( "TOPLEFT", BagsBar, "TOPLEFT", x, -(sh / 2 - h / 2) )
+				
 				x = x + w
 			end
 		end
@@ -60,18 +76,28 @@ end
 
 function MoveAny:InitBags()
 	if MoveAny:IsEnabled( "BAGS", true ) then
+
 		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
 		end
 
-		MABagBar = CreateFrame( "Frame", "MABagBar", UIParent )
+		if not BagsBar then
+			BagsBar = CreateFrame( "Frame", "BagsBar", UIParent )
+		end
+
+		hooksecurefunc( BagsBar, "SetSize", function( self, w, h )
+			if self.ma_bags_setsize then return end
+			self.ma_bags_setsize = true
+			MoveAny:UpdateBags()
+			self.ma_bags_setsize = false
+		end )
 
 		if MicroButtonAndBagsBar then
-			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
+			BagsBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
 		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
-			MABagBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
+			BagsBar:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 36 )
 		else
-			MABagBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
+			BagsBar:SetPoint( "CENTER", UIParent, "CENTER", 0, 0 )
 		end
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -603,10 +603,6 @@ function MoveAny:RegisterWidget( tab, debug )
 					end
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint( name )
-					if frame.Selection and frame:GetScale() ~= 1 then
-						dbp4 = dbp4 / frame:GetScale()
-						dbp5 = dbp5 / frame:GetScale()
-					end
 					frame:ClearAllPoints()
 					frame:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 				end
@@ -1537,11 +1533,11 @@ function MoveAny:Event( event, ... )
 			["name"] = "BagsBar",
 			["lstr"] = "LID_BAGS"
 		} )
-	elseif MoveAny:IsEnabled( "BAGS", true ) then
+	--[[elseif MoveAny:IsEnabled( "BAGS", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "MABagBar",
 			["lstr"] = "LID_BAGS"
-		} )
+		} )]]
 	end
 	if IAMoneyBar and MoveAny:IsEnabled( "MONEYBAR", true ) then
 		MoveAny:RegisterWidget( {
@@ -1751,7 +1747,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
 		} )
 	end
-	if StatusTrackingBarManager then
+	if not MainStatusTrackingBarContainer and not SecondaryStatusTrackingBarContainer and StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
 			-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
 
