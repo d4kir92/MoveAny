@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.34" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.35" )
 }
 
 local PREFIX = "MOAN"
@@ -362,7 +362,7 @@ function MoveAny:InitMALock()
 		if SecondaryStatusTrackingBarContainer then
 			AddCheckBox( 4, "SecondaryStatusTrackingBarContainer", true )
 		end
-		if not MainStatusTrackingBarContainer and not SecondaryStatusTrackingBarContainer and StatusTrackingBarManager then
+		if StatusTrackingBarManager then
 			AddCheckBox( 4, "STATUSTRACKINGBARMANAGER", true )
 		end
 		if MainMenuExpBar then

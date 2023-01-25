@@ -42,6 +42,7 @@ function MoveAny:UpdateBags()
 	end
 	if BagsBar then
 		BagsBar:SetSize( sw, sh )
+
 		local x = 0
 		for i, mbname in pairs( BAGS ) do
 			local bb = _G[mbname]
@@ -83,6 +84,7 @@ function MoveAny:InitBags()
 
 		if not BagsBar then
 			BagsBar = CreateFrame( "Frame", "BagsBar", UIParent )
+			BagsBar:SetSize( 100, 100 )
 		end
 
 		hooksecurefunc( BagsBar, "SetSize", function( self, w, h )

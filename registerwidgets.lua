@@ -1527,18 +1527,10 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_MICROMENU"
 		} )
 	end
-
-	if BagsBar then
-		MoveAny:RegisterWidget( {
-			["name"] = "BagsBar",
-			["lstr"] = "LID_BAGS"
-		} )
-	--[[elseif MoveAny:IsEnabled( "BAGS", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "MABagBar",
-			["lstr"] = "LID_BAGS"
-		} )]]
-	end
+	MoveAny:RegisterWidget( {
+		["name"] = "BagsBar",
+		["lstr"] = "LID_BAGS"
+	} )
 	if IAMoneyBar and MoveAny:IsEnabled( "MONEYBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IAMoneyBar",
@@ -1747,7 +1739,7 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
 		} )
 	end
-	if not MainStatusTrackingBarContainer and not SecondaryStatusTrackingBarContainer and StatusTrackingBarManager then
+	if StatusTrackingBarManager then
 		if MoveAny:IsEnabled( "STATUSTRACKINGBARMANAGER", true ) then
 			-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
 
