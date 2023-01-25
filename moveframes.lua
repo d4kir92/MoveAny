@@ -75,6 +75,7 @@ local MAFRAMES = {
 	"ItemSocketingFrame",
 	"BlackMarketFrame",
 	"QuestLogPopupDetailFrame",
+	"ItemInteractionFrame",
 }
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
