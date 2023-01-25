@@ -225,7 +225,7 @@ function MoveAny:MenuOptions( opt, frame )
 			local items = {}
 			local function UpdateRowItems()
 				local maxBtns = getn( frame.btns )
-				if frame ~= MAMenuBar then
+				if frame ~= MAMenuBar and frame ~= StanceBar then
 					if opts["COUNT"] then
 						if opts["COUNT"] > 0 then
 							maxBtns = opts["COUNT"]
@@ -275,7 +275,7 @@ function MoveAny:MenuOptions( opt, frame )
 
 			local PY = -20
 
-			if frame ~= MAMenuBar then
+			if frame ~= MAMenuBar and frame ~= StanceBar then
 				slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 				local sliderCount = slides.sliderCount
 				sliderCount:SetWidth( content:GetWidth() - 110 )

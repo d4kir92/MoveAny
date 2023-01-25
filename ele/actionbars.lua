@@ -118,7 +118,7 @@ function MoveAny:UpdateActionBar( frame )
 	count = tonumber( count )
 
 	local maxB = maxbtns
-	if frame ~= MAMenuBar then
+	if frame ~= MAMenuBar and frame ~= StanceBar then
 		if count > 0 then
 			maxB = count
 		end
