@@ -76,15 +76,15 @@ function MoveAny:UpdateBags()
 end
 
 function MoveAny:InitBags()
+	if not BagsBar then
+		BagsBar = CreateFrame( "Frame", "BagsBar", UIParent )
+		BagsBar:SetSize( 100, 100 )
+	end
+
 	if MoveAny:IsEnabled( "BAGS", true ) then
 
 		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
-		end
-
-		if not BagsBar then
-			BagsBar = CreateFrame( "Frame", "BagsBar", UIParent )
-			BagsBar:SetSize( 100, 100 )
 		end
 
 		hooksecurefunc( BagsBar, "SetSize", function( self, w, h )

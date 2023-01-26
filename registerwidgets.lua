@@ -1527,10 +1527,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_MICROMENU"
 		} )
 	end
-	MoveAny:RegisterWidget( {
-		["name"] = "BagsBar",
-		["lstr"] = "LID_BAGS"
-	} )
+	if MoveAny:IsEnabled( "BAGS", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "BagsBar",
+			["lstr"] = "LID_BAGS"
+		} )
+	end
 	if IAMoneyBar and MoveAny:IsEnabled( "MONEYBAR", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IAMoneyBar",
