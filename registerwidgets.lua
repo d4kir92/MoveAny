@@ -693,6 +693,8 @@ function MoveAny:RegisterWidget( tab, debug )
 
 	sw = sw or frame:GetWidth()
 	sh = sh or frame:GetHeight()
+	sw = math.floor( sw )
+	sh = math.floor( sh )
 
 	if MoveAny:GetElePoint( name ) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
@@ -710,7 +712,10 @@ function MoveAny:RegisterWidget( tab, debug )
 			MoveAny:SetElePoint( name, an, UIParent, re, px, py ) 
 		end
 	end
-	MoveAny:SetEleSize( name, sw, sh )
+	local osw, osh = MoveAny:GetEleSize( name )
+	if osw ~= sw or osh ~= sh then
+		MoveAny:SetEleSize( name, sw, sh )
+	end
 
 	if frame.SetPointBase then
 		--frame.layoutApplyInProgress = true

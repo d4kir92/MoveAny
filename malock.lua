@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.41" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.42" )
 }
 
 local PREFIX = "MOAN"
@@ -178,10 +178,6 @@ local function AddCheckBox( x, key, val, func, id, editModeEnum )
 			if func then
 				func()
 			end
-
-			if MALock.save then
-				MALock.save:Enable()
-			end
 		end)
 
 		cb.f = cb:CreateFontString( nil, nil, "GameFontNormal" )
@@ -227,10 +223,6 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 				if func then
 					func()
 				end
-
-				if MALock.save then
-					MALock.save:Enable()
-				end
 			end
 		end)
 		posy = posy - 10
@@ -244,6 +236,19 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 		posy = posy - 24
 	else
 		sls[key]:Hide()
+	end
+end
+
+function MoveAny:EnableSave( from, key )
+	if MALock == nil then
+		return
+	end
+
+	if MALock.save then
+		MALock.save:Enable()
+	end
+	if MALock.CloseButton then
+		MALock.CloseButton:Disable()
 	end
 end
 
@@ -268,13 +273,13 @@ function MoveAny:InitMALock()
 		p5 = MoveAny:Grid( p5 )
 		MoveAny:SetElePoint( "MALock", p1, _, p3, p4, p5 )
 	end )
-
+	
 	MALock.TitleText:SetText( config.title )
 
 	MALock.CloseButton:SetScript( "OnClick", function()
 		MoveAny:ToggleMALock()
 	end )
-
+	
 	function MAUpdateElementList()
 		local _, class = UnitClass( "PLAYER" )
 		
@@ -500,7 +505,18 @@ function MoveAny:InitMALock()
 	MALock.save:SetPoint( "TOPLEFT", MALock, "TOPLEFT", 4, -MALock:GetHeight() + 24 + 4 )
 	MALock.save:SetText( SAVE )
 	MALock.save:SetScript("OnClick", function()
-		C_UI.Reload()
+		if EditModeManagerFrame then
+			EditModeManagerFrame.SaveChangesButton:SetEnabled( true )
+			EditModeManagerFrame.SaveChangesButton:Click()
+			EditModeManagerFrame.CloseButton:Click()
+		end
+
+		if MALock.save then
+			MALock.save:Disable()
+		end
+		if MALock.CloseButton then
+			MALock.CloseButton:Enable()
+		end
 	end)
 	MALock.save:Disable()
 
@@ -574,7 +590,7 @@ function MoveAny:InitMALock()
 		MALock:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 	end
 
-	MoveAny:HideMALock( true )
+	MoveAny:HideMALock()
 end
 
 function MoveAny:UpdateGrid()

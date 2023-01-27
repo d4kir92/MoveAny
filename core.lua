@@ -78,7 +78,7 @@ function MoveAny:ShowMALock()
 	end
 end
 
-function MoveAny:HideMALock( ignore )
+function MoveAny:HideMALock()
 	if not MoveAny:IsEnabled( "MALOCK", false ) then
 		for i, df in pairs( MoveAny:GetDragFrames() ) do
 			df:EnableMouse( false )
@@ -89,20 +89,15 @@ function MoveAny:HideMALock( ignore )
 			MAGridFrame:Hide()
 
 			MALock:UpdateShowErrors()
-
-			if ignore == nil and not InCombatLockdown() and GameMenuButtonEditMode then
-				GameMenuButtonEditMode:Click()
-				if EditModeManagerFrame then
-					EditModeManagerFrame.SaveChangesButton:SetEnabled( true )
-					EditModeManagerFrame.SaveChangesButton:Click()
-					EditModeManagerFrame.CloseButton:Click()
-				end
-			end
 		end
 	end
 end
 
 function MoveAny:ToggleMALock()
+	if MALock.save and MALock.save:IsEnabled() then
+		return
+	end
+
 	MoveAny:SetEnabled( "MALOCK", not MoveAny:IsEnabled( "MALOCK", false ) )
 	if MoveAny:IsEnabled( "MALOCK", false ) then
 		MoveAny:ShowMALock()

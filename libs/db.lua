@@ -223,6 +223,8 @@ end
 
 function MoveAny:SV( key, val )
 	MATAB[key] = val
+
+	MoveAny:EnableSave( "SV", key )
 end
 
 function MoveAny:FixTable( tab )
@@ -320,6 +322,10 @@ function MoveAny:SetEnabled( element, value )
 
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
+
+	if element ~= "MALOCK" then
+		MoveAny:EnableSave( "SetEnabled", element )
+	end
 end
 
 function MoveAny:IsEnabled( element, value, settings )
@@ -358,6 +364,8 @@ end
 function MoveAny:SetEleOption( element, key, value )
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
+
+	MoveAny:EnableSave( "SetEleOption", key )
 end
 
 function MoveAny:GetElePoint( key )
@@ -402,6 +410,8 @@ function MoveAny:SetElePoint( key, p1, p2, p3, p4, p5 )
 			EditModeSystemMixin.UpdateSystem( frame, frame.systemInfo )
 		end
 	end
+
+	MoveAny:EnableSave( "SetElePoint", key )
 end
 
 function MoveAny:GetEleSize( key )
@@ -415,8 +425,10 @@ end
 function MoveAny:SetEleSize( key, sw, sh )
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 
-	MoveAny:GetTab()["ELES"]["SIZES"][key]["SW"] = sw
-	MoveAny:GetTab()["ELES"]["SIZES"][key]["SH"] = sh
+	MoveAny:GetTab()["ELES"]["SIZES"][key]["SW"] = math.floor( sw )
+	MoveAny:GetTab()["ELES"]["SIZES"][key]["SH"] = math.floor( sh )
+
+	MoveAny:EnableSave( "SetEleSize", key )
 end
 
 function MoveAny:GetEleScale( key )
@@ -451,6 +463,8 @@ function MoveAny:SetEleScale( key, scale )
 	else
 		MoveAny:MSG( "[SetEleScale] SCALE <= 0, key: " .. tostring( key ) )
 	end
+
+	MoveAny:EnableSave( "SetEleScale", key )
 end
 
 function MoveAny:GetFramePoint( key )
@@ -472,6 +486,8 @@ function MoveAny:SetFramePoint( key, p1, p2, p3, p4, p5 )
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["RE"] = p3
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PX"] = p4
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PY"] = p5
+
+	MoveAny:EnableSave( "SetFramePoint", key )
 end
 
 function MoveAny:GetFrameScale( key )
@@ -485,6 +501,8 @@ function MoveAny:SetFrameScale( key, scale )
 	MoveAny:GetTab()["FRAMES"]["SIZES"][key] = MoveAny:GetTab()["FRAMES"]["SIZES"][key] or {}
 
 	MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"] = scale
+
+	MoveAny:EnableSave( "SetFrameScale", key )
 end
 
 function MoveAny:GetMinimapTable()
