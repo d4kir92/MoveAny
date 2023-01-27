@@ -94,7 +94,7 @@ function MoveAny:HideMALock()
 end
 
 function MoveAny:ToggleMALock()
-	if MALock.save and MALock.save:IsEnabled() then
+	if MoveAny:IsEnabled( "MALOCK", false ) and MALock.save and MALock.save:IsEnabled() then
 		return
 	end
 

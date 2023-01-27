@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.42" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.43" )
 }
 
 local PREFIX = "MOAN"
@@ -241,6 +241,9 @@ end
 
 function MoveAny:EnableSave( from, key )
 	if MALock == nil then
+		return
+	end
+	if not MALock:IsVisible() then
 		return
 	end
 
