@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.44" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.45" )
 }
 
 local PREFIX = "MOAN"
@@ -239,6 +239,7 @@ local function AddSlider( x, key, val, func, vmin, vmax, steps )
 	end
 end
 
+local saved = false
 function MoveAny:EnableSave( from, key )
 	if MALock == nil then
 		return
@@ -246,7 +247,7 @@ function MoveAny:EnableSave( from, key )
 	if not MALock:IsVisible() then
 		return
 	end
-
+	saved = true
 	if MALock.save then
 		MALock.save:Enable()
 	end
@@ -281,6 +282,9 @@ function MoveAny:InitMALock()
 
 	MALock.CloseButton:SetScript( "OnClick", function()
 		MoveAny:ToggleMALock()
+		if saved then
+			C_UI.Reload()
+		end
 	end )
 	
 	function MAUpdateElementList()
