@@ -154,6 +154,8 @@ function MoveAny:LangenUS()
 		["LID_SecondaryStatusTrackingBarContainer"] = "Reputation Bar",
 
 		["LID_TargetFrameNumericalThreat"] = "Threat Percentage",
+
+		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Levelup, Zonetext)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

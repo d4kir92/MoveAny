@@ -76,6 +76,7 @@ local MAFRAMES = {
 	"BlackMarketFrame",
 	"QuestLogPopupDetailFrame",
 	"ItemInteractionFrame",
+	"GarrisonCapacitiveDisplayFrame",
 }
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
@@ -313,7 +314,7 @@ function MoveAny:MoveFrames()
 					hooksecurefunc( frame, "SetPoint", function( self, ... )
 						if self.maframesetpoint then return end
 						self.maframesetpoint = true
-
+						
 						self:SetMovable( true )
 						if self.SetUserPlaced and self:IsMovable() then
 							self:SetUserPlaced( false )

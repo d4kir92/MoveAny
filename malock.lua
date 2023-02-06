@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.46" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.47" )
 }
 
 local PREFIX = "MOAN"
@@ -384,6 +384,7 @@ function MoveAny:InitMALock()
 		
 		AddCheckBox( 4, "MAFPSFrame", true )
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
+		--AddCheckBox( 4, "POWERBAR", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		AddCheckBox( 4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false )
 		AddCheckBox( 4, "UIERRORSFRAME", false )
@@ -450,6 +451,7 @@ function MoveAny:InitMALock()
 		if BNToastFrame then
 			AddCheckBox( 4, "BNToastFrame", false )
 		end
+		AddCheckBox( 4, "EventToastManagerFrame", false )
 		AddCheckBox( 4, "COMPACTRAIDFRAMEMANAGER", false )
 		AddCheckBox( 4, "TICKETSTATUSFRAME", false )
 		if TargetFrame and TargetFrameNumericalThreat then

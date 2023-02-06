@@ -1673,6 +1673,23 @@ function MoveAny:Event( event, ... )
 			["sh"] = 36 * 1
 		} )
 	end
+	--[[if PlayerPowerBarAlt and MoveAny:IsEnabled( "POWERBAR", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "PlayerPowerBarAlt",
+			["lstr"] = "LID_POWERBAR",
+			["sw"] = 36 * 6,
+			["sh"] = 36 * 1
+		} )
+	end]]
+
+	if EventToastManagerFrame and MoveAny:IsEnabled( "EventToastManagerFrame", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "EventToastManagerFrame",
+			["lstr"] = "LID_EventToastManagerFrame",
+			["sw"] = 36 * 2,
+			["sh"] = 36 * 2
+		} )
+	end
 	
 	if MoveAny:GetWoWBuild() == "RETAIL" then
 		LoadAddOn("Blizzard_ArchaeologyUI")

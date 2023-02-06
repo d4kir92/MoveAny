@@ -148,6 +148,8 @@ function MoveAny:LangdeDE()
 		["LID_SecondaryStatusTrackingBarContainer"] = "Rufleiste",
 
 		["LID_TargetFrameNumericalThreat"] = "Bedrohungs Prozente",
+
+		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Stufenaufstieg, Zonentext)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
