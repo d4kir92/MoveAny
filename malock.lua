@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.47" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.48" )
 }
 
 local PREFIX = "MOAN"
@@ -386,6 +386,7 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
 		--AddCheckBox( 4, "POWERBAR", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
+		--AddCheckBox( 4, "BUFFTIMER1", true )
 		AddCheckBox( 4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false )
 		AddCheckBox( 4, "UIERRORSFRAME", false )
 

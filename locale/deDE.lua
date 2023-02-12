@@ -83,7 +83,7 @@ function MoveAny:LangdeDE()
 		["LID_EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit (Zauber für Quests, Bosse)",
 		["LID_MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["LID_REPUTATIONWATCHBAR"] = "Rufleiste",
-		["LID_UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, ...)",
+		["LID_UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, Dunkelmond-Jahrmarkt, ...)",
 
 		["LID_COUNT"] = "Anzahl",
 		["LID_ROWS"] = "Reihen",
@@ -150,6 +150,7 @@ function MoveAny:LangdeDE()
 		["LID_TargetFrameNumericalThreat"] = "Bedrohungs Prozente",
 
 		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Stufenaufstieg, Zonentext)",
+		["LID_BUFFTIMER1"] = "Stärkungsanzeige",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

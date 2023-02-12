@@ -1058,7 +1058,7 @@ function MoveAny:Event( event, ... )
 			if MoveAny:IsEnabled( "CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000 ) then
 				MoveAny:RegisterWidget( {
 					["name"] = "PlayerCastingBarFrame",
-					["lstr"] = "LID_CASTINGBAR"
+					["lstr"] = "LID_CASTINGBAR",
 				} )
 			end
 		else

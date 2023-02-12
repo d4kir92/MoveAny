@@ -89,7 +89,7 @@ function MoveAny:LangenUS()
 		["LID_EXTRAABILITYCONTAINER"] = "Extra Ability (Spells for Quest, Boss)",
 		["LID_MAINMENUEXPBAR"] = "Exp Bar",
 		["LID_REPUTATIONWATCHBAR"] = "Reputation Bar",
-		["LID_UIWIDGETPOWERBAR"] = "Power Bar (Boss Bar, Vigor Bar, ...)",
+		["LID_UIWIDGETPOWERBAR"] = "Power Bar (Boss Bar, Vigor Bar, Darkmoon faire, ...)",
 
 		["LID_COUNT"] = "Count",
 		["LID_ROWS"] = "Rows",
@@ -156,6 +156,7 @@ function MoveAny:LangenUS()
 		["LID_TargetFrameNumericalThreat"] = "Threat Percentage",
 
 		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Levelup, Zonetext)",
+		["LID_BUFFTIMER1"] = "Buff Timer",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
