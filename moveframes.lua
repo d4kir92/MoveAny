@@ -2,9 +2,15 @@
 local AddOnName, MoveAny = ...
 
 local MAFRAMES = {
-	--"StaticPopup1", Buggy
-	--"StaticPopup2", Buggy
-	--"ReadyCheckListenerFrame", Buggy
+	-- BUGGY:
+	--"StaticPopup1",
+	--"StaticPopup2",
+	--"ReadyCheckFrame",
+
+	-- BUGGY?:
+	"PVPParentFrame",
+
+	-- Working:
 	"SettingsPanel",
 	"SplashFrame",
 	"GameMenuFrame",
@@ -32,7 +38,6 @@ local MAFRAMES = {
 	"CovenantMissionFrame",
 	"OrderHallMissionFrame",
 	"PVPMatchScoreboard",
-	"PVPParentFrame", -- BUGGY?
 	"GossipFrame",
 	"MerchantFrame",
 	"PetStableFrame",
@@ -215,7 +220,7 @@ function MoveAny:MoveFrames()
 									
 					frame:SetClampedToScreen( true )
 
-					function frame:MAStopMoving()
+					function MoveAny:MAFrameStopMoving( frameObj )
 						local fm = _G[name .. "Move"]
 						if fm.ismoving then
 							fm.ismoving = false
@@ -227,25 +232,27 @@ function MoveAny:MoveFrames()
 						currentFrameName = nil
 					end
 
-					function frame:MACheckSave()
+					function MoveAny:MAFrameCheckSave( frameObj )
 						if not MoveAny:IsEnabled( "SAVEFRAMEPOSITION", true ) then
 							MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
-							frame:SetMovable( true )
-							if frame.SetUserPlaced then
-								frame:SetUserPlaced( false )
+							frameObj:SetMovable( true )
+							if frameObj.SetUserPlaced then
+								frameObj:SetUserPlaced( false )
 							end
 						end
 						if not MoveAny:IsEnabled( "SAVEFRAMESCALE", true ) then
 							MoveAny:SetFrameScale( name, nil )
-							frame:SetScale( frame:GetScale() )
+							frameObj:SetScale( frameObj:GetScale() )
 						end
 					end
-					frame:MACheckSave()
+					MoveAny:MAFrameCheckSave( frame )
 
 					frame:HookScript( "OnHide", function()
-						frame:MAStopMoving()
+						MoveAny:MAFrameStopMoving()
 
-						frame:MACheckSave()
+						if MoveAny.MAFrameCheckSave then
+							MoveAny:MAFrameCheckSave( frame )
+						end
 					end )
 
 					function MoveAny:IsResetButtonDown( btn )
@@ -295,23 +302,25 @@ function MoveAny:MoveFrames()
 					end )
 
 					frame:HookScript( "OnMouseUp", function( self )
-						frame:MAStopMoving()
+						MoveAny:MAFrameStopMoving()
 					end )
 
-					function frame:MARetrySetPoint()
-						frame.maretrysetpoint = true
+					function MoveAny:MAFrameRetrySetPoint( frameObj )
+						frameObj.maretrysetpoint = true
 						if not InCombatLockdown() then
-							if frame:GetPoint() then
-								frame:SetPoint( frame:GetPoint() )
+							if frameObj:GetPoint() then
+								frameObj:SetPoint( frameObj:GetPoint() )
 							else
-								frame:SetPoint( "CENTER" )
+								frameObj:SetPoint( "CENTER" )
 							end
 						else
-							C_Timer.After( 0.01, frame.MARetrySetPoint )
+							C_Timer.After( 0.01, function()
+								MoveAny:MAFrameRetrySetPoint( frameObj )
+							end )
 						end
 					end
 
-					hooksecurefunc( frame, "SetPoint", function( self, ... )
+					hooksecurefunc( frame, "SetPoint", function( self, p1, p2, p3, p4, p5 )
 						if self.maframesetpoint then return end
 						self.maframesetpoint = true
 						
@@ -325,14 +334,15 @@ function MoveAny:MoveFrames()
 							if not InCombatLockdown() then
 								self.maretrysetpoint = nil
 								local w, h = self:GetSize()
+
 								self:ClearAllPoints()
 								self:SetPoint( dbp1, UIParent, dbp3, dbp4, dbp5 )
 
 								if self:GetNumPoints() > 1 then
 									self:SetSize( w, h )
 								end
-							elseif self.maretrysetpoint == nil then
-								frame:MARetrySetPoint()
+							elseif self.maretrysetpoint == nil and MoveAny.MAFrameRetrySetPoint then
+								MoveAny:MAFrameRetrySetPoint( frame )
 							end
 						end
 						self.maframesetpoint = false
@@ -370,19 +380,17 @@ function MoveAny:MoveFrames()
 							frame:ClearAllPoints()
 							frame:SetPoint( p1, p2, p3, p4, p5 )
 						else
-							function frame:MAUpdatePos()
-								frame.maupdatepos = true
+							function MoveAny:MAFrameUpdatePos( frameObj )
 								if not InCombatLockdown() then
-									frame:ClearAllPoints()
-									frame:SetPoint( p1, p2, p3, p4, p5 )
-									frame.maupdatepos = nil
+									frameObj:ClearAllPoints()
+									frameObj:SetPoint( p1, p2, p3, p4, p5 )
 								else
-									C_Timer.After( 0.03, frame.MAUpdatePos )
+									C_Timer.After( 0.03, function()
+										MoveAny:MAFrameUpdatePos( frameObj )
+									end )
 								end
 							end
-							if frame.maupdatepos == nil then
-								frame:MAUpdatePos()
-							end
+							MoveAny:MAFrameUpdatePos( frame )
 						end
 					end
 				else
