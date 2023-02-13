@@ -1631,7 +1631,35 @@ function MoveAny:Event( event, ... )
 		MAGameTooltip = CreateFrame( "Frame", "MAGameTooltip", UIParent )
 		MAGameTooltip:SetSize( 100, 100 )
 		MAGameTooltip:SetPoint( "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100 )
-		
+
+		hooksecurefunc( GameTooltip, "SetScale", function( self, ... )
+			if self.gtsetscale then return end
+			self.gtsetscale = true
+			self:SetScale( MAGameTooltip:GetScale() )
+			self.gtsetscale = false
+		end )
+		hooksecurefunc( MAGameTooltip, "SetScale", function( self, ... )
+			if self.gtsetscale2 then return end
+			self.gtsetscale2 = true
+			GameTooltip:SetScale( MAGameTooltip:GetScale() )
+			self.gtsetscale2 = false
+		end )
+		GameTooltip:SetScale( MAGameTooltip:GetScale() )
+
+		hooksecurefunc( GameTooltip, "SetAlpha", function( self, ... )
+			if self.gtsetalpha then return end
+			self.gtsetalpha = true
+			self:SetAlpha( MAGameTooltip:GetAlpha() )
+			self.gtsetalpha = false
+		end )
+		hooksecurefunc( MAGameTooltip, "SetAlpha", function( self, ... )
+			if self.gtsetalpha2 then return end
+			self.gtsetalpha2 = true
+			GameTooltip:SetAlpha( MAGameTooltip:GetAlpha() )
+			self.gtsetalpha2 = false
+		end )
+		GameTooltip:SetAlpha( MAGameTooltip:GetAlpha() )
+
 		hooksecurefunc( GameTooltip, "SetPoint", function( self, ... )
 			if self.gtsetpoint then return end
 			self.gtsetpoint = true
