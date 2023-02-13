@@ -221,6 +221,7 @@ function MoveAny:MoveFrames()
 					frame:SetClampedToScreen( true )
 
 					function MoveAny:MAFrameStopMoving( frameObj )
+						local name = frameObj:GetName()
 						local fm = _G[name .. "Move"]
 						if fm.ismoving then
 							fm.ismoving = false
@@ -248,7 +249,7 @@ function MoveAny:MoveFrames()
 					MoveAny:MAFrameCheckSave( frame )
 
 					frame:HookScript( "OnHide", function()
-						MoveAny:MAFrameStopMoving()
+						MoveAny:MAFrameStopMoving( frame )
 
 						if MoveAny.MAFrameCheckSave then
 							MoveAny:MAFrameCheckSave( frame )
@@ -302,7 +303,7 @@ function MoveAny:MoveFrames()
 					end )
 
 					frame:HookScript( "OnMouseUp", function( self )
-						MoveAny:MAFrameStopMoving()
+						MoveAny:MAFrameStopMoving( self )
 					end )
 
 					function MoveAny:MAFrameRetrySetPoint( frameObj )
