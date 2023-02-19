@@ -34,6 +34,7 @@ function MoveAny:LangdeDE()
 		["LID_ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
 		["LID_PALADINPOWERBARFRAME"] = "Paladin Machtleiste",
 		["LID_MAFPSFrame"] = "FPS",
+		["LID_IAPingFrame"] = "Ping",
 
 		["LID_MINIMAP"] = "Minimap",
 		["LID_BUFFS"] = "Stärkungszauber",

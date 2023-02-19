@@ -40,6 +40,7 @@ function MoveAny:LangenUS()
 		["LID_ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
 		["LID_PALADINPOWERBARFRAME"] = "Paladin Power Bar",
 		["LID_MAFPSFrame"] = "FPS",
+		["LID_IAPingFrame"] = "Ping",
 
 		["LID_MINIMAP"] = "Mini Map",
 		["LID_BUFFS"] = "Buffs",

@@ -1411,6 +1411,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_MAFPSFrame"
 		} )
 	end
+	if MoveAny:IsEnabled( "IAPingFrame", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "IAPingFrame",
+			["lstr"] = "LID_IAPingFrame"
+		} )
+	end
 	if IASkills and MoveAny:IsEnabled( "IASKILLS", true ) and MoveAny:GetWoWBuild() ~= "RETAIL" then
 		MoveAny:RegisterWidget( {
 			["name"] = "IASkills",
