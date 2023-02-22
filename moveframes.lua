@@ -82,6 +82,7 @@ local MAFRAMES = {
 	"QuestLogPopupDetailFrame",
 	"ItemInteractionFrame",
 	"GarrisonCapacitiveDisplayFrame",
+	"ChannelFrame",
 }
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
