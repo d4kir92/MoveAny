@@ -55,6 +55,7 @@ function MoveAny:LangenUS()
 		["LID_GAMETOOLTIP"] = "Tooltip",
 		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
 		["LID_QUEUESTATUSBUTTON"] = "LFG Status",
+		["LID_QUEUESTATUSFRAME"] = "LFG Status Tooltip",
 
 		["LID_PETBAR"] = "Pet Bar",
 		["LID_STANCEBAR"] = "Stance Bar",
@@ -91,6 +92,7 @@ function MoveAny:LangenUS()
 		["LID_MAINMENUEXPBAR"] = "Exp Bar",
 		["LID_REPUTATIONWATCHBAR"] = "Reputation Bar",
 		["LID_UIWIDGETPOWERBAR"] = "Power Bar (Boss Bar, Vigor Bar, Darkmoon faire, ...)",
+		["LID_POWERBAR"] = "Power Bar (Encounters, ...)",
 
 		["LID_COUNT"] = "Count",
 		["LID_ROWS"] = "Rows",

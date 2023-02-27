@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.53" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.54" )
 }
 
 local PREFIX = "MOAN"
@@ -367,6 +367,9 @@ function MoveAny:InitMALock()
 		if QueueStatusButton then
 			AddCheckBox( 4, "QUEUESTATUSBUTTON", true )
 		end
+		if QueueStatusFrame then
+			AddCheckBox( 4, "QUEUESTATUSFRAME", false )
+		end
 
 		if MainStatusTrackingBarContainer then
 			AddCheckBox( 4, "MainStatusTrackingBarContainer", true )
@@ -385,7 +388,7 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "MAFPSFrame", true )
 		AddCheckBox( 4, "IAPingFrame", true )
 		AddCheckBox( 4, "ZONEABILITYFRAME", true )
-		--AddCheckBox( 4, "POWERBAR", true )
+		AddCheckBox( 4, "POWERBAR", true )
 		AddCheckBox( 4, "UIWIDGETPOWERBAR", true )
 		--AddCheckBox( 4, "BUFFTIMER1", true )
 		AddCheckBox( 4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false )

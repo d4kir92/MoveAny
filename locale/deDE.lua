@@ -49,6 +49,7 @@ function MoveAny:LangdeDE()
 		["LID_GAMETOOLTIP"] = "Tooltip",
 		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip am Zeiger",
 		["LID_QUEUESTATUSBUTTON"] = "SNG Status (LFG)",
+		["LID_QUEUESTATUSFRAME"] = "SNG Status (LFG) Tooltip",
 
 		["LID_PETBAR"] = "Begleiterleiste",
 		["LID_STANCEBAR"] = "Haltungsleiste",
@@ -85,6 +86,7 @@ function MoveAny:LangdeDE()
 		["LID_MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["LID_REPUTATIONWATCHBAR"] = "Rufleiste",
 		["LID_UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, Dunkelmond-Jahrmarkt, ...)",
+		["LID_POWERBAR"] = "Power Bar (Encounters, ...)",
 
 		["LID_COUNT"] = "Anzahl",
 		["LID_ROWS"] = "Reihen",

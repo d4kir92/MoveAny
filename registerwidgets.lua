@@ -1469,6 +1469,12 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_QUEUESTATUSBUTTON"
 		} )
 	end
+	if QueueStatusFrame and MoveAny:IsEnabled( "QUEUESTATUSFRAME", false ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "QueueStatusFrame",
+			["lstr"] = "LID_QUEUESTATUSFRAME"
+		} )
+	end
 	if BNToastFrame and MoveAny:IsEnabled( "BNToastFrame", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "BNToastFrame",
@@ -1707,14 +1713,14 @@ function MoveAny:Event( event, ... )
 			["sh"] = 36 * 1
 		} )
 	end
-	--[[if PlayerPowerBarAlt and MoveAny:IsEnabled( "POWERBAR", false ) then
+	if PlayerPowerBarAlt and MoveAny:IsEnabled( "POWERBAR", false ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "PlayerPowerBarAlt",
 			["lstr"] = "LID_POWERBAR",
 			["sw"] = 36 * 6,
 			["sh"] = 36 * 1
 		} )
-	end]]
+	end
 
 	if EventToastManagerFrame and MoveAny:IsEnabled( "EventToastManagerFrame", false ) then
 		MoveAny:RegisterWidget( {
