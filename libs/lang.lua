@@ -6,11 +6,13 @@ function MoveAny:GetLangTab()
 	return ltab
 end
 
+local missingTab = {}
 function MoveAny:GT( str )
 	local result = MoveAny:GetLangTab()[str]
 	if result ~= nil then
 		return result
-	else
+	elseif not tContains( missingTab, str ) then
+		tinsert( missingTab, str )
 		MoveAny:MSG( format( "Missing Translation: %s", str ) )
 		return str
 	end
