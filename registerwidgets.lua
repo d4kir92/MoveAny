@@ -179,7 +179,7 @@ function MoveAny:MenuOptions( opt, frame )
 
 			local hide = CreateFrame( "CheckButton", "hide", content, "ChatConfigCheckButtonTemplate" )
 			hide:SetSize( btnsize, btnsize )
-			hide:SetPoint( "TOPLEFT", content, "TOPLEFT", 4, -160 )
+			hide:SetPoint( "TOPLEFT", content, "TOPLEFT", 150, -110 )
 			hide:SetChecked( MoveAny:GetEleOption( name, "Hide", false ) )
 			hide:SetText( HIDE )
 			hide:SetScript( "OnClick", function()
@@ -217,9 +217,11 @@ function MoveAny:MenuOptions( opt, frame )
 			hide.text:SetPoint( "LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText( getglobal("HIDE") )
 
-			MoveAny:CreateSlider( content, 10, -210, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
-			MoveAny:CreateSlider( content, 10, -260, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
-			MoveAny:CreateSlider( content, 10, -310, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -190, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -220, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -250, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -280, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
+			MoveAny:CreateSlider( content, 10, -310, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas )
 		elseif string.find( content.name, ACTIONBARS_LABEL ) then
 			local slides = {}
 			local items = {}
@@ -580,11 +582,6 @@ function MoveAny:RegisterWidget( tab, debug )
 				local p1, p2, p3, p4, p5 = dragframe:GetPoint()
 				p4 = MoveAny:Grid( p4 )
 				p5 = MoveAny:Grid( p5 )
-				if frame.Selection and frame:GetScale() ~= 1 then
-					p4 = p4 * frame:GetScale()
-					p5 = p5 * frame:GetScale()
-				end
-
 				MoveAny:SetElePoint( name, p1, UIParent, p3, p4, p5 )
 
 				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
@@ -878,12 +875,20 @@ function MoveAny:UpdateAlphas()
 		local alphaInVehicle = MoveAny:GetEleOption( ele:GetName(), "ALPHAINVEHICLE", 1 )
 		local alphaInCombat = MoveAny:GetEleOption( ele:GetName(), "ALPHAINCOMBAT", 1 )
 		local alphaNotInCombat = MoveAny:GetEleOption( ele:GetName(), "ALPHANOTINCOMBAT", 1 )
+		local alphaInRestedArea = MoveAny:GetEleOption( ele:GetName(), "ALPHAINRESTEDAREA", 1 )
+		local alphaIsMounted = MoveAny:GetEleOption( ele:GetName(), "ALPHAISMOUNTED", 1 )
 		if UnitInVehicle and invehicle then
 			MoveAny:SetEleAlpha( ele, alphaInVehicle )
-		elseif incombat then
-			MoveAny:SetEleAlpha( ele, alphaInCombat )
-		elseif not incombat then
-			MoveAny:SetEleAlpha( ele, alphaNotInCombat )
+		elseif IsMounted and IsMounted() then
+			MoveAny:SetEleAlpha( ele, alphaIsMounted )
+		elseif IsResting and IsResting() then
+			MoveAny:SetEleAlpha( ele, alphaInRestedArea )
+		else
+			if incombat then
+				MoveAny:SetEleAlpha( ele, alphaInCombat )
+			elseif not incombat then
+				MoveAny:SetEleAlpha( ele, alphaNotInCombat )
+			end
 		end
 	end
 end
@@ -1158,12 +1163,6 @@ function MoveAny:Event( event, ... )
 					} )
 				end
 			end
-		end
-		if MoveAny:IsEnabled( "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 ) then
-			MoveAny:RegisterWidget( {
-				["name"] = "Minimap",
-				["lstr"] = "LID_MINIMAP"
-			} )
 		end
 		if MoveAny:IsEnabled( "QUESTTRACKER", true ) then
 			C_Timer.After( 0, function()
@@ -1572,6 +1571,13 @@ function MoveAny:Event( event, ... )
 		MoveAny:RegisterWidget( {
 			["name"] = "IAILVLBar",
 			["lstr"] = "LID_IAILVLBAR"
+		} )
+	end
+
+	if MoveAny:IsEnabled( "MINIMAP", MoveAny:GetWoWBuildNr() < 100000 ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "Minimap",
+			["lstr"] = "LID_MINIMAP"
 		} )
 	end
 	

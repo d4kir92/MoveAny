@@ -124,6 +124,8 @@ function MoveAny:LangenUS()
 		["LID_ALPHAINCOMBAT"] = "Alpha (in Combat)",
 		["LID_ALPHANOTINCOMBAT"] = "Alpha (not in Combat)",
 		["LID_ALPHAINVEHICLE"] = "Alpha (in Vehicle)",
+		["LID_ALPHAINRESTEDAREA"] = "Alpha (in Rested)",
+		["LID_ALPHAISMOUNTED"] = "Alpha (in Mounted)",
 
 		["LID_MABUFFLIMIT"] = "Buff limit",
 		["LID_MABUFFSPACINGX"] = "Buff Spacing Horizontal",

@@ -412,5 +412,5 @@ function MoveAny:MoveFrames()
 	end
 	if BattlefieldFrame then
 		BattlefieldFrame:EnableMouse( false )
-	end
+	end	
 end

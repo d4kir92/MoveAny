@@ -118,6 +118,8 @@ function MoveAny:LangdeDE()
 		["LID_ALPHAINCOMBAT"] = "Sichtbarkeit (im Kampf)",
 		["LID_ALPHANOTINCOMBAT"] = "Sichtbarkeit (Nicht im Kampf)",
 		["LID_ALPHAINVEHICLE"] = "Sichtbarkeit (im Fahrzeug)",
+		["LID_ALPHAINRESTEDAREA"] = "Sichtbarkeit (in Erholung)",
+		["LID_ALPHAISMOUNTED"] = "Sichtbarkeit (auf Mount)",
 
 		["LID_MABUFFLIMIT"] = "Stärkungszauber Grenze",
 		["LID_MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
