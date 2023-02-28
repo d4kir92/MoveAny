@@ -41,6 +41,7 @@ function MoveAny:LangenUS()
 		["LID_PALADINPOWERBARFRAME"] = "Paladin Power Bar",
 		["LID_MAFPSFrame"] = "FPS",
 		["LID_IAPingFrame"] = "Ping",
+		["LID_IACoordsFrame"] = "Coords Frame",
 
 		["LID_MINIMAP"] = "Mini Map",
 		["LID_BUFFS"] = "Buffs",

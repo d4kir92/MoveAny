@@ -35,6 +35,7 @@ function MoveAny:LangdeDE()
 		["LID_PALADINPOWERBARFRAME"] = "Paladin Machtleiste",
 		["LID_MAFPSFrame"] = "FPS",
 		["LID_IAPingFrame"] = "Ping",
+		["LID_IACoordsFrame"] = "Koordinatenfenster",
 
 		["LID_MINIMAP"] = "Minimap",
 		["LID_BUFFS"] = "Stärkungszauber",
