@@ -165,6 +165,7 @@ function MoveAny:LangenUS()
 		["LID_BUFFTIMER1"] = "Buff Timer",
 
 		["LID_!KalielsTracker"] = "!KalielsTracker",
+		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
