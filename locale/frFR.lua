@@ -121,7 +121,7 @@ function MoveAny:LangfrFR()
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Classe spécifique",
 		["LID_ADVANCED"] = "Avancé",
-		["LID_ImproveAny"] = "LID_ImproveAny",
+		["LID_ImproveAny"] = "ImproveAny",
 
 		["LID_MISSINGREQUIREMENT"] = "Case à cocher manquante : %s",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Barre de progression du site de fouilles archéologiques",

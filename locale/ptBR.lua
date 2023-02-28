@@ -125,7 +125,7 @@ function MoveAny:LangptBR()
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Classe Específica",
 		["LID_ADVANCED"] = "Avançado",
-		["LID_ImproveAny"] = "LID_ImproveAny",
+		["LID_ImproveAny"] = "ImproveAny",
 
 		["LID_MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",

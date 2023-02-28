@@ -1429,6 +1429,14 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 
+	if MoveAny:IsEnabled( "!KalielsTrackerButtons", true ) then
+		MoveAny:RegisterWidget( {
+			["name"] = "!KalielsTrackerButtons",
+			["lstr"] = "LID_KalielsTrackerButtons",
+			["sw"] = 40,
+			["sh"] = 40,
+		} )
+	end
 
 
 	-- TOP

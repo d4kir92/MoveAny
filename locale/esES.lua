@@ -123,7 +123,7 @@ function MoveAny:LangesES()
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Específico de clase",
 		["LID_ADVANCED"] = "Avanzado",
-		["LID_ImproveAny"] = "MejoraCualquier",
+		["LID_ImproveAny"] = "ImproveAny",
 
 		["LID_MISSINGREQUIREMENT"] = "Falta casilla de verificación: %s",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Barra de progreso del sitio arqueológico",

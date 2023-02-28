@@ -134,7 +134,7 @@ function MoveAny:LangdeDE()
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Klassenspezifisch",
 		["LID_ADVANCED"] = "Erweitert",
-		["LID_ImproveAny"] = "LID_ImproveAny",
+		["LID_ImproveAny"] = "ImproveAny",
 
 		["LID_MISSINGREQUIREMENT"] = "Fehlende Anforderung: %s",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Fortschrittsanzeige der archäologischen Ausgrabungsstätte",
@@ -157,6 +157,9 @@ function MoveAny:LangdeDE()
 
 		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Stufenaufstieg, Zonentext)",
 		["LID_BUFFTIMER1"] = "Stärkungsanzeige",
+
+		["LID_!KalielsTracker"] = "!KalielsTracker",
+		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

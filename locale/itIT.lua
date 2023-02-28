@@ -122,7 +122,7 @@ function MoveAny:LangitIT()
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Classe specifica",
 		["LID_ADVANCED"] = "Avanzato",
-		["LID_ImproveAny"] = "LID_ImproveAny",
+		["LID_ImproveAny"] = "ImproveAny",
 
 		["LID_MISSINGREQUIREMENT"] = "Casella di controllo mancante: %s",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Barra di avanzamento del sito archeologico",

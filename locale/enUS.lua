@@ -140,7 +140,7 @@ function MoveAny:LangenUS()
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Class Specific",
 		["LID_ADVANCED"] = "Advanced",
-		["LID_ImproveAny"] = "LID_ImproveAny",
+		["LID_ImproveAny"] = "ImproveAny",
 
 		["LID_MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
@@ -163,6 +163,8 @@ function MoveAny:LangenUS()
 
 		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Levelup, Zonetext)",
 		["LID_BUFFTIMER1"] = "Buff Timer",
+
+		["LID_!KalielsTracker"] = "!KalielsTracker",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
