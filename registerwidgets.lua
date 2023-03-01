@@ -1410,13 +1410,13 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_MAFPSFrame"
 		} )
 	end
-	if MoveAny:IsEnabled( "IAPingFrame", true ) then
+	if IAPingFrame and MoveAny:IsEnabled( "IAPingFrame", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IAPingFrame",
 			["lstr"] = "LID_IAPingFrame"
 		} )
 	end
-	if MoveAny:IsEnabled( "IACoordsFrame", true ) then
+	if IACoordsFrame and MoveAny:IsEnabled( "IACoordsFrame", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IACoordsFrame",
 			["lstr"] = "LID_IACoordsFrame"
@@ -1429,13 +1429,15 @@ function MoveAny:Event( event, ... )
 		} )
 	end
 
-	if MoveAny:IsEnabled( "!KalielsTrackerButtons", true ) then
-		MoveAny:RegisterWidget( {
-			["name"] = "!KalielsTrackerButtons",
-			["lstr"] = "LID_!KalielsTrackerButtons",
-			["sw"] = 40,
-			["sh"] = 40,
-		} )
+	if IsAddOnLoaded( "!KalielsTracker" ) then
+		if MoveAny:IsEnabled( "!KalielsTrackerButtons", true ) then
+			MoveAny:RegisterWidget( {
+				["name"] = "!KalielsTrackerButtons",
+				["lstr"] = "LID_!KalielsTrackerButtons",
+				["sw"] = 40,
+				["sh"] = 40,
+			} )
+		end
 	end
 
 
