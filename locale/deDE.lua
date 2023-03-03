@@ -57,6 +57,7 @@ function MoveAny:LangdeDE()
 		["LID_TOTEMBAR"] = "Schamane - Totemleiste",
 		["LID_LEAVEVEHICLE"] = "Fahrzeug verlassen Taste",
 		["LID_GROUPLOOTCONTAINER"] = "Beute-Würfeln Fenster",
+		["LID_BONUSROLLFRAME"] = "Bonus-Würfeln Fenster",
 		["LID_STATUSTRACKINGBARMANAGER"] = "Statusverfolgungsleiste Manager (EP, Ruf)",
 		["LID_ALERTFRAME"] = "Alarmfenster (Bonus Beute, Erfolg, ...)",
 

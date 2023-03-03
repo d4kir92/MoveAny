@@ -62,7 +62,8 @@ function MoveAny:LangenUS()
 		["LID_STANCEBAR"] = "Stance Bar",
 		["LID_TOTEMBAR"] = "Shaman - Totem Bar",
 		["LID_LEAVEVEHICLE"] = "Leave Vehicle Button",
-		["LID_GROUPLOOTCONTAINER"] = "Loot Roll frame",
+		["LID_GROUPLOOTCONTAINER"] = "Loot Roll Frame",
+		["LID_BONUSROLLFRAME"] = "Bonus Roll Frame",
 		["LID_STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
 		["LID_ALERTFRAME"] = "Alert Frame (Bonus Loot, Achiements, ...)",
 

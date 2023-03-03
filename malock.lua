@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.60" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.61" )
 }
 
 local PREFIX = "MOAN"
@@ -449,6 +449,7 @@ function MoveAny:InitMALock()
 		AddCheckBox( 4, "ARENAPREPFRAMES", false )
 		AddCheckBox( 4, "GAMETOOLTIP_ONCURSOR", false )
 		AddCheckBox( 4, "GROUPLOOTCONTAINER", false )
+		AddCheckBox( 4, "BONUSROLLFRAME", false )
 		AddCheckBox( 4, "ALERTFRAME", false )
 		AddCheckBox( 4, "CHATBUTTONFRAME", false )
 		AddCheckBox( 4, "CHATEDITBOX", false )

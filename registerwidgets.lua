@@ -1800,7 +1800,7 @@ function MoveAny:Event( event, ... )
 				end
 			end
 		end
-
+			
 		MoveAny:RegisterWidget( {
 			["name"] = "GroupLootFrame1",
 			["lstr"] = "LID_GROUPLOOTCONTAINER",
@@ -1810,6 +1810,12 @@ function MoveAny:Event( event, ... )
 			["py"] = 200,
 			["an"] = "BOTTOM",
 			["re"] = "BOTTOM"
+		} )
+	end
+	if MoveAny:IsEnabled( "BONUSROLLFRAME", false ) and BonusRollFrame then
+		MoveAny:RegisterWidget( {
+			["name"] = "BonusRollFrame",
+			["lstr"] = "LID_BONUSROLLFRAME",
 		} )
 	end
 
