@@ -1768,49 +1768,65 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_UIERRORSFRAME",
 		} )
 	end
-	if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
-		local glfsw, glfsh = 244, 84
-		if GroupLootFrame1 then
-			glfsw, glfsh = GroupLootFrame1:GetSize()
-			for i = 2, 10 do
-				local glf = _G["GroupLootFrame" .. i]
-				if glf then
-					hooksecurefunc( glf, "SetPoint", function( self, ... )
-						if self.glfsetpoint then return end
-						self.glfsetpoint = true
-				
-						self:SetMovable( true )
-						if self.SetUserPlaced and self:IsMovable() then
-							self:SetUserPlaced( false )
-						end
 
-						self:ClearAllPoints()
-						self:SetPoint( "BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4 )
-						
-						self.glfsetpoint = false
-					end )
+	if GroupLootContainer then
+		if MoveAny:IsEnabled( "GROUPLOOTCONTAINER", true ) then
+			if GroupLootFrame1 then
+				glfsw, glfsh = GroupLootFrame1:GetSize()
 
-					hooksecurefunc( GroupLootFrame1, "SetScale", function( self, scale )
-						glf:SetScale( scale )
-					end )
-
-					hooksecurefunc( GroupLootFrame1, "SetAlpha", function( self, alpha )
-						glf:SetAlpha( alpha )
-					end )
-				end
+				MoveAny:RegisterWidget( {
+					["name"] = "GroupLootContainer",
+					["lstr"] = "LID_GROUPLOOTCONTAINER",
+					["sw"] = glfsw,
+					["sh"] = glfsh,
+				} )
 			end
 		end
-			
-		MoveAny:RegisterWidget( {
-			["name"] = "GroupLootFrame1",
-			["lstr"] = "LID_GROUPLOOTCONTAINER",
-			["sw"] = glfsw,
-			["sh"] = glfsh,
-			["px"] = 0,
-			["py"] = 200,
-			["an"] = "BOTTOM",
-			["re"] = "BOTTOM"
-		} )
+	else
+		if MoveAny:IsEnabled( "GROUPLOOTFRAME1", true ) then
+			local glfsw, glfsh = 244, 84
+			if GroupLootFrame1 then
+				glfsw, glfsh = GroupLootFrame1:GetSize()
+				for i = 2, 10 do
+					local glf = _G["GroupLootFrame" .. i]
+					if glf then
+						hooksecurefunc( glf, "SetPoint", function( self, ... )
+							if self.glfsetpoint then return end
+							self.glfsetpoint = true
+					
+							self:SetMovable( true )
+							if self.SetUserPlaced and self:IsMovable() then
+								self:SetUserPlaced( false )
+							end
+
+							self:ClearAllPoints()
+							self:SetPoint( "BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4 )
+							
+							self.glfsetpoint = false
+						end )
+
+						hooksecurefunc( GroupLootFrame1, "SetScale", function( self, scale )
+							glf:SetScale( scale )
+						end )
+
+						hooksecurefunc( GroupLootFrame1, "SetAlpha", function( self, alpha )
+							glf:SetAlpha( alpha )
+						end )
+					end
+				end
+			end
+				
+			MoveAny:RegisterWidget( {
+				["name"] = "GroupLootFrame1",
+				["lstr"] = "LID_GROUPLOOTFRAME1",
+				["sw"] = glfsw,
+				["sh"] = glfsh,
+				["px"] = 0,
+				["py"] = 200,
+				["an"] = "BOTTOM",
+				["re"] = "BOTTOM"
+			} )
+		end
 	end
 	if MoveAny:IsEnabled( "BONUSROLLFRAME", false ) and BonusRollFrame then
 		MoveAny:RegisterWidget( {

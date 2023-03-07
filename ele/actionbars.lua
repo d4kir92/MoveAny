@@ -474,12 +474,3 @@ f:SetScript( "OnEvent", function( self, event )
 		end
 	end
 end )
-
---[[
-function Loop()
-	if MainMenuBarArtFrame then
-		print(MainMenuBarArtFrame:GetAttribute("actionpage"))
-	end
-	C_Timer.After(1, Loop)
-end
-Loop()]]

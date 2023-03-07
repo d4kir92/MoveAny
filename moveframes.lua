@@ -85,6 +85,19 @@ local MAFRAMES = {
 	"ChannelFrame",
 }
 
+local MAFS = {}
+for i, v in pairs( MAFRAMES ) do
+	MAFS[v] = v
+end
+
+function GetTableLng(tbl)
+  local getN = 0
+  for n in pairs(tbl) do 
+    getN = getN + 1 
+  end
+  return getN
+end
+
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
 	hooksecurefunc( ScriptErrorsFrame.DragArea, "SetParent", function( self )
 		if self.ma_setparent then return end
@@ -97,8 +110,8 @@ end
 
 for i = 1, 20 do
 	if _G["ContainerFrame" .. i] then
-		if not tContains( MAFRAMES, "ContainerFrame" .. i ) then
-			tinsert( MAFRAMES, "ContainerFrame" .. i )
+		if not MAFS["ContainerFrame" .. i] then
+			MAFS["ContainerFrame" .. i] = "ContainerFrame" .. i
 		end
 	end
 end
@@ -174,15 +187,13 @@ function MoveAny:FrameDragInfo( c )
 	end
 end
 
-local frameinit = {}
-function MoveAny:MoveFrames()
+function MoveAny:UpdateMoveFrames()
 	if MoveAny:IsEnabled( "MOVEFRAMES", true ) then
 		if not InCombatLockdown() then
-			local allsetup = true
-			for i, name in pairs( MAFRAMES ) do
+			for i, name in pairs( MAFS ) do
 				local frame = MoveAny:GetFrame( _G[name], name )
-				if frame and frameinit[name] == nil then
-					frameinit[name] = true
+				if frame then
+					MAFS[name] = nil
 
 					local fm = _G[name .. "Move"]
 					if fm == nil then
@@ -395,17 +406,22 @@ function MoveAny:MoveFrames()
 							MoveAny:MAFrameUpdatePos( frame )
 						end
 					end
-				else
-					allsetup = false
 				end
 			end
-			if not allsetup then
-				C_Timer.After( 0.1, MoveAny.MoveFrames )
-			end
 		else
-			C_Timer.After( 0.2, MoveAny.MoveFrames )
+			C_Timer.After( 0.1, MoveAny.UpdateMoveFrames )
 		end
 	end
+end
+
+function MoveAny:MoveFrames()
+	local f = CreateFrame( "FRAME" )
+	f:RegisterEvent( "ADDON_LOADED" )
+	f:SetScript( "OnEvent", function( self, event, ... )
+		MoveAny:UpdateMoveFrames()
+	end )
+
+	MoveAny:UpdateMoveFrames()
 
 	if PVPFrame then
 		PVPFrame:EnableMouse( false )
