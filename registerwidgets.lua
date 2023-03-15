@@ -1116,7 +1116,7 @@ function MoveAny:Event( event, ... )
 							if abtn then
 								table.insert( ab.btns, abtn )
 							else
-								print( "ACTION BUTTON NOT FOUND", name )
+								print( "[MoveAny] ACTION BUTTON NOT FOUND", name )
 							end
 						end
 					end
@@ -1410,6 +1410,9 @@ function MoveAny:Event( event, ... )
 			["lstr"] = "LID_MAFPSFrame"
 		} )
 	end
+
+
+
 	if IAPingFrame and MoveAny:IsEnabled( "IAPingFrame", true ) then
 		MoveAny:RegisterWidget( {
 			["name"] = "IAPingFrame",
