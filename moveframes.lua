@@ -301,7 +301,7 @@ function MoveAny:UpdateMoveFrames()
 						elseif (MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and IsShiftKeyDown() and MoveAny:IsResetButtonDown( btn )) or (not MoveAny:IsEnabled( "FRAMESSHIFTRESET", false ) and MoveAny:IsResetButtonDown( btn )) then
 							MoveAny:SetFramePoint( name, nil, nil, nil, nil, nil )
 							MoveAny:SetFrameScale( name, nil )
-							
+
 							frame:SetScale( 1 )
 							frame:ClearAllPoints()
 

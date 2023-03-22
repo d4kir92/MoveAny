@@ -1651,7 +1651,7 @@ function MoveAny:Event( event, ... )
 				local mX, mY = GetCursorPosition()
 				mX = mX / scale
 				mY = mY / scale
-
+				
 				GameTooltip:ClearAllPoints()
 				GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
 				GameTooltip.default = 1
@@ -1705,7 +1705,6 @@ function MoveAny:Event( event, ... )
 			self:SetUserPlaced( false )
 
 			local p1, p2, p3, p4, p5 = MAGameTooltip:GetPoint()
-
 			if MAGameTooltipOnDefaultPosition() then
 				if not MoveAny:IsEnabled( "GAMETOOLTIP_ONCURSOR", false ) then
 					self:ClearAllPoints()
