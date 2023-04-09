@@ -168,6 +168,10 @@ function MoveAny:LangenUS()
 
 		["LID_!KalielsTracker"] = "!KalielsTracker",
 		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
+
+		["LID_ENDCAPLEFT"] = "End Cap Left (Gryphon)",
+		["LID_ENDCAPRIGHT"] = "End Cap Right (Gryphon)",
+		["LID_ENDCAPS"] = "Enden (Gryphons)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

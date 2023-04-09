@@ -162,6 +162,10 @@ function MoveAny:LangdeDE()
 
 		["LID_!KalielsTracker"] = "!KalielsTracker",
 		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
+
+		["LID_ENDCAPLEFT"] = "Abschlusskappe links (Greif)",
+		["LID_ENDCAPRIGHT"] = "Abschlusskappe rechts (Greif)",
+		["LID_ENDCAPS"] = "Abschlusskappen (Greifen)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

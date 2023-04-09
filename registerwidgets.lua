@@ -85,7 +85,7 @@ end
 function MoveAny:CreateSlider( parent, x, y, name, key, value, steps, vmin, vmax, func )
 	local slider = CreateFrame( "Slider", nil, parent, "OptionsSliderTemplate" )
 	slider:SetWidth( parent:GetWidth() - 20 )
-	slider:SetPoint( "TOPLEFT", parent, "TOPLEFT", x, y );
+	slider:SetPoint( "TOPLEFT", parent, "TOPLEFT", x, y )
 	slider.Low:SetText( vmin )
 	slider.High:SetText( vmax )
 	slider.Text:SetText( MoveAny:GT( "LID_" .. key ) .. ": " .. MoveAny:GetEleOption( name, key, value ) )
@@ -281,7 +281,7 @@ function MoveAny:MenuOptions( opt, frame )
 				slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 				local sliderCount = slides.sliderCount
 				sliderCount:SetWidth( content:GetWidth() - 110 )
-				sliderCount:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY );
+				sliderCount:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY )
 				sliderCount.Low:SetText( "" )
 				sliderCount.High:SetText( "" )
 				sliderCount.Text:SetText( MoveAny:GT("LID_COUNT") .. ": " .. count )
@@ -313,7 +313,7 @@ function MoveAny:MenuOptions( opt, frame )
 			slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			local sliderRows = slides.sliderRows
 			sliderRows:SetWidth( content:GetWidth() - 110 )
-			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY );
+			sliderRows:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY )
 			sliderRows.Low:SetText( "" )
 			sliderRows.High:SetText( "" )
 			sliderRows.Text:SetText( MoveAny:GT("LID_ROWS") .. ": " .. rows )
@@ -366,7 +366,7 @@ function MoveAny:MenuOptions( opt, frame )
 			opts["SPACING"] = opts["SPACING"] or 2
 			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			slider:SetWidth( content:GetWidth() - 110 )
-			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY );
+			slider:SetPoint( "TOPLEFT", content, "TOPLEFT", 10, PY )
 			slider.Low:SetText( 0 )
 			slider.High:SetText( 16 )
 			slider.Text:SetText( MoveAny:GT("LID_SPACING") .. ": " .. opts["SPACING"] )
@@ -629,17 +629,21 @@ function MoveAny:RegisterWidget( tab, debug )
 	tinsert( MoveAny:GetEleFrames(), frame )
 	tinsert( MoveAny:GetAlphaFrames(), frame )
 
-	for i, btn in pairs( { frame:GetChildren() } ) do
-		function btn:GetMAEle()
-			return frame
+	if frame and frame.GetChildren then
+		for i, btn in pairs( { frame:GetChildren() } ) do
+			function btn:GetMAEle()
+				return frame
+			end
 		end
 	end
 
 	frame.ignoreFramePositionManager = true
 
-	frame:SetMovable( true )
-	if frame.SetUserPlaced and frame:IsMovable() then
-		frame:SetUserPlaced( userplaced or false )
+	if frame.SetMovable then
+		frame:SetMovable( true )
+		if frame.SetUserPlaced and frame:IsMovable() then
+			frame:SetUserPlaced( userplaced or false )
+		end
 	end
 
 	frame:SetDontSavePosition( true )
@@ -1136,6 +1140,59 @@ function MoveAny:Event( event, ... )
 					end
 				end
 			end
+		end
+
+		if MoveAny:IsEnabled( "ENDCAPS", false ) then
+			local ecl = CreateFrame( "FRAME", "MA_LeftEndCap", UIParent )
+			ecl.tex = ecl:CreateTexture( "ecl.tex", "OVERLAY" )
+			ecl.tex:SetAllPoints( ecl )
+
+			local ecr = CreateFrame( "FRAME", "MA_RightEndCap", UIParent )
+			ecr.tex = ecr:CreateTexture( "ecr.tex", "OVERLAY" )
+			ecr.tex:SetAllPoints( ecr )
+
+			local factionGroup = UnitFactionGroup( "player" )
+			
+			if MainMenuBar.EndCaps then
+				ecl:SetSize( MainMenuBar.EndCaps.LeftEndCap:GetSize() )
+				ecl.tex:SetTexCoord( MainMenuBar.EndCaps.LeftEndCap:GetTexCoord() )
+
+				ecr:SetSize( MainMenuBar.EndCaps.RightEndCap:GetSize() )
+				ecr.tex:SetTexCoord( MainMenuBar.EndCaps.RightEndCap:GetTexCoord() )
+
+				if factionGroup and factionGroup ~= "Neutral" then
+					if factionGroup == "Alliance" then
+						ecl.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
+						ecr.tex:SetAtlas("ui-hud-actionbar-gryphon-right")
+					elseif factionGroup == "Horde" then
+						ecl.tex:SetAtlas("ui-hud-actionbar-wyvern-left")
+						ecr.tex:SetAtlas("ui-hud-actionbar-wyvern-right")
+					end
+				end
+
+				MainMenuBar.EndCaps:SetParent( MAHIDDEN )
+			elseif MainMenuBarLeftEndCap then
+				ecl:SetSize( MainMenuBarLeftEndCap:GetSize() )
+				ecl.tex:SetTexture( MainMenuBarLeftEndCap:GetTexture() )
+				ecl.tex:SetTexCoord( MainMenuBarLeftEndCap:GetTexCoord() )
+
+				ecr:SetSize( MainMenuBarRightEndCap:GetSize() )
+				ecr.tex:SetTexture( MainMenuBarRightEndCap:GetTexture() )
+				ecr.tex:SetTexCoord( MainMenuBarRightEndCap:GetTexCoord() )
+
+				MainMenuBarLeftEndCap:SetParent( MAHIDDEN )
+				MainMenuBarRightEndCap:SetParent( MAHIDDEN )
+			end
+
+			MoveAny:RegisterWidget( {
+				["name"] = "MA_LeftEndCap",
+				["lstr"] = "LID_ENDCAPLEFT",
+			} )
+
+			MoveAny:RegisterWidget( {
+				["name"] = "MA_RightEndCap",
+				["lstr"] = "LID_ENDCAPRIGHT",
+			} )
 		end
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
@@ -2157,7 +2214,7 @@ function MoveAny:Event( event, ... )
 			if not IsAddOnLoaded( "Mapster" ) then
 				return x / scale, y / scale
 			else
-				local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale();
+				local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
 				return x / scale * reverseEffectiveScale, y / scale * reverseEffectiveScale
 			end
 		end

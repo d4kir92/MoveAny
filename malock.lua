@@ -2,7 +2,7 @@
 local AddOnName, MoveAny = ...
 
 local config = {
-	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.68" )
+	["title"] = format( "MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.69" )
 }
 
 local PREFIX = "MOAN"
@@ -440,6 +440,7 @@ function MoveAny:InitMALock()
 		if TotemFrame then
 			AddCheckBox( 4, "TOTEMFRAME", false )
 		end
+		AddCheckBox( 4, "ENDCAPS", false )
 		AddCheckBox( 4, "TARGETFRAMESPELLBAR", false )
 		AddCheckBox( 4, "FOCUSFRAMESPELLBAR", false )
 		AddCheckBox( 4, "UIWIDGETTOPCENTER", false )
