@@ -271,7 +271,12 @@ function MoveAny:MenuOptions( opt, frame )
 			end
 			UpdateRowItems()
 
+			local vmin = 1
+			if frame == MAActionBar1 or frame == MainMenuBar then
+				vmin = 6
+			end
 			local max = getn( frame.btns )
+			
 			local count = opts["COUNT"] or max
 			local rows = opts["ROWS"] or 1
 
@@ -285,11 +290,11 @@ function MoveAny:MenuOptions( opt, frame )
 				sliderCount.Low:SetText( "" )
 				sliderCount.High:SetText( "" )
 				sliderCount.Text:SetText( MoveAny:GT("LID_COUNT") .. ": " .. count )
-				sliderCount:SetMinMaxValues( 0, max )
+				sliderCount:SetMinMaxValues( vmin, max )
 				sliderCount:SetObeyStepOnDrag( true )
 				sliderCount:SetValueStep( 1 )
 				sliderCount:SetValue( count )
-				sliderCount:SetScript( "OnValueChanged", function(self, val)
+				sliderCount:SetScript( "OnValueChanged", function( self, val )
 					val = tonumber( string.format( "%" .. 0 .. "f", val ) )
 					if val and val ~= opts["ROWS"] then
 						opts["COUNT"] = val

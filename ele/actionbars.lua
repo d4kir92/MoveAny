@@ -138,7 +138,7 @@ function MoveAny:UpdateActionBar( frame )
 
 		local id = 1
 		for i, abtn in pairs( frame.btns ) do
-			if abtn:GetParent() ~= MAHIDDEN and not InCombatLockdown() then
+			if not InCombatLockdown() then
 				abtn:ClearAllPoints()
 				if flipped then
 					abtn:SetPoint( "BOTTOMLEFT", frame, "BOTTOMLEFT", ( id - 1 ) % cols * (fSizeW + spacing), (( id - 1 ) / cols - ( id - 1 ) % cols / cols) * (fSizeH + spacing) )
@@ -157,17 +157,23 @@ function MoveAny:UpdateActionBar( frame )
 						self.ma_abtn_hide = false
 					end )
 				end
-				
+
+				abtn.oldparent = abtn.oldparent or abtn:GetParent()
+					
 				if count > 0 and i > count then
 					abtn.hide = true
-					if abtn:IsShown() then
+					
+					abtn:SetParent( MAHIDDEN )
+					--[[if abtn:IsShown() then
 						abtn:Hide()
-					end
+					end]]
 				else
 					abtn.hide = false
-					if not abtn:IsShown() then
+
+					abtn:SetParent( abtn.oldparent )
+					--[[if not abtn:IsShown() then
 						abtn:Show()
-					end
+					end]]
 				end
 
 				if frame == MAMenuBar then
