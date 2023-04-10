@@ -236,7 +236,9 @@ function MoveAny:MenuOptions( opt, frame )
 				end
 				if frame == MAMenuBar then
 					if MoveAny:GetWoWBuild() == "RETAIL" then
-						items = { "1", "2", "3", "4", "5", "10", "11" }
+						items = { "1", "2", "3", "4", "5", "10", "11", "12" }
+					elseif MoveAny:GetWoWBuild() == "CLASSIC" then
+						items = { "1", "2", "4", "8" }
 					else
 						items = { "1", "2", "3", "4", "5", "8", "9", "10" }
 					end

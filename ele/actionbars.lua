@@ -75,7 +75,7 @@ function MoveAny:UpdateActionBar( frame )
 					MainMenuMicroButton:GetParent():SetParent( MAMenuBar )
 				end
 			end
-		else
+		elseif MoveAny:GetWoWBuild() == "WRATH" then
 			if rows == 10 or rows == 5 or rows == 2 or rows == 1 then
 				if HelpMicroButton then
 					HelpMicroButton:GetParent():SetParent( MAMenuBar )
@@ -123,7 +123,7 @@ function MoveAny:UpdateActionBar( frame )
 			maxB = count
 		end
 	else
-		maxB = count
+		maxB = maxbtns
 	end
 
 	local cols = maxB / rows
@@ -137,6 +137,8 @@ function MoveAny:UpdateActionBar( frame )
 
 	if frame.btns and frame.btns[1] then
 		local fSizeW, fSizeH = frame.btns[1]:GetSize()
+		fSizeW = math.ceil( fSizeW )
+		fSizeH = math.ceil( fSizeH )
 
 		local id = 1
 		for i, abtn in pairs( frame.btns ) do
@@ -150,31 +152,42 @@ function MoveAny:UpdateActionBar( frame )
 
 				if abtn.setup == nil then
 					abtn.setup = true
-					hooksecurefunc( abtn, "Show", function( self )
-						if self.ma_abtn_hide then return end
-						self.ma_abtn_hide = true
-						if self.hide and self:IsShown() then
-							self:Hide()
-						end
-						self.ma_abtn_hide = false
-					end )
+					if frame == MAMenuBar then
+						hooksecurefunc( abtn, "Hide", function( self )
+							if self.ma_abtn_hide then return end
+							self.ma_abtn_hide = true
+							self:Show()
+							self.ma_abtn_hide = false
+						end )
+					else
+						hooksecurefunc( abtn, "Show", function( self )
+							if self.ma_abtn_hide then return end
+							self.ma_abtn_hide = true
+							if self.hide and self:IsShown() then
+								self:Hide()
+							end
+							self.ma_abtn_hide = false
+						end )
+					end
 				end
 
 				abtn.oldparent = abtn.oldparent or abtn:GetParent()
-					
-				if count > 0 and i > count then
-					abtn.hide = true
-					
-					abtn:SetParent( MAHIDDEN )
-					if abtn:IsShown() then
-						abtn:Hide()
-					end
-				else
-					abtn.hide = false
+				
+				if (frame ~= MAMenuBar and frame ~= StanceBar) then
+					if count > 0 and i > count then
+						abtn.hide = true
+						
+						abtn:SetParent( MAHIDDEN )
+						if abtn:IsShown() then
+							abtn:Hide()
+						end
+					else
+						abtn.hide = false
 
-					abtn:SetParent( abtn.oldparent )
-					if not abtn:IsShown() then
-						abtn:Show()
+						abtn:SetParent( abtn.oldparent )
+						if not abtn:IsShown() then
+							abtn:Show()
+						end
 					end
 				end
 
@@ -185,7 +198,9 @@ function MoveAny:UpdateActionBar( frame )
 					end
 				end
 
-				id = id + 1
+				if abtn:GetParent() ~= MAHIDDEN then
+					id = id + 1
+				end
 			end
 		end
 

@@ -20,6 +20,14 @@ function MoveAny:InitMicroMenu()
 				"MainMenuMicroButton",
 			}
 		end
+	
+		if MoveAny:GetWoWBuild() == "CLASSIC" then
+			for i, v in pairs( MICRO_BUTTONS ) do
+				if v == "LFGMicroButton" then
+					tremove( MICRO_BUTTONS, i)
+				end
+			end
+		end
 
 		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
@@ -108,6 +116,9 @@ function MoveAny:InitMicroMenu()
 					mb:SetPoint( "BOTTOM", hb, "BOTTOM", 0, -2 )
 				end
 
+				hooksecurefunc( mb, "Hide", function( self )
+					self:Show()
+				end )
 				mb:Show()
 
 				tinsert( MAMenuBar.btns, hb )
@@ -119,3 +130,5 @@ function MoveAny:InitMicroMenu()
 		end
 	end
 end
+
+
