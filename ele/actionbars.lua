@@ -122,6 +122,8 @@ function MoveAny:UpdateActionBar( frame )
 		if count > 0 then
 			maxB = count
 		end
+	else
+		maxB = count
 	end
 
 	local cols = maxB / rows
@@ -164,16 +166,16 @@ function MoveAny:UpdateActionBar( frame )
 					abtn.hide = true
 					
 					abtn:SetParent( MAHIDDEN )
-					--[[if abtn:IsShown() then
+					if abtn:IsShown() then
 						abtn:Hide()
-					end]]
+					end
 				else
 					abtn.hide = false
 
 					abtn:SetParent( abtn.oldparent )
-					--[[if not abtn:IsShown() then
+					if not abtn:IsShown() then
 						abtn:Show()
-					end]]
+					end
 				end
 
 				if frame == MAMenuBar then
