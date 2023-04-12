@@ -903,7 +903,7 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	C_Timer.After(0.1, MoveAny.CheckAlphas)
+	C_Timer.After(0.15, MoveAny.CheckAlphas)
 end
 
 function MoveAny:UpdateAlphas()
@@ -948,8 +948,13 @@ function MoveAny:Event(event, ...)
 		MoveAny:MSG("DON'T use MoveAndImprove, when you use MoveAny")
 	end
 
-	MoveAny:InitSlash()
-	MoveAny:InitDB()
+	if MoveAny.InitSlash then
+		MoveAny:InitSlash()
+	end
+
+	if MoveAny.InitDB then
+		MoveAny:InitDB()
+	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", true) then
 		if MainMenuBarPerformanceBarFrame then
@@ -1791,9 +1796,11 @@ function MoveAny:Event(event, ...)
 				GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
 				GameTooltip.default = 1
 			end
-		end
 
-		C_Timer.After(0.01, MAThinkGameTooltip)
+			C_Timer.After(0.01, MAThinkGameTooltip)
+		else
+			C_Timer.After(1, MAThinkGameTooltip)
+		end
 	end
 
 	MAThinkGameTooltip()
