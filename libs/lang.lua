@@ -1,25 +1,28 @@
-
-local AddOnName, MoveAny = ...
-
+local _, MoveAny = ...
 local ltab = {}
+
 function MoveAny:GetLangTab()
 	return ltab
 end
 
 local missingTab = {}
-function MoveAny:GT( str )
+
+function MoveAny:GT(str)
 	local result = MoveAny:GetLangTab()[str]
+
 	if result ~= nil then
 		return result
-	elseif not tContains( missingTab, str ) then
-		tinsert( missingTab, str )
-		MoveAny:MSG( format( "Missing Translation: %s", str ) )
+	elseif not tContains(missingTab, str) then
+		tinsert(missingTab, str)
+		MoveAny:MSG(format("Missing Translation: %s", str))
+
 		return str
 	end
 end
 
 function MoveAny:UpdateLanguage()
 	MoveAny:LangenUS()
+
 	if GetLocale() == "deDE" then
 		MoveAny:LangdeDE()
 	elseif GetLocale() == "enUS" then
@@ -38,4 +41,5 @@ function MoveAny:UpdateLanguage()
 		MoveAny:LangzhCN()
 	end
 end
+
 MoveAny:UpdateLanguage()

@@ -1,48 +1,48 @@
 local _, MoveAny = ...
 
 function MoveAny:InitMAVehicleSeatIndicator()
-    if VehicleSeatIndicator then
-        MAVehicleSeatIndicator = CreateFrame("Frame", "MAVehicleSeatIndicator", UIParent)
-        MAVehicleSeatIndicator:SetSize(100, 100)
-        MAVehicleSeatIndicator:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -300, -300)
+	if VehicleSeatIndicator then
+		MAVehicleSeatIndicator = CreateFrame("Frame", "MAVehicleSeatIndicator", UIParent)
+		MAVehicleSeatIndicator:SetSize(100, 100)
+		MAVehicleSeatIndicator:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -300, -300)
 
-        hooksecurefunc(MAVehicleSeatIndicator, "SetPoint", function(self, ...)
-            if self.mavsisetpoint then return end
-            self.mavsisetpoint = true
-            self:SetMovable(true)
+		hooksecurefunc(MAVehicleSeatIndicator, "SetPoint", function(sel, ...)
+			if sel.mavsisetpoint then return end
+			sel.mavsisetpoint = true
+			sel:SetMovable(true)
 
-            if self.SetUserPlaced and self:IsMovable() then
-                self:SetUserPlaced(false)
-            end
+			if sel.SetUserPlaced and sel:IsMovable() then
+				sel:SetUserPlaced(false)
+			end
 
-            VehicleSeatIndicator:ClearAllPoints()
-            VehicleSeatIndicator:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
-            self.mavsisetpoint = false
-        end)
+			VehicleSeatIndicator:ClearAllPoints()
+			VehicleSeatIndicator:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
+			sel.mavsisetpoint = false
+		end)
 
-        hooksecurefunc(MAVehicleSeatIndicator, "SetScale", function(self, scale)
-            VehicleSeatIndicator:SetScale(scale)
-        end)
+		hooksecurefunc(MAVehicleSeatIndicator, "SetScale", function(sel, scale)
+			VehicleSeatIndicator:SetScale(scale)
+		end)
 
-        hooksecurefunc(MAVehicleSeatIndicator, "SetAlpha", function(self, alpha)
-            VehicleSeatIndicator:SetAlpha(alpha)
-        end)
+		hooksecurefunc(MAVehicleSeatIndicator, "SetAlpha", function(sel, alpha)
+			VehicleSeatIndicator:SetAlpha(alpha)
+		end)
 
-        hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(self, ...)
-            if self.vsisetpoint then return end
-            self.vsisetpoint = true
-            self:SetMovable(true)
+		hooksecurefunc(VehicleSeatIndicator, "SetPoint", function(sel, ...)
+			if sel.vsisetpoint then return end
+			sel.vsisetpoint = true
+			sel:SetMovable(true)
 
-            if self.SetUserPlaced and self:IsMovable() then
-                self:SetUserPlaced(false)
-            end
+			if sel.SetUserPlaced and sel:IsMovable() then
+				sel:SetUserPlaced(false)
+			end
 
-            self:ClearAllPoints()
-            self:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
-            self.vsisetpoint = false
-        end)
+			sel:ClearAllPoints()
+			sel:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
+			sel.vsisetpoint = false
+		end)
 
-        VehicleSeatIndicator:ClearAllPoints()
-        VehicleSeatIndicator:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
-    end
+		VehicleSeatIndicator:ClearAllPoints()
+		VehicleSeatIndicator:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
+	end
 end
