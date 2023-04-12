@@ -1,6 +1,5 @@
-
-local AddOnName, MoveAny = ...
+local _, MoveAny = ...
 
 function MoveAny:InitPartyFrame()
-	--PartyFrame:SetSize(120, 244)
 end
+--PartyFrame:SetSize(120, 244)
