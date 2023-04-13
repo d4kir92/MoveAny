@@ -1225,6 +1225,7 @@ function MoveAny:Event(event, ...)
 				end
 
 				MainMenuBar.EndCaps:SetParent(MAHIDDEN)
+				MainMenuBar.BorderArt:SetParent(MAHIDDEN)
 			elseif MainMenuBarLeftEndCap then
 				ecl:SetSize(MainMenuBarLeftEndCap:GetSize())
 				ecl.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
