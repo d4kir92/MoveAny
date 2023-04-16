@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.76")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.77")
 }
 
 local PREFIX = "MOAN"
@@ -158,7 +158,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum)
 		end
 	end
 
-	if EMMap[key] or EMMapForced[key] and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+	if (EMMap[key] or EMMapForced[key]) and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 		lstr = "(" .. format(MoveAny:GT("LID_MISSINGREQUIREMENT"), MoveAny:GT("LID_EDITMODE")) .. ") " .. lstr
 	end
 
