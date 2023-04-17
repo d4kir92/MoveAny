@@ -1207,6 +1207,17 @@ function MoveAny:Event(event, ...)
 			end
 		end
 
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
+			for i = 1, 10 do
+				if i ~= 2 and ((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
+					MoveAny:RegisterWidget({
+						["name"] = "MAActionBar" .. i,
+						["lstr"] = "LID_ACTIONBAR" .. i
+					}, true)
+				end
+			end
+		end
+
 		if MoveAny:IsEnabled("ENDCAPS", false) then
 			local ecl = CreateFrame("FRAME", "MA_LeftEndCap", UIParent)
 			ecl.tex = ecl:CreateTexture("ecl.tex", "OVERLAY")
@@ -1245,6 +1256,11 @@ function MoveAny:Event(event, ...)
 				MainMenuBarRightEndCap:SetParent(MAHIDDEN)
 			end
 
+			ecl:SetFrameLevel(3)
+			ecr:SetFrameLevel(3)
+			ecl.tex:SetDrawLayer("OVERLAY", 2)
+			ecr.tex:SetDrawLayer("OVERLAY", 2)
+
 			MoveAny:RegisterWidget({
 				["name"] = "MA_LeftEndCap",
 				["lstr"] = "LID_ENDCAPLEFT",
@@ -1254,17 +1270,6 @@ function MoveAny:Event(event, ...)
 				["name"] = "MA_RightEndCap",
 				["lstr"] = "LID_ENDCAPRIGHT",
 			})
-		end
-
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
-			for i = 1, 10 do
-				if i ~= 2 and ((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", MoveAny:GetWoWBuildNr() < 100000)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
-					MoveAny:RegisterWidget({
-						["name"] = "MAActionBar" .. i,
-						["lstr"] = "LID_ACTIONBAR" .. i
-					}, true)
-				end
-			end
 		end
 
 		for i = 1, 10 do
