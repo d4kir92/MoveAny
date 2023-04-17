@@ -970,7 +970,15 @@ function MoveAny:Event(event, ...)
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
 			end
 
-			MainMenuBarArtFrame:Hide()
+			MainMenuBarArtFrame:SetParent(MAHIDDEN)
+		end
+
+		if MainMenuBar then
+			MainMenuBar:SetParent(MAHIDDEN)
+		end
+
+		if MainMenuBarOverlayFrame then
+			MainMenuBarOverlayFrame:SetParent(MAHIDDEN)
 		end
 	end
 
@@ -1561,12 +1569,28 @@ function MoveAny:Event(event, ...)
 	end
 
 	if IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", true) then
-		MoveAny:RegisterWidget({
-			["name"] = "!KalielsTrackerButtons",
-			["lstr"] = "LID_!KalielsTrackerButtons",
-			["sw"] = 40,
-			["sh"] = 40,
-		})
+		local MAKTB = CreateFrame("FRAME", "MAKTB", UIParent)
+		local size = 28
+		local br = 6
+		MAKTB:SetSize(size, size * 3 + br * 2)
+		local ktb = _G["!KalielsTrackerButtons"]
+
+		if ktb then
+			hooksecurefunc(ktb, "SetPoint", function(sel, ...)
+				if sel.ma_ktb_setpoint then return end
+				sel.ma_ktb_setpoint = true
+				sel:ClearAllPoints()
+				sel:SetPoint("TOP", MAKTB, "TOP", 0, br)
+				sel.ma_ktb_setpoint = false
+			end)
+
+			ktb:SetPoint("TOP", MAKTB, "TOP", 0, br)
+
+			MoveAny:RegisterWidget({
+				["name"] = "MAKTB",
+				["lstr"] = "LID_!KalielsTrackerButtons",
+			})
+		end
 	end
 
 	-- TOP

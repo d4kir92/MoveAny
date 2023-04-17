@@ -53,6 +53,13 @@ function MoveAny:InitPetBar()
 			if bb then
 				bb:SetSize(btnsize, btnsize)
 
+				hooksecurefunc(bb, "SetParent", function(sel, ...)
+					if sel.ma_setparent then return end
+					sel.ma_setparent = true
+					bb:SetParent(MAPetBar)
+					sel.ma_setparent = false
+				end)
+
 				hooksecurefunc(MAPetBar, "SetPoint", function(sel, ...)
 					bb:SetParent(MAPetBar)
 					bb:SetMovable(true)
