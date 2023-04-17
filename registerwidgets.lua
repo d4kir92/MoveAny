@@ -1574,28 +1574,33 @@ function MoveAny:Event(event, ...)
 	end
 
 	if IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", true) then
-		local MAKTB = CreateFrame("FRAME", "MAKTB", UIParent)
-		local size = 28
-		local br = 6
-		MAKTB:SetSize(size, size * 3 + br * 2)
-		local ktb = _G["!KalielsTrackerButtons"]
+		C_Timer.After(1, function()
+			local ktb = _G["!KalielsTrackerButtons"]
 
-		if ktb then
-			hooksecurefunc(ktb, "SetPoint", function(sel, ...)
-				if sel.ma_ktb_setpoint then return end
-				sel.ma_ktb_setpoint = true
-				sel:ClearAllPoints()
-				sel:SetPoint("TOP", MAKTB, "TOP", 0, br)
-				sel.ma_ktb_setpoint = false
-			end)
+			if ktb then
+				local MAKTB = CreateFrame("FRAME", "MAKTB", UIParent)
+				local size = 28
+				local br = 6
+				MAKTB:SetSize(size, size * 3 + br * 2)
 
-			ktb:SetPoint("TOP", MAKTB, "TOP", 0, br)
+				hooksecurefunc(ktb, "SetPoint", function(sel, ...)
+					if sel.ma_ktb_setpoint then return end
+					sel.ma_ktb_setpoint = true
+					sel:ClearAllPoints()
+					sel:SetPoint("TOP", MAKTB, "TOP", 0, br)
+					sel.ma_ktb_setpoint = false
+				end)
 
-			MoveAny:RegisterWidget({
-				["name"] = "MAKTB",
-				["lstr"] = "LID_!KalielsTrackerButtons",
-			})
-		end
+				ktb:SetPoint("TOP", MAKTB, "TOP", 0, br)
+
+				MoveAny:RegisterWidget({
+					["name"] = "MAKTB",
+					["lstr"] = "LID_!KalielsTrackerButtons",
+				})
+			else
+				MoveAny:MSG("FAILED TO ADD !KalielsTrackerButtons")
+			end
+		end)
 	end
 
 	-- TOP
