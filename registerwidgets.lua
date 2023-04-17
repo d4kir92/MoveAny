@@ -980,6 +980,10 @@ function MoveAny:Event(event, ...)
 		if MainMenuBarOverlayFrame then
 			MainMenuBarOverlayFrame:SetParent(MAHIDDEN)
 		end
+
+		if MainMenuBarExpText then
+			MainMenuBarExpText:SetParent(MainMenuExpBar)
+		end
 	end
 
 	MoveAny:InitActionBarLayouts()
@@ -2054,6 +2058,8 @@ function MoveAny:Event(event, ...)
 
 	if MainMenuExpBar and ReputationWatchBar then
 		if MoveAny:IsEnabled("MAINMENUEXPBAR", true) then
+			MainMenuExpBar:SetParent(UIParent)
+			--MainMenuExpBar.StatusBar:SetParent(UIParent)
 			MainMenuExpBar:ClearAllPoints()
 			MainMenuExpBar:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 140)
 
@@ -2064,6 +2070,8 @@ function MoveAny:Event(event, ...)
 		end
 
 		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", true) then
+			ReputationWatchBar:SetParent(UIParent)
+			--ReputationWatchBar.StatusBar:SetParent(UIParent)
 			ReputationWatchBar:ClearAllPoints()
 			ReputationWatchBar:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 130)
 
