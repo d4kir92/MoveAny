@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.83")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.84")
 }
 
 local PREFIX = "MOAN"
@@ -289,6 +289,8 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton)
 		AddSlider(24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
 		AddCheckBox(4, "MOVEFRAMES", true)
+		AddCheckBox(24, "MOVESMALLBAGS", false)
+		AddCheckBox(24, "MOVELOOTFRAME", false)
 		AddCheckBox(24, "SAVEFRAMEPOSITION", true)
 		AddCheckBox(24, "SAVEFRAMESCALE", true)
 		AddCheckBox(24, "FRAMESSHIFTDRAG", false)
