@@ -2375,17 +2375,29 @@ function MoveAny:Event(event, ...)
 		MoveAny:MoveFrames()
 	end
 
-	if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then
-		WorldMapFrame.ScrollContainer.GetCursorPosition = function(f)
-			local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(f)
-			local scale = WorldMapFrame:GetScale()
+	if WorldMapFrame then
+		if WorldMapFrame.Minimize then
+			hooksecurefunc(WorldMapFrame, "Minimize", function(sel)
+				sel:SetScale(1)
+			end)
 
-			if not IsAddOnLoaded("Mapster") then
-				return x / scale, y / scale
-			else
-				local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
+			hooksecurefunc(WorldMapFrame, "Maximize", function(sel)
+				sel:SetScale(1)
+			end)
+		end
 
-				return x / scale * reverseEffectiveScale, y / scale * reverseEffectiveScale
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			WorldMapFrame.ScrollContainer.GetCursorPosition = function(f)
+				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(f)
+				local scale = WorldMapFrame:GetScale()
+
+				if not IsAddOnLoaded("Mapster") then
+					return x / scale, y / scale
+				else
+					local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
+
+					return x / scale * reverseEffectiveScale, y / scale * reverseEffectiveScale
+				end
 			end
 		end
 	end

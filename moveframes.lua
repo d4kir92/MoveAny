@@ -62,14 +62,20 @@ scaler:SetScript("OnUpdate", function()
 
 				if newScale > 0 then
 					currentFrame:SetScale(newScale)
-					MoveAny:SetFrameScale(currentFrameName, newScale)
+
+					if currentFrame.isMaximized == nil or currentFrame.isMaximized == false then
+						MoveAny:SetFrameScale(currentFrameName, newScale)
+					end
 				end
 			elseif curMouseY < scaler.prevMouseY then
 				local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
 
 				if newScale > 0 then
 					currentFrame:SetScale(newScale)
-					MoveAny:SetFrameScale(currentFrameName, newScale)
+
+					if currentFrame.isMaximized == nil or currentFrame.isMaximized == false then
+						MoveAny:SetFrameScale(currentFrameName, newScale)
+					end
 				end
 			end
 		end
@@ -290,11 +296,15 @@ function MoveAny:UpdateMoveFrames()
 						if sel.masetscale_frame then return end
 						sel.masetscale_frame = true
 
-						if MoveAny:GetFrameScale(name) or scale then
-							local sca = MoveAny:GetFrameScale(name) or scale
+						if sel.isMaximized then
+							sel:SetScale(1)
+						else
+							if MoveAny:GetFrameScale(name) or scale then
+								local sca = MoveAny:GetFrameScale(name) or scale
 
-							if sca > 0 then
-								sel:SetScale(sca)
+								if sca > 0 then
+									sel:SetScale(sca)
+								end
 							end
 						end
 
@@ -303,7 +313,7 @@ function MoveAny:UpdateMoveFrames()
 
 					if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 						if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
-							if GetScreenHeight() / frame:GetHeight() > 0 then
+							if GetScreenHeight() / frame:GetHeight() > 0 and frame.isMaximized == nil or frame.isMaximized == false then
 								MoveAny:SetFrameScale(name, GetScreenHeight() / frame:GetHeight())
 							end
 
