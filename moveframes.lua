@@ -232,7 +232,7 @@ function MoveAny:UpdateMoveFrames()
 							MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
 							MoveAny:SetFrameScale(name, nil)
 							frame:SetScale(1)
-							frame:ClearAllPoints()
+							--frame:ClearAllPoints()
 							MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
 						else
 							if MoveAny:IsResetButtonDown(btn) then
