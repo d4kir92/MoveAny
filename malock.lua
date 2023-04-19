@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.84")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.85")
 }
 
 local PREFIX = "MOAN"
@@ -624,7 +624,7 @@ function MoveAny:InitMALock()
 
 	MALock:UpdateShowErrors()
 	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock, "InputBoxTemplate")
-	MALock.DISCORD:SetText("discord.gg/pRjC7cbqYW")
+	MALock.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 	MALock.DISCORD:SetSize(160, 24)
 	MALock.DISCORD:SetPoint("TOPLEFT", MALock, "TOPLEFT", MALock:GetWidth() - 160 - 8, -MALock:GetHeight() + 24 + 4)
 	MALock.DISCORD:SetAutoFocus(false)
