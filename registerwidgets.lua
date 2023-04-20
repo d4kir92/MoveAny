@@ -1097,6 +1097,10 @@ function MoveAny:Event(event, ...)
 			end
 		elseif PossessBarFrame then
 			if MoveAny:IsEnabled("POSSESSBAR", false) then
+				if PossessBarFrame then
+					PossessBarFrame:SetParent(UIParent)
+				end
+
 				MoveAny:RegisterWidget({
 					["name"] = "PossessBarFrame",
 					["lstr"] = "LID_POSSESSBAR"
@@ -2083,6 +2087,10 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MoveAny:IsEnabled("TOTEMBAR", true) and MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
+		if MultiCastActionBarFrame then
+			MultiCastActionBarFrame:SetParent(UIParent)
+		end
+
 		MoveAny:RegisterWidget({
 			["name"] = "MultiCastActionBarFrame",
 			["lstr"] = "LID_TOTEMBAR",
