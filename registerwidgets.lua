@@ -1011,7 +1011,96 @@ function MoveAny:Event(event, ...)
 		end
 	end
 
-	-- TOPLEFT
+	if PlayerCastingBarFrame then
+		if MoveAny:IsEnabled("CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000) then
+			MoveAny:RegisterWidget({
+				["name"] = "PlayerCastingBarFrame",
+				["lstr"] = "LID_CASTINGBAR",
+			})
+		end
+	else
+		if MoveAny:IsEnabled("CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000) then
+			MoveAny:RegisterWidget({
+				["name"] = "CastingBarFrame",
+				["lstr"] = "LID_CASTINGBAR"
+			})
+		end
+	end
+
+	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
+		MoveAny:RegisterWidget({
+			["name"] = "RuneFrame",
+			["lstr"] = "LID_RUNEFRAME"
+		})
+	end
+
+	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
+		MoveAny:RegisterWidget({
+			["name"] = "TotemFrame",
+			["lstr"] = "LID_TOTEMFRAME",
+			["sw"] = 32 * 4,
+			["sh"] = 32,
+			["userplaced"] = true,
+			["secure"] = true,
+		})
+	end
+
+	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
+		MoveAny:RegisterWidget({
+			["name"] = "WarlockPowerFrame",
+			["lstr"] = "LID_WARLOCKPOWERFRAME"
+		})
+	end
+
+	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
+		MoveAny:RegisterWidget({
+			["name"] = "MonkHarmonyBarFrame",
+			["lstr"] = "LID_MONKHARMONYBARFRAME"
+		})
+	end
+
+	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
+		MoveAny:RegisterWidget({
+			["name"] = "MonkStaggerBar",
+			["lstr"] = "LID_MONKSTAGGERBAR"
+		})
+	end
+
+	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
+		MoveAny:RegisterWidget({
+			["name"] = "MageArcaneChargesFrame",
+			["lstr"] = "LID_MAGEARCANECHARGESFRAME"
+		})
+	end
+
+	if ComboPointPlayerFrame and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
+		if class == "ROGUE" then
+			MoveAny:RegisterWidget({
+				["name"] = "ComboPointPlayerFrame",
+				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
+			})
+		elseif class == "DRUID" then
+			MoveAny:RegisterWidget({
+				["name"] = "ComboPointDruidPlayerFrame",
+				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
+			})
+		end
+	end
+
+	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
+		MoveAny:RegisterWidget({
+			["name"] = "EssencePlayerFrame",
+			["lstr"] = "LID_ESSENCEPLAYERFRAME"
+		})
+	end
+
+	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
+		MoveAny:RegisterWidget({
+			["name"] = "PaladinPowerBarFrame",
+			["lstr"] = "LID_PALADINPOWERBARFRAME"
+		})
+	end
+
 	if MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 		if MoveAny:IsEnabled("PLAYERFRAME", MoveAny:GetWoWBuildNr() < 100000) then
 			MoveAny:RegisterWidget({
@@ -1127,22 +1216,6 @@ function MoveAny:Event(event, ...)
 				["lstr"] = "LID_EXTRAABILITYCONTAINER",
 				["userplaced"] = true
 			})
-		end
-
-		if PlayerCastingBarFrame then
-			if MoveAny:IsEnabled("CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000) then
-				MoveAny:RegisterWidget({
-					["name"] = "PlayerCastingBarFrame",
-					["lstr"] = "LID_CASTINGBAR",
-				})
-			end
-		else
-			if MoveAny:IsEnabled("CASTINGBAR", MoveAny:GetWoWBuildNr() < 100000) then
-				MoveAny:RegisterWidget({
-					["name"] = "CastingBarFrame",
-					["lstr"] = "LID_CASTINGBAR"
-				})
-			end
 		end
 
 		if TalkingHeadFrame and MoveAny:IsEnabled("TALKINGHEAD", MoveAny:GetWoWBuildNr() < 100000) then
@@ -1402,80 +1475,6 @@ function MoveAny:Event(event, ...)
 			["name"] = "PetFrame",
 			["lstr"] = "LID_PETFRAME",
 			["userplaced"] = true
-		})
-	end
-
-	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
-		MoveAny:RegisterWidget({
-			["name"] = "RuneFrame",
-			["lstr"] = "LID_RUNEFRAME"
-		})
-	end
-
-	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "TotemFrame",
-			["lstr"] = "LID_TOTEMFRAME",
-			["sw"] = 32 * 4,
-			["sh"] = 32,
-			["userplaced"] = true,
-			["secure"] = true,
-		})
-	end
-
-	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
-		MoveAny:RegisterWidget({
-			["name"] = "WarlockPowerFrame",
-			["lstr"] = "LID_WARLOCKPOWERFRAME"
-		})
-	end
-
-	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
-		MoveAny:RegisterWidget({
-			["name"] = "MonkHarmonyBarFrame",
-			["lstr"] = "LID_MONKHARMONYBARFRAME"
-		})
-	end
-
-	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
-		MoveAny:RegisterWidget({
-			["name"] = "MonkStaggerBar",
-			["lstr"] = "LID_MONKSTAGGERBAR"
-		})
-	end
-
-	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
-		MoveAny:RegisterWidget({
-			["name"] = "MageArcaneChargesFrame",
-			["lstr"] = "LID_MAGEARCANECHARGESFRAME"
-		})
-	end
-
-	if ComboPointPlayerFrame and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
-		if class == "ROGUE" then
-			MoveAny:RegisterWidget({
-				["name"] = "ComboPointPlayerFrame",
-				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
-			})
-		elseif class == "DRUID" then
-			MoveAny:RegisterWidget({
-				["name"] = "ComboPointDruidPlayerFrame",
-				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
-			})
-		end
-	end
-
-	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
-		MoveAny:RegisterWidget({
-			["name"] = "EssencePlayerFrame",
-			["lstr"] = "LID_ESSENCEPLAYERFRAME"
-		})
-	end
-
-	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
-		MoveAny:RegisterWidget({
-			["name"] = "PaladinPowerBarFrame",
-			["lstr"] = "LID_PALADINPOWERBARFRAME"
 		})
 	end
 
