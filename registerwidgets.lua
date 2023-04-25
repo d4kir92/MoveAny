@@ -1619,10 +1619,18 @@ function MoveAny:Event(event, ...)
 		})
 	end
 
-	if ObjectiveTrackerBonusBannerFrame and MoveAny:IsEnabled("OBJECTIVETRACKERBONUSBANNERFRAME", true) then
+	if ObjectiveTrackerBonusBannerFrame and MoveAny:IsEnabled("OBJECTIVETRACKERBONUSBANNERFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "ObjectiveTrackerBonusBannerFrame",
 			["lstr"] = "LID_OBJECTIVETRACKERBONUSBANNERFRAME",
+			["userplaced"] = true
+		})
+	end
+
+	if RaidBossEmoteFrame and MoveAny:IsEnabled("RAIDBOSSEMOTEFRAME", false) then
+		MoveAny:RegisterWidget({
+			["name"] = "RaidBossEmoteFrame",
+			["lstr"] = "LID_RAIDBOSSEMOTEFRAME",
 			["userplaced"] = true
 		})
 	end

@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.87")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.0.88")
 }
 
 local PREFIX = "MOAN"
@@ -135,7 +135,13 @@ local function AddCategory(key)
 	end
 end
 
-local function AddCheckBox(x, key, val, func, id, editModeEnum)
+local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
+	local bShowReload = showReload
+
+	if bShowReload == nil then
+		bShowReload = true
+	end
+
 	if val == nil then
 		MoveAny:MSG("Missing Value For: " .. tostring(key))
 		val = true
@@ -174,6 +180,10 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum)
 
 		cb:SetScript("OnClick", function(sel)
 			MoveAny:SetEnabled(key, sel:GetChecked())
+
+			if bShowReload and sel:GetChecked() and sel.f then
+				sel.f:SetText(format("[%s] %s", MoveAny:GT("LID_NEEDSARELOAD"), lstr))
+			end
 
 			if func then
 				func()
@@ -285,8 +295,9 @@ function MoveAny:InitMALock()
 	function MAUpdateElementList()
 		local _, class = UnitClass("PLAYER")
 		posy = -4
+		-- AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		AddCategory("GENERAL")
-		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton)
+		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton, nil, nil, false)
 		AddSlider(24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
 		AddCheckBox(4, "MOVEFRAMES", true)
 		AddCheckBox(24, "MOVESMALLBAGS", false)
@@ -365,7 +376,11 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "ZONETEXTFRAME", true)
 
 		if ObjectiveTrackerBonusBannerFrame then
-			AddCheckBox(4, "OBJECTIVETRACKERBONUSBANNERFRAME", true)
+			AddCheckBox(4, "OBJECTIVETRACKERBONUSBANNERFRAME", false)
+		end
+
+		if RaidBossEmoteFrame then
+			AddCheckBox(4, "RAIDBOSSEMOTEFRAME", false)
 		end
 
 		if VehicleSeatIndicator then

@@ -18,6 +18,8 @@ function MoveAny:GT(str)
 
 		return str
 	end
+
+	return str
 end
 
 function MoveAny:UpdateLanguage()

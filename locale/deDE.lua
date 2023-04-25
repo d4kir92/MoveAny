@@ -143,6 +143,8 @@ function MoveAny:LangdeDE()
 		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objektiv Tracker Fenster (World Quest Titel)",
 		["LID_MOVESMALLBAGS"] = "Bewegen/Skalieren von kleinen Taschen",
 		["LID_MOVELOOTFRAME"] = "Bewegen/Skalieren von Beutefenster",
+		["LID_NEEDSARELOAD"] = "Braucht ein Neu laden",
+		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emotionen Fenster",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

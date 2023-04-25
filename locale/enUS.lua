@@ -149,6 +149,8 @@ function MoveAny:LangenUS()
 		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objective Tracker Frame (World Quest Title)",
 		["LID_MOVESMALLBAGS"] = "Move/Scale Small Bags",
 		["LID_MOVELOOTFRAME"] = "Move/Scale Lootframe",
+		["LID_NEEDSARELOAD"] = "Needs a Reload",
+		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emote Frame",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
