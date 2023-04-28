@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.1")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.2")
 }
 
 local PREFIX = "MOAN"
@@ -960,7 +960,7 @@ function MoveAny:ShowProfiles()
 
 							MADownloadProfile.btn:SetScript("OnClick", function()
 								local profileName = MADownloadProfile.ProfileName:GetText()
-								MATAB = MATAB or {}
+								MoveAny:CheckDB()
 
 								if MATAB["PROFILES"][profileName] == nil then
 									MoveAny:ImportProfile(profileName, WebProfileData)
@@ -1101,7 +1101,7 @@ function MoveAny:ShowProfiles()
 						MAShareProfile.lines[id].btn:SetScript("OnClick", function()
 							local delay = 0.01
 							C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";0", "WHISPER", source)
-							MATAB = MATAB or {}
+							MoveAny:CheckDB()
 
 							if MATAB["PROFILES"][profile] then
 								local max = 0

@@ -942,12 +942,6 @@ function MoveAny:Event(event, ...)
 	MoveAny.init = MoveAny.init or false
 	if MoveAny.init then return end
 	MoveAny.init = true
-
-	if MoveAny:IsEnabled("SHOWTIPS", true) then
-		MoveAny:MSG(MoveAny:GT("LID_STARTHELP"))
-		MoveAny:MSG(MoveAny:GT("LID_STARTHELP2"))
-	end
-
 	local _, class = UnitClass("PLAYER")
 
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
@@ -960,6 +954,11 @@ function MoveAny:Event(event, ...)
 
 	if MoveAny.InitDB then
 		MoveAny:InitDB()
+	end
+
+	if MoveAny:IsEnabled("SHOWTIPS", true) then
+		MoveAny:MSG(MoveAny:GT("LID_STARTHELP"))
+		MoveAny:MSG(MoveAny:GT("LID_STARTHELP2"))
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
