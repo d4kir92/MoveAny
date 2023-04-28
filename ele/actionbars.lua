@@ -243,7 +243,7 @@ function MoveAny:InitActionBarLayouts()
 end
 
 function MoveAny:CustomBars()
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", true) then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
 
@@ -324,7 +324,7 @@ function MoveAny:CustomBars()
 	end
 
 	for i = 1, MAMaxAB do
-		if i ~= 2 and i <= 6 and MoveAny:IsEnabled("ACTIONBARS", true) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
+		if i ~= 2 and i <= 6 and MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
 			local name = "MAActionBar" .. i
 			_G[name] = CreateFrame("Frame", name, UIParent, "SecureHandlerStateTemplate")
 			local bar = _G[name]

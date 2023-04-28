@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 function MoveAny:InitMicroMenu()
-	if MoveAny:IsEnabled("MICROMENU", true) then
+	if MoveAny:IsEnabled("MICROMENU", false) then
 		local MBTNS = MICRO_BUTTONS
 
 		if MICRO_BUTTONS == nil then

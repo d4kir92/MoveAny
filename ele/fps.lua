@@ -2,7 +2,7 @@ local _, MoveAny = ...
 local config_update = 1
 
 function MoveAny:InitMAFPSFrame()
-	if MoveAny:IsEnabled("MAFPSFrame", true) then
+	if MoveAny:IsEnabled("MAFPSFrame", false) then
 		MAFPSFrame = CreateFrame("Frame", "MAFPSFrame", UIParent)
 		MAFPSFrame:SetSize(100, 20)
 		MAFPSFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)

@@ -9,7 +9,7 @@ MABuffBar:SetSize(sw1, sh1)
 MABuffBar:SetPoint(BuffFrame:GetPoint())
 
 function MoveAny:InitBuffBar()
-	if MoveAny:IsEnabled("BUFFS", true) then
+	if MoveAny:IsEnabled("BUFFS", false) then
 		if BuffFrame then
 			MABuffBar:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -165, -32)
 		else

@@ -79,7 +79,7 @@ function MoveAny:InitBags()
 		BagsBar:SetSize(100, 100)
 	end
 
-	if MoveAny:IsEnabled("BAGS", true) then
+	if MoveAny:IsEnabled("BAGS", false) then
 		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
 		end

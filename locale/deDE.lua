@@ -145,6 +145,9 @@ function MoveAny:LangdeDE()
 		["LID_MOVELOOTFRAME"] = "Bewegen/Skalieren von Beutefenster",
 		["LID_NEEDSARELOAD"] = "Braucht ein Neu laden",
 		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emotionen Fenster",
+		["LID_STARTHELP"] = "Klicken Sie auf die MoveAny Minimap-Schaltfläche, um die Einstellungen zu öffnen",
+		["LID_STARTHELP2"] = "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.",
+		["LID_SHOWTIPS"] = "Tipps anzeigen",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

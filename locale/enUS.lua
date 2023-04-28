@@ -151,6 +151,9 @@ function MoveAny:LangenUS()
 		["LID_MOVELOOTFRAME"] = "Move/Scale Lootframe",
 		["LID_NEEDSARELOAD"] = "Needs a Reload",
 		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emote Frame",
+		["LID_STARTHELP"] = "Click the MoveAny Minimap Button to open the settings.",
+		["LID_STARTHELP2"] = "Or tap /move or /moveany in chat to open the settings.",
+		["LID_SHOWTIPS"] = "Show Tips",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

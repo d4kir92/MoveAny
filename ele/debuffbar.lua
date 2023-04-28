@@ -3,7 +3,7 @@ local btnsize = 36
 local debuffs = {}
 
 function MoveAny:InitDebuffBar()
-	if MoveAny:IsEnabled("DEBUFFS", true) then
+	if MoveAny:IsEnabled("DEBUFFS", false) then
 		MADebuffBar = CreateFrame("Frame", "MADebuffBar", UIParent)
 		MADebuffBar:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -165, -132)
 		MADebuffBar:SetSize(btnsize * 10, btnsize * 3)

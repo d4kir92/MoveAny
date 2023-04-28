@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 function MoveAny:InitMinimap()
-	if not MoveAny:IsEnabled("MINIMAP", true) then return end
+	if not MoveAny:IsEnabled("MINIMAP", false) then return end
 	if ElvUI then return end
 
 	if MinimapToggleButton then
