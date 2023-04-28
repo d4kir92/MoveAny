@@ -34,6 +34,7 @@ function MoveAny:SetCP(name)
 end
 
 function MoveAny:GetValidProfileName(name)
+	MATAB = MATAB or {}
 	if MATAB["PROFILES"][name] == nil then return name end
 
 	return MoveAny:GetValidProfileName(name .. " NEW")
@@ -78,6 +79,8 @@ function MoveAny:ImportProfile(name, eleTab)
 end
 
 function MoveAny:RenameProfile(oldname, newname)
+	MATAB = MATAB or {}
+
 	if MATAB["PROFILES"][newname] ~= nil then
 		MoveAny:MSG("[RenameProfile] can't rename, new Name already exists.")
 
@@ -111,6 +114,7 @@ function MoveAny:GetProfiles()
 end
 
 function MoveAny:IImportPointValue(profileName, n, t, key, dbKey)
+	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
@@ -146,6 +150,7 @@ function MoveAny:IImportPointValue(profileName, n, t, key, dbKey)
 end
 
 function MoveAny:IImportSizesValue(profileName, n, t, key, dbKey)
+	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
@@ -181,6 +186,7 @@ function MoveAny:IImportSizesValue(profileName, n, t, key, dbKey)
 end
 
 function MoveAny:IImportOptionValue(profileName, n, t, key, dbKey)
+	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
@@ -219,14 +225,20 @@ function MoveAny:IImportOptionValue(profileName, n, t, key, dbKey)
 end
 
 function MoveAny:GetTab()
+	MATAB = MATAB or {}
+	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+
 	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
 function MoveAny:GV(key, val)
+	MATAB = MATAB or {}
+
 	return MATAB[key] or val
 end
 
 function MoveAny:SV(key, val)
+	MATAB = MATAB or {}
 	MATAB[key] = val
 	MoveAny:EnableSave("SV", key)
 end
@@ -512,6 +524,7 @@ function MoveAny:SetFrameScale(key, scale)
 end
 
 function MoveAny:GetMinimapTable()
+	MATAB = MATAB or {}
 	MATAB["PROFILES"] = MATAB["PROFILES"] or {}
 	MoveAny:GetTab()["MMICON"] = MoveAny:GetTab()["MMICON"] or {}
 
