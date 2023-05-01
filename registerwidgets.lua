@@ -469,7 +469,7 @@ function MoveAny:GetFrame(ele, name)
 	return ele
 end
 
-function MoveAny:RegisterWidget(tab, debug)
+function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
 	local lstri = tab.lstri
@@ -1231,6 +1231,11 @@ function MoveAny:Event(event, ...)
 			})
 		end
 
+		MoveAny:RegisterWidget({
+			["name"] = "OverrideActionBar",
+			["lstr"] = "OVERRIDEACTIONBAR"
+		})
+
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			local ABNames = {}
 			ABNames[1] = "MainMenuBar"
@@ -1299,7 +1304,7 @@ function MoveAny:Event(event, ...)
 					MoveAny:RegisterWidget({
 						["name"] = "MAActionBar" .. i,
 						["lstr"] = "LID_ACTIONBAR" .. i
-					}, true)
+					})
 				end
 			end
 		end

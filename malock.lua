@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.2")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.3")
 }
 
 local PREFIX = "MOAN"
@@ -341,6 +341,7 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "CASTINGBAR", false, nil, nil, "ShowCastBar")
 		AddCheckBox(posx, "TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame")
+		AddCheckBox(posx, "OVERRIDEACTIONBAR", false)
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "ACTIONBARS", false)

@@ -154,6 +154,7 @@ function MoveAny:LangenUS()
 		["LID_STARTHELP"] = "Click the MoveAny Minimap Button to open the settings.",
 		["LID_STARTHELP2"] = "Or tap /move or /moveany in chat to open the settings.",
 		["LID_SHOWTIPS"] = "Show Tips",
+		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

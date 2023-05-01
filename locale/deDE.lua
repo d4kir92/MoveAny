@@ -148,6 +148,7 @@ function MoveAny:LangdeDE()
 		["LID_STARTHELP"] = "Klicken Sie auf die MoveAny Minimap-Schaltfläche, um die Einstellungen zu öffnen",
 		["LID_STARTHELP2"] = "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.",
 		["LID_SHOWTIPS"] = "Tipps anzeigen",
+		["LID_OVERRIDEACTIONBAR"] = "\"Überschreiben\" Aktionsleiste (Fahrzeugleiste)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
