@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.5")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.6")
 }
 
 local PREFIX = "MOAN"
@@ -182,10 +182,6 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		cb:SetSize(24, 24)
 		cb:SetChecked(MoveAny:IsEnabled(key, val, true))
 
-		if bGreyed then
-			cb:SetEnabled(false)
-		end
-
 		cb:SetScript("OnClick", function(sel)
 			MoveAny:SetEnabled(key, sel:GetChecked())
 
@@ -196,6 +192,10 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 			if func then
 				func()
 			end
+
+			if key == "EDITMODE" then
+				MAUpdateElementList()
+			end
 		end)
 
 		cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
@@ -204,6 +204,12 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 	end
 
 	cbs[key]:ClearAllPoints()
+
+	if bGreyed then
+		cbs[key]:SetEnabled(false)
+	else
+		cbs[key]:SetEnabled(true)
+	end
 
 	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(lstr), strlower(searchStr)) then
 		cbs[key]:Show()
