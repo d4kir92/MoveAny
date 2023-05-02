@@ -1231,10 +1231,12 @@ function MoveAny:Event(event, ...)
 			})
 		end
 
-		MoveAny:RegisterWidget({
-			["name"] = "OverrideActionBar",
-			["lstr"] = "OVERRIDEACTIONBAR"
-		})
+		if MoveAny:IsEnabled("OVERRIDEACTIONBAR", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "OverrideActionBar",
+				["lstr"] = "LID_OVERRIDEACTIONBAR"
+			})
+		end
 
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			local ABNames = {}
@@ -1975,6 +1977,13 @@ function MoveAny:Event(event, ...)
 		MoveAny:RegisterWidget({
 			["name"] = "UIErrorsFrame",
 			["lstr"] = "LID_UIERRORSFRAME",
+		})
+	end
+
+	if MoveAny:IsEnabled("BOSSBANNER", false) and BossBanner then
+		MoveAny:RegisterWidget({
+			["name"] = "BossBanner",
+			["lstr"] = "LID_BOSSBANNER",
 		})
 	end
 

@@ -125,7 +125,7 @@ function MoveAny:LangenUS()
 		["LID_CLASSSPECIFIC"] = "Class Specific",
 		["LID_ADVANCED"] = "Advanced",
 		["LID_ImproveAny"] = "ImproveAny",
-		["LID_MISSINGREQUIREMENT"] = "Missing Checkbox: %s",
+		["LID_MISSINGREQUIREMENT"] = "You must first tick \"%s\"",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
 		["LID_UIERRORSFRAME"] = "Ui Error Messages, Quest Progress",
 		["LID_COMBOPOINTPLAYERFRAME"] = "Combo Points",
@@ -155,6 +155,7 @@ function MoveAny:LangenUS()
 		["LID_STARTHELP2"] = "Or tap /move or /moveany in chat to open the settings.",
 		["LID_SHOWTIPS"] = "Show Tips",
 		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
+		["LID_BOSSBANNER"] = "Boss Banner (Dropped Loot, Boss Title)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

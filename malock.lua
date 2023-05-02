@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.3")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.4")
 }
 
 local PREFIX = "MOAN"
@@ -495,6 +495,10 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "ARENAENEMYFRAMES", false)
 		AddCheckBox(4, "ARENAPREPFRAMES", false)
 		AddCheckBox(4, "GAMETOOLTIP_ONCURSOR", false)
+
+		if BossBanner then
+			AddCheckBox(4, "BOSSBANNER", false)
+		end
 
 		if GroupLootContainer then
 			AddCheckBox(4, "GROUPLOOTCONTAINER", false)
