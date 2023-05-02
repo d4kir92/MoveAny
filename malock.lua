@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.4")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.5")
 }
 
 local PREFIX = "MOAN"
@@ -121,7 +121,7 @@ local function AddCategory(key)
 
 	cas[key]:ClearAllPoints()
 
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:GT("LID_" .. key)), strlower(searchStr)) then
+	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:GT("LID_" .. key)), strlower(searchStr)) then
 		cas[key]:Show()
 
 		if posy < -4 then
@@ -137,6 +137,7 @@ end
 
 local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 	local bShowReload = showReload
+	local bGreyed = false
 
 	if bShowReload == nil then
 		bShowReload = true
@@ -147,7 +148,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		val = true
 	end
 
-	local lstr = "|cFFFFFFFF" .. MoveAny:GT("LID_" .. key)
+	local lstr = MoveAny:GT("LID_" .. key)
 
 	if id then
 		lstr = format(lstr, id)
@@ -165,7 +166,10 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 	end
 
 	if (EMMap[key] or EMMapForced[key]) and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
-		lstr = "(" .. format(MoveAny:GT("LID_MISSINGREQUIREMENT"), MoveAny:GT("LID_EDITMODE")) .. ") " .. lstr
+		bGreyed = true
+		lstr = "(" .. MoveAny:GT("LID_EDITMODE") .. ") |c88888888" .. lstr
+	else
+		lstr = "|cFFFFFFFF" .. lstr
 	end
 
 	if id then
@@ -177,6 +181,10 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		local cb = cbs[key]
 		cb:SetSize(24, 24)
 		cb:SetChecked(MoveAny:IsEnabled(key, val, true))
+
+		if bGreyed then
+			cb:SetEnabled(false)
+		end
 
 		cb:SetScript("OnClick", function(sel)
 			MoveAny:SetEnabled(key, sel:GetChecked())
@@ -197,7 +205,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 
 	cbs[key]:ClearAllPoints()
 
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(lstr), strlower(searchStr)) then
+	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(lstr), strlower(searchStr)) then
 		cbs[key]:Show()
 		cbs[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
 		posy = posy - 24
@@ -237,7 +245,7 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps)
 
 	sls[key]:ClearAllPoints()
 
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:GT("LID_" .. key)), strlower(searchStr)) then
+	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:GT("LID_" .. key)), strlower(searchStr)) then
 		sls[key]:Show()
 		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
 		posy = posy - 24

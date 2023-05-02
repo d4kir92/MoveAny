@@ -99,7 +99,7 @@ function MoveAny:LangfrFR()
 		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(Peut provoquer une erreur due au mode d'édition)",
 		["LID_HELPTEXT"] = "\"%s\" est déjà activé en EditMode. Veuillez le désactiver en EditMode ou MoveAny.",
 		["LID_BUILTIN"] = "Built-In",
-		["LID_EDITMODE"] = "Mode d'édition par écrasement",
+		["LID_EDITMODE"] = "Ecrase le Mode Edition",
 		["LID_NORMAL"] = "Normal",
 		["LID_CLASSSPECIFIC"] = "Classe spécifique",
 		["LID_ADVANCED"] = "Avancé",

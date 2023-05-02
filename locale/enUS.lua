@@ -125,7 +125,6 @@ function MoveAny:LangenUS()
 		["LID_CLASSSPECIFIC"] = "Class Specific",
 		["LID_ADVANCED"] = "Advanced",
 		["LID_ImproveAny"] = "ImproveAny",
-		["LID_MISSINGREQUIREMENT"] = "You must first tick \"%s\"",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
 		["LID_UIERRORSFRAME"] = "Ui Error Messages, Quest Progress",
 		["LID_COMBOPOINTPLAYERFRAME"] = "Combo Points",
