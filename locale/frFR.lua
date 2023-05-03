@@ -114,8 +114,6 @@ function MoveAny:LangfrFR()
 		["LID_GHOSTFRAME"] = "Cadre fantôme (téléportation au cimetière)",
 		["LID_TICKETSTATUSFRAME"] = "Cadre des tickets",
 		["LID_LOSSOFCONTROLFRAME"] = "Cadre de perte de contrôle",
-		["LID_MainStatusTrackingBarContainer"] = "Barre de contrôle",
-		["LID_SecondaryStatusTrackingBarContainer"] = "Barre de réputation",
 		["LID_TargetFrameNumericalThreat"] = "Pourcentage de menace",
 	}
 

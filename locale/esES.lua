@@ -114,8 +114,6 @@ function MoveAny:LangesES()
 		["LID_GHOSTFRAME"] = "Fotograma fantasma (teletransporte al cementerio)",
 		["LID_TICKETSTATUSFRAME"] = "Fotograma de ticket",
 		["LID_LOSSOFCONTROLFRAME"] = "Cuadro de pérdida de control",
-		["LID_MainStatusTrackingBarContainer"] = "Barra de Exp",
-		["LID_SecondaryStatusTrackingBarContainer"] = "Barra de Reputación",
 		["LID_TargetFrameNumericalThreat"] = "Porcentaje de amenaza",
 	}
 

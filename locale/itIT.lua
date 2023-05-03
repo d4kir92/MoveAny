@@ -114,8 +114,6 @@ function MoveAny:LangitIT()
 		["LID_GHOSTFRAME"] = "Cornice fantasma (teletrasporto al cimitero)",
 		["LID_TICKETSTATUSFRAME"] = "Cornice biglietto",
 		["LID_LOSSOFCONTROLFRAME"] = "Quadro di perdita di controllo",
-		["LID_MainStatusTrackingBarContainer"] = "Barra Exp",
-		["LID_SecondaryStatusTrackingBarContainer"] = "Barra della reputazione",
 		["LID_TargetFrameNumericalThreat"] = "Percentuale di minaccia",
 	}
 

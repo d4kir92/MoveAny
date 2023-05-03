@@ -114,8 +114,6 @@ function MoveAny:LangptBR()
 		["LID_GHOSTFRAME"] = "Armação Fantasma (Teletransporte para Cemitério)",
 		["LID_TICKETSTATUSFRAME"] = "Ticket Frame",
 		["LID_LOSSOFCONTROLFRAME"] = "Loss of Control Frame (Perda do Quadro de Controle)",
-		["LID_MainStatusTrackingBarContainer"] = "Exp Bar",
-		["LID_SecondaryStatusTrackingBarContainer"] = "Barra de Reputação",
 		["LID_TargetFrameNumericalThreat"] = "Percentual de Ameaça",
 	}
 
