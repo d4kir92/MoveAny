@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.9")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.10")
 }
 
 local PREFIX = "MOAN"
@@ -62,8 +62,8 @@ MoveAny:AddToEMMap("StanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("MAGameTooltip", "ShowHudTooltip")
 MoveAny:AddToEMMap("TalkingHeadFrame", "ShowTalkingHeadFrame")
 MoveAny:AddToEMMap("TalkingHead", "ShowTalkingHeadFrame")
-MoveAny:AddToEMMap("MABuffBar", "ShowBuffFrame")
-MoveAny:AddToEMMap("MADebuffBar", "ShowDebuffFrame")
+MoveAny:AddToEMMap("MABuffBar", "ShowBuffsAndDebuffs")
+MoveAny:AddToEMMap("MADebuffBar", "ShowBuffsAndDebuffs")
 MoveAny:AddToEMMap("TargetFrame", "ShowTargetAndFocus")
 MoveAny:AddToEMMap("FocusFrame", "ShowTargetAndFocus")
 MoveAny:AddToEMMap("ExtraAbilityFrame", "ShowExtraAbilities")
@@ -97,10 +97,9 @@ function MoveAny:IsInEditModeEnabled(val)
 
 		if EMMap[val] and editModeEnum == nil then
 			MoveAny:MSG("MISSING ENUM FOR val: " .. tostring(val))
-
-			for i, v in pairs(Enum.EditModeAccountSetting) do
+			--[[for i, v in pairs(Enum.EditModeAccountSetting) do
 				MoveAny:MSG("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
-			end
+			end]]
 		end
 	end
 
