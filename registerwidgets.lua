@@ -1840,7 +1840,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	function MAThinkGameTooltip()
-		if EditModeManagerFrame and EditModeManagerFrame:IsShown() then
+		if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
 			C_Timer.After(0.1, MAThinkGameTooltip)
 
 			return

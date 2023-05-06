@@ -40,7 +40,7 @@ local currentFrameName = nil
 local scaler = CreateFrame("Frame")
 
 scaler:SetScript("OnUpdate", function()
-	if currentFrame and not currentFrame:IsShown() then
+	if currentFrame ~= nil and not currentFrame:IsShown() then
 		currentFrame:SetAlpha(1)
 		currentFrame = nil
 		currentFrameName = nil

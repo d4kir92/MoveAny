@@ -25,7 +25,7 @@ function MoveAny:UpdateBags()
 	for i, mbname in pairs(BAGS) do
 		local bb = _G[mbname]
 
-		if bb and bb:IsShown() then
+		if bb ~= nil and bb:IsShown() then
 			local w, h = bb:GetSize()
 			sw = sw + w
 
@@ -42,7 +42,7 @@ function MoveAny:UpdateBags()
 		for i, mbname in pairs(BAGS) do
 			local bb = _G[mbname]
 
-			if bb and bb:IsShown() then
+			if bb ~= nil and bb:IsShown() then
 				local w, h = bb:GetSize()
 				bb:SetParent(BagsBar)
 
