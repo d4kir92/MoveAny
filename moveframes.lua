@@ -55,6 +55,7 @@ scaler:SetScript("OnUpdate", function()
 				local newScale = math.min(currentFrame:GetScale() + 0.006, 1.5)
 
 				if newScale > 0 then
+					newScale = tonumber(string.format("%.4f", newScale))
 					currentFrame:SetScale(newScale)
 
 					if currentFrame.isMaximized == nil or currentFrame.isMaximized == false then
@@ -65,6 +66,7 @@ scaler:SetScript("OnUpdate", function()
 				local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
 
 				if newScale > 0 then
+					newScale = tonumber(string.format("%.4f", newScale))
 					currentFrame:SetScale(newScale)
 
 					if currentFrame.isMaximized == nil or currentFrame.isMaximized == false then

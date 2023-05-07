@@ -163,7 +163,8 @@ function MoveAny:MenuOptions(opt, frame)
 			sup:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -24)
 
 			sup:SetScript("OnClick", function()
-				MoveAny:SetEleScale(name, frame:GetScale() + 0.1)
+				local val = tonumber(string.format("%.1f", frame:GetScale() + 0.1))
+				MoveAny:SetEleScale(name, val)
 				content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
 			end)
 
@@ -176,7 +177,8 @@ function MoveAny:MenuOptions(opt, frame)
 
 			sdn:SetScript("OnClick", function()
 				if frame:GetScale() > 0.3 then
-					MoveAny:SetEleScale(name, frame:GetScale() - 0.1)
+					local val = tonumber(string.format("%.1f", frame:GetScale() - 0.1))
+					MoveAny:SetEleScale(name, val)
 					content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
 				end
 			end)

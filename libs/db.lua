@@ -26,6 +26,25 @@ function MoveAny:CheckDB()
 	--[[PER CHARACTER]]
 	MATABPC = MATABPC or {}
 	MATABPC["CURRENTPROFILE"] = MATABPC["CURRENTPROFILE"] or "DEFAULT"
+	--[[VERSION OF DB]]
+	MATAB["VERSION"] = MATAB["VERSION"] or 1
+
+	if MATAB["VERSION"] < 2 then
+		MATAB["VERSION"] = 2
+		MATAB["PROFILES"] = MATAB["PROFILES"] or {}
+
+		for pn, pt in pairs(MATAB["PROFILES"]) do
+			pt["ELES"] = pt["ELES"] or {}
+			pt["ELES"]["SIZES"] = pt["ELES"]["SIZES"] or {}
+
+			for i, ft in pairs(pt["ELES"]["SIZES"]) do
+				if ft.SCALE ~= nil then
+					local val = tonumber(string.format("%.1f", ft.SCALE))
+					ft.SCALE = val
+				end
+			end
+		end
+	end
 end
 
 function MoveAny:GetCP()
