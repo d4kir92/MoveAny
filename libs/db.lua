@@ -468,6 +468,8 @@ function MoveAny:GetEleSize(key)
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 	local sw = MoveAny:GetTab()["ELES"]["SIZES"][key]["SW"]
 	local sh = MoveAny:GetTab()["ELES"]["SIZES"][key]["SH"]
+	sw = MoveAny:MathR(sw)
+	sh = MoveAny:MathR(sh)
 
 	return sw, sh
 end
