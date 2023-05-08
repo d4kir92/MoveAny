@@ -139,8 +139,8 @@ function MoveAny:UpdateActionBar(frame)
 
 	if frame.btns and frame.btns[1] then
 		local fSizeW, fSizeH = frame.btns[1]:GetSize()
-		fSizeW = math.ceil(fSizeW)
-		fSizeH = math.ceil(fSizeH)
+		fSizeW = MoveAny:MathR(fSizeW, 0)
+		fSizeH = MoveAny:MathR(fSizeH, 0)
 		local id = 1
 
 		for i, abtn in pairs(frame.btns) do
@@ -213,6 +213,12 @@ function MoveAny:UpdateActionBar(frame)
 
 		if not InCombatLockdown() then
 			frame:SetSize(cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing)
+			local mover = _G[frame:GetName() .. "_DRAG"]
+			MoveAny:SetEleSize(frame:GetName(), frame:GetSize())
+
+			if mover then
+				mover:SetSize(frame:GetSize())
+			end
 		end
 	end
 end

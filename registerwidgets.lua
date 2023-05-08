@@ -617,6 +617,8 @@ function MoveAny:RegisterWidget(tab)
 				dragframe:SetPoint("CENTER", fram, "CENTER", posx, posy)
 
 				if fram then
+					sw, sh = MoveAny:GetEleSize(name)
+
 					if not InCombatLockdown() and sw and sh then
 						fram:SetSize(sw, sh)
 					end
@@ -723,8 +725,8 @@ function MoveAny:RegisterWidget(tab)
 
 	sw = sw or frame:GetWidth()
 	sh = sh or frame:GetHeight()
-	sw = math.floor(sw)
-	sh = math.floor(sh)
+	sw = MoveAny:MathR(sw)
+	sh = MoveAny:MathR(sh)
 
 	if MoveAny:GetElePoint(name) == nil then
 		local an, parent, re, px, py = frame:GetPoint()

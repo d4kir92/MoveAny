@@ -475,8 +475,8 @@ end
 function MoveAny:SetEleSize(key, sw, sh)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
-	MoveAny:GetTab()["ELES"]["SIZES"][key]["SW"] = math.floor(sw)
-	MoveAny:GetTab()["ELES"]["SIZES"][key]["SH"] = math.floor(sh)
+	MoveAny:GetTab()["ELES"]["SIZES"][key]["SW"] = MoveAny:MathR(sw)
+	MoveAny:GetTab()["ELES"]["SIZES"][key]["SH"] = MoveAny:MathR(sh)
 	MoveAny:EnableSave("SetEleSize", key)
 end
 

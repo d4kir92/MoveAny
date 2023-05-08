@@ -77,7 +77,7 @@ scaler:SetScript("OnUpdate", function()
 		end
 
 		GameTooltip:SetOwner(currentFrame)
-		GameTooltip:SetText(math.floor(currentFrame:GetScale() * 100) .. "%")
+		GameTooltip:SetText(MoveAny:MathR(currentFrame:GetScale() * 100) .. "%")
 		scaler.prevMouseX = curMouseX
 		scaler.prevMouseY = curMouseY
 	end
