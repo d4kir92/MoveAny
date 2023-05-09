@@ -6,7 +6,13 @@ function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled("DEBUFFS", false) then
 		MADebuffBar = CreateFrame("Frame", "MADebuffBar", UIParent)
 		MADebuffBar:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -165, -132)
-		MADebuffBar:SetSize(btnsize * 10, btnsize * 3)
+
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			MADebuffBar:SetSize(btnsize * 10, btnsize * 3)
+		else
+			local sw1, sh1 = BuffFrame:GetSize()
+			MADebuffBar:SetSize(sw1, sh1)
+		end
 
 		function MALoadDebuff()
 			for i = 1, 32 do

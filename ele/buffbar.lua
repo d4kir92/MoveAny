@@ -3,23 +3,29 @@ local btnsize = 36
 local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
-MABuffBar = CreateFrame("Frame", "MABuffBar", UIParent)
-local sw1, sh1 = BuffFrame:GetSize()
-MABuffBar:SetSize(sw1, sh1)
-MABuffBar:SetPoint(BuffFrame:GetPoint())
 
 function MoveAny:InitBuffBar()
 	if MoveAny:IsEnabled("BUFFS", false) then
+		MABuffBar = CreateFrame("Frame", "MABuffBar", UIParent)
+		local sw1, sh1 = BuffFrame:GetSize()
+		MABuffBar:SetSize(sw1, sh1)
+		MABuffBar:SetPoint(BuffFrame:GetPoint())
+
 		if BuffFrame then
 			MABuffBar:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -165, -32)
 		else
 			MABuffBar:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 		end
 
-		if MoveAny:IsEnabled("DEBUFFS", false) then
-			MABuffBar:SetSize(btnsize * 10, btnsize * 3)
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if MoveAny:IsEnabled("DEBUFFS", false) then
+				MABuffBar:SetSize(btnsize * 10, btnsize * 3)
+			else
+				MABuffBar:SetSize(btnsize * 10, btnsize * 6)
+			end
 		else
-			MABuffBar:SetSize(btnsize * 10, btnsize * 6)
+			sw1, sh1 = BuffFrame:GetSize()
+			MABuffBar:SetSize(sw1, sh1)
 		end
 
 		hooksecurefunc(BuffFrame, "SetPoint", function(sel, ...)

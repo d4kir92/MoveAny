@@ -1446,13 +1446,6 @@ function MoveAny:Event(event, ...)
 				end
 
 				if ObjectiveTrackerFrame then
-					hooksecurefunc(ObjectiveTrackerFrame, "SetHeight", function(sel, h)
-						if sel.iasetheight then return end
-						sel.iasetheight = true
-						sel:SetHeight(600)
-						sel.iasetheight = false
-					end)
-
 					ObjectiveTrackerFrame:SetHeight(600)
 
 					MoveAny:RegisterWidget({
