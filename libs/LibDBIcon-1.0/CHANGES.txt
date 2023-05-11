@@ -1,14 +1,20 @@
 ------------------------------------------------------------------------
-r109 | funkehdude | 2023-05-03 10:39:23 +0000 (Wed, 03 May 2023) | 1 line
+r120 | funkehdude | 2023-05-10 22:38:55 +0000 (Wed, 10 May 2023) | 1 line
 Changed paths:
-   M /trunk/LibDBIcon-1.0.toc
+   M /trunk/LibDBIcon-1.0/LibDBIcon-1.0.lua
 
-bump toc
+Add `lib:IsButtonCompartmentAvailable()`
 ------------------------------------------------------------------------
-r108 | funkehdude | 2023-03-22 03:23:20 +0000 (Wed, 22 Mar 2023) | 1 line
+r119 | funkehdude | 2023-05-10 16:43:39 +0000 (Wed, 10 May 2023) | 1 line
 Changed paths:
-   M /trunk/LibDBIcon-1.0.toc
+   M /trunk/LibDBIcon-1.0/LibDBIcon-1.0.lua
 
-bump toc
+Add some pre-50 upgrade code
+------------------------------------------------------------------------
+r118 | funkehdude | 2023-05-10 16:33:44 +0000 (Wed, 10 May 2023) | 1 line
+Changed paths:
+   M /trunk/LibDBIcon-1.0/LibDBIcon-1.0.lua
+
+Cleanups
 ------------------------------------------------------------------------
 
