@@ -952,7 +952,6 @@ function MoveAny:Event(event, ...)
 	if MoveAny.init then return end
 	MoveAny.init = true
 	local _, class = UnitClass("PLAYER")
-	MoveAny:UpdateMALock()
 
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG("DON'T use MoveAndImprove, when you use MoveAny")
@@ -2499,6 +2498,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	MoveAny:CheckAlphas()
+	MoveAny:UpdateMALock()
 end
 
 local f = CreateFrame("Frame")

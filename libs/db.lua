@@ -382,15 +382,19 @@ function MoveAny:IsEnabled(element, value, settings)
 		return false
 	end
 
-	MoveAny:GetTab()["ELES"] = MoveAny:GetTab()["ELES"] or {}
-	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
-	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
+	if MoveAny:GetTab() then
+		MoveAny:GetTab()["ELES"] = MoveAny:GetTab()["ELES"] or {}
+		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
+		MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 
-	if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
-		MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
+		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
+			MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
+		end
+
+		return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
 	end
 
-	return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
+	return false
 end
 
 function MoveAny:GetEleOptions(key)
