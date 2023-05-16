@@ -21,6 +21,8 @@ MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
 
 function MoveAny:ShowMALock()
+	if MALock == nil then return end
+
 	if MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:EnableMouse(true)
@@ -36,6 +38,8 @@ function MoveAny:ShowMALock()
 end
 
 function MoveAny:HideMALock()
+	if MALock == nil then return end
+
 	if not MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:EnableMouse(false)
@@ -51,6 +55,7 @@ function MoveAny:HideMALock()
 end
 
 function MoveAny:ToggleMALock()
+	if MALock == nil then return end
 	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then return end
 	MoveAny:SetEnabled("MALOCK", not MoveAny:IsEnabled("MALOCK", false))
 
@@ -73,7 +78,6 @@ function MoveAny:UpdateMALock()
 	end
 end
 
-C_Timer.After(1, MoveAny.UpdateMALock)
 -- TAINTFREE SLASH COMMANDS --
 local lastMessage = ""
 local cmds = {}
