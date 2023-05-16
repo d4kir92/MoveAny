@@ -1212,8 +1212,24 @@ function MoveAny:Event(event, ...)
 		end
 
 		if MoveAny:IsEnabled("LEAVEVEHICLE", false) then
-			if MainMenuBarVehicleLeaveButton then
-				MainMenuBarVehicleLeaveButton:SetParent(UIParent)
+			if MainMenuBar then
+				if MainMenuBarVehicleLeaveButton then
+					MainMenuBarVehicleLeaveButton:SetParent(UIParent)
+				end
+
+				if UnitInVehicle then
+					function MoveAny:UpdateVehicleLeaveButton()
+						if UnitInVehicle("PLAYER") then
+							MainMenuBarVehicleLeaveButton:Show()
+						else
+							MainMenuBarVehicleLeaveButton:Hide()
+						end
+
+						C_Timer.After(0.3, MoveAny.UpdateVehicleLeaveButton)
+					end
+				end
+
+				MoveAny:UpdateVehicleLeaveButton()
 			end
 
 			MoveAny:RegisterWidget({
