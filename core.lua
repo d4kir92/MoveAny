@@ -1,7 +1,4 @@
 local _, MoveAny = ...
--- TAINTFREE SLASH COMMANDS --
-local lastMessage = ""
-local cmds = {}
 local colors = {}
 
 colors["bg"] = {0.03, 0.03, 0.03, 1}
@@ -10,40 +7,10 @@ colors["el"] = {0.6, 0.84, 1.0, 1}
 
 colors["hidden"] = {1.0, 0.0, 0.0, 0.5}
 
-hooksecurefunc("ChatEdit_ParseText", function(editBox, send, parseIfNoSpace)
-	if send == 0 then
-		lastMessage = editBox:GetText()
-	end
-end)
-
-hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(frame)
-	if lastMessage and lastMessage ~= "" then
-		local cmd = string.upper(lastMessage)
-		cmd = strsplit(" ", cmd)
-
-		if cmds[cmd] ~= nil then
-			local count = 1
-			local numMessages = frame:GetNumMessages()
-
-			local function predicateFunction(entry)
-				if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
-				count = count + 1
-			end
-
-			frame:RemoveMessagesByPredicate(predicateFunction)
-			cmds[cmd]()
-		end
-	end
-end)
-
-function MoveAny:InitSlash()
-	cmds["/MOVE"] = MoveAny.ToggleMALock
-	cmds["/MOVEANY"] = MoveAny.ToggleMALock
-	cmds["/RL"] = C_UI.Reload
-	cmds["/REL"] = C_UI.Reload
+function MoveAny:GetColor(key)
+	return colors[key][1], colors[key][2], colors[key][3], colors[key][4]
 end
 
--- TAINTFREE SLASH COMMANDS --
 local MADF = {}
 
 function MoveAny:GetDragFrames()
@@ -52,10 +19,6 @@ end
 
 MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
-
-function MoveAny:GetColor(key)
-	return colors[key][1], colors[key][2], colors[key][3], colors[key][4]
-end
 
 function MoveAny:ShowMALock()
 	if MoveAny:IsEnabled("MALOCK", false) then
@@ -98,15 +61,53 @@ function MoveAny:ToggleMALock()
 	end
 end
 
-local f = CreateFrame("Frame")
-f.incombat = false
+local inCombat = false
 
-f:SetScript("OnUpdate", function()
+function MoveAny:UpdateMALock()
 	if MoveAny:IsEnabled("MALOCK", false) and InCombatLockdown() then
-		f.incombat = true
+		inCombat = true
 		MoveAny:ToggleMALock()
-	elseif f.incombat and not InCombatLockdown() then
-		f.incombat = false
+	elseif inCombat and not InCombatLockdown() then
+		inCombat = false
 		MoveAny:ToggleMALock()
 	end
+end
+
+C_Timer.After(1, MoveAny.UpdateMALock)
+-- TAINTFREE SLASH COMMANDS --
+local lastMessage = ""
+local cmds = {}
+
+hooksecurefunc("ChatEdit_ParseText", function(editBox, send, parseIfNoSpace)
+	if send == 0 then
+		lastMessage = editBox:GetText()
+	end
 end)
+
+hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(frame)
+	if lastMessage and lastMessage ~= "" then
+		local cmd = string.upper(lastMessage)
+		cmd = strsplit(" ", cmd)
+
+		if cmds[cmd] ~= nil then
+			local count = 1
+			local numMessages = frame:GetNumMessages()
+
+			local function predicateFunction(entry)
+				if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
+				count = count + 1
+			end
+
+			frame:RemoveMessagesByPredicate(predicateFunction)
+			cmds[cmd]()
+		end
+	end
+end)
+
+function MoveAny:InitSlash()
+	cmds["/MOVE"] = MoveAny.ToggleMALock
+	cmds["/MOVEANY"] = MoveAny.ToggleMALock
+	cmds["/RL"] = C_UI.Reload
+	cmds["/REL"] = C_UI.Reload
+end
+-- TAINTFREE SLASH COMMANDS --

@@ -37,21 +37,22 @@ end
 
 local currentFrame = nil
 local currentFrameName = nil
-local scaler = CreateFrame("Frame")
+local prevMouseX = nil
+local prevMouseY = nil
 
-scaler:SetScript("OnUpdate", function()
-	if currentFrame ~= nil and not currentFrame:IsShown() then
-		currentFrame:SetAlpha(1)
-		currentFrame = nil
-		currentFrameName = nil
-		GameTooltip:Hide()
-	end
+function MoveAny:UpdateCurrentFrame()
+	if currentFrame ~= nil then
+		if not currentFrame:IsShown() then
+			currentFrame:SetAlpha(1)
+			currentFrame = nil
+			currentFrameName = nil
+			GameTooltip:Hide()
+		end
 
-	if currentFrame then
 		local curMouseX, curMouseY = GetCursorPosition()
 
-		if scaler.prevMouseX and scaler.prevMouseY then
-			if curMouseY > scaler.prevMouseY then
+		if prevMouseX and prevMouseY then
+			if curMouseY > prevMouseY then
 				local newScale = math.min(currentFrame:GetScale() + 0.006, 1.5)
 
 				if newScale > 0 then
@@ -62,7 +63,7 @@ scaler:SetScript("OnUpdate", function()
 						MoveAny:SetFrameScale(currentFrameName, newScale)
 					end
 				end
-			elseif curMouseY < scaler.prevMouseY then
+			elseif curMouseY < prevMouseY then
 				local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
 
 				if newScale > 0 then
@@ -78,10 +79,11 @@ scaler:SetScript("OnUpdate", function()
 
 		GameTooltip:SetOwner(currentFrame)
 		GameTooltip:SetText(MoveAny:MathR(currentFrame:GetScale() * 100) .. "%")
-		scaler.prevMouseX = curMouseX
-		scaler.prevMouseY = curMouseY
+		prevMouseX = curMouseX
+		prevMouseY = curMouseY
+		C_Timer.After(0.01, MoveAny.UpdateCurrentFrame)
 	end
-end)
+end
 
 function MoveAny:FrameDragInfo(c)
 	if c > 0 then
@@ -215,6 +217,7 @@ function MoveAny:UpdateMoveFrames()
 						if (MoveAny:IsEnabled("FRAMESSHIFTSCALE", false) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESSHIFTSCALE", false) and btn == "RightButton") then
 							currentFrame = frame
 							currentFrameName = name
+							MoveAny:UpdateCurrentFrame()
 							GameTooltip:Hide()
 						elseif (MoveAny:IsEnabled("FRAMESSHIFTDRAG", false) and IsShiftKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESSHIFTDRAG", false) and btn == "LeftButton") then
 							if not InCombatLockdown() then

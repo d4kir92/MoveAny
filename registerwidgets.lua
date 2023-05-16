@@ -754,14 +754,18 @@ function MoveAny:RegisterWidget(tab)
 
 	if frame.SetPointBase then
 		--frame.layoutApplyInProgress = true
-		frame:HookScript("OnUpdate", function(sel, elapsed)
-			if sel.ma_retry_setpoint and not InCombatLockdown() then
+		function frame:MAUpdate()
+			if frame.ma_retry_setpoint and not InCombatLockdown() then
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-				sel:ClearAllPoints()
-				sel:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
-				sel.ma_retry_setpoint = false
+				frame:ClearAllPoints()
+				frame:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+				frame.ma_retry_setpoint = false
 			end
-		end)
+
+			if frame.ma_retry_setpoint then
+				C_Timer.After(0.1, frame.MAUpdate)
+			end
+		end
 	end
 
 	hooksecurefunc(frame, "SetPoint", function(sel, ...)
@@ -781,8 +785,9 @@ function MoveAny:RegisterWidget(tab)
 			if not sel.SetPointBase then
 				sel:ClearAllPoints()
 				sel:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
-			else
+			elseif sel.ma_retry_setpoint == false then
 				sel.ma_retry_setpoint = true
+				frame:MAUpdate()
 			end
 
 			sel.elesetpoint = false
