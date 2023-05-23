@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.23")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.24")
 }
 
 local PREFIX = "MOAN"
@@ -481,7 +481,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "MAGEARCANECHARGESFRAME", false)
 		end
 
-		if ComboPointPlayerFrame and (class == "ROGUE" or class == "DRUID") then
+		if (RogueComboPointBarFrame or DruidComboPointBarFrame) and (class == "ROGUE" or class == "DRUID") then
 			AddCheckBox(4, "COMBOPOINTPLAYERFRAME", false)
 		end
 

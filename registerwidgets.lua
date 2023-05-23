@@ -1087,15 +1087,15 @@ function MoveAny:Event(event, ...)
 		})
 	end
 
-	if ComboPointPlayerFrame and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
+	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
 		if class == "ROGUE" then
 			MoveAny:RegisterWidget({
-				["name"] = "ComboPointPlayerFrame",
+				["name"] = "RogueComboPointBarFrame",
 				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			})
 		elseif class == "DRUID" then
 			MoveAny:RegisterWidget({
-				["name"] = "ComboPointDruidPlayerFrame",
+				["name"] = "DruidComboPointBarFrame",
 				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			})
 		end
