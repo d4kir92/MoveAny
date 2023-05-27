@@ -168,7 +168,7 @@ function MoveAny:UpdateMoveFrames()
 						currentFrameName = nil
 					end
 
-					function MoveAny:MAFrameCheckSave(frameObj)
+					function MoveAny:CheckSave(frameObj)
 						if not MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then
 							MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
 							frameObj:SetMovable(true)
@@ -178,19 +178,19 @@ function MoveAny:UpdateMoveFrames()
 							end
 						end
 
-						if not MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
+						if not InCombatLockdown() and not MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
 							MoveAny:SetFrameScale(name, nil)
 							frameObj:SetScale(frameObj:GetScale())
 						end
 					end
 
-					MoveAny:MAFrameCheckSave(frame)
+					MoveAny:CheckSave(frame)
 
 					frame:HookScript("OnHide", function()
 						MoveAny:MAFrameStopMoving(frame)
 
-						if MoveAny.MAFrameCheckSave then
-							MoveAny:MAFrameCheckSave(frame)
+						if MoveAny.CheckSave then
+							MoveAny:CheckSave(frame)
 						end
 					end)
 
