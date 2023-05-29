@@ -6,7 +6,7 @@ function MoveAny:InitMicroMenu()
 
 		if MICRO_BUTTONS == nil then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-		else
+		elseif MoveAny:GetWoWBuild() == "RETAIL" then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
 
 			MICRO_BUTTONS = MBTNS
@@ -56,36 +56,60 @@ function MoveAny:InitMicroMenu()
 			for i, mbname in pairs(MBTNS) do
 				local mb = _G[mbname]
 
-				function mb:GetMAEle()
-					return MAMenuBar
-				end
-
-				local sw2, sh2 = mb:GetSize()
-
-				if MoveAny:GetWoWBuild() ~= "RETAIL" then
-					sw2 = sw2 - 2
-					sh2 = sh2 - 24
-				end
-
-				local hb = CreateFrame("FRAME", mbname .. "_HB", MAMenuBar)
-				hb:SetParent(MAMenuBar)
-				hb:SetSize(sw2, sh2)
-				hb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
-
-				if MoveAny:DEBUG() then
-					hb.t = hb:CreateTexture("hb_debug" .. i, "BACKGROUND", nil, 1)
-					hb.t:SetAllPoints(hb)
-					hb.t:SetColorTexture(0, 1, 0, 0.5)
-				end
-
-				hooksecurefunc(mb, "SetPoint", function(sel, ...)
-					if sel.mmbsetpoint then return end
-					sel.mmbsetpoint = true
-					mb:SetMovable(true)
-
-					if mb.SetUserPlaced and mb:IsMovable() then
-						mb:SetUserPlaced(false)
+				if mb then
+					function mb:GetMAEle()
+						return MAMenuBar
 					end
+
+					local sw2, sh2 = mb:GetSize()
+
+					if MoveAny:GetWoWBuild() ~= "RETAIL" then
+						sw2 = sw2 - 2
+						sh2 = sh2 - 24
+					end
+
+					local hb = CreateFrame("FRAME", mbname .. "_HB", MAMenuBar)
+					hb:SetParent(MAMenuBar)
+					hb:SetSize(sw2, sh2)
+					hb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
+
+					if MoveAny:DEBUG() then
+						hb.t = hb:CreateTexture("hb_debug" .. i, "BACKGROUND", nil, 1)
+						hb.t:SetAllPoints(hb)
+						hb.t:SetColorTexture(0, 1, 0, 0.5)
+					end
+
+					hooksecurefunc(mb, "SetPoint", function(sel, ...)
+						if sel.mmbsetpoint then return end
+						sel.mmbsetpoint = true
+						mb:SetMovable(true)
+
+						if mb.SetUserPlaced and mb:IsMovable() then
+							mb:SetUserPlaced(false)
+						end
+
+						mb:ClearAllPoints()
+						mb:SetParent(hb)
+
+						if MoveAny:GetWoWBuild() == "RETAIL" then
+							mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+						else
+							mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+						end
+
+						sel.mmbsetpoint = false
+					end)
+
+					hooksecurefunc(mb, "SetParent", function(sel, parent)
+						if sel.masetparent then return end
+						sel.masetparent = true
+
+						if parent ~= hb then
+							sel:SetParent(hb)
+						end
+
+						sel.masetparent = false
+					end)
 
 					mb:ClearAllPoints()
 					mb:SetParent(hb)
@@ -96,35 +120,13 @@ function MoveAny:InitMicroMenu()
 						mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
 					end
 
-					sel.mmbsetpoint = false
-				end)
+					hooksecurefunc(mb, "Hide", function(sel)
+						sel:Show()
+					end)
 
-				hooksecurefunc(mb, "SetParent", function(sel, parent)
-					if sel.masetparent then return end
-					sel.masetparent = true
-
-					if parent ~= hb then
-						sel:SetParent(hb)
-					end
-
-					sel.masetparent = false
-				end)
-
-				mb:ClearAllPoints()
-				mb:SetParent(hb)
-
-				if MoveAny:GetWoWBuild() == "RETAIL" then
-					mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
-				else
-					mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+					mb:Show()
+					tinsert(MAMenuBar.btns, hb)
 				end
-
-				hooksecurefunc(mb, "Hide", function(sel)
-					sel:Show()
-				end)
-
-				mb:Show()
-				tinsert(MAMenuBar.btns, hb)
 			end
 		end
 
