@@ -1814,10 +1814,12 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MoveAny:IsEnabled("BAGS", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "BagsBar",
-			["lstr"] = "LID_BAGS"
-		})
+		C_Timer.After(4, function()
+			MoveAny:RegisterWidget({
+				["name"] = "BagsBar",
+				["lstr"] = "LID_BAGS"
+			})
+		end)
 	end
 
 	if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", false) then
