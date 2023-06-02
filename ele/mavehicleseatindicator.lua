@@ -1,6 +1,9 @@
 local _, MoveAny = ...
+local tries = 0
 
 function MoveAny:InitMAVehicleSeatIndicator()
+	tries = tries + 1
+
 	if VehicleSeatIndicator then
 		MAVehicleSeatIndicator = CreateFrame("Frame", "MAVehicleSeatIndicator", UIParent)
 		MAVehicleSeatIndicator:SetSize(100, 100)
@@ -44,5 +47,7 @@ function MoveAny:InitMAVehicleSeatIndicator()
 
 		VehicleSeatIndicator:ClearAllPoints()
 		VehicleSeatIndicator:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
+	elseif tries < 10 then
+		C_Timer.After(1, MoveAny.InitMAVehicleSeatIndicator)
 	end
 end

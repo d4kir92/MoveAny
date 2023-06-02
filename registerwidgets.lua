@@ -1715,7 +1715,7 @@ function MoveAny:Event(event, ...)
 		})
 	end
 
-	if VehicleSeatIndicator and MoveAny:IsEnabled("VEHICLESEATINDICATOR", false) then
+	if MoveAny:IsEnabled("VEHICLESEATINDICATOR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "MAVehicleSeatIndicator",
 			["lstr"] = "LID_VEHICLESEATINDICATOR"
@@ -2385,10 +2385,6 @@ function MoveAny:Event(event, ...)
 
 	MoveAny:InitMALock()
 
-	if MoveAny.InitMAVehicleSeatIndicator then
-		MoveAny:InitMAVehicleSeatIndicator()
-	end
-
 	if MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 		if MoveAny.InitMinimap then
 			MoveAny:InitMinimap()
@@ -2425,6 +2421,10 @@ function MoveAny:Event(event, ...)
 
 	if MoveAny.MoveFrames then
 		MoveAny:MoveFrames()
+	end
+
+	if MoveAny.InitMAVehicleSeatIndicator then
+		MoveAny:InitMAVehicleSeatIndicator()
 	end
 
 	if WorldMapFrame then
