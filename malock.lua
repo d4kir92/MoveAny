@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.32")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.33")
 }
 
 local PREFIX = "MOAN"
@@ -306,7 +306,7 @@ function MoveAny:InitMALock()
 	end)
 
 	function MAUpdateElementList()
-		local _, class = UnitClass("PLAYER")
+		local _, class = UnitClass("player")
 		posy = -4
 		-- AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		AddCategory("GENERAL")
@@ -1424,7 +1424,7 @@ local function OnEvent(sel, event, ...)
 		if prefix == PREFIX then
 			tab = {strsplit(";", data)}
 
-			local name, realm = UnitName("PLAYER")
+			local name, realm = UnitName("player")
 
 			if realm == nil then
 				realm = GetRealmName()

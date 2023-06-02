@@ -542,7 +542,7 @@ function MoveAny:RegisterWidget(tab)
 		dragframe.t = dragframe:CreateTexture(name .. "_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
 		dragframe.t:SetColorTexture(MoveAny:GetColor("el"))
-		dragframe.t:SetAlpha(0.33)
+		dragframe.t:SetAlpha(0.4)
 		dragframe.name = dragframe:CreateFontString(nil, nil, "GameFontHighlightLarge")
 		dragframe.name:SetPoint("CENTER", dragframe, "CENTER", 0, 0)
 		local font, _, fontFlags = dragframe.name:GetFont()
@@ -558,12 +558,12 @@ function MoveAny:RegisterWidget(tab)
 
 		dragframe:SetScript("OnEnter", function()
 			dragframe.name:Show()
-			dragframe.t:SetAlpha(0.66)
+			dragframe.t:SetAlpha(0.8)
 		end)
 
 		dragframe:SetScript("OnLeave", function()
 			dragframe.name:Hide()
-			dragframe.t:SetAlpha(0.33)
+			dragframe.t:SetAlpha(0.4)
 		end)
 
 		dragframe:SetScript("OnMouseDown", function(sel, btn)
@@ -883,8 +883,8 @@ function MoveAny:CheckAlphas()
 	if incombat ~= InCombatLockdown() then
 		incombat = InCombatLockdown()
 		MoveAny:UpdateAlphas()
-	elseif UnitInVehicle and invehicle ~= UnitInVehicle("PLAYER") then
-		invehicle = UnitInVehicle("PLAYER")
+	elseif UnitInVehicle and invehicle ~= UnitInVehicle("player") then
+		invehicle = UnitInVehicle("player")
 		MoveAny:UpdateAlphas()
 	end
 
@@ -951,7 +951,7 @@ function MoveAny:Event(event, ...)
 	MoveAny.init = MoveAny.init or false
 	if MoveAny.init then return end
 	MoveAny.init = true
-	local _, class = UnitClass("PLAYER")
+	local _, class = UnitClass("player")
 
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG("DON'T use MoveAndImprove, when you use MoveAny")
@@ -1042,7 +1042,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
-		TotemFrame.unit = "PLAYER"
+		TotemFrame.unit = "player"
 		TotemFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1056,7 +1056,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
-		RuneFrame.unit = "PLAYER"
+		RuneFrame.unit = "player"
 		RuneFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1066,7 +1066,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
-		WarlockPowerFrame.unit = "PLAYER"
+		WarlockPowerFrame.unit = "player"
 		WarlockPowerFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1076,7 +1076,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
-		MonkHarmonyBarFrame.unit = "PLAYER"
+		MonkHarmonyBarFrame.unit = "player"
 		MonkHarmonyBarFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1086,7 +1086,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
-		MonkStaggerBar.unit = "PLAYER"
+		MonkStaggerBar.unit = "player"
 		MonkStaggerBar:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1096,7 +1096,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
-		MageArcaneChargesFrame.unit = "PLAYER"
+		MageArcaneChargesFrame.unit = "player"
 		MageArcaneChargesFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1107,7 +1107,7 @@ function MoveAny:Event(event, ...)
 
 	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
 		if class == "ROGUE" then
-			RogueComboPointBarFrame.unit = "PLAYER"
+			RogueComboPointBarFrame.unit = "player"
 			RogueComboPointBarFrame:SetParent(UIParent)
 
 			MoveAny:RegisterWidget({
@@ -1115,7 +1115,7 @@ function MoveAny:Event(event, ...)
 				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			})
 		elseif class == "DRUID" then
-			DruidComboPointBarFrame.unit = "PLAYER"
+			DruidComboPointBarFrame.unit = "player"
 			DruidComboPointBarFrame:SetParent(UIParent)
 
 			MoveAny:RegisterWidget({
@@ -1126,7 +1126,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
-		EssencePlayerFrame.unit = "PLAYER"
+		EssencePlayerFrame.unit = "player"
 		EssencePlayerFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1136,7 +1136,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
-		PaladinPowerBarFrame.unit = "PLAYER"
+		PaladinPowerBarFrame.unit = "player"
 		PaladinPowerBarFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1249,7 +1249,7 @@ function MoveAny:Event(event, ...)
 
 				if UnitInVehicle then
 					function MoveAny:UpdateVehicleLeaveButton()
-						if UnitInVehicle("PLAYER") then
+						if UnitInVehicle("player") then
 							MainMenuBarVehicleLeaveButton:Show()
 						else
 							MainMenuBarVehicleLeaveButton:Hide()
