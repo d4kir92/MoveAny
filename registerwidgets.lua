@@ -1108,7 +1108,6 @@ function MoveAny:Event(event, ...)
 				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			})
 		elseif class == "DRUID" then
-			print(DruidComboPointBarFrame)
 			DruidComboPointBarFrame:SetParent(UIParent)
 
 			MoveAny:RegisterWidget({
