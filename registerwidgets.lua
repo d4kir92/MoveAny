@@ -1042,6 +1042,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
+		TotemFrame.unit = "PLAYER"
 		TotemFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1055,6 +1056,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
+		RuneFrame.unit = "PLAYER"
 		RuneFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1064,6 +1066,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
+		WarlockPowerFrame.unit = "PLAYER"
 		WarlockPowerFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1073,6 +1076,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
+		MonkHarmonyBarFrame.unit = "PLAYER"
 		MonkHarmonyBarFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1082,6 +1086,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
+		MonkStaggerBar.unit = "PLAYER"
 		MonkStaggerBar:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1091,6 +1096,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
+		MageArcaneChargesFrame.unit = "PLAYER"
 		MageArcaneChargesFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1101,6 +1107,7 @@ function MoveAny:Event(event, ...)
 
 	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
 		if class == "ROGUE" then
+			RogueComboPointBarFrame.unit = "PLAYER"
 			RogueComboPointBarFrame:SetParent(UIParent)
 
 			MoveAny:RegisterWidget({
@@ -1108,6 +1115,7 @@ function MoveAny:Event(event, ...)
 				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			})
 		elseif class == "DRUID" then
+			DruidComboPointBarFrame.unit = "PLAYER"
 			DruidComboPointBarFrame:SetParent(UIParent)
 
 			MoveAny:RegisterWidget({
@@ -1118,6 +1126,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
+		EssencePlayerFrame.unit = "PLAYER"
 		EssencePlayerFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
@@ -1127,6 +1136,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
+		PaladinPowerBarFrame.unit = "PLAYER"
 		PaladinPowerBarFrame:SetParent(UIParent)
 
 		MoveAny:RegisterWidget({
