@@ -1041,14 +1041,9 @@ function MoveAny:Event(event, ...)
 		end
 	end
 
-	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
-		MoveAny:RegisterWidget({
-			["name"] = "RuneFrame",
-			["lstr"] = "LID_RUNEFRAME"
-		})
-	end
-
 	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
+		TotemFrame:SetParent(UIParent)
+
 		MoveAny:RegisterWidget({
 			["name"] = "TotemFrame",
 			["lstr"] = "LID_TOTEMFRAME",
@@ -1056,6 +1051,15 @@ function MoveAny:Event(event, ...)
 			["sh"] = 32,
 			["userplaced"] = true,
 			["secure"] = true,
+		})
+	end
+
+	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
+		RuneFrame:SetParent(UIParent)
+
+		MoveAny:RegisterWidget({
+			["name"] = "RuneFrame",
+			["lstr"] = "LID_RUNEFRAME"
 		})
 	end
 
@@ -1104,6 +1108,7 @@ function MoveAny:Event(event, ...)
 				["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
 			})
 		elseif class == "DRUID" then
+			print(DruidComboPointBarFrame)
 			DruidComboPointBarFrame:SetParent(UIParent)
 
 			MoveAny:RegisterWidget({
