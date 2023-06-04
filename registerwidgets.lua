@@ -1055,6 +1055,8 @@ function MoveAny:Event(event, ...)
 		})
 	end
 
+	UIParent.unit = "player"
+
 	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
 		RuneFrame.unit = "player"
 		RuneFrame:SetParent(UIParent)
