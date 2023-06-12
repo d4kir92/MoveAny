@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.37")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.0")
 }
 
 local PREFIX = "MOAN"
@@ -194,6 +194,18 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 
 			if key == "EDITMODE" then
 				MAUpdateElementList()
+			end
+		end)
+
+		cb.btn = CreateFrame("BUTTON", "cb.btn", cb)
+		cb.btn:SetSize(MALock.SC:GetWidth() - 24, 24)
+		cb.btn:SetPoint("LEFT", cb, "RIGHT", 0, 0)
+
+		cb.btn:SetScript("OnClick", function(sel)
+			local ele = MoveAny:GetSelectEleName("LID_" .. key)
+
+			if ele then
+				MoveAny:SelectEle(_G[ele .. "_DRAG"])
 			end
 		end)
 

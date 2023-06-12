@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local MAEF = {}
+local MACurrentEle = nil
 
 function MoveAny:GetEleFrames()
 	return MAEF
@@ -240,7 +241,7 @@ function MoveAny:MenuOptions(opt, frame)
 						maframe2:SetParent(MAHIDDEN)
 					end
 
-					dragf.t:SetColorTexture(MoveAny:GetColor("hidden"))
+					dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 				else
 					frame:SetParent(frame.oldparent)
 
@@ -252,7 +253,11 @@ function MoveAny:MenuOptions(opt, frame)
 						maframe2:SetParent(maframe2.oldparent)
 					end
 
-					dragf.t:SetColorTexture(MoveAny:GetColor("el"))
+					if MACurrentEle == frame then
+						dragf.t:SetVertexColor(MoveAny:GetColor("se"))
+					else
+						dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+					end
 				end
 			end)
 
@@ -501,10 +506,32 @@ function MoveAny:GetFrame(ele, name)
 	return ele
 end
 
+local ses = {}
+
+function MoveAny:SelectEle(ele)
+	if MACurrentEle and MACurrentEle.t then
+		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
+		MACurrentEle.name:Hide()
+	end
+
+	MACurrentEle = ele
+	MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
+	MACurrentEle.name:Show()
+end
+
+function MoveAny:GetSelectEleName(lstr)
+	return ses[lstr]
+end
+
+function MoveAny:RegisterSelectEle(lstr, name)
+	ses[lstr] = name
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
 	local lstri = tab.lstri
+	MoveAny:RegisterSelectEle(lstr, name)
 
 	if lstri then
 		lstr = format(MoveAny:GT(lstr), lstri)
@@ -575,7 +602,8 @@ function MoveAny:RegisterWidget(tab)
 		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
-		dragframe.t:SetColorTexture(MoveAny:GetColor("el"))
+		dragframe.t:SetColorTexture(1, 1, 1, 1)
+		dragframe.t:SetVertexColor(MoveAny:GetColor("el"))
 		dragframe.t:SetAlpha(0.4)
 		dragframe.name = dragframe:CreateFontString(nil, nil, "GameFontHighlightLarge")
 		dragframe.name:SetPoint("CENTER", dragframe, "CENTER", 0, 0)
@@ -591,17 +619,45 @@ function MoveAny:RegisterWidget(tab)
 		dragframe.name:Hide()
 
 		dragframe:SetScript("OnEnter", function()
-			dragframe.name:Show()
+			if dragframe ~= MACurrentEle then
+				dragframe.name:Show()
+			end
+
 			dragframe.t:SetAlpha(0.8)
 		end)
 
 		dragframe:SetScript("OnLeave", function()
-			dragframe.name:Hide()
+			if dragframe ~= MACurrentEle then
+				dragframe.name:Hide()
+			end
+
 			dragframe.t:SetAlpha(0.4)
+		end)
+
+		dragframe:SetPropagateKeyboardInput(true)
+
+		dragframe:HookScript("OnKeyDown", function(sel, btn)
+			if dragframe == MACurrentEle then
+				local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
+
+				if btn == "RIGHT" then
+					MoveAny:SetElePoint(name, p1, UIParent, p3, p4 + 1, p5)
+				elseif btn == "LEFT" then
+					MoveAny:SetElePoint(name, p1, UIParent, p3, p4 - 1, p5)
+				elseif btn == "UP" then
+					MoveAny:SetElePoint(name, p1, UIParent, p3, p4, p5 + 1)
+				elseif btn == "DOWN" then
+					MoveAny:SetElePoint(name, p1, UIParent, p3, p4, p5 - 1)
+				end
+			end
 		end)
 
 		dragframe:SetScript("OnMouseDown", function(sel, btn)
 			local fram = _G[name]
+
+			if btn == "LeftButton" then
+				MoveAny:SelectEle(sel)
+			end
 
 			if btn == "LeftButton" then
 				dragframe:SetMovable(true)
@@ -751,9 +807,13 @@ function MoveAny:RegisterWidget(tab)
 			maframe2:SetParent(MAHIDDEN)
 		end
 
-		dragf.t:SetColorTexture(MoveAny:GetColor("hidden"))
+		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 	else
-		dragf.t:SetColorTexture(MoveAny:GetColor("el"))
+		if frame == MACurrentEle then
+			dragf.t:SetVertexColor(MoveAny:GetColor("se"))
+		else
+			dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+		end
 	end
 
 	frame.ma_secure = secure
@@ -1217,6 +1277,14 @@ function MoveAny:Event(event, ...)
 			})
 		end
 
+		if TargetFrameNumericalThreat and MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "TargetFrameNumericalThreat",
+				["lstr"] = "LID_TargetFrameNumericalThreat",
+				["userplaced"] = true
+			})
+		end
+
 		if MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameBuff1",
@@ -1229,14 +1297,6 @@ function MoveAny:Event(event, ...)
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrame",
 				["lstr"] = "LID_TARGETFRAME",
-				["userplaced"] = true
-			})
-		end
-
-		if TargetFrameNumericalThreat and MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
-			MoveAny:RegisterWidget({
-				["name"] = "TargetFrameNumericalThreat",
-				["lstr"] = "LID_TargetFrameNumericalThreat",
 				["userplaced"] = true
 			})
 		end
