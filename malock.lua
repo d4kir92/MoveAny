@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.0")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.1")
 }
 
 local PREFIX = "MOAN"
@@ -603,7 +603,7 @@ function MoveAny:InitMALock()
 	MALock.Profiles:SetText(MoveAny:GT("LID_PROFILES"))
 
 	MALock.Profiles:SetScript("OnClick", function()
-		MoveAny:SetEnabled("MALOCK", false)
+		MoveAny:Lock()
 		MoveAny:HideMALock()
 		MoveAny:SetEnabled("MAPROFILES", true)
 		MoveAny:ShowProfiles()
@@ -682,7 +682,21 @@ function MoveAny:InitMALock()
 	MALock.DISCORD:SetPoint("TOPLEFT", MALock, "TOPLEFT", MALock:GetWidth() - 160 - 8, -MALock:GetHeight() + 24 + 4)
 	MALock.DISCORD:SetAutoFocus(false)
 	MAGridFrame = CreateFrame("Frame", "MAGridFrame", UIParent)
-	MAGridFrame:EnableMouse(false)
+
+	MAGridFrame:SetScript("OnUpdate", function(sel)
+		if MACurrentEle then
+			MAGridFrame:EnableMouse(true)
+		else
+			MAGridFrame:EnableMouse(false)
+		end
+	end)
+
+	MAGridFrame:HookScript("OnMouseDown", function(sel, btn)
+		if MoveAny:IsEnabled("MOVEFRAMES", true) and btn == "LeftButton" then
+			MoveAny:ClearSelectEle()
+		end
+	end)
+
 	MAGridFrame:SetSize(GetScreenWidth(), GetScreenHeight())
 	MAGridFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 	MAGridFrame:SetFrameStrata("LOW")
@@ -804,7 +818,7 @@ function MoveAny:ShowProfiles()
 		MAProfiles.CloseButton:SetScript("OnClick", function()
 			MoveAny:SetEnabled("MAPROFILES", false)
 			MAProfiles:Hide()
-			MoveAny:SetEnabled("MALOCK", true)
+			MoveAny:Unlock()
 			MoveAny:ShowMALock()
 		end)
 

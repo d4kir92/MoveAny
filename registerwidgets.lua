@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local MAEF = {}
-local MACurrentEle = nil
+MACurrentEle = nil
 
 function MoveAny:GetEleFrames()
 	return MAEF
@@ -508,6 +508,15 @@ end
 
 local ses = {}
 
+function MoveAny:ClearSelectEle()
+	if MACurrentEle and MACurrentEle.t then
+		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
+		MACurrentEle.name:Hide()
+	end
+
+	MACurrentEle = nil
+end
+
 function MoveAny:SelectEle(ele)
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
@@ -634,6 +643,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe.t:SetAlpha(0.4)
 		end)
 
+		dragframe:EnableKeyboard(true)
 		dragframe:SetPropagateKeyboardInput(true)
 
 		dragframe:HookScript("OnKeyDown", function(sel, btn)
@@ -649,6 +659,8 @@ function MoveAny:RegisterWidget(tab)
 				elseif btn == "DOWN" then
 					MoveAny:SetElePoint(name, p1, UIParent, p3, p4, p5 - 1)
 				end
+			else
+				return
 			end
 		end)
 
@@ -692,10 +704,14 @@ function MoveAny:RegisterWidget(tab)
 				dragframe.IsMoving = false
 				dragframe:StopMovingOrSizing()
 				dragframe:SetMovable(false)
-				local p1, _, p3, p4, p5 = dragframe:GetPoint()
-				p4 = MoveAny:Grid(p4)
-				p5 = MoveAny:Grid(p5)
-				MoveAny:SetElePoint(name, p1, UIParent, p3, p4, p5)
+				local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
+				local np1, _, np3, p4, p5 = dragframe:GetPoint()
+				local np4 = MoveAny:Grid(p4)
+				local np5 = MoveAny:Grid(p5)
+
+				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then
+					MoveAny:SetElePoint(name, np1, UIParent, np3, np4, np5)
+				end
 
 				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
 					local tab1 = dragframe.opt.tabs[1]

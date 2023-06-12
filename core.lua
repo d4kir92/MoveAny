@@ -22,8 +22,32 @@ end
 MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
 
+local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
+
+local oldKeybinds = {}
+
+function MoveAny:Unlock()
+	MoveAny:SetEnabled("MALOCK", true)
+
+	for i, name in pairs(pausedKeybinds) do
+		oldKeybinds[name] = GetBindingAction(name)
+		SetBinding(name, nil)
+	end
+end
+
+function MoveAny:Lock()
+	MoveAny:SetEnabled("MALOCK", false)
+
+	for i, name in pairs(pausedKeybinds) do
+		if oldKeybinds[name] then
+			SetBinding(name, oldKeybinds[name])
+		end
+	end
+end
+
 function MoveAny:ShowMALock()
 	if MALock == nil then return end
+	MoveAny:Unlock()
 
 	if MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
@@ -41,6 +65,7 @@ end
 
 function MoveAny:HideMALock()
 	if MALock == nil then return end
+	MoveAny:Lock()
 
 	if not MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
@@ -59,9 +84,8 @@ end
 function MoveAny:ToggleMALock()
 	if MALock == nil then return end
 	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then return end
-	MoveAny:SetEnabled("MALOCK", not MoveAny:IsEnabled("MALOCK", false))
 
-	if MoveAny:IsEnabled("MALOCK", false) then
+	if not MoveAny:IsEnabled("MALOCK", false) then
 		MoveAny:ShowMALock()
 	else
 		MoveAny:HideMALock()
