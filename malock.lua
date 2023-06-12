@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.35")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.1.36")
 }
 
 local PREFIX = "MOAN"
@@ -331,9 +331,11 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "PLAYERFRAME", false)
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 
 		if FocusFrame then
 			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox(posx, "FOCUSFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		AddCheckBox(posx, "BUFFS", false, nil, nil, "ShowBuffFrame")
@@ -353,6 +355,11 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(posx, "CASTINGBAR", false, nil, nil, "ShowCastBar")
+
+		if PlayerCastingBarFrame then
+			AddCheckBox(posx, "CASTINGBARTIMER", false, nil, nil, "ShowCastBar")
+		end
+
 		AddCheckBox(posx, "TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame")
 		AddCheckBox(posx, "OVERRIDEACTIONBAR", false)
 

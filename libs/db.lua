@@ -36,6 +36,7 @@ function MoveAny:CheckDB()
 		for pn, pt in pairs(MATAB["PROFILES"]) do
 			pt["ELES"] = pt["ELES"] or {}
 			pt["ELES"]["SIZES"] = pt["ELES"]["SIZES"] or {}
+			pt["ELES"]["OPTIONS"] = pt["ELES"]["OPTIONS"] or {}
 
 			for i, ft in pairs(pt["ELES"]["SIZES"]) do
 				if ft.SCALE ~= nil then
@@ -397,15 +398,29 @@ function MoveAny:IsEnabled(element, value, settings)
 	return false
 end
 
-function MoveAny:GetEleOptions(key)
+function MoveAny:GetEleOptions(key, from)
+	if key == nil then
+		MoveAny:MSG("GetEleOptions(): key is nil: " .. tostring(from))
+
+		return {}
+	end
+
 	MoveAny:CheckDB()
+	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][key] = MoveAny:GetTab()["ELES"]["OPTIONS"][key] or {}
 
 	return MoveAny:GetTab()["ELES"]["OPTIONS"][key]
 end
 
-function MoveAny:GetEleOption(element, key, value)
+function MoveAny:GetEleOption(element, key, value, from)
+	if element == nil then
+		MoveAny:MSG("GetEleOption(): element is nil: " .. tostring(from))
+
+		return value
+	end
+
 	MoveAny:CheckDB()
+	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	if MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] ~= nil then return MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] end
 
@@ -413,7 +428,14 @@ function MoveAny:GetEleOption(element, key, value)
 end
 
 function MoveAny:SetEleOption(element, key, value)
+	if element == nil then
+		MoveAny:MSG("SetEleOption(): element is nil")
+
+		return value
+	end
+
 	MoveAny:CheckDB()
+	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
 	MoveAny:EnableSave("SetEleOption", key)

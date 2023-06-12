@@ -11,6 +11,36 @@ function MoveAny:GetAlphaFrames()
 	return MAAF
 end
 
+local fnt = {}
+
+function MoveAny:AddFrameName(frame, name)
+	if frame == nil then
+		MoveAny:MSG("AddFrameName: frame is nil")
+
+		return false
+	end
+
+	if name == nil then
+		MoveAny:MSG("AddFrameName: name is nil")
+
+		return false
+	end
+
+	fnt[frame] = name
+
+	return true
+end
+
+function MoveAny:GetFrameName(frame)
+	if frame == nil then
+		MoveAny:MSG("GetFrameName: frame is nil")
+
+		return "FAILED"
+	end
+
+	return fnt[frame]
+end
+
 local framelevel = 100
 
 local function SelectTab(sel)
@@ -95,7 +125,7 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 	slider:SetMinMaxValues(vmin, vmax)
 	slider:SetObeyStepOnDrag(true)
 	slider:SetValueStep(steps)
-	slider:SetValue(MoveAny:GetEleOption(name, key, value))
+	slider:SetValue(MoveAny:GetEleOption(name, key, value, "Slider1"))
 
 	slider:SetScript("OnValueChanged", function(sel, val)
 		val = tonumber(string.format("%" .. steps .. "f", val))
@@ -120,8 +150,8 @@ function MoveAny:MenuOptions(opt, frame)
 		return
 	end
 
-	local name = frame:GetName()
-	local opts = MoveAny:GetEleOptions(name)
+	local name = frame:GetName() or frame.name
+	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
 
 	local tabs = {GENERAL}
 
@@ -186,7 +216,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local hide = CreateFrame("CheckButton", "hide", content, "ChatConfigCheckButtonTemplate")
 			hide:SetSize(btnsize, btnsize)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -110)
-			hide:SetChecked(MoveAny:GetEleOption(name, "Hide", false))
+			hide:SetChecked(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
 			hide:SetText(HIDE)
 
 			hide:SetScript("OnClick", function()
@@ -366,7 +396,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local flipped = CreateFrame("CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate")
 			flipped:SetSize(btnsize, btnsize)
 			flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
-			flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false))
+			flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"))
 			flipped:SetText(MoveAny:GT("LID_FLIPPED"))
 
 			flipped:SetScript("OnClick", function()
@@ -521,6 +551,10 @@ function MoveAny:RegisterWidget(tab)
 
 	local frame = MoveAny:GetFrame(_G[name], name)
 
+	if frame then
+		MoveAny:AddFrameName(frame, name)
+	end
+
 	if _G[name .. "_DRAG"] == nil then
 		_G[name .. "_DRAG"] = CreateFrame("FRAME", name .. "_DRAG", UIParent)
 		local dragframe = _G[name .. "_DRAG"]
@@ -614,7 +648,7 @@ function MoveAny:RegisterWidget(tab)
 
 				dragframe:SetMovable(true)
 				dragframe:ClearAllPoints()
-				dragframe:SetPoint("CENTER", fram, "CENTER", posx, posy)
+				dragframe:SetPoint("CENTER", fram, "CENTER", posx or 0, posy or 0)
 
 				if fram then
 					sw, sh = MoveAny:GetEleSize(name)
@@ -673,13 +707,19 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
-	frame:SetDontSavePosition(true)
-	frame:SetClampedToScreen(true)
+	if frame.SetDontSavePosition then
+		frame:SetDontSavePosition(true)
+	end
+
+	if frame.SetClampedToScreen then
+		frame:SetClampedToScreen(true)
+	end
+
 	local maframe1 = _G["MA" .. name]
 	local maframe2 = _G[string.gsub(name, "MA", "")]
 	local dragf = _G[name .. "_DRAG"]
 
-	if MoveAny:GetEleOption(name, "Hide", false) then
+	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
 		frame.oldparent = frame.oldparent or frame:GetParent()
 
 		hooksecurefunc(frame, "SetParent", function(sel, newParent)
@@ -690,7 +730,7 @@ function MoveAny:RegisterWidget(tab)
 			if sel.ma_setparent then return end
 			sel.ma_setparent = true
 
-			if MoveAny:GetEleOption(name, "Hide", false) then
+			if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
 				sel:SetParent(MAHIDDEN)
 			else
 				sel:SetParent(sel.oldparent)
@@ -773,7 +813,9 @@ function MoveAny:RegisterWidget(tab)
 
 		--sel.layoutApplyInProgress = true
 		if not sel.ma_secure then
-			sel:SetMovable(true)
+			if sel.SetMovable then
+				sel:SetMovable(true)
+			end
 
 			if sel.SetUserPlaced and sel:IsMovable() then
 				sel:SetUserPlaced(userplaced or false)
@@ -917,11 +959,11 @@ end
 
 function MoveAny:UpdateAlphas()
 	for i, ele in pairs(MoveAny:GetEleFrames()) do
-		local alphaInVehicle = MoveAny:GetEleOption(ele:GetName(), "ALPHAINVEHICLE", 1)
-		local alphaInCombat = MoveAny:GetEleOption(ele:GetName(), "ALPHAINCOMBAT", 1)
-		local alphaNotInCombat = MoveAny:GetEleOption(ele:GetName(), "ALPHANOTINCOMBAT", 1)
-		local alphaInRestedArea = MoveAny:GetEleOption(ele:GetName(), "ALPHAINRESTEDAREA", 1)
-		local alphaIsMounted = MoveAny:GetEleOption(ele:GetName(), "ALPHAISMOUNTED", 1)
+		local alphaInVehicle = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAINVEHICLE", 1, "Alpha1")
+		local alphaInCombat = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAINCOMBAT", 1, "Alpha2")
+		local alphaNotInCombat = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHANOTINCOMBAT", 1, "Alpha3")
+		local alphaInRestedArea = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAINRESTEDAREA", 1, "Alpha4")
+		local alphaIsMounted = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAISMOUNTED", 1, "Alpha5")
 
 		if UnitInVehicle and invehicle then
 			MoveAny:SetEleAlpha(ele, alphaInVehicle)
@@ -1030,6 +1072,20 @@ function MoveAny:Event(event, ...)
 			MoveAny:RegisterWidget({
 				["name"] = "PlayerCastingBarFrame",
 				["lstr"] = "LID_CASTINGBAR",
+			})
+		end
+
+		if MoveAny:IsEnabled("CASTINGBARTIMER", false) then
+			PlayerCastingBarFrameT = CreateFrame("FRAME", UIParent)
+			PlayerCastingBarFrameT:SetSize(20, 20)
+			PlayerCastingBarFrameT:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			PlayerCastingBarFrame.timer:SetParent(PlayerCastingBarFrameT)
+			PlayerCastingBarFrame.timer:ClearAllPoints()
+			PlayerCastingBarFrame.timer:SetPoint("CENTER", PlayerCastingBarFrameT, "CENTER", 0, 0)
+
+			MoveAny:RegisterWidget({
+				["name"] = "PlayerCastingBarFrameT",
+				["lstr"] = "LID_CASTINGBARTIMER",
 			})
 		end
 	else
@@ -1156,6 +1212,14 @@ function MoveAny:Event(event, ...)
 			})
 		end
 
+		if MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "TargetFrameBuff1",
+				["lstr"] = "LID_TARGETFRAMEBUFF1",
+				["userplaced"] = true
+			})
+		end
+
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrame",
@@ -1168,6 +1232,14 @@ function MoveAny:Event(event, ...)
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameNumericalThreat",
 				["lstr"] = "LID_TargetFrameNumericalThreat",
+				["userplaced"] = true
+			})
+		end
+
+		if FocusFrame and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "FocusFrameBuff1",
+				["lstr"] = "LID_FOCUSFRAMEBUFF1",
 				["userplaced"] = true
 			})
 		end

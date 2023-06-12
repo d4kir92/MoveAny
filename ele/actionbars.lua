@@ -25,7 +25,7 @@ local dFlipped = false
 
 function MoveAny:UpdateActionBar(frame)
 	local name = frame:GetName()
-	local opts = MoveAny:GetEleOptions(name)
+	local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
 	opts["ROWS"] = opts["ROWS"] or nil
 	opts["SPACING"] = opts["SPACING"] or dSpacing
 	opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
