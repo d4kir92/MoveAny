@@ -150,7 +150,7 @@ function MoveAny:MenuOptions(opt, frame)
 		return
 	end
 
-	local name = frame:GetName() or frame.name
+	local name = MoveAny:GetFrameName(frame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
 
 	local tabs = {GENERAL}
@@ -959,23 +959,28 @@ end
 
 function MoveAny:UpdateAlphas()
 	for i, ele in pairs(MoveAny:GetEleFrames()) do
-		local alphaInVehicle = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAINVEHICLE", 1, "Alpha1")
-		local alphaInCombat = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAINCOMBAT", 1, "Alpha2")
-		local alphaNotInCombat = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHANOTINCOMBAT", 1, "Alpha3")
-		local alphaInRestedArea = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAINRESTEDAREA", 1, "Alpha4")
-		local alphaIsMounted = MoveAny:GetEleOption(ele:GetName() or ele.name, "ALPHAISMOUNTED", 1, "Alpha5")
-
-		if UnitInVehicle and invehicle then
-			MoveAny:SetEleAlpha(ele, alphaInVehicle)
-		elseif IsMounted and IsMounted() then
-			MoveAny:SetEleAlpha(ele, alphaIsMounted)
-		elseif IsResting and IsResting() then
-			MoveAny:SetEleAlpha(ele, alphaInRestedArea)
+		if ele == nil then
+			MoveAny:MSG("UpdateAlphas: ele is nil")
 		else
-			if incombat then
-				MoveAny:SetEleAlpha(ele, alphaInCombat)
-			elseif not incombat then
-				MoveAny:SetEleAlpha(ele, alphaNotInCombat)
+			local name = MoveAny:GetFrameName(ele)
+			local alphaInVehicle = MoveAny:GetEleOption(name, "ALPHAINVEHICLE", 1, "Alpha1")
+			local alphaInCombat = MoveAny:GetEleOption(name, "ALPHAINCOMBAT", 1, "Alpha2")
+			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha3")
+			local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha4")
+			local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha5")
+
+			if UnitInVehicle and invehicle then
+				MoveAny:SetEleAlpha(ele, alphaInVehicle)
+			elseif IsMounted and IsMounted() then
+				MoveAny:SetEleAlpha(ele, alphaIsMounted)
+			elseif IsResting and IsResting() then
+				MoveAny:SetEleAlpha(ele, alphaInRestedArea)
+			else
+				if incombat then
+					MoveAny:SetEleAlpha(ele, alphaInCombat)
+				elseif not incombat then
+					MoveAny:SetEleAlpha(ele, alphaNotInCombat)
+				end
 			end
 		end
 	end
@@ -2603,7 +2608,10 @@ function MoveAny:Event(event, ...)
 		MoveAny:ShowProfiles()
 	end
 
-	MoveAny:CheckAlphas()
+	C_Timer.After(1, function()
+		MoveAny:CheckAlphas()
+	end)
+
 	MoveAny:UpdateMALock()
 end
 
