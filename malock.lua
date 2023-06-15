@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.1")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.2")
 }
 
 local PREFIX = "MOAN"
@@ -556,6 +556,14 @@ function MoveAny:InitMALock()
 
 		if TargetFrame and TargetFrameNumericalThreat then
 			AddCheckBox(4, "TargetFrameNumericalThreat", false)
+		end
+
+		if PlayerFrameBackground then
+			AddCheckBox(4, "PLAYERFRAMEBACKGROUND", false)
+		end
+
+		if TargetFrameNameBackground then
+			AddCheckBox(4, "TARGETFRAMENAMEBACKGROUND", false)
 		end
 
 		if IsAddOnLoaded("ImproveAny") then

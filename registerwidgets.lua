@@ -1285,6 +1285,14 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+		if PlayerFrameBackground and MoveAny:IsEnabled("PLAYERFRAMEBACKGROUND", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "PlayerFrameBackground",
+				["lstr"] = "LID_PLAYERFRAMEBACKGROUND",
+				["userplaced"] = true
+			})
+		end
+
 		if MoveAny:IsEnabled("PLAYERFRAME", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "PlayerFrame",
@@ -1305,6 +1313,14 @@ function MoveAny:Event(event, ...)
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameBuff1",
 				["lstr"] = "LID_TARGETFRAMEBUFF1",
+				["userplaced"] = true
+			})
+		end
+
+		if TargetFrameNameBackground and MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "TargetFrameNameBackground",
+				["lstr"] = "LID_TARGETFRAMENAMEBACKGROUND",
 				["userplaced"] = true
 			})
 		end
