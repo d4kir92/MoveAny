@@ -17,6 +17,7 @@ function MoveAny:LangdeDE()
 		["LID_PLAYERFRAME"] = "Spielerfenster",
 		["LID_PLAYERFRAMEBACKGROUND"] = "Spielerfenster Hintergrund",
 		["LID_PETFRAME"] = "Begleiterfenster",
+		["LID_MAPETFRAME"] = "Begleiterfenster",
 		["LID_TARGETFRAME"] = "Zielfenster",
 		["LID_TARGETFRAMENAMEBACKGROUND"] = "Zielfenster Namen-Hintergrund",
 		["LID_TARGETFRAMEBUFF1"] = "Zielfenster Buff 1",

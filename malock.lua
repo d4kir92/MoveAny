@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.2")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.4")
 }
 
 local PREFIX = "MOAN"
@@ -75,6 +75,8 @@ MoveAny:AddToEMMap("MainMenuBarVehicleLeaveButton", "ShowVehicleLeaveButton")
 MoveAny:AddToEMMap("LeaveVehicle", "ShowVehicleLeaveButton")
 MoveAny:AddToEMMap("PlayerCastingBarFrame", "ShowCastBar")
 MoveAny:AddToEMMap("PartyFrame", "ShowPartyFrames")
+MoveAny:AddToEMMap("PetFrame", "ShowPetFrame")
+MoveAny:AddToEMMap("MAPetFrame", "ShowPetFrame")
 MoveAny:AddToEMMap("BossTargetFrameContainer", "ShowBossFrames")
 
 function MoveAny:IsBlizEditModeEnabled()
@@ -398,9 +400,9 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "MINIMAP", false)
 		AddCheckBox(posx, "QUESTTRACKER", false)
 		AddCheckBox(posx, "PARTYFRAME", false)
+		AddCheckBox(posx, "MAPETFRAME", false)
 		AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames")
 		AddCategory("NORMAL")
-		AddCheckBox(4, "PETFRAME", false)
 		AddCheckBox(4, "TARGETOFTARGETFRAME", false)
 
 		if FocusFrameToT then

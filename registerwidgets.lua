@@ -1701,9 +1701,16 @@ function MoveAny:Event(event, ...)
 		end
 	end
 
-	if MoveAny:IsEnabled("PETFRAME", false) then
+	if MoveAny:IsEnabled("MAPETFRAME", false) then
+		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", UIParent)
+		MAPetFrame:SetSize(PetFrame:GetSize())
+		MAPetFrame:SetPoint(PetFrame:GetPoint())
+		PetFrame:SetParent(MAPetFrame)
+		PetFrame:ClearAllPoints()
+		PetFrame:SetPoint("CENTER", MAPetFrame, "CENTER", 0, 0)
+
 		MoveAny:RegisterWidget({
-			["name"] = "PetFrame",
+			["name"] = "MAPetFrame",
 			["lstr"] = "LID_PETFRAME",
 			["userplaced"] = true
 		})

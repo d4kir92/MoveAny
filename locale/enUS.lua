@@ -22,6 +22,7 @@ function MoveAny:LangenUS()
 		["LID_FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick",
 		["LID_PLAYERFRAME"] = "Player Frame",
 		["LID_PETFRAME"] = "Pet Frame",
+		["LID_MAPETFRAME"] = "Pet Frame",
 		["LID_TARGETFRAME"] = "Target Frame",
 		["LID_TARGETFRAMEBUFF1"] = "Target Frame Buff 1",
 		["LID_TARGETOFTARGETFRAME"] = "Target of Target Frame",
