@@ -1093,6 +1093,11 @@ function MoveAny:Event(event, ...)
 		MoveAny:MSG(MoveAny:GT("LID_STARTHELP2"))
 	end
 
+	UIParent.unit = "player"
+	UIParent.auraRows = 0
+	MAHIDDEN.unit = "player"
+	MAHIDDEN.auraRows = 0
+
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		if MainMenuBarPerformanceBarFrame then
 			MainMenuBarPerformanceBarFrame:SetParent(MAHIDDEN)
@@ -1191,8 +1196,6 @@ function MoveAny:Event(event, ...)
 			["secure"] = true,
 		})
 	end
-
-	UIParent.unit = "player"
 
 	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
 		RuneFrame.unit = "player"
@@ -1301,6 +1304,14 @@ function MoveAny:Event(event, ...)
 			})
 		end
 
+		if TargetFrameNameBackground and MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "TargetFrameNameBackground",
+				["lstr"] = "LID_TARGETFRAMENAMEBACKGROUND",
+				["userplaced"] = true
+			})
+		end
+
 		if TargetFrameNumericalThreat and MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameNumericalThreat",
@@ -1313,14 +1324,6 @@ function MoveAny:Event(event, ...)
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameBuff1",
 				["lstr"] = "LID_TARGETFRAMEBUFF1",
-				["userplaced"] = true
-			})
-		end
-
-		if TargetFrameNameBackground and MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
-			MoveAny:RegisterWidget({
-				["name"] = "TargetFrameNameBackground",
-				["lstr"] = "LID_TARGETFRAMENAMEBACKGROUND",
 				["userplaced"] = true
 			})
 		end
@@ -1719,14 +1722,16 @@ function MoveAny:Event(event, ...)
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "TargetFrameSpellBar",
-			["lstr"] = "LID_TARGETFRAMESPELLBAR"
+			["lstr"] = "LID_TARGETFRAMESPELLBAR",
+			["userplaced"] = true
 		})
 	end
 
 	if MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "FocusFrameSpellBar",
-			["lstr"] = "LID_FOCUSFRAMESPELLBAR"
+			["lstr"] = "LID_FOCUSFRAMESPELLBAR",
+			["userplaced"] = true
 		})
 	end
 
