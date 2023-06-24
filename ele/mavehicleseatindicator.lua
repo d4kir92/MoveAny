@@ -5,9 +5,9 @@ function MoveAny:InitMAVehicleSeatIndicator()
 	tries = tries + 1
 
 	if VehicleSeatIndicator then
-		MAVehicleSeatIndicator = CreateFrame("Frame", "MAVehicleSeatIndicator", UIParent)
+		MAVehicleSeatIndicator = CreateFrame("Frame", "MAVehicleSeatIndicator", MABack)
 		MAVehicleSeatIndicator:SetSize(100, 100)
-		MAVehicleSeatIndicator:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -300, -300)
+		MAVehicleSeatIndicator:SetPoint("TOPRIGHT", MABack, "TOPRIGHT", -300, -300)
 
 		hooksecurefunc(MAVehicleSeatIndicator, "SetPoint", function(sel, ...)
 			if sel.mavsisetpoint then return end

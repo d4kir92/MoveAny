@@ -108,7 +108,7 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 
 	btn:SetScript("OnClick", function()
 		local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-		MoveAny:SetElePoint(name, p1, UIParent, p3, p4 + x, p5 + y)
+		MoveAny:SetElePoint(name, p1, MABack, p3, p4 + x, p5 + y)
 		p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
 		parent.pos:SetText(format("Position X: %d Y:%d", p4, p5))
 	end)
@@ -592,7 +592,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	if _G[name .. "_DRAG"] == nil then
-		_G[name .. "_DRAG"] = CreateFrame("FRAME", name .. "_DRAG", UIParent)
+		_G[name .. "_DRAG"] = CreateFrame("FRAME", name .. "_DRAG", MABack)
 		local dragframe = _G[name .. "_DRAG"]
 		dragframe:SetClampedToScreen(true)
 		dragframe:SetFrameStrata("MEDIUM")
@@ -651,13 +651,13 @@ function MoveAny:RegisterWidget(tab)
 				local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
 
 				if btn == "RIGHT" then
-					MoveAny:SetElePoint(name, p1, UIParent, p3, p4 + 1, p5)
+					MoveAny:SetElePoint(name, p1, MABack, p3, p4 + 1, p5)
 				elseif btn == "LEFT" then
-					MoveAny:SetElePoint(name, p1, UIParent, p3, p4 - 1, p5)
+					MoveAny:SetElePoint(name, p1, MABack, p3, p4 - 1, p5)
 				elseif btn == "UP" then
-					MoveAny:SetElePoint(name, p1, UIParent, p3, p4, p5 + 1)
+					MoveAny:SetElePoint(name, p1, MABack, p3, p4, p5 + 1)
 				elseif btn == "DOWN" then
-					MoveAny:SetElePoint(name, p1, UIParent, p3, p4, p5 - 1)
+					MoveAny:SetElePoint(name, p1, MABack, p3, p4, p5 - 1)
 				end
 			else
 				return
@@ -677,7 +677,7 @@ function MoveAny:RegisterWidget(tab)
 				dragframe.IsMoving = true
 			elseif btn == "RightButton" then
 				if dragframe.opt == nil then
-					dragframe.opt = CreateFrame("Frame", name .. ".opt", UIParent, "BasicFrameTemplateWithInset")
+					dragframe.opt = CreateFrame("Frame", name .. ".opt", MABack, "BasicFrameTemplateWithInset")
 					dragframe.opt.TitleText:SetText(name)
 					dragframe.opt:SetFrameStrata("HIGH")
 					dragframe.opt:SetFrameLevel(framelevel)
@@ -710,7 +710,7 @@ function MoveAny:RegisterWidget(tab)
 				local np5 = MoveAny:Grid(p5)
 
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then
-					MoveAny:SetElePoint(name, np1, UIParent, np3, np4, np5)
+					MoveAny:SetElePoint(name, np1, MABack, np3, np4, np5)
 				end
 
 				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
@@ -731,7 +731,7 @@ function MoveAny:RegisterWidget(tab)
 
 					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 					fram:ClearAllPoints()
-					fram:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+					fram:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 				end
 			end
 		end)
@@ -847,18 +847,18 @@ function MoveAny:RegisterWidget(tab)
 	if MoveAny:GetElePoint(name) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
 
-		if (parent == nil or parent == UIParent) and an ~= nil and re ~= nil then
-			MoveAny:SetElePoint(name, an, UIParent, re, MoveAny:Grid(px), MoveAny:Grid(py))
+		if (parent == nil or parent == UIParent or parent == MABack) and an ~= nil and re ~= nil then
+			MoveAny:SetElePoint(name, an, MABack, re, MoveAny:Grid(px), MoveAny:Grid(py))
 		elseif frame:GetLeft() and frame:GetBottom() then
-			MoveAny:SetElePoint(name, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", MoveAny:Grid(frame:GetLeft()), MoveAny:Grid(frame:GetBottom()))
+			MoveAny:SetElePoint(name, "BOTTOMLEFT", MABack, "BOTTOMLEFT", MoveAny:Grid(frame:GetLeft()), MoveAny:Grid(frame:GetBottom()))
 		elseif parent ~= nil then
-			MoveAny:SetElePoint(name, an, UIParent, re, MoveAny:Grid(parent:GetLeft()), MoveAny:Grid(parent:GetBottom()))
+			MoveAny:SetElePoint(name, an, MABack, re, MoveAny:Grid(parent:GetLeft()), MoveAny:Grid(parent:GetBottom()))
 		else
 			local an1 = tab.an or "CENTER"
 			local re1 = tab.re or "CENTER"
 			local px1 = tab.px or 0
 			local py1 = tab.py or 0
-			MoveAny:SetElePoint(name, an1, UIParent, re1, px1, py1)
+			MoveAny:SetElePoint(name, an1, MABack, re1, px1, py1)
 		end
 	end
 
@@ -870,11 +870,11 @@ function MoveAny:RegisterWidget(tab)
 
 	if frame.SetPointBase then
 		--frame.layoutApplyInProgress = true
-		function frame:MAUpdate()
+		function frame:MAUpdatePoint()
 			if frame.ma_retry_setpoint and not InCombatLockdown() then
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 				frame:ClearAllPoints()
-				frame:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+				frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 				frame.ma_retry_setpoint = false
 			end
 
@@ -902,10 +902,10 @@ function MoveAny:RegisterWidget(tab)
 
 			if not sel.SetPointBase then
 				sel:ClearAllPoints()
-				sel:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+				sel:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 			elseif sel.ma_retry_setpoint == false then
 				sel.ma_retry_setpoint = true
-				frame:MAUpdate()
+				frame:MAUpdatePoint()
 			end
 
 			sel.elesetpoint = false
@@ -917,7 +917,12 @@ function MoveAny:RegisterWidget(tab)
 
 		if dbp1 and dbp3 then
 			frame:ClearAllPoints()
-			frame:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+			frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
+
+			C_Timer.After(0, function()
+				frame:ClearAllPoints()
+				frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
+			end)
 		end
 	end
 
@@ -1093,11 +1098,6 @@ function MoveAny:Event(event, ...)
 		MoveAny:MSG(MoveAny:GT("LID_STARTHELP2"))
 	end
 
-	UIParent.unit = "player"
-	UIParent.auraRows = 0
-	MAHIDDEN.unit = "player"
-	MAHIDDEN.auraRows = 0
-
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		if MainMenuBarPerformanceBarFrame then
 			MainMenuBarPerformanceBarFrame:SetParent(MAHIDDEN)
@@ -1162,9 +1162,9 @@ function MoveAny:Event(event, ...)
 		end
 
 		if MoveAny:IsEnabled("CASTINGBARTIMER", false) then
-			PlayerCastingBarFrameT = CreateFrame("FRAME", UIParent)
+			PlayerCastingBarFrameT = CreateFrame("FRAME", MABack)
 			PlayerCastingBarFrameT:SetSize(20, 20)
-			PlayerCastingBarFrameT:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			PlayerCastingBarFrameT:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 			PlayerCastingBarFrame.timer:SetParent(PlayerCastingBarFrameT)
 			PlayerCastingBarFrame.timer:ClearAllPoints()
 			PlayerCastingBarFrame.timer:SetPoint("CENTER", PlayerCastingBarFrameT, "CENTER", 0, 0)
@@ -1185,7 +1185,7 @@ function MoveAny:Event(event, ...)
 
 	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
 		TotemFrame.unit = "player"
-		TotemFrame:SetParent(UIParent)
+		TotemFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "TotemFrame",
@@ -1199,7 +1199,7 @@ function MoveAny:Event(event, ...)
 
 	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
 		RuneFrame.unit = "player"
-		RuneFrame:SetParent(UIParent)
+		RuneFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "RuneFrame",
@@ -1209,7 +1209,7 @@ function MoveAny:Event(event, ...)
 
 	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
 		WarlockPowerFrame.unit = "player"
-		WarlockPowerFrame:SetParent(UIParent)
+		WarlockPowerFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "WarlockPowerFrame",
@@ -1219,7 +1219,7 @@ function MoveAny:Event(event, ...)
 
 	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
 		MonkHarmonyBarFrame.unit = "player"
-		MonkHarmonyBarFrame:SetParent(UIParent)
+		MonkHarmonyBarFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "MonkHarmonyBarFrame",
@@ -1229,7 +1229,7 @@ function MoveAny:Event(event, ...)
 
 	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
 		MonkStaggerBar.unit = "player"
-		MonkStaggerBar:SetParent(UIParent)
+		MonkStaggerBar:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "MonkStaggerBar",
@@ -1239,7 +1239,7 @@ function MoveAny:Event(event, ...)
 
 	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
 		MageArcaneChargesFrame.unit = "player"
-		MageArcaneChargesFrame:SetParent(UIParent)
+		MageArcaneChargesFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "MageArcaneChargesFrame",
@@ -1250,7 +1250,7 @@ function MoveAny:Event(event, ...)
 	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
 		if class == "ROGUE" then
 			RogueComboPointBarFrame.unit = "player"
-			RogueComboPointBarFrame:SetParent(UIParent)
+			RogueComboPointBarFrame:SetParent(MABack)
 
 			MoveAny:RegisterWidget({
 				["name"] = "RogueComboPointBarFrame",
@@ -1258,7 +1258,7 @@ function MoveAny:Event(event, ...)
 			})
 		elseif class == "DRUID" then
 			DruidComboPointBarFrame.unit = "player"
-			DruidComboPointBarFrame:SetParent(UIParent)
+			DruidComboPointBarFrame:SetParent(MABack)
 
 			MoveAny:RegisterWidget({
 				["name"] = "DruidComboPointBarFrame",
@@ -1269,7 +1269,7 @@ function MoveAny:Event(event, ...)
 
 	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
 		EssencePlayerFrame.unit = "player"
-		EssencePlayerFrame:SetParent(UIParent)
+		EssencePlayerFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "EssencePlayerFrame",
@@ -1279,7 +1279,7 @@ function MoveAny:Event(event, ...)
 
 	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
 		PaladinPowerBarFrame.unit = "player"
-		PaladinPowerBarFrame:SetParent(UIParent)
+		PaladinPowerBarFrame:SetParent(MABack)
 
 		MoveAny:RegisterWidget({
 			["name"] = "PaladinPowerBarFrame",
@@ -1405,7 +1405,7 @@ function MoveAny:Event(event, ...)
 		elseif PossessBarFrame then
 			if MoveAny:IsEnabled("POSSESSBAR", false) then
 				if PossessBarFrame then
-					PossessBarFrame:SetParent(UIParent)
+					PossessBarFrame:SetParent(MABack)
 				end
 
 				MoveAny:RegisterWidget({
@@ -1418,7 +1418,7 @@ function MoveAny:Event(event, ...)
 		if MoveAny:IsEnabled("LEAVEVEHICLE", false) then
 			if MainMenuBar then
 				if MainMenuBarVehicleLeaveButton then
-					MainMenuBarVehicleLeaveButton:SetParent(UIParent)
+					MainMenuBarVehicleLeaveButton:SetParent(MABack)
 				end
 
 				if UnitInVehicle then
@@ -1541,10 +1541,10 @@ function MoveAny:Event(event, ...)
 		end
 
 		if MoveAny:IsEnabled("ENDCAPS", false) then
-			local ecl = CreateFrame("FRAME", "MA_LeftEndCap", UIParent)
+			local ecl = CreateFrame("FRAME", "MA_LeftEndCap", MABack)
 			ecl.tex = ecl:CreateTexture("ecl.tex", "OVERLAY")
 			ecl.tex:SetAllPoints(ecl)
-			local ecr = CreateFrame("FRAME", "MA_RightEndCap", UIParent)
+			local ecr = CreateFrame("FRAME", "MA_RightEndCap", MABack)
 			ecr.tex = ecr:CreateTexture("ecr.tex", "OVERLAY")
 			ecr.tex:SetAllPoints(ecr)
 			local factionGroup = UnitFactionGroup("player")
@@ -1609,9 +1609,9 @@ function MoveAny:Event(event, ...)
 		if MoveAny:IsEnabled("QUESTTRACKER", false) then
 			C_Timer.After(0, function()
 				if ObjectiveTrackerFrame == nil then
-					ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", UIParent)
+					ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MABack)
 					ObjectiveTrackerFrame:SetSize(224, 600)
-					ObjectiveTrackerFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -85, -180)
+					ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MABack, "TOPRIGHT", -85, -180)
 
 					if QuestWatchFrame then
 						hooksecurefunc(QuestWatchFrame, "SetPoint", function(sel, ...)
@@ -1705,7 +1705,7 @@ function MoveAny:Event(event, ...)
 	end
 
 	if MoveAny:IsEnabled("MAPETFRAME", false) then
-		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", UIParent)
+		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", MABack)
 		MAPetFrame:SetSize(PetFrame:GetSize())
 		MAPetFrame:SetPoint(PetFrame:GetPoint())
 		PetFrame:SetParent(MAPetFrame)
@@ -1752,9 +1752,9 @@ function MoveAny:Event(event, ...)
 	end
 
 	if CompactRaidFrameManager and MoveAny:IsEnabled("COMPACTRAIDFRAMEMANAGER", false) then
-		MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", UIParent)
+		MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", MABack)
 		MACompactRaidFrameManager:SetSize(20, 135)
-		MACompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -250)
+		MACompactRaidFrameManager:SetPoint("TOPLEFT", MABack, "TOPLEFT", 0, -250)
 
 		hooksecurefunc(CompactRaidFrameManager, "SetPoint", function(sel, ...)
 			if sel.crfmsetpoint then return end
@@ -1828,7 +1828,7 @@ function MoveAny:Event(event, ...)
 			local ktb = _G["!KalielsTrackerButtons"]
 
 			if ktb then
-				local MAKTB = CreateFrame("FRAME", "MAKTB", UIParent)
+				local MAKTB = CreateFrame("FRAME", "MAKTB", MABack)
 				local size = 28
 				local br = 6
 				MAKTB:SetSize(size, size * 3 + br * 2)
@@ -1897,7 +1897,7 @@ function MoveAny:Event(event, ...)
 
 	-- TOPRIGHT
 	if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) then
-		--UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
+		--UIWidgetBelowMinimapContainerFrame:SetParent( MABack )
 		MoveAny:RegisterWidget({
 			["name"] = "UIWidgetBelowMinimapContainerFrame",
 			["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
@@ -2048,7 +2048,7 @@ function MoveAny:Event(event, ...)
 		if p1 and p2 and p3 and p4 and p5 then
 			if p2 == MAGameTooltip then
 				return true
-			elseif p2 == UIParent then
+			elseif p2 == UIParent or p2 == MABack then
 				if gtp4 == nil and gtp5 == nil then
 					_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
 					gtp4 = floor(gtp4)
@@ -2082,13 +2082,13 @@ function MoveAny:Event(event, ...)
 		if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
 			local owner = GameTooltip:GetOwner()
 
-			if owner and owner == UIParent then
+			if owner and owner == UIParent or owner == MABack then
 				local scale = GameTooltip:GetEffectiveScale()
 				local mX, mY = GetCursorPosition()
 				mX = mX / scale
 				mY = mY / scale
 				GameTooltip:ClearAllPoints()
-				GameTooltip:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", mX + 22, mY + 22)
+				GameTooltip:SetPoint("BOTTOMLEFT", MABack, "BOTTOMLEFT", mX + 22, mY + 22)
 				GameTooltip.default = 1
 			end
 
@@ -2103,9 +2103,9 @@ function MoveAny:Event(event, ...)
 	GameTooltip:SetUserPlaced(false)
 
 	if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
-		MAGameTooltip = CreateFrame("Frame", "MAGameTooltip", UIParent)
+		MAGameTooltip = CreateFrame("Frame", "MAGameTooltip", MABack)
 		MAGameTooltip:SetSize(100, 100)
-		MAGameTooltip:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -100, 100)
+		MAGameTooltip:SetPoint("BOTTOMRIGHT", MABack, "BOTTOMRIGHT", -100, 100)
 
 		hooksecurefunc(GameTooltip, "SetScale", function(sel, ...)
 			if sel.gtsetscale then return end
@@ -2157,9 +2157,9 @@ function MoveAny:Event(event, ...)
 
 	-- BOTTOM
 	if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
-		ZoneAbilityFrame:SetParent(UIParent)
+		ZoneAbilityFrame:SetParent(MABack)
 		ZoneAbilityFrame:ClearAllPoints()
-		ZoneAbilityFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 200)
+		ZoneAbilityFrame:SetPoint("BOTTOM", MABack, "BOTTOM", 0, 200)
 
 		MoveAny:RegisterWidget({
 			["name"] = "ZoneAbilityFrame",
@@ -2321,10 +2321,10 @@ function MoveAny:Event(event, ...)
 
 	if MainMenuExpBar and ReputationWatchBar then
 		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
-			MainMenuExpBar:SetParent(UIParent)
-			--MainMenuExpBar.StatusBar:SetParent(UIParent)
+			MainMenuExpBar:SetParent(MABack)
+			--MainMenuExpBar.StatusBar:SetParent(MABack)
 			MainMenuExpBar:ClearAllPoints()
-			MainMenuExpBar:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 140)
+			MainMenuExpBar:SetPoint("BOTTOM", MABack, "BOTTOM", 0, 140)
 
 			MoveAny:RegisterWidget({
 				["name"] = "MainMenuExpBar",
@@ -2333,10 +2333,10 @@ function MoveAny:Event(event, ...)
 		end
 
 		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
-			ReputationWatchBar:SetParent(UIParent)
-			--ReputationWatchBar.StatusBar:SetParent(UIParent)
+			ReputationWatchBar:SetParent(MABack)
+			--ReputationWatchBar.StatusBar:SetParent(MABack)
 			ReputationWatchBar:ClearAllPoints()
-			ReputationWatchBar:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 130)
+			ReputationWatchBar:SetPoint("BOTTOM", MABack, "BOTTOM", 0, 130)
 
 			MoveAny:RegisterWidget({
 				["name"] = "ReputationWatchBar",
@@ -2347,7 +2347,7 @@ function MoveAny:Event(event, ...)
 
 	if MoveAny:IsEnabled("TOTEMBAR", false) and MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 		if MultiCastActionBarFrame then
-			MultiCastActionBarFrame:SetParent(UIParent)
+			MultiCastActionBarFrame:SetParent(MABack)
 		end
 
 		MoveAny:RegisterWidget({

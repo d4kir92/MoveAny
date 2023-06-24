@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.2.6")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.0")
 }
 
 local PREFIX = "MOAN"
@@ -290,9 +290,9 @@ function MoveAny:EnableSave(from, key)
 end
 
 function MoveAny:InitMALock()
-	MALock = CreateFrame("Frame", "MALock", UIParent, "BasicFrameTemplate")
+	MALock = CreateFrame("Frame", "MALock", MABack, "BasicFrameTemplate")
 	MALock:SetSize(sw, sh)
-	MALock:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	MALock:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 	MALock:SetFrameStrata("HIGH")
 	MALock:SetFrameLevel(999)
 	MALock:SetClampedToScreen(true)
@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 	MALock.DISCORD:SetSize(160, 24)
 	MALock.DISCORD:SetPoint("TOPLEFT", MALock, "TOPLEFT", MALock:GetWidth() - 160 - 8, -MALock:GetHeight() + 24 + 4)
 	MALock.DISCORD:SetAutoFocus(false)
-	MAGridFrame = CreateFrame("Frame", "MAGridFrame", UIParent)
+	MAGridFrame = CreateFrame("Frame", "MAGridFrame", MABack)
 
 	MAGridFrame:SetScript("OnUpdate", function(sel)
 		if MACurrentEle then
@@ -708,7 +708,7 @@ function MoveAny:InitMALock()
 	end)
 
 	MAGridFrame:SetSize(GetScreenWidth(), GetScreenHeight())
-	MAGridFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	MAGridFrame:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 	MAGridFrame:SetFrameStrata("LOW")
 	MAGridFrame:SetFrameLevel(1)
 	MAGridFrame.bg = MAGridFrame:CreateTexture("MAGridFrame.bg", "BACKGROUND", nil, 0)
@@ -727,7 +727,7 @@ function MoveAny:InitMALock()
 
 	if dbp1 and dbp3 then
 		MALock:ClearAllPoints()
-		MALock:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+		MALock:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 	end
 
 	MoveAny:HideMALock()
@@ -804,9 +804,9 @@ end
 
 function MoveAny:ShowProfiles()
 	if MAProfiles == nil then
-		MAProfiles = CreateFrame("Frame", "MAProfiles", UIParent, "BasicFrameTemplate")
+		MAProfiles = CreateFrame("Frame", "MAProfiles", MABack, "BasicFrameTemplate")
 		MAProfiles:SetSize(sw, sh)
-		MAProfiles:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		MAProfiles:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 		MAProfiles:SetFrameStrata("HIGH")
 		MAProfiles:SetFrameLevel(999)
 		MAProfiles:SetClampedToScreen(true)
@@ -849,9 +849,9 @@ function MoveAny:ShowProfiles()
 
 		MAProfiles.AddProfile:SetScript("OnClick", function()
 			if MAAddProfile == nil then
-				MAAddProfile = CreateFrame("Frame", "MAAddProfile", UIParent, "BasicFrameTemplate")
+				MAAddProfile = CreateFrame("Frame", "MAAddProfile", MABack, "BasicFrameTemplate")
 				MAAddProfile:SetSize(300, 130)
-				MAAddProfile:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MAAddProfile:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 				MAAddProfile:SetFrameStrata("HIGH")
 				MAAddProfile:SetFrameLevel(1010)
 				MAAddProfile:SetClampedToScreen(true)
@@ -927,9 +927,9 @@ function MoveAny:ShowProfiles()
 
 		MAProfiles.GetProfile:SetScript("OnClick", function()
 			if MAGetProfile == nil then
-				MAGetProfile = CreateFrame("Frame", "MAGetProfile", UIParent, "BasicFrameTemplate")
+				MAGetProfile = CreateFrame("Frame", "MAGetProfile", MABack, "BasicFrameTemplate")
 				MAGetProfile:SetSize(600, 200)
-				MAGetProfile:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MAGetProfile:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 				MAGetProfile:SetFrameStrata("HIGH")
 				MAGetProfile:SetFrameLevel(1010)
 				MAGetProfile:SetClampedToScreen(true)
@@ -991,9 +991,9 @@ function MoveAny:ShowProfiles()
 						C_ChatInfo.SendAddonMessage(PREFIX, "WP;" .. profile, "WHISPER", source)
 
 						if MADownloadProfile == nil then
-							MADownloadProfile = CreateFrame("Frame", "MADownloadProfile", UIParent, "BasicFrameTemplate")
+							MADownloadProfile = CreateFrame("Frame", "MADownloadProfile", MABack, "BasicFrameTemplate")
 							MADownloadProfile:SetSize(300, 120)
-							MADownloadProfile:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+							MADownloadProfile:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 							MADownloadProfile:SetFrameStrata("HIGH")
 							MADownloadProfile:SetFrameLevel(1010)
 							MADownloadProfile:SetClampedToScreen(true)
@@ -1105,9 +1105,9 @@ function MoveAny:ShowProfiles()
 
 			btnShare:SetScript("OnClick", function()
 				if MAShareProfile == nil then
-					MAShareProfile = CreateFrame("Frame", "MAShareProfile", UIParent, "BasicFrameTemplate")
+					MAShareProfile = CreateFrame("Frame", "MAShareProfile", MABack, "BasicFrameTemplate")
 					MAShareProfile:SetSize(600, 200)
-					MAShareProfile:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					MAShareProfile:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 					MAShareProfile:SetFrameStrata("HIGH")
 					MAShareProfile:SetFrameLevel(1010)
 					MAShareProfile:SetClampedToScreen(true)
@@ -1295,9 +1295,9 @@ function MoveAny:ShowProfiles()
 							MAShareProfile:Hide()
 
 							if MAUploadProfile == nil then
-								MAUploadProfile = CreateFrame("Frame", "MAUploadProfile", UIParent, "BasicFrameTemplate")
+								MAUploadProfile = CreateFrame("Frame", "MAUploadProfile", MABack, "BasicFrameTemplate")
 								MAUploadProfile:SetSize(120, 120)
-								MAUploadProfile:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+								MAUploadProfile:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 								MAUploadProfile:SetFrameStrata("HIGH")
 								MAUploadProfile:SetFrameLevel(1010)
 								MAUploadProfile:SetClampedToScreen(true)
@@ -1388,9 +1388,9 @@ function MoveAny:ShowProfiles()
 
 				btnRen:SetScript("OnClick", function()
 					if MARenameProfile == nil then
-						MARenameProfile = CreateFrame("Frame", "MARenameProfile", UIParent, "BasicFrameTemplate")
+						MARenameProfile = CreateFrame("Frame", "MARenameProfile", MABack, "BasicFrameTemplate")
 						MARenameProfile:SetSize(300, 130)
-						MARenameProfile:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+						MARenameProfile:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 						MARenameProfile:SetFrameStrata("HIGH")
 						MARenameProfile:SetFrameLevel(1010)
 						MARenameProfile:SetClampedToScreen(true)
@@ -1453,7 +1453,7 @@ function MoveAny:ShowProfiles()
 
 		if dbp1 and dbp3 then
 			MAProfiles:ClearAllPoints()
-			MAProfiles:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+			MAProfiles:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 		end
 	else
 		MAProfiles:Show()

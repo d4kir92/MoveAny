@@ -21,6 +21,12 @@ end
 
 MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
+MAHIDDEN.unit = "player"
+MAHIDDEN.auraRows = 0
+MABack = CreateFrame("Frame", "MABack", UIParent)
+MABack:SetAllPoints(UIParent)
+MABack.unit = "player"
+MABack.auraRows = 0
 
 local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
 

@@ -39,8 +39,8 @@ end
 
 function MoveAny:InitPetBar()
 	if not PetActionBar and MoveAny:IsEnabled("PETBAR", false) then
-		MAPetBar = CreateFrame("Frame", "MAPetBar", UIParent)
-		MAPetBar:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 110)
+		MAPetBar = CreateFrame("Frame", "MAPetBar", MABack)
+		MAPetBar:SetPoint("BOTTOM", MABack, "BOTTOM", 0, 110)
 		MAPetBar.btns = {}
 
 		if _G["PetActionButton" .. 1] then

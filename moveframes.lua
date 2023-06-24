@@ -120,7 +120,7 @@ function MoveAny:UpdateMoveFrames()
 					local fm = _G[name .. "Move"]
 
 					if fm == nil then
-						fm = CreateFrame("FRAME", name .. "Move", UIParent)
+						fm = CreateFrame("FRAME", name .. "Move", MABack)
 						fm:SetMovable(true)
 						fm:SetUserPlaced(false)
 						fm:SetClampedToScreen(true)
@@ -138,12 +138,12 @@ function MoveAny:UpdateMoveFrames()
 								if fM:GetLeft() then
 									fM.x = fM:GetLeft()
 									fM.y = fM:GetTop() - fM:GetHeight()
-									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.x, fM.y)
+									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "MABack", "BOTTOMLEFT", fM.x, fM.y)
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 
 									if dbp1 and dbp3 and not InCombatLockdown() then
 										frame:ClearAllPoints()
-										frame:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+										frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 									end
 								end
 
@@ -208,7 +208,7 @@ function MoveAny:UpdateMoveFrames()
 							if frame:GetLeft() then
 								local x = frame:GetLeft()
 								local y = frame:GetTop() - frame:GetHeight()
-								fm:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x, y)
+								fm:SetPoint("BOTTOMLEFT", MABack, "BOTTOMLEFT", x, y)
 							else
 								fm:SetAllPoints(frame)
 							end
@@ -278,7 +278,7 @@ function MoveAny:UpdateMoveFrames()
 								sel.maretrysetpoint = nil
 								local w, h = sel:GetSize()
 								sel:ClearAllPoints()
-								sel:SetPoint(dbp1, UIParent, dbp3, dbp4, dbp5)
+								sel:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 
 								if sel:GetNumPoints() > 1 then
 									sel:SetSize(w, h)

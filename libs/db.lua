@@ -457,7 +457,7 @@ function MoveAny:GetElePoint(key)
 	else
 		MoveAny:MSG_Error("[GetElePoint] KEY not found")
 
-		return "CENTER", UIParent, "CENTER"
+		return "CENTER", MABack, "CENTER"
 	end
 end
 
@@ -473,11 +473,11 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 
 	if frame then
 		frame:ClearAllPoints()
-		frame:SetPoint(p1, UIParent, p3, p4, p5)
+		frame:SetPoint(p1, MABack, p3, p4, p5)
 
 		if frame.systemInfo and frame.systemInfo.anchorInfo then
 			frame.systemInfo.anchorInfo.point = p1
-			frame.systemInfo.anchorInfo.relativeTo = "UIParent"
+			frame.systemInfo.anchorInfo.relativeTo = "MABack"
 			frame.systemInfo.anchorInfo.relativePoint = p3
 			frame.systemInfo.anchorInfo.offsetX = p4
 			frame.systemInfo.anchorInfo.offsetY = p5

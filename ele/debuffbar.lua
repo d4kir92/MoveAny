@@ -4,8 +4,8 @@ local debuffs = {}
 
 function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled("DEBUFFS", false) then
-		MADebuffBar = CreateFrame("Frame", "MADebuffBar", UIParent)
-		MADebuffBar:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -165, -132)
+		MADebuffBar = CreateFrame("Frame", "MADebuffBar", MABack)
+		MADebuffBar:SetPoint("TOPRIGHT", MABack, "TOPRIGHT", -165, -132)
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			MADebuffBar:SetSize(btnsize * 10, btnsize * 3)
