@@ -39,9 +39,9 @@ function MoveAny:MathR(val, dec)
 	return tonumber(string.format("%0." .. dec .. "f", val))
 end
 
-function MoveAny:Grid(n, snap)
+function MoveAny:Snap(n, snap)
 	n = n or 0
-	snap = snap or MoveAny:GetGridSize()
+	snap = snap or MoveAny:GetSnapSize()
 	local mod = n % snap
 
 	if mod > (snap / 2) then

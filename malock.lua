@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.1")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.2")
 }
 
 local PREFIX = "MOAN"
@@ -267,7 +267,7 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps)
 	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:GT("LID_" .. key)), strlower(searchStr)) then
 		sls[key]:Show()
 		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
-		posy = posy - 24
+		posy = posy - 30
 	else
 		sls[key]:Hide()
 	end
@@ -304,8 +304,8 @@ function MoveAny:InitMALock()
 	MALock:SetScript("OnDragStop", function()
 		MALock:StopMovingOrSizing()
 		local p1, _, p3, p4, p5 = MALock:GetPoint()
-		p4 = MoveAny:Grid(p4)
-		p5 = MoveAny:Grid(p5)
+		p4 = MoveAny:Snap(p4)
+		p5 = MoveAny:Snap(p5)
 		MoveAny:SetElePoint("MALock", p1, _, p3, p4, p5)
 	end)
 
@@ -326,6 +326,7 @@ function MoveAny:InitMALock()
 		AddCategory("GENERAL")
 		AddCheckBox(4, "SHOWTIPS", true)
 		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton, nil, nil, false)
+		AddSlider(24, "SNAPSIZE", 5, nil, 1, 50, 1)
 		AddSlider(24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
 		AddCheckBox(4, "MOVEFRAMES", true)
 		AddCheckBox(24, "MOVESMALLBAGS", false)
@@ -818,8 +819,8 @@ function MoveAny:ShowProfiles()
 		MAProfiles:SetScript("OnDragStop", function()
 			MAProfiles:StopMovingOrSizing()
 			local p1, _, p3, p4, p5 = MAProfiles:GetPoint()
-			p4 = MoveAny:Grid(p4)
-			p5 = MoveAny:Grid(p5)
+			p4 = MoveAny:Snap(p4)
+			p5 = MoveAny:Snap(p5)
 			MoveAny:SetElePoint("MALock", p1, _, p3, p4, p5)
 		end)
 

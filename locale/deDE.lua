@@ -8,6 +8,7 @@ function MoveAny:LangdeDE()
 		["LID_GENERAL"] = "Allgemein",
 		["LID_SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
 		["LID_GRIDSIZE"] = "Rastergröße (Grid)",
+		["LID_SNAPSIZE"] = "Snapgröße (Grid)",
 		["LID_MOVEFRAMES"] = "Fenster bewegen",
 		["LID_SAVEFRAMEPOSITION"] = "Fenster Position abspeichern",
 		["LID_SAVEFRAMESCALE"] = "Fenster Skalierung abspeichern",

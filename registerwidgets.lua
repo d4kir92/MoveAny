@@ -706,8 +706,8 @@ function MoveAny:RegisterWidget(tab)
 				dragframe:SetMovable(false)
 				local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
 				local np1, _, np3, p4, p5 = dragframe:GetPoint()
-				local np4 = MoveAny:Grid(p4)
-				local np5 = MoveAny:Grid(p5)
+				local np4 = MoveAny:Snap(p4)
+				local np5 = MoveAny:Snap(p5)
 
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then
 					MoveAny:SetElePoint(name, np1, MABack, np3, np4, np5)
@@ -721,18 +721,6 @@ function MoveAny:RegisterWidget(tab)
 				dragframe:SetMovable(true)
 				dragframe:ClearAllPoints()
 				dragframe:SetPoint("CENTER", fram, "CENTER", posx or 0, posy or 0)
-
-				if fram then
-					sw, sh = MoveAny:GetEleSize(name)
-
-					if not InCombatLockdown() and sw and sh then
-						fram:SetSize(sw, sh)
-					end
-
-					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-					fram:ClearAllPoints()
-					fram:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
-				end
 			end
 		end)
 
@@ -848,11 +836,11 @@ function MoveAny:RegisterWidget(tab)
 		local an, parent, re, px, py = frame:GetPoint()
 
 		if (parent == nil or parent == UIParent or parent == MABack) and an ~= nil and re ~= nil then
-			MoveAny:SetElePoint(name, an, MABack, re, MoveAny:Grid(px), MoveAny:Grid(py))
+			MoveAny:SetElePoint(name, an, MABack, re, MoveAny:Snap(px), MoveAny:Snap(py))
 		elseif frame:GetLeft() and frame:GetBottom() then
-			MoveAny:SetElePoint(name, "BOTTOMLEFT", MABack, "BOTTOMLEFT", MoveAny:Grid(frame:GetLeft()), MoveAny:Grid(frame:GetBottom()))
+			MoveAny:SetElePoint(name, "BOTTOMLEFT", MABack, "BOTTOMLEFT", MoveAny:Snap(frame:GetLeft()), MoveAny:Snap(frame:GetBottom()))
 		elseif parent ~= nil then
-			MoveAny:SetElePoint(name, an, MABack, re, MoveAny:Grid(parent:GetLeft()), MoveAny:Grid(parent:GetBottom()))
+			MoveAny:SetElePoint(name, an, MABack, re, MoveAny:Snap(parent:GetLeft()), MoveAny:Snap(parent:GetBottom()))
 		else
 			local an1 = tab.an or "CENTER"
 			local re1 = tab.re or "CENTER"
@@ -2117,7 +2105,7 @@ function MoveAny:Event(event, ...)
 		hooksecurefunc(MAGameTooltip, "SetScale", function(sel, ...)
 			if sel.gtsetscale2 then return end
 			sel.gtsetscale2 = true
-			GameTooltip:SetScale(MAGameTooltip:GetScale())
+			GameTooltip:SetScale(sel:GetScale())
 			sel.gtsetscale2 = false
 		end)
 
@@ -2133,7 +2121,7 @@ function MoveAny:Event(event, ...)
 		hooksecurefunc(MAGameTooltip, "SetAlpha", function(sel, ...)
 			if sel.gtsetalpha2 then return end
 			sel.gtsetalpha2 = true
-			GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
+			GameTooltip:SetAlpha(sel:GetAlpha())
 			sel.gtsetalpha2 = false
 		end)
 
@@ -2704,10 +2692,7 @@ function MoveAny:Event(event, ...)
 		end
 	end
 
-
-
 	if MoveAny:IsEnabled("MALOCK", false) then
-
 		MoveAny:ShowMALock()
 	end
 
