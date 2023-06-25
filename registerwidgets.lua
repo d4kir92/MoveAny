@@ -2704,7 +2704,10 @@ function MoveAny:Event(event, ...)
 		end
 	end
 
+
+
 	if MoveAny:IsEnabled("MALOCK", false) then
+
 		MoveAny:ShowMALock()
 	end
 

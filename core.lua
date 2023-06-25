@@ -31,23 +31,48 @@ MABack.auraRows = 0
 local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
 
 local oldKeybinds = {}
+local isToggling = false
+
+function MoveAny:UnlockBindings()
+	if not InCombatLockdown() then
+		for i, name in pairs(pausedKeybinds) do
+			oldKeybinds[name] = GetBindingAction(name)
+			SetBinding(name, nil)
+		end
+
+		isToggling = false
+	else
+		C_Timer.After(0.1, MoveAny.UnlockBindings)
+	end
+end
+
+function MoveAny:LockBindings()
+	if not InCombatLockdown() then
+		for i, name in pairs(pausedKeybinds) do
+			if oldKeybinds[name] then
+				SetBinding(name, oldKeybinds[name])
+			end
+		end
+
+		isToggling = false
+	else
+		C_Timer.After(0.1, MoveAny.LockBindings)
+	end
+end
 
 function MoveAny:Unlock()
-	MoveAny:SetEnabled("MALOCK", true)
-
-	for i, name in pairs(pausedKeybinds) do
-		oldKeybinds[name] = GetBindingAction(name)
-		SetBinding(name, nil)
+	if not isToggling then
+		isToggling = true
+		MoveAny:SetEnabled("MALOCK", true)
+		MoveAny:UnlockBindings()
 	end
 end
 
 function MoveAny:Lock()
-	MoveAny:SetEnabled("MALOCK", false)
-
-	for i, name in pairs(pausedKeybinds) do
-		if oldKeybinds[name] then
-			SetBinding(name, oldKeybinds[name])
-		end
+	if not isToggling then
+		isToggling = true
+		MoveAny:SetEnabled("MALOCK", false)
+		MoveAny:LockBindings()
 	end
 end
 
@@ -69,9 +94,12 @@ function MoveAny:ShowMALock()
 	end
 end
 
-function MoveAny:HideMALock()
+function MoveAny:HideMALock(onlyHide)
 	if MALock == nil then return end
-	MoveAny:Lock()
+
+	if not onlyHide then
+		MoveAny:Lock()
+	end
 
 	if not MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
