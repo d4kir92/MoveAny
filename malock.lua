@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.4")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.5")
 }
 
 local PREFIX = "MOAN"
@@ -712,9 +712,6 @@ function MoveAny:InitMALock()
 	MAGridFrame:SetPoint("CENTER", MABack, "CENTER", 0, 0)
 	MAGridFrame:SetFrameStrata("LOW")
 	MAGridFrame:SetFrameLevel(1)
-	MAGridFrame.bg = MAGridFrame:CreateTexture("MAGridFrame.bg", "BACKGROUND", nil, 0)
-	MAGridFrame.bg:SetAllPoints(MAGridFrame)
-	MAGridFrame.bg:SetColorTexture(0.03, 0.03, 0.03, 0)
 	MAGridFrame.hor = MAGridFrame:CreateTexture()
 	MAGridFrame.hor:SetPoint("CENTER", 0, -0.5)
 	MAGridFrame.hor:SetSize(GetScreenWidth(), 1)

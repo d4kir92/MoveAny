@@ -861,8 +861,15 @@ function MoveAny:RegisterWidget(tab)
 		function frame:MAUpdatePoint()
 			if frame.ma_retry_setpoint and not InCombatLockdown() then
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-				frame:ClearAllPoints()
-				frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
+
+				if frame.SetPointBase then
+					frame:ClearAllPointsBase()
+					frame:SetPointBase(dbp1, MABack, dbp3, dbp4, dbp5)
+				elseif not frame.SetPointBase then
+					frame:ClearAllPoints()
+					frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
+				end
+
 				frame.ma_retry_setpoint = false
 			end
 
@@ -888,7 +895,10 @@ function MoveAny:RegisterWidget(tab)
 			sel.elesetpoint = true
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 
-			if not sel.SetPointBase then
+			if sel.SetPointBase then
+				sel:ClearAllPointsBase()
+				sel:SetPointBase(dbp1, MABack, dbp3, dbp4, dbp5)
+			elseif not sel.SetPointBase then
 				sel:ClearAllPoints()
 				sel:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
 			elseif sel.ma_retry_setpoint == false then
@@ -950,8 +960,6 @@ function MoveAny:RegisterWidget(tab)
 			sel:SetSize(w, h)
 		end
 	end)
-
-	frame:SetSize(frame:GetSize())
 
 	if not InCombatLockdown() then
 		frame:SetSize(sw, sh)
