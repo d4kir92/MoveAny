@@ -486,12 +486,6 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 		end
 
 		if frame then
-			local sw, sh = MoveAny:GetEleSize(key)
-
-			if not InCombatLockdown() and sw and sh then
-				frame:SetSize(sw, sh)
-			end
-
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
 			frame:ClearAllPoints()
 			frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)

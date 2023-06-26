@@ -2649,7 +2649,7 @@ function MoveAny:Event(event, ...)
 				if not IsAddOnLoaded("Mapster") then
 					return x / scale, y / scale
 				else
-					local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
+					local reverseEffectiveScale = 1 / MABack:GetEffectiveScale()
 
 					return x / scale * reverseEffectiveScale, y / scale * reverseEffectiveScale
 				end
