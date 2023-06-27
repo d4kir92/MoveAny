@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.5")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.3.6")
 }
 
 local PREFIX = "MOAN"
@@ -636,7 +636,7 @@ function MoveAny:InitMALock()
 	MALock.save:SetText(SAVE)
 
 	MALock.save:SetScript("OnClick", function()
-		if EditModeManagerFrame then
+		if EditModeManagerFrame and EditModeManagerFrame.SaveChangesButton and EditModeManagerFrame.CloseButton then
 			EditModeManagerFrame.SaveChangesButton:SetEnabled(true)
 			EditModeManagerFrame.SaveChangesButton:Click()
 			EditModeManagerFrame.CloseButton:Click()
