@@ -453,11 +453,11 @@ function MoveAny:GetElePoint(key)
 		local px = MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"]
 		local py = MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"]
 
-		return an, MABack, re, px, py
+		return an, MoveAny:GetMainPanel(), re, px, py
 	else
 		MoveAny:MSG_Error("[GetElePoint] KEY not found")
 
-		return "CENTER", MABack, "CENTER"
+		return "CENTER", MoveAny:GetMainPanel(), "CENTER"
 	end
 end
 
@@ -473,11 +473,11 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 
 	if frame then
 		frame:ClearAllPoints()
-		frame:SetPoint(p1, MABack, p3, p4, p5)
+		frame:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
 
 		if frame.systemInfo and frame.systemInfo.anchorInfo then
 			frame.systemInfo.anchorInfo.point = p1
-			frame.systemInfo.anchorInfo.relativeTo = "MABack"
+			frame.systemInfo.anchorInfo.relativeTo = "UIParent"
 			frame.systemInfo.anchorInfo.relativePoint = p3
 			frame.systemInfo.anchorInfo.offsetX = p4
 			frame.systemInfo.anchorInfo.offsetY = p5
@@ -488,7 +488,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 		if frame then
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
 			frame:ClearAllPoints()
-			frame:SetPoint(dbp1, MABack, dbp3, dbp4, dbp5)
+			frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 		end
 	end
 

@@ -38,16 +38,16 @@ function MoveAny:InitMicroMenu()
 
 		local opts = MoveAny:GetEleOptions("MICROMENU")
 		opts["ROWS"] = opts["ROWS"] or 1
-		MAMenuBar = CreateFrame("Frame", "MAMenuBar", MABack)
+		MAMenuBar = CreateFrame("Frame", "MAMenuBar", MoveAny:GetMainPanel())
 		MAMenuBar:SetSize((sw1 - 4) * mbc, sh1 - 4)
 
 		if MicroButtonAndBagsBar then
 			local p1, _, p3, p4, p5 = MicroButtonAndBagsBar:GetPoint()
-			MAMenuBar:SetPoint(p1, MABack, p3, p4, p5)
+			MAMenuBar:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
 		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
-			MAMenuBar:SetPoint("BOTTOMRIGHT", MABack, "BOTTOMRIGHT", 0, 0)
+			MAMenuBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 0)
 		else
-			MAMenuBar:SetPoint("CENTER", MABack, "CENTER", 0, 0)
+			MAMenuBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
 		MAMenuBar.btns = {}

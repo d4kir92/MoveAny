@@ -11,9 +11,9 @@ function MoveAny:InitArenaEnemyFrames()
 			ArenaEnemyFrames:SetSize(sw, sh * 5 + 4 * 21)
 		end
 
-		MAArenaEnemyFrames = CreateFrame("FRAME", "MAArenaEnemyFrames", MABack)
+		MAArenaEnemyFrames = CreateFrame("FRAME", "MAArenaEnemyFrames", MoveAny:GetMainPanel())
 		MAArenaEnemyFrames:SetSize(ArenaEnemyFrames:GetSize())
-		MAArenaEnemyFrames:SetPoint("TOPRIGHT", MABack, "TOPRIGHT", 100, 100)
+		MAArenaEnemyFrames:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", 100, 100)
 		ArenaEnemyFrames:ClearAllPoints()
 		ArenaEnemyFrames:SetPoint("CENTER", MAArenaEnemyFrames, "CENTER", 0, 0)
 
@@ -66,9 +66,9 @@ function MoveAny:InitArenaPrepFrames()
 			ArenaPrepFrames:SetSize(sw, sh * 5 + 4 * 21)
 		end
 
-		MAArenaPrepFrames = CreateFrame("FRAME", "MAArenaPrepFrames", MABack)
+		MAArenaPrepFrames = CreateFrame("FRAME", "MAArenaPrepFrames", MoveAny:GetMainPanel())
 		MAArenaPrepFrames:SetSize(ArenaPrepFrames:GetSize())
-		MAArenaPrepFrames:SetPoint("TOPRIGHT", MABack, "TOPRIGHT", 100, 100)
+		MAArenaPrepFrames:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", 100, 100)
 		ArenaPrepFrames:ClearAllPoints()
 		ArenaPrepFrames:SetPoint("CENTER", MAArenaPrepFrames, "CENTER", 0, 0)
 

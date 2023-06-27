@@ -232,26 +232,26 @@ end
 
 function MoveAny:InitActionBarLayouts()
 	if MoveAny:GetWoWBuild() == "RETAIL" then
-		MASetPoint("MainMenuBar", "BOTTOM", MABack, "BOTTOM", 0, 0, 1) -- MainMenuBar
-		MASetPoint("MultiBarBottomLeft", "BOTTOM", MABack, "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
-		MASetPoint("MultiBarBottomRight", "BOTTOM", MABack, "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
-		MASetPoint("MultiBarRight", "RIGHT", MABack, "RIGHT", 0, 0, 12) -- MultiBarRight
-		MASetPoint("MultiBarLeft", "RIGHT", MABack, "RIGHT", -36, 0, 12) -- MultiBarLeft
-		MASetPoint("MultiBar" .. 5, "BOTTOM", MABack, "BOTTOM", 0, 0, 1) -- "MultiBar" .. 5
-		MASetPoint("MultiBar" .. 6, "BOTTOM", MABack, "BOTTOM", 0, 0, 1) -- "MultiBar" .. 6
-		MASetPoint("MultiBar" .. 7, "CENTER", MABack, "CENTER", 0, 0, 1) -- "MultiBar" .. 7
-		MASetPoint("MultiBar" .. 8, "CENTER", MABack, "CENTER", -360, 1 * 36, 1)
-		MASetPoint("MultiBar" .. 9, "CENTER", MABack, "CENTER", -360, 2 * 36, 1)
+		MASetPoint("MainMenuBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
+		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
+		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
+		MASetPoint("MultiBarRight", "RIGHT", MoveAny:GetMainPanel(), "RIGHT", 0, 0, 12) -- MultiBarRight
+		MASetPoint("MultiBarLeft", "RIGHT", MoveAny:GetMainPanel(), "RIGHT", -36, 0, 12) -- MultiBarLeft
+		MASetPoint("MultiBar" .. 5, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- "MultiBar" .. 5
+		MASetPoint("MultiBar" .. 6, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- "MultiBar" .. 6
+		MASetPoint("MultiBar" .. 7, "CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0, 1) -- "MultiBar" .. 7
+		MASetPoint("MultiBar" .. 8, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 1 * 36, 1)
+		MASetPoint("MultiBar" .. 9, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 2 * 36, 1)
 	else
-		MASetPoint("MAActionBar" .. 1, "BOTTOM", MABack, "BOTTOM", 0, 0, 1)
-		MASetPoint("MAActionBar" .. 3, "RIGHT", MABack, "RIGHT", 0, 0, 12)
-		MASetPoint("MAActionBar" .. 4, "RIGHT", MABack, "RIGHT", -36, 0, 12)
-		MASetPoint("MAActionBar" .. 5, "BOTTOM", MABack, "BOTTOM", 360, 0, 2)
-		MASetPoint("MAActionBar" .. 6, "BOTTOM", MABack, "BOTTOM", 0, 36, 1)
-		MASetPoint("MAActionBar" .. 7, "BOTTOM", MABack, "BOTTOM", -360, 0, 2)
-		MASetPoint("MAActionBar" .. 8, "CENTER", MABack, "CENTER", -360, 0 * 36, 1)
-		MASetPoint("MAActionBar" .. 9, "CENTER", MABack, "CENTER", -360, 1 * 36, 1)
-		MASetPoint("MAActionBar" .. 10, "CENTER", MABack, "CENTER", -360, 2 * 36, 1)
+		MASetPoint("MAActionBar" .. 1, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1)
+		MASetPoint("MAActionBar" .. 3, "RIGHT", MoveAny:GetMainPanel(), "RIGHT", 0, 0, 12)
+		MASetPoint("MAActionBar" .. 4, "RIGHT", MoveAny:GetMainPanel(), "RIGHT", -36, 0, 12)
+		MASetPoint("MAActionBar" .. 5, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 360, 0, 2)
+		MASetPoint("MAActionBar" .. 6, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 36, 1)
+		MASetPoint("MAActionBar" .. 7, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", -360, 0, 2)
+		MASetPoint("MAActionBar" .. 8, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 0 * 36, 1)
+		MASetPoint("MAActionBar" .. 9, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 1 * 36, 1)
+		MASetPoint("MAActionBar" .. 10, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 2 * 36, 1)
 	end
 end
 
@@ -339,7 +339,7 @@ function MoveAny:CustomBars()
 	for i = 1, MAMaxAB do
 		if i ~= 2 and i <= 6 and MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
 			local name = "MAActionBar" .. i
-			_G[name] = CreateFrame("Frame", name, MABack, "SecureHandlerStateTemplate")
+			_G[name] = CreateFrame("Frame", name, MoveAny:GetMainPanel(), "SecureHandlerStateTemplate")
 			local bar = _G[name]
 			bar:SetSize(36 * 12, 36)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
@@ -495,7 +495,7 @@ f:SetScript("OnEvent", function(sel, event)
 			]]
 			end
 
-			local AttributeChangedFrame = CreateFrame("Frame", nil, MABack, "SecureHandlerAttributeTemplate")
+			local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
 
 			for i = 1, 12 do
 				local button = _G["ActionButton" .. i]

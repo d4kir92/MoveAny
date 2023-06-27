@@ -75,7 +75,7 @@ end
 
 function MoveAny:InitBags()
 	if not BagsBar then
-		BagsBar = CreateFrame("Frame", "BagsBar", MABack)
+		BagsBar = CreateFrame("Frame", "BagsBar", MoveAny:GetMainPanel())
 		BagsBar:SetSize(100, 100)
 	end
 
@@ -92,11 +92,11 @@ function MoveAny:InitBags()
 		end)
 
 		if MicroButtonAndBagsBar then
-			BagsBar:SetPoint("BOTTOMRIGHT", MABack, "BOTTOMRIGHT", 0, 36)
+			BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
 		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
-			BagsBar:SetPoint("BOTTOMRIGHT", MABack, "BOTTOMRIGHT", 0, 36)
+			BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
 		else
-			BagsBar:SetPoint("CENTER", MABack, "CENTER", 0, 0)
+			BagsBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -6,15 +6,15 @@ local MABUFFSPACINGY = 10
 
 function MoveAny:InitBuffBar()
 	if MoveAny:IsEnabled("BUFFS", false) then
-		MABuffBar = CreateFrame("Frame", "MABuffBar", MABack)
+		MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
 		local sw1, sh1 = BuffFrame:GetSize()
 		MABuffBar:SetSize(sw1, sh1)
 		MABuffBar:SetPoint(BuffFrame:GetPoint())
 
 		if BuffFrame then
-			MABuffBar:SetPoint("TOPRIGHT", MABack, "TOPRIGHT", -165, -32)
+			MABuffBar:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -165, -32)
 		else
-			MABuffBar:SetPoint("CENTER", MABack, "CENTER", 0, 0)
+			MABuffBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -23,10 +23,26 @@ MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
 MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
-MABack = CreateFrame("Frame", "MABack", UIParent)
-MABack:SetAllPoints(UIParent)
-MABack.unit = "player"
-MABack.auraRows = 0
+local MAMainPanel = CreateFrame("Frame", "MAMainPanel", nil)
+MAMainPanel:SetAllPoints(UIParent)
+MAMainPanel.unit = "player"
+MAMainPanel.auraRows = 0
+
+hooksecurefunc(UIParent, "SetScale", function(self, scale)
+	MAMainPanel:SetScale(scale)
+end)
+
+MAMainPanel:SetScale(UIParent:GetScale())
+
+hooksecurefunc(UIParent, "SetAlpha", function(self, alpha)
+	MAMainPanel:SetAlpha(alpha)
+end)
+
+MAMainPanel:SetAlpha(UIParent:GetAlpha())
+
+function MoveAny:GetMainPanel()
+	return MAMainPanel
+end
 
 local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
 
