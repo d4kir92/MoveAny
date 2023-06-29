@@ -593,6 +593,12 @@ function MoveAny:RegisterWidget(tab)
 
 	if frame then
 		MoveAny:AddFrameName(frame, name)
+
+		if frame.systemInfo and frame.systemInfo.anchorInfo and frame.systemInfo.anchorInfo.relativeTo == "MABack" then
+			frame.systemInfo.anchorInfo.relativeTo = "UIParent"
+			EditModeSystemMixin.UpdateSystem(frame, frame.systemInfo)
+			MoveAny:TrySaveEditMode()
+		end
 	end
 
 	if _G[name .. "_DRAG"] == nil then

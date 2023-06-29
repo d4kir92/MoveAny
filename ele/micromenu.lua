@@ -8,14 +8,12 @@ function MoveAny:InitMicroMenu()
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
 		elseif MoveAny:GetWoWBuild() == "RETAIL" then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-
-			MICRO_BUTTONS = MBTNS
 		end
 
 		if MoveAny:GetWoWBuild() == "CLASSIC" then
-			for i, v in pairs(MICRO_BUTTONS) do
+			for i, v in pairs(MBTNS) do
 				if v == "LFGMicroButton" then
-					tremove(MICRO_BUTTONS, i)
+					tremove(MBTNS, i)
 				end
 			end
 		end

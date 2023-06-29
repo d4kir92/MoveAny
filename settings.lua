@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.0")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.1")
 }
 
 local PREFIX = "MOAN"
@@ -288,6 +288,23 @@ function MoveAny:EnableSave(from, key)
 		MALock.CloseButton:Disable()
 	end
 end
+
+function MoveAny:TrySaveEditMode()
+	local layoutCount = 0
+
+	if EditModeManagerFrame and EditModeManagerFrame.numLayouts and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account] and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character] then
+		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account]
+		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character]
+	end
+
+	if layoutCount > 0 and EditModeManagerFrame and EditModeManagerFrame.SaveChangesButton and EditModeManagerFrame.CloseButton then
+		EditModeManagerFrame.SaveChangesButton:SetEnabled(true)
+		EditModeManagerFrame.SaveChangesButton:Click()
+		EditModeManagerFrame.CloseButton:Click()
+	end
+end
+
+MoveAny:TrySaveEditMode()
 
 function MoveAny:InitMALock()
 	MALock = CreateFrame("Frame", "MALock", MoveAny:GetMainPanel(), "BasicFrameTemplate")
@@ -636,11 +653,7 @@ function MoveAny:InitMALock()
 	MALock.save:SetText(SAVE)
 
 	MALock.save:SetScript("OnClick", function()
-		if EditModeManagerFrame and EditModeManagerFrame.SaveChangesButton and EditModeManagerFrame.CloseButton then
-			EditModeManagerFrame.SaveChangesButton:SetEnabled(true)
-			EditModeManagerFrame.SaveChangesButton:Click()
-			EditModeManagerFrame.CloseButton:Click()
-		end
+		MoveAny:TrySaveEditMode()
 
 		if MALock.save then
 			MALock.save:Disable()
