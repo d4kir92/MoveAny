@@ -147,11 +147,13 @@ local inCombat = false
 function MoveAny:UpdateMALock()
 	if MoveAny:IsEnabled("MALOCK", false) and InCombatLockdown() then
 		inCombat = true
-		MoveAny:ToggleMALock()
+		MoveAny:HideMALock()
 	elseif inCombat and not InCombatLockdown() then
 		inCombat = false
-		MoveAny:ToggleMALock()
+		MoveAny:ShowMALock()
 	end
+
+	C_Timer.After(0.1, MoveAny.UpdateMALock)
 end
 
 -- TAINTFREE SLASH COMMANDS --
