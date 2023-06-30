@@ -471,7 +471,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
 	local frame = _G[key]
 
-	if frame then
+	if frame and p1 and p3 then
 		frame:ClearAllPoints()
 		frame:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
 
@@ -487,8 +487,11 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 
 		if frame then
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
-			frame:ClearAllPoints()
-			frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+
+			if dbp1 and dbp3 then
+				frame:ClearAllPoints()
+				frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+			end
 		end
 	end
 
