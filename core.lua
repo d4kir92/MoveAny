@@ -133,6 +133,7 @@ end
 
 function MoveAny:ToggleMALock()
 	if MALock == nil then return end
+	if InCombatLockdown() then return end
 	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then return end
 
 	if not MoveAny:IsEnabled("MALOCK", false) then
