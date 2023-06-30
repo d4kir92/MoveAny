@@ -643,6 +643,30 @@ function MoveAny:RegisterWidget(tab)
 			end
 
 			dragframe.t:SetAlpha(0.8)
+
+			if dragframe.setup == nil and not InCombatLockdown() then
+				dragframe.setup = true
+				dragframe:EnableKeyboard(true)
+				dragframe:SetPropagateKeyboardInput(true)
+
+				dragframe:HookScript("OnKeyDown", function(sel, btn)
+					if dragframe == MACurrentEle then
+						local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
+
+						if btn == "RIGHT" then
+							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + 1, p5)
+						elseif btn == "LEFT" then
+							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 - 1, p5)
+						elseif btn == "UP" then
+							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 + 1)
+						elseif btn == "DOWN" then
+							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 - 1)
+						end
+					else
+						return
+					end
+				end)
+			end
 		end)
 
 		dragframe:SetScript("OnLeave", function()
@@ -651,27 +675,6 @@ function MoveAny:RegisterWidget(tab)
 			end
 
 			dragframe.t:SetAlpha(0.4)
-		end)
-
-		dragframe:EnableKeyboard(true)
-		dragframe:SetPropagateKeyboardInput(true)
-
-		dragframe:HookScript("OnKeyDown", function(sel, btn)
-			if dragframe == MACurrentEle then
-				local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-
-				if btn == "RIGHT" then
-					MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + 1, p5)
-				elseif btn == "LEFT" then
-					MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 - 1, p5)
-				elseif btn == "UP" then
-					MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 + 1)
-				elseif btn == "DOWN" then
-					MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 - 1)
-				end
-			else
-				return
-			end
 		end)
 
 		dragframe:SetScript("OnMouseDown", function(sel, btn)
@@ -1585,6 +1588,8 @@ function MoveAny:Event(event, ...)
 			ecr:SetFrameLevel(3)
 			ecl.tex:SetDrawLayer("OVERLAY", 2)
 			ecr.tex:SetDrawLayer("OVERLAY", 2)
+			ecl:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			ecr:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 
 			MoveAny:RegisterWidget({
 				["name"] = "MA_LeftEndCap",

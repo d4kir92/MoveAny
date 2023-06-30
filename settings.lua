@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.2")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.3")
 }
 
 local PREFIX = "MOAN"
@@ -80,7 +80,7 @@ MoveAny:AddToEMMap("MAPetFrame", "ShowPetFrame")
 MoveAny:AddToEMMap("BossTargetFrameContainer", "ShowBossFrames")
 
 function MoveAny:IsBlizEditModeEnabled()
-	if EditModeManagerFrame then return true end
+	if MoveAny:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
 
 	return false
 end
@@ -392,7 +392,10 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "CASTINGBARTIMER", false, nil, nil, "ShowCastBar")
 		end
 
-		AddCheckBox(posx, "TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame")
+		if TalkingHeadFrame then
+			AddCheckBox(posx, "TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame")
+		end
+
 		AddCheckBox(posx, "OVERRIDEACTIONBAR", false)
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
@@ -471,11 +474,24 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "MAFPSFrame", false)
-		AddCheckBox(4, "ZONEABILITYFRAME", false)
-		AddCheckBox(4, "POWERBAR", false)
-		AddCheckBox(4, "UIWIDGETPOWERBAR", false)
+
+		if ZoneAbilityFrame then
+			AddCheckBox(4, "ZONEABILITYFRAME", false)
+		end
+
+		if PlayerPowerBarAlt then
+			AddCheckBox(4, "POWERBAR", false)
+		end
+
+		if UIWidgetPowerBarContainerFrame then
+			AddCheckBox(4, "UIWIDGETPOWERBAR", false)
+		end
+
 		--AddCheckBox( 4, "BUFFTIMER1", true )
-		AddCheckBox(4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false)
+		if ArcheologyDigsiteProgressBar then
+			AddCheckBox(4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false)
+		end
+
 		AddCheckBox(4, "UIERRORSFRAME", false)
 
 		if QuickJoinToastButton then
@@ -590,23 +606,23 @@ function MoveAny:InitMALock()
 			AddCategory("ImproveAny")
 
 			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then
-				AddCheckBox(4, "IASKILLS", false)
+				AddCheckBox(4, "IASKILLS", true)
 			end
 
 			if IAMoneyBar then
-				AddCheckBox(4, "MONEYBAR", false)
+				AddCheckBox(4, "MONEYBAR", true)
 			end
 
 			if IATokenBar then
-				AddCheckBox(4, "TOKENBAR", false)
+				AddCheckBox(4, "TOKENBAR", true)
 			end
 
 			if IAILVLBar then
-				AddCheckBox(4, "IAILVLBAR", false)
+				AddCheckBox(4, "IAILVLBAR", true)
 			end
 
-			AddCheckBox(4, "IAPingFrame", false)
-			AddCheckBox(4, "IACoordsFrame", false)
+			AddCheckBox(4, "IAPingFrame", true)
+			AddCheckBox(4, "IACoordsFrame", true)
 		end
 
 		if IsAddOnLoaded("!KalielsTracker") then
