@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.5")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.6")
 }
 
 local PREFIX = "MOAN"
@@ -621,8 +621,13 @@ function MoveAny:InitMALock()
 				AddCheckBox(4, "IAILVLBAR", true)
 			end
 
-			AddCheckBox(4, "IAPingFrame", true)
-			AddCheckBox(4, "IACoordsFrame", true)
+			if IAPingFrame then
+				AddCheckBox(4, "IAPingFrame", true)
+			end
+
+			if IACoordsFrame then
+				AddCheckBox(4, "IACoordsFrame", true)
+			end
 		end
 
 		if IsAddOnLoaded("!KalielsTracker") then

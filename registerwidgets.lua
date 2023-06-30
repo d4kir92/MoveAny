@@ -1810,21 +1810,21 @@ function MoveAny:Event(event, ...)
 		})
 	end
 
-	if IAPingFrame and MoveAny:IsEnabled("IAPingFrame", false) then
+	if IAPingFrame and MoveAny:IsEnabled("IAPingFrame", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IAPingFrame",
 			["lstr"] = "LID_IAPingFrame"
 		})
 	end
 
-	if IACoordsFrame and MoveAny:IsEnabled("IACoordsFrame", false) then
+	if IACoordsFrame and MoveAny:IsEnabled("IACoordsFrame", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IACoordsFrame",
 			["lstr"] = "LID_IACoordsFrame"
 		})
 	end
 
-	if IASkills and MoveAny:IsEnabled("IASKILLS", false) and MoveAny:GetWoWBuild() ~= "RETAIL" then
+	if IASkills and MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
 		MoveAny:RegisterWidget({
 			["name"] = "IASkills",
 			["lstr"] = "LID_IASKILLS"
@@ -2013,21 +2013,21 @@ function MoveAny:Event(event, ...)
 		end)
 	end
 
-	if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", false) then
+	if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IAMoneyBar",
 			["lstr"] = "LID_MONEYBAR"
 		})
 	end
 
-	if IATokenBar and MoveAny:IsEnabled("TOKENBAR", false) then
+	if IATokenBar and MoveAny:IsEnabled("TOKENBAR", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IATokenBar",
 			["lstr"] = "LID_TOKENBAR"
 		})
 	end
 
-	if IAILVLBar and MoveAny:IsEnabled("IAILVLBAR", false) then
+	if IAILVLBar and MoveAny:IsEnabled("IAILVLBAR", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IAILVLBar",
 			["lstr"] = "LID_IAILVLBAR"
