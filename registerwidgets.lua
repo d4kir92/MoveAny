@@ -989,6 +989,8 @@ function MoveAny:RegisterWidget(tab)
 	end
 end
 
+local isresting = nil
+local ismounted = nil
 local invehicle = nil
 local incombat = nil
 local lastEle = nil
@@ -1014,6 +1016,12 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	elseif UnitInVehicle and invehicle ~= UnitInVehicle("player") then
 		invehicle = UnitInVehicle("player")
+		MoveAny:UpdateAlphas()
+	elseif IsMounted and ismounted ~= IsMounted() then
+		ismounted = IsMounted()
+		MoveAny:UpdateAlphas()
+	elseif IsResting and isresting ~= IsResting() then
+		isresting = IsResting()
 		MoveAny:UpdateAlphas()
 	end
 
@@ -1058,9 +1066,9 @@ function MoveAny:UpdateAlphas()
 
 			if UnitInVehicle and invehicle then
 				MoveAny:SetEleAlpha(ele, alphaInVehicle)
-			elseif IsMounted and IsMounted() then
+			elseif IsMounted and ismounted then
 				MoveAny:SetEleAlpha(ele, alphaIsMounted)
-			elseif IsResting and IsResting() then
+			elseif IsResting and isresting then
 				MoveAny:SetEleAlpha(ele, alphaInRestedArea)
 			else
 				if incombat then
