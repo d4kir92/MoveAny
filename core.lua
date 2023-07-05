@@ -81,6 +81,8 @@ function MoveAny:Unlock()
 		isToggling = true
 		MoveAny:SetEnabled("MALOCK", true)
 		MoveAny:UnlockBindings()
+	else
+		MoveAny:MSG("[Unlock] Settings Frame is toggling, try again.")
 	end
 end
 
@@ -89,29 +91,47 @@ function MoveAny:Lock()
 		isToggling = true
 		MoveAny:SetEnabled("MALOCK", false)
 		MoveAny:LockBindings()
+	else
+		MoveAny:MSG("[Lock] Settings Frame is toggling, try again.")
 	end
 end
 
+function MoveAny:IsMALockNotReady()
+	if MALock == nil then
+		MoveAny:MSG("Settings Frame is not created")
+
+		return true
+	end
+
+	return false
+end
+
 function MoveAny:ShowMALock()
-	if MALock == nil then return end
+	if MoveAny:IsMALockNotReady() then return end
 	MoveAny:Unlock()
 
 	if MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:EnableMouse(true)
 			df:SetAlpha(1)
+
+			if df.opt then
+				df.opt:Show()
+			end
 		end
 
 		if MALock then
 			MALock:Show()
 			MAGridFrame:Show()
 			MALock:UpdateShowErrors()
+		else
+			MoveAny:MSG("[ShowMALock] Settings Frame couldn't be created, please tell dev.")
 		end
 	end
 end
 
 function MoveAny:HideMALock(onlyHide)
-	if MALock == nil then return end
+	if MoveAny:IsMALockNotReady() then return end
 
 	if not onlyHide then
 		MoveAny:Lock()
@@ -121,20 +141,36 @@ function MoveAny:HideMALock(onlyHide)
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:EnableMouse(false)
 			df:SetAlpha(0)
+
+			if df.opt then
+				df.opt:Hide()
+			end
 		end
 
 		if MALock then
 			MALock:Hide()
 			MAGridFrame:Hide()
 			MALock:UpdateShowErrors()
+		else
+			MoveAny:MSG("[HideMALock] Settings Frame couldn't be created, please tell dev.")
 		end
 	end
 end
 
 function MoveAny:ToggleMALock()
-	if MALock == nil then return end
-	if InCombatLockdown() then return end
-	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then return end
+	if MoveAny:IsMALockNotReady() then return end
+
+	if InCombatLockdown() then
+		MoveAny:MSG("You are in Combat")
+
+		return
+	end
+
+	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then
+		MoveAny:MSG("Can't Toggle Settings Frame when it is not saved.")
+
+		return
+	end
 
 	if not MoveAny:IsEnabled("MALOCK", false) then
 		MoveAny:ShowMALock()
