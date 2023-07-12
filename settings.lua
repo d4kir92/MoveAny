@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.10")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.11")
 }
 
 local PREFIX = "MOAN"
@@ -44,6 +44,7 @@ MoveAny:AddToEMMapForced("MultiBarLeft")
 MoveAny:AddToEMMapForced("MultiBar5")
 MoveAny:AddToEMMapForced("MultiBar6")
 MoveAny:AddToEMMapForced("MultiBar7")
+MoveAny:AddToEMMapForced("MainStatusTrackingBarContainer")
 
 for i = 1, 8 do
 	MoveAny:AddToEMMapForced("ACTIONBAR" .. i)
@@ -78,6 +79,7 @@ MoveAny:AddToEMMap("PartyFrame", "ShowPartyFrames")
 MoveAny:AddToEMMap("PetFrame", "ShowPetFrame")
 MoveAny:AddToEMMap("MAPetFrame", "ShowPetFrame")
 MoveAny:AddToEMMap("BossTargetFrameContainer", "ShowBossFrames")
+MoveAny:AddToEMMap("SecondaryStatusTrackingBarContainer", "ShowStatusTrackingBar2")
 
 function MoveAny:IsBlizEditModeEnabled()
 	if MoveAny:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
@@ -99,13 +101,18 @@ function MoveAny:IsInEditModeEnabled(val)
 
 		if EMMap[val] and editModeEnum == nil then
 			MoveAny:MSG("MISSING ENUM FOR val: " .. tostring(val))
-			--[[for i, v in pairs(Enum.EditModeAccountSetting) do
-				MoveAny:MSG("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
-			end]]
 		end
 	end
 
 	if editModeEnum and EditModeManagerFrame and tContains(Enum.EditModeAccountSetting, editModeEnum) and EditModeManagerFrame.accountSettingMap and EditModeManagerFrame:GetAccountSettingValueBool(editModeEnum) then return true, false end
+
+	if false then
+		for i, v in pairs(Enum.EditModeAccountSetting) do
+			if string.find(strlower(i), "pet") then
+				MoveAny:MSG("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
+			end
+		end
+	end
 
 	return false, false
 end
@@ -423,6 +430,19 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "PARTYFRAME", false)
 		AddCheckBox(posx, "MAPETFRAME", false)
 		AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames")
+
+		if MainStatusTrackingBarContainer then
+			AddCheckBox(posx, "MainStatusTrackingBarContainer", false)
+		end
+
+		if SecondaryStatusTrackingBarContainer then
+			AddCheckBox(posx, "SecondaryStatusTrackingBarContainer", false)
+		end
+
+		if StatusTrackingBarManager then
+			AddCheckBox(posx, "STATUSTRACKINGBARMANAGER", false)
+		end
+
 		AddCategory("NORMAL")
 		AddCheckBox(4, "TARGETOFTARGETFRAME", false)
 
@@ -454,18 +474,6 @@ function MoveAny:InitMALock()
 
 		if QueueStatusFrame then
 			AddCheckBox(4, "QUEUESTATUSFRAME", false)
-		end
-
-		if MainStatusTrackingBarContainer then
-			AddCheckBox(4, "MainStatusTrackingBarContainer", false)
-		end
-
-		if SecondaryStatusTrackingBarContainer then
-			AddCheckBox(4, "SecondaryStatusTrackingBarContainer", false)
-		end
-
-		if StatusTrackingBarManager then
-			AddCheckBox(4, "STATUSTRACKINGBARMANAGER", false)
 		end
 
 		if MainMenuExpBar then

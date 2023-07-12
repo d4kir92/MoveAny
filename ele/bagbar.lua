@@ -37,6 +37,22 @@ function MoveAny:UpdateBags()
 
 	if BagsBar then
 		BagsBar:SetSize(sw, sh)
+
+		if BagsBar_DRAG then
+			if BagsBar_DRAG.hooksetsize == nil then
+				BagsBar_DRAG.hooksetsize = true
+
+				hooksecurefunc(BagsBar_DRAG, "SetSize", function(sel, w, h)
+					if sel.ma_bags_setsize then return end
+					sel.ma_bags_setsize = true
+					MoveAny:UpdateBags()
+					sel.ma_bags_setsize = false
+				end)
+			end
+
+			BagsBar_DRAG:SetSize(sw, sh)
+		end
+
 		local x = 0
 
 		for i, mbname in pairs(BAGS) do

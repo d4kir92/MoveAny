@@ -1,5 +1,17 @@
 local _, MoveAny = ...
 
+function MoveAny:GetMicroButtonSize()
+	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 34 end
+
+	return 24, 32
+end
+
+function MoveAny:GetMicroButtonYOffset()
+	if MoveAny:GetWoWBuild() == "RETAIL" then return -3 end
+
+	return -4
+end
+
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled("MICROMENU", false) then
 		local MBTNS = MICRO_BUTTONS
@@ -22,12 +34,7 @@ function MoveAny:InitMicroMenu()
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
 		end
 
-		local sw1, sh1 = CharacterMicroButton:GetSize()
-
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
-			sh1 = sh1 - 21
-		end
-
+		local sw1, sh1 = MoveAny:GetMicroButtonSize()
 		local mbc = 11
 
 		if MBTNS then
@@ -37,7 +44,7 @@ function MoveAny:InitMicroMenu()
 		local opts = MoveAny:GetEleOptions("MICROMENU")
 		opts["ROWS"] = opts["ROWS"] or 1
 		MAMenuBar = CreateFrame("Frame", "MAMenuBar", MoveAny:GetMainPanel())
-		MAMenuBar:SetSize((sw1 - 4) * mbc, sh1 - 4)
+		MAMenuBar:SetSize(sw1 * mbc, sh1)
 
 		if MicroButtonAndBagsBar then
 			local p1, _, p3, p4, p5 = MicroButtonAndBagsBar:GetPoint()
@@ -59,13 +66,7 @@ function MoveAny:InitMicroMenu()
 						return MAMenuBar
 					end
 
-					local sw2, sh2 = mb:GetSize()
-
-					if MoveAny:GetWoWBuild() ~= "RETAIL" then
-						sw2 = sw2 - 2
-						sh2 = sh2 - 24
-					end
-
+					local sw2, sh2 = MoveAny:GetMicroButtonSize()
 					local hb = CreateFrame("FRAME", mbname .. "_HB", MAMenuBar)
 					hb:SetParent(MAMenuBar)
 					hb:SetSize(sw2, sh2)
@@ -90,9 +91,9 @@ function MoveAny:InitMicroMenu()
 						mb:SetParent(hb)
 
 						if MoveAny:GetWoWBuild() == "RETAIL" then
-							mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+							mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 						else
-							mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+							mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 						end
 
 						sel.mmbsetpoint = false
@@ -113,9 +114,9 @@ function MoveAny:InitMicroMenu()
 					mb:SetParent(hb)
 
 					if MoveAny:GetWoWBuild() == "RETAIL" then
-						mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+						mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					else
-						mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, -2)
+						mb:SetPoint("BOTTOM", hb, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					end
 
 					hooksecurefunc(mb, "Hide", function(sel)
