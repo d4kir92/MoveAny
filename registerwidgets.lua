@@ -1167,6 +1167,29 @@ function MoveAny:Event(event, ...)
 		end
 	end
 
+	if CompactArenaFrame and MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
+		MoveAny:RegisterWidget({
+			["name"] = "CompactArenaFrame",
+			["lstr"] = "LID_COMPACTARENAFRAME"
+		})
+	end
+
+	if RolePollPopup and MoveAny:IsEnabled("ROLEPOLLPOPUP", false) then
+		RolePollPopup:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+
+		MoveAny:RegisterWidget({
+			["name"] = "RolePollPopup",
+			["lstr"] = "LID_ROLEPOLLPOPUP"
+		})
+	end
+
+	if ReadyCheckListenerFrame and MoveAny:IsEnabled("READYCHECKLISTENERFRAME", false) then
+		MoveAny:RegisterWidget({
+			["name"] = "ReadyCheckListenerFrame",
+			["lstr"] = "LID_READYCHECKLISTENERFRAME"
+		})
+	end
+
 	if PlayerCastingBarFrame then
 		if MoveAny:IsEnabled("CASTINGBAR", false) then
 			MoveAny:RegisterWidget({

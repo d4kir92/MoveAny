@@ -160,6 +160,9 @@ function MoveAny:LangenUS()
 		["LID_SHOWTIPS"] = "Show Tips",
 		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
 		["LID_BOSSBANNER"] = "Boss Banner (Dropped Loot, Boss Title)",
+		["LID_COMPACTARENAFRAME"] = "Compact Arena Frame",
+		["LID_ROLEPOLLPOPUP"] = "Role Poll Popup",
+		["LID_READYCHECKLISTENERFRAME"] = "Ready Check Popup",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

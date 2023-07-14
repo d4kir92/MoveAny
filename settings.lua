@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.12")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.13")
 }
 
 local PREFIX = "MOAN"
@@ -568,8 +568,24 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
 		AddCheckBox(4, "UIWIDGETBELOWMINIMAP", false)
 		AddCheckBox(4, "MIRRORTIMER1", false)
-		AddCheckBox(4, "ARENAENEMYFRAMES", false)
-		AddCheckBox(4, "ARENAPREPFRAMES", false)
+
+		if Arena_LoadUI then
+			AddCheckBox(4, "ARENAENEMYFRAMES", false)
+			AddCheckBox(4, "ARENAPREPFRAMES", false)
+		end
+
+		if CompactArenaFrame then
+			AddCheckBox(4, "COMPACTARENAFRAME", false)
+		end
+
+		if RolePollPopup then
+			AddCheckBox(4, "ROLEPOLLPOPUP", false)
+		end
+
+		if ReadyCheckListenerFrame then
+			AddCheckBox(4, "READYCHECKLISTENERFRAME", false)
+		end
+
 		AddCheckBox(4, "GAMETOOLTIP_ONCURSOR", false)
 
 		if BossBanner then

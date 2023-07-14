@@ -156,6 +156,9 @@ function MoveAny:LangdeDE()
 		["LID_SHOWTIPS"] = "Tipps anzeigen",
 		["LID_OVERRIDEACTIONBAR"] = "\"Überschreiben\" Aktionsleiste (Fahrzeugleiste)",
 		["LID_BOSSBANNER"] = "Boss-Banner (Abgelegte Beute/Loot, Boss Titel)",
+		["LID_COMPACTARENAFRAME"] = "Kompaktes Arena Fenster",
+		["LID_ROLEPOLLPOPUP"] = "Rollenabfrage-Popup",
+		["LID_READYCHECKLISTENERFRAME"] = "Bereitschaftsprüfung-Popup",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
