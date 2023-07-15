@@ -1202,9 +1202,12 @@ function MoveAny:Event(event, ...)
 			PlayerCastingBarFrameT = CreateFrame("FRAME", MoveAny:GetMainPanel())
 			PlayerCastingBarFrameT:SetSize(20, 20)
 			PlayerCastingBarFrameT:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-			PlayerCastingBarFrame.timer:SetParent(PlayerCastingBarFrameT)
-			PlayerCastingBarFrame.timer:ClearAllPoints()
-			PlayerCastingBarFrame.timer:SetPoint("CENTER", PlayerCastingBarFrameT, "CENTER", 0, 0)
+
+			if PlayerCastingBarFrame.timer ~= nil then
+				PlayerCastingBarFrame.timer:SetParent(PlayerCastingBarFrameT)
+				PlayerCastingBarFrame.timer:ClearAllPoints()
+				PlayerCastingBarFrame.timer:SetPoint("CENTER", PlayerCastingBarFrameT, "CENTER", 0, 0)
+			end
 
 			MoveAny:RegisterWidget({
 				["name"] = "PlayerCastingBarFrameT",
