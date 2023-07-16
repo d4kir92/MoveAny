@@ -908,15 +908,17 @@ function MoveAny:RegisterWidget(tab)
 			sel.elesetpoint = true
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 
-			if not InCombatLockdown() and sel.SetPointBase then
-				sel:ClearAllPointsBase()
-				sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-			elseif not sel.SetPointBase then
-				sel:ClearAllPoints()
-				sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-			elseif sel.ma_retry_setpoint == false then
-				sel.ma_retry_setpoint = true
-				frame:MAUpdatePoint()
+			if dbp1 and dbp3 then
+				if not InCombatLockdown() and sel.SetPointBase then
+					sel:ClearAllPointsBase()
+					sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+				elseif not sel.SetPointBase then
+					sel:ClearAllPoints()
+					sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+				elseif sel.ma_retry_setpoint == false then
+					sel.ma_retry_setpoint = true
+					frame:MAUpdatePoint()
+				end
 			end
 
 			sel.elesetpoint = false
