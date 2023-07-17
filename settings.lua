@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.2")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.3")
 }
 
 local MAMMBTN = nil
@@ -2156,10 +2156,30 @@ function MoveAny:LoadAddon()
 			local cf = _G["ChatFrame" .. i]
 
 			if cf and MoveAny:IsEnabled("CHAT" .. i, false) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
+				local cleft = -34
+				local cright = 2
+				local cbottom = -34
+
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					cright = 16
+				end
+
+				if MoveAny:IsEnabled("CHATBUTTONFRAME", false) then
+					cleft = -2
+				end
+
+				if MoveAny:IsEnabled("CHATEDITBOX", false) then
+					cbottom = -4
+				end
+
 				MoveAny:RegisterWidget({
 					["name"] = "ChatFrame" .. i,
 					["lstr"] = "LID_CHAT",
-					["lstri"] = i
+					["lstri"] = i,
+					["cleft"] = cleft,
+					["cright"] = cright,
+					["ctop"] = 22,
+					["cbottom"] = cbottom,
 				})
 			end
 		end
@@ -2960,126 +2980,96 @@ function MoveAny:LoadAddon()
 	for i = 1, 10 do
 		local cf = _G["ChatFrame" .. i]
 
-		if cf then
-			local left = nil
-
+		if cf and i > 1 then
 			if MoveAny:IsEnabled("CHATBUTTONFRAME", false) then
-				left = 0
-			end
+				local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
 
-			local bottom = nil
+				if cbf then
+					hooksecurefunc(cbf, "SetPoint", function(sel, ...)
+						if sel.cbfsetpoint then return end
+						sel:SetMovable(true)
 
-			if MoveAny:IsEnabled("CHATEDITBOX", false) then
-				bottom = 0
-			end
+						if sel.SetUserPlaced and sel:IsMovable() then
+							sel:SetUserPlaced(true)
+						end
 
-			if left or bottom then
-				local l = left or -35
-				local b = bottom or -35
+						sel.cbfsetpoint = true
 
-				hooksecurefunc(cf, "SetClampRectInsets", function(sel, oL, oR, oT, oB)
-					if sel.setclamprectinsets_ma then return end
-					sel.setclamprectinsets_ma = true
-					local le = left or -35
-					local bo = bottom or -35
-					sel:SetClampRectInsets(le, 25, 25, bo)
-					sel.setclamprectinsets_ma = false
-				end)
-
-				cf:SetClampRectInsets(l, 25, 25, b)
-			end
-
-			if i > 1 then
-				if MoveAny:IsEnabled("CHATBUTTONFRAME", false) then
-					local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
-
-					if cbf then
-						hooksecurefunc(cbf, "SetPoint", function(sel, ...)
-							if sel.cbfsetpoint then return end
-							sel:SetMovable(true)
-
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(true)
-							end
-
-							sel.cbfsetpoint = true
-
-							C_Timer.After(0.0, function()
-								local ssw, _ = _G["ChatFrame" .. 1 .. "ButtonFrame"]:GetSize()
-								sel:SetSize(ssw, ssw * 6)
-								sel:ClearAllPoints()
-								sel:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
-								sel.cbfsetpoint = false
-							end)
+						C_Timer.After(0.0, function()
+							local ssw, _ = _G["ChatFrame" .. 1 .. "ButtonFrame"]:GetSize()
+							sel:SetSize(ssw, ssw * 6)
+							sel:ClearAllPoints()
+							sel:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
+							sel.cbfsetpoint = false
 						end)
+					end)
 
-						cbf:SetMovable(true)
+					cbf:SetMovable(true)
 
-						if cbf.SetUserPlaced and cbf:IsMovable() then
-							cbf:SetUserPlaced(true)
-						end
-
-						cbf:ClearAllPoints()
-						cbf:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
+					if cbf.SetUserPlaced and cbf:IsMovable() then
+						cbf:SetUserPlaced(true)
 					end
 
-					function MoveAny:UpdateActiveTab()
-						local selectedId = 1
-
-						if SELECTED_CHAT_FRAME then
-							selectedId = SELECTED_CHAT_FRAME:GetID()
-						end
-
-						for x = 1, 10 do
-							local cbff = _G["ChatFrame" .. x .. "ButtonFrame"]
-
-							if cbff then
-								if x == selectedId then
-									cbff:Show()
-								else
-									cbff:Hide()
-								end
-							end
-						end
-
-						C_Timer.After(0.1, MoveAny.UpdateActiveTab)
-					end
-
-					MoveAny:UpdateActiveTab()
+					cbf:ClearAllPoints()
+					cbf:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
 				end
 
-				if MoveAny:IsEnabled("CHATEDITBOX", false) then
-					local ceb = _G["ChatFrame" .. i .. "EditBox"]
+				function MoveAny:UpdateActiveTab()
+					local selectedId = 1
 
-					if ceb then
-						hooksecurefunc(ceb, "SetPoint", function(sel, ...)
-							if sel.cebsetpoint then return end
-							sel:SetMovable(true)
+					if SELECTED_CHAT_FRAME then
+						selectedId = SELECTED_CHAT_FRAME:GetID()
+					end
 
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(true)
+					for x = 1, 10 do
+						local cbff = _G["ChatFrame" .. x .. "ButtonFrame"]
+
+						if cbff then
+							if x == selectedId then
+								cbff:Show()
+							else
+								cbff:Hide()
 							end
+						end
+					end
 
-							sel.cebsetpoint = true
+					C_Timer.After(0.1, MoveAny.UpdateActiveTab)
+				end
 
-							if _G["ChatFrame" .. 1 .. "EditBox"] then
-								sel:SetSize(_G["ChatFrame" .. 1 .. "EditBox"]:GetSize())
-								sel:ClearAllPoints()
-								sel:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
-							end
+				MoveAny:UpdateActiveTab()
+			end
 
-							sel.cebsetpoint = false
-						end)
+			if MoveAny:IsEnabled("CHATEDITBOX", false) then
+				local ceb = _G["ChatFrame" .. i .. "EditBox"]
 
-						ceb:SetMovable(true)
+				if ceb then
+					hooksecurefunc(ceb, "SetPoint", function(sel, ...)
+						if sel.cebsetpoint then return end
+						sel:SetMovable(true)
 
-						if ceb.SetUserPlaced and ceb:IsMovable() then
-							ceb:SetUserPlaced(true)
+						if sel.SetUserPlaced and sel:IsMovable() then
+							sel:SetUserPlaced(true)
 						end
 
-						ceb:ClearAllPoints()
-						ceb:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
+						sel.cebsetpoint = true
+
+						if _G["ChatFrame" .. 1 .. "EditBox"] then
+							sel:SetSize(_G["ChatFrame" .. 1 .. "EditBox"]:GetSize())
+							sel:ClearAllPoints()
+							sel:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
+						end
+
+						sel.cebsetpoint = false
+					end)
+
+					ceb:SetMovable(true)
+
+					if ceb.SetUserPlaced and ceb:IsMovable() then
+						ceb:SetUserPlaced(true)
 					end
+
+					ceb:ClearAllPoints()
+					ceb:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
 				end
 			end
 		end
@@ -3236,7 +3226,42 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	local mmBtnData = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
+	function MoveAny:UpdateMinimapButton()
+		if MoveAny:GetMinimapButton() then
+			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+				print("SHOW")
+				MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
+			else
+				print("HIDE")
+				MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
+			end
+		end
+	end
+
+	function MoveAny:ToggleMinimapButton()
+		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
+		MoveAny:UpdateMinimapButton()
+	end
+
+	function MoveAny:HideMinimapButton()
+		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+
+		if MoveAny:GetMinimapButton() then
+			print("HIDE 2")
+			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
+		end
+	end
+
+	function MoveAny:ShowMinimapButton()
+		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
+
+		if MoveAny:GetMinimapButton() then
+			print("SHOW 2")
+			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
+		end
+	end
+
+	local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
 		text = "MoveAnyMinimapIcon",
 		icon = 135994,
@@ -3259,16 +3284,13 @@ function MoveAny:LoadAddon()
 		MAMMBTN = LibStub("LibDBIcon-1.0", true)
 
 		if MoveAny:GetMinimapButton() then
-			MoveAny:GetMinimapButton():Register("MoveAnyMinimapIcon", mmBtnData, MoveAny:GetMinimapTable())
+			MoveAny:GetMinimapButton():Register("MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable())
 		end
 	end
 
 	if MoveAny:GetMinimapButton() then
-		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-		else
-			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-		end
+		print("WORKS", MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
+		MoveAny:UpdateMinimapButton()
 	end
 
 	if MoveAny:IsEnabled("MALOCK", false) then

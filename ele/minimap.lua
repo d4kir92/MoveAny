@@ -60,8 +60,6 @@ function MoveAny:InitMinimap()
 		zoneTextBG:SetPoint("TOP", Minimap, "TOP", 0, 32)
 	end
 
-	Minimap:SetParent(MoveAny:GetMainPanel())
-
 	if MinimapBorder then
 		local sw, sh = Minimap:GetSize()
 		local texture = MinimapBorder:GetTexture()

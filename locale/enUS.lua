@@ -29,7 +29,7 @@ function MoveAny:LangenUS()
 		["LID_TARGETOFTARGETFRAME"] = "Target of Target Frame",
 		["LID_TARGETFRAMESPELLBAR"] = "Castbar from Target",
 		["LID_FOCUSFRAME"] = "Focus Frame",
-		["LID_TARGETFRAMEBUFF1"] = "Focus Frame Buff 1",
+		["LID_FOCUSFRAMEBUFF1"] = "Focus Frame Buff 1",
 		["LID_FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
 		["LID_TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
 		["LID_RUNEFRAME"] = "Deathknight - Runes Frame",

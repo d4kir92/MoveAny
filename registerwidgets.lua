@@ -454,44 +454,6 @@ function MoveAny:MenuOptions(opt, frame)
 	end
 end
 
-function MoveAny:UpdateMinimapButton()
-	if MoveAny:GetMinimapButton() then
-		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-		else
-			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-		end
-	end
-end
-
-function MoveAny:ToggleMinimapButton()
-	MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
-
-	if MoveAny:GetMinimapButton() then
-		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-		else
-			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-		end
-	end
-end
-
-function MoveAny:HideMinimapButton()
-	MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
-
-	if MoveAny:GetMinimapButton() then
-		MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-	end
-end
-
-function MoveAny:ShowMinimapButton()
-	MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
-
-	if MoveAny:GetMinimapButton() then
-		MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-	end
-end
-
 function MoveAny:GetFrame(ele, name)
 	local _, e1 = strfind(name, ".", 1, true)
 
@@ -759,6 +721,19 @@ function MoveAny:RegisterWidget(tab)
 		local b = cbottom or 0
 
 		if frame.SetClampRectInsets then
+			hooksecurefunc(frame, "SetClampRectInsets", function(sel, ...)
+				if sel.scri then return end
+				sel.scri = true
+				sel:SetClampRectInsets(l, r, t, b)
+				local df = _G[name .. "_DRAG"]
+
+				if df then
+					df:SetClampRectInsets(l, r, t, b)
+				end
+
+				sel.scri = false
+			end)
+
 			frame:SetClampRectInsets(l, r, t, b)
 		end
 	end
