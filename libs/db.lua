@@ -1,4 +1,4 @@
-local _, MoveAny = ...
+local AddonName, MoveAny = ...
 local COL_R = "|cFFFF0000"
 local COL_Y = "|cFFFFFF00"
 local MADEBUG = false
@@ -279,70 +279,6 @@ function MoveAny:FixTable(tab)
 	end
 end
 
-function MoveAny:InitDB()
-	MoveAny:CheckDB()
-
-	if MATAB["PROFILES"]["DEFAULT"] == nil then
-		MoveAny:AddProfile("DEFAULT")
-	end
-
-	if MATAB["PROFILES"][MoveAny:GetCP()] == nil then
-		MoveAny:SetCP("DEFAULT")
-	end
-
-	MoveAny:FixTable(MATAB["PROFILES"])
-
-	-- FIX, parent had big junk behind
-	for x, profil in pairs(MATAB["PROFILES"]) do
-		if profil then
-			if profil["ELES"] and profil["ELES"]["POINTS"] then
-				for i, v in pairs(profil["ELES"]["POINTS"]) do
-					if v.PA then
-						v.PA = nil
-					end
-				end
-			end
-
-			if profil["FRAMES"] and profil["FRAMES"]["POINTS"] then
-				for i, v in pairs(profil["FRAMES"]["POINTS"]) do
-					if v.PA then
-						v.PA = nil
-					end
-				end
-			end
-		end
-	end
-
-	if MAITAB then
-		MoveAny:HR()
-		MoveAny:MSG("...MoveAndImprove detected, importing Profiles...")
-
-		for name, tab in pairs(MAITAB["PROFILES"]) do
-			local newName = name .. " by MAI"
-
-			if MATAB["PROFILES"][newName] == nil then
-				MoveAny:MSG("Importing Profile: " .. name)
-				MoveAny:AddProfile(newName, nil, true)
-
-				for n, t in pairs(tab) do
-					MoveAny:IImportPointValue(newName, n, t, "point", "AN")
-					MoveAny:IImportPointValue(newName, n, t, "relativePoint", "RE")
-					MoveAny:IImportPointValue(newName, n, t, "ofsx", "PX")
-					MoveAny:IImportPointValue(newName, n, t, "ofsy", "PY")
-					MoveAny:IImportSizesValue(newName, n, t, "scale", "SCALE")
-					MoveAny:IImportOptionValue(newName, n, t, "rows", "ROWS")
-					MoveAny:IImportOptionValue(newName, n, t, "spacing", "SPACING")
-				end
-			else
-				MoveAny:MSG("Already Imported Profile: " .. name)
-			end
-		end
-
-		MoveAny:MSG("Done Importing Profiles.")
-		MoveAny:HR()
-	end
-end
-
 function MoveAny:SetEnabled(element, value)
 	MoveAny:CheckDB()
 
@@ -611,3 +547,77 @@ end
 function MoveAny:GetSnapSize()
 	return MoveAny:GV("GRIDSIZE", 10)
 end
+
+function MoveAny:InitDB()
+	MoveAny:CheckDB()
+
+	if MATAB["PROFILES"]["DEFAULT"] == nil then
+		MoveAny:AddProfile("DEFAULT")
+	end
+
+	if MATAB["PROFILES"][MoveAny:GetCP()] == nil then
+		MoveAny:SetCP("DEFAULT")
+	end
+
+	MoveAny:FixTable(MATAB["PROFILES"])
+
+	-- FIX, parent had big junk behind
+	for x, profil in pairs(MATAB["PROFILES"]) do
+		if profil then
+			if profil["ELES"] and profil["ELES"]["POINTS"] then
+				for i, v in pairs(profil["ELES"]["POINTS"]) do
+					if v.PA then
+						v.PA = nil
+					end
+				end
+			end
+
+			if profil["FRAMES"] and profil["FRAMES"]["POINTS"] then
+				for i, v in pairs(profil["FRAMES"]["POINTS"]) do
+					if v.PA then
+						v.PA = nil
+					end
+				end
+			end
+		end
+	end
+
+	if MAITAB then
+		MoveAny:HR()
+		MoveAny:MSG("...MoveAndImprove detected, importing Profiles...")
+
+		for name, tab in pairs(MAITAB["PROFILES"]) do
+			local newName = name .. " by MAI"
+
+			if MATAB["PROFILES"][newName] == nil then
+				MoveAny:MSG("Importing Profile: " .. name)
+				MoveAny:AddProfile(newName, nil, true)
+
+				for n, t in pairs(tab) do
+					MoveAny:IImportPointValue(newName, n, t, "point", "AN")
+					MoveAny:IImportPointValue(newName, n, t, "relativePoint", "RE")
+					MoveAny:IImportPointValue(newName, n, t, "ofsx", "PX")
+					MoveAny:IImportPointValue(newName, n, t, "ofsy", "PY")
+					MoveAny:IImportSizesValue(newName, n, t, "scale", "SCALE")
+					MoveAny:IImportOptionValue(newName, n, t, "rows", "ROWS")
+					MoveAny:IImportOptionValue(newName, n, t, "spacing", "SPACING")
+				end
+			else
+				MoveAny:MSG("Already Imported Profile: " .. name)
+			end
+		end
+
+		MoveAny:MSG("Done Importing Profiles.")
+		MoveAny:HR()
+	end
+end
+
+function MoveAny:AddonLoaded(event, addonName, ...)
+	if event == "ADDON_LOADED" and addonName == AddonName then
+		MoveAny:LoadAddon()
+	end
+end
+
+local mf = CreateFrame("FRAME")
+mf:RegisterEvent("ADDON_LOADED")
+mf:SetScript("OnEvent", MoveAny.AddonLoaded)
