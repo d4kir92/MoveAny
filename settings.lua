@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.1")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.2")
 }
 
 local MAMMBTN = nil
@@ -2659,9 +2659,9 @@ function MoveAny:LoadAddon()
 				GameTooltip.default = 1
 			end
 
-			C_Timer.After(0.01, MAThinkGameTooltip)
+			C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
 		else
-			C_Timer.After(1, MAThinkGameTooltip)
+			C_Timer.After(1, MoveAny.ThinkGameTooltip)
 		end
 	end
 
