@@ -59,7 +59,7 @@ function MoveAny:InitBuffBar()
 		local dirH = "LEFT"
 		local dirV = "BOTTOM"
 
-		function MAUpdateBuffDirections()
+		function MoveAny:UpdateBuffDirections()
 			local p1, _, p3, _, _ = MABuffBar:GetPoint()
 			rel = "RIGHT"
 
@@ -88,7 +88,7 @@ function MoveAny:InitBuffBar()
 			end
 		end
 
-		MAUpdateBuffDirections()
+		MoveAny:UpdateBuffDirections()
 
 		if TempEnchant1 then
 			hooksecurefunc(TempEnchant1, "SetPoint", function(sel, ...)
@@ -186,7 +186,7 @@ function MoveAny:InitBuffBar()
 			end)
 		end
 
-		function GetEnchantCount()
+		function MoveAny:GetEnchantCount()
 			local count = 0
 			local e1, _, _, _, e2, _, _, _, e3, _, _, _ = GetWeaponEnchantInfo()
 
@@ -205,11 +205,11 @@ function MoveAny:InitBuffBar()
 			return count
 		end
 
-		function MAUpdateBuffs()
+		function MoveAny:UpdateBuffs()
 			MABUFFLIMIT = MoveAny:GetEleOption("MABuffBar", "MABUFFLIMIT", 10)
 			MABUFFSPACINGX = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGX", 4)
 			MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
-			MAUpdateBuffDirections()
+			MoveAny:UpdateBuffDirections()
 
 			if ConsolidatedBuffs then
 				ConsolidatedBuffs:SetParent(MABuffBar)
@@ -252,7 +252,7 @@ function MoveAny:InitBuffBar()
 								end
 							end
 
-							local count = GetEnchantCount()
+							local count = MoveAny:GetEnchantCount()
 
 							if GetCVarBool("consolidateBuffs") then
 								count = count + 1
@@ -315,7 +315,7 @@ function MoveAny:InitBuffBar()
 		end
 
 		hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...)
-			MAUpdateBuffs()
+			MoveAny:UpdateBuffs()
 		end)
 
 		local f = CreateFrame("FRAME")
@@ -326,11 +326,11 @@ function MoveAny:InitBuffBar()
 				unit = ...
 
 				if unit and unit == "player" then
-					MAUpdateBuffs()
+					MoveAny:UpdateBuffs()
 				end
 			end
 		end)
 
-		C_Timer.After(1, MAUpdateBuffs)
+		C_Timer.After(1, MoveAny.UpdateBuffs)
 	end
 end

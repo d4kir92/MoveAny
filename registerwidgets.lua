@@ -447,19 +447,19 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			end)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
-			MoveAny:CreateSlider(content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MAUpdateBuffs)
-			MoveAny:CreateSlider(content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MAUpdateBuffs)
-			MoveAny:CreateSlider(content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MAUpdateBuffs)
+			MoveAny:CreateSlider(content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MoveAny.UpdateBuffs)
+			MoveAny:CreateSlider(content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MoveAny.UpdateBuffs)
+			MoveAny:CreateSlider(content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateBuffs)
 		end
 	end
 end
 
 function MoveAny:UpdateMinimapButton()
-	if MAMMBTN then
+	if MoveAny:GetMinimapButton() then
 		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MAMMBTN:Show("MoveAnyMinimapIcon")
+			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
 		else
-			MAMMBTN:Hide("MoveAnyMinimapIcon")
+			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
 		end
 	end
 end
@@ -467,11 +467,11 @@ end
 function MoveAny:ToggleMinimapButton()
 	MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
 
-	if MAMMBTN then
+	if MoveAny:GetMinimapButton() then
 		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MAMMBTN:Show("MoveAnyMinimapIcon")
+			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
 		else
-			MAMMBTN:Hide("MoveAnyMinimapIcon")
+			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
 		end
 	end
 end
@@ -479,16 +479,16 @@ end
 function MoveAny:HideMinimapButton()
 	MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
 
-	if MAMMBTN then
-		MAMMBTN:Hide("MoveAnyMinimapIcon")
+	if MoveAny:GetMinimapButton() then
+		MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
 	end
 end
 
 function MoveAny:ShowMinimapButton()
 	MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
 
-	if MAMMBTN then
-		MAMMBTN:Show("MoveAnyMinimapIcon")
+	if MoveAny:GetMinimapButton() then
+		MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
 	end
 end
 
@@ -800,10 +800,6 @@ function MoveAny:RegisterWidget(tab)
 		frame.oldparent = frame.oldparent or frame:GetParent()
 
 		hooksecurefunc(frame, "SetParent", function(sel, newParent)
-			if newParent.GetName then
-				pn = newParent:GetName()
-			end
-
 			if sel.ma_setparent then return end
 			sel.ma_setparent = true
 

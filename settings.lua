@@ -1,8 +1,14 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.0")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.1")
 }
+
+local MAMMBTN = nil
+
+function MoveAny:GetMinimapButton()
+	return MAMMBTN
+end
 
 local PREFIX = "MOAN"
 local MASendProfiles = {}
@@ -202,7 +208,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 			end
 
 			if key == "EDITMODE" then
-				MAUpdateElementList()
+				MoveAny:UpdateElementList()
 			end
 		end)
 
@@ -343,7 +349,7 @@ function MoveAny:InitMALock()
 		end
 	end)
 
-	function MAUpdateElementList()
+	function MoveAny:UpdateElementList()
 		local _, class = UnitClass("player")
 		posy = -4
 		-- AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
@@ -671,7 +677,7 @@ function MoveAny:InitMALock()
 
 	MALock.Search:SetScript("OnTextChanged", function(sel, ...)
 		searchStr = MALock.Search:GetText()
-		MAUpdateElementList()
+		MoveAny:UpdateElementList()
 	end)
 
 	MALock.Profiles = CreateFrame("Button", "MALock_Profiles", MALock, "UIPanelButtonTemplate")
@@ -2597,13 +2603,13 @@ function MoveAny:LoadAddon()
 	local gtp4 = nil
 	local gtp5 = nil
 
-	function MANearNumber(num1, num2, near)
+	function MoveAny:NearNumber(num1, num2, near)
 		if num1 + near >= num2 and num1 - near <= num2 then return true end
 
 		return false
 	end
 
-	function MAGameTooltipOnDefaultPosition()
+	function MoveAny:GameTooltipOnDefaultPosition()
 		local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
 
 		if p1 and p2 and p3 and p4 and p5 then
@@ -2619,13 +2625,13 @@ function MoveAny:LoadAddon()
 				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
 					p4 = floor(p4)
 					p5 = floor(p5)
-					if MANearNumber(p4, gtp4, 1) and MANearNumber(p5, gtp5, 1) then return true end
+					if MoveAny:NearNumber(p4, gtp4, 1) and MoveAny:NearNumber(p5, gtp5, 1) then return true end
 				end
 			elseif p2 == GameTooltipDefaultContainer then
 				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
 					p4 = floor(p4)
 					p5 = floor(p5)
-					if MANearNumber(p4, 0, 1) and MANearNumber(p5, 0, 1) then return true end
+					if MoveAny:NearNumber(p4, 0, 1) and MoveAny:NearNumber(p5, 0, 1) then return true end
 				end
 			end
 		end
@@ -2633,9 +2639,9 @@ function MoveAny:LoadAddon()
 		return false
 	end
 
-	function MAThinkGameTooltip()
+	function MoveAny:ThinkGameTooltip()
 		if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
-			C_Timer.After(0.1, MAThinkGameTooltip)
+			C_Timer.After(0.1, MoveAny.ThinkGameTooltip)
 
 			return
 		end
@@ -2659,7 +2665,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	MAThinkGameTooltip()
+	MoveAny:ThinkGameTooltip()
 	GameTooltip:SetMovable(true)
 	GameTooltip:SetUserPlaced(false)
 
@@ -2707,7 +2713,7 @@ function MoveAny:LoadAddon()
 			sel:SetUserPlaced(false)
 			local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
 
-			if MAGameTooltipOnDefaultPosition() and not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+			if MoveAny:GameTooltipOnDefaultPosition() and not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
 				sel:ClearAllPoints()
 				sel:SetPoint(p1, MAGameTooltip, p3, 0, 0)
 			end
@@ -3230,7 +3236,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
+	local mmBtnData = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
 		text = "MoveAnyMinimapIcon",
 		icon = 135994,
@@ -3249,19 +3255,19 @@ function MoveAny:LoadAddon()
 		end,
 	})
 
-	if MoveAnyMinimapIcon then
+	if mmBtnData then
 		MAMMBTN = LibStub("LibDBIcon-1.0", true)
 
-		if MAMMBTN then
-			MAMMBTN:Register("MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable())
+		if MoveAny:GetMinimapButton() then
+			MoveAny:GetMinimapButton():Register("MoveAnyMinimapIcon", mmBtnData, MoveAny:GetMinimapTable())
 		end
 	end
 
-	if MAMMBTN then
+	if MoveAny:GetMinimapButton() then
 		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MAMMBTN:Show("MoveAnyMinimapIcon")
+			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
 		else
-			MAMMBTN:Hide("MoveAnyMinimapIcon")
+			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
 		end
 	end
 

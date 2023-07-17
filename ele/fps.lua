@@ -10,11 +10,11 @@ function MoveAny:InitMAFPSFrame()
 		MAFPSFrame.fps:SetPoint("CENTER", MAFPSFrame, "CENTER", 0, 0)
 		MAFPSFrame.fps:SetFont(STANDARD_TEXT_FONT, 14, "THINOUTLINE")
 
-		function MAFPSThink()
+		function MoveAny:FPSThink()
 			MAFPSFrame.fps:SetText(format("|cff3FC7EBFPS|r: %4d", GetFramerate()))
-			C_Timer.After(config_update, MAFPSThink)
+			C_Timer.After(config_update, MoveAny.FPSThink)
 		end
 
-		MAFPSThink()
+		MoveAny:FPSThink()
 	end
 end
