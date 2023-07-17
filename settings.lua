@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.3")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.4")
 }
 
 local MAMMBTN = nil
@@ -195,6 +195,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		local cb = cbs[key]
 		cb:SetSize(24, 24)
 		cb:SetChecked(MoveAny:IsEnabled(key, val, true))
+		cb.func = func or nil
 
 		cb:SetScript("OnClick", function(sel)
 			MoveAny:SetEnabled(key, sel:GetChecked())
@@ -203,8 +204,8 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 				sel.f:SetText(format("[%s] %s", MoveAny:GT("LID_NEEDSARELOAD"), lstr))
 			end
 
-			if func then
-				func()
+			if cb.func then
+				cb:func(sel:GetChecked())
 			end
 
 			if key == "EDITMODE" then
@@ -355,7 +356,7 @@ function MoveAny:InitMALock()
 		-- AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		AddCategory("GENERAL")
 		AddCheckBox(4, "SHOWTIPS", true)
-		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.UpdateMinimapButton, nil, nil, false)
+		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.MinimapButtonCB, nil, nil, false)
 		AddSlider(24, "SNAPSIZE", 5, nil, 1, 50, 1)
 		AddSlider(24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
 		AddCheckBox(4, "MOVEFRAMES", true)
@@ -3226,41 +3227,6 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	function MoveAny:UpdateMinimapButton()
-		if MoveAny:GetMinimapButton() then
-			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-				print("SHOW")
-				MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-			else
-				print("HIDE")
-				MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-			end
-		end
-	end
-
-	function MoveAny:ToggleMinimapButton()
-		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
-		MoveAny:UpdateMinimapButton()
-	end
-
-	function MoveAny:HideMinimapButton()
-		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
-
-		if MoveAny:GetMinimapButton() then
-			print("HIDE 2")
-			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-		end
-	end
-
-	function MoveAny:ShowMinimapButton()
-		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
-
-		if MoveAny:GetMinimapButton() then
-			print("SHOW 2")
-			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-		end
-	end
-
 	local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject("MoveAnyMinimapIcon", {
 		type = "data source",
 		text = "MoveAnyMinimapIcon",
@@ -3280,7 +3246,7 @@ function MoveAny:LoadAddon()
 		end,
 	})
 
-	if mmBtnData then
+	if MoveAnyMinimapIcon then
 		MAMMBTN = LibStub("LibDBIcon-1.0", true)
 
 		if MoveAny:GetMinimapButton() then
@@ -3288,8 +3254,46 @@ function MoveAny:LoadAddon()
 		end
 	end
 
+	function MoveAny:MinimapButtonCB(checked)
+		if checked then
+			MoveAny:ShowMinimapButton()
+		else
+			MoveAny:HideMinimapButton()
+		end
+	end
+
+	function MoveAny:HideMinimapButton()
+		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+
+		if MoveAny:GetMinimapButton() then
+			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
+		end
+	end
+
+	function MoveAny:ShowMinimapButton()
+		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
+
+		if MoveAny:GetMinimapButton() then
+			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
+		end
+	end
+
+	function MoveAny:UpdateMinimapButton()
+		if MoveAny:GetMinimapButton() then
+			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+				MoveAny:ShowMinimapButton()
+			else
+				MoveAny:HideMinimapButton()
+			end
+		end
+	end
+
+	function MoveAny:ToggleMinimapButton()
+		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
+		MoveAny:UpdateMinimapButton()
+	end
+
 	if MoveAny:GetMinimapButton() then
-		print("WORKS", MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
 		MoveAny:UpdateMinimapButton()
 	end
 
