@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.4.16")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.0")
 }
 
 local PREFIX = "MOAN"
@@ -564,7 +564,11 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(4, "ENDCAPS", false)
 		AddCheckBox(4, "TARGETFRAMESPELLBAR", false)
-		AddCheckBox(4, "FOCUSFRAMESPELLBAR", false)
+
+		if FocusFrame then
+			AddCheckBox(4, "FOCUSFRAMESPELLBAR", false)
+		end
+
 		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
 		AddCheckBox(4, "UIWIDGETBELOWMINIMAP", false)
 		AddCheckBox(4, "MIRRORTIMER1", false)
@@ -2254,8 +2258,17 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:IsEnabled("MAPETFRAME", false) then
 		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", MoveAny:GetMainPanel())
-		MAPetFrame:SetSize(PetFrame:GetSize())
-		MAPetFrame:SetPoint(PetFrame:GetPoint())
+
+		if PetFrame:GetSize() then
+			MAPetFrame:SetSize(PetFrame:GetSize())
+		end
+
+		if PetFrame:GetPoint() then
+			MAPetFrame:SetPoint(PetFrame:GetPoint())
+		else
+			MAPetFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		end
+
 		PetFrame:SetParent(MAPetFrame)
 		PetFrame:ClearAllPoints()
 		PetFrame:SetPoint("CENTER", MAPetFrame, "CENTER", 0, 0)
@@ -2275,7 +2288,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
+	if FocusFrame and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "FocusFrameSpellBar",
 			["lstr"] = "LID_FOCUSFRAMESPELLBAR",
@@ -2350,21 +2363,21 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if IAPingFrame and MoveAny:IsEnabled("IAPingFrame", true) then
+	if MoveAny:IsEnabled("IAPingFrame", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IAPingFrame",
 			["lstr"] = "LID_IAPingFrame"
 		})
 	end
 
-	if IACoordsFrame and MoveAny:IsEnabled("IACoordsFrame", true) then
+	if MoveAny:IsEnabled("IACoordsFrame", true) then
 		MoveAny:RegisterWidget({
 			["name"] = "IACoordsFrame",
 			["lstr"] = "LID_IACoordsFrame"
 		})
 	end
 
-	if IASkills and MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
+	if MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
 		MoveAny:RegisterWidget({
 			["name"] = "IASkills",
 			["lstr"] = "LID_IASKILLS"

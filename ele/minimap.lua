@@ -8,14 +8,31 @@ function MoveAny:InitMinimap()
 		MinimapToggleButton:SetParent(MAHIDDEN)
 	end
 
-	if MinimapCluster then
-		for i, v in pairs({MinimapCluster:GetChildren()}) do
-			if v ~= Minimap then
-				v:SetParent(Minimap)
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if MinimapCluster then
+			for i, v in pairs({MinimapCluster:GetChildren()}) do
+				if v ~= Minimap then
+					v:SetParent(Minimap)
+				end
 			end
-		end
 
-		MinimapCluster:SetParent(MAHIDDEN)
+			MinimapCluster:SetParent(MAHIDDEN)
+		end
+	else
+		if MinimapCluster then
+			hooksecurefunc(MinimapCluster, "SetPoint", function(sel, ...)
+				if sel.mc_setpoint then return end
+				sel.mc_setpoint = true
+				sel:ClearAllPoints()
+				sel:SetPoint("TOP", Minimap, "TOP", -15, 20)
+				sel:SetScale(1.1)
+				sel.mc_setpoint = false
+			end)
+
+			MinimapCluster:SetParent(Minimap)
+			MinimapCluster:ClearAllPoints()
+			MinimapCluster:SetPoint("TOP", Minimap, "TOP", 0, 0)
+		end
 	end
 
 	if MinimapBackdrop then
