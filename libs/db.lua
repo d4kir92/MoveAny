@@ -452,10 +452,6 @@ function MoveAny:SetEleSize(key, sw, sh)
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 	MoveAny:GetTab()["ELES"]["SIZES"][key]["SW"] = MoveAny:MathR(sw)
 	MoveAny:GetTab()["ELES"]["SIZES"][key]["SH"] = MoveAny:MathR(sh)
-
-	if key ~= "MALock" then
-		MoveAny:EnableSave("SetEleSize", key)
-	end
 end
 
 function MoveAny:GetEleScale(key)

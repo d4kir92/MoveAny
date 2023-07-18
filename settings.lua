@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.6")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.7")
 }
 
 local MAMMBTN = nil
@@ -2879,63 +2879,65 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "MainStatusTrackingBarContainer",
-			["lstr"] = "LID_MainStatusTrackingBarContainer",
-		})
-	end
-
-	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "SecondaryStatusTrackingBarContainer",
-			["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
-		})
-	end
-
-	if StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
-		-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
-		local ssw, ssh = StatusTrackingBarManager:GetSize()
-
-		MoveAny:RegisterWidget({
-			["name"] = "StatusTrackingBarManager",
-			["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
-			["sw"] = ssw - 6,
-			["sh"] = ssh - 8,
-			["cleft"] = 0,
-			["cright"] = 2,
-			["ctop"] = 4,
-			["cbottom"] = 4,
-			["posx"] = 1,
-			["posy"] = 4,
-		})
-	end
-
-	if MainMenuExpBar and ReputationWatchBar then
-		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
-			MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
-			--MainMenuExpBar.StatusBar:SetParent(MoveAny:GetMainPanel())
-			MainMenuExpBar:ClearAllPoints()
-			MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
-
+	C_Timer.After(1, function()
+		if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
 			MoveAny:RegisterWidget({
-				["name"] = "MainMenuExpBar",
-				["lstr"] = "LID_MAINMENUEXPBAR"
+				["name"] = "MainStatusTrackingBarContainer",
+				["lstr"] = "LID_MainStatusTrackingBarContainer",
 			})
 		end
 
-		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
-			ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
-			--ReputationWatchBar.StatusBar:SetParent(MoveAny:GetMainPanel())
-			ReputationWatchBar:ClearAllPoints()
-			ReputationWatchBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 130)
-
+		if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
 			MoveAny:RegisterWidget({
-				["name"] = "ReputationWatchBar",
-				["lstr"] = "LID_REPUTATIONWATCHBAR"
+				["name"] = "SecondaryStatusTrackingBarContainer",
+				["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
 			})
 		end
-	end
+
+		if StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
+			-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
+			local ssw, ssh = StatusTrackingBarManager:GetSize()
+
+			MoveAny:RegisterWidget({
+				["name"] = "StatusTrackingBarManager",
+				["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
+				["sw"] = ssw - 6,
+				["sh"] = ssh - 8,
+				["cleft"] = 0,
+				["cright"] = 2,
+				["ctop"] = 4,
+				["cbottom"] = 4,
+				["posx"] = 1,
+				["posy"] = 4,
+			})
+		end
+
+		if MainMenuExpBar and ReputationWatchBar then
+			if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
+				MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
+				--MainMenuExpBar.StatusBar:SetParent(MoveAny:GetMainPanel())
+				MainMenuExpBar:ClearAllPoints()
+				MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
+
+				MoveAny:RegisterWidget({
+					["name"] = "MainMenuExpBar",
+					["lstr"] = "LID_MAINMENUEXPBAR"
+				})
+			end
+
+			if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
+				ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
+				--ReputationWatchBar.StatusBar:SetParent(MoveAny:GetMainPanel())
+				ReputationWatchBar:ClearAllPoints()
+				ReputationWatchBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 130)
+
+				MoveAny:RegisterWidget({
+					["name"] = "ReputationWatchBar",
+					["lstr"] = "LID_REPUTATIONWATCHBAR"
+				})
+			end
+		end
+	end)
 
 	if MoveAny:IsEnabled("TOTEMBAR", false) and MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 		if MultiCastActionBarFrame then
@@ -3267,7 +3269,9 @@ function MoveAny:LoadAddon()
 	end
 
 	function MoveAny:HideMinimapButton()
-		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+		end
 
 		if MoveAny:GetMinimapButton() then
 			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
@@ -3275,7 +3279,9 @@ function MoveAny:LoadAddon()
 	end
 
 	function MoveAny:ShowMinimapButton()
-		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
+		if not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
+		end
 
 		if MoveAny:GetMinimapButton() then
 			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
@@ -3297,10 +3303,6 @@ function MoveAny:LoadAddon()
 		MoveAny:UpdateMinimapButton()
 	end
 
-	if MoveAny:GetMinimapButton() then
-		MoveAny:UpdateMinimapButton()
-	end
-
 	if MoveAny:IsEnabled("MALOCK", false) then
 		MoveAny:ShowMALock()
 	end
@@ -3308,6 +3310,12 @@ function MoveAny:LoadAddon()
 	if MoveAny:IsEnabled("MAPROFILES", false) then
 		MoveAny:ShowProfiles()
 	end
+
+	C_Timer.After(0, function()
+		if MoveAny:GetMinimapButton() then
+			MoveAny:UpdateMinimapButton()
+		end
+	end)
 
 	C_Timer.After(1, function()
 		MoveAny:CheckAlphas()
