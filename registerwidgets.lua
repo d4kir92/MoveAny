@@ -710,10 +710,6 @@ function MoveAny:RegisterWidget(tab)
 		return false
 	end
 
-	if frame.SetParent then
-		frame:SetParent(MoveAny:GetMainPanel())
-	end
-
 	if cleft or cright or ctop or cbottom then
 		local l = cleft or 0
 		local r = cright or 0

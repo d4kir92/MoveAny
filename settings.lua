@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.4")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.5")
 }
 
 local MAMMBTN = nil
@@ -2308,6 +2308,8 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
+		TargetFrameSpellBar:SetParent(MoveAny:GetMainPanel())
+
 		MoveAny:RegisterWidget({
 			["name"] = "TargetFrameSpellBar",
 			["lstr"] = "LID_TARGETFRAMESPELLBAR",
@@ -2316,6 +2318,8 @@ function MoveAny:LoadAddon()
 	end
 
 	if FocusFrame and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
+		FocusFrameSpellBar:SetParent(MoveAny:GetMainPanel())
+
 		MoveAny:RegisterWidget({
 			["name"] = "FocusFrameSpellBar",
 			["lstr"] = "LID_FOCUSFRAMESPELLBAR",

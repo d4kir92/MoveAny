@@ -15,8 +15,6 @@ function MoveAny:InitMinimap()
 					v:SetParent(Minimap)
 				end
 			end
-
-			MinimapCluster:SetParent(MAHIDDEN)
 		end
 	else
 		if MinimapCluster then
@@ -25,11 +23,18 @@ function MoveAny:InitMinimap()
 				sel.mc_setpoint = true
 				sel:ClearAllPoints()
 				sel:SetPoint("TOP", Minimap, "TOP", -15, 20)
-				sel:SetScale(1.1)
 				sel.mc_setpoint = false
 			end)
 
-			MinimapCluster:SetParent(Minimap)
+			hooksecurefunc(MinimapCluster, "SetScale", function(sel, ...)
+				if sel.mc_setscale then return end
+				sel.mc_setscale = true
+				sel:SetScale(Minimap:GetScale() * 1.1)
+				sel.mc_setscale = false
+			end)
+
+			Minimap:SetParent(MoveAny:GetMainPanel())
+			MinimapCluster:SetScale(Minimap:GetScale())
 			MinimapCluster:ClearAllPoints()
 			MinimapCluster:SetPoint("TOP", Minimap, "TOP", 0, 0)
 		end
