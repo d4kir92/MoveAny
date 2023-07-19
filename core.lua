@@ -43,6 +43,22 @@ end)
 
 Test:SetAlpha(UIParent:GetAlpha())
 
+hooksecurefunc(UIParent, "Show", function(self)
+	Test:SetAlpha(1)
+end)
+
+hooksecurefunc(UIParent, "Hide", function(self)
+	Test:SetAlpha(0)
+end)
+
+hooksecurefunc(_G, "SetUIVisibility", function(show)
+	if show then
+		Test:SetAlpha(1)
+	else
+		Test:SetAlpha(0)
+	end
+end)
+
 function MoveAny:GetMainPanel()
 	return Test
 end
