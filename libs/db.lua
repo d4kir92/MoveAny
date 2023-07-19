@@ -410,26 +410,33 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	if frame and p1 and p3 then
 		frame:ClearAllPoints()
 		frame:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
+		local systemFrame = frame
+		local systemInfo = frame.systemInfo
 
-		if frame.systemInfo then
-			if frame.systemInfo.anchorInfo then
-				frame.systemInfo.anchorInfo.point = p1
-				frame.systemInfo.anchorInfo.relativeTo = "UIParent"
-				frame.systemInfo.anchorInfo.relativePoint = p3
-				frame.systemInfo.anchorInfo.offsetX = p4
-				frame.systemInfo.anchorInfo.offsetY = p5
-				frame.systemInfo.isInDefaultPosition = false
+		if frame.GetRealEle then
+			systemFrame = MABuffBar:GetRealEle()
+			systemInfo = systemFrame.systemInfo
+		end
+
+		if systemInfo then
+			if systemInfo.anchorInfo then
+				systemInfo.anchorInfo.point = p1
+				systemInfo.anchorInfo.relativeTo = "UIParent"
+				systemInfo.anchorInfo.relativePoint = p3
+				systemInfo.anchorInfo.offsetX = p4
+				systemInfo.anchorInfo.offsetY = p5
+				systemInfo.isInDefaultPosition = false
 			end
 
-			if frame.systemInfo.settings and Enum and Enum.EditModeUnitFrameSetting and Enum.EditModeUnitFrameSetting.FrameSize then
-				for i, v in pairs(frame.systemInfo.settings) do
+			if systemInfo.settings and Enum and Enum.EditModeUnitFrameSetting and Enum.EditModeUnitFrameSetting.FrameSize then
+				for i, v in pairs(systemInfo.settings) do
 					if Enum.EditModeUnitFrameSetting.FrameSize and v.setting == Enum.EditModeUnitFrameSetting.FrameSize then
 						v.value = 0 -- = Scale: 1.0
 					end
 				end
 			end
 
-			EditModeSystemMixin.UpdateSystem(frame, frame.systemInfo)
+			EditModeSystemMixin.UpdateSystem(systemFrame, systemInfo)
 		end
 
 		if frame then

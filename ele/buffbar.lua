@@ -11,6 +11,10 @@ function MoveAny:InitBuffBar()
 		MABuffBar:SetSize(sw1, sh1)
 		MABuffBar:SetPoint(BuffFrame:GetPoint())
 
+		function MABuffBar:GetRealEle()
+			return BuffFrame
+		end
+
 		if BuffFrame then
 			MABuffBar:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -165, -32)
 		else
