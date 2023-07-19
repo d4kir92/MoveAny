@@ -118,7 +118,9 @@ function MoveAny:UpdateMoveFrames()
 						fm:EnableMouse(false)
 
 						hooksecurefunc(frame, "SetScale", function(sel, scale)
-							fm:SetScale(scale)
+							if scale and scale > 0 then
+								fm:SetScale(scale)
+							end
 						end)
 
 						function fm:UpdatePreview()
@@ -170,7 +172,11 @@ function MoveAny:UpdateMoveFrames()
 
 						if not InCombatLockdown() and not MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
 							MoveAny:SetFrameScale(name, nil)
-							frameObj:SetScale(frameObj:GetScale())
+							local scale = frameObj:GetScale()
+
+							if scale and scale > 0 then
+								frameObj:SetScale(scale)
+							end
 						end
 					end
 
@@ -291,7 +297,7 @@ function MoveAny:UpdateMoveFrames()
 							if MoveAny:GetFrameScale(name) or scale then
 								local sca = MoveAny:GetFrameScale(name) or scale
 
-								if sca > 0 then
+								if sca and sca > 0 then
 									sel:SetScale(sca)
 								end
 							end
@@ -313,7 +319,11 @@ function MoveAny:UpdateMoveFrames()
 							frame:SetScale(MoveAny:GetFrameScale(name))
 						end
 					else
-						frame:SetScale(frame:GetScale())
+						local scale = frame:GetScale()
+
+						if scale and scale > 0 then
+							frame:SetScale(scale)
+						end
 					end
 
 					if frame.GetPoint and frame:GetPoint() then

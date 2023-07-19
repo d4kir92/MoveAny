@@ -423,7 +423,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 
 			if frame.systemInfo.settings and Enum and Enum.EditModeUnitFrameSetting and Enum.EditModeUnitFrameSetting.FrameSize then
 				for i, v in pairs(frame.systemInfo.settings) do
-					if v.setting == Enum.EditModeUnitFrameSetting.FrameSize then
+					if Enum.EditModeUnitFrameSetting.FrameSize and v.setting == Enum.EditModeUnitFrameSetting.FrameSize then
 						v.value = 0 -- = Scale: 1.0
 					end
 				end
