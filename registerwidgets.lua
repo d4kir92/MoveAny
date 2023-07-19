@@ -555,12 +555,6 @@ function MoveAny:RegisterWidget(tab)
 
 	if frame then
 		MoveAny:AddFrameName(frame, name)
-
-		if frame.systemInfo and frame.systemInfo.anchorInfo and frame.systemInfo.anchorInfo.relativeTo == "MABack" then
-			frame.systemInfo.anchorInfo.relativeTo = "UIParent"
-			EditModeSystemMixin.UpdateSystem(frame, frame.systemInfo)
-			MoveAny:TrySaveEditMode()
-		end
 	end
 
 	if _G[name .. "_DRAG"] == nil then
@@ -710,6 +704,7 @@ function MoveAny:RegisterWidget(tab)
 		return false
 	end
 
+	--frame:SetParent(MoveAny:GetMainPanel())
 	if cleft or cright or ctop or cbottom then
 		local l = cleft or 0
 		local r = cright or 0
@@ -910,10 +905,15 @@ function MoveAny:RegisterWidget(tab)
 	hooksecurefunc(frame, "SetScale", function(sel, scale)
 		if sel.masetscale_ele then return end
 		sel.masetscale_ele = true
+		local newScale = MoveAny:GetEleScale(name)
 
-		if scale and scale > 0 then
+		if newScale and newScale > 0 then
+			frame:SetScale(newScale)
 			local dragframe = _G[name .. "_DRAG"]
-			dragframe:SetScale(scale)
+
+			if dragframe then
+				dragframe:SetScale(newScale)
+			end
 		end
 
 		sel.masetscale_ele = false

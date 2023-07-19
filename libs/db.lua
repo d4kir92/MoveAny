@@ -411,13 +411,24 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 		frame:ClearAllPoints()
 		frame:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
 
-		if frame.systemInfo and frame.systemInfo.anchorInfo then
-			frame.systemInfo.anchorInfo.point = p1
-			frame.systemInfo.anchorInfo.relativeTo = "UIParent"
-			frame.systemInfo.anchorInfo.relativePoint = p3
-			frame.systemInfo.anchorInfo.offsetX = p4
-			frame.systemInfo.anchorInfo.offsetY = p5
-			frame.systemInfo.isInDefaultPosition = false
+		if frame.systemInfo then
+			if frame.systemInfo.anchorInfo then
+				frame.systemInfo.anchorInfo.point = p1
+				frame.systemInfo.anchorInfo.relativeTo = "UIParent"
+				frame.systemInfo.anchorInfo.relativePoint = p3
+				frame.systemInfo.anchorInfo.offsetX = p4
+				frame.systemInfo.anchorInfo.offsetY = p5
+				frame.systemInfo.isInDefaultPosition = false
+			end
+
+			if frame.systemInfo.settings and Enum and Enum.EditModeUnitFrameSetting and Enum.EditModeUnitFrameSetting.FrameSize then
+				for i, v in pairs(frame.systemInfo.settings) do
+					if v.setting == Enum.EditModeUnitFrameSetting.FrameSize then
+						v.value = 0 -- = Scale: 1.0
+					end
+				end
+			end
+
 			EditModeSystemMixin.UpdateSystem(frame, frame.systemInfo)
 		end
 
@@ -622,3 +633,44 @@ end
 local mf = CreateFrame("FRAME")
 mf:RegisterEvent("ADDON_LOADED")
 mf:SetScript("OnEvent", MoveAny.AddonLoaded)
+
+--[[ FIX ]]
+function MoveAny:TrySaveEditMode()
+	local layoutCount = 0
+
+	if EditModeManagerFrame and EditModeManagerFrame.numLayouts and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account] and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character] then
+		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account]
+		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character]
+	end
+
+	if layoutCount > 0 and EditModeManagerFrame and EditModeManagerFrame.SaveChangesButton and EditModeManagerFrame.CloseButton then
+		EditModeManagerFrame.SaveChangesButton:SetEnabled(true)
+		EditModeManagerFrame.SaveChangesButton:Click()
+		EditModeManagerFrame.CloseButton:Click()
+	end
+end
+
+MoveAny:TrySaveEditMode()
+local foundProblem = false
+
+function MoveAny:HasProblem()
+	return foundProblem
+end
+
+function MoveAny:FixEditMode()
+	for i, v in pairs(_G) do
+		if type(v) == "table" and v.systemInfo and v.systemInfo.anchorInfo and (v.systemInfo.anchorInfo.relativeTo == "MAMainPanel" or v.systemInfo.anchorInfo.relativeTo == "MABack") then
+			_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
+			EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
+			foundProblem = true
+		end
+	end
+
+	if foundProblem then
+		MoveAny:MSG("FOUND A PROBLEM, please relog your character.")
+		C_Timer.After(0, MoveAny.TrySaveEditMode)
+	end
+end
+
+C_Timer.After(0, MoveAny.FixEditMode)
+--[[ FIX ]]

@@ -19,10 +19,13 @@ function MoveAny:GetDragFrames()
 	return MADF
 end
 
+--[[ HIDEPANEL ]]
 MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
 MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
+--[[ HIDEPANEL ]]
+--[[ NEW ]]
 local Test = CreateFrame("Frame")
 Test:SetAllPoints(UIParent)
 Test.unit = "player"
@@ -44,6 +47,7 @@ function MoveAny:GetMainPanel()
 	return Test
 end
 
+--[[ NEW ]]
 local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
 
 local oldKeybinds = {}
