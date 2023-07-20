@@ -6,7 +6,7 @@ local MABUFFSPACINGY = 10
 
 function MoveAny:InitBuffBar()
 	if MoveAny:IsEnabled("BUFFS", false) then
-		MABuffBar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
+		local MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
 		local sw1, sh1 = BuffFrame:GetSize()
 		MABuffBar:SetSize(sw1, sh1)
 		MABuffBar:SetPoint(BuffFrame:GetPoint())

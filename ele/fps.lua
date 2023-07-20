@@ -3,7 +3,7 @@ local config_update = 1
 
 function MoveAny:InitMAFPSFrame()
 	if MoveAny:IsEnabled("MAFPSFrame", false) then
-		MAFPSFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
+		local MAFPSFrame = CreateFrame("Frame", "MAFPSFrame", MoveAny:GetMainPanel())
 		MAFPSFrame:SetSize(100, 20)
 		MAFPSFrame:SetPoint("TOPLEFT", MoveAny:GetMainPanel(), "TOPLEFT", 0, 0)
 		MAFPSFrame.fps = MAFPSFrame:CreateFontString("MAFPSFrame.fps", "BACKGROUND")

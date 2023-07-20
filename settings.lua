@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.12")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.13")
 }
 
 local MAMMBTN = nil
@@ -2085,10 +2085,10 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("ENDCAPS", false) then
-			MA_LeftEndCap = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+			local MA_LeftEndCap = CreateFrame("FRAME", "MA_LeftEndCap", MoveAny:GetMainPanel())
 			MA_LeftEndCap.tex = MA_LeftEndCap:CreateTexture("MA_LeftEndCap.tex", "OVERLAY")
 			MA_LeftEndCap.tex:SetAllPoints(MA_LeftEndCap)
-			MA_RightEndCap = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+			local MA_RightEndCap = CreateFrame("FRAME", "MA_RightEndCap", MoveAny:GetMainPanel())
 			MA_RightEndCap.tex = MA_RightEndCap:CreateTexture("MA_RightEndCap.tex", "OVERLAY")
 			MA_RightEndCap.tex:SetAllPoints(MA_RightEndCap)
 			local factionGroup = UnitFactionGroup("player")
@@ -2331,7 +2331,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if CompactRaidFrameManager and MoveAny:IsEnabled("COMPACTRAIDFRAMEMANAGER", false) then
-		MACompactRaidFrameManager = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
+		local MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", MoveAny:GetMainPanel())
 		MACompactRaidFrameManager:SetSize(20, 135)
 		MACompactRaidFrameManager:SetPoint("TOPLEFT", MoveAny:GetMainPanel(), "TOPLEFT", 0, -250)
 
@@ -2627,7 +2627,7 @@ function MoveAny:LoadAddon()
 		local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
 
 		if p1 and p2 and p3 and p4 and p5 then
-			if p2 == MAGameTooltip then
+			if p2 == _G["MAGameTooltip"] then
 				return true
 			elseif p2 == UIParent or p2 == UIParent then
 				if gtp4 == nil and gtp5 == nil then
@@ -2684,7 +2684,7 @@ function MoveAny:LoadAddon()
 	GameTooltip:SetUserPlaced(false)
 
 	if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
-		MAGameTooltip = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
+		local MAGameTooltip = CreateFrame("Frame", "MAGameTooltip", MoveAny:GetMainPanel())
 		MAGameTooltip:SetSize(100, 100)
 		MAGameTooltip:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", -100, 100)
 

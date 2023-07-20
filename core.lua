@@ -20,7 +20,7 @@ function MoveAny:GetDragFrames()
 end
 
 --[[ HIDEPANEL ]]
-MAHIDDEN = CreateFrame("Frame", nil)
+local MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
 MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
