@@ -670,7 +670,7 @@ end
 
 function MoveAny:FixEditMode()
 	for i, v in pairs(_G) do
-		if v ~= nil and type(v) == "table" and v.systemInfo ~= nil and v.systemInfo.anchorInfo ~= nil and v.systemInfo.anchorInfo.relativeTo ~= nil and string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
+		if v ~= nil and type(v) == "table" and v.systemInfo ~= nil and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil and string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
 			_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
 			EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
 			foundProblem = true

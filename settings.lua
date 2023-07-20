@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.15")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.16")
 }
 
 local MAMMBTN = nil
@@ -1671,14 +1671,14 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if CompactArenaFrame and MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
+	if MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "CompactArenaFrame",
 			["lstr"] = "LID_COMPACTARENAFRAME"
 		})
 	end
 
-	if RolePollPopup and MoveAny:IsEnabled("ROLEPOLLPOPUP", false) then
+	if MoveAny:IsEnabled("ROLEPOLLPOPUP", false) then
 		RolePollPopup:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 
 		MoveAny:RegisterWidget({
@@ -1687,7 +1687,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if ReadyCheckListenerFrame and MoveAny:IsEnabled("READYCHECKLISTENERFRAME", false) then
+	if MoveAny:IsEnabled("READYCHECKLISTENERFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "ReadyCheckListenerFrame",
 			["lstr"] = "LID_READYCHECKLISTENERFRAME"
@@ -1848,7 +1848,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if TargetFrameNameBackground and MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
+		if MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameNameBackground",
 				["lstr"] = "LID_TARGETFRAMENAMEBACKGROUND",
@@ -1856,7 +1856,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if TargetFrameNumericalThreat and MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
+		if MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameNumericalThreat",
 				["lstr"] = "LID_TargetFrameNumericalThreat",
@@ -1880,7 +1880,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if FocusFrame and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
+		if MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "FocusFrameBuff1",
 				["lstr"] = "LID_FOCUSFRAMEBUFF1",
@@ -1888,7 +1888,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false) then
+		if MoveAny:IsEnabled("FOCUSFRAME", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "FocusFrame",
 				["lstr"] = "LID_FOCUSFRAME",
@@ -1996,7 +1996,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if TalkingHeadFrame and MoveAny:IsEnabled("TALKINGHEAD", false) then
+		if MoveAny:IsEnabled("TALKINGHEAD", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TalkingHeadFrame",
 				["lstr"] = "LID_TALKINGHEAD",
@@ -2304,7 +2304,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if FocusFrame and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
+	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
 		FocusFrameSpellBar:SetParent(MoveAny:GetMainPanel())
 
 		MoveAny:RegisterWidget({
@@ -2322,7 +2322,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if FocusFrameToT and MoveAny:IsEnabled("TARGETOFFOCUSFRAME", false) then
+	if MoveAny:IsEnabled("TARGETOFFOCUSFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "FocusFrameToT",
 			["lstr"] = "LID_TARGETOFFOCUSFRAME",
@@ -2430,7 +2430,7 @@ function MoveAny:LoadAddon()
 			local ktb = _G["!KalielsTrackerButtons"]
 
 			if ktb then
-				local MAKTB = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+				local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
 				local size = 28
 				local kbr = 6
 				MAKTB:SetSize(size, size * 3 + kbr * 2)
@@ -2464,7 +2464,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if ObjectiveTrackerBonusBannerFrame and MoveAny:IsEnabled("OBJECTIVETRACKERBONUSBANNERFRAME", false) then
+	if MoveAny:IsEnabled("OBJECTIVETRACKERBONUSBANNERFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "ObjectiveTrackerBonusBannerFrame",
 			["lstr"] = "LID_OBJECTIVETRACKERBONUSBANNERFRAME",
@@ -2472,20 +2472,10 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if RaidBossEmoteFrame and MoveAny:IsEnabled("RAIDBOSSEMOTEFRAME", false) then
+	if MoveAny:IsEnabled("RAIDBOSSEMOTEFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "RaidBossEmoteFrame",
 			["lstr"] = "LID_RAIDBOSSEMOTEFRAME",
-			["userplaced"] = true
-		})
-	end
-
-	if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "UIWidgetTopCenterContainerFrame",
-			["lstr"] = "LID_UIWIDGETTOPCENTER",
-			["sw"] = 36 * 5,
-			["sh"] = 36 * 2,
 			["userplaced"] = true
 		})
 	end
@@ -2497,33 +2487,43 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	-- TOPRIGHT
-	if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) then
-		--UIWidgetBelowMinimapContainerFrame:SetParent( UIParent )
-		MoveAny:RegisterWidget({
-			["name"] = "UIWidgetBelowMinimapContainerFrame",
-			["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
-			["sw"] = 36 * 5,
-			["sh"] = 36 * 2,
-			["userplaced"] = true
-		})
-	end
+	C_Timer.After(1, function()
+		if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "UIWidgetTopCenterContainerFrame",
+				["lstr"] = "LID_UIWIDGETTOPCENTER",
+				["sw"] = 36 * 5,
+				["sh"] = 36 * 2,
+				["userplaced"] = true
+			})
+		end
 
-	if QueueStatusButton and MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
+		if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "UIWidgetBelowMinimapContainerFrame",
+				["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
+				["sw"] = 36 * 5,
+				["sh"] = 36 * 2,
+				["userplaced"] = true
+			})
+		end
+	end)
+
+	if MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "QueueStatusButton",
 			["lstr"] = "LID_QUEUESTATUSBUTTON"
 		})
 	end
 
-	if QueueStatusFrame and MoveAny:IsEnabled("QUEUESTATUSFRAME", false) then
+	if MoveAny:IsEnabled("QUEUESTATUSFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "QueueStatusFrame",
 			["lstr"] = "LID_QUEUESTATUSFRAME"
 		})
 	end
 
-	if BNToastFrame and MoveAny:IsEnabled("BNToastFrame", false) then
+	if MoveAny:IsEnabled("BNToastFrame", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "BNToastFrame",
 			["lstr"] = "LID_BNToastFrame"
@@ -2749,7 +2749,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
+	if MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "UIWidgetPowerBarContainerFrame",
 			["lstr"] = "LID_UIWIDGETPOWERBAR",
@@ -2758,7 +2758,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if PlayerPowerBarAlt and MoveAny:IsEnabled("POWERBAR", false) then
+	if MoveAny:IsEnabled("POWERBAR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "PlayerPowerBarAlt",
 			["lstr"] = "LID_POWERBAR",
@@ -2767,7 +2767,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if EventToastManagerFrame and MoveAny:IsEnabled("EventToastManagerFrame", false) then
+	if MoveAny:IsEnabled("EventToastManagerFrame", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "EventToastManagerFrame",
 			["lstr"] = "LID_EventToastManagerFrame",
@@ -2780,85 +2780,85 @@ function MoveAny:LoadAddon()
 		LoadAddOn("Blizzard_ArchaeologyUI")
 	end
 
-	if ArcheologyDigsiteProgressBar and MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) then
+	if MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "ArcheologyDigsiteProgressBar",
 			["lstr"] = "LID_ARCHEOLOGYDIGSITEPROGRESSBAR",
 		})
 	end
 
-	if UIErrorsFrame and MoveAny:IsEnabled("UIERRORSFRAME", false) then
+	if MoveAny:IsEnabled("UIERRORSFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "UIErrorsFrame",
 			["lstr"] = "LID_UIERRORSFRAME",
 		})
 	end
 
-	if MoveAny:IsEnabled("BOSSBANNER", false) and BossBanner then
+	if MoveAny:IsEnabled("BOSSBANNER", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "BossBanner",
 			["lstr"] = "LID_BOSSBANNER",
 		})
 	end
 
-	if GroupLootContainer then
-		if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) and GroupLootFrame1 then
-			local glfsw, glfsh = GroupLootFrame1:GetSize()
+	if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
+		local glfsw, glfsh = 100, 100
 
-			MoveAny:RegisterWidget({
-				["name"] = "GroupLootContainer",
-				["lstr"] = "LID_GROUPLOOTCONTAINER",
-				["sw"] = glfsw,
-				["sh"] = glfsh,
-			})
+		if GroupLootFrame1 then
+			glfsw, glfsh = GroupLootFrame1:GetSize()
 		end
-	else
-		if MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
-			local glfsw, glfsh = 244, 84
 
-			if GroupLootFrame1 then
-				glfsw, glfsh = GroupLootFrame1:GetSize()
+		MoveAny:RegisterWidget({
+			["name"] = "GroupLootContainer",
+			["lstr"] = "LID_GROUPLOOTCONTAINER",
+			["sw"] = glfsw,
+			["sh"] = glfsh,
+		})
+	elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
+		local glfsw, glfsh = 244, 84
 
-				for i = 2, 10 do
-					local glf = _G["GroupLootFrame" .. i]
+		if GroupLootFrame1 then
+			glfsw, glfsh = GroupLootFrame1:GetSize()
 
-					if glf then
-						hooksecurefunc(glf, "SetPoint", function(sel, ...)
-							if sel.glfsetpoint then return end
-							sel.glfsetpoint = true
-							sel:SetMovable(true)
+			for i = 2, 10 do
+				local glf = _G["GroupLootFrame" .. i]
 
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(false)
-							end
+				if glf then
+					hooksecurefunc(glf, "SetPoint", function(sel, ...)
+						if sel.glfsetpoint then return end
+						sel.glfsetpoint = true
+						sel:SetMovable(true)
 
-							sel:ClearAllPoints()
-							sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4)
-							sel.glfsetpoint = false
-						end)
+						if sel.SetUserPlaced and sel:IsMovable() then
+							sel:SetUserPlaced(false)
+						end
 
-						hooksecurefunc(GroupLootFrame1, "SetScale", function(sel, scale)
-							glf:SetScale(scale)
-						end)
+						sel:ClearAllPoints()
+						sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4)
+						sel.glfsetpoint = false
+					end)
 
-						hooksecurefunc(GroupLootFrame1, "SetAlpha", function(sel, alpha)
-							glf:SetAlpha(alpha)
-						end)
-					end
+					hooksecurefunc(GroupLootFrame1, "SetScale", function(sel, scale)
+						glf:SetScale(scale)
+					end)
+
+					hooksecurefunc(GroupLootFrame1, "SetAlpha", function(sel, alpha)
+						glf:SetAlpha(alpha)
+					end)
 				end
 			end
-
-			MoveAny:RegisterWidget({
-				["name"] = "GroupLootFrame1",
-				["lstr"] = "LID_GROUPLOOTFRAME1",
-				["sw"] = glfsw,
-				["sh"] = glfsh,
-				["px"] = 0,
-				["py"] = 200,
-				["an"] = "BOTTOM",
-				["re"] = "BOTTOM"
-			})
 		end
+
+		MoveAny:RegisterWidget({
+			["name"] = "GroupLootFrame1",
+			["lstr"] = "LID_GROUPLOOTFRAME1",
+			["sw"] = glfsw,
+			["sh"] = glfsh,
+			["px"] = 0,
+			["py"] = 200,
+			["an"] = "BOTTOM",
+			["re"] = "BOTTOM"
+		})
 	end
 
 	if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
@@ -2869,14 +2869,14 @@ function MoveAny:LoadAddon()
 	end
 
 	C_Timer.After(1, function()
-		if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
+		if MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "MainStatusTrackingBarContainer",
 				["lstr"] = "LID_MainStatusTrackingBarContainer",
 			})
 		end
 
-		if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
+		if MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "SecondaryStatusTrackingBarContainer",
 				["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
@@ -2941,7 +2941,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if AlertFrame and MoveAny:IsEnabled("ALERTFRAME", false) then
+	if MoveAny:IsEnabled("ALERTFRAME", false) then
 		local afsw, afsh = 276, 68
 
 		MoveAny:RegisterWidget({
@@ -3113,7 +3113,7 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if QuickJoinToastButton and MoveAny:IsEnabled("CHATQUICKJOIN", false) then
+	if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "QuickJoinToastButton",
 			["lstr"] = "LID_CHATQUICKJOIN"
@@ -3122,21 +3122,21 @@ function MoveAny:LoadAddon()
 
 	-- LEFT
 	-- CENTER
-	if SpellActivationOverlayFrame and MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
+	if MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "SpellActivationOverlayFrame",
 			["lstr"] = "LID_SPELLACTIVATIONOVERLAYFRAME"
 		})
 	end
 
-	if LossOfControlFrame and MoveAny:IsEnabled("LOSSOFCONTROLFRAME", false) then
+	if MoveAny:IsEnabled("LOSSOFCONTROLFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "LossOfControlFrame",
 			["lstr"] = "LID_LOSSOFCONTROLFRAME"
 		})
 	end
 
-	if GhostFrame and MoveAny:IsEnabled("GHOSTFRAME", false) then
+	if MoveAny:IsEnabled("GHOSTFRAME", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "GhostFrame",
 			["lstr"] = "LID_GHOSTFRAME",
