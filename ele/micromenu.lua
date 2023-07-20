@@ -130,6 +130,7 @@ function MoveAny:InitMicroMenu()
 		end
 
 		if MoveAny.UpdateActionBar then
+			MoveAny:AddBarName(MAMenuBar, "MAMenuBar")
 			MoveAny:UpdateActionBar(MAMenuBar)
 		end
 	end

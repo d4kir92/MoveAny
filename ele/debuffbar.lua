@@ -4,7 +4,7 @@ local debuffs = {}
 
 function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled("DEBUFFS", false) then
-		MADebuffBar = CreateFrame("Frame", "MADebuffBar", MoveAny:GetMainPanel())
+		MADebuffBar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
 		MADebuffBar:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -165, -132)
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -22,9 +22,14 @@ end
 
 local dSpacing = 2
 local dFlipped = false
+local BarNames = {}
+
+function MoveAny:AddBarName(frame, name)
+	BarNames[frame] = name
+end
 
 function MoveAny:UpdateActionBar(frame)
-	local name = frame:GetName()
+	local name = frame:GetName() or BarNames[frame]
 	local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
 	opts["ROWS"] = opts["ROWS"] or nil
 	opts["SPACING"] = opts["SPACING"] or dSpacing
@@ -213,14 +218,14 @@ function MoveAny:UpdateActionBar(frame)
 
 		if not InCombatLockdown() then
 			frame:SetSize(cols * (fSizeW + spacing) - spacing, rows * (fSizeH + spacing) - spacing)
-			local mover = _G[frame:GetName() .. "_DRAG"]
+			local mover = _G[name .. "_DRAG"]
 			local sw, sh = frame:GetSize()
-			local osw, osh = MoveAny:GetEleSize(frame:GetName())
+			local osw, osh = MoveAny:GetEleSize(name)
 			sw = MoveAny:MathR(sw)
 			sh = MoveAny:MathR(sh)
 
 			if osw ~= sw or osh ~= sh then
-				MoveAny:SetEleSize(frame:GetName(), sw, sh)
+				MoveAny:SetEleSize(name, sw, sh)
 			end
 
 			if mover then

@@ -664,9 +664,13 @@ function MoveAny:HasProblem()
 	return foundProblem
 end
 
+function string.startswith(str, prefix)
+	return str:sub(1, #prefix) == prefix
+end
+
 function MoveAny:FixEditMode()
 	for i, v in pairs(_G) do
-		if type(v) == "table" and v.systemInfo and v.systemInfo.anchorInfo and (v.systemInfo.anchorInfo.relativeTo == "MAMainPanel" or v.systemInfo.anchorInfo.relativeTo == "MABack") then
+		if type(v) == "table" and v.systemInfo and v.systemInfo.anchorInfo and string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
 			_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
 			EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
 			foundProblem = true

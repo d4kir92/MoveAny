@@ -4,8 +4,8 @@ local tries = 0
 function MoveAny:InitMAVehicleSeatIndicator()
 	tries = tries + 1
 
-	if VehicleSeatIndicator then
-		MAVehicleSeatIndicator = CreateFrame("Frame", "MAVehicleSeatIndicator", MoveAny:GetMainPanel())
+	if VehicleSeatIndicator and MoveAny:IsEnabled("VEHICLESEATINDICATOR", false) then
+		MAVehicleSeatIndicator = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
 		MAVehicleSeatIndicator:SetSize(100, 100)
 		MAVehicleSeatIndicator:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -300, -300)
 

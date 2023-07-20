@@ -31,6 +31,7 @@ function MoveAny:UpdatePetBar()
 	end
 
 	if MoveAny.UpdateActionBar then
+		MoveAny:AddBarName(MAPetBar, "MAPetBar")
 		MoveAny:UpdateActionBar(MAPetBar)
 	end
 
@@ -39,7 +40,7 @@ end
 
 function MoveAny:InitPetBar()
 	if not PetActionBar and MoveAny:IsEnabled("PETBAR", false) then
-		MAPetBar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
+		MAPetBar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
 		MAPetBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
 		MAPetBar.btns = {}
 

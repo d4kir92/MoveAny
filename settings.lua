@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.11")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.12")
 }
 
 local MAMMBTN = nil
@@ -38,8 +38,6 @@ MoveAny:AddToEMMapForced("ObjectiveTrackerFrame")
 MoveAny:AddToEMMapForced("QuestTracker")
 MoveAny:AddToEMMapForced("ChatFrame1")
 MoveAny:AddToEMMapForced("Chat")
-MoveAny:AddToEMMapForced("Buffs")
-MoveAny:AddToEMMapForced("Debuffs")
 MoveAny:AddToEMMapForced("GameTooltip")
 MoveAny:AddToEMMapForced("Castingbar")
 MoveAny:AddToEMMapForced("MainMenuBar")
@@ -69,7 +67,11 @@ MoveAny:AddToEMMap("StanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("MAGameTooltip", "ShowHudTooltip")
 MoveAny:AddToEMMap("TalkingHeadFrame", "ShowTalkingHeadFrame")
 MoveAny:AddToEMMap("TalkingHead", "ShowTalkingHeadFrame")
+MoveAny:AddToEMMap("Buffs", "ShowBuffsAndDebuffs")
+MoveAny:AddToEMMap("BuffFrame", "ShowBuffsAndDebuffs")
 MoveAny:AddToEMMap("MABuffBar", "ShowBuffsAndDebuffs")
+MoveAny:AddToEMMap("Debuffs", "ShowBuffsAndDebuffs")
+MoveAny:AddToEMMap("DebuffFrame", "ShowBuffsAndDebuffs")
 MoveAny:AddToEMMap("MADebuffBar", "ShowBuffsAndDebuffs")
 MoveAny:AddToEMMap("TargetFrame", "ShowTargetAndFocus")
 MoveAny:AddToEMMap("FocusFrame", "ShowTargetAndFocus")
@@ -86,6 +88,8 @@ MoveAny:AddToEMMap("PetFrame", "ShowPetFrame")
 MoveAny:AddToEMMap("MAPetFrame", "ShowPetFrame")
 MoveAny:AddToEMMap("BossTargetFrameContainer", "ShowBossFrames")
 MoveAny:AddToEMMap("SecondaryStatusTrackingBarContainer", "ShowStatusTrackingBar2")
+MoveAny:AddToEMMap("VehicleSeatIndicator", "ShowVehicleSeatIndicator")
+MoveAny:AddToEMMap("MAVehicleSeatIndicator", "ShowVehicleSeatIndicator")
 
 function MoveAny:IsBlizEditModeEnabled()
 	if MoveAny:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
@@ -114,7 +118,7 @@ function MoveAny:IsInEditModeEnabled(val)
 
 	if false then
 		for i, v in pairs(Enum.EditModeAccountSetting) do
-			if string.find(strlower(i), "pet") then
+			if string.find(strlower(i), "vehicle") then
 				MoveAny:MSG("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
 			end
 		end
@@ -433,6 +437,10 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "STATUSTRACKINGBARMANAGER", false)
 		end
 
+		if VehicleSeatIndicator then
+			AddCheckBox(posx, "VEHICLESEATINDICATOR", false)
+		end
+
 		AddCategory("NORMAL")
 		AddCheckBox(4, "TARGETOFTARGETFRAME", false)
 
@@ -448,10 +456,6 @@ function MoveAny:InitMALock()
 
 		if RaidBossEmoteFrame then
 			AddCheckBox(4, "RAIDBOSSEMOTEFRAME", false)
-		end
-
-		if VehicleSeatIndicator then
-			AddCheckBox(4, "VEHICLESEATINDICATOR", false)
 		end
 
 		AddCheckBox(4, "DURABILITY", false)
@@ -2081,49 +2085,49 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("ENDCAPS", false) then
-			local ecl = CreateFrame("FRAME", "MA_LeftEndCap", MoveAny:GetMainPanel())
-			ecl.tex = ecl:CreateTexture("ecl.tex", "OVERLAY")
-			ecl.tex:SetAllPoints(ecl)
-			local ecr = CreateFrame("FRAME", "MA_RightEndCap", MoveAny:GetMainPanel())
-			ecr.tex = ecr:CreateTexture("ecr.tex", "OVERLAY")
-			ecr.tex:SetAllPoints(ecr)
+			MA_LeftEndCap = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+			MA_LeftEndCap.tex = MA_LeftEndCap:CreateTexture("MA_LeftEndCap.tex", "OVERLAY")
+			MA_LeftEndCap.tex:SetAllPoints(MA_LeftEndCap)
+			MA_RightEndCap = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+			MA_RightEndCap.tex = MA_RightEndCap:CreateTexture("MA_RightEndCap.tex", "OVERLAY")
+			MA_RightEndCap.tex:SetAllPoints(MA_RightEndCap)
 			local factionGroup = UnitFactionGroup("player")
 
 			if MainMenuBar.EndCaps then
-				ecl:SetSize(MainMenuBar.EndCaps.LeftEndCap:GetSize())
-				ecl.tex:SetTexCoord(MainMenuBar.EndCaps.LeftEndCap:GetTexCoord())
-				ecr:SetSize(MainMenuBar.EndCaps.RightEndCap:GetSize())
-				ecr.tex:SetTexCoord(MainMenuBar.EndCaps.RightEndCap:GetTexCoord())
+				MA_LeftEndCap:SetSize(MainMenuBar.EndCaps.LeftEndCap:GetSize())
+				MA_LeftEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.LeftEndCap:GetTexCoord())
+				MA_RightEndCap:SetSize(MainMenuBar.EndCaps.RightEndCap:GetSize())
+				MA_RightEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.RightEndCap:GetTexCoord())
 
 				if factionGroup and factionGroup ~= "Neutral" then
 					if factionGroup == "Alliance" then
-						ecl.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
-						ecr.tex:SetAtlas("ui-hud-actionbar-gryphon-right")
+						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
+						MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-right")
 					elseif factionGroup == "Horde" then
-						ecl.tex:SetAtlas("ui-hud-actionbar-wyvern-left")
-						ecr.tex:SetAtlas("ui-hud-actionbar-wyvern-right")
+						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-left")
+						MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-right")
 					end
 				end
 
 				MainMenuBar.EndCaps:SetParent(MAHIDDEN)
 				MainMenuBar.BorderArt:SetParent(MAHIDDEN)
 			elseif MainMenuBarLeftEndCap then
-				ecl:SetSize(MainMenuBarLeftEndCap:GetSize())
-				ecl.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
-				ecl.tex:SetTexCoord(MainMenuBarLeftEndCap:GetTexCoord())
-				ecr:SetSize(MainMenuBarRightEndCap:GetSize())
-				ecr.tex:SetTexture(MainMenuBarRightEndCap:GetTexture())
-				ecr.tex:SetTexCoord(MainMenuBarRightEndCap:GetTexCoord())
+				MA_LeftEndCap:SetSize(MainMenuBarLeftEndCap:GetSize())
+				MA_LeftEndCap.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
+				MA_LeftEndCap.tex:SetTexCoord(MainMenuBarLeftEndCap:GetTexCoord())
+				MA_RightEndCap:SetSize(MainMenuBarRightEndCap:GetSize())
+				MA_RightEndCap.tex:SetTexture(MainMenuBarRightEndCap:GetTexture())
+				MA_RightEndCap.tex:SetTexCoord(MainMenuBarRightEndCap:GetTexCoord())
 				MainMenuBarLeftEndCap:SetParent(MAHIDDEN)
 				MainMenuBarRightEndCap:SetParent(MAHIDDEN)
 			end
 
-			ecl:SetFrameLevel(3)
-			ecr:SetFrameLevel(3)
-			ecl.tex:SetDrawLayer("OVERLAY", 2)
-			ecr.tex:SetDrawLayer("OVERLAY", 2)
-			ecl:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-			ecr:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MA_LeftEndCap:SetFrameLevel(3)
+			MA_RightEndCap:SetFrameLevel(3)
+			MA_LeftEndCap.tex:SetDrawLayer("OVERLAY", 2)
+			MA_RightEndCap.tex:SetDrawLayer("OVERLAY", 2)
+			MA_LeftEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MA_RightEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 
 			MoveAny:RegisterWidget({
 				["name"] = "MA_LeftEndCap",
@@ -2267,7 +2271,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MAPETFRAME", false) then
-		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", MoveAny:GetMainPanel())
+		MAPetFrame = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
 
 		if PetFrame:GetSize() then
 			MAPetFrame:SetSize(PetFrame:GetSize())
@@ -2327,7 +2331,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if CompactRaidFrameManager and MoveAny:IsEnabled("COMPACTRAIDFRAMEMANAGER", false) then
-		MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", MoveAny:GetMainPanel())
+		MACompactRaidFrameManager = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
 		MACompactRaidFrameManager:SetSize(20, 135)
 		MACompactRaidFrameManager:SetPoint("TOPLEFT", MoveAny:GetMainPanel(), "TOPLEFT", 0, -250)
 
@@ -2377,33 +2381,56 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MoveAny:IsEnabled("IAPingFrame", true) then
-		MoveAny:RegisterWidget({
-			["name"] = "IAPingFrame",
-			["lstr"] = "LID_IAPingFrame"
-		})
-	end
+	C_Timer.After(1, function()
+		if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IAMoneyBar",
+				["lstr"] = "LID_MONEYBAR"
+			})
+		end
 
-	if MoveAny:IsEnabled("IACoordsFrame", true) then
-		MoveAny:RegisterWidget({
-			["name"] = "IACoordsFrame",
-			["lstr"] = "LID_IACoordsFrame"
-		})
-	end
+		if IATokenBar and MoveAny:IsEnabled("TOKENBAR", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IATokenBar",
+				["lstr"] = "LID_TOKENBAR"
+			})
+		end
 
-	if MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
-		MoveAny:RegisterWidget({
-			["name"] = "IASkills",
-			["lstr"] = "LID_IASKILLS"
-		})
-	end
+		if IAILVLBar and MoveAny:IsEnabled("IAILVLBAR", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IAILVLBar",
+				["lstr"] = "LID_IAILVLBAR"
+			})
+		end
+
+		if IAPingFrame and MoveAny:IsEnabled("IAPingFrame", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IAPingFrame",
+				["lstr"] = "LID_IAPingFrame"
+			})
+		end
+
+		if IACoordsFrame and MoveAny:IsEnabled("IACoordsFrame", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IACoordsFrame",
+				["lstr"] = "LID_IACoordsFrame"
+			})
+		end
+
+		if IASkills and MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
+			MoveAny:RegisterWidget({
+				["name"] = "IASkills",
+				["lstr"] = "LID_IASKILLS"
+			})
+		end
+	end)
 
 	if IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
 		C_Timer.After(1, function()
 			local ktb = _G["!KalielsTrackerButtons"]
 
 			if ktb then
-				local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
+				local MAKTB = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
 				local size = 28
 				local kbr = 6
 				MAKTB:SetSize(size, size * 3 + kbr * 2)
@@ -2580,27 +2607,6 @@ function MoveAny:LoadAddon()
 		end)
 	end
 
-	if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", true) then
-		MoveAny:RegisterWidget({
-			["name"] = "IAMoneyBar",
-			["lstr"] = "LID_MONEYBAR"
-		})
-	end
-
-	if IATokenBar and MoveAny:IsEnabled("TOKENBAR", true) then
-		MoveAny:RegisterWidget({
-			["name"] = "IATokenBar",
-			["lstr"] = "LID_TOKENBAR"
-		})
-	end
-
-	if IAILVLBar and MoveAny:IsEnabled("IAILVLBAR", true) then
-		MoveAny:RegisterWidget({
-			["name"] = "IAILVLBar",
-			["lstr"] = "LID_IAILVLBAR"
-		})
-	end
-
 	if MoveAny:IsEnabled("MINIMAP", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "Minimap",
@@ -2678,7 +2684,7 @@ function MoveAny:LoadAddon()
 	GameTooltip:SetUserPlaced(false)
 
 	if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
-		MAGameTooltip = CreateFrame("Frame", "MAGameTooltip", MoveAny:GetMainPanel())
+		MAGameTooltip = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
 		MAGameTooltip:SetSize(100, 100)
 		MAGameTooltip:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", -100, 100)
 
