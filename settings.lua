@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.13")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.14")
 }
 
 local MAMMBTN = nil
@@ -1968,9 +1968,9 @@ function MoveAny:LoadAddon()
 				if UnitInVehicle then
 					function MoveAny:UpdateVehicleLeaveButton()
 						if UnitInVehicle("player") then
-							MainMenuBarVehicleLeaveButton:Show()
+							MainMenuBarVehicleLeaveButton:SetAlpha(1)
 						else
-							MainMenuBarVehicleLeaveButton:Hide()
+							MainMenuBarVehicleLeaveButton:SetAlpha(0)
 						end
 
 						C_Timer.After(0.3, MoveAny.UpdateVehicleLeaveButton)
