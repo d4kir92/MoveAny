@@ -79,7 +79,7 @@ function MoveAny:LangdeDE()
 		["LID_IAILVLBAR"] = "Gegenstandsstufe-Leiste (ItemLevel)",
 		["LID_CASTINGBAR"] = "Zauberleiste",
 		["LID_CASTINGBARTIMER"] = "Zauberleiste Timer",
-		["LID_TALKINGHEAD"] = "Redekopf-Dialog",
+		["LID_TALKINGHEAD"] = "Weltquestfenster (\"Redekopf\")",
 		["LID_POSSESSBAR"] = "Besitzleiste (NPC/Fahrzeug steuern)",
 		["LID_ZONEABILITYFRAME"] = "Zonen-Fähigkeit",
 		["LID_EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit (Zauber für Quests, Bosse)",

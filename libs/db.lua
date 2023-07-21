@@ -669,11 +669,19 @@ function string.startswith(str, prefix)
 end
 
 function MoveAny:FixEditMode()
+	local rig = 0
+	local wro = 0
+
 	for i, v in pairs(_G) do
-		if v ~= nil and type(v) == "table" and v.systemInfo ~= nil and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil and string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
-			_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
-			EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
-			foundProblem = true
+		if v ~= nil and type(v) == "table" and v.systemInfo ~= nil and type(v.systemInfo) == "table" and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil then
+			if string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
+				_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
+				EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
+				foundProblem = true
+				wro = wro + 1
+			else
+				rig = rig + 1
+			end
 		end
 	end
 
