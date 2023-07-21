@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.17")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.18")
 }
 
 local MAMMBTN = nil
@@ -2869,14 +2869,21 @@ function MoveAny:LoadAddon()
 	end
 
 	C_Timer.After(1, function()
-		if MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
+		if SpellActivationOverlayFrame and MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "SpellActivationOverlayFrame",
+				["lstr"] = "LID_SPELLACTIVATIONOVERLAYFRAME"
+			})
+		end
+
+		if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "MainStatusTrackingBarContainer",
 				["lstr"] = "LID_MainStatusTrackingBarContainer",
 			})
 		end
 
-		if MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
+		if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "SecondaryStatusTrackingBarContainer",
 				["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
@@ -3117,15 +3124,6 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget({
 			["name"] = "QuickJoinToastButton",
 			["lstr"] = "LID_CHATQUICKJOIN"
-		})
-	end
-
-	-- LEFT
-	-- CENTER
-	if MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "SpellActivationOverlayFrame",
-			["lstr"] = "LID_SPELLACTIVATIONOVERLAYFRAME"
 		})
 	end
 

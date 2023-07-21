@@ -395,6 +395,32 @@ function MoveAny:CustomBars()
 			MoveAny:UpdateActionBar(_G[name])
 		end
 	end
+
+	local oldState = "-1"
+
+	function MoveAny:UpdateUpDown()
+		if GetCVar("ActionButtonUseKeyDown") ~= oldState and not InCombatLockdown() then
+			oldState = GetCVar("ActionButtonUseKeyDown")
+
+			for name, bar in pairs(abs) do
+				if bar and bar.btns then
+					for x, btn in pairs(bar.btns) do
+						btn:SetMouseClickEnabled(true)
+
+						if GetCVar("ActionButtonUseKeyDown") == "1" then
+							btn:RegisterForClicks("AnyDown")
+						else
+							btn:RegisterForClicks("AnyUp")
+						end
+					end
+				end
+			end
+		end
+
+		C_Timer.After(1, MoveAny.UpdateUpDown)
+	end
+
+	MoveAny:UpdateUpDown()
 end
 
 function MoveAny:UpdateABs()
