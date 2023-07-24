@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.18")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.19")
 }
 
 local MAMMBTN = nil
@@ -2801,72 +2801,74 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
-		local glfsw, glfsh = 100, 100
+	C_Timer.After(1, function()
+		if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
+			local glfsw, glfsh = 100, 100
 
-		if GroupLootFrame1 then
-			glfsw, glfsh = GroupLootFrame1:GetSize()
-		end
+			if GroupLootFrame1 then
+				glfsw, glfsh = GroupLootFrame1:GetSize()
+			end
 
-		MoveAny:RegisterWidget({
-			["name"] = "GroupLootContainer",
-			["lstr"] = "LID_GROUPLOOTCONTAINER",
-			["sw"] = glfsw,
-			["sh"] = glfsh,
-		})
-	elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
-		local glfsw, glfsh = 244, 84
+			MoveAny:RegisterWidget({
+				["name"] = "GroupLootContainer",
+				["lstr"] = "LID_GROUPLOOTCONTAINER",
+				["sw"] = glfsw,
+				["sh"] = glfsh,
+			})
+		elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
+			local glfsw, glfsh = 244, 84
 
-		if GroupLootFrame1 then
-			glfsw, glfsh = GroupLootFrame1:GetSize()
+			if GroupLootFrame1 then
+				glfsw, glfsh = GroupLootFrame1:GetSize()
 
-			for i = 2, 10 do
-				local glf = _G["GroupLootFrame" .. i]
+				for i = 2, 10 do
+					local glf = _G["GroupLootFrame" .. i]
 
-				if glf then
-					hooksecurefunc(glf, "SetPoint", function(sel, ...)
-						if sel.glfsetpoint then return end
-						sel.glfsetpoint = true
-						sel:SetMovable(true)
+					if glf then
+						hooksecurefunc(glf, "SetPoint", function(sel, ...)
+							if sel.glfsetpoint then return end
+							sel.glfsetpoint = true
+							sel:SetMovable(true)
 
-						if sel.SetUserPlaced and sel:IsMovable() then
-							sel:SetUserPlaced(false)
-						end
+							if sel.SetUserPlaced and sel:IsMovable() then
+								sel:SetUserPlaced(false)
+							end
 
-						sel:ClearAllPoints()
-						sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4)
-						sel.glfsetpoint = false
-					end)
+							sel:ClearAllPoints()
+							sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4)
+							sel.glfsetpoint = false
+						end)
 
-					hooksecurefunc(GroupLootFrame1, "SetScale", function(sel, scale)
-						glf:SetScale(scale)
-					end)
+						hooksecurefunc(GroupLootFrame1, "SetScale", function(sel, scale)
+							glf:SetScale(scale)
+						end)
 
-					hooksecurefunc(GroupLootFrame1, "SetAlpha", function(sel, alpha)
-						glf:SetAlpha(alpha)
-					end)
+						hooksecurefunc(GroupLootFrame1, "SetAlpha", function(sel, alpha)
+							glf:SetAlpha(alpha)
+						end)
+					end
 				end
 			end
+
+			MoveAny:RegisterWidget({
+				["name"] = "GroupLootFrame1",
+				["lstr"] = "LID_GROUPLOOTFRAME1",
+				["sw"] = glfsw,
+				["sh"] = glfsh,
+				["px"] = 0,
+				["py"] = 200,
+				["an"] = "BOTTOM",
+				["re"] = "BOTTOM"
+			})
 		end
 
-		MoveAny:RegisterWidget({
-			["name"] = "GroupLootFrame1",
-			["lstr"] = "LID_GROUPLOOTFRAME1",
-			["sw"] = glfsw,
-			["sh"] = glfsh,
-			["px"] = 0,
-			["py"] = 200,
-			["an"] = "BOTTOM",
-			["re"] = "BOTTOM"
-		})
-	end
-
-	if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
-		MoveAny:RegisterWidget({
-			["name"] = "BonusRollFrame",
-			["lstr"] = "LID_BONUSROLLFRAME",
-		})
-	end
+		if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
+			MoveAny:RegisterWidget({
+				["name"] = "BonusRollFrame",
+				["lstr"] = "LID_BONUSROLLFRAME",
+			})
+		end
+	end)
 
 	C_Timer.After(1, function()
 		if SpellActivationOverlayFrame and MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
