@@ -10,11 +10,25 @@ function MoveAny:InitMinimap()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		if MinimapCluster then
-			for i, v in pairs({MinimapCluster:GetChildren()}) do
-				if v ~= Minimap then
-					v:SetParent(Minimap)
-				end
-			end
+			hooksecurefunc(MinimapCluster, "SetPoint", function(sel, ...)
+				if sel.mc_setpoint then return end
+				sel.mc_setpoint = true
+				sel:ClearAllPoints()
+				sel:SetPoint("TOP", Minimap, "TOP", -5, 30)
+				sel.mc_setpoint = false
+			end)
+
+			hooksecurefunc(MinimapCluster, "SetScale", function(sel, ...)
+				if sel.mc_setscale then return end
+				sel.mc_setscale = true
+				sel:SetScale(Minimap:GetScale() * 1.1)
+				sel.mc_setscale = false
+			end)
+
+			Minimap:SetParent(MoveAny:GetMainPanel())
+			MinimapCluster:SetScale(Minimap:GetScale())
+			MinimapCluster:ClearAllPoints()
+			MinimapCluster:SetPoint("TOP", Minimap, "TOP", 0, 0)
 		end
 	else
 		if MinimapCluster then
@@ -79,6 +93,10 @@ function MoveAny:InitMinimap()
 		MinimapBorder:SetScale(1.40)
 	end
 
+	if MinimapBorderTop then
+		MinimapBorderTop:SetParent(MAHIDDEN)
+	end
+
 	if MiniMapTracking and MiniMapTrackingButton then
 		MiniMapTrackingButton:ClearAllPoints()
 		MiniMapTrackingButton:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, -40)
@@ -121,6 +139,7 @@ function MoveAny:InitMinimap()
 	end
 
 	if MinimapZoneTextButton then
+		MinimapZoneTextButton:SetParent(Minimap)
 		MinimapZoneTextButton:ClearAllPoints()
 		MinimapZoneTextButton:SetPoint("BOTTOM", Minimap, "TOP", 0, 12)
 	end
@@ -136,8 +155,9 @@ function MoveAny:InitMinimap()
 	end
 
 	if GameTimeFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then
+		GameTimeFrame:SetParent(Minimap)
 		GameTimeFrame:ClearAllPoints()
-		GameTimeFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 20, -10)
+		GameTimeFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 30, 5)
 	end
 
 	if MiniMapWorldMapButton then

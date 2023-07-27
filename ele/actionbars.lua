@@ -405,8 +405,6 @@ function MoveAny:CustomBars()
 			for name, bar in pairs(abs) do
 				if bar and bar.btns then
 					for x, btn in pairs(bar.btns) do
-						btn:SetMouseClickEnabled(true)
-
 						if GetCVar("ActionButtonUseKeyDown") == "1" then
 							btn:RegisterForClicks("AnyDown")
 						else
