@@ -75,7 +75,7 @@ function MoveAny:LangenUS()
 		["LID_BNToastFrame"] = "Battlenet Friends Notifications",
 		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",
 		["LID_ZONETEXTFRAME"] = "Zone Text",
-		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Status on BGs/Dungeons)",
+		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Status/Stats on Battlegrounds/Dungeons/Raids)",
 		["LID_MIRRORTIMER1"] = "Breathbar",
 		["LID_IASKILLS"] = "Skillbars",
 		["LID_UIWIDGETBELOWMINIMAP"] = "Widget Below Minimap (Capture Status)",
@@ -165,6 +165,7 @@ function MoveAny:LangenUS()
 		["LID_COMPACTARENAFRAME"] = "Compact Arena Frame",
 		["LID_ROLEPOLLPOPUP"] = "Role Poll Popup",
 		["LID_READYCHECKLISTENERFRAME"] = "Ready Check Popup",
+		["LID_DISABLEMOVEMENT"] = "Disable Movement keybinds, when in MoveAny-EditMode",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -69,7 +69,7 @@ function MoveAny:LangdeDE()
 		["LID_BNToastFrame"] = "Benachrichtigungen von Battlenet Freunden",
 		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Zauber-Aktivierungs-Overlay",
 		["LID_ZONETEXTFRAME"] = "Zonentext",
-		["LID_UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status bei BGs/Dungeons)",
+		["LID_UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status/Statistik von Schlachtfeldern/Dungeons/Raids)",
 		["LID_MIRRORTIMER1"] = "Atemleiste",
 		["LID_IASKILLS"] = "Fertigkeitsbalken",
 		["LID_UIWIDGETBELOWMINIMAP"] = "Widget Unterhalb der Minimap (Einnehmen-Status)",
@@ -159,6 +159,7 @@ function MoveAny:LangdeDE()
 		["LID_COMPACTARENAFRAME"] = "Kompaktes Arena Fenster",
 		["LID_ROLEPOLLPOPUP"] = "Rollenabfrage-Popup",
 		["LID_READYCHECKLISTENERFRAME"] = "Bereitschaftsprüfung-Popup",
+		["LID_DISABLEMOVEMENT"] = "Bewegungstastenbelegung deaktivieren, wenn im MoveAny-EditMode",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

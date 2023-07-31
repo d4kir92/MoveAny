@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.21")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.22")
 }
 
 local MAMMBTN = nil
@@ -656,6 +656,8 @@ function MoveAny:InitMALock()
 			AddCategory("!KalielsTracker")
 			AddCheckBox(4, "!KalielsTrackerButtons", false)
 		end
+
+		AddCheckBox(4, "DISABLEMOVEMENT", false)
 	end
 
 	MALock.Search = CreateFrame("EditBox", "MALock_Search", MALock, "InputBoxTemplate")
@@ -2046,6 +2048,10 @@ function MoveAny:LoadAddon()
 							end
 
 							if abtn then
+								function abtn:GetMAEle()
+									return ab
+								end
+
 								table.insert(ab.btns, abtn)
 							else
 								print("[MoveAny] ACTION BUTTON NOT FOUND", name)
@@ -2481,10 +2487,19 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MIRRORTIMER1", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "MirrorTimer1",
-			["lstr"] = "LID_MIRRORTIMER1",
-		})
+		if MirrorTimerContainer then
+			MirrorTimerContainer:SetSize(206, 32)
+
+			MoveAny:RegisterWidget({
+				["name"] = "MirrorTimerContainer",
+				["lstr"] = "LID_MIRRORTIMER1",
+			})
+		else
+			MoveAny:RegisterWidget({
+				["name"] = "MirrorTimer1",
+				["lstr"] = "LID_MIRRORTIMER1",
+			})
+		end
 	end
 
 	C_Timer.After(1, function()

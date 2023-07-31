@@ -68,31 +68,37 @@ local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
 
 local oldKeybinds = {}
 local isToggling = false
+local wasDisabled = false
 
 function MoveAny:UnlockBindings()
-	if not InCombatLockdown() then
-		for i, name in pairs(pausedKeybinds) do
-			oldKeybinds[name] = GetBindingAction(name)
-			SetBinding(name, nil)
-		end
+	if MoveAny:IsEnabled("DISABLEMOVEMENT", false) then
+		if not InCombatLockdown() then
+			for i, name in pairs(pausedKeybinds) do
+				oldKeybinds[name] = GetBindingAction(name)
+				SetBinding(name, nil)
+			end
 
-		isToggling = false
-	else
-		C_Timer.After(0.1, MoveAny.UnlockBindings)
+			wasDisabled = true
+			isToggling = false
+		else
+			C_Timer.After(0.1, MoveAny.UnlockBindings)
+		end
 	end
 end
 
 function MoveAny:LockBindings()
-	if not InCombatLockdown() then
-		for i, name in pairs(pausedKeybinds) do
-			if oldKeybinds[name] then
-				SetBinding(name, oldKeybinds[name])
+	if MoveAny:IsEnabled("DISABLEMOVEMENT", false) or wasDisabled then
+		if not InCombatLockdown() then
+			for i, name in pairs(pausedKeybinds) do
+				if oldKeybinds[name] then
+					SetBinding(name, oldKeybinds[name])
+				end
 			end
-		end
 
-		isToggling = false
-	else
-		C_Timer.After(0.1, MoveAny.LockBindings)
+			isToggling = false
+		else
+			C_Timer.After(0.1, MoveAny.LockBindings)
+		end
 	end
 end
 

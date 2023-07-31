@@ -977,7 +977,7 @@ end
 
 function MoveAny:SetMouseEleAlpha(ele)
 	if lastEle and ele ~= lastEle then
-		MoveAny:UpdateAlphas()
+		MoveAny:UpdateAlphas(ele)
 	end
 
 	lastEle = ele
@@ -1025,8 +1025,8 @@ function MoveAny:CheckAlphas()
 	C_Timer.After(0.15, MoveAny.CheckAlphas)
 end
 
-function MoveAny:UpdateAlphas()
-	for i, ele in pairs(MoveAny:GetEleFrames()) do
+function MoveAny:UpdateAlphas(mouseEle)
+	for i, ele in pairs(MoveAny:GetAlphaFrames()) do
 		if ele == nil then
 			MoveAny:MSG("UpdateAlphas: ele is nil")
 		else
@@ -1037,7 +1037,9 @@ function MoveAny:UpdateAlphas()
 			local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha4")
 			local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha5")
 
-			if UnitInVehicle and invehicle then
+			if ele == mouseEle then
+				MoveAny:SetEleAlpha(ele, 1)
+			elseif UnitInVehicle and invehicle then
 				MoveAny:SetEleAlpha(ele, alphaInVehicle)
 			elseif IsMounted and ismounted then
 				MoveAny:SetEleAlpha(ele, alphaIsMounted)
