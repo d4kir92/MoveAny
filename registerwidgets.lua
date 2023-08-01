@@ -1037,6 +1037,7 @@ function MoveAny:UpdateAlphas(mouseEle)
 			local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha4")
 			local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha5")
 
+			-- hovered
 			if ele == mouseEle then
 				MoveAny:SetEleAlpha(ele, 1)
 			elseif UnitInVehicle and invehicle then

@@ -111,7 +111,7 @@ function MoveAny:Unlock()
 		MoveAny:SetEnabled("MALOCK", true)
 		MoveAny:UnlockBindings()
 	else
-		MoveAny:MSG("[Unlock] Settings Frame is toggling, try again.")
+		MoveAny:MSG("[Unlock] Settings Frame is toggling. ShowMenu: " .. tostring(MoveAny:IsEnabled("MALOCK", false)))
 	end
 end
 
@@ -121,13 +121,13 @@ function MoveAny:Lock()
 		MoveAny:SetEnabled("MALOCK", false)
 		MoveAny:LockBindings()
 	else
-		MoveAny:MSG("[Lock] Settings Frame is toggling, try again.")
+		MoveAny:MSG("[Lock] Settings Frame is toggling. ShowMenu: " .. tostring(MoveAny:IsEnabled("MALOCK", false)))
 	end
 end
 
 function MoveAny:IsMALockNotReady()
 	if MALock == nil then
-		MoveAny:MSG("Settings Frame is not created")
+		MoveAny:MSG("Settings Frame is not created yet, maybe you got an error? If not error, please install BugSack, Buggrabber to see the error.")
 
 		return true
 	end
