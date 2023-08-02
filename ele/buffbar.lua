@@ -32,6 +32,21 @@ function MoveAny:InitBuffBar()
 			MABuffBar:SetSize(sw1, sh1)
 		end
 
+		if not MoveAny:IsEnabled("DEBUFFS", false) and DebuffFrame then
+			hooksecurefunc(DebuffFrame, "SetPoint", function(sel, ...)
+				if sel.debuffsetpoint then return end
+				sel.debuffsetpoint = true
+				sel:ClearAllPoints()
+				sel:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -128)
+				sel.debuffsetpoint = false
+			end)
+
+			if not InCombatLockdown() then
+				DebuffFrame:ClearAllPoints()
+				DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -128)
+			end
+		end
+
 		hooksecurefunc(BuffFrame, "SetPoint", function(sel, ...)
 			if sel.buffsetpoint then return end
 			sel.buffsetpoint = true
