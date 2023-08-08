@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.5.25")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.0")
 }
 
 local MAMMBTN = nil
@@ -364,11 +364,17 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "PLAYERFRAME", false)
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus")
-		AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+		end
 
 		if FocusFrame then
 			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox(posx, "FOCUSFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				AddCheckBox(posx, "FOCUSFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+			end
 		end
 
 		AddCheckBox(posx, "BUFFS", false, nil, nil, "ShowBuffFrame")
@@ -1866,7 +1872,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameBuff1",
 				["lstr"] = "LID_TARGETFRAMEBUFF1",
@@ -1882,7 +1888,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "FocusFrameBuff1",
 				["lstr"] = "LID_FOCUSFRAMEBUFF1",

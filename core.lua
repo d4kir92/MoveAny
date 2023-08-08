@@ -9,6 +9,8 @@ colors["el"] = {0.6, 0.84, 1.0}
 
 colors["hidden"] = {1.0, 0.0, 0.0}
 
+colors["clickthrough"] = {0.2, 0.2, 1.0}
+
 function MoveAny:GetColor(key)
 	return colors[key][1], colors[key][2], colors[key][3]
 end

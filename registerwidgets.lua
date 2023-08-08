@@ -269,6 +269,36 @@ function MoveAny:MenuOptions(opt, frame)
 			hide.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(getglobal("HIDE"))
+			local clickthrough = CreateFrame("CheckButton", "clickthrough", content, "ChatConfigCheckButtonTemplate")
+			clickthrough:SetSize(btnsize, btnsize)
+			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
+			clickthrough:SetChecked(MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"))
+			clickthrough:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
+
+			clickthrough:SetScript("OnClick", function()
+				local checked = clickthrough:GetChecked()
+				MoveAny:SetEleOption(name, "ClickThrough", checked)
+				local dragf = _G[name .. "_DRAG"]
+
+				if checked then
+					dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
+
+					if frame then
+						frame:EnableMouse(false)
+					end
+				else
+					dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+
+					if frame then
+						frame:EnableMouse(true)
+					end
+				end
+			end)
+
+			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK")
+			clickthrough.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
+			clickthrough.text:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
 			MoveAny:CreateSlider(content, 10, -190, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			MoveAny:CreateSlider(content, 10, -220, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			MoveAny:CreateSlider(content, 10, -250, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
@@ -794,6 +824,88 @@ function MoveAny:RegisterWidget(tab)
 	else
 		if frame == MACurrentEle then
 			dragf.t:SetVertexColor(MoveAny:GetColor("se"))
+		elseif MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough2") then
+			dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
+
+			hooksecurefunc(frame, "EnableMouse", function(sel, bo)
+				if sel.ma_enablemouse then return end
+				sel.ma_enablemouse = true
+				sel:EnableMouse(false)
+				sel.ma_enablemouse = false
+			end)
+
+			frame:EnableMouse(false)
+
+			if frame == MABuffBar then
+				function frame:UpdateBuffMouse()
+					for i = 1, 32 do
+						local bb = _G["BuffButton" .. i]
+
+						if bb then
+							bb:EnableMouse(false)
+						end
+					end
+				end
+
+				local bbf = CreateFrame("FRAME")
+				bbf:RegisterEvent("UNIT_AURA")
+
+				bbf:SetScript("OnEvent", function()
+					frame:UpdateBuffMouse()
+				end)
+
+				frame:UpdateBuffMouse()
+			elseif frame == TargetFrameBuff1 then
+				function frame:UpdateBuffMouse()
+					for i = 1, 32 do
+						local bb = _G["TargetFrameBuff" .. i]
+
+						if bb then
+							bb:EnableMouse(false)
+						end
+
+						local db = _G["TargetFrameDebuff" .. i]
+
+						if db then
+							db:EnableMouse(false)
+						end
+					end
+				end
+
+				local bbf = CreateFrame("FRAME")
+				bbf:RegisterEvent("UNIT_AURA")
+
+				bbf:SetScript("OnEvent", function()
+					frame:UpdateBuffMouse()
+				end)
+
+				frame:UpdateBuffMouse()
+			elseif frame == FocusFrameBuff1 then
+				function frame:UpdateBuffMouse()
+					for i = 1, 32 do
+						local bb = _G["FocusFrameBuff" .. i]
+
+						if bb then
+							bb:EnableMouse(false)
+						end
+
+						local db = _G["FocusFrameDebuff" .. i]
+
+						if db then
+							db:EnableMouse(false)
+						end
+					end
+				end
+
+				local bbf = CreateFrame("FRAME")
+				bbf:RegisterEvent("UNIT_AURA")
+
+				bbf:SetScript("OnEvent", function()
+					frame:UpdateBuffMouse()
+				end)
+
+				frame:UpdateBuffMouse()
+			end
 		else
 			dragf.t:SetVertexColor(MoveAny:GetColor("el"))
 		end

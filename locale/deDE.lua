@@ -160,6 +160,7 @@ function MoveAny:LangdeDE()
 		["LID_ROLEPOLLPOPUP"] = "Rollenabfrage-Popup",
 		["LID_READYCHECKLISTENERFRAME"] = "Bereitschaftsprüfung-Popup",
 		["LID_DISABLEMOVEMENT"] = "Bewegungstastenbelegung deaktivieren, wenn im MoveAny-EditMode",
+		["LID_CLICKTHROUGH"] = "Durchklicken",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

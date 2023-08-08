@@ -166,6 +166,7 @@ function MoveAny:LangenUS()
 		["LID_ROLEPOLLPOPUP"] = "Role Poll Popup",
 		["LID_READYCHECKLISTENERFRAME"] = "Ready Check Popup",
 		["LID_DISABLEMOVEMENT"] = "Disable Movement keybinds, when in MoveAny-EditMode",
+		["LID_CLICKTHROUGH"] = "Clickthrough",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
