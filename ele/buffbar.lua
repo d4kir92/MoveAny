@@ -32,13 +32,74 @@ function MoveAny:InitBuffBar()
 			MABuffBar:SetSize(sw1, sh1)
 		end
 
-		if not MoveAny:IsEnabled("DEBUFFS", false) and DebuffFrame then
+		if not MoveAny:IsEnabled("DEBUFFS", false) then
+			if DebuffFrame == nil then
+				local sw, sh = BuffFrame:GetSize()
+				DebuffFrame = CreateFrame("FRAME", "DebuffFrame", MoveAny:GetMainPanel())
+				DebuffFrame:SetSize(sw, sh)
+				DebuffFrame:SetPoint("CENTER", 0, 0)
+			end
+
+			function DebuffFrame:UpdatePoint()
+				local p1 = MABuffBar:GetPoint()
+				local left = p1 == "TOPLEFT" or p1 == "LEFT" or p1 == "BOTTOMLEFT"
+
+				if left then
+					DebuffFrame:ClearAllPoints()
+					DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -200)
+				else
+					local x = 0
+
+					if MoveAny:GetWoWBuild() == "CLASSIC" then
+						x = -10
+					end
+
+					DebuffFrame:ClearAllPoints()
+					DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", x, -200)
+				end
+
+				local olddb = nil
+
+				for i = 1, 32 do
+					local db = _G["DebuffButton" .. i]
+
+					if db then
+						if olddb then
+							db:ClearAllPoints()
+							db:SetPoint("LEFT", olddb, "RIGHT", 0, 0)
+						else
+							db:ClearAllPoints()
+							db:SetPoint("TOPLEFT", DebuffFrame, "TOPLEFT", 0, 0)
+						end
+
+						olddb = db
+					else
+						break
+					end
+				end
+			end
+
 			hooksecurefunc(DebuffFrame, "SetPoint", function(sel, ...)
 				if sel.debuffsetpoint then return end
 				sel.debuffsetpoint = true
-				sel:ClearAllPoints()
-				sel:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -128)
+				DebuffFrame:UpdatePoint()
 				sel.debuffsetpoint = false
+			end)
+
+			hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...)
+				if sel.debuffsetpoint then return end
+				sel.debuffsetpoint = true
+				DebuffFrame:UpdatePoint()
+				sel.debuffsetpoint = false
+			end)
+
+			local f = CreateFrame("FRAME")
+			f:RegisterEvent("UNIT_AURA")
+
+			f:SetScript("OnEvent", function(sel, event, ...)
+				if event == "UNIT_AURA" then
+					DebuffFrame:UpdatePoint()
+				end
 			end)
 
 			if not InCombatLockdown() then

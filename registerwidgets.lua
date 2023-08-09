@@ -554,6 +554,7 @@ function MoveAny:RegisterWidget(tab)
 	local cbottom = tab.cbottom
 	local posx = tab.posx
 	local posy = tab.posy
+	local setup = tab.setup
 	tab.delay = tab.delay or 0.2
 
 	if tab.delay < 2 then
@@ -844,6 +845,14 @@ function MoveAny:RegisterWidget(tab)
 						if bb then
 							bb:EnableMouse(false)
 						end
+
+						if not MoveAny:IsEnabled("DEBUFFS", false) then
+							local db = _G["DebuffButton" .. i]
+
+							if db then
+								db:EnableMouse(false)
+							end
+						end
 					end
 				end
 
@@ -855,6 +864,25 @@ function MoveAny:RegisterWidget(tab)
 				end)
 
 				frame:UpdateBuffMouse()
+			elseif frame == MADebuffBar then
+				function frame:UpdateDebuffMouse()
+					for i = 1, 32 do
+						local db = _G["DebuffButton" .. i]
+
+						if db then
+							db:EnableMouse(false)
+						end
+					end
+				end
+
+				local bbf = CreateFrame("FRAME")
+				bbf:RegisterEvent("UNIT_AURA")
+
+				bbf:SetScript("OnEvent", function()
+					frame:UpdateDebuffMouse()
+				end)
+
+				frame:UpdateDebuffMouse()
 			elseif frame == TargetFrameBuff1 then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
@@ -1071,6 +1099,10 @@ function MoveAny:RegisterWidget(tab)
 	else
 		dragframe:SetAlpha(0)
 		dragframe:EnableMouse(false)
+	end
+
+	if setup then
+		setup()
 	end
 end
 

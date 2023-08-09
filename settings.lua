@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.0")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.1")
 }
 
 local MAMMBTN = nil
@@ -1876,7 +1876,49 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrameBuff1",
 				["lstr"] = "LID_TARGETFRAMEBUFF1",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["setup"] = function()
+					local frame = TargetFrameBuff1
+
+					function frame:UpdateBuffScaleAlpha()
+						if _G["TargetFrameBuff" .. 1] == nil then return end
+						local scale = _G["TargetFrameBuff" .. 1]:GetScale()
+						local alpha = _G["TargetFrameBuff" .. 1]:GetAlpha()
+
+						for i = 1, 32 do
+							local bb = _G["TargetFrameBuff" .. i]
+
+							if bb and i > 1 then
+								bb:SetScale(scale)
+								bb:SetAlpha(alpha)
+							end
+
+							local db = _G["TargetFrameDebuff" .. i]
+
+							if db then
+								db:SetScale(scale)
+								db:SetAlpha(alpha)
+							end
+						end
+					end
+
+					local bbf = CreateFrame("FRAME")
+					bbf:RegisterEvent("UNIT_AURA")
+
+					bbf:SetScript("OnEvent", function()
+						frame:UpdateBuffScaleAlpha()
+					end)
+
+					hooksecurefunc(frame, "SetPoint", function()
+						frame:UpdateBuffScaleAlpha()
+					end)
+
+					hooksecurefunc(frame, "SetScale", function()
+						frame:UpdateBuffScaleAlpha()
+					end)
+
+					frame:UpdateBuffScaleAlpha()
+				end,
 			})
 		end
 
@@ -1892,7 +1934,49 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "FocusFrameBuff1",
 				["lstr"] = "LID_FOCUSFRAMEBUFF1",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["setup"] = function()
+					local frame = FocusFrameBuff1
+
+					function frame:UpdateBuffScaleAlpha()
+						if _G["FocusFrameBuff" .. 1] == nil then return end
+						local scale = _G["FocusFrameBuff" .. 1]:GetScale()
+						local alpha = _G["FocusFrameBuff" .. 1]:GetAlpha()
+
+						for i = 1, 32 do
+							local bb = _G["FocusFrameBuff" .. i]
+
+							if bb and i > 1 then
+								bb:SetScale(scale)
+								bb:SetAlpha(alpha)
+							end
+
+							local db = _G["FocusFrameDebuff" .. i]
+
+							if db then
+								db:SetScale(scale)
+								db:SetAlpha(alpha)
+							end
+						end
+					end
+
+					local bbf = CreateFrame("FRAME")
+					bbf:RegisterEvent("UNIT_AURA")
+
+					bbf:SetScript("OnEvent", function()
+						frame:UpdateBuffScaleAlpha()
+					end)
+
+					hooksecurefunc(frame, "SetPoint", function()
+						frame:UpdateBuffScaleAlpha()
+					end)
+
+					hooksecurefunc(frame, "SetScale", function()
+						frame:UpdateBuffScaleAlpha()
+					end)
+
+					frame:UpdateBuffScaleAlpha()
+				end,
 			})
 		end
 
@@ -2630,7 +2714,7 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:IsEnabled("MINIMAP", false) then
 		MoveAny:RegisterWidget({
-			["name"] = "Minimap",
+			["name"] = "MinimapCluster",
 			["lstr"] = "LID_MINIMAP"
 		})
 	end

@@ -4,220 +4,56 @@ function MoveAny:InitMinimap()
 	if not MoveAny:IsEnabled("MINIMAP", false) then return end
 	if ElvUI then return end
 
+	if MultiBarRight then
+		MultiBarRight.OldSetScale = MultiBarRight.SetScale
+
+		function MultiBarRight:SetScale(scale)
+			if scale > 0 then
+				MultiBarRight:OldSetScale(scale)
+			end
+		end
+	end
+
+	if MultiBarLeft then
+		MultiBarLeft.OldSetScale = MultiBarLeft.SetScale
+
+		function MultiBarLeft:SetScale(scale)
+			if scale > 0 then
+				MultiBarLeft:OldSetScale(scale)
+			end
+		end
+	end
+
 	if MinimapToggleButton then
 		MinimapToggleButton:SetParent(MAHIDDEN)
-	end
-
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		if MinimapCluster then
-			hooksecurefunc(MinimapCluster, "SetPoint", function(sel, ...)
-				if sel.mc_setpoint then return end
-				sel.mc_setpoint = true
-				sel:ClearAllPoints()
-				sel:SetPoint("TOP", Minimap, "TOP", -5, 30)
-				sel.mc_setpoint = false
-			end)
-
-			hooksecurefunc(MinimapCluster, "SetScale", function(sel, ...)
-				if sel.mc_setscale then return end
-				sel.mc_setscale = true
-				sel:SetScale(Minimap:GetScale() * 1.1)
-				sel.mc_setscale = false
-			end)
-
-			Minimap:SetParent(MoveAny:GetMainPanel())
-			MinimapCluster:SetScale(Minimap:GetScale())
-			MinimapCluster:ClearAllPoints()
-			MinimapCluster:SetPoint("TOP", Minimap, "TOP", 0, 0)
-		end
-	else
-		if MinimapCluster then
-			hooksecurefunc(MinimapCluster, "SetPoint", function(sel, ...)
-				if sel.mc_setpoint then return end
-				sel.mc_setpoint = true
-				sel:ClearAllPoints()
-				sel:SetPoint("TOP", Minimap, "TOP", -15, 20)
-				sel.mc_setpoint = false
-			end)
-
-			hooksecurefunc(MinimapCluster, "SetScale", function(sel, ...)
-				if sel.mc_setscale then return end
-				sel.mc_setscale = true
-				sel:SetScale(Minimap:GetScale() * 1.1)
-				sel.mc_setscale = false
-			end)
-
-			Minimap:SetParent(MoveAny:GetMainPanel())
-			MinimapCluster:SetScale(Minimap:GetScale())
-			MinimapCluster:ClearAllPoints()
-			MinimapCluster:SetPoint("TOP", Minimap, "TOP", 0, 0)
-		end
-	end
-
-	if MinimapBackdrop then
-		for i, v in pairs({MinimapBackdrop:GetChildren()}) do
-			if v ~= Minimap then
-				v:SetParent(Minimap)
-			end
-		end
-
-		MinimapBackdrop:SetParent(MAHIDDEN)
-	end
-
-	local zoneTextBG = nil
-
-	for i, v in pairs({Minimap:GetChildren()}) do
-		for x, w in pairs(v) do
-			if x == "layoutTextureKit" then
-				zoneTextBG = v
-			end
-		end
-	end
-
-	if zoneTextBG then
-		zoneTextBG:ClearAllPoints()
-		zoneTextBG:SetPoint("TOP", Minimap, "TOP", 0, 32)
-	end
-
-	if MinimapBorder then
-		local sw, sh = Minimap:GetSize()
-		local texture = MinimapBorder:GetTexture()
-
-		local texcoord = {MinimapBorder:GetTexCoord()}
-
-		MinimapBorder = Minimap:CreateTexture("MinimapBorder2", "ARTWORK", nil, 1)
-		MinimapBorder:SetPoint("CENTER", Minimap, "CENTER", -6, -17)
-		MinimapBorder:SetTexture(texture)
-		MinimapBorder:SetSize(sw, sh)
-		MinimapBorder:SetTexCoord(unpack(texcoord))
-		MinimapBorder:SetScale(1.40)
 	end
 
 	if MinimapBorderTop then
 		MinimapBorderTop:SetParent(MAHIDDEN)
 	end
 
-	if MiniMapTracking and MiniMapTrackingButton then
-		MiniMapTrackingButton:ClearAllPoints()
-		MiniMapTrackingButton:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, -40)
-		MiniMapTrackingButton:SetParent(Minimap)
-		MiniMapTrackingButton:SetFrameLevel(5)
+	hooksecurefunc(Minimap, "SetAlpha", function()
+		local alpha = MoveAny:GetMainPanel():GetAlpha()
 
-		hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, ...)
-			local p1, _, p3, p4, p5 = sel:GetPoint()
-			sel:SetMovable(true)
+		if alpha == 0 then
+			if self.ma_setalpha then return end
+			self.ma_setalpha = true
+			Minimap:SetAlpha(0)
+			self.ma_setalpha = false
+		end
+	end)
 
-			if sel.SetUserPlaced and sel:IsMovable() then
-				sel:SetUserPlaced(false)
+	if MinimapBackdrop then
+		hooksecurefunc(MinimapBackdrop, "SetAlpha", function()
+			local alpha = MoveAny:GetMainPanel():GetAlpha()
+
+			if alpha == 0 then
+				if self.ma_setalpha then return end
+				self.ma_setalpha = true
+				MinimapBackdrop:SetAlpha(0)
+				self.ma_setalpha = false
 			end
-
-			MiniMapTracking:ClearAllPoints()
-			MiniMapTracking:SetPoint(p1, Minimap, p3, p4, p5)
 		end)
-
-		hooksecurefunc(MiniMapTracking, "SetPoint", function(sel, ...)
-			if sel.mmtsetpoint then return end
-			sel.mmtsetpoint = true
-			sel:ClearAllPoints()
-			sel:SetPoint("CENTER", MiniMapTrackingButton, "CENTER", 0, 0)
-			sel.mmtsetpoint = false
-		end)
-
-		MiniMapTracking:ClearAllPoints()
-		MiniMapTracking:SetPoint("CENTER", MiniMapTrackingButton, "CENTER", 0, 0)
-		MiniMapTracking:SetParent(MiniMapTrackingButton)
-		MiniMapTracking:SetFrameLevel(4)
-	elseif MiniMapTracking then
-		MiniMapTracking:ClearAllPoints()
-		MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -14, -20)
-		MiniMapTracking:SetParent(Minimap)
-	end
-
-	if TimeManagerClockButton and MoveAny:GetWoWBuild() ~= "RETAIL" then
-		TimeManagerClockButton:ClearAllPoints()
-		TimeManagerClockButton:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, -18)
-	end
-
-	if MinimapZoneTextButton then
-		MinimapZoneTextButton:SetParent(Minimap)
-		MinimapZoneTextButton:ClearAllPoints()
-		MinimapZoneTextButton:SetPoint("BOTTOM", Minimap, "TOP", 0, 12)
-	end
-
-	if MinimapZoomIn then
-		MinimapZoomIn:ClearAllPoints()
-		MinimapZoomIn:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 8, 8)
-	end
-
-	if MinimapZoomOut then
-		MinimapZoomOut:ClearAllPoints()
-		MinimapZoomOut:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -10, -10)
-	end
-
-	if GameTimeFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then
-		GameTimeFrame:SetParent(Minimap)
-		GameTimeFrame:ClearAllPoints()
-		GameTimeFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 30, 5)
-	end
-
-	if MiniMapWorldMapButton then
-		MiniMapWorldMapButton:ClearAllPoints()
-		MiniMapWorldMapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -6, 6)
-	end
-
-	if MiniMapInstanceDifficulty then
-		MiniMapInstanceDifficulty:ClearAllPoints()
-		MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, 0)
-	end
-
-	if MiniMapChallengeMode then
-		MiniMapChallengeMode:ClearAllPoints()
-		MiniMapChallengeMode:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, 0)
-	end
-
-	if MiniMapLFGFrame then
-		MiniMapLFGFrame:ClearAllPoints()
-		MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, 0)
-	end
-
-	if GarrisonLandingPageMinimapButton then
-		hooksecurefunc(GarrisonLandingPageMinimapButton, "SetPoint", function(sel, ...)
-			if IsAddOnLoaded("ImproveAny") then return end
-			if sel.iasetpoint then return end
-			sel.iasetpoint = true
-			sel:SetMovable(true)
-
-			if sel.SetUserPlaced and sel:IsMovable() then
-				sel:SetUserPlaced(false)
-			end
-
-			GarrisonLandingPageMinimapButton:ClearAllPoints()
-			GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -2, -30)
-			sel.iasetpoint = false
-		end)
-
-		GarrisonLandingPageMinimapButton:ClearAllPoints()
-		GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, -30)
-	end
-
-	if QueueStatusMinimapButton then
-		hooksecurefunc(QueueStatusMinimapButton, "SetPoint", function(sel, ...)
-			if IsAddOnLoaded("ImproveAny") then return end
-			if sel.iasetpoint then return end
-			sel.iasetpoint = true
-			sel:SetMovable(true)
-
-			if sel.SetUserPlaced and sel:IsMovable() then
-				sel:SetUserPlaced(false)
-			end
-
-			QueueStatusMinimapButton:ClearAllPoints()
-			QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, 2)
-			sel.iasetpoint = false
-		end)
-
-		QueueStatusMinimapButton:ClearAllPoints()
-		QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, 0)
 	end
 
 	local debugMinimap = false
