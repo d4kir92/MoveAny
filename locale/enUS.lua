@@ -167,6 +167,7 @@ function MoveAny:LangenUS()
 		["LID_READYCHECKLISTENERFRAME"] = "Ready Check Popup",
 		["LID_DISABLEMOVEMENT"] = "Disable Movement keybinds, when in MoveAny-EditMode",
 		["LID_CLICKTHROUGH"] = "Clickthrough",
+		["LID_MABUFFMODE"] = "Buff-Alignment",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

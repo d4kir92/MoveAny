@@ -161,6 +161,7 @@ function MoveAny:LangdeDE()
 		["LID_READYCHECKLISTENERFRAME"] = "Bereitschaftsprüfung-Popup",
 		["LID_DISABLEMOVEMENT"] = "Bewegungstastenbelegung deaktivieren, wenn im MoveAny-EditMode",
 		["LID_CLICKTHROUGH"] = "Durchklicken",
+		["LID_MABUFFMODE"] = "Stärkungszauber-Ausrichtung",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

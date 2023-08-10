@@ -120,13 +120,19 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 	return btn
 end
 
-function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
+function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
 	local slider = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate")
 	slider:SetWidth(parent:GetWidth() - 20)
 	slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 	slider.Low:SetText(vmin)
 	slider.High:SetText(vmax)
-	slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
+
+	if lanArray then
+		slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
+	else
+		slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
+	end
+
 	slider:SetMinMaxValues(vmin, vmax)
 	slider:SetObeyStepOnDrag(true)
 	slider:SetValueStep(steps)
@@ -137,7 +143,12 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 
 		if val then
 			MoveAny:SetEleOption(name, key, val)
-			slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. val)
+
+			if lanArray then
+				slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[val])
+			else
+				slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. val)
+			end
 
 			if func then
 				func()
@@ -477,9 +488,27 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			end)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
-			MoveAny:CreateSlider(content, 10, -20, name, "MABUFFLIMIT", 10, 1, 1, 20, MoveAny.UpdateBuffs)
-			MoveAny:CreateSlider(content, 10, -60, name, "MABUFFSPACINGX", 4, 1, 0, 30, MoveAny.UpdateBuffs)
-			MoveAny:CreateSlider(content, 10, -100, name, "MABUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateBuffs)
+			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
+			local y = -20
+
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				MoveAny:CreateSlider(content, 10, y, name, "MABUFFMODE", 0, 1, 0, 4, MoveAny.UpdateBuffs, {
+					[0] = "AUTO",
+					[1] = "TOPRIGHT",
+					[2] = "TOPLEFT",
+					[3] = "BOTTOMRIGHT",
+					[4] = "BOTTOMLEFT"
+				})
+
+				y = y - 40
+			end
+
+			MoveAny:CreateSlider(content, 10, y, name, "MABUFFLIMIT", 10, 1, 1, 20, MoveAny.UpdateBuffs)
+			y = y - 40
+			MoveAny:CreateSlider(content, 10, y, name, "MABUFFSPACINGX", 4, 1, 0, 30, MoveAny.UpdateBuffs)
+			y = y - 40
+			MoveAny:CreateSlider(content, 10, y, name, "MABUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateBuffs)
+			y = y - 40
 		end
 	end
 end

@@ -4,6 +4,32 @@ local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
 
+function MoveAny:GetBuffPosition(p1, p3)
+	MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] = MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] or 0
+
+	if MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 0 then
+		if p1 == "TOPLEFT" or p1 == "LEFT" then
+			return "TOPLEFT", "TOPLEFT"
+		elseif p1 == "TOPRIGHT" or p1 == "RIGHT" or p1 == "TOP" or p1 == "CENTER" then
+			return "TOPRIGHT", "TOPRIGHT"
+		elseif p1 == "BOTTOMLEFT" then
+			return "BOTTOMLEFT", "BOTTOMLEFT"
+		elseif p1 == "BOTTOMRIGHT" or p1 == "BOTTOM" then
+			return "BOTTOMRIGHT", "BOTTOMRIGHT"
+		end
+	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 1 then
+		return "TOPRIGHT", "TOPRIGHT"
+	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 2 then
+		return "TOPLEFT", "TOPLEFT"
+	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 3 then
+		return "BOTTOMRIGHT", "BOTTOMRIGHT"
+	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 4 then
+		return "BOTTOMLEFT", "BOTTOMLEFT"
+	end
+
+	return "TOPRIGHT", "TOPRIGHT"
+end
+
 function MoveAny:InitBuffBar()
 	if MoveAny:IsEnabled("BUFFS", false) then
 		local MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
@@ -41,12 +67,13 @@ function MoveAny:InitBuffBar()
 			end
 
 			function DebuffFrame:UpdatePoint()
-				local p1 = MABuffBar:GetPoint()
-				local left = p1 == "TOPLEFT" or p1 == "LEFT" or p1 == "BOTTOMLEFT"
+				local p1, _, p3 = MABuffBar:GetPoint()
+				local bp1 = MoveAny:GetBuffPosition(p1, p3)
+				local left = bp1 == "TOPLEFT" or bp1 == "LEFT" or bp1 == "BOTTOMLEFT"
 
 				if left then
 					DebuffFrame:ClearAllPoints()
-					DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -200)
+					DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(180 + 2 * MABUFFSPACINGY))
 				else
 					local x = 0
 
@@ -55,7 +82,7 @@ function MoveAny:InitBuffBar()
 					end
 
 					DebuffFrame:ClearAllPoints()
-					DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", x, -200)
+					DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", x, -(180 + 2 * MABUFFSPACINGY))
 				end
 
 				local olddb = nil
@@ -141,13 +168,14 @@ function MoveAny:InitBuffBar()
 
 		function MoveAny:UpdateBuffDirections()
 			local p1, _, p3, _, _ = MABuffBar:GetPoint()
+			local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
 			rel = "RIGHT"
 
-			if p1 == "TOPLEFT" then
+			if bp1 == "TOPLEFT" then
 				rel = "LEFT"
-			elseif p1 == "LEFT" then
+			elseif bp1 == "LEFT" then
 				rel = "LEFT"
-			elseif p1 == "BOTTOMLEFT" then
+			elseif bp1 == "BOTTOMLEFT" then
 				rel = "LEFT"
 			end
 
@@ -159,11 +187,11 @@ function MoveAny:InitBuffBar()
 
 			dirV = "BOTTOM"
 
-			if p3 == "BOTTOMLEFT" then
+			if bp3 == "BOTTOMLEFT" then
 				dirV = "TOP"
-			elseif p3 == "BOTTOM" then
+			elseif bp3 == "BOTTOM" then
 				dirV = "TOP"
-			elseif p3 == "BOTTOMRIGHT" then
+			elseif bp3 == "BOTTOMRIGHT" then
 				dirV = "TOP"
 			end
 		end
@@ -182,6 +210,7 @@ function MoveAny:InitBuffBar()
 
 				sel:SetParent(MABuffBar)
 				local p1, _, p3, _, _ = MABuffBar:GetPoint()
+				local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
 				local x = 0
 
 				if GetCVarBool("consolidateBuffs") then
@@ -190,10 +219,10 @@ function MoveAny:InitBuffBar()
 
 				if dirH == "LEFT" then
 					sel:ClearAllPoints()
-					sel:SetPoint(p1, MABuffBar, p3, x * -(30 + MABUFFSPACINGX), 0)
+					sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
 				else
 					sel:ClearAllPoints()
-					sel:SetPoint(p1, MABuffBar, p3, x * (30 + MABUFFSPACINGX), 0)
+					sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 				end
 
 				sel.setpoint_te1 = false
@@ -212,6 +241,7 @@ function MoveAny:InitBuffBar()
 
 				sel:SetParent(MABuffBar)
 				local p1, _, p3, _, _ = MABuffBar:GetPoint()
+				local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
 				local x = 1
 
 				if GetCVarBool("consolidateBuffs") then
@@ -226,10 +256,10 @@ function MoveAny:InitBuffBar()
 
 				if dirH == "LEFT" then
 					sel:ClearAllPoints()
-					sel:SetPoint(p1, MABuffBar, p3, x * -(30 + MABUFFSPACINGX), posy)
+					sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
 				else
 					sel:ClearAllPoints()
-					sel:SetPoint(p1, MABuffBar, p3, x * (30 + MABUFFSPACINGX), 0)
+					sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 				end
 
 				sel.setpoint_te2 = false
@@ -248,6 +278,7 @@ function MoveAny:InitBuffBar()
 
 				sel:SetParent(MABuffBar)
 				local p1, _, p3, _, _ = MABuffBar:GetPoint()
+				local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
 				local x = 2
 
 				if GetCVarBool("consolidateBuffs") then
@@ -256,10 +287,10 @@ function MoveAny:InitBuffBar()
 
 				if dirH == "LEFT" then
 					sel:ClearAllPoints()
-					sel:SetPoint(p1, MABuffBar, p3, -x * (30 + MABUFFSPACINGX), 0)
+					sel:SetPoint(bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
 				else
 					sel:ClearAllPoints()
-					sel:SetPoint(p1, MABuffBar, p3, x * (30 + MABUFFSPACINGX), 0)
+					sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 				end
 
 				sel.setpoint_te3 = false
@@ -318,6 +349,7 @@ function MoveAny:InitBuffBar()
 							if sel.setpoint_bbtn then return end
 							sel.setpoint_bbtn = true
 							local p1, _, p3, _, _ = MABuffBar:GetPoint()
+							local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
 							local sw2, sh2 = sel:GetSize()
 							local numBuffs = 1
 							local prevBuff = nil
@@ -366,13 +398,13 @@ function MoveAny:InitBuffBar()
 										end
 									end
 
-									sel:SetPoint(p1, MABuffBar, p3, posx, posy)
+									sel:SetPoint(bp1, MABuffBar, bp3, posx, posy)
 								else
 									if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
 										if dirV == "BOTTOM" then
-											sel:SetPoint(p1, MABuffBar, p3, 0, -cy * (sh2 + MABUFFSPACINGY))
+											sel:SetPoint(bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
 										else
-											sel:SetPoint(p1, MABuffBar, p3, 0, cy * (sh2 + MABUFFSPACINGY))
+											sel:SetPoint(bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
 										end
 									elseif prevBuff then
 										if rel == "RIGHT" then
