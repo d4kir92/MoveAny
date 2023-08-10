@@ -2,6 +2,32 @@ local _, MoveAny = ...
 local btnsize = 36
 local debuffs = {}
 
+function MoveAny:GetDebuffPosition(p1, p3)
+	MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] = MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] or 0
+
+	if MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 0 then
+		if p1 == "TOPLEFT" or p1 == "LEFT" then
+			return "TOPLEFT", "TOPLEFT"
+		elseif p1 == "TOPRIGHT" or p1 == "RIGHT" or p1 == "TOP" or p1 == "CENTER" then
+			return "TOPRIGHT", "TOPRIGHT"
+		elseif p1 == "BOTTOMLEFT" then
+			return "BOTTOMLEFT", "BOTTOMLEFT"
+		elseif p1 == "BOTTOMRIGHT" or p1 == "BOTTOM" then
+			return "BOTTOMRIGHT", "BOTTOMRIGHT"
+		end
+	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 1 then
+		return "TOPRIGHT", "TOPRIGHT"
+	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 2 then
+		return "TOPLEFT", "TOPLEFT"
+	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 3 then
+		return "BOTTOMRIGHT", "BOTTOMRIGHT"
+	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 4 then
+		return "BOTTOMLEFT", "BOTTOMLEFT"
+	end
+
+	return "TOPRIGHT", "TOPRIGHT"
+end
+
 function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled("DEBUFFS", false) then
 		MADebuffBar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
@@ -82,15 +108,16 @@ function MoveAny:InitDebuffBar()
 		local dirH = "LEFT"
 		local dirV = "BOTTOM"
 
-		function MAUpdateDebuffDirections()
+		function MoveAny:UpdateDebuffDirections()
 			local p1, _, p3, _, _ = MADebuffBar:GetPoint()
+			local bp1, bp3 = MoveAny:GetDebuffPosition(p1, p3)
 			rel = "RIGHT"
 
-			if p1 == "TOPLEFT" then
+			if bp1 == "TOPLEFT" then
 				rel = "LEFT"
-			elseif p1 == "LEFT" then
+			elseif bp1 == "LEFT" then
 				rel = "LEFT"
-			elseif p1 == "BOTTOMLEFT" then
+			elseif bp1 == "BOTTOMLEFT" then
 				rel = "LEFT"
 			end
 
@@ -102,19 +129,19 @@ function MoveAny:InitDebuffBar()
 
 			dirV = "BOTTOM"
 
-			if p3 == "BOTTOMLEFT" then
+			if bp3 == "BOTTOMLEFT" then
 				dirV = "TOP"
-			elseif p3 == "BOTTOM" then
+			elseif bp3 == "BOTTOM" then
 				dirV = "TOP"
-			elseif p3 == "BOTTOMRIGHT" then
+			elseif bp3 == "BOTTOMRIGHT" then
 				dirV = "TOP"
 			end
 		end
 
-		MAUpdateDebuffDirections()
+		MoveAny:UpdateDebuffDirections()
 
-		function MAUpdateDebuffs()
-			MAUpdateDebuffDirections()
+		function MoveAny:UpdateDebuffs()
+			MoveAny:UpdateDebuffDirections()
 
 			for i = 1, 32 do
 				local dbtn = _G["DebuffButton" .. i]
@@ -127,6 +154,7 @@ function MoveAny:InitDebuffBar()
 							if sel.setpoint_dbtn then return end
 							sel.setpoint_dbtn = true
 							local p1, _, p3, _, _ = MADebuffBar:GetPoint()
+							local bp1, bp3 = MoveAny:GetDebuffPosition(p1, p3)
 							local _, sh = sel:GetSize()
 							local id = i
 							local caly = (id - 0.1) / 10
@@ -135,16 +163,16 @@ function MoveAny:InitDebuffBar()
 
 							if i == 1 then
 								if rel == "RIGHT" then
-									sel:SetPoint(p1, MADebuffBar, p3, 0, 0)
+									sel:SetPoint(bp1, MADebuffBar, bp3, 0, 0)
 								else
-									sel:SetPoint(p1, MADebuffBar, p3, 0, 0)
+									sel:SetPoint(bp1, MADebuffBar, bp3, 0, 0)
 								end
 							else
 								if id % 10 == 1 then
 									if dirV == "BOTTOM" then
-										sel:SetPoint(p1, MADebuffBar, p3, 0, -cy * (sh + 10))
+										sel:SetPoint(bp1, MADebuffBar, bp3, 0, -cy * (sh + 10))
 									else
-										sel:SetPoint(p1, MADebuffBar, p3, 0, cy * (sh + 10))
+										sel:SetPoint(bp1, MADebuffBar, bp3, 0, cy * (sh + 10))
 									end
 								else
 									if rel == "RIGHT" then
@@ -166,12 +194,12 @@ function MoveAny:InitDebuffBar()
 
 		if MABuffBar then
 			hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...)
-				MAUpdateDebuffs()
+				MoveAny:UpdateDebuffs()
 			end)
 		end
 
 		hooksecurefunc(MADebuffBar, "SetPoint", function(sel, ...)
-			MAUpdateDebuffs()
+			MoveAny:UpdateDebuffs()
 		end)
 
 		local f = CreateFrame("FRAME")
@@ -182,11 +210,11 @@ function MoveAny:InitDebuffBar()
 				unit = ...
 
 				if unit and unit == "player" then
-					MAUpdateDebuffs()
+					MoveAny:UpdateDebuffs()
 				end
 			end
 		end)
 
-		C_Timer.After(1, MAUpdateDebuffs)
+		C_Timer.After(1, MoveAny.UpdateDebuffs)
 	end
 end

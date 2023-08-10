@@ -162,6 +162,10 @@ function MoveAny:LangdeDE()
 		["LID_DISABLEMOVEMENT"] = "Bewegungstastenbelegung deaktivieren, wenn im MoveAny-EditMode",
 		["LID_CLICKTHROUGH"] = "Durchklicken",
 		["LID_MABUFFMODE"] = "Stärkungszauber-Ausrichtung",
+		["LID_MADEBUFFLIMIT"] = "Schwächungszauber Grenze",
+		["LID_MADEBUFFSPACINGX"] = "Schwächungszauber Abstand Horizontal",
+		["LID_MADEBUFFSPACINGY"] = "Schwächungszauber Abstand Vertikal",
+		["LID_MADEBUFFMODE"] = "Schwächungszauber-Ausrichtung",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

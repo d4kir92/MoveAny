@@ -179,6 +179,10 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
 	end
 
+	if string.find(name, "MADebuffBar") then
+		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
+	end
+
 	CreateTabs(opt, tabs)
 
 	for i, tab in pairs(opt.tabs) do
@@ -509,6 +513,28 @@ function MoveAny:MenuOptions(opt, frame)
 			y = y - 40
 			MoveAny:CreateSlider(content, 10, y, name, "MABUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateBuffs)
 			y = y - 40
+		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
+			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
+			local y = -20
+
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFMODE", 0, 1, 0, 4, MoveAny.UpdateDebuffs, {
+					[0] = "AUTO",
+					[1] = "TOPRIGHT",
+					[2] = "TOPLEFT",
+					[3] = "BOTTOMRIGHT",
+					[4] = "BOTTOMLEFT"
+				})
+
+				y = y - 40
+			end
+
+			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFLIMIT", 10, 1, 1, 20, MoveAny.UpdateDebuffs)
+			y = y - 40
+			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFSPACINGX", 4, 1, 0, 30, MoveAny.UpdateDebuffs)
+			y = y - 40
+			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateDebuffs)
+			y = y - 40
 		end
 	end
 end
@@ -585,11 +611,6 @@ function MoveAny:RegisterWidget(tab)
 	local posy = tab.posy
 	local setup = tab.setup
 	tab.delay = tab.delay or 0.2
-
-	if tab.delay < 2 then
-		tab.delay = tab.delay + 0.2
-	end
-
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 

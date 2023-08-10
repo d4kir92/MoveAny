@@ -168,6 +168,10 @@ function MoveAny:LangenUS()
 		["LID_DISABLEMOVEMENT"] = "Disable Movement keybinds, when in MoveAny-EditMode",
 		["LID_CLICKTHROUGH"] = "Clickthrough",
 		["LID_MABUFFMODE"] = "Buff-Alignment",
+		["LID_MADEBUFFLIMIT"] = "Debuff limit",
+		["LID_MADEBUFFSPACINGX"] = "Debuff Spacing Horizontal",
+		["LID_MADEBUFFSPACINGY"] = "Debuff Spacing Vertical",
+		["LID_MADEBUFFMODE"] = "Debuff-Alignment",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

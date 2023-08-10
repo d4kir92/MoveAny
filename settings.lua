@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.2")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.3")
 }
 
 local MAMMBTN = nil
@@ -1988,27 +1988,6 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsEnabled("BUFFS", false) then
-			MoveAny:RegisterWidget({
-				["name"] = "MABuffBar",
-				["lstr"] = "LID_BUFFS"
-			})
-		end
-
-		if MoveAny:IsEnabled("DEBUFFS", false) then
-			MoveAny:RegisterWidget({
-				["name"] = "MADebuffBar",
-				["lstr"] = "LID_DEBUFFS"
-			})
-		end
-
-		if MoveAny:IsEnabled("GAMETOOLTIP", false) then
-			MoveAny:RegisterWidget({
-				["name"] = "MAGameTooltip",
-				["lstr"] = "LID_GAMETOOLTIP"
-			})
-		end
-
 		if MoveAny:IsEnabled("PETBAR", false) then
 			if PetActionBar then
 				MoveAny:RegisterWidget({
@@ -2088,7 +2067,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsEnabled("TALKINGHEAD", false) then
+		if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
 			MoveAny:RegisterWidget({
 				["name"] = "TalkingHeadFrame",
 				["lstr"] = "LID_TALKINGHEAD",
@@ -2470,57 +2449,6 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MoveAny:IsEnabled("MAFPSFrame", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "MAFPSFrame",
-			["lstr"] = "LID_MAFPSFrame"
-		})
-	end
-
-	C_Timer.After(1, function()
-		if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", true) then
-			MoveAny:RegisterWidget({
-				["name"] = "IAMoneyBar",
-				["lstr"] = "LID_MONEYBAR"
-			})
-		end
-
-		if IATokenBar and MoveAny:IsEnabled("TOKENBAR", true) then
-			MoveAny:RegisterWidget({
-				["name"] = "IATokenBar",
-				["lstr"] = "LID_TOKENBAR"
-			})
-		end
-
-		if IAILVLBar and MoveAny:IsEnabled("IAILVLBAR", true) then
-			MoveAny:RegisterWidget({
-				["name"] = "IAILVLBar",
-				["lstr"] = "LID_IAILVLBAR"
-			})
-		end
-
-		if IAPingFrame and MoveAny:IsEnabled("IAPingFrame", true) then
-			MoveAny:RegisterWidget({
-				["name"] = "IAPingFrame",
-				["lstr"] = "LID_IAPingFrame"
-			})
-		end
-
-		if IACoordsFrame and MoveAny:IsEnabled("IACoordsFrame", true) then
-			MoveAny:RegisterWidget({
-				["name"] = "IACoordsFrame",
-				["lstr"] = "LID_IACoordsFrame"
-			})
-		end
-
-		if IASkills and MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
-			MoveAny:RegisterWidget({
-				["name"] = "IASkills",
-				["lstr"] = "LID_IASKILLS"
-			})
-		end
-	end)
-
 	if IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
 		C_Timer.After(1, function()
 			local ktb = _G["!KalielsTrackerButtons"]
@@ -2593,7 +2521,111 @@ function MoveAny:LoadAddon()
 	end
 
 	C_Timer.After(1, function()
-		if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) then
+		if MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) and UIWidgetPowerBarContainerFrame then
+			MoveAny:RegisterWidget({
+				["name"] = "UIWidgetPowerBarContainerFrame",
+				["lstr"] = "LID_UIWIDGETPOWERBAR",
+				["sw"] = 36 * 6,
+				["sh"] = 36 * 1
+			})
+		end
+
+		if MoveAny:IsEnabled("POWERBAR", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "PlayerPowerBarAlt",
+				["lstr"] = "LID_POWERBAR",
+				["sw"] = 36 * 6,
+				["sh"] = 36 * 1
+			})
+		end
+
+		if MoveAny:IsEnabled("MICROMENU", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MAMenuBar",
+				["lstr"] = "LID_MICROMENU"
+			})
+		end
+
+		if MoveAny:IsEnabled("BAGS", false) then
+			C_Timer.After(1, function()
+				MoveAny:RegisterWidget({
+					["name"] = "BagsBar",
+					["lstr"] = "LID_BAGS"
+				})
+			end)
+		end
+
+		if MoveAny:IsEnabled("BUFFS", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MABuffBar",
+				["lstr"] = "LID_BUFFS"
+			})
+		end
+
+		if MoveAny:IsEnabled("DEBUFFS", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MADebuffBar",
+				["lstr"] = "LID_DEBUFFS"
+			})
+		end
+
+		if MoveAny:IsEnabled("GAMETOOLTIP", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MAGameTooltip",
+				["lstr"] = "LID_GAMETOOLTIP"
+			})
+		end
+
+		if MoveAny:IsEnabled("MAFPSFrame", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MAFPSFrame",
+				["lstr"] = "LID_MAFPSFrame"
+			})
+		end
+
+		if IAMoneyBar and MoveAny:IsEnabled("MONEYBAR", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IAMoneyBar",
+				["lstr"] = "LID_MONEYBAR"
+			})
+		end
+
+		if IATokenBar and MoveAny:IsEnabled("TOKENBAR", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IATokenBar",
+				["lstr"] = "LID_TOKENBAR"
+			})
+		end
+
+		if IAILVLBar and MoveAny:IsEnabled("IAILVLBAR", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IAILVLBar",
+				["lstr"] = "LID_IAILVLBAR"
+			})
+		end
+
+		if IAPingFrame and MoveAny:IsEnabled("IAPingFrame", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IAPingFrame",
+				["lstr"] = "LID_IAPingFrame"
+			})
+		end
+
+		if IACoordsFrame and MoveAny:IsEnabled("IACoordsFrame", true) then
+			MoveAny:RegisterWidget({
+				["name"] = "IACoordsFrame",
+				["lstr"] = "LID_IACoordsFrame"
+			})
+		end
+
+		if IASkills and MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
+			MoveAny:RegisterWidget({
+				["name"] = "IASkills",
+				["lstr"] = "LID_IASKILLS"
+			})
+		end
+
+		if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) and UIWidgetTopCenterContainerFrame then
 			MoveAny:RegisterWidget({
 				["name"] = "UIWidgetTopCenterContainerFrame",
 				["lstr"] = "LID_UIWIDGETTOPCENTER",
@@ -2603,7 +2635,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) then
+		if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) and UIWidgetBelowMinimapContainerFrame then
 			MoveAny:RegisterWidget({
 				["name"] = "UIWidgetBelowMinimapContainerFrame",
 				["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
@@ -2692,24 +2724,6 @@ function MoveAny:LoadAddon()
 			["userplaced"] = true,
 			["secure"] = true
 		})
-	end
-
-	-- RIGHT
-	-- BOTTOMRIGHT
-	if MoveAny:IsEnabled("MICROMENU", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "MAMenuBar",
-			["lstr"] = "LID_MICROMENU"
-		})
-	end
-
-	if MoveAny:IsEnabled("BAGS", false) then
-		C_Timer.After(4, function()
-			MoveAny:RegisterWidget({
-				["name"] = "BagsBar",
-				["lstr"] = "LID_BAGS"
-			})
-		end)
 	end
 
 	if MoveAny:IsEnabled("MINIMAP", false) then
@@ -2854,24 +2868,6 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "UIWidgetPowerBarContainerFrame",
-			["lstr"] = "LID_UIWIDGETPOWERBAR",
-			["sw"] = 36 * 6,
-			["sh"] = 36 * 1
-		})
-	end
-
-	if MoveAny:IsEnabled("POWERBAR", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "PlayerPowerBarAlt",
-			["lstr"] = "LID_POWERBAR",
-			["sw"] = 36 * 6,
-			["sh"] = 36 * 1
-		})
-	end
-
 	if MoveAny:IsEnabled("EventToastManagerFrame", false) then
 		MoveAny:RegisterWidget({
 			["name"] = "EventToastManagerFrame",
@@ -2885,28 +2881,28 @@ function MoveAny:LoadAddon()
 		LoadAddOn("Blizzard_ArchaeologyUI")
 	end
 
-	if MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "ArcheologyDigsiteProgressBar",
-			["lstr"] = "LID_ARCHEOLOGYDIGSITEPROGRESSBAR",
-		})
-	end
-
-	if MoveAny:IsEnabled("UIERRORSFRAME", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "UIErrorsFrame",
-			["lstr"] = "LID_UIERRORSFRAME",
-		})
-	end
-
-	if MoveAny:IsEnabled("BOSSBANNER", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "BossBanner",
-			["lstr"] = "LID_BOSSBANNER",
-		})
-	end
-
 	C_Timer.After(1, function()
+		if MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) and ARCHEOLOGYDIGSITEPROGRESSBAR then
+			MoveAny:RegisterWidget({
+				["name"] = "ArcheologyDigsiteProgressBar",
+				["lstr"] = "LID_ARCHEOLOGYDIGSITEPROGRESSBAR",
+			})
+		end
+
+		if MoveAny:IsEnabled("UIERRORSFRAME", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "UIErrorsFrame",
+				["lstr"] = "LID_UIERRORSFRAME",
+			})
+		end
+
+		if MoveAny:IsEnabled("BOSSBANNER", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "BossBanner",
+				["lstr"] = "LID_BOSSBANNER",
+			})
+		end
+
 		if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
 			local glfsw, glfsh = 100, 100
 
@@ -2973,9 +2969,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_BONUSROLLFRAME",
 			})
 		end
-	end)
 
-	C_Timer.After(1, function()
 		if SpellActivationOverlayFrame and MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "SpellActivationOverlayFrame",
