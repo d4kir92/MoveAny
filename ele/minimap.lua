@@ -4,18 +4,6 @@ function MoveAny:InitMinimap()
 	if not MoveAny:IsEnabled("MINIMAP", false) then return end
 	if ElvUI then return end
 
-	if MultiBarRight then
-		function MultiBarRight:IsInDefaultPosition()
-			return false
-		end
-	end
-
-	if MultiBarLeft then
-		function MultiBarLeft:IsInDefaultPosition()
-			return false
-		end
-	end
-
 	if MinimapToggleButton then
 		MinimapToggleButton:SetParent(MAHIDDEN)
 	end
