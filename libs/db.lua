@@ -668,12 +668,20 @@ function string.startswith(str, prefix)
 	return str:sub(1, #prefix) == prefix
 end
 
+local function is_full_caps(text)
+	for character in text:gmatch("%S") do
+		if character:upper() ~= character then return false end
+	end
+
+	return true
+end
+
 function MoveAny:FixEditMode()
 	local rig = 0
 	local wro = 0
 
 	for i, v in pairs(_G) do
-		if v ~= nil and type(v) == "table" and v.systemInfo ~= nil and type(v.systemInfo) == "table" and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil then
+		if v ~= nil and i ~= "L" and i ~= "G" and type(v) == "table" and v.GetPoint ~= nil and v.systemInfo ~= nil and type(v.systemInfo) == "table" and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil and not is_full_caps(i) then
 			if string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
 				_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
 				EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])

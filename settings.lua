@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.3")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.4")
 }
 
 local MAMMBTN = nil
@@ -33,6 +33,7 @@ function MoveAny:AddToEMMapForced(key)
 end
 
 MoveAny:AddToEMMapForced("Minimap")
+MoveAny:AddToEMMapForced("MinimapCluster")
 MoveAny:AddToEMMapForced("PlayerFrame")
 MoveAny:AddToEMMapForced("ObjectiveTrackerFrame")
 MoveAny:AddToEMMapForced("QuestTracker")
@@ -2726,12 +2727,14 @@ function MoveAny:LoadAddon()
 		})
 	end
 
-	if MoveAny:IsEnabled("MINIMAP", false) then
-		MoveAny:RegisterWidget({
-			["name"] = "MinimapCluster",
-			["lstr"] = "LID_MINIMAP"
-		})
-	end
+	C_Timer.After(1, function()
+		if MoveAny:IsEnabled("MINIMAP", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MinimapCluster",
+				["lstr"] = "LID_MINIMAP"
+			})
+		end
+	end)
 
 	local gtp4 = nil
 	local gtp5 = nil
