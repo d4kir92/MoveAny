@@ -3,7 +3,7 @@
 ## Interface-Wrath: 30402
 ## Interface: 100105
 
-## Version: 1.6.4
+## Version: 1.6.5
 ## Title: MoveAny by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR

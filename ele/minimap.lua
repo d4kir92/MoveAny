@@ -5,22 +5,14 @@ function MoveAny:InitMinimap()
 	if ElvUI then return end
 
 	if MultiBarRight then
-		MultiBarRight.OldSetScale = MultiBarRight.SetScale
-
-		function MultiBarRight:SetScale(scale)
-			if scale > 0 then
-				MultiBarRight:OldSetScale(scale)
-			end
+		function MultiBarRight:IsInDefaultPosition()
+			return false
 		end
 	end
 
 	if MultiBarLeft then
-		MultiBarLeft.OldSetScale = MultiBarLeft.SetScale
-
-		function MultiBarLeft:SetScale(scale)
-			if scale > 0 then
-				MultiBarLeft:OldSetScale(scale)
-			end
+		function MultiBarLeft:IsInDefaultPosition()
+			return false
 		end
 	end
 
