@@ -28,41 +28,41 @@ MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
 --[[ HIDEPANEL ]]
 --[[ NEW ]]
-local Test = CreateFrame("Frame")
-Test:SetAllPoints(UIParent)
-Test.unit = "player"
-Test.auraRows = 0
+local MAUIP = CreateFrame("Frame", "UIParent")
+MAUIP:SetAllPoints(UIParent)
+MAUIP.unit = "player"
+MAUIP.auraRows = 0
 
 hooksecurefunc(UIParent, "SetScale", function(self, scale)
-	Test:SetScale(scale)
+	MAUIP:SetScale(scale)
 end)
 
-Test:SetScale(UIParent:GetScale())
+MAUIP:SetScale(UIParent:GetScale())
 
 hooksecurefunc(UIParent, "SetAlpha", function(self, alpha)
-	Test:SetAlpha(alpha)
+	MAUIP:SetAlpha(alpha)
 end)
 
-Test:SetAlpha(UIParent:GetAlpha())
+MAUIP:SetAlpha(UIParent:GetAlpha())
 
 hooksecurefunc(UIParent, "Show", function(self)
-	Test:SetAlpha(1)
+	MAUIP:SetAlpha(1)
 end)
 
 hooksecurefunc(UIParent, "Hide", function(self)
-	Test:SetAlpha(0)
+	MAUIP:SetAlpha(0)
 end)
 
 hooksecurefunc(_G, "SetUIVisibility", function(show)
 	if show then
-		Test:SetAlpha(1)
+		MAUIP:SetAlpha(1)
 	else
-		Test:SetAlpha(0)
+		MAUIP:SetAlpha(0)
 	end
 end)
 
 function MoveAny:GetMainPanel()
-	return Test
+	return MAUIP
 end
 
 --[[ NEW ]]
