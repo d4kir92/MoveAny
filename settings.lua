@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.7")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.8")
 }
 
 local MAMMBTN = nil
@@ -1608,6 +1608,14 @@ function MoveAny:LoadAddon()
 	MoveAny.init = true
 	local _, class = UnitClass("player")
 
+	if IsAddOnLoaded("Dominos") then
+		MoveAny:MSG("Dominos Detected, please make sure Dominos Elements are disabled in MoveAny!")
+	end
+
+	if IsAddOnLoaded("Bartender4") then
+		MoveAny:MSG("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!")
+	end
+
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG("DON'T use MoveAndImprove, when you use MoveAny")
 	end
@@ -2540,20 +2548,22 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsEnabled("MICROMENU", false) then
-			MoveAny:RegisterWidget({
-				["name"] = "MAMenuBar",
-				["lstr"] = "LID_MICROMENU"
-			})
-		end
-
-		if MoveAny:IsEnabled("BAGS", false) then
-			C_Timer.After(1, function()
+		if not IsAddOnLoaded("Dominos") then
+			if MoveAny:IsEnabled("MICROMENU", false) then
 				MoveAny:RegisterWidget({
-					["name"] = "BagsBar",
-					["lstr"] = "LID_BAGS"
+					["name"] = "MAMenuBar",
+					["lstr"] = "LID_MICROMENU"
 				})
-			end)
+			end
+
+			if MoveAny:IsEnabled("BAGS", false) then
+				C_Timer.After(1, function()
+					MoveAny:RegisterWidget({
+						["name"] = "BagsBar",
+						["lstr"] = "LID_BAGS"
+					})
+				end)
+			end
 		end
 
 		if MoveAny:IsEnabled("BUFFS", false) then
@@ -3269,12 +3279,14 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny.InitMicroMenu then
-		MoveAny:InitMicroMenu()
-	end
+	if not IsAddOnLoaded("Dominos") then
+		if MoveAny.InitMicroMenu then
+			MoveAny:InitMicroMenu()
+		end
 
-	if MoveAny.InitBags then
-		MoveAny:InitBags()
+		if MoveAny.InitBags then
+			MoveAny:InitBags()
+		end
 	end
 
 	if MoveAny.InitMAFPSFrame then
