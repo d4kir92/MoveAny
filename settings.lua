@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.8")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.9")
 }
 
 local MAMMBTN = nil
@@ -430,7 +430,10 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "QUESTTRACKER", false)
 		AddCheckBox(posx, "PARTYFRAME", false)
 		AddCheckBox(posx, "MAPETFRAME", false)
-		AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames")
+
+		if BossTargetFrameContainer then
+			AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames")
+		end
 
 		if MainStatusTrackingBarContainer then
 			AddCheckBox(posx, "MainStatusTrackingBarContainer", false)
@@ -2719,12 +2722,14 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) then
+	if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) and BossTargetFrameContainer then
 		MoveAny:RegisterWidget({
 			["name"] = "BossTargetFrameContainer",
 			["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
 			["userplaced"] = true,
-			["secure"] = true
+			["secure"] = true,
+			["sw"] = 214,
+			["sh"] = 305
 		})
 	end
 
