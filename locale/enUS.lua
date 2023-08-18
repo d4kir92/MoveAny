@@ -137,6 +137,7 @@ function MoveAny:LangenUS()
 		["LID_COMBOPOINTPLAYERFRAME"] = "Combo Points",
 		["LID_PARTYFRAME"] = "Party Frame",
 		["LID_PARTYMEMBERFRAME"] = "Party Member Frame %s",
+		["LID_COMPACTRAIDFRAMECONTAINER"] = "RaidFrame",
 		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Frames",
 		["LID_FLIPPED"] = "Flipped",
 		["LID_GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",

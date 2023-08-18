@@ -628,6 +628,25 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
+	C_Timer.After(0, function()
+		enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
+		enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
+
+		if enabled1 or enabled2 then
+			if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+				MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
+
+				return
+			end
+
+			if not forced1 and not forced2 then
+				MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
+
+				return
+			end
+		end
+	end)
+
 	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
 		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil
 	end

@@ -131,6 +131,7 @@ function MoveAny:LangdeDE()
 		["LID_COMBOPOINTPLAYERFRAME"] = "Kombopunkte",
 		["LID_PARTYFRAME"] = "Gruppenfenster",
 		["LID_PARTYMEMBERFRAME"] = "Gruppenmitgliedfenster %s",
+		["LID_COMPACTRAIDFRAMECONTAINER"] = "Schlachtzugfenster",
 		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Fenster",
 		["LID_FLIPPED"] = "Umgedreht",
 		["LID_GHOSTFRAME"] = "Geisterfenster (Teleport zum Friedhof)",
