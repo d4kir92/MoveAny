@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.11")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.12")
 }
 
 local MAMMBTN = nil
@@ -129,6 +129,12 @@ function MoveAny:IsInEditModeEnabled(val)
 	return false, false
 end
 
+local lastSelected = nil
+
+function MoveAny:GetLastSelected()
+	return lastSelected
+end
+
 local function AddCategory(key)
 	if cas[key] == nil then
 		cas[key] = CreateFrame("Frame", key .. "_Category", MALock.SC)
@@ -158,6 +164,7 @@ end
 local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 	local bShowReload = showReload
 	local bGreyed = false
+	local lkey = key
 
 	if bShowReload == nil then
 		bShowReload = true
@@ -166,30 +173,6 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 	if val == nil then
 		MoveAny:MSG("Missing Value For: " .. tostring(key))
 		val = true
-	end
-
-	local lstr = MoveAny:GT("LID_" .. key)
-
-	if id then
-		lstr = format(lstr, id)
-	end
-
-	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(key)
-	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(editModeEnum)
-
-	if enabled1 or enabled2 then
-		if forced1 or forced2 then
-			lstr = lstr .. " |cFFFF0000" .. MoveAny:GT("LID_CANBREAKBECAUSEOFEDITMODE")
-		else
-			lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT("LID_ISENABLEDINEDITMODE")
-		end
-	end
-
-	if (EMMap[key] or EMMapForced[key]) and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
-		bGreyed = true
-		lstr = "(" .. MoveAny:GT("LID_EDITMODE") .. ") |c88888888" .. lstr
-	else
-		lstr = "|cFFFFFFFF" .. lstr
 	end
 
 	if id then
@@ -202,12 +185,55 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		cb:SetSize(24, 24)
 		cb:SetChecked(MoveAny:IsEnabled(key, val, true))
 		cb.func = func or nil
+		cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
+		cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
+
+		function cb:UpdateText(checked)
+			checked = checked or false
+			local lstr = MoveAny:GT("LID_" .. lkey)
+
+			if id then
+				lstr = format(lstr, id)
+			end
+
+			local ele = MoveAny:GetSelectEleName("LID_" .. key)
+
+			if ele and _G[ele .. "_DRAG"] and MoveAny:GetCurrentEle() == _G[ele .. "_DRAG"] then
+				lstr = "|cFFFFFF00" .. lstr .. "|r"
+				MoveAny:ResetSelectedText()
+				lastSelected = cb
+			end
+
+			local enabled1, forced1 = MoveAny:IsInEditModeEnabled(key)
+			local enabled2, forced2 = MoveAny:IsInEditModeEnabled(editModeEnum)
+
+			if enabled1 or enabled2 then
+				if forced1 or forced2 then
+					lstr = lstr .. " |cFFFF0000" .. MoveAny:GT("LID_CANBREAKBECAUSEOFEDITMODE")
+				else
+					lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT("LID_ISENABLEDINEDITMODE")
+				end
+			end
+
+			if (EMMap[key] or EMMapForced[key]) and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+				bGreyed = true
+				lstr = "(" .. MoveAny:GT("LID_EDITMODE") .. ") |c88888888" .. lstr
+			else
+				lstr = "|cFFFFFFFF" .. lstr
+			end
+
+			if checked then
+				cb.f:SetText(format("[%s] %s", MoveAny:GT("LID_NEEDSARELOAD"), lstr))
+			else
+				cb.f:SetText(lstr)
+			end
+		end
 
 		cb:SetScript("OnClick", function(sel)
 			MoveAny:SetEnabled(key, sel:GetChecked())
 
 			if bShowReload and sel:GetChecked() and sel.f then
-				sel.f:SetText(format("[%s] %s", MoveAny:GT("LID_NEEDSARELOAD"), lstr))
+				cb:UpdateText(true)
 			end
 
 			if cb.func then
@@ -228,14 +254,12 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 
 			if ele then
 				MoveAny:SelectEle(_G[ele .. "_DRAG"])
+				cb:UpdateText()
 			end
 		end)
-
-		cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
-		cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-		cb.f:SetText(lstr)
 	end
 
+	cbs[key]:UpdateText()
 	cbs[key]:ClearAllPoints()
 
 	if bGreyed then
@@ -244,7 +268,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		cbs[key]:SetEnabled(true)
 	end
 
-	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(lstr), strlower(searchStr)) then
+	if key == "EDITMODE" or strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:GT("LID_" .. lkey)), strlower(searchStr)) then
 		cbs[key]:Show()
 		cbs[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
 		posy = posy - 24
@@ -665,9 +689,13 @@ function MoveAny:InitMALock()
 	end
 
 	MALock.Search = CreateFrame("EditBox", "MALock_Search", MALock, "InputBoxTemplate")
-	MALock.Search:SetPoint("TOPLEFT", MALock, "TOPLEFT", 12, -26)
-	MALock.Search:SetSize(sw - 2 * br - br - 100, 24)
 	MALock.Search:SetAutoFocus(false)
+	MALock.Search.f = MALock.Search:CreateFontString(nil, nil, "GameFontNormal")
+	MALock.Search.f:SetText(MoveAny:GT("LID_SEARCH") .. ":")
+	local searchLen = MALock.Search.f:GetStringWidth() + 10
+	MALock.Search:SetPoint("TOPLEFT", MALock, "TOPLEFT", 12 + searchLen, -26)
+	MALock.Search:SetSize(sw - 2 * br - br - 100 - searchLen, 24)
+	MALock.Search.f:SetPoint("RIGHT", MALock.Search, "LEFT", -10, 0)
 
 	MALock.Search:SetScript("OnTextChanged", function(sel, ...)
 		searchStr = MALock.Search:GetText()
@@ -2354,8 +2382,8 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "CompactRaidFrameContainer",
 				["lstr"] = "LID_COMPACTRAIDFRAMECONTAINER",
-				["sw"] = 100,
-				["sh"] = 100
+				["sw"] = 360,
+				["sh"] = 288
 			})
 		end
 	end

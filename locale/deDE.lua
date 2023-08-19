@@ -167,6 +167,7 @@ function MoveAny:LangdeDE()
 		["LID_MADEBUFFSPACINGX"] = "Schwächungszauber Abstand Horizontal",
 		["LID_MADEBUFFSPACINGY"] = "Schwächungszauber Abstand Vertikal",
 		["LID_MADEBUFFMODE"] = "Schwächungszauber-Ausrichtung",
+		["LID_SEARCH"] = "Suche",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

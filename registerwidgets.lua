@@ -559,6 +559,14 @@ end
 
 local ses = {}
 
+function MoveAny:ResetSelectedText()
+	local cb = MoveAny:GetLastSelected()
+
+	if cb then
+		cb:UpdateText()
+	end
+end
+
 function MoveAny:ClearSelectEle()
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))

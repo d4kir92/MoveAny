@@ -173,6 +173,7 @@ function MoveAny:LangenUS()
 		["LID_MADEBUFFSPACINGX"] = "Debuff Spacing Horizontal",
 		["LID_MADEBUFFSPACINGY"] = "Debuff Spacing Vertical",
 		["LID_MADEBUFFMODE"] = "Debuff-Alignment",
+		["LID_SEARCH"] = "Search",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
