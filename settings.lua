@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.12")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.13")
 }
 
 local MAMMBTN = nil
@@ -455,7 +455,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "QUESTTRACKER", false)
 		AddCheckBox(posx, "MAPETFRAME", false)
 
-		if PartyFrame then
+		if PartyFrame or PartyMemberFrame1 then
 			AddCheckBox(posx, "PARTYFRAME", false, nil, nil, "ShowPartyFrames")
 		end
 
