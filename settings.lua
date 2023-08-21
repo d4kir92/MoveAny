@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.13")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.14")
 }
 
 local MAMMBTN = nil
@@ -3085,17 +3085,19 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("TOTEMBAR", false) and MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
+	if MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 		if MultiCastActionBarFrame then
 			MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel())
 		end
 
-		MoveAny:RegisterWidget({
-			["name"] = "MultiCastActionBarFrame",
-			["lstr"] = "LID_TOTEMBAR",
-			["userplaced"] = true,
-			["secure"] = true
-		})
+		if MoveAny:IsEnabled("TOTEMBAR", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "MultiCastActionBarFrame",
+				["lstr"] = "LID_TOTEMBAR",
+				["userplaced"] = true,
+				["secure"] = true
+			})
+		end
 	end
 
 	if MoveAny:IsEnabled("ALERTFRAME", false) then
