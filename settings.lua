@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.14")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.15")
 }
 
 local MAMMBTN = nil
@@ -1633,12 +1633,14 @@ function MoveAny:LoadAddon()
 	MoveAny.init = true
 	local _, class = UnitClass("player")
 
-	if IsAddOnLoaded("Dominos") then
-		MoveAny:MSG("Dominos Detected, please make sure Dominos Elements are disabled in MoveAny!")
-	end
+	if MoveAny:IsEnabled("SHOWTIPS", true) then
+		if IsAddOnLoaded("Dominos") then
+			MoveAny:MSG("Dominos Detected, please make sure Dominos Elements are disabled in MoveAny!")
+		end
 
-	if IsAddOnLoaded("Bartender4") then
-		MoveAny:MSG("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!")
+		if IsAddOnLoaded("Bartender4") then
+			MoveAny:MSG("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!")
+		end
 	end
 
 	if IsAddOnLoaded("D4KiR MoveAndImprove") then
