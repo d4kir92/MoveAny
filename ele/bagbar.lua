@@ -140,9 +140,12 @@ function MoveAny:InitBags()
 
 			if NT and bagF and NT.scalesetup == nil then
 				NT.scalesetup = true
-				local sw, sh = bagF:GetSize()
-				local scale = 1.67
-				NT:SetSize(sw * scale, sh * scale)
+
+				if NT:GetTexture() == 130841 then
+					local sw, sh = bagF:GetSize()
+					local scale = 1.66
+					NT:SetSize(sw * scale, sh * scale)
+				end
 			end
 		end
 	end)
