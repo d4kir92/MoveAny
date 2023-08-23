@@ -95,7 +95,7 @@ function MoveAny:InitBags()
 		BagsBar:SetSize(100, 100)
 	end
 
-	if MoveAny:IsEnabled("BAGS", false) then
+	if MoveAny:IsEnabled("BAGS", false) and BagsBar then
 		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
 			MicroButtonAndBagsBar.MicroBagBar:Hide()
 		end
@@ -115,10 +115,6 @@ function MoveAny:InitBags()
 			BagsBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
-			MainMenuBarBackpackButtonNormalTexture:Hide()
-		end
-
 		for i, mbname in pairs(BAGS) do
 			local bb = _G[mbname]
 
@@ -131,27 +127,23 @@ function MoveAny:InitBags()
 				end)
 
 				bb:Show()
-				local border = _G[mbname .. "NormalTexture"]
-
-				if border then
-					hooksecurefunc(border, "Show", function(sel)
-						sel:Hide()
-					end)
-
-					border:Hide()
-
-					hooksecurefunc(border, "SetAlpha", function(sel, alpha)
-						if sel.iasetalpha then return end
-						sel.iasetalpha = true
-						sel:SetAlpha(0)
-						sel.iasetalpha = false
-					end)
-
-					border:SetAlpha(0)
-				end
 			end
 		end
 
 		MoveAny:UpdateBags()
 	end
+
+	C_Timer.After(1, function()
+		for i, v in pairs(BAGS) do
+			local bagF = _G[v]
+			local NT = _G[v .. "NormalTexture"]
+
+			if NT and bagF and NT.scalesetup == nil then
+				NT.scalesetup = true
+				local sw, sh = bagF:GetSize()
+				local scale = 1.67
+				NT:SetSize(sw * scale, sh * scale)
+			end
+		end
+	end)
 end
