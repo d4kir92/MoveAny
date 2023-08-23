@@ -77,7 +77,7 @@ end
 
 function MoveAny:FrameDragInfo(c)
 	if c > 0 then
-		if IsMouseButtonDown("RightButton") or IsMouseButtonDown("LeftButton") or IsMouseButtonDown("MiddleButton") or IsMouseButtonDown("Button4") or IsMouseButtonDown("Button5") then
+		if IsMouseButtonDown("RightButton") or IsMouseButtonDown("LeftButton") or IsMouseButtonDown("MiddleButton") then
 			C_Timer.After(0.01, function()
 				MoveAny:FrameDragInfo(c - 1)
 			end)
@@ -91,7 +91,7 @@ function MoveAny:FrameDragInfo(c)
 			if MoveAny:IsEnabled("FRAMESSHIFTDRAG", false) then
 				MoveAny:MSG(MoveAny:GT("LID_FRAMESSHIFTDRAG") .. ".")
 			end
-		elseif IsMouseButtonDown("MiddleButton") or IsMouseButtonDown("Button4") or IsMouseButtonDown("Button5") then
+		elseif IsMouseButtonDown("MiddleButton") then
 			if MoveAny:IsEnabled("FRAMESSHIFTRESET", false) then
 				MoveAny:MSG(MoveAny:GT("LID_FRAMESSHIFTRESET") .. ".")
 			end
@@ -191,7 +191,7 @@ function MoveAny:UpdateMoveFrames()
 					end)
 
 					function MoveAny:IsResetButtonDown(btn)
-						return btn == "MiddleButton" or btn == "Button4" or btn == "Button5"
+						return btn == "MiddleButton"
 					end
 
 					frame:RegisterForDrag("Any")
