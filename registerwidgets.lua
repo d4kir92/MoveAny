@@ -558,12 +558,18 @@ function MoveAny:GetFrame(ele, name)
 end
 
 local ses = {}
+local runSelectedReset = false
 
 function MoveAny:ResetSelectedText()
-	local cb = MoveAny:GetLastSelected()
+	if not runSelectedReset then
+		runSelectedReset = true
+		local cb = MoveAny:GetLastSelected()
 
-	if cb then
-		cb:UpdateText()
+		if cb then
+			cb:UpdateText()
+		end
+
+		runSelectedReset = false
 	end
 end
 
