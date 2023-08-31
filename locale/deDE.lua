@@ -168,6 +168,7 @@ function MoveAny:LangdeDE()
 		["LID_MADEBUFFSPACINGY"] = "Schwächungszauber Abstand Vertikal",
 		["LID_MADEBUFFMODE"] = "Schwächungszauber-Ausrichtung",
 		["LID_SEARCH"] = "Suche",
+		["LID_COMBOFRAME"] = "Komboleiste",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

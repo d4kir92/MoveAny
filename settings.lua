@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.19")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.20")
 }
 
 local MAMMBTN = nil
@@ -390,6 +390,10 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "PLAYERFRAME", false)
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus")
+
+		if ComboFrame then
+			AddCheckBox(posx, "COMBOFRAME", false)
+		end
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
@@ -1959,9 +1963,40 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			if ComboFrame and not MoveAny:IsEnabled("COMBOFRAME", false) then
+				ComboFrame:SetParent(TargetFrame)
+			end
+
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrame",
 				["lstr"] = "LID_TARGETFRAME",
+				["userplaced"] = true
+			})
+		end
+
+		if MoveAny:IsEnabled("COMBOFRAME", false) then
+			local cpsw, cpsh = 12, 12
+
+			for i = 1, 5 do
+				local cp = _G["ComboPoint" .. i]
+
+				if cp then
+					cpsw, cpsh = cp:GetSize()
+					cp:ClearAllPoints()
+
+					if i == 1 then
+						cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
+					else
+						cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
+					end
+				end
+			end
+
+			ComboFrame:SetSize(cpsw * 5, cpsh)
+
+			MoveAny:RegisterWidget({
+				["name"] = "ComboFrame",
+				["lstr"] = "LID_COMBOFRAME",
 				["userplaced"] = true
 			})
 		end
