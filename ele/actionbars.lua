@@ -467,17 +467,12 @@ f:SetScript("OnEvent", function(sel, event)
 				if name == 'statehidden' then
 					if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
 						for i = 1, 12 do
-							if i < 7 then
-								if overridebuttons[i]:GetAttribute('statehidden') then
-									buttons[i]:SetAttribute('statehidden', true)
-									buttons[i]:Hide()
-								else
-									buttons[i]:SetAttribute('statehidden', false)
-									buttons[i]:Show()
-								end
-							else
+							if overridebuttons[i]:GetAttribute('statehidden') then
 								buttons[i]:SetAttribute('statehidden', true)
 								buttons[i]:Hide()
+							else
+								buttons[i]:SetAttribute('statehidden', false)
+								buttons[i]:Show()
 							end
 						end
 					else
@@ -522,7 +517,7 @@ f:SetScript("OnEvent", function(sel, event)
 				end
 			
 				overridebuttons = table.new()
-				for j = 1, 6 do
+				for j = 1, 12 do
 					overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
 				end
 			]])
