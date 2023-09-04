@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.20")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.21")
 }
 
 local MAMMBTN = nil
@@ -2757,6 +2757,10 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("DURABILITY", false) then
+		if DurabilityFrame:GetPoint() == nil then
+			DurabilityFrame:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -0, 0)
+		end
+
 		if DurabilityFrame.SetAlerts ~= nil then
 			DurabilityFrame:SetAlerts()
 		elseif DurabilityFrame_SetAlerts ~= nil then
