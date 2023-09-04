@@ -467,18 +467,20 @@ f:SetScript("OnEvent", function(sel, event)
 				if name == 'statehidden' then
 					if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
 						for i = 1, 12 do
-							if overridebuttons[i]:GetAttribute('statehidden') then
+							if overridebuttons[i] and overridebuttons[i]:GetAttribute('statehidden') then
 								buttons[i]:SetAttribute('statehidden', true)
 								buttons[i]:Hide()
-							else
+							elseif buttons[i] then
 								buttons[i]:SetAttribute('statehidden', false)
 								buttons[i]:Show()
 							end
 						end
 					else
 						for i = 1, 12 do
-							buttons[i]:SetAttribute('statehidden', false)
-							buttons[i]:Show()
+							if buttons[i] then
+								buttons[i]:SetAttribute('statehidden', false)
+								buttons[i]:Show()
+							end
 						end
 					end
 				end
@@ -488,8 +490,10 @@ f:SetScript("OnEvent", function(sel, event)
 				_onAttributeChanged = [[
 				if name == 'statehidden' then
 					for i = 1, 12 do
-						buttons[i]:SetAttribute('statehidden', false)
-						buttons[i]:Show()
+						if buttons[i] then
+							buttons[i]:SetAttribute('statehidden', false)
+							buttons[i]:Show()
+						end
 					end
 				end
 			]]
@@ -526,3 +530,5 @@ f:SetScript("OnEvent", function(sel, event)
 		end
 	end
 end)
+
+print(NUM_OVERRIDE_BUTTONS)
