@@ -530,5 +530,3 @@ f:SetScript("OnEvent", function(sel, event)
 		end
 	end
 end)
-
-print(NUM_OVERRIDE_BUTTONS)
