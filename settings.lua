@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.25")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.26")
 }
 
 local MAMMBTN = nil
@@ -92,12 +92,15 @@ MoveAny:AddToEMMap("VehicleSeatIndicator", "ShowVehicleSeatIndicator")
 MoveAny:AddToEMMap("MAVehicleSeatIndicator", "ShowVehicleSeatIndicator")
 MoveAny:AddToEMMap("PartyFrame", "ShowPartyFrames")
 MoveAny:AddToEMMap("CompactRaidFrameContainer", "ShowRaidFrames")
+MoveAny:AddToEMMap("CompactArenaFrame", "ShowArenaFrames")
 
 function MoveAny:IsBlizEditModeEnabled()
 	if MoveAny:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
 
 	return false
 end
+
+local onceDebug = true
 
 function MoveAny:IsInEditModeEnabled(val)
 	local editModeEnum = nil
@@ -116,11 +119,22 @@ function MoveAny:IsInEditModeEnabled(val)
 		end
 	end
 
-	if editModeEnum and EditModeManagerFrame and tContains(Enum.EditModeAccountSetting, editModeEnum) and EditModeManagerFrame.accountSettingMap and EditModeManagerFrame:GetAccountSettingValueBool(editModeEnum) then return true, false end
+	if EditModeManagerFrame.accountSettings == nil then
+		EditModeManagerFrame:InitializeAccountSettings()
+	end
 
-	if false then
+	if GameMenuButtonEditMode and not GameMenuButtonEditMode:IsEnabled() then
+		GameMenuButtonEditMode:SetEnabled(true)
+	end
+
+	if editModeEnum and EditModeManagerFrame and tContains(Enum.EditModeAccountSetting, editModeEnum) and EditModeManagerFrame:GetAccountSettingValueBool(editModeEnum) then return true, false end
+
+	-- DEBUG EDITMODE
+	if false and onceDebug then
+		onceDebug = false
+
 		for i, v in pairs(Enum.EditModeAccountSetting) do
-			if string.find(strlower(i), "raid") then
+			if string.find(strlower(i), "arena") then
 				MoveAny:MSG("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
 			end
 		end

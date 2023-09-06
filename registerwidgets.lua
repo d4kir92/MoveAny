@@ -642,7 +642,7 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
-	C_Timer.After(0, function()
+	C_Timer.After(1, function()
 		enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 		enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 
