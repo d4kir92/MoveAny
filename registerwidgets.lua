@@ -1128,7 +1128,7 @@ function MoveAny:RegisterWidget(tab)
 	hooksecurefunc(frame, "SetScale", function(sel, scale)
 		if sel.masetscale_ele then return end
 		sel.masetscale_ele = true
-		local newScale = MoveAny:GetEleScale(name)
+		local newScale = MoveAny:GetEleScale(name) or 1
 
 		if newScale and newScale > 0 then
 			frame:SetScale(newScale)
