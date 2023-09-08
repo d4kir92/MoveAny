@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.31")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.32")
 }
 
 local MAMMBTN = nil
@@ -1977,8 +1977,18 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			if ComboFrame and not MoveAny:IsEnabled("COMBOFRAME", false) then
-				ComboFrame:SetParent(TargetFrame)
+			if ComboFrame then
+				hooksecurefunc(TargetFrame, "SetScale", function(sel, scale)
+					ComboFrame:SetScale(scale)
+				end)
+
+				ComboFrame:SetScale(TargetFrame:GetScale())
+
+				hooksecurefunc(TargetFrame, "SetAlpha", function(sel, alpha)
+					ComboFrame:SetAlpha(alpha)
+				end)
+
+				ComboFrame:SetAlpha(TargetFrame:GetAlpha())
 			end
 
 			MoveAny:RegisterWidget({
