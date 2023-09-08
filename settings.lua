@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.30")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.31")
 }
 
 local MAMMBTN = nil
@@ -2331,7 +2331,7 @@ function MoveAny:LoadAddon()
 						["ctop"] = ctop,
 						["cbottom"] = cbottom,
 					})
-				elseif cf.SetClampRectInsets then
+				elseif cf.SetClampRectInsets and MoveAny:IsEnabled("CHAT" .. 1, false) then
 					hooksecurefunc(cf, "SetClampRectInsets", function(sel, ...)
 						if sel.scri then return end
 						sel.scri = true
