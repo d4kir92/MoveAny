@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.28")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.29")
 }
 
 local MAMMBTN = nil
@@ -2300,12 +2300,13 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		for i = 1, 10 do
-			local cf = _G["ChatFrame" .. i]
+		for x = 1, 10 do
+			local cf = _G["ChatFrame" .. x]
 
-			if cf and MoveAny:IsEnabled("CHAT" .. i, false) and (_G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1) then
+			if cf then
 				local cleft = -34
 				local cright = 2
+				local ctop = 22
 				local cbottom = -34
 
 				if MoveAny:GetWoWBuild() == "RETAIL" then
@@ -2320,15 +2321,26 @@ function MoveAny:LoadAddon()
 					cbottom = -4
 				end
 
-				MoveAny:RegisterWidget({
-					["name"] = "ChatFrame" .. i,
-					["lstr"] = "LID_CHAT",
-					["lstri"] = i,
-					["cleft"] = cleft,
-					["cright"] = cright,
-					["ctop"] = 22,
-					["cbottom"] = cbottom,
-				})
+				if MoveAny:IsEnabled("CHAT" .. x, false) then
+					MoveAny:RegisterWidget({
+						["name"] = "ChatFrame" .. x,
+						["lstr"] = "LID_CHAT",
+						["lstri"] = x,
+						["cleft"] = cleft,
+						["cright"] = cright,
+						["ctop"] = ctop,
+						["cbottom"] = cbottom,
+					})
+				elseif cf.SetClampRectInsets then
+					hooksecurefunc(cf, "SetClampRectInsets", function(sel, ...)
+						if sel.scri then return end
+						sel.scri = true
+						sel:SetClampRectInsets(cleft, cright, ctop, cbottom)
+						sel.scri = false
+					end)
+
+					cf:SetClampRectInsets(cleft, cright, ctop, cbottom)
+				end
 			end
 		end
 
@@ -2419,11 +2431,11 @@ function MoveAny:LoadAddon()
 					["sh"] = 244
 				})
 			else
-				for i = 1, 4 do
+				for x = 1, 4 do
 					MoveAny:RegisterWidget({
-						["name"] = "PartyMemberFrame" .. i,
+						["name"] = "PartyMemberFrame" .. x,
 						["lstr"] = "LID_PARTYMEMBERFRAME",
-						["lstri"] = i
+						["lstri"] = x
 					})
 				end
 			end
@@ -3019,8 +3031,8 @@ function MoveAny:LoadAddon()
 		if GroupLootFrame1 then
 			glfsw, glfsh = GroupLootFrame1:GetSize()
 
-			for i = 2, 10 do
-				local glf = _G["GroupLootFrame" .. i]
+			for x = 2, 10 do
+				local glf = _G["GroupLootFrame" .. x]
 
 				if glf then
 					hooksecurefunc(glf, "SetPoint", function(sel, ...)
@@ -3033,7 +3045,7 @@ function MoveAny:LoadAddon()
 						end
 
 						sel:ClearAllPoints()
-						sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (i - 1)], "TOP", 0, 4)
+						sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
 						sel.glfsetpoint = false
 					end)
 
