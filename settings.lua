@@ -1,7 +1,7 @@
 local _, MoveAny = ...
 
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.33")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.34")
 }
 
 local MAMMBTN = nil
@@ -2878,13 +2878,13 @@ function MoveAny:LoadAddon()
 				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
 					p4 = floor(p4)
 					p5 = floor(p5)
-					if MoveAny:NearNumber(p4, gtp4, 1) and MoveAny:NearNumber(p5, gtp5, 1) then return true end
+					if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then return true end
 				end
 			elseif p2 == GameTooltipDefaultContainer then
 				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
 					p4 = floor(p4)
 					p5 = floor(p5)
-					if MoveAny:NearNumber(p4, 0, 1) and MoveAny:NearNumber(p5, 0, 1) then return true end
+					if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then return true end
 				end
 			end
 		end
