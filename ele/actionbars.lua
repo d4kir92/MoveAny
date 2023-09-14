@@ -373,6 +373,17 @@ function MoveAny:CustomBars()
 					_G[btnname].bindingID = x
 				end
 
+				local alwaysShow = GetCVarBool("alwaysShowActionBars")
+
+				if alwaysShow then
+					alwaysShow = 1
+				else
+					alwaysShow = 0
+				end
+
+				_G[btnname]:SetAttribute("statehidden", false)
+				_G[btnname]:SetAttribute("showgrid", alwaysShow)
+
 				if _G[btnname .. "FloatingBG"] == nil then
 					_G[btnname .. "FloatingBG"] = _G[btnname]:CreateTexture(btnname .. "FloatingBG", "BACKGROUND")
 					_G[btnname .. "FloatingBG"]:SetParent(_G[btnname])
@@ -395,47 +406,48 @@ function MoveAny:CustomBars()
 			MoveAny:UpdateActionBar(_G[name])
 		end
 	end
+
+	UpdateActionBarBackground(GetCVarBool("alwaysShowActionBars"))
 end
 
-function MoveAny:UpdateABs()
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		local cvar = tonumber(GetCVar("alwaysShowActionBars"))
+function UpdateActionBarBackground(show)
+	for name, bar in pairs(abs) do
+		local ab = bar
 
-		if cvar ~= oldcvar then
-			oldcvar = cvar
+		if ab and ab.btns then
+			for id, abtn in pairs(ab.btns) do
+				local btnname = abtn:GetName()
 
-			for name, bar in pairs(abs) do
-				local ab = bar
+				if btnname and _G[btnname .. "FloatingBG"] then
+					_G[btnname .. "FloatingBG"]:Show()
+				end
 
-				if ab and ab.btns then
-					for id, abtn in pairs(ab.btns) do
-						local btnname = abtn:GetName()
-
-						if btnname and _G[btnname .. "FloatingBG"] then
-							_G[btnname .. "FloatingBG"]:Show()
-						end
-
-						if btnname and _G[btnname .. "NormalTexture"] then
-							if cvar == 1 then
-								_G[btnname]:SetAttribute("showgrid", 1)
-								_G[btnname .. "NormalTexture"]:Show()
-								_G[btnname]:Show()
-							elseif cvar == 0 then
-								_G[btnname]:SetAttribute("showgrid", 0)
-								_G[btnname .. "NormalTexture"]:Hide()
-							end
-						else
-							MoveAny:MSG("NOT FOUND: " .. tostring(btnname))
-						end
+				if btnname and _G[btnname .. "NormalTexture"] then
+					if show == 1 then
+						_G[btnname]:SetAttribute("showgrid", 1)
+						_G[btnname .. "NormalTexture"]:Show()
+						_G[btnname]:Show()
+					elseif show == 0 then
+						_G[btnname]:SetAttribute("showgrid", 0)
+						_G[btnname .. "NormalTexture"]:Hide()
 					end
+				else
+					MoveAny:MSG("NOT FOUND: " .. tostring(btnname))
 				end
 			end
 		end
-
-		C_Timer.After(0.5, MoveAny.UpdateABs)
 	end
 end
 
+function EventHandler(self, event, target, value)
+	if event == "CVAR_UPDATE" and target == "alwaysShowActionBars" then
+		UpdateActionBarBackground(tonumber(value))
+	end
+end
+
+local asabf = CreateFrame("Frame")
+asabf:RegisterEvent("CVAR_UPDATE")
+asabf:SetScript("OnEvent", EventHandler)
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
