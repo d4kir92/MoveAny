@@ -218,6 +218,19 @@ function MoveAny:MenuOptions(opt, frame)
 				content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
 			end)
 
+			local sup2 = CreateFrame("Button", "sup2", content)
+			sup2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
+			sup2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
+			sup2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+			sup2:SetSize(btnsize, btnsize)
+			sup2:SetPoint("TOPLEFT", content, "TOPLEFT", 220, -24)
+
+			sup2:SetScript("OnClick", function()
+				local val = tonumber(string.format("%.2f", frame:GetScale() + 0.01))
+				MoveAny:SetEleScale(name, val)
+				content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
+			end)
+
 			local sdn = CreateFrame("Button", "sdn", content)
 			sdn:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 			sdn:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
@@ -226,10 +239,25 @@ function MoveAny:MenuOptions(opt, frame)
 			sdn:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -48)
 
 			sdn:SetScript("OnClick", function()
-				if frame:GetScale() > 0.3 then
+				if frame:GetScale() > 0.2 then
 					local val = tonumber(string.format("%.1f", frame:GetScale() - 0.1))
 					MoveAny:SetEleScale(name, val)
 					content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
+				end
+			end)
+
+			local sdn2 = CreateFrame("Button", "sdn2", content)
+			sdn2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+			sdn2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
+			sdn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+			sdn2:SetSize(btnsize, btnsize)
+			sdn2:SetPoint("TOPLEFT", content, "TOPLEFT", 220, -48)
+
+			sdn2:SetScript("OnClick", function()
+				if frame:GetScale() > 0.2 then
+					local val = tonumber(string.format("%.2f", frame:GetScale() - 0.01))
+					MoveAny:SetEleScale(name, val)
+					content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
 				end
 			end)
 
