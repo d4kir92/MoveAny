@@ -184,21 +184,12 @@ function MoveAny:UpdateActionBar(frame)
 
 				abtn.oldparent = abtn.oldparent or abtn:GetParent()
 
-				if frame ~= MAMenuBar and frame ~= StanceBar then
-					if count > 0 and i > count then
-						abtn.hide = true
-						abtn:SetParent(MAHIDDEN)
+				if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
+					abtn.hide = true
+					abtn:SetParent(MAHIDDEN)
 
-						if abtn:IsShown() then
-							abtn:Hide()
-						end
-					else
-						abtn.hide = false
-						abtn:SetParent(abtn.oldparent)
-
-						if not abtn:IsShown() then
-							abtn:Show()
-						end
+					if abtn:IsShown() then
+						abtn:Hide()
 					end
 				end
 
