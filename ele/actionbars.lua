@@ -133,9 +133,12 @@ function MoveAny:UpdateActionBar(frame)
 
 	local cols = maxB / rows
 
-	if cols % 1 ~= 0 then
+	--[[if cols % 1 ~= 0 then
 		rows = maxB
 		cols = maxB / rows
+	end]]
+	if cols % 1 ~= 0 then
+		cols = math.ceil(cols)
 	end
 
 	local spacing = opts["SPACING"]

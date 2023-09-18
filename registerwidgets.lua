@@ -358,7 +358,7 @@ function MoveAny:MenuOptions(opt, frame)
 					maxBtns = opts["COUNT"]
 				end
 
-				if frame == MAMenuBar then
+				--[[if frame == MAMenuBar then
 					if MoveAny:GetWoWBuild() == "RETAIL" then
 						items = {"1", "2", "3", "4", "5", "10", "11", "12"}
 					elseif MoveAny:GetWoWBuild() == "CLASSIC" then
@@ -393,6 +393,11 @@ function MoveAny:MenuOptions(opt, frame)
 				else
 					--MoveAny:MSG( "FOUND OTHER MAX: " .. maxBtns .. " for " .. name )
 					items = {"1"}
+				end]]
+				items = {}
+
+				for id = 1, maxBtns do
+					tinsert(items, id)
 				end
 			end
 
