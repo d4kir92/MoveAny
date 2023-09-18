@@ -3,7 +3,6 @@ local MAMaxAB = 10
 local btns = {}
 local abpoints = {}
 local abs = {}
-local oldcvar = -1
 btns[1] = "ActionButton"
 btns[3] = "MultiBarRightButton" --"MultiBarRightButton"
 btns[4] = "MultiBarLeftButton" --"MultiBarLeftButton"
@@ -430,15 +429,15 @@ function UpdateActionBarBackground(show)
 	end
 end
 
-function EventHandler(self, event, target, value)
+local asabf = CreateFrame("Frame")
+asabf:RegisterEvent("CVAR_UPDATE")
+
+asabf:SetScript("OnEvent", function(self, event, target, value)
 	if event == "CVAR_UPDATE" and target == "alwaysShowActionBars" then
 		UpdateActionBarBackground(tonumber(value))
 	end
-end
+end)
 
-local asabf = CreateFrame("Frame")
-asabf:RegisterEvent("CVAR_UPDATE")
-asabf:SetScript("OnEvent", EventHandler)
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
