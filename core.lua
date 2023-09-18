@@ -228,31 +228,39 @@ end
 local lastMessage = ""
 local cmds = {}
 
-hooksecurefunc("ChatEdit_ParseText", function(editBox, send, parseIfNoSpace)
-	if send == 0 then
-		lastMessage = editBox:GetText()
-	end
-end)
-
-hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(frame)
-	if lastMessage and lastMessage ~= "" then
-		local cmd = string.upper(lastMessage)
-		cmd = strsplit(" ", cmd)
-
-		if cmds[cmd] ~= nil then
-			local count = 1
-			local numMessages = frame:GetNumMessages()
-
-			local function predicateFunction(entry)
-				if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
-				count = count + 1
-			end
-
-			frame:RemoveMessagesByPredicate(predicateFunction)
-			cmds[cmd]()
+if ChatEdit_ParseText and type(ChatEdit_ParseText) == "function" then
+	hooksecurefunc("ChatEdit_ParseText", function(editBox, send, parseIfNoSpace)
+		if send == 0 then
+			lastMessage = editBox:GetText()
 		end
-	end
-end)
+	end)
+else
+	MoveAny:MSG("FAILED TO ADD SLASH COMMAND #1")
+end
+
+if ChatFrame_DisplayHelpTextSimple and type(ChatFrame_DisplayHelpTextSimple) == "function" then
+	hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(frame)
+		if lastMessage and lastMessage ~= "" then
+			local cmd = string.upper(lastMessage)
+			cmd = strsplit(" ", cmd)
+
+			if cmds[cmd] ~= nil then
+				local count = 1
+				local numMessages = frame:GetNumMessages()
+
+				local function predicateFunction(entry)
+					if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
+					count = count + 1
+				end
+
+				frame:RemoveMessagesByPredicate(predicateFunction)
+				cmds[cmd]()
+			end
+		end
+	end)
+else
+	MoveAny:MSG("FAILED TO ADD SLASH COMMAND #2")
+end
 
 function MoveAny:InitSlash()
 	cmds["/MOVE"] = MoveAny.ToggleMALock
