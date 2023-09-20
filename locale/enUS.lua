@@ -1,6 +1,5 @@
 -- enUS English
 local _, MoveAny = ...
-
 function MoveAny:UpdateLanguageTab(tab)
 	for i, v in pairs(tab) do
 		MoveAny:GetLangTab()[i] = v
@@ -73,7 +72,7 @@ function MoveAny:LangenUS()
 		["LID_CHATEDITBOX"] = "Chat Inputbox",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
 		["LID_BNToastFrame"] = "Battlenet Friends Notifications",
-		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay",
+		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay (Class Proc)",
 		["LID_ZONETEXTFRAME"] = "Zone Text",
 		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Status/Stats on Battlegrounds/Dungeons/Raids)",
 		["LID_MIRRORTIMER1"] = "Breathbar",

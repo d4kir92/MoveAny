@@ -1,6 +1,5 @@
 -- deDE German Deutsch
 local _, MoveAny = ...
-
 function MoveAny:LangdeDE()
 	local tab = {
 		["LID_MMBTNLEFT"] = "Linksklick => Sperren/Entsperren + Optionen",
@@ -67,7 +66,7 @@ function MoveAny:LangdeDE()
 		["LID_CHATEDITBOX"] = "Chat Eingabefeld",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",
 		["LID_BNToastFrame"] = "Benachrichtigungen von Battlenet Freunden",
-		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Zauber-Aktivierungs-Overlay",
+		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Zauber-Aktivierungs-Overlay (Class Proc)",
 		["LID_ZONETEXTFRAME"] = "Zonentext",
 		["LID_UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status/Statistik von Schlachtfeldern/Dungeons/Raids)",
 		["LID_MIRRORTIMER1"] = "Atemleiste",
