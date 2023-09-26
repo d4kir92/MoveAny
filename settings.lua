@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.43")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.44")
 }
 
 local MAMMBTN = nil
@@ -3364,6 +3364,9 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
 			MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
 			local opts = MoveAny:GetEleOptions("MainMenuExpBar", "RegisterWidget: MainMenuExpBar")
+			opts = opts or {}
+			opts["WIDTH"] = opts["WIDTH"] or 1024
+			opts["HEIGHT"] = opts["HEIGHT"] or 15
 			if opts["WIDTH"] and opts["HEIGHT"] then
 				MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
 			end
@@ -3383,6 +3386,9 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
 			ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
 			local opts = MoveAny:GetEleOptions("ReputationWatchBar", "RegisterWidget: ReputationWatchBar")
+			opts = opts or {}
+			opts["WIDTH"] = opts["WIDTH"] or 1024
+			opts["HEIGHT"] = opts["HEIGHT"] or 15
 			if opts["WIDTH"] and opts["HEIGHT"] then
 				hooksecurefunc(
 					ReputationWatchBar,
