@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.42")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.43")
 }
 
 local MAMMBTN = nil
@@ -3363,26 +3363,63 @@ function MoveAny:LoadAddon()
 	if MainMenuExpBar and ReputationWatchBar then
 		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
 			MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
-			--MainMenuExpBar.StatusBar:SetParent(MoveAny:GetMainPanel())
+			local opts = MoveAny:GetEleOptions("MainMenuExpBar", "RegisterWidget: MainMenuExpBar")
+			if opts["WIDTH"] and opts["HEIGHT"] then
+				MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+			end
+
 			MainMenuExpBar:ClearAllPoints()
 			MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "MainMenuExpBar",
-					["lstr"] = "LID_MAINMENUEXPBAR"
+					["lstr"] = "LID_MAINMENUEXPBAR",
+					["sw"] = opts["WIDTH"],
+					["sh"] = opts["HEIGHT"]
 				}
 			)
 		end
 
 		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
 			ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
-			--ReputationWatchBar.StatusBar:SetParent(MoveAny:GetMainPanel())
+			local opts = MoveAny:GetEleOptions("ReputationWatchBar", "RegisterWidget: ReputationWatchBar")
+			if opts["WIDTH"] and opts["HEIGHT"] then
+				hooksecurefunc(
+					ReputationWatchBar,
+					"SetHeight",
+					function(sel, nh)
+						if sel.ma_setheight then return end
+						sel.ma_setheight = true
+						sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						sel.ma_setheight = false
+					end
+				)
+
+				ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+				if ReputationWatchBar.StatusBar then
+					hooksecurefunc(
+						ReputationWatchBar.StatusBar,
+						"SetHeight",
+						function(sel, nh)
+							if sel.ma_setheight then return end
+							sel.ma_setheight = true
+							sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
+							sel.ma_setheight = false
+						end
+					)
+
+					ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+				end
+			end
+
 			ReputationWatchBar:ClearAllPoints()
 			ReputationWatchBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 130)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "ReputationWatchBar",
-					["lstr"] = "LID_REPUTATIONWATCHBAR"
+					["lstr"] = "LID_REPUTATIONWATCHBAR",
+					["sw"] = opts["WIDTH"],
+					["sh"] = opts["HEIGHT"]
 				}
 			)
 		end

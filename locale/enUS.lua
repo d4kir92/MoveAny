@@ -174,6 +174,8 @@ function MoveAny:LangenUS()
 		["LID_MADEBUFFMODE"] = "Debuff-Alignment",
 		["LID_SEARCH"] = "Search",
 		["LID_COMBOFRAME"] = "Combo Bar",
+		["LID_WIDTH"] = "Width",
+		["LID_HEIGHT"] = "Height",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

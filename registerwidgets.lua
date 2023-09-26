@@ -1,7 +1,6 @@
 local _, MoveAny = ...
 local MAEF = {}
 local MACurrentEle = nil
-
 function MoveAny:GetCurrentEle()
 	return MACurrentEle
 end
@@ -11,13 +10,11 @@ function MoveAny:GetEleFrames()
 end
 
 local MAAF = {}
-
 function MoveAny:GetAlphaFrames()
 	return MAAF
 end
 
 local fnt = {}
-
 function MoveAny:AddFrameName(frame, name)
 	if frame == nil then
 		MoveAny:MSG("AddFrameName: frame is nil")
@@ -47,11 +44,9 @@ function MoveAny:GetFrameName(frame)
 end
 
 local framelevel = 100
-
 local function SelectTab(sel)
 	PanelTemplates_SetTab(sel:GetParent(), sel:GetID())
 	local content = sel:GetParent().currentcontent
-
 	if content then
 		content:Hide()
 	end
@@ -64,10 +59,8 @@ local function CreateTabs(frame, args)
 	frame.numTabs = #args
 	frame.tabs = {}
 	local sw, sh = frame:GetSize()
-
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
-
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			template = "PanelTabButtonTemplate"
 		end
@@ -76,10 +69,12 @@ local function CreateTabs(frame, args)
 		local tab = frame.tabs[i]
 		tab:SetID(i)
 		tab:SetText(args[i])
-
-		tab:SetScript("OnClick", function(sel)
-			SelectTab(sel)
-		end)
+		tab:SetScript(
+			"OnClick",
+			function(sel)
+				SelectTab(sel)
+			end
+		)
 
 		tab.content = CreateFrame("Frame", frame:GetName() .. "Tab" .. i .. "Content", frame)
 		tab.content.name = args[i]
@@ -87,7 +82,6 @@ local function CreateTabs(frame, args)
 		tab.content:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -26)
 		tab.content:Hide()
 		PanelTemplates_TabResize(tab, 0)
-
 		if i == 1 then
 			tab:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 5, 2)
 		else
@@ -101,7 +95,6 @@ local function CreateTabs(frame, args)
 end
 
 local btnsize = 24
-
 local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 	local btn = CreateFrame("Button", "MOVE" .. x .. y, parent)
 	btn:SetNormalTexture(texNor)
@@ -109,13 +102,15 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 	btn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 	btn:SetSize(btnsize, btnsize)
 	btn:SetPoint("TOPLEFT", parent, "TOPLEFT", ofsx, ofsy)
-
-	btn:SetScript("OnClick", function()
-		local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-		MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y)
-		p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-		parent.pos:SetText(format("Position X: %d Y:%d", p4, p5))
-	end)
+	btn:SetScript(
+		"OnClick",
+		function()
+			local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
+			MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y)
+			p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
+			parent.pos:SetText(format("Position X: %d Y:%d", p4, p5))
+		end
+	)
 
 	return btn
 end
@@ -126,7 +121,6 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 	slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 	slider.Low:SetText(vmin)
 	slider.High:SetText(vmax)
-
 	if lanArray then
 		slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
 	else
@@ -137,24 +131,24 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 	slider:SetObeyStepOnDrag(true)
 	slider:SetValueStep(steps)
 	slider:SetValue(MoveAny:GetEleOption(name, key, value, "Slider1"))
+	slider:SetScript(
+		"OnValueChanged",
+		function(sel, val)
+			val = tonumber(string.format("%" .. steps .. "f", val))
+			if val then
+				MoveAny:SetEleOption(name, key, val)
+				if lanArray then
+					slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[val])
+				else
+					slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. val)
+				end
 
-	slider:SetScript("OnValueChanged", function(sel, val)
-		val = tonumber(string.format("%" .. steps .. "f", val))
-
-		if val then
-			MoveAny:SetEleOption(name, key, val)
-
-			if lanArray then
-				slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[val])
-			else
-				slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. val)
-			end
-
-			if func then
-				func()
+				if func then
+					func()
+				end
 			end
 		end
-	end)
+	)
 
 	return slider
 end
@@ -168,9 +162,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 	local name = MoveAny:GetFrameName(frame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
-
 	local tabs = {GENERAL}
-
 	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "StanceBar" then
 		table.insert(tabs, ACTIONBARS_LABEL)
 	end
@@ -183,11 +175,17 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
 	end
 
-	CreateTabs(opt, tabs)
+	if string.find(name, "MainMenuExpBar") then
+		table.insert(tabs, MoveAny:GT("LID_MAINMENUEXPBAR"))
+	end
 
+	if string.find(name, "ReputationWatchBar") then
+		table.insert(tabs, MoveAny:GT("LID_REPUTATIONWATCHBAR"))
+	end
+
+	CreateTabs(opt, tabs)
 	for i, tab in pairs(opt.tabs) do
 		local content = tab.content
-
 		if string.find(content.name, GENERAL) then
 			content.pos = content:CreateFontString(nil, nil, "GameFontNormal")
 			content.pos:SetPoint("TOPLEFT", content, "TOPLEFT", 4, -4)
@@ -211,12 +209,14 @@ function MoveAny:MenuOptions(opt, frame)
 			sup:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 			sup:SetSize(btnsize, btnsize)
 			sup:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -24)
-
-			sup:SetScript("OnClick", function()
-				local val = tonumber(string.format("%.1f", frame:GetScale() + 0.1))
-				MoveAny:SetEleScale(name, val)
-				content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
-			end)
+			sup:SetScript(
+				"OnClick",
+				function()
+					local val = tonumber(string.format("%.1f", frame:GetScale() + 0.1))
+					MoveAny:SetEleScale(name, val)
+					content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
+				end
+			)
 
 			local sup2 = CreateFrame("Button", "sup2", content)
 			sup2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
@@ -224,12 +224,14 @@ function MoveAny:MenuOptions(opt, frame)
 			sup2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 			sup2:SetSize(btnsize, btnsize)
 			sup2:SetPoint("TOPLEFT", content, "TOPLEFT", 220, -24)
-
-			sup2:SetScript("OnClick", function()
-				local val = tonumber(string.format("%.2f", frame:GetScale() + 0.01))
-				MoveAny:SetEleScale(name, val)
-				content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
-			end)
+			sup2:SetScript(
+				"OnClick",
+				function()
+					local val = tonumber(string.format("%.2f", frame:GetScale() + 0.01))
+					MoveAny:SetEleScale(name, val)
+					content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
+				end
+			)
 
 			local sdn = CreateFrame("Button", "sdn", content)
 			sdn:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
@@ -237,14 +239,16 @@ function MoveAny:MenuOptions(opt, frame)
 			sdn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 			sdn:SetSize(btnsize, btnsize)
 			sdn:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -48)
-
-			sdn:SetScript("OnClick", function()
-				if frame:GetScale() > 0.2 then
-					local val = tonumber(string.format("%.1f", frame:GetScale() - 0.1))
-					MoveAny:SetEleScale(name, val)
-					content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
+			sdn:SetScript(
+				"OnClick",
+				function()
+					if frame:GetScale() > 0.2 then
+						local val = tonumber(string.format("%.1f", frame:GetScale() - 0.1))
+						MoveAny:SetEleScale(name, val)
+						content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
+					end
 				end
-			end)
+			)
 
 			local sdn2 = CreateFrame("Button", "sdn2", content)
 			sdn2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
@@ -252,61 +256,62 @@ function MoveAny:MenuOptions(opt, frame)
 			sdn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 			sdn2:SetSize(btnsize, btnsize)
 			sdn2:SetPoint("TOPLEFT", content, "TOPLEFT", 220, -48)
-
-			sdn2:SetScript("OnClick", function()
-				if frame:GetScale() > 0.2 then
-					local val = tonumber(string.format("%.2f", frame:GetScale() - 0.01))
-					MoveAny:SetEleScale(name, val)
-					content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
+			sdn2:SetScript(
+				"OnClick",
+				function()
+					if frame:GetScale() > 0.2 then
+						local val = tonumber(string.format("%.2f", frame:GetScale() - 0.01))
+						MoveAny:SetEleScale(name, val)
+						content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
+					end
 				end
-			end)
+			)
 
 			local hide = CreateFrame("CheckButton", "hide", content, "ChatConfigCheckButtonTemplate")
 			hide:SetSize(btnsize, btnsize)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -110)
 			hide:SetChecked(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
 			hide:SetText(HIDE)
+			hide:SetScript(
+				"OnClick",
+				function()
+					local checked = hide:GetChecked()
+					MoveAny:SetEleOption(name, "Hide", checked)
+					local maframe1 = _G["MA" .. name]
+					local maframe2 = _G[string.gsub(name, "MA", "")]
+					local dragf = _G[name .. "_DRAG"]
+					if checked then
+						frame.oldparent = frame.oldparent or frame:GetParent()
+						frame:SetParent(MAHIDDEN)
+						if maframe1 then
+							maframe1.oldparent = maframe1.oldparent or maframe1:GetParent()
+							maframe1:SetParent(MAHIDDEN)
+						end
 
-			hide:SetScript("OnClick", function()
-				local checked = hide:GetChecked()
-				MoveAny:SetEleOption(name, "Hide", checked)
-				local maframe1 = _G["MA" .. name]
-				local maframe2 = _G[string.gsub(name, "MA", "")]
-				local dragf = _G[name .. "_DRAG"]
+						if maframe2 then
+							maframe2.oldparent = maframe2.oldparent or maframe2:GetParent()
+							maframe2:SetParent(MAHIDDEN)
+						end
 
-				if checked then
-					frame.oldparent = frame.oldparent or frame:GetParent()
-					frame:SetParent(MAHIDDEN)
-
-					if maframe1 then
-						maframe1.oldparent = maframe1.oldparent or maframe1:GetParent()
-						maframe1:SetParent(MAHIDDEN)
-					end
-
-					if maframe2 then
-						maframe2.oldparent = maframe2.oldparent or maframe2:GetParent()
-						maframe2:SetParent(MAHIDDEN)
-					end
-
-					dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
-				else
-					frame:SetParent(frame.oldparent)
-
-					if maframe1 then
-						maframe1:SetParent(maframe1.oldparent)
-					end
-
-					if maframe2 then
-						maframe2:SetParent(maframe2.oldparent)
-					end
-
-					if MACurrentEle == frame then
-						dragf.t:SetVertexColor(MoveAny:GetColor("se"))
+						dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 					else
-						dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+						frame:SetParent(frame.oldparent)
+						if maframe1 then
+							maframe1:SetParent(maframe1.oldparent)
+						end
+
+						if maframe2 then
+							maframe2:SetParent(maframe2.oldparent)
+						end
+
+						if MACurrentEle == frame then
+							dragf.t:SetVertexColor(MoveAny:GetColor("se"))
+						else
+							dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+						end
 					end
 				end
-			end)
+			)
 
 			hide.text = hide:CreateFontString(nil, "ARTWORK")
 			hide.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
@@ -317,26 +322,25 @@ function MoveAny:MenuOptions(opt, frame)
 			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
 			clickthrough:SetChecked(MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"))
 			clickthrough:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
-
-			clickthrough:SetScript("OnClick", function()
-				local checked = clickthrough:GetChecked()
-				MoveAny:SetEleOption(name, "ClickThrough", checked)
-				local dragf = _G[name .. "_DRAG"]
-
-				if checked then
-					dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
-
-					if frame then
-						frame:EnableMouse(false)
-					end
-				else
-					dragf.t:SetVertexColor(MoveAny:GetColor("el"))
-
-					if frame then
-						frame:EnableMouse(true)
+			clickthrough:SetScript(
+				"OnClick",
+				function()
+					local checked = clickthrough:GetChecked()
+					MoveAny:SetEleOption(name, "ClickThrough", checked)
+					local dragf = _G[name .. "_DRAG"]
+					if checked then
+						dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
+						if frame then
+							frame:EnableMouse(false)
+						end
+					else
+						dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+						if frame then
+							frame:EnableMouse(true)
+						end
 					end
 				end
-			end)
+			)
 
 			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK")
 			clickthrough.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
@@ -350,10 +354,8 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, ACTIONBARS_LABEL) then
 			local slides = {}
 			local items = {}
-
 			local function UpdateRowItems()
 				local maxBtns = getn(frame.btns)
-
 				if frame ~= MAMenuBar and frame ~= StanceBar and opts["COUNT"] and opts["COUNT"] > 0 then
 					maxBtns = opts["COUNT"]
 				end
@@ -395,7 +397,6 @@ function MoveAny:MenuOptions(opt, frame)
 					items = {"1"}
 				end]]
 				items = {}
-
 				for id = 1, maxBtns do
 					tinsert(items, id)
 				end
@@ -403,7 +404,6 @@ function MoveAny:MenuOptions(opt, frame)
 
 			UpdateRowItems()
 			local vmin = 1
-
 			if frame == MAActionBar1 or frame == MainMenuBar then
 				vmin = 6
 			end
@@ -412,7 +412,6 @@ function MoveAny:MenuOptions(opt, frame)
 			local count = opts["COUNT"] or max
 			local rows = opts["ROWS"] or 1
 			local PY = -20
-
 			if frame ~= MAMenuBar and frame ~= StanceBar then
 				slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 				local sliderCount = slides.sliderCount
@@ -425,25 +424,25 @@ function MoveAny:MenuOptions(opt, frame)
 				sliderCount:SetObeyStepOnDrag(true)
 				sliderCount:SetValueStep(1)
 				sliderCount:SetValue(count)
+				sliderCount:SetScript(
+					"OnValueChanged",
+					function(sel, val)
+						val = tonumber(string.format("%" .. 0 .. "f", val))
+						if val and val ~= opts["ROWS"] then
+							opts["COUNT"] = val
+							sel.Text:SetText(MoveAny:GT("LID_COUNT") .. ": " .. val)
+							UpdateRowItems()
+							if slides.sliderRows then
+								slides.sliderRows:SetMinMaxValues(1, #items)
+								slides.sliderRows:SetValue(slides.sliderRows:GetValue())
+							end
 
-				sliderCount:SetScript("OnValueChanged", function(sel, val)
-					val = tonumber(string.format("%" .. 0 .. "f", val))
-
-					if val and val ~= opts["ROWS"] then
-						opts["COUNT"] = val
-						sel.Text:SetText(MoveAny:GT("LID_COUNT") .. ": " .. val)
-						UpdateRowItems()
-
-						if slides.sliderRows then
-							slides.sliderRows:SetMinMaxValues(1, #items)
-							slides.sliderRows:SetValue(slides.sliderRows:GetValue())
-						end
-
-						if MoveAny.UpdateActionBar then
-							MoveAny:UpdateActionBar(frame)
+							if MoveAny.UpdateActionBar then
+								MoveAny:UpdateActionBar(frame)
+							end
 						end
 					end
-				end)
+				)
 
 				PY = PY - 30
 			end
@@ -459,25 +458,25 @@ function MoveAny:MenuOptions(opt, frame)
 			sliderRows:SetObeyStepOnDrag(true)
 			sliderRows:SetValueStep(1)
 			sliderRows:SetValue(rows)
+			sliderRows:SetScript(
+				"OnValueChanged",
+				function(sel, val)
+					val = tonumber(string.format("%" .. 0 .. "f", val))
+					local value = items[val]
+					if value and value ~= opts["ROWS"] then
+						opts["ROWS"] = value
+						sel.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. value)
+						if frame.UpdateSystemSettingNumRows then
+							frame.numRows = value
+							frame:UpdateSystemSettingNumRows()
+						end
 
-			sliderRows:SetScript("OnValueChanged", function(sel, val)
-				val = tonumber(string.format("%" .. 0 .. "f", val))
-				local value = items[val]
-
-				if value and value ~= opts["ROWS"] then
-					opts["ROWS"] = value
-					sel.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. value)
-
-					if frame.UpdateSystemSettingNumRows then
-						frame.numRows = value
-						frame:UpdateSystemSettingNumRows()
-					end
-
-					if MoveAny.UpdateActionBar then
-						MoveAny:UpdateActionBar(frame)
+						if MoveAny.UpdateActionBar then
+							MoveAny:UpdateActionBar(frame)
+						end
 					end
 				end
-			end)
+			)
 
 			PY = PY - 30
 			local flipped = CreateFrame("CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate")
@@ -485,15 +484,16 @@ function MoveAny:MenuOptions(opt, frame)
 			flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
 			flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"))
 			flipped:SetText(MoveAny:GT("LID_FLIPPED"))
-
-			flipped:SetScript("OnClick", function()
-				local checked = flipped:GetChecked()
-				MoveAny:SetEleOption(name, "FLIPPED", checked)
-
-				if MoveAny.UpdateActionBar then
-					MoveAny:UpdateActionBar(frame)
+			flipped:SetScript(
+				"OnClick",
+				function()
+					local checked = flipped:GetChecked()
+					MoveAny:SetEleOption(name, "FLIPPED", checked)
+					if MoveAny.UpdateActionBar then
+						MoveAny:UpdateActionBar(frame)
+					end
 				end
-			end)
+			)
 
 			flipped.text = flipped:CreateFontString(nil, "ARTWORK")
 			flipped.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
@@ -511,31 +511,42 @@ function MoveAny:MenuOptions(opt, frame)
 			slider:SetObeyStepOnDrag(true)
 			slider:SetValueStep(1)
 			slider:SetValue(opts["SPACING"])
-
-			slider:SetScript("OnValueChanged", function(sel, val)
-				val = tonumber(string.format("%" .. 0 .. "f", val))
-
-				if val and val ~= opts["SPACING"] then
-					opts["SPACING"] = val
-					slider.Text:SetText(MoveAny:GT("LID_SPACING") .. ": " .. val)
-
-					if MoveAny.UpdateActionBar then
-						MoveAny:UpdateActionBar(frame)
+			slider:SetScript(
+				"OnValueChanged",
+				function(sel, val)
+					val = tonumber(string.format("%" .. 0 .. "f", val))
+					if val and val ~= opts["SPACING"] then
+						opts["SPACING"] = val
+						slider.Text:SetText(MoveAny:GT("LID_SPACING") .. ": " .. val)
+						if MoveAny.UpdateActionBar then
+							MoveAny:UpdateActionBar(frame)
+						end
 					end
 				end
-			end)
+			)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-
 			if MoveAny:GetWoWBuild() ~= "RETAIL" then
-				MoveAny:CreateSlider(content, 10, y, name, "MABUFFMODE", 0, 1, 0, 4, MoveAny.UpdateBuffs, {
-					[0] = "AUTO",
-					[1] = "TOPRIGHT",
-					[2] = "TOPLEFT",
-					[3] = "BOTTOMRIGHT",
-					[4] = "BOTTOMLEFT"
-				})
+				MoveAny:CreateSlider(
+					content,
+					10,
+					y,
+					name,
+					"MABUFFMODE",
+					0,
+					1,
+					0,
+					4,
+					MoveAny.UpdateBuffs,
+					{
+						[0] = "AUTO",
+						[1] = "TOPRIGHT",
+						[2] = "TOPLEFT",
+						[3] = "BOTTOMRIGHT",
+						[4] = "BOTTOMLEFT"
+					}
+				)
 
 				y = y - 40
 			end
@@ -549,15 +560,26 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-
 			if MoveAny:GetWoWBuild() ~= "RETAIL" then
-				MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFMODE", 0, 1, 0, 4, MoveAny.UpdateDebuffs, {
-					[0] = "AUTO",
-					[1] = "TOPRIGHT",
-					[2] = "TOPLEFT",
-					[3] = "BOTTOMRIGHT",
-					[4] = "BOTTOMLEFT"
-				})
+				MoveAny:CreateSlider(
+					content,
+					10,
+					y,
+					name,
+					"MADEBUFFMODE",
+					0,
+					1,
+					0,
+					4,
+					MoveAny.UpdateDebuffs,
+					{
+						[0] = "AUTO",
+						[1] = "TOPRIGHT",
+						[2] = "TOPLEFT",
+						[3] = "BOTTOMRIGHT",
+						[4] = "BOTTOMLEFT"
+					}
+				)
 
 				y = y - 40
 			end
@@ -568,16 +590,60 @@ function MoveAny:MenuOptions(opt, frame)
 			y = y - 40
 			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateDebuffs)
 			y = y - 40
+		elseif string.find(content.name, MoveAny:GT("LID_MAINMENUEXPBAR")) or string.find(content.name, MoveAny:GT("LID_REPUTATIONWATCHBAR")) then
+			opts["WIDTH"] = opts["WIDTH"] or 1024
+			local width = opts["WIDTH"]
+			opts["HEIGHT"] = opts["HEIGHT"] or 15
+			local height = opts["HEIGHT"]
+			local sliderW = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			sliderW:SetWidth(content:GetWidth() - 110)
+			sliderW:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -30)
+			sliderW.Low:SetText(100)
+			sliderW.High:SetText(1024)
+			sliderW.Text:SetText(MoveAny:GT("LID_WIDTH") .. ": " .. width)
+			sliderW:SetMinMaxValues(100, 1024)
+			sliderW:SetObeyStepOnDrag(true)
+			sliderW:SetValueStep(1)
+			sliderW:SetValue(width)
+			sliderW:SetScript(
+				"OnValueChanged",
+				function(sel, val)
+					val = tonumber(string.format("%" .. 0 .. "f", val))
+					if val and val ~= opts["WIDTH"] then
+						opts["WIDTH"] = val
+						sel.Text:SetText(MoveAny:GT("LID_WIDTH") .. ": " .. val)
+					end
+				end
+			)
+
+			local sliderH = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			sliderH:SetWidth(content:GetWidth() - 110)
+			sliderH:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -60)
+			sliderH.Low:SetText(2)
+			sliderH.High:SetText(64)
+			sliderH.Text:SetText(MoveAny:GT("LID_HEIGHT") .. ": " .. height)
+			sliderH:SetMinMaxValues(2, 64)
+			sliderH:SetObeyStepOnDrag(true)
+			sliderH:SetValueStep(1)
+			sliderH:SetValue(height)
+			sliderH:SetScript(
+				"OnValueChanged",
+				function(sel, val)
+					val = tonumber(string.format("%" .. 0 .. "f", val))
+					if val and val ~= opts["HEIGHT"] then
+						opts["HEIGHT"] = val
+						sel.Text:SetText(MoveAny:GT("LID_HEIGHT") .. ": " .. val)
+					end
+				end
+			)
 		end
 	end
 end
 
 function MoveAny:GetFrame(ele, name)
 	local _, e1 = strfind(name, ".", 1, true)
-
 	if e1 then
 		local tab = {strsplit(".", name)}
-
 		for i, na in pairs(tab) do
 			if i == 1 and _G[na] then
 				ele = _G[na]
@@ -592,12 +658,10 @@ end
 
 local ses = {}
 local runSelectedReset = false
-
 function MoveAny:ResetSelectedText()
 	if not runSelectedReset then
 		runSelectedReset = true
 		local cb = MoveAny:GetLastSelected()
-
 		if cb then
 			cb:UpdateText()
 		end
@@ -639,7 +703,6 @@ function MoveAny:RegisterWidget(tab)
 	local lstr = tab.lstr
 	local lstri = tab.lstri
 	MoveAny:RegisterSelectEle(lstr, name)
-
 	if lstri then
 		lstr = format(MoveAny:GT(lstr), lstri)
 	else
@@ -660,7 +723,6 @@ function MoveAny:RegisterWidget(tab)
 	tab.delay = tab.delay or 0.2
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
-
 	if enabled1 or enabled2 then
 		if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 			MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
@@ -675,31 +737,32 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
-	C_Timer.After(1, function()
-		enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
-		enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
+	C_Timer.After(
+		1,
+		function()
+			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
+			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
+			if enabled1 or enabled2 then
+				if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+					MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
 
-		if enabled1 or enabled2 then
-			if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
-				MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
+					return
+				end
 
-				return
-			end
+				if not forced1 and not forced2 then
+					MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
 
-			if not forced1 and not forced2 then
-				MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
-
-				return
+					return
+				end
 			end
 		end
-	end)
+	)
 
 	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
 		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil
 	end
 
 	local frame = MoveAny:GetFrame(_G[name], name)
-
 	if frame then
 		MoveAny:AddFrameName(frame, name)
 	end
@@ -712,7 +775,6 @@ function MoveAny:RegisterWidget(tab)
 		dragframe:SetFrameLevel(99)
 		dragframe:SetAlpha(0)
 		dragframe:EnableMouse(false)
-
 		if MoveAny:GetEleSize(name) then
 			dragframe:SetSize(MoveAny:GetEleSize(name))
 		else
@@ -732,121 +794,131 @@ function MoveAny:RegisterWidget(tab)
 		local font, _, fontFlags = dragframe.name:GetFont()
 		dragframe.name:SetFont(font, 15, fontFlags)
 		local enab, forc = MoveAny:IsInEditModeEnabled(name)
-
 		if enab and not forc then
 			lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT("LID_ISENABLEDINEDITMODE")
 		end
 
 		dragframe.name:SetText(lstr)
 		dragframe.name:Hide()
+		dragframe:SetScript(
+			"OnEnter",
+			function()
+				if dragframe ~= MACurrentEle then
+					dragframe.name:Show()
+				end
 
-		dragframe:SetScript("OnEnter", function()
-			if dragframe ~= MACurrentEle then
-				dragframe.name:Show()
-			end
-
-			dragframe.t:SetAlpha(0.8)
-
-			if dragframe.setup == nil and not InCombatLockdown() then
-				dragframe.setup = true
-				dragframe:EnableKeyboard(true)
-				dragframe:SetPropagateKeyboardInput(true)
-
-				dragframe:HookScript("OnKeyDown", function(sel, btn)
-					if dragframe == MACurrentEle then
-						local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-
-						if btn == "RIGHT" then
-							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + 1, p5)
-						elseif btn == "LEFT" then
-							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 - 1, p5)
-						elseif btn == "UP" then
-							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 + 1)
-						elseif btn == "DOWN" then
-							MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 - 1)
+				dragframe.t:SetAlpha(0.8)
+				if dragframe.setup == nil and not InCombatLockdown() then
+					dragframe.setup = true
+					dragframe:EnableKeyboard(true)
+					dragframe:SetPropagateKeyboardInput(true)
+					dragframe:HookScript(
+						"OnKeyDown",
+						function(sel, btn)
+							if dragframe == MACurrentEle then
+								local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
+								if btn == "RIGHT" then
+									MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + 1, p5)
+								elseif btn == "LEFT" then
+									MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 - 1, p5)
+								elseif btn == "UP" then
+									MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 + 1)
+								elseif btn == "DOWN" then
+									MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4, p5 - 1)
+								end
+							else
+								return
+							end
 						end
-					else
-						return
+					)
+				end
+			end
+		)
+
+		dragframe:SetScript(
+			"OnLeave",
+			function()
+				if dragframe ~= MACurrentEle then
+					dragframe.name:Hide()
+				end
+
+				dragframe.t:SetAlpha(0.4)
+			end
+		)
+
+		dragframe:SetScript(
+			"OnMouseDown",
+			function(sel, btn)
+				local fram = _G[name]
+				if btn == "LeftButton" then
+					MoveAny:SelectEle(sel)
+				end
+
+				if btn == "LeftButton" then
+					dragframe:SetMovable(true)
+					dragframe:StartMoving()
+					dragframe.IsMoving = true
+				elseif btn == "RightButton" then
+					if dragframe.opt == nil then
+						dragframe.opt = CreateFrame("Frame", name .. ".opt", MoveAny:GetMainPanel(), "BasicFrameTemplateWithInset")
+						dragframe.opt.TitleText:SetText(name)
+						dragframe.opt:SetFrameStrata("HIGH")
+						dragframe.opt:SetFrameLevel(framelevel)
+						framelevel = framelevel + 510 -- 509 <- closebutton height
+						dragframe.opt:SetSize(300, 370)
+						dragframe.opt:SetPoint("CENTER")
+						dragframe.opt:SetClampedToScreen(true)
+						dragframe.opt:SetMovable(true)
+						dragframe.opt:EnableMouse(true)
+						dragframe.opt:RegisterForDrag("LeftButton")
+						dragframe.opt:SetScript("OnDragStart", dragframe.opt.StartMoving)
+						dragframe.opt:SetScript("OnDragStop", dragframe.opt.StopMovingOrSizing)
+						MoveAny:MenuOptions(dragframe.opt, fram)
+					elseif dragframe.opt then
+						dragframe.opt:Show()
 					end
-				end)
-			end
-		end)
-
-		dragframe:SetScript("OnLeave", function()
-			if dragframe ~= MACurrentEle then
-				dragframe.name:Hide()
-			end
-
-			dragframe.t:SetAlpha(0.4)
-		end)
-
-		dragframe:SetScript("OnMouseDown", function(sel, btn)
-			local fram = _G[name]
-
-			if btn == "LeftButton" then
-				MoveAny:SelectEle(sel)
-			end
-
-			if btn == "LeftButton" then
-				dragframe:SetMovable(true)
-				dragframe:StartMoving()
-				dragframe.IsMoving = true
-			elseif btn == "RightButton" then
-				if dragframe.opt == nil then
-					dragframe.opt = CreateFrame("Frame", name .. ".opt", MoveAny:GetMainPanel(), "BasicFrameTemplateWithInset")
-					dragframe.opt.TitleText:SetText(name)
-					dragframe.opt:SetFrameStrata("HIGH")
-					dragframe.opt:SetFrameLevel(framelevel)
-					framelevel = framelevel + 510 -- 509 <- closebutton height
-					dragframe.opt:SetSize(300, 370)
-					dragframe.opt:SetPoint("CENTER")
-					dragframe.opt:SetClampedToScreen(true)
-					dragframe.opt:SetMovable(true)
-					dragframe.opt:EnableMouse(true)
-					dragframe.opt:RegisterForDrag("LeftButton")
-					dragframe.opt:SetScript("OnDragStart", dragframe.opt.StartMoving)
-					dragframe.opt:SetScript("OnDragStop", dragframe.opt.StopMovingOrSizing)
-					MoveAny:MenuOptions(dragframe.opt, fram)
-				elseif dragframe.opt then
-					dragframe.opt:Show()
 				end
 			end
-		end)
+		)
 
-		dragframe:SetScript("OnMouseUp", function()
-			local fram = _G[name]
+		dragframe:SetScript(
+			"OnMouseUp",
+			function()
+				local fram = _G[name]
+				if dragframe.IsMoving then
+					dragframe.IsMoving = false
+					dragframe:StopMovingOrSizing()
+					dragframe:SetMovable(false)
+					local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
+					local np1, _, np3, p4, p5 = dragframe:GetPoint()
+					local np4 = MoveAny:Snap(p4)
+					local np5 = MoveAny:Snap(p5)
+					if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then
+						MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5)
+					end
 
-			if dragframe.IsMoving then
-				dragframe.IsMoving = false
-				dragframe:StopMovingOrSizing()
-				dragframe:SetMovable(false)
-				local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
-				local np1, _, np3, p4, p5 = dragframe:GetPoint()
-				local np4 = MoveAny:Snap(p4)
-				local np5 = MoveAny:Snap(p5)
+					if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
+						local tab1 = dragframe.opt.tabs[1]
+						tab1.content.pos:SetText(format("Position X: %d Y:%d", p4, p5))
+					end
 
-				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then
-					MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5)
+					dragframe:SetMovable(true)
+					dragframe:ClearAllPoints()
+					dragframe:SetPoint("CENTER", fram, "CENTER", posx or 0, posy or 0)
 				end
-
-				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
-					local tab1 = dragframe.opt.tabs[1]
-					tab1.content.pos:SetText(format("Position X: %d Y:%d", p4, p5))
-				end
-
-				dragframe:SetMovable(true)
-				dragframe:ClearAllPoints()
-				dragframe:SetPoint("CENTER", fram, "CENTER", posx or 0, posy or 0)
 			end
-		end)
+		)
 
 		tinsert(MoveAny:GetDragFrames(), dragframe)
 	end
 
 	if frame == nil then
-		C_Timer.After(tab.delay or 0.2, function()
-			MoveAny:RegisterWidget(tab)
-		end)
+		C_Timer.After(
+			tab.delay or 0.2,
+			function()
+				MoveAny:RegisterWidget(tab)
+			end
+		)
 
 		return false
 	end
@@ -857,20 +929,22 @@ function MoveAny:RegisterWidget(tab)
 		local r = cright or 0
 		local t = ctop or 0
 		local b = cbottom or 0
-
 		if frame.SetClampRectInsets then
-			hooksecurefunc(frame, "SetClampRectInsets", function(sel, ...)
-				if sel.scri then return end
-				sel.scri = true
-				sel:SetClampRectInsets(l, r, t, b)
-				local df = _G[name .. "_DRAG"]
+			hooksecurefunc(
+				frame,
+				"SetClampRectInsets",
+				function(sel, ...)
+					if sel.scri then return end
+					sel.scri = true
+					sel:SetClampRectInsets(l, r, t, b)
+					local df = _G[name .. "_DRAG"]
+					if df then
+						df:SetClampRectInsets(l, r, t, b)
+					end
 
-				if df then
-					df:SetClampRectInsets(l, r, t, b)
+					sel.scri = false
 				end
-
-				sel.scri = false
-			end)
+			)
 
 			frame:SetClampRectInsets(l, r, t, b)
 		end
@@ -878,7 +952,6 @@ function MoveAny:RegisterWidget(tab)
 
 	tinsert(MoveAny:GetEleFrames(), frame)
 	tinsert(MoveAny:GetAlphaFrames(), frame)
-
 	if frame and frame.GetChildren then
 		for i, btn in pairs({frame:GetChildren()}) do
 			function btn:GetMAEle()
@@ -888,10 +961,8 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	frame.ignoreFramePositionManager = true
-
 	if frame.SetMovable then
 		frame:SetMovable(true)
-
 		if frame.SetUserPlaced and frame:IsMovable() then
 			frame:SetUserPlaced(userplaced or false)
 		end
@@ -908,25 +979,25 @@ function MoveAny:RegisterWidget(tab)
 	local maframe1 = _G["MA" .. name]
 	local maframe2 = _G[string.gsub(name, "MA", "")]
 	local dragf = _G[name .. "_DRAG"]
-
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
 		frame.oldparent = frame.oldparent or frame:GetParent()
+		hooksecurefunc(
+			frame,
+			"SetParent",
+			function(sel, newParent)
+				if sel.ma_setparent then return end
+				sel.ma_setparent = true
+				if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
+					sel:SetParent(MAHIDDEN)
+				else
+					sel:SetParent(sel.oldparent)
+				end
 
-		hooksecurefunc(frame, "SetParent", function(sel, newParent)
-			if sel.ma_setparent then return end
-			sel.ma_setparent = true
-
-			if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
-				sel:SetParent(MAHIDDEN)
-			else
-				sel:SetParent(sel.oldparent)
+				sel.ma_setparent = false
 			end
-
-			sel.ma_setparent = false
-		end)
+		)
 
 		frame:SetParent(MAHIDDEN)
-
 		if maframe1 then
 			maframe1.oldparent = maframe1.oldparent or frame:GetParent()
 			maframe1:SetParent(MAHIDDEN)
@@ -943,28 +1014,28 @@ function MoveAny:RegisterWidget(tab)
 			dragf.t:SetVertexColor(MoveAny:GetColor("se"))
 		elseif MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough2") then
 			dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
-
-			hooksecurefunc(frame, "EnableMouse", function(sel, bo)
-				if sel.ma_enablemouse then return end
-				sel.ma_enablemouse = true
-				sel:EnableMouse(false)
-				sel.ma_enablemouse = false
-			end)
+			hooksecurefunc(
+				frame,
+				"EnableMouse",
+				function(sel, bo)
+					if sel.ma_enablemouse then return end
+					sel.ma_enablemouse = true
+					sel:EnableMouse(false)
+					sel.ma_enablemouse = false
+				end
+			)
 
 			frame:EnableMouse(false)
-
 			if frame == MABuffBar then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
 						local bb = _G["BuffButton" .. i]
-
 						if bb then
 							bb:EnableMouse(false)
 						end
 
 						if not MoveAny:IsEnabled("DEBUFFS", false) then
 							local db = _G["DebuffButton" .. i]
-
 							if db then
 								db:EnableMouse(false)
 							end
@@ -974,17 +1045,18 @@ function MoveAny:RegisterWidget(tab)
 
 				local bbf = CreateFrame("FRAME")
 				bbf:RegisterEvent("UNIT_AURA")
-
-				bbf:SetScript("OnEvent", function()
-					frame:UpdateBuffMouse()
-				end)
+				bbf:SetScript(
+					"OnEvent",
+					function()
+						frame:UpdateBuffMouse()
+					end
+				)
 
 				frame:UpdateBuffMouse()
 			elseif frame == MADebuffBar then
 				function frame:UpdateDebuffMouse()
 					for i = 1, 32 do
 						local db = _G["DebuffButton" .. i]
-
 						if db then
 							db:EnableMouse(false)
 						end
@@ -993,23 +1065,23 @@ function MoveAny:RegisterWidget(tab)
 
 				local bbf = CreateFrame("FRAME")
 				bbf:RegisterEvent("UNIT_AURA")
-
-				bbf:SetScript("OnEvent", function()
-					frame:UpdateDebuffMouse()
-				end)
+				bbf:SetScript(
+					"OnEvent",
+					function()
+						frame:UpdateDebuffMouse()
+					end
+				)
 
 				frame:UpdateDebuffMouse()
 			elseif frame == TargetFrameBuff1 then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
 						local bb = _G["TargetFrameBuff" .. i]
-
 						if bb then
 							bb:EnableMouse(false)
 						end
 
 						local db = _G["TargetFrameDebuff" .. i]
-
 						if db then
 							db:EnableMouse(false)
 						end
@@ -1018,23 +1090,23 @@ function MoveAny:RegisterWidget(tab)
 
 				local bbf = CreateFrame("FRAME")
 				bbf:RegisterEvent("UNIT_AURA")
-
-				bbf:SetScript("OnEvent", function()
-					frame:UpdateBuffMouse()
-				end)
+				bbf:SetScript(
+					"OnEvent",
+					function()
+						frame:UpdateBuffMouse()
+					end
+				)
 
 				frame:UpdateBuffMouse()
 			elseif frame == FocusFrameBuff1 then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
 						local bb = _G["FocusFrameBuff" .. i]
-
 						if bb then
 							bb:EnableMouse(false)
 						end
 
 						local db = _G["FocusFrameDebuff" .. i]
-
 						if db then
 							db:EnableMouse(false)
 						end
@@ -1043,10 +1115,12 @@ function MoveAny:RegisterWidget(tab)
 
 				local bbf = CreateFrame("FRAME")
 				bbf:RegisterEvent("UNIT_AURA")
-
-				bbf:SetScript("OnEvent", function()
-					frame:UpdateBuffMouse()
-				end)
+				bbf:SetScript(
+					"OnEvent",
+					function()
+						frame:UpdateBuffMouse()
+					end
+				)
 
 				frame:UpdateBuffMouse()
 			end
@@ -1057,7 +1131,6 @@ function MoveAny:RegisterWidget(tab)
 
 	frame.ma_secure = secure
 	local bToSmall = false
-
 	if sw or sh then
 		bToSmall = true
 	end
@@ -1066,10 +1139,8 @@ function MoveAny:RegisterWidget(tab)
 	sh = sh or frame:GetHeight()
 	sw = MoveAny:MathR(sw)
 	sh = MoveAny:MathR(sh)
-
 	if MoveAny:GetElePoint(name) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
-
 		if parent == nil or parent == UIParent or parent == MoveAny:GetMainPanel() and an ~= nil and re ~= nil then
 			MoveAny:SetElePoint(name, an, MoveAny:GetMainPanel(), re, MoveAny:Snap(px), MoveAny:Snap(py))
 		elseif frame:GetLeft() and frame:GetBottom() then
@@ -1086,7 +1157,6 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	local osw, osh = MoveAny:GetEleSize(name)
-
 	if osw ~= sw or osh ~= sh then
 		MoveAny:SetEleSize(name, sw, sh)
 	end
@@ -1096,7 +1166,6 @@ function MoveAny:RegisterWidget(tab)
 		function frame:MAUpdatePoint()
 			if frame.ma_retry_setpoint and not InCombatLockdown() then
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-
 				if not InCombatLockdown() and frame.SetPointBase then
 					frame:ClearAllPoints()
 					frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
@@ -1114,42 +1183,43 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
-	hooksecurefunc(frame, "SetPoint", function(sel, ...)
-		if sel.elesetpoint then return end
-
-		--sel.layoutApplyInProgress = true
-		if not sel.ma_secure then
-			if sel.SetMovable then
-				sel:SetMovable(true)
-			end
-
-			if sel.SetUserPlaced and sel:IsMovable() then
-				sel:SetUserPlaced(userplaced or false)
-			end
-
-			sel.elesetpoint = true
-			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-
-			if dbp1 and dbp3 then
-				if not InCombatLockdown() and sel.SetPointBase then
-					sel:ClearAllPointsBase()
-					sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-				elseif not sel.SetPointBase then
-					sel:ClearAllPoints()
-					sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-				elseif sel.ma_retry_setpoint == false then
-					sel.ma_retry_setpoint = true
-					frame:MAUpdatePoint()
+	hooksecurefunc(
+		frame,
+		"SetPoint",
+		function(sel, ...)
+			if sel.elesetpoint then return end
+			--sel.layoutApplyInProgress = true
+			if not sel.ma_secure then
+				if sel.SetMovable then
+					sel:SetMovable(true)
 				end
-			end
 
-			sel.elesetpoint = false
+				if sel.SetUserPlaced and sel:IsMovable() then
+					sel:SetUserPlaced(userplaced or false)
+				end
+
+				sel.elesetpoint = true
+				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+				if dbp1 and dbp3 then
+					if not InCombatLockdown() and sel.SetPointBase then
+						sel:ClearAllPointsBase()
+						sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+					elseif not sel.SetPointBase then
+						sel:ClearAllPoints()
+						sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+					elseif sel.ma_retry_setpoint == false then
+						sel.ma_retry_setpoint = true
+						frame:MAUpdatePoint()
+					end
+				end
+
+				sel.elesetpoint = false
+			end
 		end
-	end)
+	)
 
 	if not frame.ma_secure then
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-
 		if dbp1 and dbp3 then
 			frame:ClearAllPoints()
 			frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
@@ -1158,47 +1228,52 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
-	hooksecurefunc(frame, "SetScale", function(sel, scale)
-		if sel.masetscale_ele then return end
-		sel.masetscale_ele = true
-		local newScale = MoveAny:GetEleScale(name) or 1
-
-		if newScale and newScale > 0 then
-			frame:SetScale(newScale)
-			local dragframe = _G[name .. "_DRAG"]
-
-			if dragframe then
-				dragframe:SetScale(newScale)
+	hooksecurefunc(
+		frame,
+		"SetScale",
+		function(sel, scale)
+			if sel.masetscale_ele then return end
+			sel.masetscale_ele = true
+			local newScale = MoveAny:GetEleScale(name) or 1
+			if newScale and newScale > 0 then
+				frame:SetScale(newScale)
+				local dragframe = _G[name .. "_DRAG"]
+				if dragframe then
+					dragframe:SetScale(newScale)
+				end
 			end
-		end
 
-		sel.masetscale_ele = false
-	end)
+			sel.masetscale_ele = false
+		end
+	)
 
 	if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then
 		frame:SetScale(MoveAny:GetEleScale(name))
 	end
 
-	hooksecurefunc(frame, "SetSize", function(sel, w, h)
-		local isToSmall = false
-		local df = _G[name .. "_DRAG"]
-		df:SetSize(w, h)
-
-		if w < sw then
-			w = sw
-			isToSmall = true
-		end
-
-		if h < sh then
-			h = sh
-			isToSmall = true
-		end
-
-		if bToSmall and isToSmall then
+	hooksecurefunc(
+		frame,
+		"SetSize",
+		function(sel, w, h)
+			local isToSmall = false
+			local df = _G[name .. "_DRAG"]
 			df:SetSize(w, h)
-			sel:SetSize(w, h)
+			if w < sw then
+				w = sw
+				isToSmall = true
+			end
+
+			if h < sh then
+				h = sh
+				isToSmall = true
+			end
+
+			if bToSmall and isToSmall then
+				df:SetSize(w, h)
+				sel:SetSize(w, h)
+			end
 		end
-	end)
+	)
 
 	if not InCombatLockdown() then
 		frame:SetSize(sw, sh)
@@ -1208,7 +1283,6 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:SetSize(sw, sh)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
-
 	if MoveAny:IsEnabled("MALOCK", false) then
 		dragframe:SetAlpha(1)
 		dragframe:EnableMouse(true)
@@ -1228,7 +1302,6 @@ local invehicle = nil
 local incombat = nil
 local lastEle = nil
 local lastSize = 0
-
 function MoveAny:SetEleAlpha(ele, alpha)
 	if ele:GetAlpha() ~= alpha then
 		ele:SetAlpha(alpha)
@@ -1264,7 +1337,6 @@ function MoveAny:CheckAlphas()
 	end
 
 	local ele = GetMouseFocus()
-
 	if ele and ele ~= CompactRaidFrameManager then
 		if tContains(MoveAny:GetAlphaFrames(), ele) then
 			ele:SetAlpha(1)
@@ -1296,7 +1368,6 @@ function MoveAny:UpdateAlphas(mouseEle)
 			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha3")
 			local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha4")
 			local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha5")
-
 			-- hovered
 			if ele == mouseEle then
 				MoveAny:SetEleAlpha(ele, 1)
