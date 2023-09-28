@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.44")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.45")
 }
 
 local MAMMBTN = nil
@@ -2191,9 +2191,9 @@ function MoveAny:LoadAddon()
 					MainMenuBarVehicleLeaveButton:SetParent(MoveAny:GetMainPanel())
 				end
 
-				if UnitInVehicle then
+				if UnitInVehicle and UnitOnTaxi then
 					function MoveAny:UpdateVehicleLeaveButton()
-						if UnitInVehicle("player") then
+						if UnitInVehicle("player") or UnitOnTaxi("player") then
 							MainMenuBarVehicleLeaveButton:SetAlpha(1)
 						else
 							MainMenuBarVehicleLeaveButton:SetAlpha(0)
