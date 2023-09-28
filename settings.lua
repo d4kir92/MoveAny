@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.45")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.46")
 }
 
 local MAMMBTN = nil
@@ -3225,9 +3225,14 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
-		local glfsw, glfsh = 100, 100
+		local glfsw, glfsh = 256, 67
 		if GroupLootFrame1 then
 			glfsw, glfsh = GroupLootFrame1:GetSize()
+		end
+
+		GroupLootContainer:SetSize(glfsw, glfsh)
+		if GroupLootContainer:GetPoint() == nil then
+			GroupLootContainer:SetPoint("CENTER", 0, 0)
 		end
 
 		MoveAny:RegisterWidget(
@@ -3296,6 +3301,10 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
+		if BonusRollFrame:GetPoint() == nil then
+			BonusRollFrame:SetPoint("CENTER", 0, 0)
+		end
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "BonusRollFrame",
