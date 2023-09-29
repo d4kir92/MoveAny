@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.46")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.47")
 }
 
 local MAMMBTN = nil
@@ -3609,12 +3609,14 @@ function MoveAny:LoadAddon()
 		)
 
 		if ChatFrameMenuButton then
+			ChatFrameMenuButton:SetParent(cbf)
 			function ChatFrameMenuButton:GetMAEle()
 				return cbf
 			end
 		end
 
 		if ChatFrameChannelButton then
+			ChatFrameChannelButton:SetParent(cbf)
 			function ChatFrameChannelButton:GetMAEle()
 				return cbf
 			end
