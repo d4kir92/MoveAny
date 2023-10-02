@@ -1316,8 +1316,10 @@ local isresting = nil
 local ismounted = nil
 local invehicle = nil
 local incombat = nil
+local inpetbattle = nil
 local lastEle = nil
 local lastSize = 0
+local fullHP = false
 function MoveAny:SetEleAlpha(ele, alpha)
 	if ele:GetAlpha() ~= alpha then
 		ele:SetAlpha(alpha)
@@ -1345,6 +1347,12 @@ function MoveAny:CheckAlphas()
 	elseif IsResting and isresting ~= IsResting() then
 		isresting = IsResting()
 		MoveAny:UpdateAlphas()
+	elseif MoveAny.IsInPetBattle and inpetbattle ~= MoveAny:IsInPetBattle() then
+		inpetbattle = MoveAny:IsInPetBattle()
+		MoveAny:UpdateAlphas()
+	elseif fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
+		fullHP = UnitHealth("player") >= UnitHealthMax("player")
+		MoveAny:UpdateAlphas()
 	end
 
 	if lastSize ~= getn(MoveAny:GetAlphaFrames()) then
@@ -1370,7 +1378,7 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	C_Timer.After(0.15, MoveAny.CheckAlphas)
+	C_Timer.After(0.11, MoveAny.CheckAlphas)
 end
 
 function MoveAny:UpdateAlphas(mouseEle)
@@ -1394,7 +1402,7 @@ function MoveAny:UpdateAlphas(mouseEle)
 				MoveAny:SetEleAlpha(ele, alphaIsMounted)
 			elseif IsResting and isresting then
 				MoveAny:SetEleAlpha(ele, alphaInRestedArea)
-			elseif MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp2") and UnitHealth("player") == UnitHealthMax("player") then
+			elseif MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp2") and UnitHealth("player") >= UnitHealthMax("player") then
 				MoveAny:SetEleAlpha(ele, alphaIsFullHealth)
 			elseif MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
 				MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
