@@ -170,8 +170,8 @@ function MoveAny:LangdeDE()
 		["LID_COMBOFRAME"] = "Komboleiste",
 		["LID_WIDTH"] = "Weite",
 		["LID_HEIGHT"] = "Höhe",
-		["LID_ALPHAISFULLHEALTH"] = "Alpha (Volle Gesundheit)",
-		["LID_ALPHAISINPETBATTLE"] = "Alpha (Ist in Haustierkampf)",
+		["LID_ALPHAISFULLHEALTH"] = "Sichtbarkeit (Volle Gesundheit)",
+		["LID_ALPHAISINPETBATTLE"] = "Sichtbarkeit (Ist in Haustierkampf)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

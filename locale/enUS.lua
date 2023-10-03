@@ -176,8 +176,8 @@ function MoveAny:LangenUS()
 		["LID_COMBOFRAME"] = "Combo Bar",
 		["LID_WIDTH"] = "Width",
 		["LID_HEIGHT"] = "Height",
-		["LID_ALPHAISFULLHEALTH"] = "Alpha Full Health",
-		["LID_ALPHAISINPETBATTLE"] = "Alpha Is In Pet Battle",
+		["LID_ALPHAISFULLHEALTH"] = "Alpha (Full Health)",
+		["LID_ALPHAISINPETBATTLE"] = "Alpha (Is In Pet Battle)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
