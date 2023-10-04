@@ -2,7 +2,6 @@ local AddonName, MoveAny = ...
 local COL_R = "|cFFFF0000"
 local COL_Y = "|cFFFFFF00"
 local MADEBUG = false
-
 function MoveAny:DEBUG()
 	return MADEBUG
 end
@@ -28,16 +27,13 @@ function MoveAny:CheckDB()
 	MATABPC["CURRENTPROFILE"] = MATABPC["CURRENTPROFILE"] or "DEFAULT"
 	--[[VERSION OF DB]]
 	MATAB["VERSION"] = MATAB["VERSION"] or 1
-
 	if MATAB["VERSION"] < 2 then
 		MATAB["VERSION"] = 2
 		MATAB["PROFILES"] = MATAB["PROFILES"] or {}
-
 		for pn, pt in pairs(MATAB["PROFILES"]) do
 			pt["ELES"] = pt["ELES"] or {}
 			pt["ELES"]["SIZES"] = pt["ELES"]["SIZES"] or {}
 			pt["ELES"]["OPTIONS"] = pt["ELES"]["OPTIONS"] or {}
-
 			for i, ft in pairs(pt["ELES"]["SIZES"]) do
 				if ft.SCALE ~= nil then
 					local val = tonumber(string.format("%.1f", ft.SCALE))
@@ -70,7 +66,6 @@ function MoveAny:AddProfile(newname, other, noChange)
 	MoveAny:CheckDB()
 	local name = MoveAny:GetValidProfileName(newname)
 	MATAB["PROFILES"][name] = MATAB["PROFILES"][name] or {}
-
 	if other and MATAB["PROFILES"][other] then
 		MATAB["PROFILES"][name] = MATAB["PROFILES"][other]
 	else
@@ -97,7 +92,6 @@ end
 function MoveAny:ImportProfile(name, eleTab)
 	MoveAny:CheckDB()
 	MoveAny:AddProfile(name)
-
 	for i, v in pairs(eleTab) do
 		MATAB["PROFILES"][name]["ELES"][i] = v
 	end
@@ -105,7 +99,6 @@ end
 
 function MoveAny:RenameProfile(oldname, newname)
 	MoveAny:CheckDB()
-
 	if MATAB["PROFILES"][newname] ~= nil then
 		MoveAny:MSG("[RenameProfile] can't rename, new Name already exists.")
 
@@ -121,7 +114,6 @@ function MoveAny:RenameProfile(oldname, newname)
 	local isCurrent = MoveAny:GetCP() == oldname
 	MoveAny:AddProfile(newname, oldname)
 	MoveAny:RemoveProfile(oldname)
-
 	if isCurrent then
 		MoveAny:SetCP(newname)
 	end
@@ -139,7 +131,6 @@ end
 
 function MoveAny:IImportPointValue(profileName, n, t, key, dbKey)
 	MoveAny:CheckDB()
-
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:MSG("[MAIImportValue] Missing Default Profile")
 
@@ -149,10 +140,8 @@ function MoveAny:IImportPointValue(profileName, n, t, key, dbKey)
 	local eleName = nil
 	local value = nil
 	local s1, _ = strfind(n, key, 1, true)
-
 	if s1 then
 		eleName = strsub(n, 1, s1 - 1)
-
 		if MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"][eleName] ~= nil then
 			value = t
 		end
@@ -174,7 +163,6 @@ end
 
 function MoveAny:IImportSizesValue(profileName, n, t, key, dbKey)
 	MoveAny:CheckDB()
-
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:MSG("[MAIImportValue] Missing Default Profile")
 
@@ -184,10 +172,8 @@ function MoveAny:IImportSizesValue(profileName, n, t, key, dbKey)
 	local eleName = nil
 	local value = nil
 	local s1, _ = strfind(n, key, 1, true)
-
 	if s1 then
 		eleName = strsub(n, 1, s1 - 1)
-
 		if MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"][eleName] ~= nil then
 			value = t
 		end
@@ -209,7 +195,6 @@ end
 
 function MoveAny:IImportOptionValue(profileName, n, t, key, dbKey)
 	MoveAny:CheckDB()
-
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:MSG("[MAIImportValue] Missing Default Profile")
 
@@ -219,10 +204,8 @@ function MoveAny:IImportOptionValue(profileName, n, t, key, dbKey)
 	local eleName = nil
 	local value = nil
 	local s1, _ = strfind(n, key, 1, true)
-
 	if s1 then
 		eleName = strsub(n, 1, s1 - 1)
-
 		if MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"][eleName] ~= nil then
 			value = t
 		elseif MATAB["PROFILES"]["DEFAULT"]["ELES"]["POINTS"]["MA" .. eleName] ~= nil then
@@ -266,7 +249,6 @@ end
 function MoveAny:FixTable(tab)
 	for i, v in pairs(tab) do
 		local typ = type(v)
-
 		if typ == "string" then
 			if type(tonumber(v)) == "number" then
 				tab[i] = tonumber(v)
@@ -281,7 +263,6 @@ end
 
 function MoveAny:SetEnabled(element, value)
 	MoveAny:CheckDB()
-
 	if element == nil then
 		MoveAny:MSG_Error("[SetEnabled] Missing Name")
 
@@ -296,7 +277,6 @@ function MoveAny:SetEnabled(element, value)
 
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
-
 	if element ~= "MALOCK" then
 		MoveAny:EnableSave("SetEnabled", element)
 	end
@@ -304,7 +284,6 @@ end
 
 function MoveAny:IsEnabled(element, value, settings)
 	MoveAny:CheckDB()
-
 	if element == nil then
 		MoveAny:MSG_Error("[IsEnabled] Missing Name")
 
@@ -312,7 +291,6 @@ function MoveAny:IsEnabled(element, value, settings)
 	end
 
 	local enabled, forced = MoveAny:IsInEditModeEnabled(element)
-
 	if value and enabled and not forced and not settings then
 		MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), MoveAny:GT(element)))
 
@@ -323,7 +301,6 @@ function MoveAny:IsEnabled(element, value, settings)
 		MoveAny:GetTab()["ELES"] = MoveAny:GetTab()["ELES"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
-
 		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
 			MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 		end
@@ -379,7 +356,6 @@ end
 
 function MoveAny:GetElePoint(key)
 	MoveAny:CheckDB()
-
 	if key then
 		MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 		local an = MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"]
@@ -406,13 +382,11 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
 	local frame = _G[key]
-
 	if frame and p1 and p3 then
 		frame:ClearAllPoints()
 		frame:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
 		local systemFrame = frame
 		local systemInfo = frame.systemInfo
-
 		if frame.GetRealEle then
 			systemFrame = MABuffBar:GetRealEle()
 			systemInfo = systemFrame.systemInfo
@@ -441,7 +415,6 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 
 		if frame then
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
-
 			if dbp1 and dbp3 then
 				frame:ClearAllPoints()
 				frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
@@ -476,7 +449,6 @@ function MoveAny:GetEleScale(key)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 	local scale = MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"]
-
 	if scale and type(scale) ~= "number" then
 		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = tonumber(scale)
 	end
@@ -492,7 +464,6 @@ end
 
 function MoveAny:SetEleScale(key, scale)
 	MoveAny:CheckDB()
-
 	if scale == nil then
 		MoveAny:MSG("[SetEleScale] NO SCALE, key: " .. tostring(key))
 
@@ -503,7 +474,6 @@ function MoveAny:SetEleScale(key, scale)
 		MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = scale
 		local frame = _G[key]
-
 		if frame then
 			frame:SetScale(scale)
 		end
@@ -567,9 +537,12 @@ function MoveAny:GetSnapSize()
 	return MoveAny:GV("GRIDSIZE", 10)
 end
 
+function MoveAny:GetSnapWindowSize()
+	return MoveAny:GV("SNAPWINDOWSIZE", 1)
+end
+
 function MoveAny:InitDB()
 	MoveAny:CheckDB()
-
 	if MATAB["PROFILES"]["DEFAULT"] == nil then
 		MoveAny:AddProfile("DEFAULT")
 	end
@@ -579,7 +552,6 @@ function MoveAny:InitDB()
 	end
 
 	MoveAny:FixTable(MATAB["PROFILES"])
-
 	-- FIX, parent had big junk behind
 	for x, profil in pairs(MATAB["PROFILES"]) do
 		if profil then
@@ -604,14 +576,11 @@ function MoveAny:InitDB()
 	if MAITAB then
 		MoveAny:HR()
 		MoveAny:MSG("...MoveAndImprove detected, importing Profiles...")
-
 		for name, tab in pairs(MAITAB["PROFILES"]) do
 			local newName = name .. " by MAI"
-
 			if MATAB["PROFILES"][newName] == nil then
 				MoveAny:MSG("Importing Profile: " .. name)
 				MoveAny:AddProfile(newName, nil, true)
-
 				for n, t in pairs(tab) do
 					MoveAny:IImportPointValue(newName, n, t, "point", "AN")
 					MoveAny:IImportPointValue(newName, n, t, "relativePoint", "RE")
@@ -640,11 +609,9 @@ end
 local mf = CreateFrame("FRAME")
 mf:RegisterEvent("ADDON_LOADED")
 mf:SetScript("OnEvent", MoveAny.AddonLoaded)
-
 --[[ FIX ]]
 function MoveAny:TrySaveEditMode()
 	local layoutCount = 0
-
 	if EditModeManagerFrame and EditModeManagerFrame.numLayouts and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account] and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character] then
 		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account]
 		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character]
@@ -659,7 +626,6 @@ end
 
 MoveAny:TrySaveEditMode()
 local foundProblem = false
-
 function MoveAny:HasProblem()
 	return foundProblem
 end
@@ -679,7 +645,6 @@ end
 function MoveAny:FixEditMode()
 	local rig = 0
 	local wro = 0
-
 	for i, v in pairs(_G) do
 		if v ~= nil and i ~= "L" and i ~= "G" and type(v) == "table" and v.GetPoint ~= nil and v.systemInfo ~= nil and type(v.systemInfo) == "table" and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil and not is_full_caps(i) then
 			if string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then

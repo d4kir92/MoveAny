@@ -1,7 +1,5 @@
 local _, MoveAny = ...
-
 local MAFRAMES = {"PVPParentFrame", "SettingsPanel", "SplashFrame", "GameMenuFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "WorldMapFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "MailFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "TaxiFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
-
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	-- Buggy on retail
 	tinsert(MAFRAMES, "StaticPopup1")
@@ -10,18 +8,21 @@ if MoveAny:GetWoWBuild() ~= "RETAIL" then
 end
 
 local MAFS = {}
-
 for i, v in pairs(MAFRAMES) do
 	MAFS[v] = v
 end
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
-	hooksecurefunc(ScriptErrorsFrame.DragArea, "SetParent", function(sel)
-		if sel.ma_setparent then return end
-		sel.ma_setparent = true
-		sel:SetParent(MAHIDDEN)
-		sel.ma_setparent = false
-	end)
+	hooksecurefunc(
+		ScriptErrorsFrame.DragArea,
+		"SetParent",
+		function(sel)
+			if sel.ma_setparent then return end
+			sel.ma_setparent = true
+			sel:SetParent(MAHIDDEN)
+			sel.ma_setparent = false
+		end
+	)
 
 	ScriptErrorsFrame.DragArea:SetParent(MAHIDDEN)
 end
@@ -30,7 +31,6 @@ local currentFrame = nil
 local currentFrameName = nil
 local prevMouseX = nil
 local prevMouseY = nil
-
 function MoveAny:UpdateCurrentFrame()
 	if currentFrame ~= nil then
 		if not currentFrame:IsShown() then
@@ -41,26 +41,21 @@ function MoveAny:UpdateCurrentFrame()
 		end
 
 		local curMouseX, curMouseY = GetCursorPosition()
-
 		if prevMouseX and prevMouseY then
 			if curMouseY > prevMouseY then
 				local newScale = math.min(currentFrame:GetScale() + 0.006, 1.5)
-
 				if newScale > 0 then
 					newScale = tonumber(string.format("%.4f", newScale))
 					currentFrame:SetScale(newScale)
-
 					if currentFrame.isMaximized == nil or currentFrame.isMaximized == false then
 						MoveAny:SetFrameScale(currentFrameName, newScale)
 					end
 				end
 			elseif curMouseY < prevMouseY then
 				local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
-
 				if newScale > 0 then
 					newScale = tonumber(string.format("%.4f", newScale))
 					currentFrame:SetScale(newScale)
-
 					if currentFrame.isMaximized == nil or currentFrame.isMaximized == false then
 						MoveAny:SetFrameScale(currentFrameName, newScale)
 					end
@@ -79,22 +74,25 @@ end
 function MoveAny:FrameDragInfo(c)
 	if c > 0 then
 		if IsMouseButtonDown("RightButton") or IsMouseButtonDown("LeftButton") or IsMouseButtonDown("MiddleButton") then
-			C_Timer.After(0.01, function()
-				MoveAny:FrameDragInfo(c - 1)
-			end)
+			C_Timer.After(
+				0.01,
+				function()
+					MoveAny:FrameDragInfo(c - 1)
+				end
+			)
 		end
 	else
 		if IsMouseButtonDown("RightButton") then
-			if MoveAny:IsEnabled("FRAMESSHIFTSCALE", false) then
-				MoveAny:MSG(MoveAny:GT("LID_FRAMESSHIFTSCALE") .. ".")
+			if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
+				MoveAny:MSG(MoveAny:GT("LID_FRAMESKEYSCALE") .. ".")
 			end
 		elseif IsMouseButtonDown("LeftButton") then
-			if MoveAny:IsEnabled("FRAMESSHIFTDRAG", false) then
-				MoveAny:MSG(MoveAny:GT("LID_FRAMESSHIFTDRAG") .. ".")
+			if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then
+				MoveAny:MSG(MoveAny:GT("LID_FRAMESKEYDRAG") .. ".")
 			end
 		elseif IsMouseButtonDown("MiddleButton") then
-			if MoveAny:IsEnabled("FRAMESSHIFTRESET", false) then
-				MoveAny:MSG(MoveAny:GT("LID_FRAMESSHIFTRESET") .. ".")
+			if MoveAny:IsEnabled("FRAMESKEYRESET", false) then
+				MoveAny:MSG(MoveAny:GT("LID_FRAMESKEYRESET") .. ".")
 			end
 		end
 	end
@@ -105,11 +103,9 @@ function MoveAny:UpdateMoveFrames()
 		if not InCombatLockdown() then
 			for i, name in pairs(MAFS) do
 				local frame = MoveAny:GetFrame(_G[name], name)
-
 				if frame then
 					MAFS[name] = nil
 					local fm = _G[name .. "Move"]
-
 					if fm == nil then
 						fm = CreateFrame("FRAME", name .. "Move", MoveAny:GetMainPanel())
 						fm:SetMovable(true)
@@ -117,23 +113,26 @@ function MoveAny:UpdateMoveFrames()
 						fm:SetClampedToScreen(true)
 						fm:RegisterForDrag("Any")
 						fm:EnableMouse(false)
-
-						hooksecurefunc(frame, "SetScale", function(sel, scale)
-							if scale and scale > 0 then
-								fm:SetScale(scale)
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel, scale)
+								if scale and scale > 0 then
+									fm:SetScale(scale)
+								end
 							end
-						end)
+						)
 
 						function fm:UpdatePreview()
 							local fM = _G[name .. "Move"]
-
 							if fM and fM.ismoving then
 								if fM:GetLeft() then
 									fM.x = fM:GetLeft()
 									fM.y = fM:GetTop() - fM:GetHeight()
-									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "MoveAny:GetMainPanel()", "BOTTOMLEFT", fM.x, fM.y)
+									fM.x = MoveAny:Snap(fM.x, MoveAny:GetSnapWindowSize())
+									fM.y = MoveAny:Snap(fM.y, MoveAny:GetSnapWindowSize())
+									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.x, fM.y)
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
-
 									if dbp1 and dbp3 and not InCombatLockdown() then
 										frame:ClearAllPoints()
 										frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
@@ -146,11 +145,9 @@ function MoveAny:UpdateMoveFrames()
 					end
 
 					frame:SetClampedToScreen(true)
-
 					function MoveAny:MAFrameStopMoving(frameObj)
 						local name2 = frameObj:GetName()
 						local fM = _G[name2 .. "Move"]
-
 						if fM.ismoving then
 							fM.ismoving = false
 							fM:StopMovingOrSizing()
@@ -165,7 +162,6 @@ function MoveAny:UpdateMoveFrames()
 						if not MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then
 							MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
 							frameObj:SetMovable(true)
-
 							if frameObj.SetUserPlaced then
 								frameObj:SetUserPlaced(false)
 							end
@@ -174,7 +170,6 @@ function MoveAny:UpdateMoveFrames()
 						if not InCombatLockdown() and not MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
 							MoveAny:SetFrameScale(name, nil)
 							local scale = frameObj:GetScale()
-
 							if scale and scale > 0 then
 								frameObj:SetScale(scale)
 							end
@@ -182,70 +177,76 @@ function MoveAny:UpdateMoveFrames()
 					end
 
 					MoveAny:CheckSave(frame)
-
-					frame:HookScript("OnHide", function()
-						MoveAny:MAFrameStopMoving(frame)
-
-						if MoveAny.CheckSave then
-							MoveAny:CheckSave(frame)
+					frame:HookScript(
+						"OnHide",
+						function()
+							MoveAny:MAFrameStopMoving(frame)
+							if MoveAny.CheckSave then
+								MoveAny:CheckSave(frame)
+							end
 						end
-					end)
+					)
 
 					function MoveAny:IsResetButtonDown(btn)
 						return btn == "MiddleButton"
 					end
 
 					frame:RegisterForDrag("Any")
+					frame:HookScript(
+						"OnMouseDown",
+						function(sel, btn)
+							if frame:GetPoint() then
+								fm:SetSize(frame:GetSize())
+								fm:ClearAllPoints()
+								if frame:GetLeft() then
+									local x = frame:GetLeft()
+									local y = frame:GetTop() - frame:GetHeight()
+									x = MoveAny:Snap(x, MoveAny:GetSnapWindowSize())
+									y = MoveAny:Snap(y, MoveAny:GetSnapWindowSize())
+									fm:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", x, y)
+								else
+									fm:SetAllPoints(frame)
+								end
+							end
 
-					frame:HookScript("OnMouseDown", function(sel, btn)
-						if frame:GetPoint() then
-							fm:SetSize(frame:GetSize())
-							fm:ClearAllPoints()
+							if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
+								currentFrame = frame
+								currentFrameName = name
+								MoveAny:UpdateCurrentFrame()
+								GameTooltip:Hide()
+							elseif (MoveAny:IsEnabled("FRAMESKEYDRAG", false) and MoveAny:IsFrameKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESKEYDRAG", false) and btn == "LeftButton") then
+								if not InCombatLockdown() then
+									fm:StartMoving()
+									fm:SetUserPlaced(false)
+									fm.ismoving = true
+								end
 
-							if frame:GetLeft() then
-								local x = frame:GetLeft()
-								local y = frame:GetTop() - frame:GetHeight()
-								fm:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", x, y)
+								fm:UpdatePreview()
+							elseif (MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsFrameKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsResetButtonDown(btn)) then
+								MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
+								MoveAny:SetFrameScale(name, nil)
+								frame:SetScale(1)
+								--frame:ClearAllPoints()
+								MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
 							else
-								fm:SetAllPoints(frame)
+								if MoveAny:IsResetButtonDown(btn) then
+									MoveAny:FrameDragInfo(0)
+								else
+									MoveAny:FrameDragInfo(20)
+								end
 							end
 						end
+					)
 
-						if (MoveAny:IsEnabled("FRAMESSHIFTSCALE", false) and IsShiftKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESSHIFTSCALE", false) and btn == "RightButton") then
-							currentFrame = frame
-							currentFrameName = name
-							MoveAny:UpdateCurrentFrame()
-							GameTooltip:Hide()
-						elseif (MoveAny:IsEnabled("FRAMESSHIFTDRAG", false) and IsShiftKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESSHIFTDRAG", false) and btn == "LeftButton") then
-							if not InCombatLockdown() then
-								fm:StartMoving()
-								fm:SetUserPlaced(false)
-								fm.ismoving = true
-							end
-
-							fm:UpdatePreview()
-						elseif (MoveAny:IsEnabled("FRAMESSHIFTRESET", false) and IsShiftKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESSHIFTRESET", false) and MoveAny:IsResetButtonDown(btn)) then
-							MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
-							MoveAny:SetFrameScale(name, nil)
-							frame:SetScale(1)
-							--frame:ClearAllPoints()
-							MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
-						else
-							if MoveAny:IsResetButtonDown(btn) then
-								MoveAny:FrameDragInfo(0)
-							else
-								MoveAny:FrameDragInfo(20)
-							end
+					frame:HookScript(
+						"OnMouseUp",
+						function(sel)
+							MoveAny:MAFrameStopMoving(sel)
 						end
-					end)
-
-					frame:HookScript("OnMouseUp", function(sel)
-						MoveAny:MAFrameStopMoving(sel)
-					end)
+					)
 
 					function MoveAny:MAFrameRetrySetPoint(frameObj)
 						frameObj.maretrysetpoint = true
-
 						if not InCombatLockdown() then
 							if frameObj:GetPoint() then
 								frameObj:SetPoint(frameObj:GetPoint())
@@ -253,59 +254,65 @@ function MoveAny:UpdateMoveFrames()
 								frameObj:SetPoint("CENTER")
 							end
 						else
-							C_Timer.After(0.01, function()
-								MoveAny:MAFrameRetrySetPoint(frameObj)
-							end)
+							C_Timer.After(
+								0.01,
+								function()
+									MoveAny:MAFrameRetrySetPoint(frameObj)
+								end
+							)
 						end
 					end
 
-					hooksecurefunc(frame, "SetPoint", function(sel, p1, p2, p3, p4, p5)
-						if sel.maframesetpoint then return end
-						sel.maframesetpoint = true
-						sel:SetMovable(true)
-
-						if sel.SetUserPlaced and sel:IsMovable() then
-							sel:SetUserPlaced(false)
-						end
-
-						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
-
-						if dbp1 and dbp3 then
-							if not InCombatLockdown() then
-								sel.maretrysetpoint = nil
-								local w, h = sel:GetSize()
-								sel:ClearAllPoints()
-								sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-
-								if sel:GetNumPoints() > 1 then
-									sel:SetSize(w, h)
-								end
-							elseif sel.maretrysetpoint == nil and MoveAny.MAFrameRetrySetPoint then
-								MoveAny:MAFrameRetrySetPoint(frame)
+					hooksecurefunc(
+						frame,
+						"SetPoint",
+						function(sel, p1, p2, p3, p4, p5)
+							if sel.maframesetpoint then return end
+							sel.maframesetpoint = true
+							sel:SetMovable(true)
+							if sel.SetUserPlaced and sel:IsMovable() then
+								sel:SetUserPlaced(false)
 							end
-						end
 
-						sel.maframesetpoint = false
-					end)
-
-					hooksecurefunc(frame, "SetScale", function(sel, scale)
-						if sel.masetscale_frame then return end
-						sel.masetscale_frame = true
-
-						if sel.isMaximized then
-							sel:SetScale(1)
-						else
-							if MoveAny:GetFrameScale(name) or scale then
-								local sca = MoveAny:GetFrameScale(name) or scale
-
-								if sca and sca > 0 then
-									sel:SetScale(sca)
+							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
+							if dbp1 and dbp3 then
+								if not InCombatLockdown() then
+									sel.maretrysetpoint = nil
+									local w, h = sel:GetSize()
+									sel:ClearAllPoints()
+									sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+									if sel:GetNumPoints() > 1 then
+										sel:SetSize(w, h)
+									end
+								elseif sel.maretrysetpoint == nil and MoveAny.MAFrameRetrySetPoint then
+									MoveAny:MAFrameRetrySetPoint(frame)
 								end
 							end
-						end
 
-						sel.masetscale_frame = false
-					end)
+							sel.maframesetpoint = false
+						end
+					)
+
+					hooksecurefunc(
+						frame,
+						"SetScale",
+						function(sel, scale)
+							if sel.masetscale_frame then return end
+							sel.masetscale_frame = true
+							if sel.isMaximized then
+								sel:SetScale(1)
+							else
+								if MoveAny:GetFrameScale(name) or scale then
+									local sca = MoveAny:GetFrameScale(name) or scale
+									if sca and sca > 0 then
+										sel:SetScale(sca)
+									end
+								end
+							end
+
+							sel.masetscale_frame = false
+						end
+					)
 
 					if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 						if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
@@ -321,7 +328,6 @@ function MoveAny:UpdateMoveFrames()
 						end
 					else
 						local scale = frame:GetScale()
-
 						if scale and scale > 0 then
 							frame:SetScale(scale)
 						end
@@ -329,7 +335,6 @@ function MoveAny:UpdateMoveFrames()
 
 					if frame.GetPoint and frame:GetPoint() then
 						local p1, p2, p3, p4, p5 = frame:GetPoint()
-
 						if not InCombatLockdown() then
 							frame:ClearAllPoints()
 							frame:SetPoint(p1, p2, p3, p4, p5)
@@ -339,9 +344,12 @@ function MoveAny:UpdateMoveFrames()
 									frameObj:ClearAllPoints()
 									frameObj:SetPoint(p1, p2, p3, p4, p5)
 								else
-									C_Timer.After(0.03, function()
-										MoveAny:MAFrameUpdatePos(frameObj)
-									end)
+									C_Timer.After(
+										0.03,
+										function()
+											MoveAny:MAFrameUpdatePos(frameObj)
+										end
+									)
 								end
 							end
 
@@ -359,7 +367,6 @@ end
 function MoveAny:MoveFrames()
 	local f = CreateFrame("FRAME")
 	f:RegisterEvent("ADDON_LOADED")
-
 	if MoveAny:IsEnabled("MOVESMALLBAGS", false) then
 		for i = 1, 20 do
 			if _G["ContainerFrame" .. i] and not MAFS["ContainerFrame" .. i] then
@@ -372,12 +379,14 @@ function MoveAny:MoveFrames()
 		MAFS["LootFrame"] = "LootFrame"
 	end
 
-	f:SetScript("OnEvent", function(sel, event, ...)
-		MoveAny:UpdateMoveFrames()
-	end)
+	f:SetScript(
+		"OnEvent",
+		function(sel, event, ...)
+			MoveAny:UpdateMoveFrames()
+		end
+	)
 
 	MoveAny:UpdateMoveFrames()
-
 	if PVPFrame then
 		PVPFrame:EnableMouse(false)
 	end

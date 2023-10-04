@@ -1,6 +1,5 @@
 -- ruRU Russian
 local _, MoveAny = ...
-
 function MoveAny:LangruRU()
     local tab = {
         ["LID_MMBTNLEFT"] = "Левый клик => блокировка/разблокировка + опции",
@@ -9,9 +8,9 @@ function MoveAny:LangruRU()
         ["LID_SHOWMINIMAPBUTTON"] = "Показать кнопку мини-картинки",
         ["LID_GRIDSIZE"] = "Размер сетки",
         ["LID_MOVEFRAMES"] = "Переместить кадры/окна",
-        ["LID_FRAMESSHIFTDRAG"] = "Перемещение рамки с помощью Shift + перетаскивание левой кнопкой мыши",
-        ["LID_FRAMESSHIFTSCALE"] = "Масштабировать рамку с помощью Shift + перетаскивание вправо",
-        ["LID_FRAMESSHIFTRESET"] = "Сбросить рамку с помощью Shift + перетаскивание мыши",
+        ["LID_FRAMESKEYDRAG"] = "Перемещение рамки с помощью %s + перетаскивание левой кнопкой мыши",
+        ["LID_FRAMESKEYSCALE"] = "Масштабировать рамку с помощью %s + перетаскивание вправо",
+        ["LID_FRAMESKEYRESET"] = "Сбросить рамку с помощью %s + перетаскивание мыши",
         ["LID_PLAYERFRAME"] = "Рамка игрока",
         ["LID_PETFRAME"] = "Рамка питомца",
         ["LID_TARGETFRAME"] = "Рамка цели",

@@ -1,6 +1,5 @@
 -- esES Spanish
 local _, MoveAny = ...
-
 function MoveAny:LangesES()
 	local tab = {
 		["LID_MMBTNLEFT"] = "Clic izquierdo => Bloquear/Desbloquear + Opciones",
@@ -9,9 +8,9 @@ function MoveAny:LangesES()
 		["LID_SHOWMINIMAPBUTTON"] = "Mostrar el botón del mapa mínimo",
 		["LID_GRIDSIZE"] = "Tamaño de la cuadrícula",
 		["LID_MOVEFRAMES"] = "Mover cuadros/ventanas",
-		["LID_FRAMESSHIFTDRAG"] = "Mover marco con Shift + arrastrar con el botón izquierdo",
-		["LID_FRAMESSHIFTSCALE"] = "Escalar el marco con Shift + arrastrar con el botón derecho",
-		["LID_FRAMESSHIFTRESET"] = "Restablecer el marco con Mayúsculas + arrastrar con la rueda del ratón",
+		["LID_FRAMESKEYDRAG"] = "Mover marco con %s + arrastrar con el botón izquierdo",
+		["LID_FRAMESKEYSCALE"] = "Escalar el marco con %s + arrastrar con el botón derecho",
+		["LID_FRAMESKEYRESET"] = "Restablecer el marco con %s + arrastrar con la rueda del ratón",
 		["LID_PLAYERFRAME"] = "Marco del jugador",
 		["LID_PETFRAME"] = "Marco de la mascota",
 		["LID_TARGETFRAME"] = "Marco del objetivo",

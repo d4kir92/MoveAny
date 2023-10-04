@@ -17,9 +17,12 @@ function MoveAny:LangenUS()
 		["LID_MOVEFRAMES"] = "Move Windows",
 		["LID_SAVEFRAMEPOSITION"] = "Save Frame Position",
 		["LID_SAVEFRAMESCALE"] = "Save Frame Scale",
-		["LID_FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
-		["LID_FRAMESSHIFTSCALE"] = "Scale Frame with Shift + Rightclick-drag",
-		["LID_FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick",
+		["LID_SHIFT"] = "SHIFT",
+		["LID_CTRL"] = "CTRL",
+		["LID_ALT"] = "ALT",
+		["LID_FRAMESKEYDRAG"] = "Move Frame with %s + Leftclick-drag",
+		["LID_FRAMESKEYSCALE"] = "Scale Frame with %s + Rightclick-drag",
+		["LID_FRAMESKEYRESET"] = "Reset Frame with %s + Mousewheelclick",
 		["LID_PLAYERFRAME"] = "Player Frame",
 		["LID_PLAYERFRAMEBACKGROUND"] = "Player Frame Background",
 		["LID_PETFRAME"] = "Pet Frame",
@@ -178,6 +181,8 @@ function MoveAny:LangenUS()
 		["LID_HEIGHT"] = "Height",
 		["LID_ALPHAISFULLHEALTH"] = "Alpha (Full Health)",
 		["LID_ALPHAISINPETBATTLE"] = "Alpha (Is In Pet Battle)",
+		["LID_KEYBINDWINDOW"] = "Keybind for Windows",
+		["LID_SNAPWINDOWSIZE"] = "Snapsize (Windows)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

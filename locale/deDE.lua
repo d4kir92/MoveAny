@@ -11,9 +11,12 @@ function MoveAny:LangdeDE()
 		["LID_MOVEFRAMES"] = "Fenster bewegen",
 		["LID_SAVEFRAMEPOSITION"] = "Fenster Position abspeichern",
 		["LID_SAVEFRAMESCALE"] = "Fenster Skalierung abspeichern",
-		["LID_FRAMESSHIFTDRAG"] = "Fenster mit Shift + Linksklick-ziehen bewegen",
-		["LID_FRAMESSHIFTSCALE"] = "Fenster mit Shift + Rechtsklick-ziehen skalieren",
-		["LID_FRAMESSHIFTRESET"] = "Fenster mit Shift + Mausradklick resetten",
+		["LID_SHIFT"] = "SHIFT",
+		["LID_CTRL"] = "STRG",
+		["LID_ALT"] = "ALT",
+		["LID_FRAMESKEYDRAG"] = "Fenster mit %s + Linksklick-ziehen bewegen",
+		["LID_FRAMESKEYSCALE"] = "Fenster mit %s + Rechtsklick-ziehen skalieren",
+		["LID_FRAMESKEYRESET"] = "Fenster mit %s + Mausradklick resetten",
 		["LID_PLAYERFRAME"] = "Spielerfenster",
 		["LID_PLAYERFRAMEBACKGROUND"] = "Spielerfenster Hintergrund",
 		["LID_PETFRAME"] = "Begleiterfenster",
@@ -172,6 +175,8 @@ function MoveAny:LangdeDE()
 		["LID_HEIGHT"] = "Höhe",
 		["LID_ALPHAISFULLHEALTH"] = "Sichtbarkeit (Volle Gesundheit)",
 		["LID_ALPHAISINPETBATTLE"] = "Sichtbarkeit (Ist in Haustierkampf)",
+		["LID_KEYBINDWINDOW"] = "Keybind für Fenster",
+		["LID_SNAPWINDOWSIZE"] = "Snapgröße (Fenster)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

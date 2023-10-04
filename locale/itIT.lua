@@ -1,6 +1,5 @@
 -- itIT Italien
 local _, MoveAny = ...
-
 function MoveAny:LangitIT()
 	local tab = {
 		["LID_MMBTNLEFT"] = "Click sinistro => Blocca/Sblocca + Opzioni",
@@ -9,9 +8,9 @@ function MoveAny:LangitIT()
 		["LID_SHOWMINIMAPBUTTON"] = "Mostra pulsante Minimap",
 		["LID_GRIDSIZE"] = "Gridsize",
 		["LID_MOVEFRAMES"] = "Sposta fotogrammi/finestre",
-		["LID_FRAMESSHIFTDRAG"] = "Sposta fotogramma con Maiusc + trascinamento con il tasto sinistro del mouse",
-		["LID_FRAMESSHIFTSCALE"] = "Scala il fotogramma con Maiusc + trascinamento con il tasto destro del mouse",
-		["LID_FRAMESSHIFTRESET"] = "Azzeramento del riquadro con Shift + clic della rotella del mouse",
+		["LID_FRAMESKEYDRAG"] = "Sposta fotogramma con %s + trascinamento con il tasto sinistro del mouse",
+		["LID_FRAMESKEYSCALE"] = "Scala il fotogramma con %s + trascinamento con il tasto destro del mouse",
+		["LID_FRAMESKEYRESET"] = "Azzeramento del riquadro con %s + clic della rotella del mouse",
 		["LID_PLAYERFRAME"] = "Riquadro giocatore",
 		["LID_PETFRAME"] = "Cornice animale domestico",
 		["LID_TARGETFRAME"] = "Cornice obiettivo",

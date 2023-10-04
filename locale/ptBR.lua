@@ -1,6 +1,5 @@
 -- ptBR Brazilian Portuguese
 local _, MoveAny = ...
-
 function MoveAny:LangptBR()
 	local tab = {
 		["LID_MMBTNLEFT"] = "Clique esquerdo => Bloqueios/Desbloqueio + Opções",
@@ -9,9 +8,9 @@ function MoveAny:LangptBR()
 		["LID_SHOWMINIMAPBUTTON"] = "Show Minimap Button",
 		["LID_GRIDSIZE"] = "Gridsize",
 		["LID_MOVEFRAMES"] = "Move Frames/Windows",
-		["LID_FRAMESSHIFTDRAG"] = "Move Frame with Shift + Leftclick-drag",
-		["LID_FRAMESSHIFTSCALE"] = "Balança com Turno + Arrastar com o Botão Direito",
-		["LID_FRAMESSHIFTRESET"] = "Reset Frame with Shift + Mousewheelclick-drag",
+		["LID_FRAMESKEYDRAG"] = "Move Frame with %s + Leftclick-drag",
+		["LID_FRAMESKEYSCALE"] = "Balança com Turno %s + Arrastar com o Botão Direito",
+		["LID_FRAMESKEYRESET"] = "Reset Frame with %s + Mousewheelclick-drag",
 		["LID_PLAYERFRAME"] = "Player Frame",
 		["LID_PETFRAME"] = "Pet Frame",
 		["LID_TARGETFRAME"] = "Target Frame",

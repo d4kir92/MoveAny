@@ -1,6 +1,5 @@
 -- frFR French
 local _, MoveAny = ...
-
 function MoveAny:LangfrFR()
 	local tab = {
 		["LID_MMBTNLEFT"] = "Clic gauche => Verrouillage/Déverrouillage + Options",
@@ -9,9 +8,9 @@ function MoveAny:LangfrFR()
 		["LID_SHOWMINIMAPBUTTON"] = "Afficher le bouton de Minimap",
 		["LID_GRIDSIZE"] = "Taille de la grille",
 		["LID_MOVEFRAMES"] = "Déplacer les cadres/fenêtres",
-		["LID_FRAMESSHIFTDRAG"] = "Déplacer le cadre avec Shift + clic gauche-glisser",
-		["LID_FRAMESSHIFTSCALE"] = "Mettre à l'échelle le cadre avec Shift + clic-droit-glisser",
-		["LID_FRAMESSHIFTRESET"] = "Réinitialiser le cadre avec Shift + Mousewheelclick-drag",
+		["LID_FRAMESKEYDRAG"] = "Déplacer le cadre avec %s + clic gauche-glisser",
+		["LID_FRAMESKEYSCALE"] = "Mettre à l'échelle le cadre avec %s + clic-droit-glisser",
+		["LID_FRAMESKEYRESET"] = "Réinitialiser le cadre avec %s + Mousewheelclick-drag",
 		["LID_PLAYERFRAME"] = "Cadre du joueur",
 		["LID_PETFRAME"] = "Cadre de l'animal",
 		["LID_TARGETFRAME"] = "Cadre de la cible",

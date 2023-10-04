@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.50")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.51")
 }
 
 local MAMMBTN = nil
@@ -275,14 +275,19 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 	end
 end
 
-local function AddSlider(x, key, val, func, vmin, vmax, steps)
+local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 	if sls[key] == nil then
 		sls[key] = CreateFrame("Slider", "sls[" .. key .. "]", MALock.SC, "OptionsSliderTemplate")
 		sls[key]:SetWidth(MALock.SC:GetWidth() - 30 - x)
 		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x + 5, posy)
 		sls[key].Low:SetText(vmin)
 		sls[key].High:SetText(vmax)
-		sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GV(key, val))
+		if tab and tab[MoveAny:GV(key, val)] then
+			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[MoveAny:GV(key, val)])
+		else
+			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GV(key, val))
+		end
+
 		sls[key]:SetMinMaxValues(vmin, vmax)
 		sls[key]:SetObeyStepOnDrag(true)
 		sls[key]:SetValueStep(steps)
@@ -293,7 +298,12 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps)
 				valu = tonumber(string.format("%" .. steps .. "f", valu))
 				if valu and valu ~= MoveAny:GV(key) then
 					MoveAny:SV(key, valu)
-					sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. valu)
+					if tab and tab[valu] then
+						sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[valu])
+					else
+						sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. valu)
+					end
+
 					if func then
 						func()
 					end
@@ -326,6 +336,19 @@ function MoveAny:EnableSave(from, key)
 	if MALock.CloseButton then
 		MALock.CloseButton:Disable()
 	end
+end
+
+function MoveAny:IsFrameKeyDown()
+	local keybind = MoveAny:GV("KEYBINDWINDOWKEY", "SHIFT")
+	if keybind == "SHIFT" then
+		return IsShiftKeyDown()
+	elseif keybind == "CTRL" then
+		return IsCtrlKeyDown()
+	elseif keybind == "ALT" then
+		return IsAltKeyDown()
+	end
+
+	return false
 end
 
 function MoveAny:InitMALock()
@@ -361,6 +384,25 @@ function MoveAny:InitMALock()
 		end
 	)
 
+	local keybinds = {}
+	keybinds[1] = "SHIFT"
+	keybinds[2] = "CTRL"
+	keybinds[3] = "ALT"
+	function MoveAny:UpdateFrameKeybindText()
+		local keybind = keybinds[MoveAny:GV("KEYBINDWINDOW", 1)]
+		local cb1 = cbs["FRAMESKEYDRAG"]
+		local cb2 = cbs["FRAMESKEYSCALE"]
+		local cb3 = cbs["FRAMESKEYRESET"]
+		cb1.f:SetText("|cFFFFFF00" .. format(MoveAny:GT("LID_FRAMESKEYDRAG"), MoveAny:GT("LID_" .. keybind)))
+		cb2.f:SetText("|cFFFFFF00" .. format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:GT("LID_" .. keybind)))
+		cb3.f:SetText("|cFFFFFF00" .. format(MoveAny:GT("LID_FRAMESKEYRESET"), MoveAny:GT("LID_" .. keybind)))
+	end
+
+	function MoveAny:UpdateFrameKeybind()
+		MoveAny:SV("KEYBINDWINDOWKEY", keybind)
+		MoveAny:UpdateFrameKeybindText()
+	end
+
 	function MoveAny:UpdateElementList()
 		local _, class = UnitClass("player")
 		posy = -4
@@ -368,16 +410,19 @@ function MoveAny:InitMALock()
 		AddCategory("GENERAL")
 		AddCheckBox(4, "SHOWTIPS", true)
 		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.MinimapButtonCB, nil, nil, false)
-		AddSlider(24, "SNAPSIZE", 5, nil, 1, 50, 1)
-		AddSlider(24, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
+		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
+		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
+		AddSlider(8, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1)
 		AddCheckBox(4, "MOVEFRAMES", true)
 		AddCheckBox(24, "MOVESMALLBAGS", false)
 		AddCheckBox(24, "MOVELOOTFRAME", false)
 		AddCheckBox(24, "SAVEFRAMEPOSITION", true)
 		AddCheckBox(24, "SAVEFRAMESCALE", true)
-		AddCheckBox(24, "FRAMESSHIFTDRAG", false)
-		AddCheckBox(24, "FRAMESSHIFTSCALE", false)
-		AddCheckBox(24, "FRAMESSHIFTRESET", false)
+		AddSlider(24, "KEYBINDWINDOW", 1, MoveAny.UpdateFrameKeybind, 1, 3, 1, keybinds)
+		AddCheckBox(24, "FRAMESKEYDRAG", false)
+		AddCheckBox(24, "FRAMESKEYSCALE", false)
+		AddCheckBox(24, "FRAMESKEYRESET", false)
+		MoveAny:UpdateFrameKeybindText()
 		AddCategory("BUILTIN")
 		local posx = 4
 		if MoveAny:IsBlizEditModeEnabled() then

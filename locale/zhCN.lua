@@ -1,6 +1,5 @@
 -- zhTW Simplified Chinese
 local _, MoveAny = ...
-
 function MoveAny:LangzhCN()
     local tab = {
         ["LID_MMBTNLEFT"] = "左键 => 锁定/解锁 + 选项",
@@ -9,9 +8,9 @@ function MoveAny:LangzhCN()
         ["LID_SHOWMINIMAPBUTTON"] = "显示迷你地图按钮",
         ["LID_GRIDSIZE"] = "网格大小",
         ["LID_MOVEFRAMES"] = "移动图框/窗口",
-        ["LID_FRAMESSHIFTDRAG"] = "用Shift+左键拖动移动框架",
+        ["LID_FRAMESKEYDRAG"] = "用Shift+左键拖动移动框架",
         ["FRAMESSHIFTSC"] = "用Shift+右键拖动缩放框架",
-        ["LID_FRAMESSHIFTRESET"] = "用Shift + 鼠标滚轮点击拖动来重置框架",
+        ["LID_FRAMESKEYRESET"] = "用Shift + 鼠标滚轮点击拖动来重置框架",
         ["LID_PLAYERFRAME"] = "玩家框架",
         ["LID_PETFRAME"] = "宠物框架",
         ["LID_TARGETFRAME"] = "目标框架",
