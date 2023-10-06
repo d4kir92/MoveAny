@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.53")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.54")
 }
 
 local MAMMBTN = nil
@@ -1974,7 +1974,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if PlayerLevelText and MoveAny:IsEnabled("PLAYERFRAMELEVEL", true) then
+		if PlayerLevelText and MoveAny:IsEnabled("PLAYERFRAMELEVEL", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "PlayerLevelText",
