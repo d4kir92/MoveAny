@@ -81,7 +81,7 @@ function MoveAny:FrameDragInfo(c)
 				end
 			)
 		end
-	else
+	elseif MoveAny:IsEnabled("SHOWTIPS", true) then
 		if IsMouseButtonDown("RightButton") then
 			if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
 				MoveAny:MSG(MoveAny:GT("LID_FRAMESKEYSCALE") .. ".")
@@ -125,13 +125,13 @@ function MoveAny:UpdateMoveFrames()
 
 						function fm:UpdatePreview()
 							local fM = _G[name .. "Move"]
-							if fM and fM.ismoving then
+							if fM and fM.ma_ismoving then
 								if fM:GetLeft() then
-									fM.x = fM:GetLeft()
-									fM.y = fM:GetTop() - fM:GetHeight()
-									fM.x = MoveAny:Snap(fM.x, MoveAny:GetSnapWindowSize())
-									fM.y = MoveAny:Snap(fM.y, MoveAny:GetSnapWindowSize())
-									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.x, fM.y)
+									fM.ma_x = fM:GetLeft()
+									fM.ma_y = fM:GetTop() - fM:GetHeight()
+									fM.ma_x = MoveAny:Snap(fM.ma_x, MoveAny:GetSnapWindowSize())
+									fM.ma_y = MoveAny:Snap(fM.ma_y, MoveAny:GetSnapWindowSize())
+									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 									if dbp1 and dbp3 and not InCombatLockdown() then
 										frame:ClearAllPoints()
@@ -148,8 +148,8 @@ function MoveAny:UpdateMoveFrames()
 					function MoveAny:MAFrameStopMoving(frameObj)
 						local name2 = frameObj:GetName()
 						local fM = _G[name2 .. "Move"]
-						if fM.ismoving then
-							fM.ismoving = false
+						if fM.ma_ismoving then
+							fM.ma_ismoving = false
 							fM:StopMovingOrSizing()
 							fM:SetUserPlaced(false)
 						end
@@ -218,7 +218,7 @@ function MoveAny:UpdateMoveFrames()
 								if not InCombatLockdown() then
 									fm:StartMoving()
 									fm:SetUserPlaced(false)
-									fm.ismoving = true
+									fm.ma_ismoving = true
 								end
 
 								fm:UpdatePreview()

@@ -8,7 +8,6 @@ btns[3] = "MultiBarRightButton" --"MultiBarRightButton"
 btns[4] = "MultiBarLeftButton" --"MultiBarLeftButton"
 btns[5] = "MultiBarBottomRightButton" --"MultiBarBottomRightButton"
 btns[6] = "MultiBarBottomLeftButton" --"MultiBarBottomLeftButton"
-
 local function MASetPoint(name, po, pa, re, px, py, rows)
 	abpoints[name] = {}
 	abpoints[name]["PO"] = po
@@ -22,7 +21,6 @@ end
 local dSpacing = 2
 local dFlipped = false
 local BarNames = {}
-
 function MoveAny:AddBarName(frame, name)
 	BarNames[frame] = name
 end
@@ -34,14 +32,12 @@ function MoveAny:UpdateActionBar(frame)
 	opts["SPACING"] = opts["SPACING"] or dSpacing
 	opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
 	local flipped = opts["FLIPPED"]
-
 	if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then
 		opts["ROWS"] = abpoints[name]["ROWS"]
 	end
 
 	local rows = opts["ROWS"] or 1
 	rows = tonumber(rows)
-
 	if frame == MAMenuBar then
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			if rows == 3 or rows == 4 or rows == 12 then
@@ -107,7 +103,6 @@ function MoveAny:UpdateActionBar(frame)
 	end
 
 	local maxbtns = 0
-
 	for i, abtn in pairs(frame.btns) do
 		if abtn:GetParent() ~= MAHIDDEN then
 			maxbtns = maxbtns + 1
@@ -122,7 +117,6 @@ function MoveAny:UpdateActionBar(frame)
 	local count = opts["COUNT"] or maxbtns
 	count = tonumber(count)
 	local maxB = maxbtns
-
 	if frame ~= MAMenuBar and frame ~= StanceBar then
 		if count > 0 then
 			maxB = count
@@ -132,7 +126,6 @@ function MoveAny:UpdateActionBar(frame)
 	end
 
 	local cols = maxB / rows
-
 	--[[if cols % 1 ~= 0 then
 		rows = maxB
 		cols = maxB / rows
@@ -143,17 +136,14 @@ function MoveAny:UpdateActionBar(frame)
 
 	local spacing = opts["SPACING"]
 	spacing = tonumber(spacing)
-
 	if frame.btns and frame.btns[1] then
 		local fSizeW, fSizeH = frame.btns[1]:GetSize()
 		fSizeW = MoveAny:MathR(fSizeW, 0)
 		fSizeH = MoveAny:MathR(fSizeH, 0)
 		local id = 1
-
 		for i, abtn in pairs(frame.btns) do
 			if not InCombatLockdown() then
 				abtn:ClearAllPoints()
-
 				if flipped then
 					abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing), ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing))
 				else
@@ -162,34 +152,38 @@ function MoveAny:UpdateActionBar(frame)
 
 				if abtn.setup == nil then
 					abtn.setup = true
-
 					if frame == MAMenuBar then
-						hooksecurefunc(abtn, "Hide", function(sel)
-							if sel.ma_abtn_hide then return end
-							sel.ma_abtn_hide = true
-							sel:Show()
-							sel.ma_abtn_hide = false
-						end)
-					else
-						hooksecurefunc(abtn, "Show", function(sel)
-							if sel.ma_abtn_hide then return end
-							sel.ma_abtn_hide = true
-
-							if sel.hide and sel:IsShown() then
-								sel:Hide()
+						hooksecurefunc(
+							abtn,
+							"Hide",
+							function(sel)
+								if sel.ma_abtn_hide then return end
+								sel.ma_abtn_hide = true
+								sel:Show()
+								sel.ma_abtn_hide = false
 							end
+						)
+					else
+						hooksecurefunc(
+							abtn,
+							"Show",
+							function(sel)
+								if sel.ma_abtn_hide then return end
+								sel.ma_abtn_hide = true
+								if sel.hide and sel:IsShown() then
+									sel:Hide()
+								end
 
-							sel.ma_abtn_hide = false
-						end)
+								sel.ma_abtn_hide = false
+							end
+						)
 					end
 				end
 
 				abtn.oldparent = abtn.oldparent or abtn:GetParent()
-
 				if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
 					abtn.hide = true
 					abtn:SetParent(MAHIDDEN)
-
 					if abtn:IsShown() then
 						abtn:Hide()
 					end
@@ -197,7 +191,6 @@ function MoveAny:UpdateActionBar(frame)
 
 				if frame == MAMenuBar then
 					abtn.hide = false
-
 					if not abtn:IsShown() then
 						abtn:Show()
 					end
@@ -216,7 +209,6 @@ function MoveAny:UpdateActionBar(frame)
 			local osw, osh = MoveAny:GetEleSize(name)
 			sw = MoveAny:MathR(sw)
 			sh = MoveAny:MathR(sh)
-
 			if osw ~= sw or osh ~= sh then
 				MoveAny:SetEleSize(name, sw, sh)
 			end
@@ -257,70 +249,93 @@ function MoveAny:CustomBars()
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
-
 			if texture then
-				hooksecurefunc(texture, "Show", function(sel)
-					if sel.mahide then return end
-					sel.mahide = true
-					sel:Hide()
-					sel.mahide = false
-				end)
+				hooksecurefunc(
+					texture,
+					"Show",
+					function(sel)
+						if sel.mahide then return end
+						sel.mahide = true
+						sel:Hide()
+						sel.mahide = false
+					end
+				)
 
 				texture:Hide()
 			end
 		end
 
 		if StanceBarLeft then
-			hooksecurefunc(StanceBarLeft, "Show", function(sel)
-				if sel.mahide then return end
-				sel.mahide = true
-				sel:Hide()
-				sel.mahide = false
-			end)
+			hooksecurefunc(
+				StanceBarLeft,
+				"Show",
+				function(sel)
+					if sel.mahide then return end
+					sel.mahide = true
+					sel:Hide()
+					sel.mahide = false
+				end
+			)
 
 			StanceBarLeft:Hide()
 		end
 
 		if StanceBarMiddle then
-			hooksecurefunc(StanceBarMiddle, "Show", function(sel)
-				if sel.mahide then return end
-				sel.mahide = true
-				sel:Hide()
-				sel.mahide = false
-			end)
+			hooksecurefunc(
+				StanceBarMiddle,
+				"Show",
+				function(sel)
+					if sel.mahide then return end
+					sel.mahide = true
+					sel:Hide()
+					sel.mahide = false
+				end
+			)
 
 			StanceBarMiddle:Hide()
 		end
 
 		if StanceBarRight then
-			hooksecurefunc(StanceBarRight, "Show", function(sel)
-				if sel.mahide then return end
-				sel.mahide = true
-				sel:Hide()
-				sel.mahide = false
-			end)
+			hooksecurefunc(
+				StanceBarRight,
+				"Show",
+				function(sel)
+					if sel.mahide then return end
+					sel.mahide = true
+					sel:Hide()
+					sel.mahide = false
+				end
+			)
 
 			StanceBarRight:Hide()
 		end
 
 		if SlidingActionBarTexture0 then
-			hooksecurefunc(SlidingActionBarTexture0, "Show", function(sel)
-				if sel.mahide then return end
-				sel.mahide = true
-				sel:Hide()
-				sel.mahide = false
-			end)
+			hooksecurefunc(
+				SlidingActionBarTexture0,
+				"Show",
+				function(sel)
+					if sel.mahide then return end
+					sel.mahide = true
+					sel:Hide()
+					sel.mahide = false
+				end
+			)
 
 			SlidingActionBarTexture0:Hide()
 		end
 
 		if SlidingActionBarTexture1 then
-			hooksecurefunc(SlidingActionBarTexture1, "Show", function(sel)
-				if sel.mahide then return end
-				sel.mahide = true
-				sel:Hide()
-				sel.mahide = false
-			end)
+			hooksecurefunc(
+				SlidingActionBarTexture1,
+				"Show",
+				function(sel)
+					if sel.mahide then return end
+					sel.mahide = true
+					sel:Hide()
+					sel.mahide = false
+				end
+			)
 
 			SlidingActionBarTexture1:Hide()
 		end
@@ -341,23 +356,19 @@ function MoveAny:CustomBars()
 			local bar = _G[name]
 			bar:SetSize(36 * 12, 36)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
-
 			if i > 1 then
 				bar:SetAttribute("actionpage", i)
 			end
 
 			bar.btns = {}
 			tinsert(abs, bar)
-
 			for x = 1, 12 do
 				local btnname = "ActionBar" .. i .. "Button" .. x
-
 				if btns[i] then
 					btnname = btns[i] .. x
 				end
 
 				local id = (i - 1) * 12 + x
-
 				if _G[btnname] == nil then
 					_G[btnname] = CreateFrame("CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
 					_G[btnname].commandName = "CLICK " .. btnname
@@ -367,7 +378,6 @@ function MoveAny:CustomBars()
 				end
 
 				local alwaysShow = GetCVarBool("alwaysShowActionBars")
-
 				if alwaysShow then
 					alwaysShow = 1
 				else
@@ -376,7 +386,6 @@ function MoveAny:CustomBars()
 
 				_G[btnname]:SetAttribute("statehidden", false)
 				_G[btnname]:SetAttribute("showgrid", alwaysShow)
-
 				if _G[btnname .. "FloatingBG"] == nil then
 					_G[btnname .. "FloatingBG"] = _G[btnname]:CreateTexture(btnname .. "FloatingBG", "BACKGROUND")
 					_G[btnname .. "FloatingBG"]:SetParent(_G[btnname])
@@ -406,11 +415,9 @@ end
 function UpdateActionBarBackground(show)
 	for name, bar in pairs(abs) do
 		local ab = bar
-
 		if ab and ab.btns then
 			for id, abtn in pairs(ab.btns) do
 				local btnname = abtn:GetName()
-
 				if btnname and _G[btnname .. "FloatingBG"] then
 					_G[btnname .. "FloatingBG"]:Show()
 				end
@@ -434,41 +441,59 @@ end
 
 local asabf = CreateFrame("Frame")
 asabf:RegisterEvent("CVAR_UPDATE")
-
-asabf:SetScript("OnEvent", function(self, event, target, value)
-	if event == "CVAR_UPDATE" and target == "alwaysShowActionBars" then
-		UpdateActionBarBackground(tonumber(value))
+asabf:SetScript(
+	"OnEvent",
+	function(self, event, target, value)
+		if event == "CVAR_UPDATE" and target == "alwaysShowActionBars" then
+			UpdateActionBarBackground(tonumber(value))
+		end
 	end
-end)
+)
 
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 f:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
 f:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-
-f:SetScript("OnEvent", function(sel, event)
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		local frame = _G["MAActionBar" .. 1]
-
-		if frame and frame.init == nil then
-			frame.init = true
-			frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
+f:SetScript(
+	"OnEvent",
+	function(sel, event)
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			local frame = _G["MAActionBar" .. 1]
+			if frame and frame.init == nil then
+				frame.init = true
+				frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
+				if newstate == "possess" or newstate == "dragon" or newstate == "11" then
+					if HasVehicleActionBar() then
+						newstate = GetVehicleBarIndex()
+					elseif HasOverrideActionBar() then
+						newstate = GetOverrideBarIndex()
+					elseif HasTempShapeshiftActionBar() then
+						newstate = GetTempShapeshiftBarIndex()
+					elseif HasBonusActionBar() then
+						newstate = GetBonusBarIndex()
+					else
+						newstate = nil
+					end
+					if not newstate then
+						print("FAILED TO FIND NEWSTATE!: " .. tostring(newstate))
+						newstate = 12
+					end
+				end
 				self:SetAttribute( "actionpage", newstate );
 			]])
+				if MoveAny:GetWoWBuild() == "WRATH" then
+					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
+					RegisterStateDriver(frame, "page", bars)
+				elseif MoveAny:GetWoWBuild() == "TBC" then
+					RegisterStateDriver(frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
+				elseif MoveAny:GetWoWBuild() == "CLASSIC" then
+					RegisterStateDriver(frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
+				else
+					print("[MoveAny] MISSING EXPANSION")
+				end
 
-			if MoveAny:GetWoWBuild() == "WRATH" then
-				local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
-				RegisterStateDriver(frame, "page", bars)
-			elseif MoveAny:GetWoWBuild() == "TBC" then
-				RegisterStateDriver(frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
-			elseif MoveAny:GetWoWBuild() == "CLASSIC" then
-				RegisterStateDriver(frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
-			else
-				print("[MoveAny] MISSING EXPANSION")
-			end
-
-			local _onAttributeChanged = [[
+				local _onAttributeChanged = [[
 				if name == 'statehidden' then
 					if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
 						for i = 1, 12 do
@@ -490,9 +515,8 @@ f:SetScript("OnEvent", function(sel, event)
 					end
 				end
 			]]
-
-			if MoveAny:GetWoWBuild() == "CLASSIC" then
-				_onAttributeChanged = [[
+				if MoveAny:GetWoWBuild() == "CLASSIC" then
+					_onAttributeChanged = [[
 				if name == 'statehidden' then
 					for i = 1, 12 do
 						if buttons[i] then
@@ -502,24 +526,22 @@ f:SetScript("OnEvent", function(sel, event)
 					end
 				end
 			]]
-			end
-
-			local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
-
-			for i = 1, 12 do
-				local button = _G["ActionButton" .. i]
-				AttributeChangedFrame:SetFrameRef("ActionButton" .. i, button)
-			end
-
-			for i = 1, 6 do
-				local overrideButton = _G["OverrideActionBarButton" .. i]
-
-				if overrideButton then
-					AttributeChangedFrame:SetFrameRef("OverrideActionBarButton" .. i, overrideButton)
 				end
-			end
 
-			AttributeChangedFrame:Execute([[
+				local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
+				for i = 1, 12 do
+					local button = _G["ActionButton" .. i]
+					AttributeChangedFrame:SetFrameRef("ActionButton" .. i, button)
+				end
+
+				for i = 1, 6 do
+					local overrideButton = _G["OverrideActionBarButton" .. i]
+					if overrideButton then
+						AttributeChangedFrame:SetFrameRef("OverrideActionBarButton" .. i, overrideButton)
+					end
+				end
+
+				AttributeChangedFrame:Execute([[
 				buttons = table.new()
 				for i = 1, 12 do
 					buttons[i] = self:GetFrameRef('ActionButton'..i)
@@ -530,8 +552,9 @@ f:SetScript("OnEvent", function(sel, event)
 					overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
 				end
 			]])
-			AttributeChangedFrame:SetAttribute("_onattributechanged", _onAttributeChanged)
-			RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
+				AttributeChangedFrame:SetAttribute("_onattributechanged", _onAttributeChanged)
+				RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
+			end
 		end
 	end
-end)
+)

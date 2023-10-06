@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.51")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.52")
 }
 
 local MAMMBTN = nil
@@ -514,7 +514,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "SecondaryStatusTrackingBarContainer", false)
 		end
 
-		if StatusTrackingBarManager then
+		if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager then
 			AddCheckBox(posx, "STATUSTRACKINGBARMANAGER", false)
 		end
 
@@ -628,6 +628,14 @@ function MoveAny:InitMALock()
 		AddCategory("ADVANCED")
 		if TotemFrame then
 			AddCheckBox(4, "TOTEMFRAME", false)
+		end
+
+		if MinimapZoneTextButton then
+			AddCheckBox(4, "MINIMAPZONETEXT", false)
+		end
+
+		if PlayerLevelText then
+			AddCheckBox(4, "PLAYERFRAMELEVEL", false)
 		end
 
 		AddCheckBox(4, "ENDCAPS", false)
@@ -1966,6 +1974,16 @@ function MoveAny:LoadAddon()
 			)
 		end
 
+		if PlayerLevelText and MoveAny:IsEnabled("PLAYERFRAMELEVEL", true) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PlayerLevelText",
+					["lstr"] = "LID_PLAYERFRAMELEVEL",
+					["userplaced"] = true
+				}
+			)
+		end
+
 		if MoveAny:IsEnabled("PLAYERFRAME", false) then
 			MoveAny:RegisterWidget(
 				{
@@ -3070,6 +3088,16 @@ function MoveAny:LoadAddon()
 		)
 	end
 
+	if MinimapZoneTextButton and MoveAny:IsEnabled("MINIMAPZONETEXT", false) then
+		MinimapZoneTextButton:SetParent(MoveAny:GetMainPanel())
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "MinimapZoneTextButton",
+				["lstr"] = "LID_MINIMAPZONETEXT"
+			}
+		)
+	end
+
 	if MoveAny:IsEnabled("MINIMAP", false) then
 		MoveAny:RegisterWidget(
 			{
@@ -3369,7 +3397,7 @@ function MoveAny:LoadAddon()
 
 	if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
 		C_Timer.After(
-			0,
+			1,
 			function()
 				MoveAny:RegisterWidget(
 					{
@@ -3383,7 +3411,7 @@ function MoveAny:LoadAddon()
 
 	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
 		C_Timer.After(
-			0,
+			1,
 			function()
 				MoveAny:RegisterWidget(
 					{
@@ -3395,22 +3423,27 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
+	if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
 		-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
-		local ssw, ssh = StatusTrackingBarManager:GetSize()
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "StatusTrackingBarManager",
-				["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
-				["sw"] = ssw - 6,
-				["sh"] = ssh - 8,
-				["cleft"] = 0,
-				["cright"] = 2,
-				["ctop"] = 4,
-				["cbottom"] = 4,
-				["posx"] = 1,
-				["posy"] = 4,
-			}
+		C_Timer.After(
+			1,
+			function()
+				local ssw, ssh = StatusTrackingBarManager:GetSize()
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "StatusTrackingBarManager",
+						["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
+						["sw"] = ssw - 6,
+						["sh"] = ssh - 8,
+						["cleft"] = 0,
+						["cright"] = 2,
+						["ctop"] = 4,
+						["cbottom"] = 4,
+						["posx"] = 1,
+						["posy"] = 4,
+					}
+				)
+			end
 		)
 	end
 

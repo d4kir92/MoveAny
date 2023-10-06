@@ -236,8 +236,9 @@ end
 
 function MoveAny:GV(key, val)
 	MoveAny:CheckDB()
+	if MATAB[key] ~= nil then return MATAB[key] end
 
-	return MATAB[key] or val
+	return val
 end
 
 function MoveAny:SV(key, val)
@@ -302,6 +303,7 @@ function MoveAny:IsEnabled(element, value, settings)
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
+			print("VALUE NOT IN DB, SET IT", element, value)
 			MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 		end
 

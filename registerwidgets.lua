@@ -873,7 +873,7 @@ function MoveAny:RegisterWidget(tab)
 				if btn == "LeftButton" then
 					dragframe:SetMovable(true)
 					dragframe:StartMoving()
-					dragframe.IsMoving = true
+					dragframe.ma_ismoving = true
 				elseif btn == "RightButton" then
 					if dragframe.opt == nil then
 						dragframe.opt = CreateFrame("Frame", name .. ".opt", MoveAny:GetMainPanel(), "BasicFrameTemplateWithInset")
@@ -901,8 +901,8 @@ function MoveAny:RegisterWidget(tab)
 			"OnMouseUp",
 			function()
 				local fram = _G[name]
-				if dragframe.IsMoving then
-					dragframe.IsMoving = false
+				if dragframe.ma_ismoving then
+					dragframe.ma_ismoving = false
 					dragframe:StopMovingOrSizing()
 					dragframe:SetMovable(false)
 					local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
