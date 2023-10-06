@@ -10,12 +10,12 @@ function MoveAny:HR()
 	print(COL_Y .. "----------------------------------------------------------------------")
 end
 
-function MoveAny:MSG(msg)
-	print("|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_Y .. msg)
+function MoveAny:MSG(...)
+	print("|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_Y, ...)
 end
 
-function MoveAny:MSG_Error(msg)
-	print("|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_R .. "[ERROR] |r" .. msg)
+function MoveAny:MSG_Error(...)
+	print("|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_R .. "[ERROR] |r", ...)
 end
 
 function MoveAny:CheckDB()
@@ -303,7 +303,7 @@ function MoveAny:IsEnabled(element, value, settings)
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
-			print("VALUE NOT IN DB, SET IT", element, value)
+			MoveAny:MSG("VALUE NOT IN DB, SET IT", element, value)
 			MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 		end
 
