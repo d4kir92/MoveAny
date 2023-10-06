@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.54")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.55")
 }
 
 local MAMMBTN = nil
@@ -635,7 +635,7 @@ function MoveAny:InitMALock()
 		end
 
 		if PlayerLevelText then
-			AddCheckBox(4, "PLAYERFRAMELEVEL", false)
+			AddCheckBox(4, "PLAYERLEVELTEXT", false)
 		end
 
 		AddCheckBox(4, "ENDCAPS", false)
@@ -1974,11 +1974,11 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if PlayerLevelText and MoveAny:IsEnabled("PLAYERFRAMELEVEL", false) then
+		if PlayerLevelText and MoveAny:IsEnabled("PLAYERLEVELTEXT", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "PlayerLevelText",
-					["lstr"] = "LID_PLAYERFRAMELEVEL",
+					["lstr"] = "LID_PLAYERLEVELTEXT",
 					["userplaced"] = true
 				}
 			)

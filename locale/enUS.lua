@@ -24,7 +24,7 @@ function MoveAny:LangenUS()
 		["LID_FRAMESKEYSCALE"] = "Scale Frame with %s + Rightclick-drag",
 		["LID_FRAMESKEYRESET"] = "Reset Frame with %s + Mousewheelclick",
 		["LID_PLAYERFRAME"] = "Player Frame",
-		["LID_PLAYERFRAMELEVEL"] = "Player Frame-Level",
+		["LID_PLAYERLEVELTEXT"] = "Player Frame-Level",
 		["LID_PLAYERFRAMEBACKGROUND"] = "Player Frame Background",
 		["LID_PETFRAME"] = "Pet Frame",
 		["LID_MAPETFRAME"] = "Pet Frame",

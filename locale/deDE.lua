@@ -18,7 +18,7 @@ function MoveAny:LangdeDE()
 		["LID_FRAMESKEYSCALE"] = "Fenster mit %s + Rechtsklick-ziehen skalieren",
 		["LID_FRAMESKEYRESET"] = "Fenster mit %s + Mausradklick resetten",
 		["LID_PLAYERFRAME"] = "Spielerfenster",
-		["LID_PLAYERFRAMELEVEL"] = "Spielerfenster-Level",
+		["LID_PLAYERLEVELTEXT"] = "Spielerfenster-Level",
 		["LID_PLAYERFRAMEBACKGROUND"] = "Spielerfenster Hintergrund",
 		["LID_PETFRAME"] = "Begleiterfenster",
 		["LID_MAPETFRAME"] = "Begleiterfenster",
