@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.57")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.58")
 }
 
 local MAMMBTN = nil
@@ -2379,17 +2379,17 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" and (MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("MINIMAP", false)) and MultiBarRight and MultiBarLeft then
-			local oldSetScale = MultiBarRight.SetScale
+			MultiBarRight.MAOldSetScale = MultiBarRight.SetScale
 			function MultiBarRight:SetScale(scale)
 				if scale > 0 then
-					oldSetScale(scale)
+					self:MAOldSetScale(scale)
 				end
 			end
 
-			local oldSetScale2 = MultiBarLeft.SetScale
+			MultiBarLeft.MAOldSetScale = MultiBarLeft.SetScale
 			function MultiBarLeft:SetScale(scale)
 				if scale > 0 then
-					oldSetScale2(scale)
+					self:MAOldSetScale(scale)
 				end
 			end
 		end
