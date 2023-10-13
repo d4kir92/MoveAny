@@ -348,7 +348,7 @@ function MoveAny:MenuOptions(opt, frame)
 			clickthrough.text:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
 			local fullhp = CreateFrame("CheckButton", "FULLHPENABLED", content, "ChatConfigCheckButtonTemplate")
 			fullhp:SetSize(btnsize, btnsize)
-			fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -190)
+			fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -220)
 			fullhp:SetChecked(MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp1"))
 			fullhp:SetScript(
 				"OnClick",
@@ -358,15 +358,26 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
-			MoveAny:CreateSlider(content, 30, -190, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
-			MoveAny:CreateSlider(content, 10, -220, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
-			MoveAny:CreateSlider(content, 10, -250, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
-			MoveAny:CreateSlider(content, 10, -280, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
-			MoveAny:CreateSlider(content, 10, -310, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
-			MoveAny:CreateSlider(content, 10, -340, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			local space = -30
+			local Y = -190
+			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			Y = Y + space
+			MoveAny:CreateSlider(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			Y = Y + space
+			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			Y = Y + space
+			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			Y = Y + space
+			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			Y = Y + space
+			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			Y = Y + space
 			if C_PetBattles then
-				MoveAny:CreateSlider(content, 10, -370, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+				MoveAny:CreateSlider(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+				Y = Y + space
 			end
+
+			MoveAny:CreateSlider(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 		elseif string.find(content.name, ACTIONBARS_LABEL) then
 			local slides = {}
 			local items = {}
@@ -1317,6 +1328,7 @@ local ismounted = nil
 local invehicle = nil
 local incombat = nil
 local inpetbattle = nil
+local isstealthed = nil
 local lastEle = nil
 local lastSize = 0
 local fullHP = false
@@ -1353,6 +1365,9 @@ function MoveAny:CheckAlphas()
 	elseif fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
 		fullHP = UnitHealth("player") >= UnitHealthMax("player")
 		MoveAny:UpdateAlphas()
+	elseif IsStealthed and isstealthed ~= IsStealthed() then
+		isstealthed = IsStealthed()
+		MoveAny:UpdateAlphas()
 	end
 
 	if lastSize ~= getn(MoveAny:GetAlphaFrames()) then
@@ -1387,15 +1402,18 @@ function MoveAny:UpdateAlphas(mouseEle)
 			MoveAny:MSG("UpdateAlphas: ele is nil")
 		else
 			local name = MoveAny:GetFrameName(ele)
-			local alphaInVehicle = MoveAny:GetEleOption(name, "ALPHAINVEHICLE", 1, "Alpha1")
-			local alphaInCombat = MoveAny:GetEleOption(name, "ALPHAINCOMBAT", 1, "Alpha2")
-			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha3")
-			local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha4")
-			local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha5")
-			local alphaIsFullHealth = MoveAny:GetEleOption(name, "ALPHAISFULLHEALTH", 1, "Alpha6")
+			local alphaInCombat = MoveAny:GetEleOption(name, "ALPHAINCOMBAT", 1, "Alpha1")
+			local alphaIsFullHealth = MoveAny:GetEleOption(name, "ALPHAISFULLHEALTH", 1, "Alpha2")
+			local alphaInVehicle = MoveAny:GetEleOption(name, "ALPHAINVEHICLE", 1, "Alpha3")
+			local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha4")
+			local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha5")
+			local alphaIsStealthed = MoveAny:GetEleOption(name, "ALPHAISSTEALTHED", 1, "Alpha6")
 			local alphaIsInPetBattle = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE", 1, "Alpha7")
+			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha8")
 			if ele == mouseEle then
 				MoveAny:SetEleAlpha(ele, 1)
+			elseif incombat then
+				MoveAny:SetEleAlpha(ele, alphaInCombat)
 			elseif MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp2") and UnitHealth("player") >= UnitHealthMax("player") then
 				MoveAny:SetEleAlpha(ele, alphaIsFullHealth)
 			elseif UnitInVehicle and invehicle then
@@ -1404,14 +1422,12 @@ function MoveAny:UpdateAlphas(mouseEle)
 				MoveAny:SetEleAlpha(ele, alphaIsMounted)
 			elseif IsResting and isresting then
 				MoveAny:SetEleAlpha(ele, alphaInRestedArea)
+			elseif IsStealthed and isstealthed then
+				MoveAny:SetEleAlpha(ele, alphaIsStealthed)
 			elseif MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
 				MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
-			else
-				if incombat then
-					MoveAny:SetEleAlpha(ele, alphaInCombat)
-				elseif not incombat then
-					MoveAny:SetEleAlpha(ele, alphaNotInCombat)
-				end
+			elseif not incombat then
+				MoveAny:SetEleAlpha(ele, alphaNotInCombat)
 			end
 		end
 	end
