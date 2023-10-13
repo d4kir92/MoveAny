@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.61")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.62")
 }
 
 local MAMMBTN = nil
@@ -502,7 +502,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames")
 		end
 
-		if BossTargetFrameContainer then
+		if BossTargetFrameContainer or Boss1TargetFrame then
 			AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames")
 		end
 
@@ -3080,17 +3080,33 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) and BossTargetFrameContainer then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BossTargetFrameContainer",
-				["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
-				["userplaced"] = true,
-				["secure"] = true,
-				["sw"] = 214,
-				["sh"] = 305
-			}
-		)
+	if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) then
+		if BossTargetFrameContainer then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BossTargetFrameContainer",
+					["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
+					["userplaced"] = true,
+					["secure"] = true,
+					["sw"] = 214,
+					["sh"] = 305
+				}
+			)
+		else
+			for i = 1, 6 do
+				if _G["Boss" .. i .. "TargetFrame"] then
+					_G["Boss" .. i .. "TargetFrame"]:SetScale(1)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "Boss" .. i .. "TargetFrame",
+							["lstr"] = "LID_BOSS" .. i,
+							["userplaced"] = true,
+							["secure"] = true,
+						}
+					)
+				end
+			end
+		end
 	end
 
 	if MoveAny:IsEnabled("TICKETSTATUSFRAME", false) then

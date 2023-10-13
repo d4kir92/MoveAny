@@ -143,7 +143,7 @@ function MoveAny:LangenUS()
 		["LID_PARTYFRAME"] = "Party Frame",
 		["LID_PARTYMEMBERFRAME"] = "Party Member Frame %s",
 		["LID_COMPACTRAIDFRAMECONTAINER"] = "RaidFrame",
-		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Frames",
+		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Frames (Bossframes)",
 		["LID_FLIPPED"] = "Flipped",
 		["LID_GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",
 		["LID_TICKETSTATUSFRAME"] = "Ticket Frame",
@@ -186,6 +186,12 @@ function MoveAny:LangenUS()
 		["LID_ALPHAISINPETBATTLE"] = "Alpha (Is In Pet Battle)",
 		["LID_KEYBINDWINDOW"] = "Keybind for Windows",
 		["LID_SNAPWINDOWSIZE"] = "Snapsize (Windows)",
+		["LID_BOSS1"] = "Boss 1",
+		["LID_BOSS2"] = "Boss 2",
+		["LID_BOSS3"] = "Boss 3",
+		["LID_BOSS4"] = "Boss 4",
+		["LID_BOSS5"] = "Boss 5",
+		["LID_BOSS6"] = "Boss 6",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
