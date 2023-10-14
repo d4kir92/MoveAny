@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.62")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.63")
 }
 
 local MAMMBTN = nil
@@ -3488,6 +3488,24 @@ function MoveAny:LoadAddon()
 			opts["HEIGHT"] = opts["HEIGHT"] or 15
 			if opts["WIDTH"] and opts["HEIGHT"] then
 				MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+				local last = nil
+				for i, v in pairs({MainMenuExpBar:GetRegions()}) do
+					if i == 1 then
+						v:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					end
+
+					if i == 2 or i == 3 or i == 4 or i == 5 then
+						v:ClearAllPoints()
+						if i == 2 then
+							v:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
+						else
+							v:SetPoint("LEFT", last, "RIGHT", 0, 0)
+						end
+
+						v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+						last = v
+					end
+				end
 			end
 
 			MainMenuExpBar:ClearAllPoints()
@@ -3534,6 +3552,23 @@ function MoveAny:LoadAddon()
 					)
 
 					ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					local last = nil
+					local id = 0
+					for i, v in pairs({ReputationWatchBar.StatusBar:GetRegions()}) do
+						if i == 5 or i == 6 or i == 7 or i == 8 then
+							v:SetTexCoord(0.01, 1.01, 0.03, 0.17)
+							v:ClearAllPoints()
+							if i == 5 then
+								v:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
+							else
+								v:SetPoint("LEFT", last, "RIGHT", 0, 0)
+							end
+
+							v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+							last = v
+							id = id + 1
+						end
+					end
 				end
 			end
 
