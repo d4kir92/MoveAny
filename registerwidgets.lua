@@ -1345,13 +1345,13 @@ local lastEle = nil
 local lastSize = 0
 local fullHP = false
 function MoveAny:SetEleAlpha(ele, alpha)
-	if ele:GetAlpha() ~= alpha then
+	if ele and ele:GetAlpha() ~= alpha then
 		ele:SetAlpha(alpha)
 	end
 end
 
 function MoveAny:SetMouseEleAlpha(ele)
-	if lastEle and ele ~= lastEle then
+	if lastEle and ele and ele ~= lastEle then
 		MoveAny:UpdateAlphas(ele)
 	end
 
@@ -1408,12 +1408,12 @@ function MoveAny:CheckAlphas()
 	C_Timer.After(0.11, MoveAny.CheckAlphas)
 end
 
-function MoveAny:UpdateAlphas(mouseEle)
-	for i, ele in pairs(MoveAny:GetAlphaFrames()) do
-		if ele == nil then
-			MoveAny:MSG("UpdateAlphas: ele is nil")
-		else
-			local name = MoveAny:GetFrameName(ele)
+function MoveAny:UpdateAlpha(ele, mouseEle)
+	if ele == nil then
+		MoveAny:MSG("UpdateAlphas: ele is nil")
+	else
+		local name = MoveAny:GetFrameName(ele)
+		if name then
 			local alphaInCombat = MoveAny:GetEleOption(name, "ALPHAINCOMBAT", 1, "Alpha1")
 			local alphaIsFullHealth = MoveAny:GetEleOption(name, "ALPHAISFULLHEALTH", 1, "Alpha2")
 			local alphaInVehicle = MoveAny:GetEleOption(name, "ALPHAINVEHICLE", 1, "Alpha3")
@@ -1442,6 +1442,12 @@ function MoveAny:UpdateAlphas(mouseEle)
 				MoveAny:SetEleAlpha(ele, alphaNotInCombat)
 			end
 		end
+	end
+end
+
+function MoveAny:UpdateAlphas(mouseEle)
+	for i, ele in pairs(MoveAny:GetAlphaFrames()) do
+		MoveAny:UpdateAlpha(ele, mouseEle)
 	end
 end
 

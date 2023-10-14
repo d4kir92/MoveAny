@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.64")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.65")
 }
 
 local MAMMBTN = nil
@@ -3252,6 +3252,14 @@ function MoveAny:LoadAddon()
 				sel.gtsetalpha2 = false
 			end
 		)
+
+		function MAGameTooltip:GetMAEle()
+			return GameTooltip
+		end
+
+		function GameTooltip:GetMAEle()
+			return MAGameTooltip
+		end
 
 		GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
 		hooksecurefunc(
