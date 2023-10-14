@@ -1058,12 +1058,20 @@ function MoveAny:RegisterWidget(tab)
 					for i = 1, 32 do
 						local bb = _G["BuffButton" .. i]
 						if bb then
+							function bb:GetMAEle()
+								return MABuffBar
+							end
+
 							bb:EnableMouse(false)
 						end
 
 						if not MoveAny:IsEnabled("DEBUFFS", false) then
 							local db = _G["DebuffButton" .. i]
 							if db then
+								function db:GetMAEle()
+									return MABuffBar
+								end
+
 								db:EnableMouse(false)
 							end
 						end
@@ -1085,6 +1093,10 @@ function MoveAny:RegisterWidget(tab)
 					for i = 1, 32 do
 						local db = _G["DebuffButton" .. i]
 						if db then
+							function db:GetMAEle()
+								return MABuffBar
+							end
+
 							db:EnableMouse(false)
 						end
 					end

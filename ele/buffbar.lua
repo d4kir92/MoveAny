@@ -3,10 +3,8 @@ local btnsize = 36
 local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
-
 function MoveAny:GetBuffPosition(p1, p3)
 	MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] = MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] or 0
-
 	if MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 0 then
 		if p1 == "TOPLEFT" or p1 == "LEFT" then
 			return "TOPLEFT", "TOPLEFT"
@@ -36,7 +34,6 @@ function MoveAny:InitBuffBar()
 		local sw1, sh1 = BuffFrame:GetSize()
 		MABuffBar:SetSize(sw1, sh1)
 		MABuffBar:SetPoint(BuffFrame:GetPoint())
-
 		function MABuffBar:GetRealEle()
 			return BuffFrame
 		end
@@ -70,13 +67,11 @@ function MoveAny:InitBuffBar()
 				local p1, _, p3 = MABuffBar:GetPoint()
 				local bp1 = MoveAny:GetBuffPosition(p1, p3)
 				local left = bp1 == "TOPLEFT" or bp1 == "LEFT" or bp1 == "BOTTOMLEFT"
-
 				if left then
 					DebuffFrame:ClearAllPoints()
 					DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(180 + 2 * MABUFFSPACINGY))
 				else
 					local x = 0
-
 					if MoveAny:GetWoWBuild() == "CLASSIC" then
 						x = -10
 					end
@@ -86,11 +81,13 @@ function MoveAny:InitBuffBar()
 				end
 
 				local olddb = nil
-
 				for i = 1, 32 do
 					local db = _G["DebuffButton" .. i]
-
 					if db then
+						function db:GetMAEle()
+							return MABuffBar
+						end
+
 						if olddb then
 							db:ClearAllPoints()
 							db:SetPoint("LEFT", olddb, "RIGHT", 0, 0)
@@ -106,28 +103,38 @@ function MoveAny:InitBuffBar()
 				end
 			end
 
-			hooksecurefunc(DebuffFrame, "SetPoint", function(sel, ...)
-				if sel.debuffsetpoint then return end
-				sel.debuffsetpoint = true
-				DebuffFrame:UpdatePoint()
-				sel.debuffsetpoint = false
-			end)
+			hooksecurefunc(
+				DebuffFrame,
+				"SetPoint",
+				function(sel, ...)
+					if sel.debuffsetpoint then return end
+					sel.debuffsetpoint = true
+					DebuffFrame:UpdatePoint()
+					sel.debuffsetpoint = false
+				end
+			)
 
-			hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...)
-				if sel.debuffsetpoint then return end
-				sel.debuffsetpoint = true
-				DebuffFrame:UpdatePoint()
-				sel.debuffsetpoint = false
-			end)
+			hooksecurefunc(
+				MABuffBar,
+				"SetPoint",
+				function(sel, ...)
+					if sel.debuffsetpoint then return end
+					sel.debuffsetpoint = true
+					DebuffFrame:UpdatePoint()
+					sel.debuffsetpoint = false
+				end
+			)
 
 			local f = CreateFrame("FRAME")
 			f:RegisterEvent("UNIT_AURA")
-
-			f:SetScript("OnEvent", function(sel, event, ...)
-				if event == "UNIT_AURA" then
-					DebuffFrame:UpdatePoint()
+			f:SetScript(
+				"OnEvent",
+				function(sel, event, ...)
+					if event == "UNIT_AURA" then
+						DebuffFrame:UpdatePoint()
+					end
 				end
-			end)
+			)
 
 			if not InCombatLockdown() then
 				DebuffFrame:ClearAllPoints()
@@ -135,24 +142,26 @@ function MoveAny:InitBuffBar()
 			end
 		end
 
-		hooksecurefunc(BuffFrame, "SetPoint", function(sel, ...)
-			if sel.buffsetpoint then return end
-			sel.buffsetpoint = true
-			sel:SetMovable(true)
+		hooksecurefunc(
+			BuffFrame,
+			"SetPoint",
+			function(sel, ...)
+				if sel.buffsetpoint then return end
+				sel.buffsetpoint = true
+				sel:SetMovable(true)
+				if sel.SetUserPlaced and sel:IsMovable() then
+					sel:SetUserPlaced(false)
+				end
 
-			if sel.SetUserPlaced and sel:IsMovable() then
-				sel:SetUserPlaced(false)
+				sel:SetParent(MABuffBar)
+				sel:ClearAllPoints()
+				sel:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
+				sel.buffsetpoint = false
 			end
-
-			sel:SetParent(MABuffBar)
-			sel:ClearAllPoints()
-			sel:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
-			sel.buffsetpoint = false
-		end)
+		)
 
 		BuffFrame:ClearAllPoints()
 		BuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
-
 		if MoveAny:DEBUG() then
 			BuffFrame.t = BuffFrame:CreateTexture()
 			BuffFrame.t:SetAllPoints(BuffFrame)
@@ -165,12 +174,10 @@ function MoveAny:InitBuffBar()
 		local rel = "RIGHT"
 		local dirH = "LEFT"
 		local dirV = "BOTTOM"
-
 		function MoveAny:UpdateBuffDirections()
 			local p1, _, p3, _, _ = MABuffBar:GetPoint()
 			local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
 			rel = "RIGHT"
-
 			if bp1 == "TOPLEFT" then
 				rel = "LEFT"
 			elseif bp1 == "LEFT" then
@@ -180,13 +187,11 @@ function MoveAny:InitBuffBar()
 			end
 
 			dirH = "LEFT"
-
 			if rel == "LEFT" then
 				dirH = "RIGHT"
 			end
 
 			dirV = "BOTTOM"
-
 			if bp3 == "BOTTOMLEFT" then
 				dirV = "TOP"
 			elseif bp3 == "BOTTOM" then
@@ -197,110 +202,113 @@ function MoveAny:InitBuffBar()
 		end
 
 		MoveAny:UpdateBuffDirections()
-
 		if TempEnchant1 then
-			hooksecurefunc(TempEnchant1, "SetPoint", function(sel, ...)
-				if sel.setpoint_te1 then return end
-				sel.setpoint_te1 = true
-				sel:SetMovable(true)
+			hooksecurefunc(
+				TempEnchant1,
+				"SetPoint",
+				function(sel, ...)
+					if sel.setpoint_te1 then return end
+					sel.setpoint_te1 = true
+					sel:SetMovable(true)
+					if sel.SetUserPlaced and sel:IsMovable() then
+						sel:SetUserPlaced(false)
+					end
 
-				if sel.SetUserPlaced and sel:IsMovable() then
-					sel:SetUserPlaced(false)
+					sel:SetParent(MABuffBar)
+					local p1, _, p3, _, _ = MABuffBar:GetPoint()
+					local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+					local x = 0
+					if GetCVarBool("consolidateBuffs") then
+						x = x + 1
+					end
+
+					if dirH == "LEFT" then
+						sel:ClearAllPoints()
+						sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
+					else
+						sel:ClearAllPoints()
+						sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+					end
+
+					sel.setpoint_te1 = false
 				end
-
-				sel:SetParent(MABuffBar)
-				local p1, _, p3, _, _ = MABuffBar:GetPoint()
-				local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
-				local x = 0
-
-				if GetCVarBool("consolidateBuffs") then
-					x = x + 1
-				end
-
-				if dirH == "LEFT" then
-					sel:ClearAllPoints()
-					sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
-				else
-					sel:ClearAllPoints()
-					sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
-				end
-
-				sel.setpoint_te1 = false
-			end)
+			)
 		end
 
 		if TempEnchant2 then
-			hooksecurefunc(TempEnchant2, "SetPoint", function(sel, ...)
-				if sel.setpoint_te2 then return end
-				sel.setpoint_te2 = true
-				sel:SetMovable(true)
+			hooksecurefunc(
+				TempEnchant2,
+				"SetPoint",
+				function(sel, ...)
+					if sel.setpoint_te2 then return end
+					sel.setpoint_te2 = true
+					sel:SetMovable(true)
+					if sel.SetUserPlaced and sel:IsMovable() then
+						sel:SetUserPlaced(false)
+					end
 
-				if sel.SetUserPlaced and sel:IsMovable() then
-					sel:SetUserPlaced(false)
+					sel:SetParent(MABuffBar)
+					local p1, _, p3, _, _ = MABuffBar:GetPoint()
+					local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+					local x = 1
+					if GetCVarBool("consolidateBuffs") then
+						x = x + 1
+					end
+
+					local posy = 0
+					if MABUFFLIMIT == 1 then
+						posy = -30 - MABUFFSPACINGY
+					end
+
+					if dirH == "LEFT" then
+						sel:ClearAllPoints()
+						sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
+					else
+						sel:ClearAllPoints()
+						sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+					end
+
+					sel.setpoint_te2 = false
 				end
-
-				sel:SetParent(MABuffBar)
-				local p1, _, p3, _, _ = MABuffBar:GetPoint()
-				local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
-				local x = 1
-
-				if GetCVarBool("consolidateBuffs") then
-					x = x + 1
-				end
-
-				local posy = 0
-
-				if MABUFFLIMIT == 1 then
-					posy = -30 - MABUFFSPACINGY
-				end
-
-				if dirH == "LEFT" then
-					sel:ClearAllPoints()
-					sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
-				else
-					sel:ClearAllPoints()
-					sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
-				end
-
-				sel.setpoint_te2 = false
-			end)
+			)
 		end
 
 		if TempEnchant3 then
-			hooksecurefunc(TempEnchant3, "SetPoint", function(sel, ...)
-				if sel.setpoint_te3 then return end
-				sel.setpoint_te3 = true
-				sel:SetMovable(true)
+			hooksecurefunc(
+				TempEnchant3,
+				"SetPoint",
+				function(sel, ...)
+					if sel.setpoint_te3 then return end
+					sel.setpoint_te3 = true
+					sel:SetMovable(true)
+					if sel.SetUserPlaced and sel:IsMovable() then
+						sel:SetUserPlaced(false)
+					end
 
-				if sel.SetUserPlaced and sel:IsMovable() then
-					sel:SetUserPlaced(false)
+					sel:SetParent(MABuffBar)
+					local p1, _, p3, _, _ = MABuffBar:GetPoint()
+					local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+					local x = 2
+					if GetCVarBool("consolidateBuffs") then
+						x = x + 1
+					end
+
+					if dirH == "LEFT" then
+						sel:ClearAllPoints()
+						sel:SetPoint(bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
+					else
+						sel:ClearAllPoints()
+						sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+					end
+
+					sel.setpoint_te3 = false
 				end
-
-				sel:SetParent(MABuffBar)
-				local p1, _, p3, _, _ = MABuffBar:GetPoint()
-				local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
-				local x = 2
-
-				if GetCVarBool("consolidateBuffs") then
-					x = x + 1
-				end
-
-				if dirH == "LEFT" then
-					sel:ClearAllPoints()
-					sel:SetPoint(bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
-				else
-					sel:ClearAllPoints()
-					sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
-				end
-
-				sel.setpoint_te3 = false
-			end)
+			)
 		end
 
 		function MoveAny:GetEnchantCount()
 			local count = 0
 			local e1, _, _, _, e2, _, _, _, e3, _, _, _ = GetWeaponEnchantInfo()
-
 			if e1 then
 				count = count + 1
 			end
@@ -321,7 +329,6 @@ function MoveAny:InitBuffBar()
 			MABUFFSPACINGX = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGX", 4)
 			MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
 			MoveAny:UpdateBuffDirections()
-
 			if ConsolidatedBuffs then
 				ConsolidatedBuffs:SetParent(MABuffBar)
 			end
@@ -340,84 +347,82 @@ function MoveAny:InitBuffBar()
 
 			for bid = 1, 32 do
 				local bbtn = _G["BuffButton" .. bid]
-
 				if bbtn then
 					if bbtn.masetup == nil then
 						bbtn.masetup = true
+						function bbtn:GetMAEle()
+							return MABuffBar
+						end
 
-						hooksecurefunc(bbtn, "SetPoint", function(sel, ...)
-							if sel.setpoint_bbtn then return end
-							sel.setpoint_bbtn = true
-							local p1, _, p3, _, _ = MABuffBar:GetPoint()
-							local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
-							local sw2, sh2 = sel:GetSize()
-							local numBuffs = 1
-							local prevBuff = nil
-
-							for i = 1, 32 do
-								local btn = _G["BuffButton" .. i]
-								if i == bid then break end
-
-								if btn and btn:GetParent() == BuffFrame then
-									numBuffs = numBuffs + 1
-									prevBuff = btn
+						hooksecurefunc(
+							bbtn,
+							"SetPoint",
+							function(sel, ...)
+								if sel.setpoint_bbtn then return end
+								sel.setpoint_bbtn = true
+								local p1, _, p3, _, _ = MABuffBar:GetPoint()
+								local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+								local sw2, sh2 = sel:GetSize()
+								local numBuffs = 1
+								local prevBuff = nil
+								for i = 1, 32 do
+									local btn = _G["BuffButton" .. i]
+									if i == bid then break end
+									if btn and btn:GetParent() == BuffFrame then
+										numBuffs = numBuffs + 1
+										prevBuff = btn
+									end
 								end
-							end
 
-							local count = MoveAny:GetEnchantCount()
+								local count = MoveAny:GetEnchantCount()
+								if GetCVarBool("consolidateBuffs") then
+									count = count + 1
+								end
 
-							if GetCVarBool("consolidateBuffs") then
-								count = count + 1
-							end
-
-							local id = numBuffs + count
-							local caly = (id - 0.1) / MABUFFLIMIT
-							local cy = caly - caly % 1
-
-							if bbtn:GetParent() == BuffFrame then
-								sel:ClearAllPoints()
-
-								if numBuffs == 1 then
-									local posx = 0
-
-									if rel == "RIGHT" then
-										posx = -count * (sw2 + MABUFFSPACINGX)
-									else
-										posx = count * (sw2 + MABUFFSPACINGX)
-									end
-
-									local posy = 0
-
-									if MABUFFLIMIT == 1 then
-										posx = 0
-
-										if dirV == "BOTTOM" then
-											posy = -30 - MABUFFSPACINGY
-										else
-											posy = 30 + MABUFFSPACINGY
-										end
-									end
-
-									sel:SetPoint(bp1, MABuffBar, bp3, posx, posy)
-								else
-									if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
-										if dirV == "BOTTOM" then
-											sel:SetPoint(bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
-										else
-											sel:SetPoint(bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
-										end
-									elseif prevBuff then
+								local id = numBuffs + count
+								local caly = (id - 0.1) / MABUFFLIMIT
+								local cy = caly - caly % 1
+								if bbtn:GetParent() == BuffFrame then
+									sel:ClearAllPoints()
+									if numBuffs == 1 then
+										local posx = 0
 										if rel == "RIGHT" then
-											sel:SetPoint(rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
+											posx = -count * (sw2 + MABUFFSPACINGX)
 										else
-											sel:SetPoint(rel, prevBuff, dirH, MABUFFSPACINGX, 0)
+											posx = count * (sw2 + MABUFFSPACINGX)
+										end
+
+										local posy = 0
+										if MABUFFLIMIT == 1 then
+											posx = 0
+											if dirV == "BOTTOM" then
+												posy = -30 - MABUFFSPACINGY
+											else
+												posy = 30 + MABUFFSPACINGY
+											end
+										end
+
+										sel:SetPoint(bp1, MABuffBar, bp3, posx, posy)
+									else
+										if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
+											if dirV == "BOTTOM" then
+												sel:SetPoint(bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
+											else
+												sel:SetPoint(bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
+											end
+										elseif prevBuff then
+											if rel == "RIGHT" then
+												sel:SetPoint(rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
+											else
+												sel:SetPoint(rel, prevBuff, dirH, MABUFFSPACINGX, 0)
+											end
 										end
 									end
 								end
-							end
 
-							sel.setpoint_bbtn = false
-						end)
+								sel.setpoint_bbtn = false
+							end
+						)
 					end
 
 					bbtn:ClearAllPoints()
@@ -426,22 +431,27 @@ function MoveAny:InitBuffBar()
 			end
 		end
 
-		hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...)
-			MoveAny:UpdateBuffs()
-		end)
+		hooksecurefunc(
+			MABuffBar,
+			"SetPoint",
+			function(sel, ...)
+				MoveAny:UpdateBuffs()
+			end
+		)
 
 		local f = CreateFrame("FRAME")
 		f:RegisterEvent("UNIT_AURA")
-
-		f:SetScript("OnEvent", function(sel, event, ...)
-			if event == "UNIT_AURA" then
-				unit = ...
-
-				if unit and unit == "player" then
-					MoveAny:UpdateBuffs()
+		f:SetScript(
+			"OnEvent",
+			function(sel, event, ...)
+				if event == "UNIT_AURA" then
+					unit = ...
+					if unit and unit == "player" then
+						MoveAny:UpdateBuffs()
+					end
 				end
 			end
-		end)
+		)
 
 		C_Timer.After(1, MoveAny.UpdateBuffs)
 	end
