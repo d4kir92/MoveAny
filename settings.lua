@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.65")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.66")
 }
 
 local MAMMBTN = nil
@@ -3176,32 +3176,6 @@ function MoveAny:LoadAddon()
 		return false
 	end
 
-	function MoveAny:ThinkGameTooltip()
-		if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
-			C_Timer.After(0.1, MoveAny.ThinkGameTooltip)
-
-			return
-		end
-
-		if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
-			local owner = GameTooltip:GetOwner()
-			if owner and owner == UIParent or owner == UIParent then
-				local scale = GameTooltip:GetEffectiveScale()
-				local mX, mY = GetCursorPosition()
-				mX = mX / scale
-				mY = mY / scale
-				GameTooltip:ClearAllPoints()
-				GameTooltip:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
-				GameTooltip.default = 1
-			end
-
-			C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
-		else
-			C_Timer.After(1, MoveAny.ThinkGameTooltip)
-		end
-	end
-
-	MoveAny:ThinkGameTooltip()
 	GameTooltip:SetMovable(true)
 	GameTooltip:SetUserPlaced(false)
 	if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
@@ -3262,23 +3236,76 @@ function MoveAny:LoadAddon()
 		end
 
 		GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
-		hooksecurefunc(
-			GameTooltip,
-			"SetPoint",
-			function(sel, ...)
-				if sel.gtsetpoint then return end
-				sel.gtsetpoint = true
-				sel:SetMovable(true)
-				sel:SetUserPlaced(false)
-				local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-				if MoveAny:GameTooltipOnDefaultPosition() and not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+		if MoveAny:GameTooltipOnDefaultPosition() and not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+			hooksecurefunc(
+				GameTooltip,
+				"SetPoint",
+				function(sel, ...)
+					if sel.gtsetpoint then return end
+					sel.gtsetpoint = true
+					sel:SetMovable(true)
+					sel:SetUserPlaced(false)
+					local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
 					sel:ClearAllPoints()
 					sel:SetPoint(p1, MAGameTooltip, p3, 0, 0)
+					sel.gtsetpoint = false
+				end
+			)
+		else
+			hooksecurefunc(
+				GameTooltip,
+				"SetPoint",
+				function(sel, ...)
+					if sel.gtsetpoint then return end
+					sel.gtsetpoint = true
+					sel:SetMovable(true)
+					sel:SetUserPlaced(false)
+					local owner = GameTooltip:GetOwner()
+					if owner and owner == UIParent or owner == UIParent then
+						local scale = GameTooltip:GetEffectiveScale()
+						local mX, mY = GetCursorPosition()
+						mX = mX / scale
+						mY = mY / scale
+						GameTooltip.gtsetpoint = true
+						GameTooltip:ClearAllPoints()
+						GameTooltip:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
+						GameTooltip.gtsetpoint = false
+						GameTooltip.default = 1
+					end
+
+					sel.gtsetpoint = false
+				end
+			)
+
+			function MoveAny:ThinkGameTooltip()
+				if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
+					C_Timer.After(0.1, MoveAny.ThinkGameTooltip)
+
+					return
 				end
 
-				sel.gtsetpoint = false
+				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+					local owner = GameTooltip:GetOwner()
+					if owner and owner == UIParent or owner == UIParent then
+						local scale = GameTooltip:GetEffectiveScale()
+						local mX, mY = GetCursorPosition()
+						mX = mX / scale
+						mY = mY / scale
+						GameTooltip.gtsetpoint = true
+						GameTooltip:ClearAllPoints()
+						GameTooltip:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
+						GameTooltip.gtsetpoint = false
+						GameTooltip.default = 1
+					end
+
+					C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
+				else
+					C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
+				end
 			end
-		)
+
+			MoveAny:ThinkGameTooltip()
+		end
 	end
 
 	-- BOTTOM
