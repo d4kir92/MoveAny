@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.66")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.67")
 }
 
 local MAMMBTN = nil
@@ -3236,7 +3236,7 @@ function MoveAny:LoadAddon()
 		end
 
 		GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
-		if MoveAny:GameTooltipOnDefaultPosition() and not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+		if not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
 			hooksecurefunc(
 				GameTooltip,
 				"SetPoint",
@@ -3245,9 +3245,12 @@ function MoveAny:LoadAddon()
 					sel.gtsetpoint = true
 					sel:SetMovable(true)
 					sel:SetUserPlaced(false)
-					local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-					sel:ClearAllPoints()
-					sel:SetPoint(p1, MAGameTooltip, p3, 0, 0)
+					if MoveAny:GameTooltipOnDefaultPosition() then
+						local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
+						sel:ClearAllPoints()
+						sel:SetPoint(p1, MAGameTooltip, p3, 0, 0)
+					end
+
 					sel.gtsetpoint = false
 				end
 			)
