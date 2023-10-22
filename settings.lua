@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.67")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.68")
 }
 
 local MAMMBTN = nil
@@ -2378,22 +2378,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and (MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("MINIMAP", false)) and MultiBarRight and MultiBarLeft then
-			MultiBarRight.MAOldSetScale = MultiBarRight.SetScale
-			function MultiBarRight:SetScale(scale)
-				if scale > 0 then
-					self:MAOldSetScale(scale)
-				end
-			end
-
-			MultiBarLeft.MAOldSetScale = MultiBarLeft.SetScale
-			function MultiBarLeft:SetScale(scale)
-				if scale > 0 then
-					self:MAOldSetScale(scale)
-				end
-			end
-		end
-
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and (MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("MINIMAP", false)) and MultiBarRight and MultiBarLeft then end
 		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
 			for i = 1, 10 do
 				if i ~= 2 and ((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
