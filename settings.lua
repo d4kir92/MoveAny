@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.68")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.69")
 }
 
 local MAMMBTN = nil
@@ -399,6 +399,7 @@ function MoveAny:InitMALock()
 	end
 
 	function MoveAny:UpdateFrameKeybind()
+		local keybind = keybinds[MoveAny:GV("KEYBINDWINDOW", 1)]
 		MoveAny:SV("KEYBINDWINDOWKEY", keybind)
 		MoveAny:UpdateFrameKeybindText()
 	end
