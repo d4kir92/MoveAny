@@ -29,6 +29,7 @@ function MoveAny:GetBuffPosition(p1, p3)
 end
 
 function MoveAny:InitBuffBar()
+	local dbtab = {}
 	if MoveAny:IsEnabled("BUFFS", false) then
 		local MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
 		local sw1, sh1 = BuffFrame:GetSize()
@@ -67,33 +68,74 @@ function MoveAny:InitBuffBar()
 				local p1, _, p3 = MABuffBar:GetPoint()
 				local bp1 = MoveAny:GetBuffPosition(p1, p3)
 				local left = bp1 == "TOPLEFT" or bp1 == "LEFT" or bp1 == "BOTTOMLEFT"
+				local bottom = bp1 == "BOTTOMLEFT" or bp1 == "BOTTOM" or bp1 == "BOTTOMRIGHT"
 				if left then
-					DebuffFrame:ClearAllPoints()
-					DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(180 + 2 * MABUFFSPACINGY))
-				else
-					local x = 0
-					if MoveAny:GetWoWBuild() == "CLASSIC" then
-						x = -10
+					if bottom then
+						DebuffFrame:ClearAllPoints()
+						DebuffFrame:SetPoint("BOTTOMLEFT", MABuffBar, "BOTTOMLEFT", 0, 180 + 2 * MABUFFSPACINGY)
+					else
+						DebuffFrame:ClearAllPoints()
+						DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(180 + 2 * MABUFFSPACINGY))
 					end
-
-					DebuffFrame:ClearAllPoints()
-					DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", x, -(180 + 2 * MABUFFSPACINGY))
+				else
+					if bottom then
+						DebuffFrame:ClearAllPoints()
+						DebuffFrame:SetPoint("BOTTOMRIGHT", MABuffBar, "BOTTOMRIGHT", 0, 180 + 2 * MABUFFSPACINGY)
+					else
+						DebuffFrame:ClearAllPoints()
+						DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -(180 + 2 * MABUFFSPACINGY))
+					end
 				end
 
 				local olddb = nil
 				for i = 1, 32 do
 					local db = _G["DebuffButton" .. i]
 					if db then
-						function db:GetMAEle()
-							return MABuffBar
+						if dbtab[i] == nil then
+							dbtab[i] = {}
+							hooksecurefunc(
+								db,
+								"SetPoint",
+								function(sel, o1, o2, o3, o4, o5)
+									if sel.ma_db_setpoint then return end
+									sel.ma_db_setpoint = true
+									sel:ClearAllPoints()
+									sel:SetPoint(dbtab[i]["p1"], dbtab[i]["p2"], dbtab[i]["p3"], dbtab[i]["p4"], dbtab[i]["p5"])
+									sel.ma_db_setpoint = false
+								end
+							)
+
+							function db:GetMAEle()
+								return MABuffBar
+							end
 						end
 
 						if olddb then
+							dbtab[i]["p1"] = "LEFT"
+							dbtab[i]["p2"] = olddb
+							dbtab[i]["p3"] = "RIGHT"
+							dbtab[i]["p4"] = 0
+							dbtab[i]["p5"] = 0
 							db:ClearAllPoints()
 							db:SetPoint("LEFT", olddb, "RIGHT", 0, 0)
 						else
-							db:ClearAllPoints()
-							db:SetPoint("TOPLEFT", DebuffFrame, "TOPLEFT", 0, 0)
+							if left then
+								dbtab[i]["p1"] = "TOPLEFT"
+								dbtab[i]["p2"] = DebuffFrame
+								dbtab[i]["p3"] = "TOPLEFT"
+								dbtab[i]["p4"] = 0
+								dbtab[i]["p5"] = 0
+								db:ClearAllPoints()
+								db:SetPoint("TOPLEFT", DebuffFrame, "TOPLEFT", 0, 0)
+							else
+								dbtab[i]["p1"] = "TOPRIGHT"
+								dbtab[i]["p2"] = DebuffFrame
+								dbtab[i]["p3"] = "TOPRIGHT"
+								dbtab[i]["p4"] = 0
+								dbtab[i]["p5"] = 0
+								db:ClearAllPoints()
+								db:SetPoint("TOPRIGHT", DebuffFrame, "TOPRIGHT", 0, 0)
+							end
 						end
 
 						olddb = db
