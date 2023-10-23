@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.70")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.71")
 }
 
 local MAMMBTN = nil
@@ -2391,6 +2391,40 @@ function MoveAny:LoadAddon()
 					)
 				end
 			end
+
+			C_Timer.After(
+				1,
+				function()
+					local maxWidth = VERTICAL_MULTI_BAR_WIDTH * 2 + VERTICAL_MULTI_BAR_HORIZONTAL_SPACING
+					local topLimit = MinimapCluster:GetBottom() + 20
+					local bottomLimit = UIParent:GetBottom() + 8
+					if MultiBarBottomRight:IsShown() and MultiBarBottomRight:GetRight() >= UIParent:GetRight() - maxWidth - 16 then
+						bottomLimit = MultiBarBottomRight:GetTop() + 8
+					else
+						bottomLimit = MainMenuBarArtFrame:GetTop() + 24
+					end
+
+					local availableSpace = topLimit - bottomLimit
+					local contentHeight = VERTICAL_MULTI_BAR_HEIGHT
+					if showLeft then
+						contentHeight = contentHeight + VERTICAL_MULTI_BAR_HEIGHT + VERTICAL_MULTI_BAR_VERTICAL_SPACING
+						if contentHeight * VERTICAL_MULTI_BAR_MIN_SCALE > availableSpace or not GetCVarBool("multiBarRightVerticalLayout") then
+							contentHeight = VERTICAL_MULTI_BAR_HEIGHT
+							contentWidth = VERTICAL_MULTI_BAR_WIDTH * 2 + VERTICAL_MULTI_BAR_HORIZONTAL_SPACING
+						end
+					end
+
+					local scale = 1
+					if contentHeight > availableSpace then
+						scale = availableSpace / contentHeight
+					end
+
+					if scale < 0 and SHOW_MULTI_ACTIONBAR_3 == "1" and MoveAny:IsEnabled("ACTIONBAR" .. 4, false) then
+						print("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
+						print("Actionbar4 will still be shown.")
+					end
+				end
+			)
 		end
 
 		if MoveAny:IsEnabled("ENDCAPS", false) then
