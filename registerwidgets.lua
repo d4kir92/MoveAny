@@ -565,7 +565,10 @@ function MoveAny:MenuOptions(opt, frame)
 					1,
 					0,
 					4,
-					MoveAny.UpdateBuffs,
+					function()
+						MoveAny:UpdateBuffs()
+						DebuffFrame:UpdatePoint()
+					end,
 					{
 						[0] = "AUTO",
 						[1] = "TOPRIGHT",
@@ -578,11 +581,56 @@ function MoveAny:MenuOptions(opt, frame)
 				y = y - 40
 			end
 
-			MoveAny:CreateSlider(content, 10, y, name, "MABUFFLIMIT", 10, 1, 1, 20, MoveAny.UpdateBuffs)
+			MoveAny:CreateSlider(
+				content,
+				10,
+				y,
+				name,
+				"MABUFFLIMIT",
+				10,
+				1,
+				1,
+				20,
+				function()
+					MoveAny:UpdateBuffs()
+					DebuffFrame:UpdatePoint()
+				end
+			)
+
 			y = y - 40
-			MoveAny:CreateSlider(content, 10, y, name, "MABUFFSPACINGX", 4, 1, 0, 30, MoveAny.UpdateBuffs)
+			MoveAny:CreateSlider(
+				content,
+				10,
+				y,
+				name,
+				"MABUFFSPACINGX",
+				4,
+				1,
+				0,
+				30,
+				function()
+					MoveAny:UpdateBuffs()
+					DebuffFrame:UpdatePoint()
+				end
+			)
+
 			y = y - 40
-			MoveAny:CreateSlider(content, 10, y, name, "MABUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateBuffs)
+			MoveAny:CreateSlider(
+				content,
+				10,
+				y,
+				name,
+				"MABUFFSPACINGY",
+				10,
+				1,
+				0,
+				30,
+				function()
+					MoveAny:UpdateBuffs()
+					DebuffFrame:UpdatePoint()
+				end
+			)
+
 			y = y - 40
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)

@@ -65,6 +65,9 @@ function MoveAny:InitBuffBar()
 			end
 
 			function DebuffFrame:UpdatePoint()
+				MABUFFLIMIT = MoveAny:GetEleOption("MABuffBar", "MABUFFLIMIT", 10)
+				MABUFFSPACINGX = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGX", 4)
+				MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
 				local p1, _, p3 = MABuffBar:GetPoint()
 				local bp1 = MoveAny:GetBuffPosition(p1, p3)
 				local left = bp1 == "TOPLEFT" or bp1 == "LEFT" or bp1 == "BOTTOMLEFT"
@@ -111,13 +114,23 @@ function MoveAny:InitBuffBar()
 						end
 
 						if olddb then
-							dbtab[i]["p1"] = "LEFT"
-							dbtab[i]["p2"] = olddb
-							dbtab[i]["p3"] = "RIGHT"
-							dbtab[i]["p4"] = 0
-							dbtab[i]["p5"] = 0
-							db:ClearAllPoints()
-							db:SetPoint("LEFT", olddb, "RIGHT", 0, 0)
+							if left then
+								dbtab[i]["p1"] = "LEFT"
+								dbtab[i]["p2"] = olddb
+								dbtab[i]["p3"] = "RIGHT"
+								dbtab[i]["p4"] = MABUFFSPACINGX
+								dbtab[i]["p5"] = 0
+								db:ClearAllPoints()
+								db:SetPoint("LEFT", olddb, "RIGHT", MABUFFSPACINGX, 0)
+							else
+								dbtab[i]["p1"] = "RIGHT"
+								dbtab[i]["p2"] = olddb
+								dbtab[i]["p3"] = "LEFT"
+								dbtab[i]["p4"] = -MABUFFSPACINGX
+								dbtab[i]["p5"] = 0
+								db:ClearAllPoints()
+								db:SetPoint("RIGHT", olddb, "LEFT", -MABUFFSPACINGX, 0)
+							end
 						else
 							if left then
 								dbtab[i]["p1"] = "TOPLEFT"
