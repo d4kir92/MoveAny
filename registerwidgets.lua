@@ -1442,8 +1442,10 @@ function MoveAny:CheckAlphas()
 			MoveAny:SetMouseEleAlpha(ele)
 		elseif ele.GetMAEle then
 			ele = ele:GetMAEle()
-			ele:SetAlpha(1)
-			MoveAny:SetMouseEleAlpha(ele)
+			if ele then
+				ele:SetAlpha(1)
+				MoveAny:SetMouseEleAlpha(ele)
+			end
 		elseif lastEle then
 			lastEle = nil
 			MoveAny:UpdateAlphas()
