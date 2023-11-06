@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.72")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.73")
 }
 
 local MAMMBTN = nil
@@ -2654,7 +2654,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MAPETFRAME", false) then
-		MAPetFrame = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", MoveAny:GetMainPanel())
 		if PetFrame:GetSize() then
 			MAPetFrame:SetSize(PetFrame:GetSize())
 		end
@@ -2664,6 +2664,19 @@ function MoveAny:LoadAddon()
 		else
 			MAPetFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 		end
+
+		hooksecurefunc(
+			PetFrame,
+			"SetPoint",
+			function(sel, ...)
+				if sel.ma_setpoint then return end
+				sel.ma_setpoint = true
+				PetFrame:SetParent(MAPetFrame)
+				PetFrame:ClearAllPoints()
+				PetFrame:SetPoint("CENTER", MAPetFrame, "CENTER", 0, 0)
+				sel.ma_setpoint = false
+			end
+		)
 
 		PetFrame:SetParent(MAPetFrame)
 		PetFrame:ClearAllPoints()
