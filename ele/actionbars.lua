@@ -475,6 +475,7 @@ f:SetScript(
 					else
 						newstate = nil
 					end
+
 					if not newstate then
 						print("FAILED TO FIND NEWSTATE!: " .. tostring(newstate))
 						newstate = 12
@@ -482,13 +483,9 @@ f:SetScript(
 				end
 				self:SetAttribute( "actionpage", newstate );
 			]])
-				if MoveAny:GetWoWBuild() == "WRATH" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" then
 					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
 					RegisterStateDriver(frame, "page", bars)
-				elseif MoveAny:GetWoWBuild() == "TBC" then
-					RegisterStateDriver(frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
-				elseif MoveAny:GetWoWBuild() == "CLASSIC" then
-					RegisterStateDriver(frame, "page", "[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1")
 				else
 					print("[MoveAny] MISSING EXPANSION")
 				end
