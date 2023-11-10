@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.76")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.77")
 }
 
 local MAMMBTN = nil
@@ -3626,10 +3626,13 @@ function MoveAny:LoadAddon()
 					local last = nil
 					local id = 0
 					for i, v in pairs({ReputationWatchBar.StatusBar:GetRegions()}) do
-						if i == 5 or i == 6 or i == 7 or i == 8 then
-							v:SetTexCoord(0.01, 1.01, 0.03, 0.17)
+						if i == 5 or i == 6 or i == 7 or i == 8 or i == 9 or i == 10 or i == 11 or i == 12 then
+							if i < 9 then
+								v:SetTexCoord(0.01, 1.01, 0.03, 0.17)
+							end
+
 							v:ClearAllPoints()
-							if i == 5 then
+							if i == 5 or i == 9 then
 								v:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
 							else
 								v:SetPoint("LEFT", last, "RIGHT", 0, 0)
