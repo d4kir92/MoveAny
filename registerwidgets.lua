@@ -1322,8 +1322,8 @@ function MoveAny:RegisterWidget(tab)
 			if sel.masetscale_ele then return end
 			sel.masetscale_ele = true
 			local newScale = MoveAny:GetEleScale(name) or 1
-			if newScale and newScale > 0 then
-				frame:SetScale(newScale)
+			if newScale and newScale > 0 and scale ~= newScale and not InCombatLockdown() then
+				sel:SetScale(newScale)
 				local dragframe = _G[name .. "_DRAG"]
 				if dragframe then
 					dragframe:SetScale(newScale)
