@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.78")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.79")
 }
 
 local MAMMBTN = nil
@@ -357,6 +357,10 @@ function MoveAny:InitMALock()
 	MALock:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 	MALock:SetFrameStrata("HIGH")
 	MALock:SetFrameLevel(999)
+	if MALock.CloseButton then
+		MALock.CloseButton:SetFrameLevel(1000)
+	end
+
 	MALock:SetClampedToScreen(true)
 	MALock:SetMovable(true)
 	MALock:EnableMouse(true)

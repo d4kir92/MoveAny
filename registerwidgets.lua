@@ -43,7 +43,7 @@ function MoveAny:GetFrameName(frame)
 	return fnt[frame]
 end
 
-local framelevel = 100
+local framelevel = 1100
 local function SelectTab(sel)
 	PanelTemplates_SetTab(sel:GetParent(), sel:GetID())
 	local content = sel:GetParent().currentcontent
@@ -939,7 +939,12 @@ function MoveAny:RegisterWidget(tab)
 						dragframe.opt.TitleText:SetText(name)
 						dragframe.opt:SetFrameStrata("HIGH")
 						dragframe.opt:SetFrameLevel(framelevel)
-						framelevel = framelevel + 510 -- 509 <- closebutton height
+						framelevel = framelevel + 1
+						if dragframe.opt.CloseButton then
+							dragframe.opt.CloseButton:SetFrameLevel(framelevel)
+						end
+
+						framelevel = framelevel + 100
 						dragframe.opt:SetSize(500, 500)
 						dragframe.opt:SetPoint("CENTER")
 						dragframe.opt:SetClampedToScreen(true)
