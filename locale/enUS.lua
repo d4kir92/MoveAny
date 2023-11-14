@@ -192,6 +192,7 @@ function MoveAny:LangenUS()
 		["LID_BOSS4"] = "Boss 4",
 		["LID_BOSS5"] = "Boss 5",
 		["LID_BOSS6"] = "Boss 6",
+		["LID_MAPAGES"] = "Actionbar Pages"
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.79")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.80")
 }
 
 local MAMMBTN = nil
@@ -343,7 +343,7 @@ function MoveAny:IsFrameKeyDown()
 	if keybind == "SHIFT" then
 		return IsShiftKeyDown()
 	elseif keybind == "CTRL" then
-		return IsCtrlKeyDown()
+		return IsControlKeyDown()
 	elseif keybind == "ALT" then
 		return IsAltKeyDown()
 	end
@@ -488,6 +488,10 @@ function MoveAny:InitMALock()
 			for i = 1, 8 do
 				AddCheckBox(posx, "ACTIONBAR" .. i, false)
 			end
+		end
+
+		if ActionBarUpButton and ActionBarDownButton then
+			AddCheckBox(4, "MAPAGES", false)
 		end
 
 		for i = 1, 10 do
@@ -2536,6 +2540,28 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		if ActionBarUpButton and ActionBarDownButton and MoveAny:IsEnabled("MAPAGES", false) then
+			local MAPages = CreateFrame("FRAME", "MAPages", MoveAny:GetMainPanel())
+			local asw, ash = 18, 18
+			MAPages:SetSize(asw, 2 * ash)
+			MAPages:SetPoint("CENTER", 0, 0)
+			ActionBarUpButton:SetParent(MAPages)
+			ActionBarUpButton:ClearAllPoints()
+			ActionBarUpButton:SetPoint("TOP", MAPages, "TOP", 0, 7)
+			ActionBarDownButton:SetParent(MAPages)
+			ActionBarDownButton:ClearAllPoints()
+			ActionBarDownButton:SetPoint("BOTTOM", MAPages, "BOTTOM", 0, -8)
+			MainMenuBarPageNumber:SetParent(MAPages)
+			MainMenuBarPageNumber:ClearAllPoints()
+			MainMenuBarPageNumber:SetPoint("LEFT", MAPages, "RIGHT", 4, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAPages",
+					["lstr"] = "LID_MAPAGES",
+				}
+			)
+		end
+
 		if MoveAny:IsEnabled("QUESTTRACKER", false) then
 			C_Timer.After(
 				0,
@@ -2604,21 +2630,21 @@ function MoveAny:LoadAddon()
 							WatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
 						end
 					end
-
-					if ObjectiveTrackerFrame then
-						ObjectiveTrackerFrame:SetHeight(600)
-					end
 				end
 			)
 
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ObjectiveTrackerFrame",
-					["lstr"] = "LID_QUESTTRACKER",
-					["sh"] = 600,
-					["userplaced"] = true,
-					["secure"] = true,
-				}
+			C_Timer.After(
+				0,
+				function()
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "ObjectiveTrackerFrame",
+							["lstr"] = "LID_QUESTTRACKER",
+							["userplaced"] = true,
+							["secure"] = true,
+						}
+					)
+				end
 			)
 		end
 
@@ -3168,12 +3194,29 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MINIMAP", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MinimapCluster",
-				["lstr"] = "LID_MINIMAP"
-			}
-		)
+		if MoveAny:GetWoWBuild() == "RETAIL" then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MinimapCluster",
+					["lstr"] = "LID_MINIMAP",
+					["ctop"] = -44,
+					["cright"] = -10,
+					["cbottom"] = 10,
+					["cleft"] = 31
+				}
+			)
+		else
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MinimapCluster",
+					["lstr"] = "LID_MINIMAP",
+					["ctop"] = -25,
+					["cright"] = -20,
+					["cbottom"] = 30,
+					["cleft"] = 35
+				}
+			)
+		end
 	end
 
 	local gtp4 = nil
