@@ -245,6 +245,33 @@ function MoveAny:InitActionBarLayouts()
 	end
 end
 
+local function UpdateActionBarBackground(show)
+	for name, bar in pairs(abs) do
+		local ab = bar
+		if ab and ab.btns then
+			for id, abtn in pairs(ab.btns) do
+				local btnname = abtn:GetName()
+				if btnname and _G[btnname .. "FloatingBG"] then
+					_G[btnname .. "FloatingBG"]:Show()
+				end
+
+				if btnname and _G[btnname .. "NormalTexture"] then
+					if show == 1 then
+						_G[btnname]:SetAttribute("showgrid", 1)
+						_G[btnname .. "NormalTexture"]:Show()
+						_G[btnname]:Show()
+					elseif show == 0 then
+						_G[btnname]:SetAttribute("showgrid", 0)
+						_G[btnname .. "NormalTexture"]:Hide()
+					end
+				else
+					MoveAny:MSG("NOT FOUND: " .. tostring(btnname))
+				end
+			end
+		end
+	end
+end
+
 function MoveAny:CustomBars()
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
@@ -410,33 +437,6 @@ function MoveAny:CustomBars()
 	end
 
 	UpdateActionBarBackground(GetCVarBool("alwaysShowActionBars"))
-end
-
-function UpdateActionBarBackground(show)
-	for name, bar in pairs(abs) do
-		local ab = bar
-		if ab and ab.btns then
-			for id, abtn in pairs(ab.btns) do
-				local btnname = abtn:GetName()
-				if btnname and _G[btnname .. "FloatingBG"] then
-					_G[btnname .. "FloatingBG"]:Show()
-				end
-
-				if btnname and _G[btnname .. "NormalTexture"] then
-					if show == 1 then
-						_G[btnname]:SetAttribute("showgrid", 1)
-						_G[btnname .. "NormalTexture"]:Show()
-						_G[btnname]:Show()
-					elseif show == 0 then
-						_G[btnname]:SetAttribute("showgrid", 0)
-						_G[btnname .. "NormalTexture"]:Hide()
-					end
-				else
-					MoveAny:MSG("NOT FOUND: " .. tostring(btnname))
-				end
-			end
-		end
-	end
 end
 
 local asabf = CreateFrame("Frame")
