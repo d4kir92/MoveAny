@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.81")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.82")
 }
 
 local MAMMBTN = nil
@@ -1873,104 +1873,111 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
-		RuneFrame.unit = "player"
-		RuneFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "RuneFrame",
-				["lstr"] = "LID_RUNEFRAME"
-			}
-		)
-	end
+	C_Timer.After(
+		1,
+		function()
+			if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
+				RuneFrame.unit = "player"
+				RuneFrame:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "RuneFrame",
+						["lstr"] = "LID_RUNEFRAME"
+					}
+				)
+			end
 
-	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
-		WarlockPowerFrame.unit = "player"
-		WarlockPowerFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "WarlockPowerFrame",
-				["lstr"] = "LID_WARLOCKPOWERFRAME"
-			}
-		)
-	end
+			if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
+				WarlockPowerFrame.unit = "player"
+				WarlockPowerFrame:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "WarlockPowerFrame",
+						["lstr"] = "LID_WARLOCKPOWERFRAME"
+					}
+				)
+			end
 
-	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
-		MonkHarmonyBarFrame.unit = "player"
-		MonkHarmonyBarFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MonkHarmonyBarFrame",
-				["lstr"] = "LID_MONKHARMONYBARFRAME"
-			}
-		)
-	end
+			if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
+				MonkHarmonyBarFrame.unit = "player"
+				MonkHarmonyBarFrame:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MonkHarmonyBarFrame",
+						["lstr"] = "LID_MONKHARMONYBARFRAME"
+					}
+				)
+			end
 
-	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
-		MonkStaggerBar.unit = "player"
-		MonkStaggerBar:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MonkStaggerBar",
-				["lstr"] = "LID_MONKSTAGGERBAR"
-			}
-		)
-	end
+			if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
+				MonkStaggerBar.unit = "player"
+				MonkStaggerBar:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MonkStaggerBar",
+						["lstr"] = "LID_MONKSTAGGERBAR"
+					}
+				)
+			end
 
-	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
-		MageArcaneChargesFrame.unit = "player"
-		MageArcaneChargesFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MageArcaneChargesFrame",
-				["lstr"] = "LID_MAGEARCANECHARGESFRAME"
-			}
-		)
-	end
+			if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
+				MageArcaneChargesFrame.unit = "player"
+				MageArcaneChargesFrame:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MageArcaneChargesFrame",
+						["lstr"] = "LID_MAGEARCANECHARGESFRAME"
+					}
+				)
+			end
 
-	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
-		if class == "ROGUE" then
-			RogueComboPointBarFrame.unit = "player"
-			RogueComboPointBarFrame:SetParent(MoveAny:GetMainPanel())
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "RogueComboPointBarFrame",
-					["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
-				}
-			)
-		elseif class == "DRUID" then
-			DruidComboPointBarFrame.unit = "player"
-			DruidComboPointBarFrame:SetParent(MoveAny:GetMainPanel())
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "DruidComboPointBarFrame",
-					["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
-				}
-			)
+			if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
+				if class == "ROGUE" then
+					RogueComboPointBarFrame.unit = "player"
+					RogueComboPointBarFrame:SetParent(MoveAny:GetMainPanel())
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "RogueComboPointBarFrame",
+							["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
+						}
+					)
+				elseif class == "DRUID" then
+					DruidComboPointBarFrame.unit = "player"
+					DruidComboPointBarFrame:SetParent(MoveAny:GetMainPanel())
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "DruidComboPointBarFrame",
+							["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
+						}
+					)
+				end
+			end
+
+			if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
+				EssencePlayerFrame.unit = "player"
+				EssencePlayerFrame.Hide = EssencePlayerFrame.Show
+				EssencePlayerFrame:Show()
+				EssencePlayerFrame:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "EssencePlayerFrame",
+						["lstr"] = "LID_ESSENCEPLAYERFRAME"
+					}
+				)
+			end
+
+			if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
+				PaladinPowerBarFrame.unit = "player"
+				PaladinPowerBarFrame:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PaladinPowerBarFrame",
+						["lstr"] = "LID_PALADINPOWERBARFRAME"
+					}
+				)
+			end
 		end
-	end
-
-	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
-		EssencePlayerFrame.unit = "player"
-		EssencePlayerFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "EssencePlayerFrame",
-				["lstr"] = "LID_ESSENCEPLAYERFRAME"
-			}
-		)
-	end
-
-	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
-		PaladinPowerBarFrame.unit = "player"
-		PaladinPowerBarFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PaladinPowerBarFrame",
-				["lstr"] = "LID_PALADINPOWERBARFRAME"
-			}
-		)
-	end
+	)
 
 	if MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 		if PlayerFrameBackground and MoveAny:IsEnabled("PLAYERFRAMEBACKGROUND", false) then
