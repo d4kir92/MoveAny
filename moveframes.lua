@@ -1,12 +1,12 @@
 local _, MoveAny = ...
 local MAFRAMES = {"PVPParentFrame", "SettingsPanel", "SplashFrame", "GameMenuFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "WorldMapFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "MailFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "TaxiFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
-if MoveAny:GetWoWBuild() ~= "RETAIL" then
-	-- Buggy on retail
-	tinsert(MAFRAMES, "StaticPopup1")
-	tinsert(MAFRAMES, "StaticPopup2")
-	tinsert(MAFRAMES, "ReadyCheckFrame")
-end
-
+--[[if MoveAny:GetWoWBuild() ~= "RETAIL" then]]
+-- Buggy on retail --
+tinsert(MAFRAMES, "StaticPopup1")
+tinsert(MAFRAMES, "StaticPopup2")
+tinsert(MAFRAMES, "ReadyCheckFrame")
+-- Buggy on retail --
+--end
 local MAFS = {}
 for i, v in pairs(MAFRAMES) do
 	MAFS[v] = v
