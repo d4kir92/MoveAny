@@ -165,6 +165,7 @@ function MoveAny:LangenUS()
 		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emote Frame",
 		["LID_STARTHELP"] = "Click the MoveAny Minimap Button to open the settings.",
 		["LID_STARTHELP2"] = "Or tap /move or /moveany in chat to open the settings.",
+		["LID_STARTHELP3"] = "To hide these messages deactivate tips in the MoveAny menu.",
 		["LID_SHOWTIPS"] = "Show Tips",
 		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
 		["LID_BOSSBANNER"] = "Boss Banner (Dropped Loot, Boss Title)",

@@ -159,6 +159,7 @@ function MoveAny:LangdeDE()
 		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emotionen Fenster",
 		["LID_STARTHELP"] = "Klicken Sie auf die MoveAny Minimap-Schaltfläche, um die Einstellungen zu öffnen",
 		["LID_STARTHELP2"] = "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.",
+		["LID_STARTHELP3"] = "Um diese Nachrichten zu verstecken deaktiviere Tipps im MoveAny Menü.",
 		["LID_SHOWTIPS"] = "Tipps anzeigen",
 		["LID_OVERRIDEACTIONBAR"] = "\"Überschreiben\" Aktionsleiste (Fahrzeugleiste)",
 		["LID_BOSSBANNER"] = "Boss-Banner (Abgelegte Beute/Loot, Boss Titel)",

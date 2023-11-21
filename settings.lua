@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.85")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.86")
 }
 
 local MAMMBTN = nil
@@ -1737,6 +1737,7 @@ function MoveAny:LoadAddon()
 	if MoveAny:IsEnabled("SHOWTIPS", true) then
 		MoveAny:MSG(MoveAny:GT("LID_STARTHELP"))
 		MoveAny:MSG(MoveAny:GT("LID_STARTHELP2"))
+		MoveAny:MSG(MoveAny:GT("LID_STARTHELP3"))
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
@@ -2249,6 +2250,13 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("STANCEBAR", false) and StanceBar then
+			for i = 1, 12 do
+				if _G["StanceButton" .. i] and _G["StanceButton" .. i .. "NormalTexture2"] then
+					_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
+					_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", _G["StanceButton" .. i], "CENTER", 0, 0)
+				end
+			end
+
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "StanceBar",
