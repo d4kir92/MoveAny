@@ -1478,7 +1478,9 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 			local alphaIsStealthed = MoveAny:GetEleOption(name, "ALPHAISSTEALTHED", 1, "Alpha6")
 			local alphaIsInPetBattle = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE", 1, "Alpha7")
 			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha8")
-			if ele == mouseEle then
+			if MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
+				MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
+			elseif ele == mouseEle then
 				MoveAny:SetEleAlpha(ele, 1)
 			elseif incombat then
 				MoveAny:SetEleAlpha(ele, alphaInCombat)
@@ -1492,8 +1494,6 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 				MoveAny:SetEleAlpha(ele, alphaInRestedArea)
 			elseif IsStealthed and isstealthed then
 				MoveAny:SetEleAlpha(ele, alphaIsStealthed)
-			elseif MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
-				MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
 			elseif not incombat then
 				MoveAny:SetEleAlpha(ele, alphaNotInCombat)
 			end
