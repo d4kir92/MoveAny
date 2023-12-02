@@ -2,8 +2,32 @@ local _, MoveAny = ...
 local MAFRAMES = {"PVPParentFrame", "SettingsPanel", "SplashFrame", "GameMenuFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "WorldMapFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "MailFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "TaxiFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 --[[if MoveAny:GetWoWBuild() ~= "RETAIL" then]]
 -- Buggy on retail --
-tinsert(MAFRAMES, "StaticPopup1")
-tinsert(MAFRAMES, "StaticPopup2")
+if StaticPopup1 then
+	hooksecurefunc(
+		StaticPopup1,
+		"Hide",
+		function(sel)
+			sel:ClearAllPoints()
+		end
+	)
+
+	StaticPopup1:ClearAllPoints()
+	tinsert(MAFRAMES, "StaticPopup1")
+end
+
+if StaticPopup2 then
+	hooksecurefunc(
+		StaticPopup2,
+		"Hide",
+		function(sel)
+			sel:ClearAllPoints()
+		end
+	)
+
+	StaticPopup2:ClearAllPoints()
+	tinsert(MAFRAMES, "StaticPopup2")
+end
+
 tinsert(MAFRAMES, "ReadyCheckFrame")
 -- Buggy on retail --
 --end
