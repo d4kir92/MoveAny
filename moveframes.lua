@@ -7,7 +7,9 @@ if StaticPopup1 then
 		StaticPopup1,
 		"Hide",
 		function(sel)
-			sel:ClearAllPoints()
+			if not InCombatLockdown() then
+				sel:ClearAllPoints()
+			end
 		end
 	)
 
@@ -20,7 +22,9 @@ if StaticPopup2 then
 		StaticPopup2,
 		"Hide",
 		function(sel)
-			sel:ClearAllPoints()
+			if not InCombatLockdown() then
+				sel:ClearAllPoints()
+			end
 		end
 	)
 
