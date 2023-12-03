@@ -14,7 +14,6 @@ end
 local hookedBags = {}
 local run = false
 function MoveAny:UpdateBags()
-	print("UPDATE BAGS")
 	run = true
 	MoveAny:BAGSTryAdd("CharacterReagentBag0Slot", 1)
 	MoveAny:BAGSTryAdd("KeyRingButton", 1)
@@ -24,7 +23,6 @@ function MoveAny:UpdateBags()
 	local sw, sh = 0, 0
 	for i, mbname in pairs(BAGS) do
 		local bb = _G[mbname]
-		print(mbname, bb:IsShown())
 		if bb ~= nil and bb:IsShown() and bb:GetParent"someString":IsShown() then
 			if not tContains(hookedBags, mbname) then
 				tinsert(hookedBags, mbname)
@@ -32,7 +30,6 @@ function MoveAny:UpdateBags()
 					bb,
 					"SetParent",
 					function(sel, parent)
-						print("SET PARENT", parent:GetName(), run)
 						if run then return end
 						if sel.ma_setparent then return end
 						sel.ma_setparent = true
