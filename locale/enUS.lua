@@ -28,6 +28,7 @@ function MoveAny:LangenUS()
 		["LID_PLAYERFRAMEBACKGROUND"] = "Player Frame Background",
 		["LID_PETFRAME"] = "Pet Frame",
 		["LID_MAPETFRAME"] = "Pet Frame",
+		["LID_PETFRAMEHAPPINESS"] = "Pet Frame Happiness",
 		["LID_TARGETFRAME"] = "Target Frame",
 		["LID_TARGETFRAMENAMEBACKGROUND"] = "Target Frame Namen-Background",
 		["LID_TARGETFRAMEBUFF1"] = "Target Frame Buff 1",

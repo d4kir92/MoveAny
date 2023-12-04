@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.91")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.92")
 }
 
 local MAMMBTN = nil
@@ -503,6 +503,10 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "MINIMAP", false)
 		AddCheckBox(posx, "QUESTTRACKER", false)
 		AddCheckBox(posx, "MAPETFRAME", false)
+		if PetFrameHappiness then
+			AddCheckBox(posx, "PETFRAMEHAPPINESS", false)
+		end
+
 		if PartyFrame or PartyMemberFrame1 then
 			AddCheckBox(posx, "PARTYFRAME", false, nil, nil, "ShowPartyFrames")
 		end
@@ -2749,6 +2753,15 @@ function MoveAny:LoadAddon()
 				["name"] = "MAPetFrame",
 				["lstr"] = "LID_PETFRAME",
 				["userplaced"] = true
+			}
+		)
+	end
+
+	if PetFrameHappiness and MoveAny:IsEnabled("PETFRAMEHAPPINESS", true) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "PetFrameHappiness",
+				["lstr"] = "LID_PETFRAMEHAPPINESS"
 			}
 		)
 	end
