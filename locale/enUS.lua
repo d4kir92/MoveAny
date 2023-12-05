@@ -32,6 +32,7 @@ function MoveAny:LangenUS()
 		["LID_TARGETFRAME"] = "Target Frame",
 		["LID_TARGETFRAMENAMEBACKGROUND"] = "Target Frame Namen-Background",
 		["LID_TARGETFRAMEBUFF1"] = "Target Frame Buff 1",
+		["LID_TARGETFRAMETOTDEBUFF1"] = "Target of Target Frame Debuff 1",
 		["LID_TARGETOFTARGETFRAME"] = "Target of Target Frame",
 		["LID_TARGETFRAMESPELLBAR"] = "Castbar from Target",
 		["LID_FOCUSFRAME"] = "Focus Frame",

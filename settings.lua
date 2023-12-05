@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.93")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.94")
 }
 
 local MAMMBTN = nil
@@ -443,6 +443,10 @@ function MoveAny:InitMALock()
 
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+		end
+
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			AddCheckBox(posx, "TARGETFRAMETOTDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		if FocusFrame then
@@ -2067,6 +2071,64 @@ function MoveAny:LoadAddon()
 							local alpha = _G["TargetFrameBuff" .. 1]:GetAlpha()
 							for i = 1, 32 do
 								local bb = _G["TargetFrameBuff" .. i]
+								if bb and i > 1 then
+									bb:SetScale(scale)
+									bb:SetAlpha(alpha)
+								end
+
+								local db = _G["TargetFrameDebuff" .. i]
+								if db then
+									db:SetScale(scale)
+									db:SetAlpha(alpha)
+								end
+							end
+						end
+
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterEvent("UNIT_AURA")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
+
+						frame:UpdateBuffScaleAlpha()
+					end,
+				}
+			)
+		end
+
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTDEBUFF1", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameToTDebuff1",
+					["lstr"] = "LID_TARGETFRAMETOTDEBUFF1",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameToTDebuff1
+						function frame:UpdateBuffScaleAlpha()
+							if _G["TargetFrameToTDebff" .. 1] == nil then return end
+							local scale = _G["TargetFrameToTDebff" .. 1]:GetScale()
+							local alpha = _G["TargetFrameToTDebff" .. 1]:GetAlpha()
+							for i = 1, 32 do
+								local bb = _G["TargetFrameToTDebff" .. i]
 								if bb and i > 1 then
 									bb:SetScale(scale)
 									bb:SetAlpha(alpha)

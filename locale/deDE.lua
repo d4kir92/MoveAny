@@ -26,6 +26,7 @@ function MoveAny:LangdeDE()
 		["LID_TARGETFRAME"] = "Zielfenster",
 		["LID_TARGETFRAMENAMEBACKGROUND"] = "Zielfenster Namen-Hintergrund",
 		["LID_TARGETFRAMEBUFF1"] = "Zielfenster Buff 1",
+		["LID_TARGETFRAMETOTDEBUFF1"] = "Ziel des Zielfenster Debuff 1",
 		["LID_TARGETOFTARGETFRAME"] = "Ziel des Zielfenster",
 		["LID_TARGETFRAMESPELLBAR"] = "Zauberleiste vom Ziel",
 		["LID_FOCUSFRAME"] = "Fokusfenster",
