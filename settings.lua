@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.94")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.95")
 }
 
 local MAMMBTN = nil
@@ -4051,7 +4051,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] then
+	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] and ArenaEnemyFrames then
 		ArenaEnemyFrames:SetMovable(true)
 		ArenaEnemyFrames:SetUserPlaced(true)
 		UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] = nil
