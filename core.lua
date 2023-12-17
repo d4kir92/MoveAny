@@ -1,22 +1,15 @@
 local _, MoveAny = ...
 local colors = {}
-
 colors["bg"] = {0.03, 0.03, 0.03}
-
 colors["se"] = {1.0, 1.0, 0.0}
-
 colors["el"] = {0.6, 0.84, 1.0}
-
 colors["hidden"] = {1.0, 0.0, 0.0}
-
 colors["clickthrough"] = {0.2, 0.2, 1.0}
-
 function MoveAny:GetColor(key)
 	return colors[key][1], colors[key][2], colors[key][3]
 end
 
 local MADF = {}
-
 function MoveAny:GetDragFrames()
 	return MADF
 end
@@ -32,34 +25,59 @@ local MAUIP = CreateFrame("Frame", "UIParent")
 MAUIP:SetAllPoints(UIParent)
 MAUIP.unit = "player"
 MAUIP.auraRows = 0
+hooksecurefunc(
+	UIParent,
+	"SetScale",
+	function(self, scale)
+		MAUIP:SetScale(scale)
+	end
+)
 
-hooksecurefunc(UIParent, "SetScale", function(self, scale)
-	MAUIP:SetScale(scale)
-end)
-
-MAUIP:SetScale(UIParent:GetScale())
-
-hooksecurefunc(UIParent, "SetAlpha", function(self, alpha)
-	MAUIP:SetAlpha(alpha)
-end)
-
-MAUIP:SetAlpha(UIParent:GetAlpha())
-
-hooksecurefunc(UIParent, "Show", function(self)
-	MAUIP:SetAlpha(1)
-end)
-
-hooksecurefunc(UIParent, "Hide", function(self)
-	MAUIP:SetAlpha(0)
-end)
-
-hooksecurefunc(_G, "SetUIVisibility", function(show)
-	if show then
-		MAUIP:SetAlpha(1)
+function MoveAny:SetMAUIPAlpha(alpha)
+	if UIParent:IsShown() then
+		MAUIP:SetAlpha(alpha)
 	else
 		MAUIP:SetAlpha(0)
 	end
-end)
+end
+
+MAUIP:SetScale(UIParent:GetScale())
+hooksecurefunc(
+	UIParent,
+	"SetAlpha",
+	function(self, alpha)
+		MoveAny:SetMAUIPAlpha(alpha)
+	end
+)
+
+MoveAny:SetMAUIPAlpha(UIParent:GetAlpha())
+hooksecurefunc(
+	UIParent,
+	"Show",
+	function(self)
+		MoveAny:SetMAUIPAlpha(1)
+	end
+)
+
+hooksecurefunc(
+	UIParent,
+	"Hide",
+	function(self)
+		MoveAny:SetMAUIPAlpha(0)
+	end
+)
+
+hooksecurefunc(
+	_G,
+	"SetUIVisibility",
+	function(show, ...)
+		if show then
+			MoveAny:SetMAUIPAlpha(1)
+		else
+			MoveAny:SetMAUIPAlpha(0)
+		end
+	end
+)
 
 function MoveAny:GetMainPanel()
 	return MAUIP
@@ -67,11 +85,9 @@ end
 
 --[[ NEW ]]
 local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
-
 local oldKeybinds = {}
 local isToggling = false
 local wasDisabled = false
-
 function MoveAny:UnlockBindings()
 	if not InCombatLockdown() then
 		if MoveAny:IsEnabled("DISABLEMOVEMENT", false) then
@@ -140,12 +156,10 @@ end
 function MoveAny:ShowMALock()
 	if MoveAny:IsMALockNotReady() then return end
 	MoveAny:Unlock()
-
 	if MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:EnableMouse(true)
 			df:SetAlpha(1)
-
 			if df.opt then
 				df.opt:Show()
 			end
@@ -163,7 +177,6 @@ end
 
 function MoveAny:HideMALock(onlyHide)
 	if MoveAny:IsMALockNotReady() then return end
-
 	if not onlyHide then
 		MoveAny:Lock()
 	end
@@ -172,7 +185,6 @@ function MoveAny:HideMALock(onlyHide)
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:EnableMouse(false)
 			df:SetAlpha(0)
-
 			if df.opt then
 				df.opt:Hide()
 			end
@@ -190,7 +202,6 @@ end
 
 function MoveAny:ToggleMALock()
 	if MoveAny:IsMALockNotReady() then return end
-
 	if InCombatLockdown() then
 		MoveAny:MSG("You are in Combat")
 
@@ -211,7 +222,6 @@ function MoveAny:ToggleMALock()
 end
 
 local inCombat = false
-
 function MoveAny:UpdateMALock()
 	if MoveAny:IsEnabled("MALOCK", false) and InCombatLockdown() then
 		inCombat = true
@@ -227,38 +237,41 @@ end
 -- TAINTFREE SLASH COMMANDS --
 local lastMessage = ""
 local cmds = {}
-
 function MoveAny:InitSlash()
 	if ChatEdit_ParseText and type(ChatEdit_ParseText) == "function" then
-		hooksecurefunc("ChatEdit_ParseText", function(editBox, send, parseIfNoSpace)
-			if send == 0 then
-				lastMessage = editBox:GetText()
+		hooksecurefunc(
+			"ChatEdit_ParseText",
+			function(editBox, send, parseIfNoSpace)
+				if send == 0 then
+					lastMessage = editBox:GetText()
+				end
 			end
-		end)
+		)
 	else
 		MoveAny:MSG("FAILED TO ADD SLASH COMMAND #1")
 	end
 
 	if ChatFrame_DisplayHelpTextSimple and type(ChatFrame_DisplayHelpTextSimple) == "function" then
-		hooksecurefunc("ChatFrame_DisplayHelpTextSimple", function(frame)
-			if lastMessage and lastMessage ~= "" then
-				local cmd = string.upper(lastMessage)
-				cmd = strsplit(" ", cmd)
+		hooksecurefunc(
+			"ChatFrame_DisplayHelpTextSimple",
+			function(frame)
+				if lastMessage and lastMessage ~= "" then
+					local cmd = string.upper(lastMessage)
+					cmd = strsplit(" ", cmd)
+					if cmds[cmd] ~= nil then
+						local count = 1
+						local numMessages = frame:GetNumMessages()
+						local function predicateFunction(entry)
+							if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
+							count = count + 1
+						end
 
-				if cmds[cmd] ~= nil then
-					local count = 1
-					local numMessages = frame:GetNumMessages()
-
-					local function predicateFunction(entry)
-						if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
-						count = count + 1
+						frame:RemoveMessagesByPredicate(predicateFunction)
+						cmds[cmd]()
 					end
-
-					frame:RemoveMessagesByPredicate(predicateFunction)
-					cmds[cmd]()
 				end
 			end
-		end)
+		)
 	else
 		MoveAny:MSG("FAILED TO ADD SLASH COMMAND #2")
 	end
