@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.97")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.98")
 }
 
 local MAMMBTN = nil
@@ -3984,7 +3984,7 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "ChatFrame" .. i .. "ButtonFrame",
-					["lstr"] = "LID_CHATBUTTONFRAME",
+					["lstr"] = "LID_CHATBUTTONFRAME" .. i,
 				}
 			)
 
