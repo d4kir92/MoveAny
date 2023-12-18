@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.96")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.97")
 }
 
 local MAMMBTN = nil
@@ -697,7 +697,12 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "ALERTFRAME", false)
-		AddCheckBox(4, "CHATBUTTONFRAME", false)
+		for i = 1, 10 do
+			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "ButtonFrame"] ~= nil then
+				AddCheckBox(4, "CHATBUTTONFRAME" .. i, false)
+			end
+		end
+
 		AddCheckBox(4, "CHATEDITBOX", false)
 		if BNToastFrame then
 			AddCheckBox(4, "BNToastFrame", false)
@@ -2602,7 +2607,7 @@ function MoveAny:LoadAddon()
 					cright = 16
 				end
 
-				if MoveAny:IsEnabled("CHATBUTTONFRAME", false) then
+				if MoveAny:IsEnabled("CHATBUTTONFRAME" .. x, false) then
 					cleft = -2
 				end
 
@@ -3877,7 +3882,7 @@ function MoveAny:LoadAddon()
 	for i = 1, 10 do
 		local cf = _G["ChatFrame" .. i]
 		if cf and i > 1 then
-			if MoveAny:IsEnabled("CHATBUTTONFRAME", false) then
+			if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
 				local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
 				if cbf then
 					hooksecurefunc(
@@ -3894,7 +3899,7 @@ function MoveAny:LoadAddon()
 							C_Timer.After(
 								0.0,
 								function()
-									local ssw, _ = _G["ChatFrame" .. 1 .. "ButtonFrame"]:GetSize()
+									local ssw, _ = _G["ChatFrame" .. i .. "ButtonFrame"]:GetSize()
 									sel:SetSize(ssw, ssw * 6)
 									sel:ClearAllPoints()
 									sel:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
@@ -3972,27 +3977,31 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("CHATBUTTONFRAME", false) then
-		local cbf = _G["ChatFrame" .. 1 .. "ButtonFrame"]
-		cbf:EnableMouse(true)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ChatFrame" .. 1 .. "ButtonFrame",
-				["lstr"] = "LID_CHATBUTTONFRAME",
-			}
-		)
+	for i = 1, 10 do
+		if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
+			local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
+			cbf:EnableMouse(true)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ChatFrame" .. i .. "ButtonFrame",
+					["lstr"] = "LID_CHATBUTTONFRAME",
+				}
+			)
 
-		if ChatFrameMenuButton then
-			ChatFrameMenuButton:SetParent(cbf)
-			function ChatFrameMenuButton:GetMAEle()
-				return cbf
-			end
-		end
+			if i == 1 then
+				if ChatFrameMenuButton then
+					ChatFrameMenuButton:SetParent(cbf)
+					function ChatFrameMenuButton:GetMAEle()
+						return cbf
+					end
+				end
 
-		if ChatFrameChannelButton then
-			ChatFrameChannelButton:SetParent(cbf)
-			function ChatFrameChannelButton:GetMAEle()
-				return cbf
+				if ChatFrameChannelButton then
+					ChatFrameChannelButton:SetParent(cbf)
+					function ChatFrameChannelButton:GetMAEle()
+						return cbf
+					end
+				end
 			end
 		end
 	end
