@@ -1469,7 +1469,7 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 		MoveAny:MSG("UpdateAlphas: ele is nil")
 	else
 		local name = MoveAny:GetFrameName(ele)
-		if name then
+		if name ~= nil then
 			local alphaInCombat = MoveAny:GetEleOption(name, "ALPHAINCOMBAT", 1, "Alpha1")
 			local alphaIsFullHealth = MoveAny:GetEleOption(name, "ALPHAISFULLHEALTH", 1, "Alpha2")
 			local alphaInVehicle = MoveAny:GetEleOption(name, "ALPHAINVEHICLE", 1, "Alpha3")

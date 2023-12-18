@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.98")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.99")
 }
 
 local MAMMBTN = nil
@@ -1863,6 +1863,21 @@ function MoveAny:LoadAddon()
 		end
 	else
 		if MoveAny:IsEnabled("CASTINGBAR", false) then
+			if CastingBarFrame_ApplyAlpha then
+				hooksecurefunc(
+					"CastingBarFrame_ApplyAlpha",
+					function(sel, alpha)
+						if sel.ma_setalpha then return end
+						sel.ma_setalpha = true
+						if alpha == 1 then
+							MoveAny:UpdateAlpha(CastingBarFrame, mouseEle)
+						end
+
+						sel.ma_setalpha = false
+					end
+				)
+			end
+
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "CastingBarFrame",
@@ -3398,28 +3413,6 @@ function MoveAny:LoadAddon()
 		)
 
 		GameTooltip:SetScale(MAGameTooltip:GetScale())
-		hooksecurefunc(
-			GameTooltip,
-			"SetAlpha",
-			function(sel, ...)
-				if sel.gtsetalpha then return end
-				sel.gtsetalpha = true
-				sel:SetAlpha(MAGameTooltip:GetAlpha())
-				sel.gtsetalpha = false
-			end
-		)
-
-		hooksecurefunc(
-			MAGameTooltip,
-			"SetAlpha",
-			function(sel, ...)
-				if sel.gtsetalpha2 then return end
-				sel.gtsetalpha2 = true
-				GameTooltip:SetAlpha(sel:GetAlpha())
-				sel.gtsetalpha2 = false
-			end
-		)
-
 		function MAGameTooltip:GetMAEle()
 			return GameTooltip
 		end
@@ -3428,7 +3421,34 @@ function MoveAny:LoadAddon()
 			return MAGameTooltip
 		end
 
-		GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
+		local children = {GameTooltip:GetChildren()}
+		hooksecurefunc(
+			GameTooltip,
+			"SetAlpha",
+			function(sel, alpha)
+				if sel.gtsetalpha then return end
+				sel.gtsetalpha = true
+				sel:SetAlpha(MAGameTooltip:GetAlpha())
+				for i, v in pairs(children) do
+					v:SetAlpha(MAGameTooltip:GetAlpha())
+				end
+
+				sel.gtsetalpha = false
+			end
+		)
+
+		hooksecurefunc(
+			MAGameTooltip,
+			"SetAlpha",
+			function(sel, alpha)
+				if sel.gtsetalpha then return end
+				sel.gtsetalpha = true
+				GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
+				sel.gtsetalpha = false
+			end
+		)
+
+		GameTooltip:SetAlpha(1)
 		if not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
 			hooksecurefunc(
 				GameTooltip,
