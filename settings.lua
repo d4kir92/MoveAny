@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.99")
+	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.100")
 }
 
 local MAMMBTN = nil
@@ -2839,7 +2839,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if PetFrameHappiness and MoveAny:IsEnabled("PETFRAMEHAPPINESS", true) then
+	if PetFrameHappiness and MoveAny:IsEnabled("PETFRAMEHAPPINESS", false) then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "PetFrameHappiness",
@@ -2849,6 +2849,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
+		TargetFrameSpellBar:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "TargetFrameSpellBar",
@@ -2859,6 +2860,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
+		FocusFrameSpellBar:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "FocusFrameSpellBar",
