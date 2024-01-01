@@ -113,20 +113,22 @@ f:SetScript(
                     id = id + 1
                     if i == AddonName then break end
                 end]]
-                local id = D4VersionTab[string.lower(AddonName)].id or 0
-                C_Timer.After(
-                    id * 0.1,
-                    function()
-                        local ver = D4:GetVersion(AddonName)
-                        if ver == nil then
-                            D4:MSG(AddonName, 0, "|cffff0000MISSING VERSION", AddonName)
-                        end
+                if D4VersionTab[string.lower(AddonName)] then
+                    local id = D4VersionTab[string.lower(AddonName)].id or 0
+                    C_Timer.After(
+                        id * 0.1,
+                        function()
+                            local ver = D4:GetVersion(AddonName)
+                            if ver == nil then
+                                D4:MSG(AddonName, 0, "|cffff0000MISSING VERSION", AddonName)
+                            end
 
-                        if true and ver and pre then
-                            C_ChatInfo.SendAddonMessage(pre, format("A;%s;V;%s", AddonName, ver), "GUILD")
+                            if true and ver and pre then
+                                C_ChatInfo.SendAddonMessage(pre, format("A;%s;V;%s", AddonName, ver), "GUILD")
+                            end
                         end
-                    end
-                )
+                    )
+                end
             end
         )
     end
