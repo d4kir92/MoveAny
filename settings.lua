@@ -1,8 +1,4 @@
-local _, MoveAny = ...
-local config = {
-	["title"] = format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.100")
-}
-
+local AddonName, MoveAny = ...
 local MAMMBTN = nil
 function MoveAny:GetMinimapButton()
 	return MAMMBTN
@@ -377,7 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MALock.TitleText:SetText(config.title)
+	D4:SetVersion(AddonName, 135994, "1.6.101")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.101"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
