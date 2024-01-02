@@ -108,6 +108,7 @@ function MoveAny:UpdateBags()
 	run = false
 end
 
+local once = true
 function MoveAny:InitBags()
 	if not BagsBar then
 		BagsBar = CreateFrame("Frame", "BagsBar", MoveAny:GetMainPanel())
@@ -171,6 +172,28 @@ function MoveAny:InitBags()
 						local sw, sh = bagF:GetSize()
 						local scale = 1.66
 						NT:SetSize(sw * scale, sh * scale)
+					end
+				end
+			end
+
+			-- Masque
+			if once then
+				once = false
+				local MSQ = LibStub("Masque", true)
+				if MSQ then
+					local group = MSQ:Group("MA Blizzard Bags")
+					for i, v in pairs(BAGS) do
+						if v ~= "KeyRingButton" and v ~= "BagToggle" then
+							local btn = _G[v]
+							if not btn.MasqueButtonData then
+								btn.MasqueButtonData = {
+									Button = btn,
+									Icon = _G[v .. "IconTexture"],
+								}
+
+								group:AddButton(btn, btn.MasqueButtonData, "Item")
+							end
+						end
 					end
 				end
 			end

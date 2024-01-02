@@ -28,6 +28,7 @@ function MoveAny:GetBuffPosition(p1, p3)
 	return "TOPRIGHT", "TOPRIGHT"
 end
 
+local once = true
 function MoveAny:InitBuffBar()
 	local dbtab = {}
 	if MoveAny:IsEnabled("BUFFS", false) then
@@ -482,6 +483,50 @@ function MoveAny:InitBuffBar()
 
 					bbtn:ClearAllPoints()
 					bbtn:SetPoint("CENTER", 0, 0)
+				end
+			end
+
+			-- Masque
+			local MSQ = LibStub("Masque", true)
+			if MSQ then
+				if once then
+					once = false
+					MSQ:Register("Buffs", function() end, {})
+					MAMasqueBuffs = MSQ:Group("MA Blizzard Buffs")
+				end
+
+				for i = 1, 32 do
+					local btn = _G["BuffButton" .. i]
+					if btn and not btn.MasqueButtonData then
+						btn.MasqueButtonData = {
+							Button = btn,
+							Icon = _G["BuffButton" .. "IconTexture"],
+						}
+
+						MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")
+					end
+
+					local btn2 = _G["DebuffButton" .. i]
+					if btn2 and not btn2.MasqueButtonData then
+						btn2.MasqueButtonData = {
+							Button = btn2,
+							Icon = _G["DebuffButton" .. "IconTexture"],
+						}
+
+						MAMasqueBuffs:AddButton(btn2, btn2.MasqueButtonData, "Item")
+					end
+				end
+
+				for i = 1, 3 do
+					local btn = _G["TempEnchant" .. i]
+					if btn and not btn.MasqueButtonData then
+						btn.MasqueButtonData = {
+							Button = btn,
+							Icon = _G["TempEnchant" .. i .. "IconTexture"],
+						}
+
+						MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")
+					end
 				end
 			end
 		end

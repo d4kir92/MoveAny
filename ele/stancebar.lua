@@ -1,9 +1,7 @@
 local _, MoveAny = ...
 local btnsize = 30
-
 function MoveAny:GetStanceBarCount()
 	local cou = 0
-
 	if GetNumShapeshiftForms() > 0 then
 		cou = GetNumShapeshiftForms()
 	else
@@ -19,21 +17,17 @@ function MoveAny:UpdateStanceBar()
 	end
 
 	local cou = MoveAny:GetStanceBarCount()
-
 	if StanceBar and cou and StanceBar.cou ~= cou then
 		StanceBar.cou = cou
 		StanceBar.btns = {}
-
 		if cou ~= 10 then
 			for i = 1, cou do
 				local bb = _G["StanceButton" .. i]
-
 				if bb then
 					if bb.setup == nil then
 						bb.setup = true
 						bb:SetSize(btnsize, btnsize)
 						bb:SetMovable(true)
-
 						if bb.SetUserPlaced and bb:IsMovable() then
 							bb:SetUserPlaced(false)
 						end
@@ -47,16 +41,52 @@ function MoveAny:UpdateStanceBar()
 		end
 
 		StanceBar:SetSize(cou * btnsize, btnsize)
-
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(StanceBar, "StanceBar")
 			MoveAny:UpdateActionBar(StanceBar)
+		end
+
+		-- Masque
+		local MSQ = LibStub("Masque", true)
+		if MSQ then
+			local MAMasqueGroups = {}
+			MAMasqueGroups.Groups = {}
+			if once then
+				once = false
+				MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
+			end
+
+			for y, btn in pairs(StanceBar.btns) do
+				if btn then
+					local btnName = btn:GetName()
+					if _G[btnName .. "FloatingBG"] then
+						_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
+					end
+
+					local parent = btn:GetParent():GetName()
+					local group = nil
+					if MAMasqueGroups.Groups["MA " .. parent] == nil then
+						MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
+					end
+
+					group = MAMasqueGroups.Groups["MA " .. parent]
+					if not btn.MasqueButtonData then
+						btn.MasqueButtonData = {
+							Button = btn,
+							Icon = _G[btnName .. "IconTexture"],
+						}
+
+						group:AddButton(btn, btn.MasqueButtonData, "Item")
+					end
+				end
+			end
 		end
 	end
 
 	C_Timer.After(1, MoveAny.UpdateStanceBar)
 end
 
+local once = true
 function MoveAny:InitStanceBar()
 	if not StanceBar then
 		StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
@@ -69,7 +99,6 @@ function MoveAny:InitStanceBar()
 	if MoveAny:IsEnabled("STANCEBAR", false) and StanceBar then
 		StanceBar.btns = {}
 		local cou = MoveAny:GetStanceBarCount()
-
 		if StanceBar.actionButtons then
 			for i, v in pairs(StanceBar.actionButtons) do
 				if i <= cou then

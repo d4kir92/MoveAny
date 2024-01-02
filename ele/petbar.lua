@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local btnsize = 36
+local once = true
 function MoveAny:IsInPetBattle()
 	local inPetBattle = false
 	if C_PetBattles then
@@ -25,6 +26,42 @@ function MoveAny:UpdatePetBar()
 			local bb = _G["PetActionButton" .. i]
 			if bb then
 				bb:SetAlpha(0)
+			end
+		end
+	end
+
+	-- Masque
+	local MSQ = LibStub("Masque", true)
+	if MSQ then
+		local MAMasqueGroups = {}
+		MAMasqueGroups.Groups = {}
+		if once then
+			once = false
+			MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
+		end
+
+		for y, btn in pairs(MAPetBar.btns) do
+			if btn then
+				local btnName = btn:GetName()
+				if _G[btnName .. "FloatingBG"] then
+					_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
+				end
+
+				local parent = "MAPetBar"
+				local group = nil
+				if MAMasqueGroups.Groups["MA " .. parent] == nil then
+					MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
+				end
+
+				group = MAMasqueGroups.Groups["MA " .. parent]
+				if not btn.MasqueButtonData then
+					btn.MasqueButtonData = {
+						Button = btn,
+						Icon = _G[btnName .. "IconTexture"],
+					}
+
+					group:AddButton(btn, btn.MasqueButtonData, "Item")
+				end
 			end
 		end
 	end
