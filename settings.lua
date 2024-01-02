@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.105")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.105"))
+	D4:SetVersion(AddonName, 135994, "1.6.106")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.106"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -978,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.105"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.106"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2637,6 +2637,72 @@ function MoveAny:LoadAddon()
 			)
 		end
 
+		for i = 1, 10 do
+			if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
+				local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
+				cbf:EnableMouse(true)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ChatFrame" .. i .. "ButtonFrame",
+						["lstr"] = "LID_CHATBUTTONFRAME" .. i,
+					}
+				)
+
+				if i == 1 then
+					if ChatFrameMenuButton then
+						ChatFrameMenuButton:SetFrameLevel(10)
+						ChatFrameMenuButton:SetParent(cbf)
+						function ChatFrameMenuButton:GetMAEle()
+							return cbf
+						end
+					end
+
+					if ChatFrameChannelButton then
+						ChatFrameChannelButton:SetFrameLevel(10)
+						ChatFrameChannelButton:SetParent(cbf)
+						function ChatFrameChannelButton:GetMAEle()
+							return cbf
+						end
+					end
+				end
+			end
+		end
+
+		if MoveAny:IsEnabled("CHATEDITBOX", false) then
+			local ceb = _G["ChatFrame" .. 1 .. "EditBox"]
+			if ceb then
+				hooksecurefunc(
+					ceb,
+					"SetClampRectInsets",
+					function(sel)
+						if sel.setclamprectinsets_ma then return end
+						sel.setclamprectinsets_ma = true
+						sel:SetClampRectInsets(2, 2, 2, 2)
+						sel.setclamprectinsets_ma = false
+					end
+				)
+
+				ceb:SetClampRectInsets(2, 2, 2, 2)
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ChatFrame" .. 1 .. "EditBox",
+					["lstr"] = "LID_CHATEDITBOX",
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
+			QuickJoinToastButton:SetFrameLevel(10)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "QuickJoinToastButton",
+					["lstr"] = "LID_CHATQUICKJOIN"
+				}
+			)
+		end
+
 		for x = 1, 10 do
 			local cf = _G["ChatFrame" .. x]
 			if cf then
@@ -4039,69 +4105,6 @@ function MoveAny:LoadAddon()
 				end
 			end
 		end
-	end
-
-	for i = 1, 10 do
-		if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
-			local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
-			cbf:EnableMouse(true)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ChatFrame" .. i .. "ButtonFrame",
-					["lstr"] = "LID_CHATBUTTONFRAME" .. i,
-				}
-			)
-
-			if i == 1 then
-				if ChatFrameMenuButton then
-					ChatFrameMenuButton:SetParent(cbf)
-					function ChatFrameMenuButton:GetMAEle()
-						return cbf
-					end
-				end
-
-				if ChatFrameChannelButton then
-					ChatFrameChannelButton:SetParent(cbf)
-					function ChatFrameChannelButton:GetMAEle()
-						return cbf
-					end
-				end
-			end
-		end
-	end
-
-	if MoveAny:IsEnabled("CHATEDITBOX", false) then
-		local ceb = _G["ChatFrame" .. 1 .. "EditBox"]
-		if ceb then
-			hooksecurefunc(
-				ceb,
-				"SetClampRectInsets",
-				function(sel)
-					if sel.setclamprectinsets_ma then return end
-					sel.setclamprectinsets_ma = true
-					sel:SetClampRectInsets(2, 2, 2, 2)
-					sel.setclamprectinsets_ma = false
-				end
-			)
-
-			ceb:SetClampRectInsets(2, 2, 2, 2)
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ChatFrame" .. 1 .. "EditBox",
-				["lstr"] = "LID_CHATEDITBOX",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "QuickJoinToastButton",
-				["lstr"] = "LID_CHATQUICKJOIN"
-			}
-		)
 	end
 
 	if MoveAny:IsEnabled("LOSSOFCONTROLFRAME", false) then
