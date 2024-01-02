@@ -108,11 +108,6 @@ f:SetScript(
         C_Timer.After(
             2,
             function()
-                --[[  local id = 0
-                for i, v in pairs(D4VersionTab) do
-                    id = id + 1
-                    if i == AddonName then break end
-                end]]
                 if D4VersionTab[string.lower(AddonName)] then
                     local id = D4VersionTab[string.lower(AddonName)].id or 0
                     C_Timer.After(
@@ -123,8 +118,8 @@ f:SetScript(
                                 D4:MSG(AddonName, 0, "|cffff0000MISSING VERSION", AddonName)
                             end
 
-                            if true and ver and pre then
-                                C_ChatInfo.SendAddonMessage(pre, format("A;%s;V;%s", AddonName, ver), "GUILD")
+                            if isInitialLogin and ver and pre then
+                                C_ChatInfo.SendAddonMessage(pre, format("A;%s;V;%s", AddonName, ver))
                             end
                         end
                     )
