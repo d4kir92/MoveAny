@@ -1,5 +1,5 @@
 ## Interface: 11500
-## Version: 1.6.104
+## Version: 1.6.105
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -13,6 +13,7 @@ libs\D4Lib\D4Lib.xml
 
 libs/math.lua
 libs/db.lua
+profiles/emp.lua
 
 locale/enUS.lua
 locale/deDE.lua

@@ -76,18 +76,18 @@ function MoveAny:InitBuffBar()
 				if left then
 					if bottom then
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("BOTTOMLEFT", MABuffBar, "BOTTOMLEFT", 0, 180 + 2 * MABUFFSPACINGY)
+						DebuffFrame:SetPoint("BOTTOMLEFT", MABuffBar, "BOTTOMLEFT", 0, 120 + 2 * MABUFFSPACINGY)
 					else
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(180 + 2 * MABUFFSPACINGY))
+						DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(120 + 2 * MABUFFSPACINGY))
 					end
 				else
 					if bottom then
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("BOTTOMRIGHT", MABuffBar, "BOTTOMRIGHT", 0, 180 + 2 * MABUFFSPACINGY)
+						DebuffFrame:SetPoint("BOTTOMRIGHT", MABuffBar, "BOTTOMRIGHT", 0, 120 + 2 * MABUFFSPACINGY)
 					else
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -(180 + 2 * MABUFFSPACINGY))
+						DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -(120 + 2 * MABUFFSPACINGY))
 					end
 				end
 

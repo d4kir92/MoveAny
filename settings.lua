@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.104")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.104"))
+	D4:SetVersion(AddonName, 135994, "1.6.105")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.105"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -653,6 +653,10 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "ENDCAPS", false)
+		if MainMenuBarTexture0 then
+			AddCheckBox(4, "BLIZZARDACTIONBUTTONSART", false)
+		end
+
 		AddCheckBox(4, "TARGETFRAMESPELLBAR", false)
 		if FocusFrame then
 			AddCheckBox(4, "FOCUSFRAMESPELLBAR", false)
@@ -974,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.104"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.105"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2608,6 +2612,31 @@ function MoveAny:LoadAddon()
 			)
 		end
 
+		if MoveAny:IsEnabled("BLIZZARDACTIONBUTTONSART", false) and MainMenuBarTexture0 then
+			local MA_BlizzArt = CreateFrame("FRAME", "MA_BlizzArt", MoveAny:GetMainPanel())
+			for i = 0, 1 do
+				local blizzpart = MA_BlizzArt:CreateTexture("MA_BlizzArt.part" .. i, "OVERLAY")
+				local art = _G["MainMenuBarTexture" .. i]
+				local ssw, ssh = 256, 43
+				blizzpart:SetPoint("LEFT", MA_BlizzArt, "LEFT", i * ssw, 0)
+				blizzpart:SetSize(ssw, ssh)
+				blizzpart:SetTexture(art:GetTexture())
+				blizzpart:SetTexCoord(art:GetTexCoord())
+				blizzpart:SetDrawLayer("ARTWORK", 0)
+				MA_BlizzArt:SetSize(ssw * 2, ssh)
+				MA_BlizzArt["part" .. i] = blizzpart
+			end
+
+			MA_BlizzArt:SetFrameLevel(0)
+			MA_BlizzArt:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MA_BlizzArt",
+					["lstr"] = "LID_BLIZZARDACTIONBUTTONSART",
+				}
+			)
+		end
+
 		for x = 1, 10 do
 			local cf = _G["ChatFrame" .. x]
 			if cf then
@@ -3730,68 +3759,17 @@ function MoveAny:LoadAddon()
 	end
 
 	if MainMenuExpBar and ReputationWatchBar then
-		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
-			MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
-			local opts = MoveAny:GetEleOptions("MainMenuExpBar", "RegisterWidget: MainMenuExpBar")
-			opts = opts or {}
-			opts["WIDTH"] = opts["WIDTH"] or 1024
-			opts["HEIGHT"] = opts["HEIGHT"] or 15
-			if opts["WIDTH"] and opts["HEIGHT"] then
-				MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-				local last = nil
-				for i, v in pairs({MainMenuExpBar:GetRegions()}) do
-					if i == 1 then
-						v:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					end
-
-					if i == 2 or i == 3 or i == 4 or i == 5 then
-						v:ClearAllPoints()
-						if i == 2 then
-							v:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
-						else
-							v:SetPoint("LEFT", last, "RIGHT", 0, 0)
-						end
-
-						v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
-						last = v
-					end
-				end
-			end
-
-			MainMenuExpBar:ClearAllPoints()
-			MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MainMenuExpBar",
-					["lstr"] = "LID_MAINMENUEXPBAR",
-					["sw"] = opts["WIDTH"],
-					["sh"] = opts["HEIGHT"]
-				}
-			)
-		end
-
 		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
+			local opts = nil
 			ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
-			local opts = MoveAny:GetEleOptions("ReputationWatchBar", "RegisterWidget: ReputationWatchBar")
-			opts = opts or {}
-			opts["WIDTH"] = opts["WIDTH"] or 1024
-			opts["HEIGHT"] = opts["HEIGHT"] or 15
-			if opts["WIDTH"] and opts["HEIGHT"] then
-				hooksecurefunc(
-					ReputationWatchBar,
-					"SetHeight",
-					function(sel, nh)
-						if sel.ma_setheight then return end
-						sel.ma_setheight = true
-						sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
-						sel.ma_setheight = false
-					end
-				)
-
-				ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-				if ReputationWatchBar.StatusBar then
+			function ReputationWatchBar:UpdateSize()
+				opts = MoveAny:GetEleOptions("ReputationWatchBar", "RegisterWidget: ReputationWatchBar")
+				opts = opts or {}
+				opts["WIDTH"] = opts["WIDTH"] or 1024
+				opts["HEIGHT"] = opts["HEIGHT"] or 15
+				if opts["WIDTH"] and opts["HEIGHT"] then
 					hooksecurefunc(
-						ReputationWatchBar.StatusBar,
+						ReputationWatchBar,
 						"SetHeight",
 						function(sel, nh)
 							if sel.ma_setheight then return end
@@ -3801,38 +3779,105 @@ function MoveAny:LoadAddon()
 						end
 					)
 
-					ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					local last = nil
-					local id = 0
-					for i, v in pairs({ReputationWatchBar.StatusBar:GetRegions()}) do
-						if i == 5 or i == 6 or i == 7 or i == 8 or i == 9 or i == 10 or i == 11 or i == 12 then
-							if i < 9 then
-								v:SetTexCoord(0.01, 1.01, 0.03, 0.17)
-							end
+					ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					if ReputationWatchBar_Drag then
+						ReputationWatchBar_Drag:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					end
 
-							v:ClearAllPoints()
-							if i == 5 or i == 9 then
-								v:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
-							else
-								v:SetPoint("LEFT", last, "RIGHT", 0, 0)
+					if ReputationWatchBar.StatusBar then
+						hooksecurefunc(
+							ReputationWatchBar.StatusBar,
+							"SetHeight",
+							function(sel, nh)
+								if sel.ma_setheight then return end
+								sel.ma_setheight = true
+								sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
+								sel.ma_setheight = false
 							end
+						)
 
-							v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
-							last = v
-							id = id + 1
+						ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						local last = nil
+						local id = 0
+						for i, v in pairs({ReputationWatchBar.StatusBar:GetRegions()}) do
+							if i == 5 or i == 6 or i == 7 or i == 8 or i == 9 or i == 10 or i == 11 or i == 12 then
+								if i < 9 then
+									v:SetTexCoord(0.01, 1.01, 0.03, 0.17)
+								end
+
+								v:ClearAllPoints()
+								if i == 5 or i == 9 then
+									v:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
+								else
+									v:SetPoint("LEFT", last, "RIGHT", 0, 0)
+								end
+
+								v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+								last = v
+								id = id + 1
+							end
 						end
 					end
 				end
 			end
 
+			ReputationWatchBar:UpdateSize()
 			ReputationWatchBar:ClearAllPoints()
 			ReputationWatchBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 130)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "ReputationWatchBar",
 					["lstr"] = "LID_REPUTATIONWATCHBAR",
-					["sw"] = opts["WIDTH"],
-					["sh"] = opts["HEIGHT"]
+					["sw"] = opts["WIDTH"] or nil,
+					["sh"] = opts["HEIGHT"] or nil
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
+			local opts = nil
+			MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
+			function MainMenuExpBar:UpdateSize()
+				opts = MoveAny:GetEleOptions("MainMenuExpBar", "RegisterWidget: MainMenuExpBar")
+				opts = opts or {}
+				opts["WIDTH"] = opts["WIDTH"] or 1024
+				opts["HEIGHT"] = opts["HEIGHT"] or 15
+				if opts["WIDTH"] and opts["HEIGHT"] then
+					MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					if MainMenuExpBar_Drag then
+						MainMenuExpBar_Drag:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					end
+
+					local last = nil
+					for i, v in pairs({MainMenuExpBar:GetRegions()}) do
+						if i == 1 then
+							v:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						end
+
+						if i == 2 or i == 3 or i == 4 or i == 5 then
+							v:ClearAllPoints()
+							if i == 2 then
+								v:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
+							else
+								v:SetPoint("LEFT", last, "RIGHT", 0, 0)
+							end
+
+							v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+							last = v
+						end
+					end
+				end
+			end
+
+			MainMenuExpBar:UpdateSize()
+			MainMenuExpBar:ClearAllPoints()
+			MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MainMenuExpBar",
+					["lstr"] = "LID_MAINMENUEXPBAR",
+					["sw"] = opts["WIDTH"] or nil,
+					["sh"] = opts["HEIGHT"] or nil
 				}
 			)
 		end

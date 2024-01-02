@@ -169,6 +169,7 @@ function MoveAny:LangenUS()
 		["LID_ENDCAPLEFT"] = "End Cap Left (Gryphon)",
 		["LID_ENDCAPRIGHT"] = "End Cap Right (Gryphon)",
 		["LID_ENDCAPS"] = "End Caps (Gryphons)",
+		["LID_BLIZZARDACTIONBUTTONSART"] = "Actionbar 1 Blizzard-Art",
 		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objective Tracker Frame (World Quest Title)",
 		["LID_MOVESMALLBAGS"] = "Move/Scale Small Bags",
 		["LID_MOVELOOTFRAME"] = "Move/Scale Lootframe",

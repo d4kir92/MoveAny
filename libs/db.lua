@@ -668,3 +668,8 @@ end
 
 C_Timer.After(0, MoveAny.FixEditMode)
 --[[ FIX ]]
+function MoveAny:AddProfileData(name, tab)
+	--if MATAB["PROFILES"][name] == nil then
+	MATAB["PROFILES"][name] = tab
+	--end
+end

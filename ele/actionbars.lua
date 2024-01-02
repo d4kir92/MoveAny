@@ -25,6 +25,27 @@ function MoveAny:AddBarName(frame, name)
 	BarNames[frame] = name
 end
 
+local visiTab = {}
+visiTab[1] = 5
+visiTab[2] = 4
+visiTab[3] = 2
+visiTab[4] = 3
+function MoveAny:UpdateVisi()
+	local barVisibles = {GetActionBarToggles()}
+	for i = 1, 5 do
+		if visiTab[i] and abs[visiTab[i]] then
+			if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
+				abs[visiTab[i]]:Show()
+			else
+				abs[visiTab[i]]:Hide()
+			end
+		end
+	end
+
+	C_Timer.After(0.3, MoveAny.UpdateVisi)
+end
+
+MoveAny:UpdateVisi()
 function MoveAny:UpdateActionBar(frame)
 	local name = frame:GetName() or BarNames[frame]
 	local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
@@ -382,6 +403,7 @@ function MoveAny:CustomBars()
 			local name = "MAActionBar" .. i
 			_G[name] = CreateFrame("Frame", name, MoveAny:GetMainPanel(), "SecureHandlerStateTemplate")
 			local bar = _G[name]
+			bar:SetFrameLevel(4)
 			bar:SetSize(36 * 12, 36)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
 			if i > 1 then

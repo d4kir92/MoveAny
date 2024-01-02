@@ -163,6 +163,7 @@ function MoveAny:LangdeDE()
 		["LID_ENDCAPLEFT"] = "Abschlusskappe links (Greif)",
 		["LID_ENDCAPRIGHT"] = "Abschlusskappe rechts (Greif)",
 		["LID_ENDCAPS"] = "Abschlusskappen (Greifen)",
+		["LID_BLIZZARDACTIONBUTTONSART"] = "Aktionsleiste 1 Blizzard-Kunst",
 		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objektiv Tracker Fenster (World Quest Titel)",
 		["LID_MOVESMALLBAGS"] = "Bewegen/Skalieren von kleinen Taschen",
 		["LID_MOVELOOTFRAME"] = "Bewegen/Skalieren von Beutefenster (Loot)",

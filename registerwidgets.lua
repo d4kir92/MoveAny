@@ -687,6 +687,9 @@ function MoveAny:MenuOptions(opt, frame)
 					if val and val ~= opts["WIDTH"] then
 						opts["WIDTH"] = val
 						sel.Text:SetText(MoveAny:GT("LID_WIDTH") .. ": " .. val)
+						if frame and frame.UpdateSize then
+							frame:UpdateSize()
+						end
 					end
 				end
 			)
@@ -708,6 +711,9 @@ function MoveAny:MenuOptions(opt, frame)
 					if val and val ~= opts["HEIGHT"] then
 						opts["HEIGHT"] = val
 						sel.Text:SetText(MoveAny:GT("LID_HEIGHT") .. ": " .. val)
+						if frame and frame.UpdateSize then
+							frame:UpdateSize()
+						end
 					end
 				end
 			)
