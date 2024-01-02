@@ -32,12 +32,19 @@ visiTab[3] = 2
 visiTab[4] = 3
 function MoveAny:UpdateVisi()
 	local barVisibles = {GetActionBarToggles()}
-	for i = 1, 5 do
-		if visiTab[i] and abs[visiTab[i]] then
-			if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
-				abs[visiTab[i]]:Show()
-			else
-				abs[visiTab[i]]:Hide()
+	if not InCombatLockdown() then
+		for i = 1, 5 do
+			if visiTab[i] and abs[visiTab[i]] then
+				local bar = abs[visiTab[i]]
+				if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
+					if not bar:IsShown() then
+						bar:Show()
+					end
+				else
+					if bar:IsShown() then
+						bar:Hide()
+					end
+				end
 			end
 		end
 	end

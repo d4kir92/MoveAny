@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.106")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.106"))
+	D4:SetVersion(AddonName, 135994, "1.6.107")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.107"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -978,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.106"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.107"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
