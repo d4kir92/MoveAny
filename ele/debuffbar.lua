@@ -233,40 +233,40 @@ function MoveAny:InitDebuffBar()
 					end
 				end
 			end
+		end
 
-			if MABuffBar then
-				hooksecurefunc(
-					MABuffBar,
-					"SetPoint",
-					function(sel, ...)
-						MoveAny:UpdateDebuffs()
-					end
-				)
-			end
-
+		if MABuffBar then
 			hooksecurefunc(
-				MADebuffBar,
+				MABuffBar,
 				"SetPoint",
 				function(sel, ...)
 					MoveAny:UpdateDebuffs()
 				end
 			)
+		end
 
-			local f = CreateFrame("FRAME")
-			f:RegisterEvent("UNIT_AURA")
-			f:SetScript(
-				"OnEvent",
-				function(sel, event, ...)
-					if event == "UNIT_AURA" then
-						unit = ...
-						if unit and unit == "player" then
-							MoveAny:UpdateDebuffs()
-						end
+		hooksecurefunc(
+			MADebuffBar,
+			"SetPoint",
+			function(sel, ...)
+				MoveAny:UpdateDebuffs()
+			end
+		)
+
+		local f = CreateFrame("FRAME")
+		f:RegisterEvent("UNIT_AURA")
+		f:SetScript(
+			"OnEvent",
+			function(sel, event, ...)
+				if event == "UNIT_AURA" then
+					unit = ...
+					if unit and unit == "player" then
+						MoveAny:UpdateDebuffs()
 					end
 				end
-			)
+			end
+		)
 
-			C_Timer.After(1, MoveAny.UpdateDebuffs)
-		end
+		C_Timer.After(1, MoveAny.UpdateDebuffs)
 	end
 end

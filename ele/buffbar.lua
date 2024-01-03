@@ -3,6 +3,7 @@ local btnsize = 36
 local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
+local MADEBUFFSPACING = 140
 function MoveAny:GetBuffPosition(p1, p3)
 	MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] = MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] or 0
 	if MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 0 then
@@ -76,18 +77,18 @@ function MoveAny:InitBuffBar()
 				if left then
 					if bottom then
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("BOTTOMLEFT", MABuffBar, "BOTTOMLEFT", 0, 120 + 2 * MABUFFSPACINGY)
+						DebuffFrame:SetPoint("BOTTOMLEFT", MABuffBar, "BOTTOMLEFT", 0, MADEBUFFSPACING + 2 * MABUFFSPACINGY)
 					else
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(120 + 2 * MABUFFSPACINGY))
+						DebuffFrame:SetPoint("TOPLEFT", MABuffBar, "TOPLEFT", 0, -(MADEBUFFSPACING + 2 * MABUFFSPACINGY))
 					end
 				else
 					if bottom then
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("BOTTOMRIGHT", MABuffBar, "BOTTOMRIGHT", 0, 120 + 2 * MABUFFSPACINGY)
+						DebuffFrame:SetPoint("BOTTOMRIGHT", MABuffBar, "BOTTOMRIGHT", 0, MADEBUFFSPACING + 2 * MABUFFSPACINGY)
 					else
 						DebuffFrame:ClearAllPoints()
-						DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -(120 + 2 * MABUFFSPACINGY))
+						DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -(MADEBUFFSPACING + 2 * MABUFFSPACINGY))
 					end
 				end
 
