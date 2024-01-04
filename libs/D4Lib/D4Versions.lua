@@ -1,5 +1,5 @@
 local AddonName, _ = ...
-D4VersionTab = D4VersionTab or {}
+D4.VersionTab = D4.VersionTab or {}
 local pre = "D4PREFIX"
 C_ChatInfo.RegisterAddonMessagePrefix(pre)
 function D4:SetVersion(name, icon, ver)
@@ -21,20 +21,20 @@ function D4:SetVersion(name, icon, ver)
         return false
     end
 
-    if D4VersionTab[string.lower(name)] ~= nil then
+    if D4.VersionTab[string.lower(name)] ~= nil then
         D4:msg("|cffff0000VERSION ALREADY SET", name)
 
         return false
     end
 
     local index = string.lower(name)
-    D4VersionTab[index] = {}
-    D4VersionTab[index].name = name
-    D4VersionTab[index].version = ver
-    D4VersionTab[index].icon = icon
-    D4VersionTab[index].foundHigher = false
+    D4.VersionTab[index] = {}
+    D4.VersionTab[index].name = name
+    D4.VersionTab[index].version = ver
+    D4.VersionTab[index].icon = icon
+    D4.VersionTab[index].foundHigher = false
     local nameOrder = {}
-    for k, v in pairs(D4VersionTab) do
+    for k, v in pairs(D4.VersionTab) do
         tinsert(nameOrder, string.lower(k))
     end
 
@@ -42,7 +42,7 @@ function D4:SetVersion(name, icon, ver)
     local id = 0
     for i, v in pairs(nameOrder) do
         id = id + 1
-        D4VersionTab[string.lower(v)].id = id
+        D4.VersionTab[string.lower(v)].id = id
     end
 end
 
@@ -53,7 +53,7 @@ function D4:GetVersion(name)
         return false
     end
 
-    if name and D4VersionTab[string.lower(name)] then return D4VersionTab[string.lower(name)].version end
+    if name and D4.VersionTab[string.lower(name)] then return D4.VersionTab[string.lower(name)].version end
 
     return nil
 end
@@ -65,7 +65,7 @@ function D4:FoundHigher(name)
         return false
     end
 
-    if name and D4VersionTab[string.lower(name)] then return D4VersionTab[string.lower(name)].foundHigher end
+    if name and D4.VersionTab[string.lower(name)] then return D4.VersionTab[string.lower(name)].foundHigher end
 
     return false
 end
@@ -94,9 +94,9 @@ function D4:CheckVersion(name, ver)
     local ov1, ov2, ov3 = string.split(".", ver)
     local cv1, cv2, cv3 = string.split(".", D4:GetVersion(name))
     local higher = D4:IsHigherVersion(ov1, ov2, ov3, cv1, cv2, cv3)
-    if higher and name and D4VersionTab and D4VersionTab[string.lower(name)] then
-        D4VersionTab[string.lower(name)].foundHigher = true
-        D4:MSG(name, D4VersionTab[string.lower(name)].icon, format("New Version available (v%s -> v%s)", D4:GetVersion(name), ver))
+    if higher and name and D4.VersionTab and D4.VersionTab[string.lower(name)] then
+        D4.VersionTab[string.lower(name)].foundHigher = true
+        D4:MSG(name, D4.VersionTab[string.lower(name)].icon, format("New Version available (v%s -> v%s)", D4:GetVersion(name), ver))
     end
 end
 
@@ -108,8 +108,8 @@ f:SetScript(
         C_Timer.After(
             2,
             function()
-                if D4VersionTab[string.lower(AddonName)] then
-                    local id = D4VersionTab[string.lower(AddonName)].id or 0
+                if D4.VersionTab[string.lower(AddonName)] then
+                    local id = D4.VersionTab[string.lower(AddonName)].id or 0
                     C_Timer.After(
                         id * 0.1,
                         function()

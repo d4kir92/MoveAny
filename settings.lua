@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.109")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.109"))
+	D4:SetVersion(AddonName, 135994, "1.6.111")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.111"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -978,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.109"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.111"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2941,7 +2941,17 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
-		TargetFrameSpellBar:SetParent(MoveAny:GetMainPanel())
+		hooksecurefunc(
+			TargetFrameSpellBar,
+			"SetAlpha",
+			function(sel)
+				if sel.ma_set_alpha then return end
+				sel.ma_set_alpha = true
+				MoveAny:UpdateAlpha(sel)
+				sel.ma_set_alpha = false
+			end
+		)
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "TargetFrameSpellBar",
@@ -2952,7 +2962,17 @@ function MoveAny:LoadAddon()
 	end
 
 	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
-		FocusFrameSpellBar:SetParent(MoveAny:GetMainPanel())
+		hooksecurefunc(
+			FocusFrameSpellBar,
+			"SetAlpha",
+			function(sel)
+				if sel.ma_set_alpha then return end
+				sel.ma_set_alpha = true
+				MoveAny:UpdateAlpha(sel)
+				sel.ma_set_alpha = false
+			end
+		)
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "FocusFrameSpellBar",

@@ -1100,18 +1100,6 @@ function MoveAny:RegisterWidget(tab)
 			dragf.t:SetVertexColor(MoveAny:GetColor("se"))
 		elseif MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough2") then
 			dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
-			hooksecurefunc(
-				frame,
-				"EnableMouse",
-				function(sel, bo)
-					if sel.ma_enablemouse then return end
-					sel.ma_enablemouse = true
-					sel:EnableMouse(false)
-					sel.ma_enablemouse = false
-				end
-			)
-
-			frame:EnableMouse(false)
 			if frame == MABuffBar then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
@@ -1225,6 +1213,21 @@ function MoveAny:RegisterWidget(tab)
 		else
 			dragf.t:SetVertexColor(MoveAny:GetColor("el"))
 		end
+	end
+
+	if MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough3") then
+		hooksecurefunc(
+			frame,
+			"EnableMouse",
+			function(sel, bo)
+				if sel.ma_enablemouse then return end
+				sel.ma_enablemouse = true
+				sel:EnableMouse(false)
+				sel.ma_enablemouse = false
+			end
+		)
+
+		frame:EnableMouse(false)
 	end
 
 	frame.ma_secure = secure
