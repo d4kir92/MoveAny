@@ -110,54 +110,56 @@ end
 
 local once = true
 function MoveAny:InitBags()
-	if not BagsBar then
-		BagsBar = CreateFrame("Frame", "BagsBar", MoveAny:GetMainPanel())
-		BagsBar:SetSize(100, 100)
-	end
-
-	if MoveAny:IsEnabled("BAGS", false) and BagsBar then
-		if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
-			MicroButtonAndBagsBar.MicroBagBar:Hide()
+	if MoveAny:IsEnabled("BAGS", false) then
+		if not BagsBar then
+			BagsBar = CreateFrame("Frame", "BagsBar", MoveAny:GetMainPanel())
+			BagsBar:SetSize(100, 100)
 		end
 
-		hooksecurefunc(
-			BagsBar,
-			"SetSize",
-			function(sel, w, h)
-				if sel.ma_bags_setsize then return end
-				sel.ma_bags_setsize = true
-				MoveAny:UpdateBags()
-				sel.ma_bags_setsize = false
+		if BagsBar then
+			if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
+				MicroButtonAndBagsBar.MicroBagBar:Hide()
 			end
-		)
 
-		if MicroButtonAndBagsBar then
-			BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
-		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
-			BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
-		else
-			BagsBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-		end
+			hooksecurefunc(
+				BagsBar,
+				"SetSize",
+				function(sel, w, h)
+					if sel.ma_bags_setsize then return end
+					sel.ma_bags_setsize = true
+					MoveAny:UpdateBags()
+					sel.ma_bags_setsize = false
+				end
+			)
 
-		for i, mbname in pairs(BAGS) do
-			local bb = _G[mbname]
-			if bb and MoveAny:GetWoWBuild() ~= "RETAIL" then
-				hooksecurefunc(
-					bb,
-					"Hide",
-					function(sel)
-						if sel.mashow then return end
-						sel.mashow = true
-						sel:Show()
-						sel.mashow = false
-					end
-				)
-
-				bb:Show()
+			if MicroButtonAndBagsBar then
+				BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
+			elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
+				BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
+			else
+				BagsBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 			end
-		end
 
-		MoveAny:UpdateBags()
+			for i, mbname in pairs(BAGS) do
+				local bb = _G[mbname]
+				if bb and MoveAny:GetWoWBuild() ~= "RETAIL" then
+					hooksecurefunc(
+						bb,
+						"Hide",
+						function(sel)
+							if sel.mashow then return end
+							sel.mashow = true
+							sel:Show()
+							sel.mashow = false
+						end
+					)
+
+					bb:Show()
+				end
+			end
+
+			MoveAny:UpdateBags()
+		end
 	end
 
 	C_Timer.After(
