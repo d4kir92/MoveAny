@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.113")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.113"))
+	D4:SetVersion(AddonName, 135994, "1.6.114")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.114"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -978,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.113"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.114"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4217,11 +4217,11 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then
 			WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
 				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
 				local scale = WorldMapFrame:GetScale()
-				if not IsAddOnLoaded("Mapster") then
+				if not IsAddOnLoaded("Mapster") and not IsAddOnLoaded("GW2_UI") then
 					return x / scale, y / scale
 				else
 					local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
@@ -4230,103 +4230,103 @@ function MoveAny:LoadAddon()
 				end
 			end
 		end
-	end
 
-	local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject(
-		"MoveAnyMinimapIcon",
-		{
-			type = "data source",
-			text = "MoveAnyMinimapIcon",
-			icon = 135994,
-			OnClick = function(sel, btnName)
-				if btnName == "LeftButton" then
-					MoveAny:ToggleMALock()
-				elseif IsShiftKeyDown() and btnName == "RightButton" then
-					MoveAny:HideMinimapButton()
-				end
-			end,
-			OnTooltipShow = function(tooltip)
-				if not tooltip or not tooltip.AddLine then return end
-				tooltip:AddLine("MoveAny")
-				tooltip:AddLine(MoveAny:GT("LID_MMBTNLEFT"))
-				tooltip:AddLine(MoveAny:GT("LID_MMBTNRIGHT"))
-			end,
-		}
-	)
+		local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject(
+			"MoveAnyMinimapIcon",
+			{
+				type = "data source",
+				text = "MoveAnyMinimapIcon",
+				icon = 135994,
+				OnClick = function(sel, btnName)
+					if btnName == "LeftButton" then
+						MoveAny:ToggleMALock()
+					elseif IsShiftKeyDown() and btnName == "RightButton" then
+						MoveAny:HideMinimapButton()
+					end
+				end,
+				OnTooltipShow = function(tooltip)
+					if not tooltip or not tooltip.AddLine then return end
+					tooltip:AddLine("MoveAny")
+					tooltip:AddLine(MoveAny:GT("LID_MMBTNLEFT"))
+					tooltip:AddLine(MoveAny:GT("LID_MMBTNRIGHT"))
+				end,
+			}
+		)
 
-	if MoveAnyMinimapIcon then
-		MAMMBTN = LibStub("LibDBIcon-1.0", true)
-		if MoveAny:GetMinimapButton() then
-			MoveAny:GetMinimapButton():Register("MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable())
-		end
-	end
-
-	function MoveAny:MinimapButtonCB(checked)
-		if checked then
-			MoveAny:ShowMinimapButton()
-		else
-			MoveAny:HideMinimapButton()
-		end
-	end
-
-	function MoveAny:HideMinimapButton()
-		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+		if MoveAnyMinimapIcon then
+			MAMMBTN = LibStub("LibDBIcon-1.0", true)
+			if MoveAny:GetMinimapButton() then
+				MoveAny:GetMinimapButton():Register("MoveAnyMinimapIcon", MoveAnyMinimapIcon, MoveAny:GetMinimapTable())
+			end
 		end
 
-		if MoveAny:GetMinimapButton() then
-			MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
-		end
-	end
-
-	function MoveAny:ShowMinimapButton()
-		if not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
-		end
-
-		if MoveAny:GetMinimapButton() then
-			MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
-		end
-	end
-
-	function MoveAny:UpdateMinimapButton()
-		if MoveAny:GetMinimapButton() then
-			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+		function MoveAny:MinimapButtonCB(checked)
+			if checked then
 				MoveAny:ShowMinimapButton()
 			else
 				MoveAny:HideMinimapButton()
 			end
 		end
-	end
 
-	function MoveAny:ToggleMinimapButton()
-		MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
-		MoveAny:UpdateMinimapButton()
-	end
+		function MoveAny:HideMinimapButton()
+			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+			end
 
-	if MoveAny:IsEnabled("MALOCK", false) then
-		MoveAny:ShowMALock()
-	end
-
-	if MoveAny:IsEnabled("MAPROFILES", false) then
-		MoveAny:ShowProfiles()
-	end
-
-	C_Timer.After(
-		0,
-		function()
 			if MoveAny:GetMinimapButton() then
-				MoveAny:UpdateMinimapButton()
+				MoveAny:GetMinimapButton():Hide("MoveAnyMinimapIcon")
 			end
 		end
-	)
 
-	C_Timer.After(
-		1,
-		function()
-			MoveAny:CheckAlphas()
+		function MoveAny:ShowMinimapButton()
+			if not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
+			end
+
+			if MoveAny:GetMinimapButton() then
+				MoveAny:GetMinimapButton():Show("MoveAnyMinimapIcon")
+			end
 		end
-	)
 
-	MoveAny:UpdateMALock()
+		function MoveAny:UpdateMinimapButton()
+			if MoveAny:GetMinimapButton() then
+				if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+					MoveAny:ShowMinimapButton()
+				else
+					MoveAny:HideMinimapButton()
+				end
+			end
+		end
+
+		function MoveAny:ToggleMinimapButton()
+			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
+			MoveAny:UpdateMinimapButton()
+		end
+
+		if MoveAny:IsEnabled("MALOCK", false) then
+			MoveAny:ShowMALock()
+		end
+
+		if MoveAny:IsEnabled("MAPROFILES", false) then
+			MoveAny:ShowProfiles()
+		end
+
+		C_Timer.After(
+			0,
+			function()
+				if MoveAny:GetMinimapButton() then
+					MoveAny:UpdateMinimapButton()
+				end
+			end
+		)
+
+		C_Timer.After(
+			1,
+			function()
+				MoveAny:CheckAlphas()
+			end
+		)
+
+		MoveAny:UpdateMALock()
+	end
 end
