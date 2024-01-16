@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.114")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.114"))
+	D4:SetVersion(AddonName, 135994, "1.6.115")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.115"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -978,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.114"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.115"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3479,6 +3479,7 @@ function MoveAny:LoadAddon()
 					_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
 					gtp4 = floor(gtp4)
 					gtp5 = floor(gtp5)
+					print("POS", gtp4, gtp5)
 				end
 
 				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
