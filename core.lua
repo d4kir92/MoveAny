@@ -23,17 +23,6 @@ MAHIDDEN.auraRows = 0
 --[[ NEW ]]
 local MAUIP = CreateFrame("Frame", "UIParent")
 MAUIP:SetAllPoints(UIParent)
-C_Timer.After(
-	0,
-	function()
-		if SunnArt_DummyFrame then
-			MAUIP:SetAllPoints(SunnArt_DummyFrame)
-		else
-			MAUIP:SetAllPoints(UIParent)
-		end
-	end
-)
-
 MAUIP.unit = "player"
 MAUIP.auraRows = 0
 hooksecurefunc(
