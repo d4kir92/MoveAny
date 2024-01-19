@@ -13,7 +13,6 @@ end
 function MoveAny:UpdatePetBar()
 	local inPetBattle = MoveAny:IsInPetBattle()
 	if PetHasActionBar() and UnitIsVisible("pet") and not inPetBattle then
-		MAPetBar:SetAlpha(1)
 		for i = 1, 10 do
 			local bb = _G["PetActionButton" .. i]
 			if bb then
