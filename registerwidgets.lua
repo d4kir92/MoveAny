@@ -294,6 +294,11 @@ function MoveAny:MenuOptions(opt, frame)
 						end
 
 						dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
+						if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
+							dragf:Hide()
+						else
+							dragf:Show()
+						end
 					else
 						frame:SetParent(frame.oldparent)
 						if maframe1 then
@@ -779,6 +784,18 @@ function MoveAny:RegisterSelectEle(lstr, name)
 	ses[lstr] = name
 end
 
+function MoveAny:UpdateHiddenFrames()
+	for i, v in pairs(MoveAny:GetDragFrames()) do
+		if v.t:GetVertexColor() == MoveAny:GetColor("hidden") then
+			if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
+				v:Hide()
+			else
+				v:Show()
+			end
+		end
+	end
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1095,6 +1112,11 @@ function MoveAny:RegisterWidget(tab)
 		end
 
 		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
+		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
+			dragf:Hide()
+		else
+			dragf:Show()
+		end
 	else
 		if frame == MACurrentEle then
 			dragf.t:SetVertexColor(MoveAny:GetColor("se"))

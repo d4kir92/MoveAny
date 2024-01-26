@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.120")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.120"))
+	D4:SetVersion(AddonName, 135994, "1.6.121")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.121"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -412,6 +412,7 @@ function MoveAny:InitMALock()
 		AddCategory("GENERAL")
 		AddCheckBox(4, "SHOWTIPS", true)
 		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.MinimapButtonCB, nil, nil, false)
+		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
 		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
 		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
 		AddSlider(8, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1)
@@ -978,7 +979,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.120"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.121"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()

@@ -199,7 +199,8 @@ function MoveAny:LangdeDE()
 		["LID_BOSS4"] = "Boss 4",
 		["LID_BOSS5"] = "Boss 5",
 		["LID_BOSS6"] = "Boss 6",
-		["LID_MAPAGES"] = "Aktionsleisten-Seiten"
+		["LID_MAPAGES"] = "Aktionsleisten-Seiten",
+		["LID_HIDEHIDDENFRAMES"] = "Verstecke versteckte Elemente",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
