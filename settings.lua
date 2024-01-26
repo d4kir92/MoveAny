@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.119")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.119"))
+	D4:SetVersion(AddonName, 135994, "1.6.120")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.120"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -978,7 +978,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.119"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.120"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2941,14 +2941,12 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
-		hooksecurefunc(
-			TargetFrameSpellBar,
-			"SetAlpha",
-			function(sel)
-				if sel.ma_set_alpha then return end
-				sel.ma_set_alpha = true
-				MoveAny:UpdateAlpha(sel)
-				sel.ma_set_alpha = false
+		TargetFrameSpellBar:HookScript(
+			"OnEvent",
+			function(sel, event)
+				if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
+					MoveAny:UpdateAlpha(sel)
+				end
 			end
 		)
 
@@ -2962,14 +2960,12 @@ function MoveAny:LoadAddon()
 	end
 
 	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
-		hooksecurefunc(
-			FocusFrameSpellBar,
-			"SetAlpha",
-			function(sel)
-				if sel.ma_set_alpha then return end
-				sel.ma_set_alpha = true
-				MoveAny:UpdateAlpha(sel)
-				sel.ma_set_alpha = false
+		FocusFrameSpellBar:HookScript(
+			"OnEvent",
+			function(sel, event)
+				if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
+					MoveAny:UpdateAlpha(sel)
+				end
 			end
 		)
 
