@@ -373,8 +373,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.123")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.123"))
+	D4:SetVersion(AddonName, 135994, "1.6.124")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.124"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -979,7 +979,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.123"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.124"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2251,7 +2251,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
+		if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "FocusFrameBuff1",
@@ -2309,7 +2309,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:IsEnabled("FOCUSFRAME", false) then
+		if FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "FocusFrame",
@@ -2989,7 +2989,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("TARGETOFFOCUSFRAME", false) then
+	if FocusFrame and MoveAny:IsEnabled("TARGETOFFOCUSFRAME", false) then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "FocusFrameToT",
