@@ -55,6 +55,7 @@ end
 
 MoveAny:AddToEMMap("MAPetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetBar", "ShowPetActionBar")
+MoveAny:AddToEMMap("PetActionBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("StanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("MAGameTooltip", "ShowHudTooltip")
 MoveAny:AddToEMMap("TalkingHeadFrame", "ShowTalkingHeadFrame")
@@ -373,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.125")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.125"))
+	D4:SetVersion(AddonName, 135994, "1.6.126")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.126"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -979,7 +980,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.125"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.126"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()

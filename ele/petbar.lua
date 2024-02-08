@@ -1,34 +1,7 @@
 local _, MoveAny = ...
 local btnsize = 36
 local once = true
-function MoveAny:IsInPetBattle()
-	local inPetBattle = false
-	if C_PetBattles then
-		inPetBattle = C_PetBattles.IsInBattle()
-	end
-
-	return inPetBattle
-end
-
 function MoveAny:UpdatePetBar()
-	local inPetBattle = MoveAny:IsInPetBattle()
-	if PetHasActionBar() and not inPetBattle then
-		for i = 1, 10 do
-			local bb = _G["PetActionButton" .. i]
-			if bb then
-				bb:SetAlpha(1)
-			end
-		end
-	else
-		MAPetBar:SetAlpha(0)
-		for i = 1, 10 do
-			local bb = _G["PetActionButton" .. i]
-			if bb then
-				bb:SetAlpha(0)
-			end
-		end
-	end
-
 	-- Masque
 	local MSQ = LibStub("Masque", true)
 	if MSQ then
@@ -119,6 +92,24 @@ function MoveAny:InitPetBar()
 		end
 
 		MAPetBar:SetSize(10 * btnsize, btnsize)
+		if ShowPetActionBar then
+			hooksecurefunc(
+				"ShowPetActionBar",
+				function()
+					MAPetBar:SetAlpha(1)
+				end
+			)
+
+			hooksecurefunc(
+				"HidePetActionBar",
+				function()
+					MAPetBar:SetAlpha(0)
+				end
+			)
+		else
+			print("[MOVEANY] MISSING ShowPetActionBar")
+		end
+
 		MoveAny:UpdatePetBar()
 	end
 end

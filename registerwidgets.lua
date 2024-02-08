@@ -163,7 +163,7 @@ function MoveAny:MenuOptions(opt, frame)
 	local name = MoveAny:GetFrameName(frame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
 	local tabs = {GENERAL}
-	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainMenuBar" or name == "MAMenuBar" or name == "MAPetBar" or name == "StanceBar" then
+	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBar" then
 		table.insert(tabs, ACTIONBARS_LABEL)
 	end
 
@@ -1441,6 +1441,15 @@ function MoveAny:SetMouseEleAlpha(ele)
 	end
 
 	lastEle = ele
+end
+
+function MoveAny:IsInPetBattle()
+	local inPetBattle = false
+	if C_PetBattles then
+		inPetBattle = C_PetBattles.IsInBattle()
+	end
+
+	return inPetBattle
 end
 
 function MoveAny:CheckAlphas()
