@@ -1,7 +1,10 @@
 local AddonName, _ = ...
 D4.VersionTab = D4.VersionTab or {}
 local pre = "D4PREFIX"
-C_ChatInfo.RegisterAddonMessagePrefix(pre)
+if C_ChatInfo then
+    C_ChatInfo.RegisterAddonMessagePrefix(pre)
+end
+
 function D4:SetVersion(name, icon, ver)
     if name == nil then
         D4:msg("|cffff0000MISSING NAME AT SetVersion", ver)
@@ -118,7 +121,7 @@ f:SetScript(
                                 D4:MSG(AddonName, 0, "|cffff0000MISSING VERSION", AddonName)
                             end
 
-                            if isInitialLogin and ver and pre then
+                            if isInitialLogin and ver and pre and C_ChatInfo then
                                 C_ChatInfo.SendAddonMessage(pre, format("A;%s;V;%s", AddonName, ver))
                             end
                         end

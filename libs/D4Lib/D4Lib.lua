@@ -19,6 +19,48 @@ function D4:GetWoWBuild()
     return Build
 end
 
+local oldWow = false
+if C_Timer == nil then
+    print("[D4] ADD C_Timer")
+    C_Timer = {}
+    local f = CreateFrame("Frame")
+    f.tab = {}
+    f:HookScript(
+        "OnUpdate",
+        function()
+            for i, v in pairs(f.tab) do
+                if v[1] < GetTime() then
+                    local func = v[2]
+                    func()
+                    tremove(f.tab, i)
+                end
+            end
+        end
+    )
+
+    C_Timer.After = function(duration, callback)
+        tinsert(f.tab, {GetTime() + duration, callback})
+    end
+
+    oldWow = true
+end
+
+if GetClassColor == nil then
+    print("[D4] ADD GetClassColor")
+    GetClassColor = function(classFilename)
+        local color = RAID_CLASS_COLORS[classFilename]
+        if color then return color.r, color.g, color.b, color.colorStr end
+
+        return 1, 1, 1, "ffffffff"
+    end
+
+    oldWow = true
+end
+
+function D4:IsOldWow()
+    return oldWow
+end
+
 --[[ QOL ]]
 local ICON_TAG_LIST_EN = {
     ["star"] = 1,
