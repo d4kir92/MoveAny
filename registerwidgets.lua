@@ -884,7 +884,12 @@ function MoveAny:RegisterWidget(tab)
 		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
-		dragframe.t:SetColorTexture(1, 1, 1, 1)
+		if dragframe.t.SetColorTexture then
+			dragframe.t:SetColorTexture(1, 1, 1, 1)
+		else
+			dragframe.t:SetTexture(1, 1, 1, 1)
+		end
+
 		dragframe.t:SetVertexColor(MoveAny:GetColor("el"))
 		dragframe.t:SetAlpha(0.4)
 		dragframe.name = dragframe:CreateFontString(nil, nil, "GameFontHighlightLarge")

@@ -234,51 +234,14 @@ function MoveAny:UpdateMALock()
 	C_Timer.After(0.1, MoveAny.UpdateMALock)
 end
 
--- TAINTFREE SLASH COMMANDS --
-local lastMessage = ""
-local cmds = {}
 function MoveAny:InitSlash()
-	if ChatEdit_ParseText and type(ChatEdit_ParseText) == "function" then
-		hooksecurefunc(
-			"ChatEdit_ParseText",
-			function(editBox, send, parseIfNoSpace)
-				if send == 0 then
-					lastMessage = editBox:GetText()
-				end
-			end
-		)
+	D4:AddSlash("move", MoveAny.ToggleMALock)
+	D4:AddSlash("moveany", MoveAny.ToggleMALock)
+	if C_UI then
+		D4:AddSlash("rl", C_UI.Reload)
+		D4:AddSlash("rel", C_UI.Reload)
 	else
-		MoveAny:MSG("FAILED TO ADD SLASH COMMAND #1")
+		D4:AddSlash("rl", ReloadUi)
+		D4:AddSlash("rel", ReloadUi)
 	end
-
-	if ChatFrame_DisplayHelpTextSimple and type(ChatFrame_DisplayHelpTextSimple) == "function" then
-		hooksecurefunc(
-			"ChatFrame_DisplayHelpTextSimple",
-			function(frame)
-				if lastMessage and lastMessage ~= "" then
-					local cmd = string.upper(lastMessage)
-					cmd = strsplit(" ", cmd)
-					if cmds[cmd] ~= nil then
-						local count = 1
-						local numMessages = frame:GetNumMessages()
-						local function predicateFunction(entry)
-							if count == numMessages and entry == HELP_TEXT_SIMPLE then return true end
-							count = count + 1
-						end
-
-						frame:RemoveMessagesByPredicate(predicateFunction)
-						cmds[cmd]()
-					end
-				end
-			end
-		)
-	else
-		MoveAny:MSG("FAILED TO ADD SLASH COMMAND #2")
-	end
-
-	cmds["/MOVE"] = MoveAny.ToggleMALock
-	cmds["/MOVEANY"] = MoveAny.ToggleMALock
-	cmds["/RL"] = C_UI.Reload
-	cmds["/REL"] = C_UI.Reload
 end
--- TAINTFREE SLASH COMMANDS --

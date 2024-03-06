@@ -19,7 +19,7 @@ function D4:GetWoWBuild()
     return Build
 end
 
-local oldWow = false
+D4.oldWow = D4.oldWow or false
 if C_Timer == nil then
     print("[D4] ADD C_Timer")
     C_Timer = {}
@@ -42,7 +42,7 @@ if C_Timer == nil then
         tinsert(f.tab, {GetTime() + duration, callback})
     end
 
-    oldWow = true
+    D4.oldWow = true
 end
 
 if GetClassColor == nil then
@@ -54,11 +54,11 @@ if GetClassColor == nil then
         return 1, 1, 1, "ffffffff"
     end
 
-    oldWow = true
+    D4.oldWow = true
 end
 
 function D4:IsOldWow()
-    return oldWow
+    return D4.oldWow
 end
 
 --[[ QOL ]]

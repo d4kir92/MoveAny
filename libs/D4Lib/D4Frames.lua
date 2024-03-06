@@ -120,8 +120,27 @@ function D4:CreateFrame(tab)
     tab.parent = tab.parent or UIParent
     tab.pTab = tab.pTab or "CENTER"
     tab.title = tab.title or ""
-    tab.templates = tab.templates or "BasicFrameTemplateWithInset"
-    local fra = CreateFrame("FRAME", tab.name, tab.parent, tab.templates)
+    local fra = nil
+    if not D4:IsOldWow() then
+        tab.templates = tab.templates or "BasicFrameTemplateWithInset"
+        fra = CreateFrame("FRAME", tab.name, tab.parent, tab.templates)
+    else
+        fra = CreateFrame("Frame", tab.name, tab.parent)
+        fra.TitleText = fra:CreateFontString(nil, nil, "GameFontNormal")
+        fra.TitleText:SetPoint("TOP", fra, "TOP", 0, 0)
+        fra.CloseButton = CreateFrame("Button", tab.name .. ".CloseButton", fra, "UIPanelButtonTemplate")
+        fra.CloseButton:SetPoint("TOPRIGHT", fra, "TOPRIGHT", 0, 0)
+        fra.CloseButton:SetSize(25, 25)
+        fra.CloseButton:SetText("X")
+        fra.bg = fra:CreateTexture(tab.name .. ".bg", "ARTWORK")
+        fra.bg:SetAllPoints(fra)
+        if fra.bg.SetColorTexture then
+            fra.bg:SetColorTexture(0.03, 0.03, 0.03, 0.5)
+        else
+            fra.bg:SetTexture(0.03, 0.03, 0.03, 0.5)
+        end
+    end
+
     fra:SetSize(tab.sw, tab.sh)
     fra:SetPoint(unpack(tab.pTab))
     fra:SetClampedToScreen(true)
@@ -131,7 +150,9 @@ function D4:CreateFrame(tab)
     fra:SetScript("OnDragStart", fra.StartMoving)
     fra:SetScript("OnDragStop", fra.StopMovingOrSizing)
     fra:Hide()
-    fra.TitleText:SetText(tab.title)
+    if fra.TitleText then
+        fra.TitleText:SetText(tab.title)
+    end
 
     return fra
 end
