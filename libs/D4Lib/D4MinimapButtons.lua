@@ -1,5 +1,9 @@
-local icon = LibStub("LibDBIcon-1.0", true)
+local icon = null
 function D4:GetLibDBIcon()
+    if not D4:IsOldWow() then
+        icon = icon or LibStub("LibDBIcon-1.0", true)
+    end
+
     return icon
 end
 
