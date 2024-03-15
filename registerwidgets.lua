@@ -392,42 +392,6 @@ function MoveAny:MenuOptions(opt, frame)
 					maxBtns = opts["COUNT"]
 				end
 
-				--[[if frame == MAMenuBar then
-					if MoveAny:GetWoWBuild() == "RETAIL" then
-						items = {"1", "2", "3", "4", "5", "10", "11", "12"}
-					elseif MoveAny:GetWoWBuild() == "CLASSIC" then
-						items = {"1", "2", "4", "8"}
-					else
-						items = {"1", "2", "3", "4", "5", "8", "9", "10"}
-					end
-				elseif maxBtns == 12 then
-					items = {"1", "2", "3", "4", "6", "12"}
-				elseif maxBtns == 11 then
-					items = {"1", "11"}
-				elseif maxBtns == 10 then
-					items = {"1", "2", "5", "10"}
-				elseif maxBtns == 9 then
-					items = {"1", "3", "9"}
-				elseif maxBtns == 8 then
-					items = {"1", "2", "4", "8"}
-				elseif maxBtns == 7 then
-					items = {"1", "7"}
-				elseif maxBtns == 6 then
-					items = {"1", "2", "3", "6"}
-				elseif maxBtns == 5 then
-					items = {"1", "5"}
-				elseif maxBtns == 4 then
-					items = {"1", "2", "4"}
-				elseif maxBtns == 3 then
-					items = {"1", "3"}
-				elseif maxBtns == 2 then
-					items = {"1", "2"}
-				elseif maxBtns == 1 then
-					items = {"1"}
-				else
-					--MoveAny:MSG( "FOUND OTHER MAX: " .. maxBtns .. " for " .. name )
-					items = {"1"}
-				end]]
 				items = {}
 				for id = 1, maxBtns do
 					tinsert(items, id)
@@ -479,38 +443,41 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-			local sliderRows = slides.sliderRows
-			sliderRows:SetWidth(content:GetWidth() - 110)
-			sliderRows:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
-			sliderRows.Low:SetText("")
-			sliderRows.High:SetText("")
-			sliderRows.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. rows)
-			sliderRows:SetMinMaxValues(1, #items)
-			sliderRows:SetObeyStepOnDrag(true)
-			sliderRows:SetValueStep(1)
-			sliderRows:SetValue(rows)
-			sliderRows:SetScript(
-				"OnValueChanged",
-				function(sel, val)
-					val = tonumber(string.format("%" .. 0 .. "f", val))
-					local value = items[val]
-					if value and value ~= opts["ROWS"] then
-						opts["ROWS"] = value
-						sel.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. value)
-						if frame.UpdateSystemSettingNumRows then
-							frame.numRows = value
-							frame:UpdateSystemSettingNumRows()
-						end
+			if #items >= 1 then
+				slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				local sliderRows = slides.sliderRows
+				sliderRows:SetWidth(content:GetWidth() - 110)
+				sliderRows:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
+				sliderRows.Low:SetText("")
+				sliderRows.High:SetText("")
+				sliderRows.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. rows)
+				sliderRows:SetMinMaxValues(1, getn(items))
+				sliderRows:SetObeyStepOnDrag(true)
+				sliderRows:SetValueStep(1)
+				sliderRows:SetValue(rows)
+				sliderRows:SetScript(
+					"OnValueChanged",
+					function(sel, val)
+						val = tonumber(string.format("%" .. 0 .. "f", val))
+						local value = items[val]
+						if value and value ~= opts["ROWS"] then
+							opts["ROWS"] = value
+							sel.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. value)
+							if frame.UpdateSystemSettingNumRows then
+								frame.numRows = value
+								frame:UpdateSystemSettingNumRows()
+							end
 
-						if MoveAny.UpdateActionBar then
-							MoveAny:UpdateActionBar(frame)
+							if MoveAny.UpdateActionBar then
+								MoveAny:UpdateActionBar(frame)
+							end
 						end
 					end
-				end
-			)
+				)
 
-			PY = PY - 30
+				PY = PY - 30
+			end
+
 			local flipped = CreateFrame("CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate")
 			flipped:SetSize(btnsize, btnsize)
 			flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)

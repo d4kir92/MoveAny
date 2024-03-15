@@ -20,6 +20,7 @@ function MoveAny:UpdateStanceBar()
 	if StanceBar and cou and StanceBar.cou ~= cou then
 		StanceBar.cou = cou
 		StanceBar.btns = {}
+		-- wrong class/no stances: 10
 		if cou ~= 10 then
 			for i = 1, cou do
 				local bb = _G["StanceButton" .. i]
@@ -86,7 +87,6 @@ function MoveAny:UpdateStanceBar()
 	C_Timer.After(1, MoveAny.UpdateStanceBar)
 end
 
-local once = true
 function MoveAny:InitStanceBar()
 	if not StanceBar then
 		StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
