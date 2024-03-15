@@ -43,6 +43,11 @@ jobs:
         with:
           args: -g retail -w 0
 
+      - name: Package and release for Cata Classic
+        uses: BigWigsMods/packager@v2
+        with:
+          args: -g cata -w 0
+
       - name: Package and release for Wrath Classic
         uses: BigWigsMods/packager@v2
         with:

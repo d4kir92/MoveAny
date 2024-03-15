@@ -1,0 +1,47 @@
+## Interface: 40400
+## Version: 1.6.131
+## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
+## Notes: Move Any Ui or Frame
+## Author: D4KiR
+## DefaultState: enabled
+## SavedVariables: MATAB
+## SavedVariablesPerCharacter: MATABPC
+## X-Curse-Project-ID: 646134
+## X-Wago-ID: e56n3pK9
+
+libs\D4Lib\D4Lib.xml
+
+libs\math.lua
+libs\db.lua
+profiles\emp.lua
+
+locale\enUS.lua
+locale\deDE.lua
+locale\esES.lua
+locale\frFR.lua
+locale\itIT.lua
+locale\ptBR.lua
+locale\ruRU.lua
+locale\zhCN.lua
+libs\lang.lua
+
+ele\actionbars.lua
+ele\arenaenemyframes.lua
+ele\bagbar.lua
+ele\buffbar.lua
+ele\debuffbar.lua
+ele\fps.lua
+ele\mavehicleseatindicator.lua
+ele\micromenu.lua
+ele\minimap.lua
+ele\multicastactionbar.lua
+ele\partyframe.lua
+ele\petbar.lua
+ele\stancebar.lua
+
+core.lua
+registerwidgets.lua
+moveframes.lua
+settings.lua
+
+Bindings.xml
