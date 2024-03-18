@@ -102,19 +102,3 @@ for i, v in pairs(chatChannels) do
 end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", FixIconChat)
-C_Timer.After(
-    4,
-    function()
-        if D4.LoadTargetHealth == nil then
-            function D4:LoadTargetHealth()
-                if D4:GetWoWBuild() ~= "RETAIL" and ShouldKnowUnitHealth and ShouldKnowUnitHealth("target") == false then
-                    function ShouldKnowUnitHealth(unit)
-                        return true
-                    end
-                end
-            end
-
-            D4:LoadTargetHealth()
-        end
-    end
-)
