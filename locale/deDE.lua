@@ -152,6 +152,7 @@ function MoveAny:LangdeDE()
 		["LID_FLIPPED"] = "Umgedreht",
 		["LID_GHOSTFRAME"] = "Geisterfenster (Teleport zum Friedhof)",
 		["LID_TICKETSTATUSFRAME"] = "Ticket Fenster",
+		["LID_HELPOPENWEBTICKETBUTTON"] = "Ticket Knopf (Status)",
 		["LID_LOSSOFCONTROLFRAME"] = "Kontrollverlustfenster",
 		["LID_MainStatusTrackingBarContainer"] = "StatusBar1 (Erfahrungsleiste/Rufleiste)",
 		["LID_SecondaryStatusTrackingBarContainer"] = "StatusBar2 (Rufleiste)",
