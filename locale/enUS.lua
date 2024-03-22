@@ -158,7 +158,6 @@ function MoveAny:LangenUS()
 		["LID_FLIPPED"] = "Flipped",
 		["LID_GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",
 		["LID_TICKETSTATUSFRAME"] = "Ticket Frame",
-		["LID_HELPOPENWEBTICKETBUTTON"] = "Ticket Button (Status)",
 		["LID_LOSSOFCONTROLFRAME"] = "Loss of Control Frame",
 		["LID_MainStatusTrackingBarContainer"] = "StatusBar1 (Exp Bar, Reputation Bar)",
 		["LID_SecondaryStatusTrackingBarContainer"] = "StatusBar2 (Reputation Bar)",

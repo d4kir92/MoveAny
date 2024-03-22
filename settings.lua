@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.138")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.138"))
+	D4:SetVersion(AddonName, 135994, "1.6.139")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.139"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -717,10 +717,6 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "TICKETSTATUSFRAME", false)
 		end
 
-		if HelpOpenWebTicketButton then
-			AddCheckBox(4, "HELPOPENWEBTICKETBUTTON", false)
-		end
-
 		if TargetFrame and TargetFrameNumericalThreat then
 			AddCheckBox(4, "TargetFrameNumericalThreat", false)
 		end
@@ -987,7 +983,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.138"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.139"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3424,17 +3420,6 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "TicketStatusFrame",
 				["lstr"] = "LID_TICKETSTATUSFRAME",
-				["userplaced"] = true,
-				["secure"] = true
-			}
-		)
-	end
-
-	if HelpOpenWebTicketButton and MoveAny:IsEnabled("HELPOPENWEBTICKETBUTTON", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "HelpOpenWebTicketButton",
-				["lstr"] = "LID_HELPOPENWEBTICKETBUTTON",
 				["userplaced"] = true,
 				["secure"] = true
 			}
