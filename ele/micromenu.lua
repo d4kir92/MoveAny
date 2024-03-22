@@ -86,7 +86,7 @@ function MoveAny:InitMicroMenu()
 						end
 					)
 
-					if mb ~= HelpMicroButton and mb ~= MainMenuMicroButton then
+					if D4:GetWoWBuild() == "RETAIL" and mb ~= HelpMicroButton and mb ~= MainMenuMicroButton then
 						hooksecurefunc(
 							MAMenuBar,
 							"SetScale",
