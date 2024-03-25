@@ -1,8 +1,8 @@
 local _, MoveAny = ...
 function MoveAny:GetMicroButtonSize()
-	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 34 end
+	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 33 end
 
-	return 26, 32
+	return 24, 33
 end
 
 function MoveAny:GetMicroButtonYOffset()
@@ -66,7 +66,7 @@ function MoveAny:InitMicroMenu()
 						mb.ofx = -2
 						mb.ofy = 22
 						mb.rsw = 24
-						mb.rsh = 32
+						mb.rsh = 33
 					else
 						mb:SetSize(sw2, sh2)
 					end
