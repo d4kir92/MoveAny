@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.142")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.142"))
+	D4:SetVersion(AddonName, 135994, "1.6.143")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.143"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -667,6 +667,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
 		AddCheckBox(4, "UIWIDGETBELOWMINIMAP", false)
 		AddCheckBox(4, "MIRRORTIMER1", false)
+		AddCheckBox(4, "TIMERTRACKER1", false)
 		if Arena_LoadUI then
 			AddCheckBox(4, "ARENAENEMYFRAMES", false)
 			AddCheckBox(4, "ARENAPREPFRAMES", false)
@@ -983,7 +984,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.142"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.143"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3120,6 +3121,15 @@ function MoveAny:LoadAddon()
 				["name"] = "RaidBossEmoteFrame",
 				["lstr"] = "LID_RAIDBOSSEMOTEFRAME",
 				["userplaced"] = true
+			}
+		)
+	end
+
+	if MoveAny:IsEnabled("TIMERTRACKER1", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "TimerTrackerTimer1",
+				["lstr"] = "LID_TIMERTRACKER1",
 			}
 		)
 	end

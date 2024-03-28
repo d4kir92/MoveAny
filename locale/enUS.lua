@@ -207,6 +207,7 @@ function MoveAny:LangenUS()
 		["LID_BOSS6"] = "Boss 6",
 		["LID_MAPAGES"] = "Actionbar Pages",
 		["LID_HIDEHIDDENFRAMES"] = "Hide hidden Elements",
+		["LID_TIMERTRACKER1"] = "Timer Tracker (only visible when available)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
