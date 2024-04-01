@@ -46,7 +46,7 @@ function MoveAny:LangenUS()
 		["LID_MONKSTAGGERBAR"] = "Monk Stagger bar  (Chi)",
 		["LID_MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
 		["LID_ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
-		["LID_PALADINPOWERBARFRAME"] = "Paladin Power Bar",
+		["LID_PALADINPOWERBARFRAME"] = "Paladin Power Bar (Holy Power)",
 		["LID_MAFPSFrame"] = "FPS",
 		["LID_IAPingFrame"] = "Ping",
 		["LID_IACoordsFrame"] = "Coords Frame",
@@ -208,6 +208,7 @@ function MoveAny:LangenUS()
 		["LID_MAPAGES"] = "Actionbar Pages",
 		["LID_HIDEHIDDENFRAMES"] = "Hide hidden Elements",
 		["LID_TIMERTRACKER1"] = "Timer Tracker (only visible when available)",
+		["LID_PALADINPOWERBAR"] = "Paladin Power Bar (Holy Power)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

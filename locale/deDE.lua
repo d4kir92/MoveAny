@@ -40,7 +40,7 @@ function MoveAny:LangdeDE()
 		["LID_MONKSTAGGERBAR"] = "Monk Staffeln Leiste  (Chi)",
 		["LID_MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
 		["LID_ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
-		["LID_PALADINPOWERBARFRAME"] = "Paladin Machtleiste",
+		["LID_PALADINPOWERBARFRAME"] = "Paladin Machtleiste (Heilige Macht)",
 		["LID_MAFPSFrame"] = "FPS",
 		["LID_IAPingFrame"] = "Ping",
 		["LID_IACoordsFrame"] = "Koordinatenfenster",
@@ -202,6 +202,7 @@ function MoveAny:LangdeDE()
 		["LID_MAPAGES"] = "Aktionsleisten-Seiten",
 		["LID_HIDEHIDDENFRAMES"] = "Verstecke versteckte Elemente",
 		["LID_TIMERTRACKER1"] = "Zeitmesser (erst sichtbar wenn verfügbar)",
+		["LID_PALADINPOWERBAR"] = "Paladin Machtleiste (Heilige Macht)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

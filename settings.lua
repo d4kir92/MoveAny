@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.143")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.143"))
+	D4:SetVersion(AddonName, 135994, "1.6.144")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.144"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -639,6 +639,11 @@ function MoveAny:InitMALock()
 
 		if PaladinPowerBarFrame and class == "PALADIN" then
 			AddCheckBox(4, "PALADINPOWERBARFRAME", false)
+		end
+
+		-- CATA
+		if PaladinPowerBar and class == "PALADIN" then
+			AddCheckBox(4, "PALADINPOWERBAR", false)
 		end
 
 		AddCategory("ADVANCED")
@@ -984,7 +989,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.143"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.144"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2029,6 +2034,15 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "PaladinPowerBarFrame",
 				["lstr"] = "LID_PALADINPOWERBARFRAME"
+			}
+		)
+	end
+
+	if PaladinPowerBar and MoveAny:IsEnabled("PALADINPOWERBAR", false) and class == "PALADIN" then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "PaladinPowerBar",
+				["lstr"] = "LID_PALADINPOWERBAR"
 			}
 		)
 	end
