@@ -41,7 +41,7 @@ function MoveAny:LangenUS()
 		["LID_TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
 		["LID_RUNEFRAME"] = "Deathknight - Runes Frame",
 		["LID_TOTEMFRAME"] = "Totem Timers (Also used by other classes)",
-		["LID_WARLOCKPOWERFRAME"] = "Warlock Power frame",
+		["LID_WARLOCKPOWERFRAME"] = "Warlock Power Frame (Shards)",
 		["LID_MONKHARMONYBARFRAME"] = "Monk Harmony frame  (Chi)",
 		["LID_MONKSTAGGERBAR"] = "Monk Stagger bar  (Chi)",
 		["LID_MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
@@ -209,6 +209,7 @@ function MoveAny:LangenUS()
 		["LID_HIDEHIDDENFRAMES"] = "Hide hidden Elements",
 		["LID_TIMERTRACKER1"] = "Timer Tracker (only visible when available)",
 		["LID_PALADINPOWERBAR"] = "Paladin Power Bar (Holy Power)",
+		["LID_SHARDBARFRAME"] = "Warlock Power Frame (Shards)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

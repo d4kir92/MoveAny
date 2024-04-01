@@ -35,7 +35,7 @@ function MoveAny:LangdeDE()
 		["LID_TARGETOFFOCUSFRAME"] = "Ziel des Fokusfenster",
 		["LID_RUNEFRAME"] = "Todesritter - Runen Fenster",
 		["LID_TOTEMFRAME"] = "Totem Zähler (Auch von anderen Klassen benutzt)",
-		["LID_WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster",
+		["LID_WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
 		["LID_MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster (Chi)",
 		["LID_MONKSTAGGERBAR"] = "Monk Staffeln Leiste  (Chi)",
 		["LID_MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
@@ -203,6 +203,7 @@ function MoveAny:LangdeDE()
 		["LID_HIDEHIDDENFRAMES"] = "Verstecke versteckte Elemente",
 		["LID_TIMERTRACKER1"] = "Zeitmesser (erst sichtbar wenn verfügbar)",
 		["LID_PALADINPOWERBAR"] = "Paladin Machtleiste (Heilige Macht)",
+		["LID_SHARDBARFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

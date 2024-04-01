@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.144")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.144"))
+	D4:SetVersion(AddonName, 135994, "1.6.145")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.145"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -615,6 +615,11 @@ function MoveAny:InitMALock()
 
 		if WarlockPowerFrame and class == "WARLOCK" then
 			AddCheckBox(4, "WARLOCKPOWERFRAME", false)
+		end
+
+		-- CATA
+		if ShardBarFrame and class == "WARLOCK" then
+			AddCheckBox(4, "SHARDBARFRAME", false)
 		end
 
 		if MonkHarmonyBarFrame and class == "MONK" then
@@ -989,7 +994,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.144"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.145"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1932,6 +1937,15 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "WarlockPowerFrame",
 				["lstr"] = "LID_WARLOCKPOWERFRAME"
+			}
+		)
+	end
+
+	if ShardBarFrame and MoveAny:IsEnabled("SHARDBARFRAME", false) and class == "WARLOCK" then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "ShardBarFrame",
+				["lstr"] = "LID_SHARDBARFRAME"
 			}
 		)
 	end
