@@ -1,22 +1,24 @@
 local _, _ = ...
 D4 = D4 or {}
 --[[ Basics ]]
-local BuildNr = select(4, GetBuildInfo())
-local Build = "CLASSIC"
-if BuildNr >= 100000 then
-    Build = "RETAIL"
-elseif BuildNr > 29999 then
-    Build = "WRATH"
-elseif BuildNr > 19999 then
-    Build = "TBC"
+local buildNr = select(4, GetBuildInfo())
+local buildName = "CLASSIC"
+if buildNr >= 100000 then
+    buildName = "RETAIL"
+elseif buildNr >= 40000 then
+    buildName = "CATA"
+elseif buildNr >= 30000 then
+    buildName = "WRATH"
+elseif buildNr >= 20000 then
+    buildName = "TBC"
 end
 
 function D4:GetWoWBuildNr()
-    return BuildNr
+    return buildNr
 end
 
 function D4:GetWoWBuild()
-    return Build
+    return buildName
 end
 
 D4.oldWow = D4.oldWow or false
