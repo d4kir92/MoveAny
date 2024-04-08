@@ -67,7 +67,7 @@ function MoveAny:UpdateActionBar(frame)
 	local rows = opts["ROWS"] or 1
 	rows = tonumber(rows)
 	if frame == MAMenuBar then
-		if MoveAny:GetWoWBuild() == "RETAIL" then
+		if D4:GetWoWBuild() == "RETAIL" then
 			if rows == 3 or rows == 4 or rows == 12 then
 				if HelpMicroButton then
 					HelpMicroButton:SetParent(MAMenuBar)
@@ -101,7 +101,7 @@ function MoveAny:UpdateActionBar(frame)
 					MainMenuMicroButton:SetParent(MAMenuBar)
 				end
 			end
-		elseif MoveAny:GetWoWBuild() == "WRATH" then
+		elseif D4:GetWoWBuild() == "WRATH" then
 			if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
 				if HelpMicroButton then
 					HelpMicroButton:SetParent(MAMenuBar)
@@ -263,7 +263,7 @@ function MoveAny:UpdateActionBar(frame)
 end
 
 function MoveAny:InitActionBarLayouts()
-	if MoveAny:GetWoWBuild() == "RETAIL" then
+	if D4:GetWoWBuild() == "RETAIL" then
 		MASetPoint("MainMenuBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
 		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
 		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
@@ -316,7 +316,7 @@ end
 
 local once = true
 function MoveAny:CustomBars()
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
+	if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
 			if texture then
@@ -411,7 +411,7 @@ function MoveAny:CustomBars()
 		end
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	if D4:GetWoWBuild() ~= "RETAIL" then
 		for i = 7, MAMaxAB do
 			for x = 1, 12 do
 				_G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] = _G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] or "Actionbar " .. i .. " Button " .. x
@@ -539,7 +539,7 @@ f:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 f:SetScript(
 	"OnEvent",
 	function(sel, event)
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if D4:GetWoWBuild() ~= "RETAIL" then
 			local frame = _G["MAActionBar" .. 1]
 			if frame and frame.init == nil then
 				frame.init = true
@@ -564,7 +564,7 @@ f:SetScript(
 				end
 				self:SetAttribute( "actionpage", newstate );
 			]])
-				if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				if D4:GetWoWBuild() ~= "RETAIL" then
 					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
 					RegisterStateDriver(frame, "page", bars)
 				else
@@ -593,7 +593,7 @@ f:SetScript(
 					end
 				end
 			]]
-				if MoveAny:GetWoWBuild() == "CLASSIC" then
+				if D4:GetWoWBuild() == "CLASSIC" then
 					_onAttributeChanged = [[
 				if name == 'statehidden' then
 					for i = 1, 12 do

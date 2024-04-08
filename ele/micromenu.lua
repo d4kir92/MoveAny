@@ -1,12 +1,12 @@
 local _, MoveAny = ...
 function MoveAny:GetMicroButtonSize()
-	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 33 end
+	if D4:GetWoWBuild() == "RETAIL" then return 24, 33 end
 
 	return 24, 33
 end
 
 function MoveAny:GetMicroButtonYOffset()
-	if MoveAny:GetWoWBuild() == "RETAIL" then return -3 end
+	if D4:GetWoWBuild() == "RETAIL" then return -3 end
 
 	return -4
 end
@@ -16,11 +16,11 @@ function MoveAny:InitMicroMenu()
 		local MBTNS = MICRO_BUTTONS
 		if MICRO_BUTTONS == nil then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-		elseif MoveAny:GetWoWBuild() == "RETAIL" then
+		elseif D4:GetWoWBuild() == "RETAIL" then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
 		end
 
-		if MoveAny:GetWoWBuild() == "CLASSIC" then
+		if D4:GetWoWBuild() == "CLASSIC" then
 			for i, v in pairs(MBTNS) do
 				if v == "LFGMicroButton" then
 					tremove(MBTNS, i)
@@ -45,7 +45,7 @@ function MoveAny:InitMicroMenu()
 		if MicroButtonAndBagsBar then
 			local p1, _, p3, p4, p5 = MicroButtonAndBagsBar:GetPoint()
 			MAMenuBar:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
-		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
+		elseif D4:GetWoWBuild() ~= "RETAIL" then
 			MAMenuBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 0)
 		else
 			MAMenuBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
@@ -73,7 +73,7 @@ function MoveAny:InitMicroMenu()
 
 					mb:ClearAllPoints()
 					mb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
-					if MoveAny:GetWoWBuild() == "RETAIL" then
+					if D4:GetWoWBuild() == "RETAIL" then
 						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					else
 						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())

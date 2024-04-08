@@ -96,7 +96,7 @@ function MoveAny:LangzhCN()
         ["LID_MABUFFSPACINGY"] = "缓冲间隔 垂直",
     }
 
-    if MoveAny:GetWoWBuild() ~= "RETAIL" then
+    if D4:GetWoWBuild() ~= "RETAIL" then
         tab["LID_ACTIONBARS"] = "动作栏1 + 5 + 6"
         tab["LID_ACTIONBAR1"] = "动作栏1（主栏）"
         tab["LID_ACTIONBAR2"] = "动作条2（动作条1的第2页）"

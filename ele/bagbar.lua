@@ -134,7 +134,7 @@ function MoveAny:InitBags()
 
 			if MicroButtonAndBagsBar then
 				BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
-			elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
+			elseif D4:GetWoWBuild() ~= "RETAIL" then
 				BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
 			else
 				BagsBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
@@ -142,7 +142,7 @@ function MoveAny:InitBags()
 
 			for i, mbname in pairs(BAGS) do
 				local bb = _G[mbname]
-				if bb and MoveAny:GetWoWBuild() ~= "RETAIL" then
+				if bb and D4:GetWoWBuild() ~= "RETAIL" then
 					hooksecurefunc(
 						bb,
 						"Hide",

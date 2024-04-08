@@ -206,7 +206,7 @@ function MoveAny:LangdeDE()
 		["LID_SHARDBARFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
 	}
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	if D4:GetWoWBuild() ~= "RETAIL" then
 		tab["LID_ACTIONBARS"] = "Aktionsleisten 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)"
 		tab["LID_ACTIONBAR2"] = "Aktionsleiste 2 (2. Seite von Aktionsleiste 1)"

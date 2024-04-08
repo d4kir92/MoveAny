@@ -61,7 +61,7 @@ local function CreateTabs(frame, args)
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
-		if MoveAny:GetWoWBuild() == "RETAIL" then
+		if D4:GetWoWBuild() == "RETAIL" then
 			template = "PanelTabButtonTemplate"
 		end
 
@@ -526,7 +526,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if D4:GetWoWBuild() ~= "RETAIL" then
 				MoveAny:CreateSlider(
 					content,
 					10,
@@ -607,7 +607,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if D4:GetWoWBuild() ~= "RETAIL" then
 				MoveAny:CreateSlider(
 					content,
 					10,
@@ -789,7 +789,7 @@ function MoveAny:RegisterWidget(tab)
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 	if enabled1 or enabled2 then
-		if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+		if not MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
 			MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
 
 			return
@@ -808,7 +808,7 @@ function MoveAny:RegisterWidget(tab)
 			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 			if enabled1 or enabled2 then
-				if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+				if not MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
 					MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
 
 					return
@@ -1520,7 +1520,7 @@ function MoveAny:UpdateAlphas(mouseEle)
 end
 
 function MoveAny:AnyActionbarEnabled()
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	if D4:GetWoWBuild() ~= "RETAIL" then
 		return MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR3", false) or MoveAny:IsEnabled("ACTIONBAR4", false) or MoveAny:IsEnabled("ACTIONBAR7", false) or MoveAny:IsEnabled("ACTIONBAR8", false) or MoveAny:IsEnabled("ACTIONBAR9", false) or MoveAny:IsEnabled("ACTIONBAR10", false)
 	else
 		return false

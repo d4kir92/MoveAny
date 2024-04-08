@@ -116,7 +116,7 @@ function MoveAny:LangesES()
 		["LID_TargetFrameNumericalThreat"] = "Porcentaje de amenaza",
 	}
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	if D4:GetWoWBuild() ~= "RETAIL" then
 		tab["LID_ACTIONBARS"] = "Barra de acción 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Barra de acción 1 (Barra principal)"
 		tab["LID_ACTIONBAR2"] = "Barra de acción 2 (2. Página de Actionbar 1)"

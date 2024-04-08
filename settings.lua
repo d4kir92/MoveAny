@@ -86,7 +86,7 @@ MoveAny:AddToEMMap("PartyFrame", "ShowPartyFrames")
 MoveAny:AddToEMMap("CompactRaidFrameContainer", "ShowRaidFrames")
 MoveAny:AddToEMMap("CompactArenaFrame", "ShowArenaFrames")
 function MoveAny:IsBlizEditModeEnabled()
-	if MoveAny:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
+	if D4:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
 
 	return false
 end
@@ -208,7 +208,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 				end
 			end
 
-			if (EMMap[key] or EMMapForced[key]) and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+			if (EMMap[key] or EMMapForced[key]) and MoveAny:IsBlizEditModeEnabled() and not MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
 				bGreyed = true
 				lstr = "(" .. MoveAny:GT("LID_EDITMODE") .. ") |c88888888" .. lstr
 			else
@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.147")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.147"))
+	D4:SetVersion(AddonName, 135994, "1.6.148")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.148"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -430,7 +430,7 @@ function MoveAny:InitMALock()
 		AddCategory("BUILTIN")
 		local posx = 4
 		if MoveAny:IsBlizEditModeEnabled() then
-			AddCheckBox(4, "EDITMODE", MoveAny:GetWoWBuildNr() < 100000)
+			AddCheckBox(4, "EDITMODE", D4:GetWoWBuildNr() < 100000)
 			posx = 24
 		end
 
@@ -440,17 +440,17 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "COMBOFRAME", false)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if D4:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if D4:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "TARGETFRAMETOTDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		if FocusFrame then
 			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if D4:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(posx, "FOCUSFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 			end
 		end
@@ -479,7 +479,7 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(posx, "OVERRIDEACTIONBAR", false)
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if D4:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "ACTIONBARS", false)
 			AddCheckBox(4, "ACTIONBAR3", false)
 			AddCheckBox(4, "ACTIONBAR4", false)
@@ -609,7 +609,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "RUNEFRAME", false)
 		end
 
-		if MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
+		if D4:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 			AddCheckBox(4, "TOTEMBAR", false)
 		end
 
@@ -742,7 +742,7 @@ function MoveAny:InitMALock()
 
 		if IsAddOnLoaded("ImproveAny") then
 			AddCategory("ImproveAny")
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if D4:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(4, "IASKILLS", true)
 			end
 
@@ -994,7 +994,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.147"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.148"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1770,7 +1770,7 @@ function MoveAny:LoadAddon()
 		MoveAny:MSG(MoveAny:GT("LID_STARTHELP3"))
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
+	if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		if MainMenuBarPerformanceBarFrame then
 			MainMenuBarPerformanceBarFrame:SetParent(MAHIDDEN)
 		end
@@ -2061,7 +2061,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+	if MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
 		if PlayerFrameBackground and MoveAny:IsEnabled("PLAYERFRAMEBACKGROUND", false) then
 			MoveAny:RegisterWidget(
 				{
@@ -2112,7 +2112,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
+		if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "TargetFrameBuff1",
@@ -2170,7 +2170,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTDEBUFF1", false) then
+		if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTDEBUFF1", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "TargetFrameToTDebuff1",
@@ -2284,7 +2284,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
+		if FocusFrame and D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "FocusFrameBuff1",
@@ -2470,7 +2470,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:GetWoWBuild() == "RETAIL" then
+		if D4:GetWoWBuild() == "RETAIL" then
 			local ABNames = {}
 			ABNames[1] = "MainMenuBar"
 			ABNames[2] = "MultiBarBottomLeft"
@@ -2541,8 +2541,8 @@ function MoveAny:LoadAddon()
 			end
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and (MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("MINIMAP", false)) and MultiBarRight and MultiBarLeft then end
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
+		if D4:GetWoWBuild() ~= "RETAIL" and (MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("ACTIONBAR" .. 3, false) or MoveAny:IsEnabled("MINIMAP", false)) and MultiBarRight and MultiBarLeft then end
+		if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
 			for i = 1, 10 do
 				if i ~= 2 and ((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
 					MoveAny:RegisterWidget(
@@ -2744,7 +2744,7 @@ function MoveAny:LoadAddon()
 				local cright = 2
 				local ctop = 22
 				local cbottom = -34
-				if MoveAny:GetWoWBuild() == "RETAIL" then
+				if D4:GetWoWBuild() == "RETAIL" then
 					cright = 16
 				end
 
@@ -3310,7 +3310,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if MoveAny:IsEnabled("IASKILLS", true) and D4:GetWoWBuild() ~= "RETAIL" then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "IASkills",
@@ -3475,7 +3475,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MINIMAP", false) then
-		if MoveAny:GetWoWBuild() == "RETAIL" then
+		if D4:GetWoWBuild() == "RETAIL" then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "MinimapCluster",
@@ -3702,7 +3702,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:GetWoWBuild() == "RETAIL" then
+	if D4:GetWoWBuild() == "RETAIL" then
 		LoadAddOn("Blizzard_ArchaeologyUI")
 	end
 
@@ -4008,7 +4008,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
+	if D4:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
 		if MultiCastActionBarFrame then
 			MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel())
 		end
@@ -4193,7 +4193,7 @@ function MoveAny:LoadAddon()
 	end
 
 	MoveAny:InitMALock()
-	if MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
+	if MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
 		if MoveAny.InitMinimap then
 			MoveAny:InitMinimap()
 		end
@@ -4256,7 +4256,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if WorldMapFrame and D4:GetWoWBuild() ~= "RETAIL" then
 			WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
 				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
 				local scale = WorldMapFrame:GetScale()

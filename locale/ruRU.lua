@@ -96,7 +96,7 @@ function MoveAny:LangruRU()
         ["LID_MABUFFSPACINGY"] = "Расстояние между буферами по вертикали",
     }
 
-    if MoveAny:GetWoWBuild() ~= "RETAIL" then
+    if D4:GetWoWBuild() ~= "RETAIL" then
         tab["LID_ACTIONBARS"] = "Панели действий 1 + 5 + 6"
         tab["LID_ACTIONBAR1"] = "Панель действий 1 (главная панель)"
         tab["LID_ACTIONBAR2"] = "Панель действий 2 (2. Страница панели действий 1)"

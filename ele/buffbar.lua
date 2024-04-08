@@ -47,7 +47,7 @@ function MoveAny:InitBuffBar()
 			MABuffBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if D4:GetWoWBuild() ~= "RETAIL" then
 			if MoveAny:IsEnabled("DEBUFFS", false) then
 				MABuffBar:SetSize(btnsize * 10, btnsize * 3)
 			else
