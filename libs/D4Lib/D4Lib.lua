@@ -106,7 +106,7 @@ end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", FixIconChat)
 if D4:GetWoWBuild() == "CLASSIC" then
     C_Timer.After(
-        3,
+        2,
         function()
             -- FIX HEALTH
             D4.fixedHealth = D4.fixedHealth or false
@@ -133,12 +133,12 @@ if D4:GetWoWBuild() == "CLASSIC" then
                     TargetFrameManaBarText:ClearAllPoints()
                     TargetFrameManaBarTextLeft:ClearAllPoints()
                     TargetFrameManaBarTextRight:ClearAllPoints()
-                    TargetFrameHealthBarText:SetPoint("CENTER", TargetFrameHealth, "CENTER", -50, 0)
-                    TargetFrameHealthBarTextLeft:SetPoint("LEFT", TargetFrameHealth, "LEFT", 8, 0)
-                    TargetFrameHealthBarTextRight:SetPoint("RIGHT", TargetFrameHealth, "RIGHT", -110, 0)
-                    TargetFrameManaBarText:SetPoint("CENTER", TargetFrameManaBar, "CENTER", -50, 0)
-                    TargetFrameManaBarTextLeft:SetPoint("LEFT", TargetFrameManaBar, "LEFT", 8, 0)
-                    TargetFrameManaBarTextRight:SetPoint("RIGHT", TargetFrameManaBar, "RIGHT", -110, 0)
+                    TargetFrameHealthBarText:SetPoint("CENTER", TargetFrameHealthBar, "CENTER", 0, 0)
+                    TargetFrameHealthBarTextLeft:SetPoint("LEFT", TargetFrameHealthBar, "LEFT", 0, 0)
+                    TargetFrameHealthBarTextRight:SetPoint("RIGHT", TargetFrameHealthBar, "RIGHT", 0, 0)
+                    TargetFrameManaBarText:SetPoint("CENTER", TargetFrameManaBar, "CENTER", 0, 0)
+                    TargetFrameManaBarTextLeft:SetPoint("LEFT", TargetFrameManaBar, "LEFT", 0, 0)
+                    TargetFrameManaBarTextRight:SetPoint("RIGHT", TargetFrameManaBar, "RIGHT", 0, 0)
                     TargetFrameHealthBar.LeftText = TargetFrameHealthBarTextLeft
                     TargetFrameHealthBar.RightText = TargetFrameHealthBarTextRight
                     TargetFrameManaBar.LeftText = TargetFrameManaBarTextLeft
