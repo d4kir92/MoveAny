@@ -1455,18 +1455,21 @@ function MoveAny:CheckAlphas()
 
 	local ele = GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
-		if tContains(MoveAny:GetAlphaFrames(), ele) then
-			ele:SetAlpha(1)
-			MoveAny:SetMouseEleAlpha(ele)
-		elseif ele.GetMAEle then
-			ele = ele:GetMAEle()
-			if ele then
+		local dufloaded = IsAddOnLoaded("DUnitFrames")
+		if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame) then
+			if tContains(MoveAny:GetAlphaFrames(), ele) then
 				ele:SetAlpha(1)
 				MoveAny:SetMouseEleAlpha(ele)
+			elseif ele.GetMAEle then
+				ele = ele:GetMAEle()
+				if ele then
+					ele:SetAlpha(1)
+					MoveAny:SetMouseEleAlpha(ele)
+				end
+			elseif lastEle then
+				lastEle = nil
+				MoveAny:UpdateAlphas()
 			end
-		elseif lastEle then
-			lastEle = nil
-			MoveAny:UpdateAlphas()
 		end
 	elseif lastEle then
 		lastEle = nil
@@ -1477,6 +1480,7 @@ function MoveAny:CheckAlphas()
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
+	local dufloaded = IsAddOnLoaded("DUnitFrames")
 	if ele == nil then
 		MoveAny:MSG("UpdateAlphas: ele is nil")
 	else
@@ -1490,24 +1494,26 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 			local alphaIsStealthed = MoveAny:GetEleOption(name, "ALPHAISSTEALTHED", 1, "Alpha6")
 			local alphaIsInPetBattle = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE", 1, "Alpha7")
 			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha8")
-			if MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
-				MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
-			elseif ele == mouseEle then
-				MoveAny:SetEleAlpha(ele, 1)
-			elseif incombat then
-				MoveAny:SetEleAlpha(ele, alphaInCombat)
-			elseif MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp2") and UnitHealth("player") >= UnitHealthMax("player") then
-				MoveAny:SetEleAlpha(ele, alphaIsFullHealth)
-			elseif UnitInVehicle and invehicle then
-				MoveAny:SetEleAlpha(ele, alphaInVehicle)
-			elseif IsMounted and ismounted then
-				MoveAny:SetEleAlpha(ele, alphaIsMounted)
-			elseif IsResting and isresting then
-				MoveAny:SetEleAlpha(ele, alphaInRestedArea)
-			elseif IsStealthed and isstealthed then
-				MoveAny:SetEleAlpha(ele, alphaIsStealthed)
-			elseif not incombat then
-				MoveAny:SetEleAlpha(ele, alphaNotInCombat)
+			if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame) then
+				if MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
+					MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
+				elseif ele == mouseEle then
+					MoveAny:SetEleAlpha(ele, 1)
+				elseif incombat then
+					MoveAny:SetEleAlpha(ele, alphaInCombat)
+				elseif MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp2") and UnitHealth("player") >= UnitHealthMax("player") then
+					MoveAny:SetEleAlpha(ele, alphaIsFullHealth)
+				elseif UnitInVehicle and invehicle then
+					MoveAny:SetEleAlpha(ele, alphaInVehicle)
+				elseif IsMounted and ismounted then
+					MoveAny:SetEleAlpha(ele, alphaIsMounted)
+				elseif IsResting and isresting then
+					MoveAny:SetEleAlpha(ele, alphaInRestedArea)
+				elseif IsStealthed and isstealthed then
+					MoveAny:SetEleAlpha(ele, alphaIsStealthed)
+				elseif not incombat then
+					MoveAny:SetEleAlpha(ele, alphaNotInCombat)
+				end
 			end
 		end
 	end
