@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.155")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.155"))
+	D4:SetVersion(AddonName, 135994, "1.6.156")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.156"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -997,7 +997,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.155"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.156"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1746,6 +1746,8 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", OnEvent)
+local hookedRep = false
+local hookedRepStatus = false
 function MoveAny:LoadAddon()
 	MoveAny.init = MoveAny.init or false
 	if MoveAny.init then return end
@@ -3902,25 +3904,10 @@ function MoveAny:LoadAddon()
 				opts["WIDTH"] = opts["WIDTH"] or 1024
 				opts["HEIGHT"] = opts["HEIGHT"] or 15
 				if opts["WIDTH"] and opts["HEIGHT"] then
-					hooksecurefunc(
-						ReputationWatchBar,
-						"SetHeight",
-						function(sel, nh)
-							if sel.ma_setheight then return end
-							sel.ma_setheight = true
-							sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
-							sel.ma_setheight = false
-						end
-					)
-
-					ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					if ReputationWatchBar_Drag then
-						ReputationWatchBar_Drag:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					end
-
-					if ReputationWatchBar.StatusBar then
+					if hookedRep == false then
+						hookedRep = true
 						hooksecurefunc(
-							ReputationWatchBar.StatusBar,
+							ReputationWatchBar,
 							"SetHeight",
 							function(sel, nh)
 								if sel.ma_setheight then return end
@@ -3929,6 +3916,27 @@ function MoveAny:LoadAddon()
 								sel.ma_setheight = false
 							end
 						)
+					end
+
+					ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					if ReputationWatchBar_MA_DRAG then
+						ReputationWatchBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					end
+
+					if ReputationWatchBar.StatusBar then
+						if hookedRepStatus == false then
+							hookedRepStatus = true
+							hooksecurefunc(
+								ReputationWatchBar.StatusBar,
+								"SetHeight",
+								function(sel, nh)
+									if sel.ma_setheight then return end
+									sel.ma_setheight = true
+									sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
+									sel.ma_setheight = false
+								end
+							)
+						end
 
 						ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
 						local last = nil
@@ -3951,6 +3959,10 @@ function MoveAny:LoadAddon()
 								id = id + 1
 							end
 						end
+					end
+
+					if ReputationWatchBar.OverlayFrame and ReputationWatchBar.OverlayFrame.Text then
+						ReputationWatchBar.OverlayFrame.Text:SetText(ReputationWatchBar.OverlayFrame.Text:GetText())
 					end
 				end
 			end
@@ -3978,8 +3990,8 @@ function MoveAny:LoadAddon()
 				opts["HEIGHT"] = opts["HEIGHT"] or 15
 				if opts["WIDTH"] and opts["HEIGHT"] then
 					MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					if MainMenuExpBar_Drag then
-						MainMenuExpBar_Drag:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					if MainMenuExpBar_MA_DRAG then
+						MainMenuExpBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
 					end
 
 					local last = nil
@@ -3999,6 +4011,10 @@ function MoveAny:LoadAddon()
 							v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
 							last = v
 						end
+					end
+
+					if MainMenuBarExpText then
+						MainMenuBarExpText:SetText(MainMenuBarExpText:GetText())
 					end
 				end
 			end
