@@ -279,7 +279,7 @@ function MoveAny:MenuOptions(opt, frame)
 					MoveAny:SetEleOption(name, "Hide", checked)
 					local maframe1 = _G["MA" .. name]
 					local maframe2 = _G[string.gsub(name, "MA", "")]
-					local dragf = _G[name .. "_DRAG"]
+					local dragf = _G[name .. "_MA_DRAG"]
 					if checked then
 						frame.oldparent = frame.oldparent or frame:GetParent()
 						frame:SetParent(MAHIDDEN)
@@ -332,7 +332,7 @@ function MoveAny:MenuOptions(opt, frame)
 				function()
 					local checked = clickthrough:GetChecked()
 					MoveAny:SetEleOption(name, "ClickThrough", checked)
-					local dragf = _G[name .. "_DRAG"]
+					local dragf = _G[name .. "_MA_DRAG"]
 					if checked then
 						dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
 						if frame then
@@ -706,7 +706,9 @@ function MoveAny:GetFrame(ele, name)
 		end
 	end
 
-	return ele
+	if ele and ele.GetName then return ele end
+
+	return nil
 end
 
 local ses = {}
@@ -832,9 +834,9 @@ function MoveAny:RegisterWidget(tab)
 		MoveAny:AddFrameName(frame, name)
 	end
 
-	if _G[name .. "_DRAG"] == nil then
-		_G[name .. "_DRAG"] = CreateFrame("FRAME", name .. "_DRAG", MoveAny:GetMainPanel())
-		local dragframe = _G[name .. "_DRAG"]
+	if _G[name .. "_MA_DRAG"] == nil then
+		_G[name .. "_MA_DRAG"] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
+		local dragframe = _G[name .. "_MA_DRAG"]
 		dragframe:SetClampedToScreen(true)
 		dragframe:SetFrameStrata("MEDIUM")
 		dragframe:SetFrameLevel(99)
@@ -847,9 +849,9 @@ function MoveAny:RegisterWidget(tab)
 		end
 
 		dragframe:ClearAllPoints()
-		dragframe:SetPoint("CENTER", frame, "CENTER", 0, 0)
+		dragframe:SetPoint("CENTER", frame or UIParent, "CENTER", 0, 0)
 		dragframe:SetToplevel(true)
-		dragframe.t = dragframe:CreateTexture(name .. "_DRAG.t", "BACKGROUND", nil, 1)
+		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
 		if dragframe.t.SetColorTexture then
 			dragframe.t:SetColorTexture(1, 1, 1, 1)
@@ -1012,7 +1014,7 @@ function MoveAny:RegisterWidget(tab)
 					if sel.scri then return end
 					sel.scri = true
 					sel:SetClampRectInsets(l, r, t, b)
-					local df = _G[name .. "_DRAG"]
+					local df = _G[name .. "_MA_DRAG"]
 					if df then
 						df:SetClampRectInsets(l, r, t, b)
 					end
@@ -1053,7 +1055,7 @@ function MoveAny:RegisterWidget(tab)
 
 	local maframe1 = _G["MA" .. name]
 	local maframe2 = _G[string.gsub(name, "MA", "")]
-	local dragf = _G[name .. "_DRAG"]
+	local dragf = _G[name .. "_MA_DRAG"]
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
 		frame.oldparent = frame.oldparent or frame:GetParent()
 		hooksecurefunc(
@@ -1334,7 +1336,7 @@ function MoveAny:RegisterWidget(tab)
 				sel:SetScale(newScale)
 			end
 
-			local dragframe = _G[name .. "_DRAG"]
+			local dragframe = _G[name .. "_MA_DRAG"]
 			if dragframe then
 				dragframe:SetScale(newScale)
 			end
@@ -1352,7 +1354,7 @@ function MoveAny:RegisterWidget(tab)
 		"SetSize",
 		function(sel, w, h)
 			local isToSmall = false
-			local df = _G[name .. "_DRAG"]
+			local df = _G[name .. "_MA_DRAG"]
 			df:SetSize(w, h)
 			if w < sw then
 				w = sw
@@ -1375,7 +1377,7 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetSize(sw, sh)
 	end
 
-	local dragframe = _G[name .. "_DRAG"]
+	local dragframe = _G[name .. "_MA_DRAG"]
 	dragframe:SetSize(sw, sh)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)

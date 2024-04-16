@@ -192,7 +192,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 			end
 
 			local ele = MoveAny:GetSelectEleName("LID_" .. key)
-			if ele and _G[ele .. "_DRAG"] and MoveAny:GetCurrentEle() == _G[ele .. "_DRAG"] then
+			if ele and _G[ele .. "_MA_DRAG"] and MoveAny:GetCurrentEle() == _G[ele .. "_MA_DRAG"] then
 				lstr = "|cFFFFFF00" .. lstr .. "|r"
 				MoveAny:ResetSelectedText()
 				lastSelected = cb
@@ -248,7 +248,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 			function(sel)
 				local ele = MoveAny:GetSelectEleName("LID_" .. key)
 				if ele then
-					MoveAny:SelectEle(_G[ele .. "_DRAG"])
+					MoveAny:SelectEle(_G[ele .. "_MA_DRAG"])
 					cb:UpdateText()
 				end
 			end
@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.154")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.154"))
+	D4:SetVersion(AddonName, 135994, "1.6.155")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.155"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -556,56 +556,56 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "DURABILITY", false)
 		AddCheckBox(4, "MICROMENU", false)
 		AddCheckBox(4, "BAGS", false)
-		if QueueStatusButton then
+		if MoveAny:IsValidFrame(QueueStatusButton) then
 			AddCheckBox(4, "QUEUESTATUSBUTTON", false)
 		end
 
-		if QueueStatusFrame then
+		if MoveAny:IsValidFrame(QueueStatusFrame) then
 			AddCheckBox(4, "QUEUESTATUSFRAME", false)
 		end
 
-		if MainMenuExpBar then
+		if MoveAny:IsValidFrame(MainMenuExpBar) then
 			AddCheckBox(4, "MAINMENUEXPBAR", false)
 			AddCheckBox(4, "REPUTATIONWATCHBAR", false)
 		end
 
 		AddCheckBox(4, "MAFPSFrame", false)
-		if ZoneAbilityFrame then
+		if MoveAny:IsValidFrame(ZoneAbilityFrame) then
 			AddCheckBox(4, "ZONEABILITYFRAME", false)
 		end
 
-		if PlayerPowerBarAlt then
+		if MoveAny:IsValidFrame(PlayerPowerBarAlt) then
 			AddCheckBox(4, "POWERBAR", false)
 		end
 
-		if UIWidgetPowerBarContainerFrame then
+		if MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
 			AddCheckBox(4, "UIWIDGETPOWERBAR", false)
 		end
 
 		--AddCheckBox( 4, "BUFFTIMER1", true )
-		if ArcheologyDigsiteProgressBar then
+		if MoveAny:IsValidFrame(ArcheologyDigsiteProgressBar) then
 			AddCheckBox(4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false)
 		end
 
 		AddCheckBox(4, "UIERRORSFRAME", false)
-		if QuickJoinToastButton then
+		if MoveAny:IsValidFrame(QuickJoinToastButton) then
 			AddCheckBox(4, "CHATQUICKJOIN", false)
 		end
 
-		if SpellActivationOverlayFrame then
+		if MoveAny:IsValidFrame(SpellActivationOverlayFrame) then
 			AddCheckBox(4, "SPELLACTIVATIONOVERLAYFRAME", false)
 		end
 
-		if LossOfControlFrame then
+		if MoveAny:IsValidFrame(LossOfControlFrame) then
 			AddCheckBox(4, "LOSSOFCONTROLFRAME", false)
 		end
 
-		if GhostFrame then
+		if MoveAny:IsValidFrame(GhostFrame) then
 			AddCheckBox(4, "GHOSTFRAME", false)
 		end
 
 		AddCategory("CLASSSPECIFIC")
-		if RuneFrame and class == "DEATHKNIGHT" then
+		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then
 			AddCheckBox(4, "RUNEFRAME", false)
 		end
 
@@ -613,50 +613,50 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "TOTEMBAR", false)
 		end
 
-		if WarlockPowerFrame and class == "WARLOCK" then
+		if MoveAny:IsValidFrame(WarlockPowerFrame) and class == "WARLOCK" then
 			AddCheckBox(4, "WARLOCKPOWERFRAME", false)
 		end
 
 		-- CATA
-		if ShardBarFrame and class == "WARLOCK" then
+		if MoveAny:IsValidFrame(ShardBarFrame) and class == "WARLOCK" then
 			AddCheckBox(4, "SHARDBARFRAME", false)
 		end
 
-		if MonkHarmonyBarFrame and class == "MONK" then
+		if MoveAny:IsValidFrame(MonkHarmonyBarFrame) and class == "MONK" then
 			AddCheckBox(4, "MONKHARMONYBARFRAME", false)
 		end
 
-		if MonkStaggerBar and class == "MONK" then
+		if MoveAny:IsValidFrame(MonkStaggerBar) and class == "MONK" then
 			AddCheckBox(4, "MONKSTAGGERBAR", false)
 		end
 
-		if MageArcaneChargesFrame and class == "MAGE" then
+		if MoveAny:IsValidFrame(MageArcaneChargesFrame) and class == "MAGE" then
 			AddCheckBox(4, "MAGEARCANECHARGESFRAME", false)
 		end
 
-		if (RogueComboPointBarFrame or DruidComboPointBarFrame) and (class == "ROGUE" or class == "DRUID") then
+		if (MoveAny:IsValidFrame(RogueComboPointBarFrame) or MoveAny:IsValidFrame(DruidComboPointBarFrame)) and (class == "ROGUE" or class == "DRUID") then
 			AddCheckBox(4, "COMBOPOINTPLAYERFRAME", false)
 		end
 
-		if EssencePlayerFrame and class == "EVOKER" then
+		if MoveAny:IsValidFrame(EssencePlayerFrame) and class == "EVOKER" then
 			AddCheckBox(4, "ESSENCEPLAYERFRAME", false)
 		end
 
-		if PaladinPowerBarFrame and class == "PALADIN" then
+		if MoveAny:IsValidFrame(PaladinPowerBarFrame) and class == "PALADIN" then
 			AddCheckBox(4, "PALADINPOWERBARFRAME", false)
 		end
 
 		-- CATA
-		if PaladinPowerBar and class == "PALADIN" then
+		if MoveAny:IsValidFrame(PaladinPowerBar) and class == "PALADIN" then
 			AddCheckBox(4, "PALADINPOWERBAR", false)
 		end
 
 		AddCategory("ADVANCED")
-		if TotemFrame then
+		if MoveAny:IsValidFrame(TotemFrame) then
 			AddCheckBox(4, "TOTEMFRAME", false)
 		end
 
-		if MinimapZoneTextButton then
+		if MoveAny:IsValidFrame(MinimapZoneTextButton) then
 			AddCheckBox(4, "MINIMAPZONETEXT", false)
 		end
 
@@ -670,20 +670,23 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "TARGETFRAMESPELLBAR", false)
-		if FocusFrame then
+		if MoveAny:IsValidFrame(FocusFrame) then
 			AddCheckBox(4, "FOCUSFRAMESPELLBAR", false)
 		end
 
 		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
 		AddCheckBox(4, "UIWIDGETBELOWMINIMAP", false)
 		AddCheckBox(4, "MIRRORTIMER1", false)
-		AddCheckBox(4, "TIMERTRACKER1", false)
+		if TimerTrackerTimer1 then
+			AddCheckBox(4, "TIMERTRACKER1", false)
+		end
+
 		if Arena_LoadUI then
 			AddCheckBox(4, "ARENAENEMYFRAMES", false)
 			AddCheckBox(4, "ARENAPREPFRAMES", false)
 		end
 
-		if CompactArenaFrame then
+		if MoveAny:IsValidFrame(CompactArenaFrame) then
 			AddCheckBox(4, "COMPACTARENAFRAME", false)
 		end
 
@@ -994,7 +997,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.154"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.155"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1733,6 +1736,12 @@ local function OnEvent(sel, event, ...)
 	end
 end
 
+function MoveAny:IsValidFrame(frame)
+	if frame and frame.GetName then return true end
+
+	return false
+end
+
 local f = CreateFrame("Frame")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -2041,7 +2050,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if PaladinPowerBarFrame and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
+	if MoveAny:IsValidFrame(PaladinPowerBarFrame) and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
 		PaladinPowerBarFrame.unit = "player"
 		PaladinPowerBarFrame:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
@@ -2052,7 +2061,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if PaladinPowerBar and MoveAny:IsEnabled("PALADINPOWERBAR", false) and class == "PALADIN" then
+	if MoveAny:IsValidFrame(PaladinPowerBar) and MoveAny:IsEnabled("PALADINPOWERBAR", false) and class == "PALADIN" then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "PaladinPowerBar",
@@ -3153,7 +3162,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("TIMERTRACKER1", false) then
+	if TimerTrackerTimer1 and MoveAny:IsEnabled("TIMERTRACKER1", false) then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "TimerTrackerTimer1",

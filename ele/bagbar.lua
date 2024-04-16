@@ -49,11 +49,11 @@ function MoveAny:UpdateBags()
 
 	if BagsBar then
 		BagsBar:SetSize(sw, sh)
-		if BagsBar_DRAG then
-			if BagsBar_DRAG.hooksetsize == nil then
-				BagsBar_DRAG.hooksetsize = true
+		if BagsBar_MA_DRAG then
+			if BagsBar_MA_DRAG.hooksetsize == nil then
+				BagsBar_MA_DRAG.hooksetsize = true
 				hooksecurefunc(
-					BagsBar_DRAG,
+					BagsBar_MA_DRAG,
 					"SetSize",
 					function(sel, w, h)
 						if sel.ma_bags_setsize then return end
@@ -64,7 +64,7 @@ function MoveAny:UpdateBags()
 				)
 			end
 
-			BagsBar_DRAG:SetSize(sw, sh)
+			BagsBar_MA_DRAG:SetSize(sw, sh)
 		end
 
 		local x = 0
