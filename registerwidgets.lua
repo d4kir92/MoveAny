@@ -1457,28 +1457,35 @@ function MoveAny:CheckAlphas()
 
 	local ele = GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
-		local dufloaded = IsAddOnLoaded("DUnitFrames")
-		if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame) then
-			if tContains(MoveAny:GetAlphaFrames(), ele) then
-				ele:SetAlpha(1)
-				MoveAny:SetMouseEleAlpha(ele)
-			elseif ele.GetMAEle then
-				ele = ele:GetMAEle()
-				if ele then
+		if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
+			lastEle = nil
+			MoveAny:UpdateAlphas()
+		end
+
+		if ele ~= WorldFrame and ele ~= UIParent then
+			local dufloaded = IsAddOnLoaded("DUnitFrames")
+			if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame) then
+				if tContains(MoveAny:GetAlphaFrames(), ele) then
 					ele:SetAlpha(1)
 					MoveAny:SetMouseEleAlpha(ele)
+				elseif ele.GetMAEle then
+					ele = ele:GetMAEle()
+					if ele then
+						ele:SetAlpha(1)
+						MoveAny:SetMouseEleAlpha(ele)
+					end
+				elseif lastEle then
+					lastEle = nil
+					MoveAny:UpdateAlphas()
 				end
-			elseif lastEle then
-				lastEle = nil
-				MoveAny:UpdateAlphas()
 			end
 		end
-	elseif lastEle then
+	elseif lastEle ~= nil then
 		lastEle = nil
 		MoveAny:UpdateAlphas()
 	end
 
-	C_Timer.After(0.11, MoveAny.CheckAlphas)
+	C_Timer.After(0.12, MoveAny.CheckAlphas)
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
