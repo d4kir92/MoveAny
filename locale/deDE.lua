@@ -104,7 +104,7 @@ function MoveAny:LangdeDE()
 		["LID_POWERBAR"] = "Power Bar (Encounters, ...)",
 		["LID_COUNT"] = "Anzahl",
 		["LID_ROWS"] = "Reihen",
-		["LID_SPACING"] = "Abstand",
+		["LID_SPACING"] = "Abstand (Lücke)",
 		["LID_PROFILE"] = "Profil",
 		["LID_PROFILES"] = "Profile",
 		["LID_ADDPROFILE"] = "Profil hinzufügen",
@@ -204,6 +204,7 @@ function MoveAny:LangdeDE()
 		["LID_TIMERTRACKER1"] = "Zeitmesser (erst sichtbar wenn verfügbar)",
 		["LID_PALADINPOWERBAR"] = "Paladin Machtleiste (Heilige Macht)",
 		["LID_SHARDBARFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
+		["LID_OFFSET"] = "Versatz (Offset)",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

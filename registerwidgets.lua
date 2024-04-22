@@ -407,6 +407,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local max = getn(frame.btns)
 			local count = opts["COUNT"] or max
 			local rows = opts["ROWS"] or 1
+			local offset = opts["OFFSET"] or 0
 			local PY = -20
 			if frame ~= MAMenuBar and frame ~= StanceBar then
 				slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
@@ -478,6 +479,32 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
+			slides.offset = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			local sliderOffset = slides.offset
+			sliderOffset:SetWidth(content:GetWidth() - 110)
+			sliderOffset:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
+			sliderOffset.Low:SetText(-4)
+			sliderOffset.High:SetText(8)
+			sliderOffset.Text:SetText(MoveAny:GT("LID_OFFSET") .. ": " .. offset)
+			sliderOffset:SetMinMaxValues(-4, 8)
+			sliderOffset:SetObeyStepOnDrag(true)
+			sliderOffset:SetValueStep(1)
+			sliderOffset:SetValue(offset)
+			sliderOffset:SetScript(
+				"OnValueChanged",
+				function(sel, value)
+					val = tonumber(string.format("%" .. 0 .. "f", value))
+					if value and value ~= opts["OFFSET"] then
+						opts["OFFSET"] = value
+						sel.Text:SetText(MoveAny:GT("LID_OFFSET") .. ": " .. value)
+						if MoveAny.UpdateActionBar then
+							MoveAny:UpdateActionBar(frame)
+						end
+					end
+				end
+			)
+
+			PY = PY - 30
 			local flipped = CreateFrame("CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate")
 			flipped:SetSize(btnsize, btnsize)
 			flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)

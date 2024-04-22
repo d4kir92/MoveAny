@@ -1,6 +1,6 @@
 local _, MoveAny = ...
 function MoveAny:GetMicroButtonSize()
-	if D4:GetWoWBuild() == "RETAIL" then return 24, 33 end
+	if D4:GetWoWBuild() == "RETAIL" then return 24, 32 end
 
 	return 24, 33
 end
