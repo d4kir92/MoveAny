@@ -103,7 +103,7 @@ function MoveAny:UpdateActionBar(frame)
 					MainMenuMicroButton:SetParent(MAMenuBar)
 				end
 			end
-		elseif D4:GetWoWBuild() == "WRATH" then
+		elseif D4:GetWoWBuild() == "WRATH" or D4:GetWoWBuild() == "CATA" then
 			if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
 				if HelpMicroButton then
 					HelpMicroButton:SetParent(MAMenuBar)

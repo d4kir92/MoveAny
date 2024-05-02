@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.159")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.159"))
+	D4:SetVersion(AddonName, 135994, "1.6.160")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.160"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -609,7 +609,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "RUNEFRAME", false)
 		end
 
-		if D4:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
+		if (D4:GetWoWBuild() == "WRATH" or D4:GetWoWBuild() == "CATA") and class == "SHAMAN" then
 			AddCheckBox(4, "TOTEMBAR", false)
 		end
 
@@ -997,7 +997,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.159"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.160"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4033,7 +4033,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if D4:GetWoWBuild() == "WRATH" and class == "SHAMAN" then
+	if (D4:GetWoWBuild() == "WRATH" or D4:GetWoWBuild() == "CATA") and class == "SHAMAN" then
 		if MultiCastActionBarFrame then
 			MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel())
 		end
