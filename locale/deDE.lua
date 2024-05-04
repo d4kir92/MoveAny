@@ -205,6 +205,7 @@ function MoveAny:LangdeDE()
 		["LID_PALADINPOWERBAR"] = "Paladin Machtleiste (Heilige Macht)",
 		["LID_SHARDBARFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
 		["LID_OFFSET"] = "Versatz (Offset)",
+		["LID_EclipseBarFrame"] = "Eclipseleiste (Druide)",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

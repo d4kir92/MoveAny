@@ -211,6 +211,7 @@ function MoveAny:LangenUS()
 		["LID_PALADINPOWERBAR"] = "Paladin Power Bar (Holy Power)",
 		["LID_SHARDBARFRAME"] = "Warlock Power Frame (Shards)",
 		["LID_OFFSET"] = "Offset",
+		["LID_EclipseBarFrame"] = "Eclipse Bar Frame (Druid)",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then
