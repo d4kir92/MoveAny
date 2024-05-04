@@ -126,7 +126,7 @@ function MoveAny:InitMicroMenu()
 						function UpdateMicroMenu()
 							local overrideChanged = false
 							local parentChanged = false
-							if OverrideActionBar:IsShown() ~= OverrideActionBar.isshown or OverrideActionBar.slideOut and OverrideActionBar.slideOut:IsPlaying() ~= OverrideActionBar.isplaying then
+							if OverrideActionBar and (OverrideActionBar:IsShown() ~= OverrideActionBar.isshown or OverrideActionBar.slideOut and OverrideActionBar.slideOut:IsPlaying() ~= OverrideActionBar.isplaying) then
 								OverrideActionBar.isshown = OverrideActionBar:IsShown()
 								OverrideActionBar.isplaying = OverrideActionBar.slideOut:IsPlaying()
 								overrideChanged = true
