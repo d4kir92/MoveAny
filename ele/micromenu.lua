@@ -74,6 +74,7 @@ function MoveAny:InitMicroMenu()
 					end
 
 					mb:ClearAllPoints()
+					mb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
 					if D4:GetWoWBuild() == "RETAIL" then
 						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					else
@@ -121,46 +122,48 @@ function MoveAny:InitMicroMenu()
 				1,
 				function()
 					MoveAny:UpdateActionBar(MAMenuBar)
-					function UpdateMicroMenu()
-						local overrideChanged = false
-						local parentChanged = false
-						if OverrideActionBar:IsShown() ~= OverrideActionBar.isshown or OverrideActionBar.slideOut and OverrideActionBar.slideOut:IsPlaying() ~= OverrideActionBar.isplaying then
-							OverrideActionBar.isshown = OverrideActionBar:IsShown()
-							OverrideActionBar.isplaying = OverrideActionBar.slideOut:IsPlaying()
-							overrideChanged = true
-						end
-
-						if CharacterMicroButton.curparent ~= CharacterMicroButton:GetParent() then
-							CharacterMicroButton.curparent = CharacterMicroButton:GetParent()
-							parentChanged = true
-						end
-
-						if CharacterMicroButton:GetParent() ~= MAMenuBar and parentChanged and (MAMenuBar.redots == nil or GetTime() + 0.11 > MAMenuBar.redots) then
-							MAMenuBar.redots = GetTime() + 0.11
-						end
-
-						if overrideChanged and (MAMenuBar.redots == nil or GetTime() + 0.51 > MAMenuBar.redots) then
-							MAMenuBar.redots = GetTime() + 0.51
-						end
-
-						if MAMenuBar.redots ~= nil and GetTime() > MAMenuBar.redots + 0.1 then
-							if CharacterMicroButton then
-								for i, v in pairs(MBTNS) do
-									local mmbtn = _G[v]
-									if mmbtn then
-										mmbtn:SetParent(MAMenuBar)
-									end
-								end
+					if D4:GetWoWBuild() ~= "RETAIL" then
+						function UpdateMicroMenu()
+							local overrideChanged = false
+							local parentChanged = false
+							if OverrideActionBar:IsShown() ~= OverrideActionBar.isshown or OverrideActionBar.slideOut and OverrideActionBar.slideOut:IsPlaying() ~= OverrideActionBar.isplaying then
+								OverrideActionBar.isshown = OverrideActionBar:IsShown()
+								OverrideActionBar.isplaying = OverrideActionBar.slideOut:IsPlaying()
+								overrideChanged = true
 							end
 
-							MoveAny:UpdateActionBar(MAMenuBar)
-							MAMenuBar.redots = nil
+							if CharacterMicroButton.curparent ~= CharacterMicroButton:GetParent() then
+								CharacterMicroButton.curparent = CharacterMicroButton:GetParent()
+								parentChanged = true
+							end
+
+							if CharacterMicroButton:GetParent() ~= MAMenuBar and parentChanged and (MAMenuBar.redots == nil or GetTime() + 0.11 > MAMenuBar.redots) then
+								MAMenuBar.redots = GetTime() + 0.11
+							end
+
+							if overrideChanged and (MAMenuBar.redots == nil or GetTime() + 0.51 > MAMenuBar.redots) then
+								MAMenuBar.redots = GetTime() + 0.51
+							end
+
+							if MAMenuBar.redots ~= nil and GetTime() > MAMenuBar.redots + 0.1 then
+								if CharacterMicroButton then
+									for i, v in pairs(MBTNS) do
+										local mmbtn = _G[v]
+										if mmbtn then
+											mmbtn:SetParent(MAMenuBar)
+										end
+									end
+								end
+
+								MoveAny:UpdateActionBar(MAMenuBar)
+								MAMenuBar.redots = nil
+							end
+
+							C_Timer.After(0.1, UpdateMicroMenu)
 						end
 
-						C_Timer.After(0.1, UpdateMicroMenu)
+						UpdateMicroMenu()
 					end
-
-					UpdateMicroMenu()
 				end
 			)
 		end
