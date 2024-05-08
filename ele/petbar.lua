@@ -97,13 +97,20 @@ function MoveAny:InitPetBar()
 				"ShowPetActionBar",
 				function()
 					MAPetBar:SetAlpha(1)
+					MAPetBar.ma_show = true
 				end
 			)
 
 			hooksecurefunc(
 				"HidePetActionBar",
 				function()
-					MAPetBar:SetAlpha(0)
+					if UnitExists("pet") then
+						MAPetBar:SetAlpha(1)
+						MAPetBar.ma_show = true
+					else
+						MAPetBar:SetAlpha(0)
+						MAPetBar.ma_show = false
+					end
 				end
 			)
 		else

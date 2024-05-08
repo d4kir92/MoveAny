@@ -1531,7 +1531,9 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 			local alphaIsInPetBattle = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE", 1, "Alpha7")
 			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha8")
 			if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame) then
-				if MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
+				if ele.ma_show ~= nil and ele.ma_show == false then
+					MoveAny:SetEleAlpha(ele, 0)
+				elseif MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
 					MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
 				elseif ele == mouseEle then
 					MoveAny:SetEleAlpha(ele, 1)
