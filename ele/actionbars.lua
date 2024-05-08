@@ -334,13 +334,12 @@ local function UpdateActionBarBackground(show)
 				end
 
 				if btnname and _G[btnname .. "NormalTexture"] then
-					if show == 1 then
-						_G[btnname]:SetAttribute("showgrid", 1)
-						_G[btnname .. "NormalTexture"]:Show()
-						_G[btnname]:Show()
-					elseif show == 0 then
-						_G[btnname]:SetAttribute("showgrid", 0)
-						_G[btnname .. "NormalTexture"]:Hide()
+					if show == nil then
+						if show == true or show == 1 then
+							ActionButton_ShowGrid(abtn)
+						elseif show == false or show == 0 then
+							ActionButton_HideGrid(abtn)
+						end
 					end
 				else
 					MoveAny:MSG("NOT FOUND: " .. tostring(btnname))
@@ -475,13 +474,14 @@ function MoveAny:CustomBars()
 					btnname = btns[i] .. x
 				end
 
+				local btn = _G[btnname]
 				local id = (i - 1) * 12 + x
-				if _G[btnname] == nil then
-					_G[btnname] = CreateFrame("CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
-					_G[btnname].commandName = "CLICK " .. btnname
-					_G[btnname]:SetAttribute("action", id)
+				if btn == nil then
+					btn = CreateFrame("CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
+					btn.commandName = "CLICK " .. btnname
+					btn:SetAttribute("action", id)
 				else
-					_G[btnname].bindingID = x
+					btn.bindingID = x
 				end
 
 				local alwaysShow = GetCVarBool("alwaysShowActionBars")
@@ -491,11 +491,17 @@ function MoveAny:CustomBars()
 					alwaysShow = 0
 				end
 
-				_G[btnname]:SetAttribute("statehidden", false)
-				_G[btnname]:SetAttribute("showgrid", alwaysShow)
+				btn:SetAttribute("statehidden", false)
+				btn:SetAttribute("showgrid", alwaysShow)
+				if alwaysShow then
+					ActionButton_ShowGrid(btn)
+				else
+					ActionButton_HideGrid(btn)
+				end
+
 				if _G[btnname .. "FloatingBG"] == nil then
-					_G[btnname .. "FloatingBG"] = _G[btnname]:CreateTexture(btnname .. "FloatingBG", "BACKGROUND")
-					_G[btnname .. "FloatingBG"]:SetParent(_G[btnname])
+					_G[btnname .. "FloatingBG"] = btn:CreateTexture(btnname .. "FloatingBG", "BACKGROUND")
+					_G[btnname .. "FloatingBG"]:SetParent(btn)
 					_G[btnname .. "FloatingBG"]:SetPoint("TOPLEFT", -15, 15)
 					_G[btnname .. "FloatingBG"]:SetPoint("BOTTOMRIGHT", 15, -15)
 					_G[btnname .. "FloatingBG"]:SetTexture("Interface/Buttons/UI-Quickslot")
@@ -503,7 +509,6 @@ function MoveAny:CustomBars()
 					_G[btnname .. "FloatingBG"]:SetDrawLayer("BACKGROUND", -1)
 				end
 
-				local btn = _G[btnname]
 				btn.maid = id
 				btn:ClearAllPoints()
 				btn:SetParent(bar)
@@ -552,8 +557,6 @@ function MoveAny:CustomBars()
 			end
 		end
 	end
-
-	UpdateActionBarBackground(GetCVarBool("alwaysShowActionBars"))
 end
 
 local asabf = CreateFrame("Frame")
