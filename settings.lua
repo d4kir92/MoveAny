@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.172")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.172"))
+	D4:SetVersion(AddonName, 135994, "1.6.173")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.173"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1001,7 +1001,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.172"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.173"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3012,7 +3012,8 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "TargetFrameSpellBar",
 				["lstr"] = "LID_TARGETFRAMESPELLBAR",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["noreparent"] = true
 			}
 		)
 	end
@@ -3031,7 +3032,8 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "FocusFrameSpellBar",
 				["lstr"] = "LID_FOCUSFRAMESPELLBAR",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["noreparent"] = true
 			}
 		)
 	end
