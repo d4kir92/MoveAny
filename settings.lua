@@ -374,8 +374,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.174")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.174"))
+	D4:SetVersion(AddonName, 135994, "1.6.175")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.175"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1001,7 +1001,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.174"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.175"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2252,7 +2252,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:IsEnabled("TARGETFRAME", false) then
+		if MoveAny:IsEnabled("TARGETFRAME", false) or MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
 			if ComboFrame then
 				hooksecurefunc(
 					TargetFrame,
@@ -2366,7 +2366,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false) then
+		if (FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false)) or (FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false)) then
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "FocusFrame",
@@ -3012,8 +3012,7 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "TargetFrameSpellBar",
 				["lstr"] = "LID_TARGETFRAMESPELLBAR",
-				["userplaced"] = true,
-				["noreparent"] = true
+				["userplaced"] = true
 			}
 		)
 	end
@@ -3032,8 +3031,7 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "FocusFrameSpellBar",
 				["lstr"] = "LID_FOCUSFRAMESPELLBAR",
-				["userplaced"] = true,
-				["noreparent"] = true
+				["userplaced"] = true
 			}
 		)
 	end
