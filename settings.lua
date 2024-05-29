@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.178")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.178"))
+	D4:SetVersion(AddonName, 135994, "1.6.179")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.179"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1038,7 +1038,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.178"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.179"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3054,27 +3054,37 @@ function MoveAny:LoadAddon()
 				}
 			)
 		else
-			MoveAny:MSG("TARGETFRAME must be enabled for TARGETFRAMESPELLBAR")
+			MoveAny:MSG("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMESPELLBAR enabled in MoveAny.")
+			if D4:GetWoWBuild() == "RETAIL" then
+				MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+			end
 		end
 	end
 
 	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
-		FocusFrameSpellBar:HookScript(
-			"OnEvent",
-			function(sel, event)
-				if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
-					MoveAny:UpdateAlpha(sel)
+		if MoveAny:IsEnabled("FOCUSFRAME", false) then
+			FocusFrameSpellBar:HookScript(
+				"OnEvent",
+				function(sel, event)
+					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
+						MoveAny:UpdateAlpha(sel)
+					end
 				end
-			end
-		)
+			)
 
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "FocusFrameSpellBar",
-				["lstr"] = "LID_FOCUSFRAMESPELLBAR",
-				["userplaced"] = true
-			}
-		)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "FocusFrameSpellBar",
+					["lstr"] = "LID_FOCUSFRAMESPELLBAR",
+					["userplaced"] = true
+				}
+			)
+		else
+			MoveAny:MSG("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMESPELLBAR enabled in MoveAny.")
+			if D4:GetWoWBuild() == "RETAIL" then
+				MoveAny:MSG("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+			end
+		end
 	end
 
 	if MoveAny:IsEnabled("TARGETOFTARGETFRAME", false) then
