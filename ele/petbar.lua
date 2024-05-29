@@ -114,7 +114,7 @@ function MoveAny:InitPetBar()
 				end
 			)
 		else
-			print("[MOVEANY] MISSING ShowPetActionBar")
+			MoveAny:MSG("MISSING ShowPetActionBar")
 		end
 
 		MoveAny:UpdatePetBar()

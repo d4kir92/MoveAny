@@ -1289,7 +1289,6 @@ function MoveAny:RegisterWidget(tab)
 	if frame.SetPointBase then
 		--frame.layoutApplyInProgress = true
 		function frame:MAUpdatePoint()
-			print("UPDATE POINT")
 			if frame.ma_retry_setpoint and not InCombatLockdown() then
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 				if not InCombatLockdown() and frame.SetPointBase then

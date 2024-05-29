@@ -34,10 +34,10 @@ function MoveAny:LangenUS()
 		["LID_TARGETFRAMEBUFF1"] = "Target Frame Buff 1",
 		["LID_TARGETFRAMETOTDEBUFF1"] = "Target of Target Frame Debuff 1",
 		["LID_TARGETOFTARGETFRAME"] = "Target of Target Frame",
-		["LID_TARGETFRAMESPELLBAR"] = "Castbar from Target (Requires TargetFrame enabled)",
+		["LID_TARGETFRAMESPELLBAR"] = "Castbar from Target",
 		["LID_FOCUSFRAME"] = "Focus Frame",
 		["LID_FOCUSFRAMEBUFF1"] = "Focus Frame Buff 1",
-		["LID_FOCUSFRAMESPELLBAR"] = "Castbar from Focus (Requires Focus enabled)",
+		["LID_FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
 		["LID_TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
 		["LID_RUNEFRAME"] = "Deathknight - Runes Frame",
 		["LID_TOTEMFRAME"] = "Totem Timers (Also used by other classes)",
@@ -212,6 +212,8 @@ function MoveAny:LangenUS()
 		["LID_SHARDBARFRAME"] = "Warlock Power Frame (Shards)",
 		["LID_OFFSET"] = "Offset",
 		["LID_EclipseBarFrame"] = "Eclipse Bar Frame (Druid)",
+		["LID_REQUIRESFOR"] = "Requires: %s",
+		["LID_REQUIREDFOR"] = "Required for: %s",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

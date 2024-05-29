@@ -28,10 +28,10 @@ function MoveAny:LangdeDE()
 		["LID_TARGETFRAMEBUFF1"] = "Zielfenster Buff 1",
 		["LID_TARGETFRAMETOTDEBUFF1"] = "Ziel des Zielfenster Debuff 1",
 		["LID_TARGETOFTARGETFRAME"] = "Ziel des Zielfenster",
-		["LID_TARGETFRAMESPELLBAR"] = "Zauberleiste vom Ziel (Benötigt Zielfenster aktiviert)",
+		["LID_TARGETFRAMESPELLBAR"] = "Zauberleiste vom Ziel",
 		["LID_FOCUSFRAME"] = "Fokusfenster",
 		["LID_FOCUSFRAMEBUFF1"] = "Fokusfenster Buff 1",
-		["LID_FOCUSFRAMESPELLBAR"] = "Zauberleiste vom Fokus (Benötigt Fokusfenster aktiviert)",
+		["LID_FOCUSFRAMESPELLBAR"] = "Zauberleiste vom Fokus",
 		["LID_TARGETOFFOCUSFRAME"] = "Ziel des Fokusfenster",
 		["LID_RUNEFRAME"] = "Todesritter - Runen Fenster",
 		["LID_TOTEMFRAME"] = "Totem Zähler (Auch von anderen Klassen benutzt)",
@@ -206,6 +206,8 @@ function MoveAny:LangdeDE()
 		["LID_SHARDBARFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
 		["LID_OFFSET"] = "Versatz (Offset)",
 		["LID_EclipseBarFrame"] = "Eclipseleiste (Druide)",
+		["LID_REQUIRESFOR"] = "Benötigt: %s",
+		["LID_REQUIREDFOR"] = "Benötigt für: %s",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

@@ -607,7 +607,7 @@ f:SetScript(
 					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;[bonusbar:5,bar:2]2;[bonusbar:5]11;[bonusbar:4,bar:2]2;[bonusbar:4]10;[bonusbar:3,bar:2]2;[bonusbar:3]9;[bonusbar:2,bar:2]2;[bonusbar:2]8;[bonusbar:1,bar:2]2;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
 					RegisterStateDriver(frame, "page", bars)
 				else
-					print("[MOVEANY] MISSING EXPANSION")
+					MoveAny:MSG("MISSING EXPANSION")
 				end
 
 				local _onAttributeChanged = [[

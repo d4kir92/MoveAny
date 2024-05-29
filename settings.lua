@@ -159,7 +159,18 @@ local function AddCategory(key)
 	end
 end
 
-local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
+local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requiresFor, requiredFor)
+	local oldVal = MoveAny:IsEnabled(key, val, true) or false
+	local bRequiresFor = nil
+	if requiresFor ~= nil then
+		bRequiresFor = MoveAny:IsEnabled(requiresFor)
+	end
+
+	local bRequiredFor = nil
+	if requiredFor ~= nil then
+		bRequiredFor = MoveAny:IsEnabled(requiredFor)
+	end
+
 	local bShowReload = showReload
 	local bGreyed = false
 	local lkey = key
@@ -167,9 +178,9 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		bShowReload = true
 	end
 
-	if val == nil then
+	if oldVal == nil then
 		MoveAny:MSG("Missing Value For: " .. tostring(key))
-		val = true
+		oldVal = true
 	end
 
 	if id then
@@ -180,7 +191,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		cbs[key] = CreateFrame("CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate")
 		local cb = cbs[key]
 		cb:SetSize(24, 24)
-		cb:SetChecked(MoveAny:IsEnabled(key, val, true))
+		cb:SetChecked(oldVal)
 		cb.func = func or nil
 		cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
 		cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
@@ -215,7 +226,15 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 				lstr = "|cFFFFFFFF" .. lstr
 			end
 
-			if checked then
+			if bRequiresFor == false then
+				lstr = lstr .. " (" .. format(MoveAny:GT("LID_REQUIRESFOR"), MoveAny:GT("LID_" .. requiresFor)) .. ")"
+			end
+
+			if bRequiredFor == true then
+				lstr = lstr .. " (" .. format(MoveAny:GT("LID_REQUIREDFOR"), MoveAny:GT("LID_" .. requiredFor)) .. ")"
+			end
+
+			if bShowReload and checked ~= oldVal then
 				cb.f:SetText(format("[%s] %s", MoveAny:GT("LID_NEEDSARELOAD"), lstr))
 			else
 				cb.f:SetText(lstr)
@@ -226,8 +245,8 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 			"OnClick",
 			function(sel)
 				MoveAny:SetEnabled(key, sel:GetChecked())
-				if bShowReload and sel:GetChecked() and sel.f then
-					cb:UpdateText(true)
+				if sel:GetChecked() and sel.f then
+					cb:UpdateText(sel:GetChecked())
 				end
 
 				if cb.func then
@@ -253,9 +272,27 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 				end
 			end
 		)
+
+		if requiresFor ~= nil or requiredFor ~= nil then
+			function cb:Think()
+				if requiresFor ~= nil then
+					bRequiresFor = MoveAny:IsEnabled(requiresFor)
+				end
+
+				if requiredFor ~= nil then
+					bRequiredFor = MoveAny:IsEnabled(requiredFor)
+				end
+
+				cb:UpdateText(cb:GetChecked())
+				C_Timer.After(1, cb.Think)
+			end
+
+			cb:Think()
+			cb:UpdateText(cb:GetChecked())
+		end
 	end
 
-	cbs[key]:UpdateText()
+	cbs[key]:UpdateText(cbs[key]:GetChecked())
 	cbs[key]:ClearAllPoints()
 	if bGreyed then
 		cbs[key]:SetEnabled(false)
@@ -374,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.175")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.175"))
+	D4:SetVersion(AddonName, 135994, "1.6.176")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.176"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -435,7 +472,7 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(posx, "PLAYERFRAME", false)
-		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
 		if ComboFrame then
 			AddCheckBox(posx, "COMBOFRAME", false)
 		end
@@ -673,9 +710,9 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "BLIZZARDACTIONBUTTONSART", false)
 		end
 
-		AddCheckBox(4, "TARGETFRAMESPELLBAR", false)
+		AddCheckBox(24, "TARGETFRAMESPELLBAR", false, nil, nil, nil, nil, "TARGETFRAME")
 		if MoveAny:IsValidFrame(FocusFrame) then
-			AddCheckBox(4, "FOCUSFRAMESPELLBAR", false)
+			AddCheckBox(24, "FOCUSFRAMESPELLBAR", false, nil, nil, nil, nil, "FOCUSFRAME")
 		end
 
 		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
@@ -1001,7 +1038,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.175"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.176"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2252,7 +2289,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:IsEnabled("TARGETFRAME", false) or MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			if ComboFrame then
 				hooksecurefunc(
 					TargetFrame,
@@ -2533,7 +2570,7 @@ function MoveAny:LoadAddon()
 
 								table.insert(ab.btns, abtn)
 							else
-								print("[MoveAny] ACTION BUTTON NOT FOUND", name)
+								MoveAny:MSG("ACTION BUTTON NOT FOUND " .. name)
 							end
 						end
 					end
@@ -2606,8 +2643,8 @@ function MoveAny:LoadAddon()
 					end
 
 					if scale < 0 and SHOW_MULTI_ACTIONBAR_3 == "1" and MoveAny:IsEnabled("ACTIONBAR" .. 4, false) then
-						print("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
-						print("Actionbar4 will still be shown.")
+						MoveAny:MSG("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
+						MoveAny:MSG("Actionbar4 will still be shown.")
 					end
 				end
 			)
@@ -2999,22 +3036,26 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
-		TargetFrameSpellBar:HookScript(
-			"OnEvent",
-			function(sel, event)
-				if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
-					MoveAny:UpdateAlpha(sel)
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			TargetFrameSpellBar:HookScript(
+				"OnEvent",
+				function(sel, event)
+					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
+						MoveAny:UpdateAlpha(sel)
+					end
 				end
-			end
-		)
+			)
 
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameSpellBar",
-				["lstr"] = "LID_TARGETFRAMESPELLBAR",
-				["userplaced"] = true
-			}
-		)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameSpellBar",
+					["lstr"] = "LID_TARGETFRAMESPELLBAR",
+					["userplaced"] = true
+				}
+			)
+		else
+			MoveAny:MSG("TARGETFRAME must be enabled for TARGETFRAMESPELLBAR")
+		end
 	end
 
 	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then

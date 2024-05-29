@@ -302,12 +302,11 @@ function MoveAny:IsEnabled(element, value, settings)
 		MoveAny:GetTab()["ELES"] = MoveAny:GetTab()["ELES"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
-		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil then
-			--MoveAny:MSG("VALUE NOT IN DB, SET IT", element, value)
+		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil and value ~= nil then
 			MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 		end
 
-		return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
+		return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] or false
 	end
 
 	return false
