@@ -94,6 +94,7 @@ function MoveAny:LangruRU()
         ["LID_MABUFFLIMIT"] = "Предел баффа",
         ["LID_MABUFFSPACINGX"] = "Горизонтальное расстояние между баффами",
         ["LID_MABUFFSPACINGY"] = "Расстояние между буферами по вертикали",
+        ["LID_RESETELEMENT"] = "Reset Element",
     }
 
     if D4:GetWoWBuild() ~= "RETAIL" then

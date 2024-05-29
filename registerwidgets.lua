@@ -267,6 +267,19 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
+			local resetDB = CreateFrame("Button", "resetdb", content, "UIPanelButtonTemplate")
+			resetDB:SetText(MoveAny:GT("LID_RESETELEMENT"))
+			resetDB:SetSize(btnsize * 4, btnsize)
+			resetDB:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -8)
+			resetDB:SetScript(
+				"OnClick",
+				function()
+					MoveAny:ResetElement(name)
+					MoveAny:TrySaveEditMode()
+					C_UI.Reload()
+				end
+			)
+
 			local hide = CreateFrame("CheckButton", "hide", content, "ChatConfigCheckButtonTemplate")
 			hide:SetSize(btnsize, btnsize)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -110)

@@ -94,6 +94,7 @@ function MoveAny:LangzhCN()
         ["LID_MABUFFLIMIT"] = "缓冲限制",
         ["LID_MABUFFSPACINGX"] = "缓冲间隔水平",
         ["LID_MABUFFSPACINGY"] = "缓冲间隔 垂直",
+        ["LID_RESETELEMENT"] = "Reset Element",
     }
 
     if D4:GetWoWBuild() ~= "RETAIL" then

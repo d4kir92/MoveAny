@@ -114,6 +114,7 @@ function MoveAny:LangesES()
 		["LID_TICKETSTATUSFRAME"] = "Fotograma de ticket",
 		["LID_LOSSOFCONTROLFRAME"] = "Cuadro de pérdida de control",
 		["LID_TargetFrameNumericalThreat"] = "Porcentaje de amenaza",
+		["LID_RESETELEMENT"] = "Reset Element",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

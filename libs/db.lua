@@ -428,6 +428,18 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	end
 end
 
+function MoveAny:ResetElement(name)
+	MoveAny:CheckDB()
+	if MoveAny:GetTab() and MoveAny:GetTab()["ELES"] then
+		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
+		MoveAny:GetTab()["ELES"]["SIZES"] = MoveAny:GetTab()["ELES"]["SIZES"] or {}
+		MoveAny:GetTab()["ELES"]["POINTS"] = MoveAny:GetTab()["ELES"]["POINTS"] or {}
+		MoveAny:GetTab()["ELES"]["OPTIONS"][name] = {}
+		MoveAny:GetTab()["ELES"]["SIZES"][name] = {}
+		MoveAny:GetTab()["ELES"]["POINTS"][name] = {}
+	end
+end
+
 function MoveAny:GetEleSize(key)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}

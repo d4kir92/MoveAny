@@ -114,6 +114,7 @@ function MoveAny:LangfrFR()
 		["LID_TICKETSTATUSFRAME"] = "Cadre des tickets",
 		["LID_LOSSOFCONTROLFRAME"] = "Cadre de perte de contrôle",
 		["LID_TargetFrameNumericalThreat"] = "Pourcentage de menace",
+		["LID_RESETELEMENT"] = "Reset Element",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

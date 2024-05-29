@@ -114,6 +114,7 @@ function MoveAny:LangptBR()
 		["LID_TICKETSTATUSFRAME"] = "Ticket Frame",
 		["LID_LOSSOFCONTROLFRAME"] = "Loss of Control Frame (Perda do Quadro de Controle)",
 		["LID_TargetFrameNumericalThreat"] = "Percentual de Ameaça",
+		["LID_RESETELEMENT"] = "Reset Element",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then
