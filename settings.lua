@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.179")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.179"))
+	D4:SetVersion(AddonName, 135994, "1.6.180")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.180"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1038,7 +1038,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.179"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.180"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1977,7 +1977,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "RuneFrame",
-				["lstr"] = "LID_RUNEFRAME"
+				["lstr"] = "LID_RUNEFRAME",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -1988,7 +1990,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "WarlockPowerFrame",
-				["lstr"] = "LID_WARLOCKPOWERFRAME"
+				["lstr"] = "LID_WARLOCKPOWERFRAME",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -1997,7 +2001,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "ShardBarFrame",
-				["lstr"] = "LID_SHARDBARFRAME"
+				["lstr"] = "LID_SHARDBARFRAME",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -2008,7 +2014,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MonkHarmonyBarFrame",
-				["lstr"] = "LID_MONKHARMONYBARFRAME"
+				["lstr"] = "LID_MONKHARMONYBARFRAME",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -2019,7 +2027,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MonkStaggerBar",
-				["lstr"] = "LID_MONKSTAGGERBAR"
+				["lstr"] = "LID_MONKSTAGGERBAR",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -2030,7 +2040,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MageArcaneChargesFrame",
-				["lstr"] = "LID_MAGEARCANECHARGESFRAME"
+				["lstr"] = "LID_MAGEARCANECHARGESFRAME",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -2042,7 +2054,9 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "RogueComboPointBarFrame",
-					["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
+					["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
+					["userplaced"] = true,
+					["secure"] = true,
 				}
 			)
 		elseif class == "DRUID" then
@@ -2051,7 +2065,9 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "DruidComboPointBarFrame",
-					["lstr"] = "LID_COMBOPOINTPLAYERFRAME"
+					["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
+					["userplaced"] = true,
+					["secure"] = true,
 				}
 			)
 		end
@@ -2061,7 +2077,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "EclipseBarFrame",
-				["lstr"] = "LID_EclipseBarFrame"
+				["lstr"] = "LID_EclipseBarFrame",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -2077,7 +2095,9 @@ function MoveAny:LoadAddon()
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "EssencePlayerFrame",
-						["lstr"] = "LID_ESSENCEPLAYERFRAME"
+						["lstr"] = "LID_ESSENCEPLAYERFRAME",
+						["userplaced"] = true,
+						["secure"] = true,
 					}
 				)
 
@@ -2094,7 +2114,9 @@ function MoveAny:LoadAddon()
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "EssencePlayerFrame",
-							["lstr"] = "LID_ESSENCEPLAYERFRAME"
+							["lstr"] = "LID_ESSENCEPLAYERFRAME",
+							["userplaced"] = true,
+							["secure"] = true,
 						}
 					)
 				end
@@ -2108,7 +2130,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "PaladinPowerBarFrame",
-				["lstr"] = "LID_PALADINPOWERBARFRAME"
+				["lstr"] = "LID_PALADINPOWERBARFRAME",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
@@ -2117,7 +2141,9 @@ function MoveAny:LoadAddon()
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "PaladinPowerBar",
-				["lstr"] = "LID_PALADINPOWERBAR"
+				["lstr"] = "LID_PALADINPOWERBAR",
+				["userplaced"] = true,
+				["secure"] = true,
 			}
 		)
 	end
