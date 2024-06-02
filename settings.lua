@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.180")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.180"))
+	D4:SetVersion(AddonName, 135994, "1.6.181")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.181"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1038,7 +1038,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.180"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.181"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3539,18 +3539,88 @@ function MoveAny:LoadAddon()
 			)
 		else
 			for i = 1, 6 do
-				if _G["Boss" .. i .. "TargetFrame"] then
-					_G["Boss" .. i .. "TargetFrame"]:SetScale(1)
+				local frame = _G["Boss" .. i .. "TargetFrame"]
+				if frame then
+					frame.unit = "boss" .. i
+					frame:SetParent(MoveAny:GetMainPanel())
+					frame:SetScale(1)
+					if D4:GetWoWBuild() ~= "RETAIL" then
+						frame:Show()
+						frame:SetAlpha(0)
+						hooksecurefunc(
+							frame,
+							"Show",
+							function(sel)
+								sel.ma_show = true
+								sel:SetAlpha(1)
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"Hide",
+							function(sel)
+								sel.ma_show = false
+								sel:SetAlpha(0)
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetAlpha",
+							function(sel, alpha)
+								if sel.ma_set_alpha then return end
+								sel.ma_set_alpha = true
+								if sel.ma_show then
+									sel:SetAlpha(alpha)
+								else
+									sel:SetAlpha(0)
+								end
+
+								sel.ma_set_alpha = false
+							end
+						)
+
+						frame.OldHide = frame.Hide
+						frame.OldShow = frame.Show
+						frame.Hide = function() end
+						frame.Show = function() end
+						frame.OldSetPoint = frame.SetPoint
+						frame.OldClearAllPoints = frame.ClearAllPoints
+						frame.SetPoint = function(sel, ...) end
+						frame.ClearAllPoints = function(sel) end
+					end
+
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "Boss" .. i .. "TargetFrame",
 							["lstr"] = "LID_BOSS" .. i,
 							["userplaced"] = true,
-							["secure"] = true,
+							["secure"] = true
 						}
 					)
 				end
 			end
+
+			function MoveAny:HandleBossFrames()
+				for i = 1, 6 do
+					local frame = _G["Boss" .. i .. "TargetFrame"]
+					local unit = "boss" .. i
+					if frame then
+						if UnitExists(unit) then
+							frame.ma_show = true
+							frame:SetAlpha(1)
+						else
+							frame.ma_show = false
+							frame:SetAlpha(0)
+						end
+					end
+				end
+
+				C_Timer.After(1, MoveAny.HandleBossFrames)
+			end
+
+			MoveAny:HandleBossFrames()
 		end
 	end
 

@@ -446,14 +446,6 @@ function MoveAny:CustomBars()
 		end
 	end
 
-	if D4:GetWoWBuild() ~= "RETAIL" then
-		for i = 7, MAMaxAB do
-			for x = 1, 12 do
-				_G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] = _G["BINDING_NAME_CLICK ActionBar" .. i .. "Button" .. x .. ":LeftButton"] or "Actionbar " .. i .. " Button " .. x
-			end
-		end
-	end
-
 	for i = 1, MAMaxAB do
 		if i ~= 2 and i <= 6 and MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
 			local name = "MAActionBar" .. i

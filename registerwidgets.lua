@@ -269,7 +269,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 			local resetDB = CreateFrame("Button", "resetdb", content, "UIPanelButtonTemplate")
 			resetDB:SetText(MoveAny:GT("LID_RESETELEMENT"))
-			resetDB:SetSize(btnsize * 4, btnsize)
+			resetDB:SetSize(btnsize * 6, btnsize)
 			resetDB:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -8)
 			resetDB:SetScript(
 				"OnClick",
@@ -819,7 +819,7 @@ function MoveAny:RegisterWidget(tab)
 	local sw = tab.sw
 	local sh = tab.sh
 	local secure = tab.ma_secure
-	local noreparent = tab.noreparent
+	local noreparent = tab.noreparent or false
 	local userplaced = tab.userplaced
 	local cleft = tab.cleft
 	local cright = tab.cright
@@ -1356,12 +1356,24 @@ function MoveAny:RegisterWidget(tab)
 							sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 						end
 					elseif not sel.SetPointBase then
-						if noreparent then
-							sel:ClearAllPoints()
-							sel:SetPoint(dbp1, sel:GetParent(), dbp3, dbp4, dbp5)
+						if D4:GetWoWBuild() ~= "RETAIL" and sel.OldSetPoint and sel.ClearAllPoints then
+							if not InCombatLockdown() then
+								if noreparent then
+									sel:OldClearAllPoints()
+									sel:OldSetPoint(dbp1, sel:GetParent(), dbp3, dbp4, dbp5)
+								else
+									sel:OldClearAllPoints()
+									sel:OldSetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+								end
+							end
 						else
-							sel:ClearAllPoints()
-							sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+							if noreparent then
+								sel:ClearAllPoints()
+								sel:SetPoint(dbp1, sel:GetParent(), dbp3, dbp4, dbp5)
+							else
+								sel:ClearAllPoints()
+								sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+							end
 						end
 					elseif sel.ma_retry_setpoint == false then
 						sel.ma_retry_setpoint = true
