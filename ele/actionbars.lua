@@ -470,7 +470,7 @@ function MoveAny:CustomBars()
 				local id = (i - 1) * 12 + x
 				if btn == nil then
 					btn = CreateFrame("CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
-					btn.commandName = "CLICK " .. btnname
+					--btn.commandName = "CLICK " .. btnname
 					btn:SetAttribute("action", id)
 				else
 					btn.bindingID = x
@@ -481,6 +481,12 @@ function MoveAny:CustomBars()
 					alwaysShow = 1
 				else
 					alwaysShow = 0
+				end
+
+				if GetCVar("ActionButtonUseKeyDown") == "1" then
+					btn:RegisterForClicks("AnyDown")
+				else
+					btn:RegisterForClicks("AnyUp")
 				end
 
 				btn:SetAttribute("statehidden", false)
@@ -512,6 +518,29 @@ function MoveAny:CustomBars()
 			MoveAny:UpdateActionBar(_G[name])
 		end
 	end
+
+	local f = CreateFrame("FRAME")
+	f:RegisterEvent("CVAR_UPDATE")
+	f:SetScript(
+		"OnEvent",
+		function(sel, event, cvar)
+			if event == "CVAR_UPDATE" and cvar ~= nil and cvar == "ActionButtonUseKeyDown" then
+				for i, v in pairs(abs) do
+					if v.btns then
+						for x, btn in pairs(v.btns) do
+							if btn then
+								if GetCVar("ActionButtonUseKeyDown") == "1" then
+									btn:RegisterForClicks("AnyDown")
+								else
+									btn:RegisterForClicks("AnyUp")
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	)
 
 	-- Masque
 	if once then
