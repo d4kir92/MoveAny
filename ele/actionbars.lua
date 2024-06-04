@@ -486,18 +486,10 @@ function MoveAny:CustomBars()
 				btn:HookScript(
 					"OnMouseDown",
 					function(sel, inputButton, down)
-						if IsModifiedClick("PICKUPACTION") then
-							if GetCVar("ActionButtonUseKeyDown") == "1" then
-								btn:RegisterForClicks("LeftButtonUp", "RightButtonDown", "MiddleButtonDown", "Button4Down", "Button5Down")
-							else
-								btn:RegisterForClicks("AnyUp")
-							end
+						if GetCVar("ActionButtonUseKeyDown") == "1" then
+							btn:RegisterForClicks("LeftButtonUp", "RightButtonDown", "MiddleButtonDown", "Button4Down", "Button5Down")
 						else
-							if GetCVar("ActionButtonUseKeyDown") == "1" then
-								btn:RegisterForClicks("AnyDown")
-							else
-								btn:RegisterForClicks("AnyUp")
-							end
+							btn:RegisterForClicks("AnyUp")
 						end
 					end
 				)
