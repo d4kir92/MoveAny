@@ -483,11 +483,24 @@ function MoveAny:CustomBars()
 					alwaysShow = 0
 				end
 
-				if GetCVar("ActionButtonUseKeyDown") == "1" then
-					btn:RegisterForClicks("AnyDown")
-				else
-					btn:RegisterForClicks("AnyUp")
-				end
+				btn:HookScript(
+					"OnMouseDown",
+					function(sel, inputButton, down)
+						if IsModifiedClick("PICKUPACTION") then
+							if GetCVar("ActionButtonUseKeyDown") == "1" then
+								btn:RegisterForClicks("LeftButtonUp", "RightButtonDown", "MiddleButtonDown", "Button4Down", "Button5Down")
+							else
+								btn:RegisterForClicks("AnyUp")
+							end
+						else
+							if GetCVar("ActionButtonUseKeyDown") == "1" then
+								btn:RegisterForClicks("AnyDown")
+							else
+								btn:RegisterForClicks("AnyUp")
+							end
+						end
+					end
+				)
 
 				btn:SetAttribute("statehidden", false)
 				btn:SetAttribute("showgrid", alwaysShow)
@@ -518,29 +531,6 @@ function MoveAny:CustomBars()
 			MoveAny:UpdateActionBar(_G[name])
 		end
 	end
-
-	local f = CreateFrame("FRAME")
-	f:RegisterEvent("CVAR_UPDATE")
-	f:SetScript(
-		"OnEvent",
-		function(sel, event, cvar)
-			if event == "CVAR_UPDATE" and cvar ~= nil and cvar == "ActionButtonUseKeyDown" then
-				for i, v in pairs(abs) do
-					if v.btns then
-						for x, btn in pairs(v.btns) do
-							if btn then
-								if GetCVar("ActionButtonUseKeyDown") == "1" then
-									btn:RegisterForClicks("AnyDown")
-								else
-									btn:RegisterForClicks("AnyUp")
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	)
 
 	-- Masque
 	if once then
