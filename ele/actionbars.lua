@@ -483,17 +483,7 @@ function MoveAny:CustomBars()
 					alwaysShow = 0
 				end
 
-				btn:HookScript(
-					"OnMouseDown",
-					function(sel, inputButton, down)
-						if GetCVar("ActionButtonUseKeyDown") == "1" then
-							btn:RegisterForClicks("LeftButtonUp", "RightButtonDown", "MiddleButtonDown", "Button4Down", "Button5Down")
-						else
-							btn:RegisterForClicks("AnyUp")
-						end
-					end
-				)
-
+				btn:RegisterForClicks("AnyUp")
 				btn:SetAttribute("statehidden", false)
 				btn:SetAttribute("showgrid", alwaysShow)
 				if alwaysShow then
