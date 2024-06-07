@@ -2,9 +2,10 @@
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30403
 ## Interface-Cata: 40400
+## Interface-Beta: 110000
 ## Interface: 100207
 
-## Version: 1.6.188
+## Version: 1.6.189
 ## Title: MoveAny by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR

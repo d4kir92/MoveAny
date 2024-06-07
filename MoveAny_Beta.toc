@@ -1,6 +1,7 @@
-## Interface: 40400
+## Interface: 110000
+
 ## Version: 1.6.189
-## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
+## Title: MoveAny by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
 ## DefaultState: enabled
@@ -8,6 +9,7 @@
 ## SavedVariablesPerCharacter: MATABPC
 ## X-Curse-Project-ID: 646134
 ## X-Wago-ID: e56n3pK9
+## IconTexture: 135994
 
 libs\D4Lib\D4Lib.xml
 
@@ -43,5 +45,3 @@ core.lua
 registerwidgets.lua
 moveframes.lua
 settings.lua
-
-Bindings.xml
