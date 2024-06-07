@@ -41,7 +41,7 @@ jobs:
       - name: Package and release for Retail Beta
         uses: BigWigsMods/packager@master
         with:
-          args: -g beta -w 0
+          args: -g retail-beta -w 0
 
       - name: Package and release for Retail
         uses: BigWigsMods/packager@master
