@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.186")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.186"))
+	D4:SetVersion(AddonName, 135994, "1.6.187")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.187"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -929,17 +929,16 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MAGridFrame:SetSize(GetScreenWidth(), GetScreenHeight())
-	MAGridFrame:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+	MAGridFrame:SetAllPoints(MoveAny:GetMainPanel())
 	MAGridFrame:SetFrameStrata("LOW")
 	MAGridFrame:SetFrameLevel(1)
 	MAGridFrame.hor = MAGridFrame:CreateTexture()
 	MAGridFrame.hor:SetPoint("CENTER", 0, -0.5)
-	MAGridFrame.hor:SetSize(GetScreenWidth(), 1)
+	MAGridFrame.hor:SetSize(MoveAny:GetMainPanel():GetWidth(), 1)
 	MAGridFrame.hor:SetColorTexture(1, 1, 1, 1)
 	MAGridFrame.ver = MAGridFrame:CreateTexture()
 	MAGridFrame.ver:SetPoint("CENTER", 0.5, 0)
-	MAGridFrame.ver:SetSize(1, GetScreenHeight())
+	MAGridFrame.ver:SetSize(1, MoveAny:GetMainPanel():GetHeight())
 	MAGridFrame.ver:SetColorTexture(1, 1, 1, 1)
 	MoveAny:UpdateGrid()
 	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint("MALock")
@@ -958,10 +957,10 @@ function MoveAny:UpdateGrid()
 		v:Hide()
 	end
 
-	for x = 0, GetScreenWidth() / 2, MoveAny:GetGridSize() do
+	for x = 0, MoveAny:GetMainPanel():GetWidth() / 2, MoveAny:GetGridSize() do
 		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
 		MAGridFrame.lines[id]:SetPoint("CENTER", 0.5 + x, 0)
-		MAGridFrame.lines[id]:SetSize(1.09, GetScreenHeight())
+		MAGridFrame.lines[id]:SetSize(1.09, MoveAny:GetMainPanel():GetHeight())
 		if x % 50 == 0 then
 			MAGridFrame.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
 		else
@@ -972,10 +971,10 @@ function MoveAny:UpdateGrid()
 		id = id + 1
 	end
 
-	for x = 0, -GetScreenWidth() / 2, -MoveAny:GetGridSize() do
+	for x = 0, -MoveAny:GetMainPanel():GetWidth() / 2, -MoveAny:GetGridSize() do
 		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
 		MAGridFrame.lines[id]:SetPoint("CENTER", 0.5 + x, 0)
-		MAGridFrame.lines[id]:SetSize(1.09, GetScreenHeight())
+		MAGridFrame.lines[id]:SetSize(1.09, MoveAny:GetMainPanel():GetHeight())
 		if x % 50 == 0 then
 			MAGridFrame.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
 		else
@@ -986,10 +985,10 @@ function MoveAny:UpdateGrid()
 		id = id + 1
 	end
 
-	for y = 0, GetScreenHeight() / 2, MoveAny:GetGridSize() do
+	for y = 0, MoveAny:GetMainPanel():GetHeight() / 2, MoveAny:GetGridSize() do
 		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
 		MAGridFrame.lines[id]:SetPoint("CENTER", 0, 0.5 + y)
-		MAGridFrame.lines[id]:SetSize(GetScreenWidth(), 1.09, GetScreenHeight())
+		MAGridFrame.lines[id]:SetSize(MoveAny:GetMainPanel():GetWidth(), 1.09, MoveAny:GetMainPanel():GetHeight())
 		if y % 50 == 0 then
 			MAGridFrame.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
 		else
@@ -1000,10 +999,10 @@ function MoveAny:UpdateGrid()
 		id = id + 1
 	end
 
-	for y = 0, -GetScreenHeight() / 2, -MoveAny:GetGridSize() do
+	for y = 0, -MoveAny:GetMainPanel():GetHeight() / 2, -MoveAny:GetGridSize() do
 		MAGridFrame.lines[id] = MAGridFrame.lines[id] or MAGridFrame:CreateTexture()
 		MAGridFrame.lines[id]:SetPoint("CENTER", 0, 0.5 + y)
-		MAGridFrame.lines[id]:SetSize(GetScreenWidth(), 1.09)
+		MAGridFrame.lines[id]:SetSize(MoveAny:GetMainPanel():GetWidth(), 1.09)
 		if y % 50 == 0 then
 			MAGridFrame.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
 		else
@@ -1038,7 +1037,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.186"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.187"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()

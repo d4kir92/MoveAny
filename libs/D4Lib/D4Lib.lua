@@ -79,6 +79,32 @@ local ICON_TAG_LIST_EN = {
     ["skull"] = 8,
 }
 
+function D4:GetCVar(name)
+    if C_CVar and C_CVar.GetCVar then return C_CVar.GetCVar(name) end
+    if GetCVar then return GetCVar(name) end
+    print("[D4][GetCVar] FAILED")
+
+    return nil
+end
+
+function D4:GetItemInfo(itemID)
+    if itemID == nil then return nil end
+    if C_Item and C_Item.GetItemInfo then return C_Item.GetItemInfo(itemID) end
+    if GetItemInfo then return GetItemInfo(itemID) end
+    print("[D4][GetItemInfo] FAILED")
+
+    return nil
+end
+
+function D4:GetSpellInfo(spellID)
+    if spellID == nil then return nil end
+    if C_Spell and C_Spell.GetSpellInfo then return C_Spell.GetSpellInfo(spellID) end
+    if GetSpellInfo then return GetSpellInfo(spellID) end
+    print("[D4][GetSpellInfo] FAILED")
+
+    return nil
+end
+
 function D4:GetMouseFocus()
     if GetMouseFoci then return GetMouseFoci() end
     if GetMouseFocus then return GetMouseFocus() end
