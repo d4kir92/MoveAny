@@ -37,7 +37,12 @@ jobs:
 
       #- name: Package and release (ONE-ZIP)
       #  uses: BigWigsMods/packager@master
-      
+
+      - name: Package and release for Retail Beta (The War Within)
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g retail-beta -w 1 -n "The War Within"  # Add -g retail-beta, -w 1, and -n "The War Within"
+
       - name: Package and release for Retail
         uses: BigWigsMods/packager@master
         with:
