@@ -38,13 +38,34 @@ uiscalecvar:RegisterEvent("CVAR_UPDATE")
 uiscalecvar:SetScript(
 	"OnEvent",
 	function(self, event, target, value)
-		if event == "CVAR_UPDATE" and target == "uiScale" then
-			MAUIP:SetScale(D4:GetCVar("uiScale"))
+		if event == "CVAR_UPDATE" and (target == "uiScale" or target == "useUiScale") then
+			if D4:GetCVar("useUiScale") == "1" then
+				MAUIP:SetScale(D4:GetCVar("uiScale"))
+			else
+				MAUIP:SetScale(UIParent:GetScale())
+			end
+
+			MoveAny:UpdateGrid()
 		end
 	end
 )
 
-MAUIP:SetScale(D4:GetCVar("uiScale"))
+hooksecurefunc(
+	UIParent,
+	"SetScale",
+	function(self, scale)
+		if D4:GetCVar("useUiScale") == "0" then
+			MAUIP:SetScale(scale)
+		end
+	end
+)
+
+if D4:GetCVar("useUiScale") == "1" then
+	MAUIP:SetScale(D4:GetCVar("uiScale"))
+else
+	MAUIP:SetScale(UIParent:GetScale())
+end
+
 MoveAny:SetMAUIPAlpha(UIParent:GetAlpha())
 hooksecurefunc(
 	UIParent,

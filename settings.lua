@@ -160,6 +160,11 @@ local function AddCategory(key)
 end
 
 local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requiresFor, requiredFor)
+	local lkey = key
+	if id then
+		key = key .. id
+	end
+
 	local oldVal = MoveAny:IsEnabled(key, val, true) or false
 	local bRequiresFor = nil
 	if requiresFor ~= nil then
@@ -173,7 +178,6 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 
 	local bShowReload = showReload
 	local bGreyed = false
-	local lkey = key
 	if bShowReload == nil then
 		bShowReload = true
 	end
@@ -181,10 +185,6 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 	if oldVal == nil then
 		MoveAny:MSG("Missing Value For: " .. tostring(key))
 		oldVal = true
-	end
-
-	if id then
-		key = key .. id
 	end
 
 	if cbs[key] == nil then
@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.187")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.187"))
+	D4:SetVersion(AddonName, 135994, "1.6.188")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.188"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1037,7 +1037,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.187"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.188"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
