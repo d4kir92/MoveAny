@@ -5,7 +5,7 @@
 ## Interface-Beta: 110000
 ## Interface: 100207
 
-## Version: 1.6.191
+## Version: 1.6.192
 ## Title: MoveAny by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
