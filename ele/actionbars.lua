@@ -472,8 +472,23 @@ function MoveAny:CustomBars()
 					btn = CreateFrame("CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
 					--btn.commandName = "CLICK " .. btnname
 					btn:SetAttribute("action", id)
+					btn:HookScript(
+						"OnMouseDown",
+						function(sel)
+							if GetCVar("ActionButtonUseKeyDown") == "1" then
+								if D4:GetMouseFocus() == sel and IsMouseButtonDown("LeftButton") then
+									btn:RegisterForClicks("AnyUp")
+								else
+									btn:RegisterForClicks("AnyDown")
+								end
+							else
+								btn:RegisterForClicks("AnyUp")
+							end
+						end
+					)
 				else
 					btn.bindingID = x
+					btn:RegisterForClicks("AnyUp")
 				end
 
 				local alwaysShow = GetCVarBool("alwaysShowActionBars")
@@ -483,7 +498,6 @@ function MoveAny:CustomBars()
 					alwaysShow = 0
 				end
 
-				btn:RegisterForClicks("AnyUp")
 				btn:SetAttribute("statehidden", false)
 				btn:SetAttribute("showgrid", alwaysShow)
 				if alwaysShow then

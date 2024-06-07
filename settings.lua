@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.185")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.185"))
+	D4:SetVersion(AddonName, 135994, "1.6.186")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.186"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -784,7 +784,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "TARGETFRAMENAMEBACKGROUND", false)
 		end
 
-		if IsAddOnLoaded("ImproveAny") then
+		if D4:IsAddOnLoaded("ImproveAny") then
 			AddCategory("ImproveAny")
 			if D4:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(4, "IASKILLS", true)
@@ -797,7 +797,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "IACoordsFrame", true)
 		end
 
-		if IsAddOnLoaded("!KalielsTracker") then
+		if D4:IsAddOnLoaded("!KalielsTracker") then
 			AddCategory("!KalielsTracker")
 			AddCheckBox(4, "!KalielsTrackerButtons", false)
 		end
@@ -1038,7 +1038,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.185"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.186"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1795,16 +1795,16 @@ function MoveAny:LoadAddon()
 	MoveAny.init = true
 	local _, class = UnitClass("player")
 	if MoveAny:IsEnabled("SHOWTIPS", true) then
-		if IsAddOnLoaded("Dominos") then
+		if D4:IsAddOnLoaded("Dominos") then
 			MoveAny:MSG("Dominos Detected, please make sure Dominos Elements are disabled in MoveAny!")
 		end
 
-		if IsAddOnLoaded("Bartender4") then
+		if D4:IsAddOnLoaded("Bartender4") then
 			MoveAny:MSG("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!")
 		end
 	end
 
-	if IsAddOnLoaded("D4KiR MoveAndImprove") then
+	if D4:IsAddOnLoaded("D4KiR MoveAndImprove") then
 		MoveAny:MSG("DON'T use MoveAndImprove, when you use MoveAny")
 	end
 
@@ -3187,7 +3187,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
+	if D4:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
 		C_Timer.After(
 			1,
 			function()
@@ -3304,7 +3304,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if not IsAddOnLoaded("Dominos") then
+	if not D4:IsAddOnLoaded("Dominos") then
 		if MoveAny:IsEnabled("MICROMENU", false) then
 			MoveAny:RegisterWidget(
 				{
@@ -3365,7 +3365,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if IsAddOnLoaded("ImproveAny") then
+	if D4:IsAddOnLoaded("ImproveAny") then
 		if MoveAny:IsEnabled("MONEYBAR", true) then
 			MoveAny:RegisterWidget(
 				{
@@ -3874,7 +3874,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if D4:GetWoWBuild() == "RETAIL" then
-		LoadAddOn("Blizzard_ArchaeologyUI")
+		D4:LoadAddOn("Blizzard_ArchaeologyUI")
 	end
 
 	if MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) and ARCHEOLOGYDIGSITEPROGRESSBAR then
@@ -4392,7 +4392,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if not IsAddOnLoaded("Dominos") then
+	if not D4:IsAddOnLoaded("Dominos") then
 		if MoveAny.InitMicroMenu then
 			MoveAny:InitMicroMenu()
 		end
@@ -4445,7 +4445,7 @@ function MoveAny:LoadAddon()
 			WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
 				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
 				local scale = WorldMapFrame:GetScale()
-				if not IsAddOnLoaded("Mapster") and not IsAddOnLoaded("GW2_UI") then
+				if not D4:IsAddOnLoaded("Mapster") and not D4:IsAddOnLoaded("GW2_UI") then
 					return x / scale, y / scale
 				else
 					local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()

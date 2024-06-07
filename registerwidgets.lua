@@ -1533,7 +1533,7 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	local ele = GetMouseFocus()
+	local ele = D4:GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
 		if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
 			lastEle = nil
@@ -1541,7 +1541,7 @@ function MoveAny:CheckAlphas()
 		end
 
 		if ele ~= WorldFrame and ele ~= UIParent then
-			local dufloaded = IsAddOnLoaded("DUnitFrames")
+			local dufloaded = D4:IsAddOnLoaded("DUnitFrames")
 			if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame) then
 				if tContains(MoveAny:GetAlphaFrames(), ele) then
 					ele:SetAlpha(1)
@@ -1567,7 +1567,7 @@ function MoveAny:CheckAlphas()
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
-	local dufloaded = IsAddOnLoaded("DUnitFrames")
+	local dufloaded = D4:IsAddOnLoaded("DUnitFrames")
 	if ele == nil then
 		MoveAny:MSG("UpdateAlphas: ele is nil")
 	else
