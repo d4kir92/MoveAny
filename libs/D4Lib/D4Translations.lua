@@ -8,8 +8,12 @@ function D4:Trans(key, lang, t1, t2, t3)
     local result = nil
     if D4.trans[lang][key] ~= nil then
         result = D4.trans[lang][key]
-    elseif D4.trans["enUS"][key] ~= nil then
+    elseif D4.trans["enUS"] and D4.trans["enUS"][key] ~= nil then
         result = D4.trans["enUS"][key]
+    else
+        print("[D4] Missing english Translation", key)
+
+        return key
     end
 
     if t1 and t2 and t3 then

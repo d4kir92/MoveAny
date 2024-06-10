@@ -90,13 +90,14 @@ function D4:CreateSlider(tab)
     tab.vmin = tab.vmin or 1
     tab.vmax = tab.vmax or 1
     tab.steps = tab.steps or 1
+    tab.decimals = tab.decimals or 0
     tab.key = tab.key or tab.name or ""
     local slider = CreateFrame("Slider", tab.name, tab.parent, "OptionsSliderTemplate")
     slider:SetWidth(tab.sw)
     slider:SetPoint(unpack(tab.pTab))
     slider.Low:SetText(tab.vmin)
     slider.High:SetText(tab.vmax)
-    slider.Text:SetText(format("%s: %s", D4:Trans(tab.key), tab.value))
+    slider.Text:SetText(format(D4:Trans(tab.key), tab.value))
     slider:SetMinMaxValues(tab.vmin, tab.vmax)
     slider:SetObeyStepOnDrag(true)
     slider:SetValueStep(tab.steps)
@@ -104,9 +105,16 @@ function D4:CreateSlider(tab)
     slider:SetScript(
         "OnValueChanged",
         function(sel, val)
-            val = string.format("%" .. tab.steps .. "f", val)
-            tab:funcV(val)
-            slider.Text:SetText(format("%s: %s", D4:Trans(tab.key), val))
+            val = string.format("%." .. tab.decimals .. "f", val)
+            if tab.funcV then
+                tab:funcV(val)
+            end
+
+            if tab.func then
+                tab:func()
+            end
+
+            slider.Text:SetText(format(D4:Trans(tab.key), val))
         end
     )
 
@@ -155,4 +163,93 @@ function D4:CreateFrame(tab)
     end
 
     return fra
+end
+
+local Y = 0
+local PARENT = nil
+local TAB = nil
+function D4:SetAppendY(newY)
+    Y = newY
+end
+
+function D4:GetAppendY()
+    return Y
+end
+
+function D4:SetAppendParent(newParent)
+    PARENT = newParent
+end
+
+function D4:GetAppendParent()
+    return PARENT
+end
+
+function D4:SetAppendTab(newTab)
+    TAB = newTab
+end
+
+function D4:AppendCategory(name)
+    if Y == 0 then
+        Y = Y - 5
+    else
+        Y = Y - 30
+    end
+
+    D4:AddCategory(
+        {
+            ["name"] = name,
+            ["parent"] = PARENT,
+            ["pTab"] = {"TOPLEFT", 5, Y},
+        }
+    )
+
+    Y = Y - 20
+
+    return Y
+end
+
+function D4:AppendCheckbox(key, value, func)
+    value = value or false
+    x = x or 5
+    local val = TAB[key]
+    if val == nil then
+        val = value
+    end
+
+    D4:CreateCheckbox(
+        {
+            ["name"] = key,
+            ["parent"] = PARENT,
+            ["pTab"] = {"TOPLEFT", x, Y},
+            ["value"] = val,
+            ["funcV"] = function(sel, checked)
+                TAB[key] = checked
+                if func then
+                    func()
+                end
+            end
+        }
+    )
+
+    Y = Y - 20
+
+    return Y
+end
+
+function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
+    Y = Y - 15
+    local slider = {}
+    slider.key = key
+    slider.parent = PARENT
+    slider.value = TAB[key]
+    slider.vmin = min
+    slider.vmax = max
+    slider.sw = 460
+    slider.steps = steps
+    slider.decimals = decimals
+    slider.color = {0, 1, 0, 1}
+    slider.func = func
+    slider.pTab = {"TOPLEFT", 10, Y}
+    D4:CreateSlider(slider)
+    Y = Y - 30
 end
