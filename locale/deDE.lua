@@ -209,6 +209,9 @@ function MoveAny:LangdeDE()
 		["LID_REQUIRESFOR"] = "Benötigt: %s",
 		["LID_REQUIREDFOR"] = "Benötigt für: %s",
 		["LID_RESETELEMENT"] = "Element resetten",
+		["LID_TARGETFRAMEDEBUFF1"] = "Zielfenster Debuff 1",
+		["LID_FOCUSFRAMEDEBUFF1"] = "Fokusfenster Debuff 1",
+		["LID_TARGETFRAMETOTBUFF1"] = "Ziel des Zielfenster Buff 1",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

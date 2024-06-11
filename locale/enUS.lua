@@ -215,6 +215,9 @@ function MoveAny:LangenUS()
 		["LID_REQUIRESFOR"] = "Requires: %s",
 		["LID_REQUIREDFOR"] = "Required for: %s",
 		["LID_RESETELEMENT"] = "Reset Element",
+		["LID_TARGETFRAMEDEBUFF1"] = "Target Frame Debuff 1",
+		["LID_FOCUSFRAMEDEBUFF1"] = "Focus Frame Debuff 1",
+		["LID_TARGETFRAMETOTBUFF1"] = "Target of Target Frame Buff 1",
 	}
 
 	if D4:GetWoWBuild() ~= "RETAIL" then

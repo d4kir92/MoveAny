@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.199")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.199"))
+	D4:SetVersion(AddonName, 135994, "1.6.200")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.200"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -479,9 +479,11 @@ function MoveAny:InitMALock()
 
 		if D4:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox(posx, "TARGETFRAMEDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		if D4:GetWoWBuild() ~= "RETAIL" then
+			AddCheckBox(posx, "TARGETFRAMETOTBUFF1", false, nil, nil, "ShowTargetAndFocus")
 			AddCheckBox(posx, "TARGETFRAMETOTDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 		end
 
@@ -489,6 +491,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
 			if D4:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(posx, "FOCUSFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+				AddCheckBox(posx, "FOCUSFRAMEDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 			end
 		end
 
@@ -1037,7 +1040,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.199"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.200"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2216,11 +2219,115 @@ function MoveAny:LoadAddon()
 									bb:SetScale(scale)
 									bb:SetAlpha(alpha)
 								end
+							end
+						end
 
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterEvent("UNIT_AURA")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if sel.ma_bb_set_scale then return end
+								sel.ma_bb_set_scale = true
+								frame:UpdateBuffScaleAlpha()
+								sel.ma_bb_set_scale = false
+							end
+						)
+
+						frame:UpdateBuffScaleAlpha()
+					end,
+				}
+			)
+		end
+
+		if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEDEBUFF1", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameDebuff1",
+					["lstr"] = "LID_TARGETFRAMEDEBUFF1",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameDebuff1
+						function frame:UpdateDebuffScaleAlpha()
+							if _G["TargetFrameDebuff" .. 1] == nil then return end
+							local scale = _G["TargetFrameDebuff" .. 1]:GetScale()
+							local alpha = _G["TargetFrameDebuff" .. 1]:GetAlpha()
+							for i = 1, 32 do
 								local db = _G["TargetFrameDebuff" .. i]
 								if db then
 									db:SetScale(scale)
 									db:SetAlpha(alpha)
+								end
+							end
+						end
+
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterEvent("UNIT_AURA")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								frame:UpdateDebuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateDebuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if sel.ma_db_set_scale then return end
+								sel.ma_db_set_scale = true
+								frame:UpdateDebuffScaleAlpha()
+								sel.ma_db_set_scale = false
+							end
+						)
+
+						frame:UpdateDebuffScaleAlpha()
+					end,
+				}
+			)
+		end
+
+		if D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTBUFF1", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameToTBuff1",
+					["lstr"] = "LID_TARGETFRAMETOTBUFF1",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameToTBuff1
+						function frame:UpdateBuffScaleAlpha()
+							if _G["TargetFrameToTBuff" .. 1] == nil then return end
+							local scale = _G["TargetFrameToTBuff" .. 1]:GetScale()
+							local alpha = _G["TargetFrameToTBuff" .. 1]:GetAlpha()
+							for i = 1, 32 do
+								local bb = _G["TargetFrameToTBuff" .. i]
+								if bb and i > 1 then
+									bb:SetScale(scale)
+									bb:SetAlpha(alpha)
 								end
 							end
 						end
@@ -2245,8 +2352,11 @@ function MoveAny:LoadAddon()
 						hooksecurefunc(
 							frame,
 							"SetScale",
-							function()
+							function(sel)
+								if sel.ma_db_set_scale then return end
+								sel.ma_db_set_scale = true
 								frame:UpdateBuffScaleAlpha()
+								sel.ma_db_set_scale = false
 							end
 						)
 
@@ -2264,7 +2374,7 @@ function MoveAny:LoadAddon()
 					["userplaced"] = true,
 					["setup"] = function()
 						local frame = TargetFrameToTDebuff1
-						function frame:UpdateBuffScaleAlpha()
+						function frame:UpdateDebuffScaleAlpha()
 							if _G["TargetFrameToTDebff" .. 1] == nil then return end
 							local scale = _G["TargetFrameToTDebff" .. 1]:GetScale()
 							local alpha = _G["TargetFrameToTDebff" .. 1]:GetAlpha()
@@ -2274,12 +2384,6 @@ function MoveAny:LoadAddon()
 									bb:SetScale(scale)
 									bb:SetAlpha(alpha)
 								end
-
-								local db = _G["TargetFrameDebuff" .. i]
-								if db then
-									db:SetScale(scale)
-									db:SetAlpha(alpha)
-								end
 							end
 						end
 
@@ -2288,7 +2392,7 @@ function MoveAny:LoadAddon()
 						bbf:SetScript(
 							"OnEvent",
 							function()
-								frame:UpdateBuffScaleAlpha()
+								frame:UpdateDebuffScaleAlpha()
 							end
 						)
 
@@ -2296,19 +2400,22 @@ function MoveAny:LoadAddon()
 							frame,
 							"SetPoint",
 							function()
-								frame:UpdateBuffScaleAlpha()
+								frame:UpdateDebuffScaleAlpha()
 							end
 						)
 
 						hooksecurefunc(
 							frame,
 							"SetScale",
-							function()
-								frame:UpdateBuffScaleAlpha()
+							function(sel)
+								if sel.ma_db_set_scale then return end
+								sel.ma_db_set_scale = true
+								frame:UpdateDebuffScaleAlpha()
+								sel.ma_db_set_scale = false
 							end
 						)
 
-						frame:UpdateBuffScaleAlpha()
+						frame:UpdateDebuffScaleAlpha()
 					end,
 				}
 			)
@@ -2388,12 +2495,6 @@ function MoveAny:LoadAddon()
 									bb:SetScale(scale)
 									bb:SetAlpha(alpha)
 								end
-
-								local db = _G["FocusFrameDebuff" .. i]
-								if db then
-									db:SetScale(scale)
-									db:SetAlpha(alpha)
-								end
 							end
 						end
 
@@ -2417,12 +2518,70 @@ function MoveAny:LoadAddon()
 						hooksecurefunc(
 							frame,
 							"SetScale",
-							function()
+							function(sel)
+								if sel.ma_db_set_scale then return end
+								sel.ma_db_set_scale = true
 								frame:UpdateBuffScaleAlpha()
+								sel.ma_db_set_scale = false
 							end
 						)
 
 						frame:UpdateBuffScaleAlpha()
+					end,
+				}
+			)
+		end
+
+		if FocusFrame and D4:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEDEBUFF1", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "FocusFrameDebuff1",
+					["lstr"] = "LID_FOCUSFRAMEDEBUFF1",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = FocusFrameDebuff1
+						function frame:UpdateDebuffScaleAlpha()
+							if _G["FocusFrameDebuff" .. 1] == nil then return end
+							local scale = _G["FocusFrameDebuff" .. 1]:GetScale()
+							local alpha = _G["FocusFrameDebuff" .. 1]:GetAlpha()
+							for i = 1, 32 do
+								local db = _G["FocusFrameDebuff" .. i]
+								if db and i > 1 then
+									db:SetScale(scale)
+									db:SetAlpha(alpha)
+								end
+							end
+						end
+
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterEvent("UNIT_AURA")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								frame:UpdateDebuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateDebuffScaleAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if sel.ma_db_set_scale then return end
+								sel.ma_db_set_scale = true
+								frame:UpdateDebuffScaleAlpha()
+								sel.ma_db_set_scale = false
+							end
+						)
+
+						frame:UpdateDebuffScaleAlpha()
 					end,
 				}
 			)
