@@ -101,7 +101,7 @@ function MoveAny:LangdeDE()
 		["LID_MAINMENUEXPBAR"] = "Erfahrungsleiste",
 		["LID_REPUTATIONWATCHBAR"] = "Rufleiste",
 		["LID_UIWIDGETPOWERBAR"] = "Machtleiste (Bossleiste, Elanleiste, Dunkelmond-Jahrmarkt, ...)",
-		["LID_POWERBAR"] = "Power Bar (Encounters, ...)",
+		["LID_POWERBAR"] = "Machtleiste (Boss Begegnungen, ...)",
 		["LID_COUNT"] = "Anzahl",
 		["LID_ROWS"] = "Reihen",
 		["LID_SPACING"] = "Abstand (Lücke)",

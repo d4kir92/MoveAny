@@ -107,7 +107,7 @@ function MoveAny:LangenUS()
 		["LID_MAINMENUEXPBAR"] = "Exp Bar",
 		["LID_REPUTATIONWATCHBAR"] = "Reputation Bar",
 		["LID_UIWIDGETPOWERBAR"] = "Power Bar (Boss Bar, Vigor Bar, Darkmoon faire, ...)",
-		["LID_POWERBAR"] = "Power Bar (Encounters, ...)",
+		["LID_POWERBAR"] = "Power Bar (Boss Encounters, ...)",
 		["LID_COUNT"] = "Count",
 		["LID_ROWS"] = "Rows",
 		["LID_SPACING"] = "Spacing",
