@@ -41,7 +41,7 @@ function MoveAny:LangdeDE()
 		["LID_MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
 		["LID_ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
 		["LID_PALADINPOWERBARFRAME"] = "Paladin Machtleiste (Heilige Macht)",
-		["LID_MAFPSFrame"] = "FPS",
+		["LID_MAFPSFrame"] = "FPS (Neuer FPS-Zähler)",
 		["LID_IAPingFrame"] = "Ping",
 		["LID_IACoordsFrame"] = "Koordinatenfenster",
 		["LID_MINIMAP"] = "Minimap",

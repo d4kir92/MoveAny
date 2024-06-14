@@ -47,7 +47,7 @@ function MoveAny:LangenUS()
 		["LID_MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
 		["LID_ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
 		["LID_PALADINPOWERBARFRAME"] = "Paladin Power Bar (Holy Power)",
-		["LID_MAFPSFrame"] = "FPS",
+		["LID_MAFPSFrame"] = "FPS (New FPS-Counter)",
 		["LID_IAPingFrame"] = "Ping",
 		["LID_IACoordsFrame"] = "Coords Frame",
 		["LID_MINIMAP"] = "Mini Map",

@@ -1,5 +1,5 @@
 local _, MoveAny = ...
-local MAFRAMES = {"ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "PVPFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "PVPParentFrame", "SettingsPanel", "SplashFrame", "GameMenuFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "WorldMapFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "MailFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "TaxiFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
+local MAFRAMES = {"WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "PVPFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "PVPParentFrame", "SettingsPanel", "SplashFrame", "GameMenuFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "WorldMapFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "MailFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "TaxiFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 -- Buggy on retail --
 if StaticPopup1 then
 	hooksecurefunc(
@@ -131,7 +131,11 @@ end
 
 local EnableMouseFrames = {"PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton"}
 local HookedEnableMouseFrames = {}
+local retries = 10
+local run = false
 function MoveAny:UpdateMoveFrames()
+	if run then return end
+	run = true
 	if MoveAny:IsEnabled("MOVEFRAMES", true) then
 		for i, name in pairs(EnableMouseFrames) do
 			local frame = _G[name]
@@ -150,9 +154,10 @@ function MoveAny:UpdateMoveFrames()
 		end
 
 		if not InCombatLockdown() then
+			local notFound = false
 			for i, name in pairs(MAFS) do
 				local frame = MoveAny:GetFrame(_G[name], name)
-				if frame then
+				if frame ~= nil then
 					MAFS[name] = nil
 					local fm = _G[name .. "Move"]
 					if fm == nil then
@@ -160,7 +165,7 @@ function MoveAny:UpdateMoveFrames()
 						fm:SetMovable(true)
 						fm:SetUserPlaced(false)
 						fm:SetClampedToScreen(false)
-						fm:RegisterForDrag("Any")
+						fm:RegisterForDrag("LeftClick")
 						fm:EnableMouse(false)
 						hooksecurefunc(
 							frame,
@@ -240,7 +245,7 @@ function MoveAny:UpdateMoveFrames()
 						return btn == "MiddleButton"
 					end
 
-					frame:RegisterForDrag("Any")
+					frame:RegisterForDrag("LeftClick")
 					frame:HookScript(
 						"OnMouseDown",
 						function(sel, btn)
@@ -405,10 +410,32 @@ function MoveAny:UpdateMoveFrames()
 							MoveAny:MAFrameUpdatePos(frame)
 						end
 					end
+				else
+					notFound = true
 				end
 			end
+
+			if notFound and retries > 0 then
+				if MAFS["WeakAurasOptions"] == nil then
+					retries = retries - 1
+				end
+
+				C_Timer.After(
+					1,
+					function()
+						run = false
+						MoveAny:UpdateMoveFrames()
+					end
+				)
+			end
 		else
-			C_Timer.After(0.1, MoveAny.UpdateMoveFrames)
+			C_Timer.After(
+				0.1,
+				function()
+					run = false
+					MoveAny:UpdateMoveFrames()
+				end
+			)
 		end
 	end
 end

@@ -739,6 +739,7 @@ function MoveAny:MenuOptions(opt, frame)
 end
 
 function MoveAny:GetFrame(ele, name)
+	if ele == nil then return ele end
 	local _, e1 = strfind(name, ".", 1, true)
 	if e1 then
 		local tab = {strsplit(".", name)}
