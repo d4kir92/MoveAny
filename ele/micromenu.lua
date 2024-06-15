@@ -123,7 +123,7 @@ function MoveAny:InitMicroMenu()
 				function()
 					MoveAny:UpdateActionBar(MAMenuBar)
 					if D4:GetWoWBuild() ~= "RETAIL" then
-						function UpdateMicroMenu()
+						function MoveAny:UpdateMicroMenu()
 							local overrideChanged = false
 							local parentChanged = false
 							if OverrideActionBar and (OverrideActionBar:IsShown() ~= OverrideActionBar.isshown or OverrideActionBar.slideOut and OverrideActionBar.slideOut:IsPlaying() ~= OverrideActionBar.isplaying) then
@@ -159,10 +159,10 @@ function MoveAny:InitMicroMenu()
 								MAMenuBar.redots = nil
 							end
 
-							C_Timer.After(0.1, UpdateMicroMenu)
+							C_Timer.After(0.1, MoveAny.UpdateMicroMenu)
 						end
 
-						UpdateMicroMenu()
+						MoveAny:UpdateMicroMenu()
 					end
 				end
 			)

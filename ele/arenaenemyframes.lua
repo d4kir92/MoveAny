@@ -82,7 +82,7 @@ function MoveAny:InitArenaPrepFrames()
 				ArenaPrepFrames:SetSize(sw, sh * 5 + 4 * 21)
 			end
 
-			MAArenaPrepFrames = CreateFrame("FRAME", nil, MoveAny:GetMainPanel())
+			local MAArenaPrepFrames = CreateFrame("FRAME", "MAArenaPrepFrames", MoveAny:GetMainPanel())
 			MAArenaPrepFrames:SetSize(ArenaPrepFrames:GetSize())
 			MAArenaPrepFrames:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", 100, 100)
 			ArenaPrepFrames:ClearAllPoints()

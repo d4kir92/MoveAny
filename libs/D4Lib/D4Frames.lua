@@ -199,7 +199,7 @@ function D4:SetAppendTab(newTab)
     TAB = newTab
 end
 
-function D4:AppendCategory(name)
+function D4:AppendCategory(name, x, y)
     if Y == 0 then
         Y = Y - 5
     else
@@ -210,7 +210,7 @@ function D4:AppendCategory(name)
         {
             ["name"] = name,
             ["parent"] = PARENT,
-            ["pTab"] = {"TOPLEFT", 5, Y},
+            ["pTab"] = {"TOPLEFT", x or 5, y or Y},
         }
     )
 
@@ -219,7 +219,7 @@ function D4:AppendCategory(name)
     return Y
 end
 
-function D4:AppendCheckbox(key, value, func)
+function D4:AppendCheckbox(key, value, func, x, y)
     value = value or false
     x = x or 5
     local val = TAB[key]
@@ -231,7 +231,7 @@ function D4:AppendCheckbox(key, value, func)
         {
             ["name"] = key,
             ["parent"] = PARENT,
-            ["pTab"] = {"TOPLEFT", x, Y},
+            ["pTab"] = {"TOPLEFT", x, y or Y},
             ["value"] = val,
             ["funcV"] = function(sel, checked)
                 TAB[key] = checked

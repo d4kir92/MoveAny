@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.203")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.203"))
+	D4:SetVersion(AddonName, 135994, "1.6.204")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.204"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1040,7 +1040,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.203"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.204"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3699,11 +3699,11 @@ function MoveAny:LoadAddon()
 			for i = 1, 6 do
 				local frame = _G["Boss" .. i .. "TargetFrame"]
 				if frame then
-					frame.unit = "boss" .. i
+					--frame.unit = "boss" .. i
 					frame:SetParent(MoveAny:GetMainPanel())
 					frame:SetScale(1)
 					if D4:GetWoWBuild() ~= "RETAIL" then
-						frame:Show()
+						if not InCombatLockdown() then end --frame:Show()
 						frame:SetAlpha(0)
 						hooksecurefunc(
 							frame,

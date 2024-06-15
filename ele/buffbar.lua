@@ -546,7 +546,7 @@ function MoveAny:InitBuffBar()
 			"OnEvent",
 			function(sel, event, ...)
 				if event == "UNIT_AURA" then
-					unit = ...
+					local unit = ...
 					if unit and unit == "player" then
 						MoveAny:UpdateBuffs()
 					end

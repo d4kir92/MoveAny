@@ -1,46 +1,49 @@
 local _, MoveAny = ...
 local btnsize = 36
 local once = true
+local bar = nil
 function MoveAny:UpdatePetBar()
-	-- Masque
-	local MSQ = LibStub("Masque", true)
-	if MSQ then
-		local MAMasqueGroups = {}
-		MAMasqueGroups.Groups = {}
-		if once then
-			once = false
-			MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
-		end
+	if bar then
+		-- Masque
+		local MSQ = LibStub("Masque", true)
+		if MSQ then
+			local MAMasqueGroups = {}
+			MAMasqueGroups.Groups = {}
+			if once then
+				once = false
+				MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
+			end
 
-		for y, btn in pairs(MAPetBar.btns) do
-			if btn then
-				local btnName = btn:GetName()
-				if _G[btnName .. "FloatingBG"] then
-					_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
-				end
+			for y, btn in pairs(bar.btns) do
+				if btn then
+					local btnName = btn:GetName()
+					if _G[btnName .. "FloatingBG"] then
+						_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
+					end
 
-				local parent = "MAPetBar"
-				local group = nil
-				if MAMasqueGroups.Groups["MA " .. parent] == nil then
-					MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
-				end
+					local parent = "MAPetBar"
+					local group = nil
+					if MAMasqueGroups.Groups["MA " .. parent] == nil then
+						MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
+					end
 
-				group = MAMasqueGroups.Groups["MA " .. parent]
-				if not btn.MasqueButtonData then
-					btn.MasqueButtonData = {
-						Button = btn,
-						Icon = _G[btnName .. "IconTexture"],
-					}
+					group = MAMasqueGroups.Groups["MA " .. parent]
+					if not btn.MasqueButtonData then
+						btn.MasqueButtonData = {
+							Button = btn,
+							Icon = _G[btnName .. "IconTexture"],
+						}
 
-					group:AddButton(btn, btn.MasqueButtonData, "Item")
+						group:AddButton(btn, btn.MasqueButtonData, "Item")
+					end
 				end
 			end
 		end
-	end
 
-	if MoveAny.UpdateActionBar then
-		MoveAny:AddBarName(MAPetBar, "MAPetBar")
-		MoveAny:UpdateActionBar(MAPetBar)
+		if MoveAny.UpdateActionBar then
+			MoveAny:AddBarName(bar, "MAPetBar")
+			MoveAny:UpdateActionBar(bar)
+		end
 	end
 
 	C_Timer.After(0.4, MoveAny.UpdatePetBar)
@@ -48,9 +51,9 @@ end
 
 function MoveAny:InitPetBar()
 	if not PetActionBar and MoveAny:IsEnabled("PETBAR", false) then
-		MAPetBar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
-		MAPetBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
-		MAPetBar.btns = {}
+		bar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
+		bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
+		bar.btns = {}
 		if _G["PetActionButton" .. 1] then
 			btnsize = _G["PetActionButton" .. 1]:GetSize()
 		end
@@ -65,39 +68,39 @@ function MoveAny:InitPetBar()
 					function(sel, ...)
 						if sel.ma_setparent then return end
 						sel.ma_setparent = true
-						bb:SetParent(MAPetBar)
+						bb:SetParent(bar)
 						sel.ma_setparent = false
 					end
 				)
 
 				hooksecurefunc(
-					MAPetBar,
+					bar,
 					"SetPoint",
 					function(sel, ...)
-						bb:SetParent(MAPetBar)
+						bb:SetParent(bar)
 						bb:SetMovable(true)
 						if bb.SetUserPlaced and bb:IsMovable() then
 							bb:SetUserPlaced(false)
 						end
 
 						bb:ClearAllPoints()
-						bb:SetPoint("TOPLEFT", MAPetBar, "TOPLEFT", (i - 1) * btnsize, 0)
+						bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
 					end
 				)
 
 				bb:ClearAllPoints()
-				bb:SetPoint("TOPLEFT", MAPetBar, "TOPLEFT", (i - 1) * btnsize, 0)
-				tinsert(MAPetBar.btns, bb)
+				bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
+				tinsert(bar.btns, bb)
 			end
 		end
 
-		MAPetBar:SetSize(10 * btnsize, btnsize)
+		bar:SetSize(10 * btnsize, btnsize)
 		if ShowPetActionBar then
 			hooksecurefunc(
 				"ShowPetActionBar",
 				function()
-					MAPetBar:SetAlpha(1)
-					MAPetBar.ma_show = true
+					bar:SetAlpha(1)
+					bar.ma_show = true
 				end
 			)
 
@@ -105,11 +108,11 @@ function MoveAny:InitPetBar()
 				"HidePetActionBar",
 				function()
 					if UnitExists("pet") then
-						MAPetBar:SetAlpha(1)
-						MAPetBar.ma_show = true
+						bar:SetAlpha(1)
+						bar.ma_show = true
 					else
-						MAPetBar:SetAlpha(0)
-						MAPetBar.ma_show = false
+						bar:SetAlpha(0)
+						bar.ma_show = false
 					end
 				end
 			)
