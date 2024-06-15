@@ -15,15 +15,15 @@ function D4:Trans(key, lang, t1, t2, t3)
     end
 
     if t1 and t2 and t3 then
-        result = format(result, t1, t2, t3)
+        result = string.format(result, t1, t2, t3)
     end
 
     if t1 and t2 then
-        result = format(result, t1, t2)
+        result = string.format(result, t1, t2)
     end
 
     if t1 then
-        result = format(result, t1)
+        result = string.format(result, t1)
     end
 
     return result or key

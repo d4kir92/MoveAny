@@ -97,7 +97,13 @@ function D4:CreateSlider(tab)
     slider:SetPoint(unpack(tab.pTab))
     slider.Low:SetText(tab.vmin)
     slider.High:SetText(tab.vmax)
-    slider.Text:SetText(format(D4:Trans(tab.key), tab.value))
+    local struct = D4:Trans(tab.key)
+    if struct then
+        slider.Text:SetText(string.format(struct, tab.value))
+    else
+        print("[D4] missing format string:", tab.key)
+    end
+
     slider:SetMinMaxValues(tab.vmin, tab.vmax)
     slider:SetObeyStepOnDrag(true)
     slider:SetValueStep(tab.steps)
@@ -114,7 +120,12 @@ function D4:CreateSlider(tab)
                 tab:func()
             end
 
-            slider.Text:SetText(format(D4:Trans(tab.key), val))
+            local struct2 = D4:Trans(tab.key)
+            if struct2 then
+                slider.Text:SetText(string.format(struct2, val))
+            else
+                print("[D4] Missing format string:", tab.key)
+            end
         end
     )
 
