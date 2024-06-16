@@ -51,7 +51,7 @@ end
 
 function MoveAny:InitPetBar()
 	if not PetActionBar and MoveAny:IsEnabled("PETBAR", false) then
-		bar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
+		bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
 		bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
 		bar.btns = {}
 		if _G["PetActionButton" .. 1] then
