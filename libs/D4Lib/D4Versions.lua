@@ -151,4 +151,3 @@ function D4:CheckVersion(name, ver)
 end
 
 D4.LibVersion = D4LibVersion
-print(D4LibVersion)
