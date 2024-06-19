@@ -1,3 +1,8 @@
+local _, _ = ...
+D4 = D4 or {}
+D4.LibVersion = D4.LibVersion or 0
+local D4LibVersion = 1.0
+if D4.LibVersion >= D4LibVersion then return end
 function D4:Trans(key, lang, t1, t2, t3)
     D4.trans = D4.trans or {}
     if lang == nil then

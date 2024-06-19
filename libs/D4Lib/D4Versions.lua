@@ -1,6 +1,53 @@
 local AddonName, _ = ...
-D4.VersionTab = D4.VersionTab or {}
+D4 = D4 or {}
 local pre = "D4PREFIX"
+local f = CreateFrame("FRAME")
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:SetScript(
+    "OnEvent",
+    function(sel, event, isInitialLogin, isReloadingUi)
+        C_Timer.After(
+            2,
+            function()
+                if D4.VersionTab[string.lower(AddonName)] then
+                    local id = D4.VersionTab[string.lower(AddonName)].id or 0
+                    C_Timer.After(
+                        id * 0.1,
+                        function()
+                            local ver = D4:GetVersion(AddonName)
+                            if ver == nil then
+                                D4:MSG(AddonName, 0, "|cffff0000MISSING VERSION", AddonName)
+                            end
+
+                            if isInitialLogin and ver and pre and C_ChatInfo then
+                                C_ChatInfo.SendAddonMessage(pre, string.format("A;%s;V;%s", AddonName, ver))
+                            end
+                        end
+                    )
+                end
+            end
+        )
+    end
+)
+
+local r = CreateFrame("FRAME")
+r:RegisterEvent("CHAT_MSG_ADDON")
+r:SetScript(
+    "OnEvent",
+    function(sel, event, pref, msg, ...)
+        if pref == pre and msg then
+            local a, name, v, ver = string.split(";", msg)
+            if a and name and v and ver and a == "A" and v == "V" and AddonName == name and not D4:FoundHigher(name) then
+                D4:CheckVersion(name, ver)
+            end
+        end
+    end
+)
+
+D4.LibVersion = D4.LibVersion or 0
+local D4LibVersion = 1.0
+if D4.LibVersion >= D4LibVersion then return end
+D4.VersionTab = D4.VersionTab or {}
 if C_ChatInfo then
     C_ChatInfo.RegisterAddonMessagePrefix(pre)
 end
@@ -103,45 +150,5 @@ function D4:CheckVersion(name, ver)
     end
 end
 
-local f = CreateFrame("FRAME")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:SetScript(
-    "OnEvent",
-    function(sel, event, isInitialLogin, isReloadingUi)
-        C_Timer.After(
-            2,
-            function()
-                if D4.VersionTab[string.lower(AddonName)] then
-                    local id = D4.VersionTab[string.lower(AddonName)].id or 0
-                    C_Timer.After(
-                        id * 0.1,
-                        function()
-                            local ver = D4:GetVersion(AddonName)
-                            if ver == nil then
-                                D4:MSG(AddonName, 0, "|cffff0000MISSING VERSION", AddonName)
-                            end
-
-                            if isInitialLogin and ver and pre and C_ChatInfo then
-                                C_ChatInfo.SendAddonMessage(pre, string.format("A;%s;V;%s", AddonName, ver))
-                            end
-                        end
-                    )
-                end
-            end
-        )
-    end
-)
-
-local r = CreateFrame("FRAME")
-r:RegisterEvent("CHAT_MSG_ADDON")
-r:SetScript(
-    "OnEvent",
-    function(sel, event, pref, msg, ...)
-        if pref == pre and msg then
-            local a, name, v, ver = string.split(";", msg)
-            if a and name and v and ver and a == "A" and v == "V" and AddonName == name and not D4:FoundHigher(name) then
-                D4:CheckVersion(name, ver)
-            end
-        end
-    end
-)
+D4.LibVersion = D4LibVersion
+print(D4LibVersion)

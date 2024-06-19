@@ -1,3 +1,8 @@
+local _, _ = ...
+D4 = D4 or {}
+D4.LibVersion = D4.LibVersion or 0
+local D4LibVersion = 1.0
+if D4.LibVersion >= D4LibVersion then return end
 function D4:Grid(n, snap)
     n = n or 0
     snap = snap or 10

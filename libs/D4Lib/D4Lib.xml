@@ -6,6 +6,8 @@
 
 <Script file="D4Lib.lua"/>
 
+<Script file="D4Math.lua"/>
+
 <Script file="D4Output.lua"/>
 <Script file="D4DB.lua"/>
 
