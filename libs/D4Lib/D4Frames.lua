@@ -1,8 +1,4 @@
-local _, _ = ...
-D4 = D4 or {}
-D4.LibVersion = D4.LibVersion or 0
-local D4LibVersion = 1.0
-if D4.LibVersion >= D4LibVersion then return end
+local _, D4 = ...
 --[[ INPUTS ]]
 function D4:AddCategory(tab)
     tab.sw = tab.sw or 25
@@ -106,7 +102,7 @@ function D4:CreateSlider(tab)
     if struct then
         slider.Text:SetText(string.format(struct, tab.value))
     else
-        print("[D4] missing format string:", tab.key)
+        D4:MSG("[D4] missing format string:", tab.key)
     end
 
     slider:SetMinMaxValues(tab.vmin, tab.vmax)
@@ -129,7 +125,7 @@ function D4:CreateSlider(tab)
             if struct2 then
                 slider.Text:SetText(string.format(struct2, val))
             else
-                print("[D4] Missing format string:", tab.key)
+                D4:MSG("[D4] Missing format string:", tab.key)
             end
         end
     )

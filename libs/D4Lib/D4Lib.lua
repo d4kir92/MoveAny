@@ -1,8 +1,4 @@
-local _, _ = ...
-D4 = D4 or {}
-D4.LibVersion = D4.LibVersion or 0
-local D4LibVersion = 1.0
-if D4.LibVersion >= D4LibVersion then return end
+local _, D4 = ...
 --[[ Basics ]]
 local buildNr = select(4, GetBuildInfo())
 local buildName = "CLASSIC"
@@ -26,7 +22,7 @@ end
 
 D4.oldWow = D4.oldWow or false
 if C_Timer == nil then
-    print("[D4] ADD C_Timer")
+    D4:MSG("[D4] ADD C_Timer")
     C_Timer = {}
     local f = CreateFrame("Frame")
     f.tab = {}
@@ -51,7 +47,7 @@ if C_Timer == nil then
 end
 
 if GetClassColor == nil then
-    print("[D4] ADD GetClassColor")
+    D4:MSG("[D4] ADD GetClassColor")
     GetClassColor = function(classFilename)
         local color = RAID_CLASS_COLORS[classFilename]
         if color then return color.r, color.g, color.b, color.colorStr end
@@ -85,7 +81,7 @@ local ICON_TAG_LIST_EN = {
 function D4:GetCVar(name)
     if C_CVar and C_CVar.GetCVar then return C_CVar.GetCVar(name) end
     if GetCVar then return GetCVar(name) end
-    print("[D4][GetCVar] FAILED")
+    D4:MSG("[D4][GetCVar] FAILED")
 
     return nil
 end
@@ -94,7 +90,7 @@ function D4:GetItemInfo(itemID)
     if itemID == nil then return nil end
     if C_Item and C_Item.GetItemInfo then return C_Item.GetItemInfo(itemID) end
     if GetItemInfo then return GetItemInfo(itemID) end
-    print("[D4][GetItemInfo] FAILED")
+    D4:MSG("[D4][GetItemInfo] FAILED")
 
     return nil
 end
@@ -103,7 +99,7 @@ function D4:GetSpellInfo(spellID)
     if spellID == nil then return nil end
     if C_Spell and C_Spell.GetSpellInfo then return C_Spell.GetSpellInfo(spellID) end
     if GetSpellInfo then return GetSpellInfo(spellID) end
-    print("[D4][GetSpellInfo] FAILED")
+    D4:MSG("[D4][GetSpellInfo] FAILED")
 
     return nil
 end
@@ -111,7 +107,7 @@ end
 function D4:GetMouseFocus()
     if GetMouseFoci then return GetMouseFoci() end
     if GetMouseFocus then return GetMouseFocus() end
-    print("[D4][GetMouseFocus] FAILED")
+    D4:MSG("[D4][GetMouseFocus] FAILED")
 
     return nil
 end
@@ -119,7 +115,7 @@ end
 function D4:LoadAddOn(name)
     if C_AddOns and C_AddOns.LoadAddOn then return C_AddOns.LoadAddOn(name) end
     if LoadAddOn then return LoadAddOn(name) end
-    print("[D4][LoadAddOn] FAILED")
+    D4:MSG("[D4][LoadAddOn] FAILED")
 
     return nil
 end
@@ -127,7 +123,7 @@ end
 function D4:IsAddOnLoaded(name)
     if C_AddOns and C_AddOns.IsAddOnLoaded then return C_AddOns.IsAddOnLoaded(name) end
     if IsAddOnLoaded then return IsAddOnLoaded(name) end
-    print("[D4][IsAddOnLoaded] FAILED")
+    D4:MSG("[D4][IsAddOnLoaded] FAILED")
 
     return nil
 end

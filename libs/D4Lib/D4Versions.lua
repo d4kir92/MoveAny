@@ -1,6 +1,5 @@
-local AddonName, _ = ...
-D4 = D4 or {}
-local pre = "D4PREFIX"
+local AddonName, D4 = ...
+local pre = AddonName .. "D4PREFIX"
 local f = CreateFrame("FRAME")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript(
@@ -44,9 +43,6 @@ r:SetScript(
     end
 )
 
-D4.LibVersion = D4.LibVersion or 0
-local D4LibVersion = 1.0
-if D4.LibVersion >= D4LibVersion then return end
 D4.VersionTab = D4.VersionTab or {}
 if C_ChatInfo then
     C_ChatInfo.RegisterAddonMessagePrefix(pre)
@@ -54,25 +50,25 @@ end
 
 function D4:SetVersion(name, icon, ver)
     if name == nil then
-        D4:msg("|cffff0000MISSING NAME AT SetVersion", ver)
+        D4:MSG("|cffff0000MISSING NAME AT SetVersion", ver)
 
         return false
     end
 
     if icon == nil then
-        D4:msg("|cffff0000MISSING ICON AT SetVersion", icon)
+        D4:MSG("|cffff0000MISSING ICON AT SetVersion", icon)
 
         return false
     end
 
     if ver == nil then
-        D4:msg("|cffff0000MISSING VERSION AT SetVersion", ver)
+        D4:MSG("|cffff0000MISSING VERSION AT SetVersion", ver)
 
         return false
     end
 
     if D4.VersionTab[string.lower(name)] ~= nil then
-        D4:msg("|cffff0000VERSION ALREADY SET", name)
+        D4:MSG("|cffff0000VERSION ALREADY SET", name)
 
         return false
     end
@@ -98,7 +94,7 @@ end
 
 function D4:GetVersion(name)
     if name == nil then
-        D4:msg("|cffff0000MISSING NAME AT GetVersion")
+        D4:MSG("|cffff0000MISSING NAME AT GetVersion")
 
         return false
     end
@@ -110,7 +106,7 @@ end
 
 function D4:FoundHigher(name)
     if name == nil then
-        D4:msg("|cffff0000MISSING NAME AT FoundHigher")
+        D4:MSG("|cffff0000MISSING NAME AT FoundHigher")
 
         return false
     end
@@ -136,7 +132,7 @@ end
 
 function D4:CheckVersion(name, ver)
     if name == nil then
-        D4:msg("|cffff0000MISSING NAME AT CheckVersion")
+        D4:MSG("|cffff0000MISSING NAME AT CheckVersion")
 
         return false
     end
@@ -149,5 +145,3 @@ function D4:CheckVersion(name, ver)
         D4:MSG(name, D4.VersionTab[string.lower(name)].icon, string.format("New Version available (v%s -> v%s)", D4:GetVersion(name), ver))
     end
 end
-
-D4.LibVersion = D4LibVersion

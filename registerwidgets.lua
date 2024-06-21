@@ -61,7 +61,7 @@ local function CreateTabs(frame, args)
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
-		if D4:GetWoWBuild() == "RETAIL" then
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			template = "PanelTabButtonTemplate"
 		end
 
@@ -571,7 +571,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if D4:GetWoWBuild() ~= "RETAIL" then
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
 				MoveAny:CreateSlider(
 					content,
 					10,
@@ -652,7 +652,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if D4:GetWoWBuild() ~= "RETAIL" then
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
 				MoveAny:CreateSlider(
 					content,
 					10,
@@ -838,7 +838,7 @@ function MoveAny:RegisterWidget(tab)
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 	if enabled1 or enabled2 then
-		if not MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
+		if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 			MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
 
 			return
@@ -857,7 +857,7 @@ function MoveAny:RegisterWidget(tab)
 			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 			if enabled1 or enabled2 then
-				if not MoveAny:IsEnabled("EDITMODE", D4:GetWoWBuildNr() < 100000) then
+				if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
 					MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
 
 					return
@@ -1368,7 +1368,7 @@ function MoveAny:RegisterWidget(tab)
 							sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 						end
 					elseif not sel.SetPointBase then
-						if D4:GetWoWBuild() ~= "RETAIL" and sel.OldSetPoint and sel.ClearAllPoints then
+						if MoveAny:GetWoWBuild() ~= "RETAIL" and sel.OldSetPoint and sel.ClearAllPoints then
 							if not InCombatLockdown() then
 								if noreparent then
 									sel:OldClearAllPoints()
@@ -1545,7 +1545,7 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	local ele = D4:GetMouseFocus()
+	local ele = MoveAny:GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
 		if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
 			lastEle = nil
@@ -1553,7 +1553,7 @@ function MoveAny:CheckAlphas()
 		end
 
 		if ele ~= WorldFrame and ele ~= UIParent then
-			local dufloaded = D4:IsAddOnLoaded("DUnitFrames")
+			local dufloaded = MoveAny:IsAddOnLoaded("DUnitFrames")
 			if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame) then
 				if tContains(MoveAny:GetAlphaFrames(), ele) then
 					ele:SetAlpha(1)
@@ -1579,7 +1579,7 @@ function MoveAny:CheckAlphas()
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
-	local dufloaded = D4:IsAddOnLoaded("DUnitFrames")
+	local dufloaded = MoveAny:IsAddOnLoaded("DUnitFrames")
 	if ele == nil then
 		MoveAny:MSG("UpdateAlphas: ele is nil")
 	else
@@ -1627,7 +1627,7 @@ function MoveAny:UpdateAlphas(mouseEle)
 end
 
 function MoveAny:AnyActionbarEnabled()
-	if D4:GetWoWBuild() ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		return MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR3", false) or MoveAny:IsEnabled("ACTIONBAR4", false) or MoveAny:IsEnabled("ACTIONBAR7", false) or MoveAny:IsEnabled("ACTIONBAR8", false) or MoveAny:IsEnabled("ACTIONBAR9", false) or MoveAny:IsEnabled("ACTIONBAR10", false)
 	else
 		return false

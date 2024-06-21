@@ -1,21 +1,7 @@
 local AddonName, MoveAny = ...
-local COL_R = "|cFFFF0000"
-local COL_Y = "|cFFFFFF00"
 local MADEBUG = false
 function MoveAny:DEBUG()
 	return MADEBUG
-end
-
-function MoveAny:HR()
-	print(COL_Y .. "----------------------------------------------------------------------")
-end
-
-function MoveAny:MSG(...)
-	print("|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_Y, ...)
-end
-
-function MoveAny:MSG_Error(...)
-	print("|cff3FC7EB" .. "[MoveAny |T135994:16:16:0:0|t]|r " .. COL_R .. "[ERROR] |r", ...)
 end
 
 function MoveAny:CheckDB()

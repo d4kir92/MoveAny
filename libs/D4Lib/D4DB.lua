@@ -1,17 +1,13 @@
-local _, _ = ...
-D4 = D4 or {}
-D4.LibVersion = D4.LibVersion or 0
-local D4LibVersion = 1.0
-if D4.LibVersion >= D4LibVersion then return end
+local _, D4 = ...
 function D4:GV(db, key, value)
     if db == nil then
-        D4:msg("[D4:GV] db is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
+        D4:MSG("[D4:GV] db is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
 
         return value
     end
 
     if type(db) ~= "table" then
-        D4:msg("[D4:GV] db is not table", "db", tostring(db), "key", tostring(key), "value", tostring(value))
+        D4:MSG("[D4:GV] db is not table", "db", tostring(db), "key", tostring(key), "value", tostring(value))
 
         return value
     end
@@ -23,13 +19,13 @@ end
 
 function D4:SV(db, key, value)
     if db == nil then
-        D4:msg("[D4:SV] db is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
+        D4:MSG("[D4:SV] db is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
 
         return false
     end
 
     if key == nil then
-        D4:msg("[D4:SV] key is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
+        D4:MSG("[D4:SV] key is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
 
         return false
     end

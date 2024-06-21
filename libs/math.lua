@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+MoveAny:SetAddonOutput("MoveAny", 135994)
 function MoveAny:MathC(val, vmin, vmax)
 	if val == nil then return 0 end
 	if vmin == nil then return 0 end

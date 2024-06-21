@@ -39,8 +39,8 @@ uiscalecvar:SetScript(
 	"OnEvent",
 	function(self, event, target, value)
 		if event == "CVAR_UPDATE" and (target == "uiScale" or target == "useUiScale") then
-			if D4:GetCVar("useUiScale") == "1" then
-				MAUIP:SetScale(D4:GetCVar("uiScale"))
+			if MoveAny:GetCVar("useUiScale") == "1" then
+				MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
 			else
 				MAUIP:SetScale(UIParent:GetScale())
 			end
@@ -54,14 +54,14 @@ hooksecurefunc(
 	UIParent,
 	"SetScale",
 	function(self, scale)
-		if D4:GetCVar("useUiScale") == "0" then
+		if MoveAny:GetCVar("useUiScale") == "0" then
 			MAUIP:SetScale(scale)
 		end
 	end
 )
 
-if D4:GetCVar("useUiScale") == "1" then
-	MAUIP:SetScale(D4:GetCVar("uiScale"))
+if MoveAny:GetCVar("useUiScale") == "1" then
+	MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
 else
 	MAUIP:SetScale(UIParent:GetScale())
 end
@@ -251,13 +251,13 @@ function MoveAny:UpdateMALock()
 end
 
 function MoveAny:InitSlash()
-	D4:AddSlash("move", MoveAny.ToggleMALock)
-	D4:AddSlash("moveany", MoveAny.ToggleMALock)
+	MoveAny:AddSlash("move", MoveAny.ToggleMALock)
+	MoveAny:AddSlash("moveany", MoveAny.ToggleMALock)
 	if C_UI then
-		D4:AddSlash("rl", C_UI.Reload)
-		D4:AddSlash("rel", C_UI.Reload)
+		MoveAny:AddSlash("rl", C_UI.Reload)
+		MoveAny:AddSlash("rel", C_UI.Reload)
 	else
-		D4:AddSlash("rl", ReloadUi)
-		D4:AddSlash("rel", ReloadUi)
+		MoveAny:AddSlash("rl", ReloadUi)
+		MoveAny:AddSlash("rel", ReloadUi)
 	end
 end

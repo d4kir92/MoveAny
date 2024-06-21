@@ -1,12 +1,8 @@
-local _, _ = ...
-D4 = D4 or {}
-D4.LibVersion = D4.LibVersion or 0
-local D4LibVersion = 1.0
-if D4.LibVersion >= D4LibVersion then return end
+local _, D4 = ...
 local cmds = {}
 function D4:AddSlash(name, func)
     if name == nil then
-        D4:msg("failed to add slash command, missing name")
+        D4:MSG("failed to add slash command, missing name")
 
         return false
     end
@@ -26,7 +22,7 @@ function D4:InitSlash()
             end
         )
     else
-        D4:msg("FAILED TO ADD SLASH COMMAND #1")
+        D4:MSG("FAILED TO ADD SLASH COMMAND #1")
     end
 
     if ChatEdit_SendText and type(ChatEdit_SendText) == "function" then
@@ -43,7 +39,7 @@ function D4:InitSlash()
             end
         )
     else
-        D4:msg("FAILED TO ADD SLASH COMMAND #2")
+        D4:MSG("FAILED TO ADD SLASH COMMAND #2")
     end
 end
 

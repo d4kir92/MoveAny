@@ -214,7 +214,7 @@ function MoveAny:LangdeDE()
 		["LID_TARGETFRAMETOTBUFF1"] = "Ziel des Zielfenster Buff 1",
 	}
 
-	if D4:GetWoWBuild() ~= "RETAIL" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		tab["LID_ACTIONBARS"] = "Aktionsleisten 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)"
 		tab["LID_ACTIONBAR2"] = "Aktionsleiste 2 (2. Seite von Aktionsleiste 1)"
