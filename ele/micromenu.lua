@@ -73,6 +73,20 @@ function MoveAny:InitMicroMenu()
 						mb:SetSize(sw2, sh2)
 					end
 
+					hooksecurefunc(
+						mb,
+						"SetPoint",
+						function(sel)
+							if MAMenuBar.ma_set_po then return end
+							MAMenuBar.ma_set_po = true
+							if MoveAny.UpdateActionBar then
+								MoveAny:UpdateActionBar(MAMenuBar)
+							end
+
+							MAMenuBar.ma_set_po = false
+						end
+					)
+
 					mb:ClearAllPoints()
 					mb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
 					if MoveAny:GetWoWBuild() == "RETAIL" then
@@ -91,6 +105,17 @@ function MoveAny:InitMicroMenu()
 
 					if MoveAny:GetWoWBuild() == "RETAIL" and mb ~= HelpMicroButton and mb ~= MainMenuMicroButton then
 						hooksecurefunc(
+							mb,
+							"SetScale",
+							function(sel, scale)
+								if sel.ma_set_s then return end
+								sel.ma_set_s = true
+								mb:SetScale(MAMenuBar:GetScale())
+								sel.ma_set_s = false
+							end
+						)
+
+						hooksecurefunc(
 							MAMenuBar,
 							"SetScale",
 							function(sel, scale)
@@ -108,6 +133,19 @@ function MoveAny:InitMicroMenu()
 							mb:Show()
 						end
 					)
+
+					if MicroMenu then
+						hooksecurefunc(
+							MicroMenu,
+							"SetScaleAdjustment",
+							function(sel)
+								if sel.ma_SetScaleAdjustment then return end
+								sel.ma_SetScaleAdjustment = true
+								MicroMenu:SetScaleAdjustment(1)
+								sel.ma_SetScaleAdjustment = false
+							end
+						)
+					end
 
 					mb:Show()
 					tinsert(MAMenuBar.btns, mb)
