@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	D4:SetVersion(AddonName, 135994, "1.6.207")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.207"))
+	D4:SetVersion(AddonName, 135994, "1.6.208")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.208"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1040,7 +1040,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.207"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.208"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3699,12 +3699,9 @@ function MoveAny:LoadAddon()
 			for i = 1, 6 do
 				local frame = _G["Boss" .. i .. "TargetFrame"]
 				if frame then
-					--frame.unit = "boss" .. i
 					frame:SetParent(MoveAny:GetMainPanel())
 					frame:SetScale(1)
 					if D4:GetWoWBuild() ~= "RETAIL" then
-						if not InCombatLockdown() then end --frame:Show()
-						frame:SetAlpha(0)
 						hooksecurefunc(
 							frame,
 							"Show",
@@ -3729,24 +3726,21 @@ function MoveAny:LoadAddon()
 							function(sel, alpha)
 								if sel.ma_set_alpha then return end
 								sel.ma_set_alpha = true
-								if sel.ma_show then
-									sel:SetAlpha(alpha)
+								if UnitExists(frame.unit) or sel.ma_show or alpha > 0 then
+									local a = alpha or 1
+									sel:SetAlpha(a)
 								else
-									sel:SetAlpha(0)
+									sel:SetAlpha(1)
 								end
 
 								sel.ma_set_alpha = false
 							end
 						)
 
-						frame.OldHide = frame.Hide
-						frame.OldShow = frame.Show
-						frame.Hide = function() end
-						frame.Show = function() end
-						frame.OldSetPoint = frame.SetPoint
-						frame.OldClearAllPoints = frame.ClearAllPoints
-						frame.SetPoint = function(sel, ...) end
-						frame.ClearAllPoints = function(sel) end
+						-- So Blizzard dont do shit with them
+						function frame:IsShown()
+							return false
+						end
 					end
 
 					MoveAny:RegisterWidget(
