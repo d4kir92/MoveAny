@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.212")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.212"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.213")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.213"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -696,6 +696,7 @@ function MoveAny:InitMALock()
 		end
 
 		AddCategory("ADVANCED")
+		AddCheckBox(4, "MINIMAPFLAG", false)
 		if MoveAny:IsValidFrame(TotemFrame) then
 			AddCheckBox(4, "TOTEMFRAME", false)
 		end
@@ -1040,7 +1041,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.212"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.213"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3797,7 +3798,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if true then
+	if MoveAny:IsEnabled("MINIMAPFLAG", false) then
 		local flags = {"MiniMapInstanceDifficulty", "MiniMapChallengeMode"}
 		for i, name in pairs(flags) do
 			local flag = _G[name]
