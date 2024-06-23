@@ -212,6 +212,9 @@ function MoveAny:LangdeDE()
 		["LID_TARGETFRAMEDEBUFF1"] = "Zielfenster Debuff 1",
 		["LID_FOCUSFRAMEDEBUFF1"] = "Fokusfenster Debuff 1",
 		["LID_TARGETFRAMETOTBUFF1"] = "Ziel des Zielfenster Buff 1",
+		["LID_MINIMAPFLAG"] = "Minimap Flagge",
+		["LID_MiniMapInstanceDifficulty"] = "Minimap Flagge Instanz Schwierigkeit",
+		["LID_MiniMapChallengeMode"] = "Minimap Flagge Herausforderungsmodus",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

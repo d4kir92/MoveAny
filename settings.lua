@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.211")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.211"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.212")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.212"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1040,7 +1040,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.211"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.212"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3795,6 +3795,22 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_MINIMAPZONETEXT"
 			}
 		)
+	end
+
+	if true then
+		local flags = {"MiniMapInstanceDifficulty", "MiniMapChallengeMode"}
+		for i, name in pairs(flags) do
+			local flag = _G[name]
+			if flag then
+				flag:SetParent(MoveAny:GetMainPanel())
+				MoveAny:RegisterWidget(
+					{
+						["name"] = name,
+						["lstr"] = "LID_" .. name,
+					}
+				)
+			end
+		end
 	end
 
 	if MoveAny:IsEnabled("MINIMAP", false) then

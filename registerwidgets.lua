@@ -405,14 +405,16 @@ function MoveAny:MenuOptions(opt, frame)
 			local slides = {}
 			local items = {}
 			local function UpdateRowItems()
-				local maxBtns = getn(frame.btns)
-				if frame ~= MAMenuBar and frame ~= StanceBar and opts["COUNT"] and opts["COUNT"] > 0 then
-					maxBtns = opts["COUNT"]
-				end
+				if frame.btns then
+					local maxBtns = getn(frame.btns)
+					if frame ~= MAMenuBar and frame ~= StanceBar and opts["COUNT"] and opts["COUNT"] > 0 then
+						maxBtns = opts["COUNT"]
+					end
 
-				items = {}
-				for id = 1, maxBtns do
-					tinsert(items, id)
+					items = {}
+					for id = 1, maxBtns do
+						tinsert(items, id)
+					end
 				end
 			end
 
@@ -422,7 +424,13 @@ function MoveAny:MenuOptions(opt, frame)
 				vmin = 6
 			end
 
-			local max = getn(frame.btns)
+			local max = 1
+			if frame.btns then
+				max = getn(frame.btns)
+			else
+				max = 1
+			end
+
 			local count = opts["COUNT"] or max
 			local rows = opts["ROWS"] or 1
 			local offset = opts["OFFSET"] or 0
