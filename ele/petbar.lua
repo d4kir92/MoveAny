@@ -121,12 +121,22 @@ function MoveAny:InitPetBar()
 		end
 
 		MoveAny:UpdatePetBar()
-	else
+	elseif PetActionBar then
 		PetActionBar.btns = {}
 		for i = 1, 12 do
 			local btn = _G["PetActionButton" .. i]
 			if btn then
 				tinsert(PetActionBar.btns, btn)
+			end
+		end
+
+		MoveAny:UpdatePetBar()
+	elseif PetActionBarFrame then
+		PetActionBarFrame.btns = {}
+		for i = 1, 12 do
+			local btn = _G["PetActionButton" .. i]
+			if btn then
+				tinsert(PetActionBarFrame.btns, btn)
 			end
 		end
 
