@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.216")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.216"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.217")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.217"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1041,7 +1041,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.216"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.217"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3441,7 +3441,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) and UIWidgetPowerBarContainerFrame then
+	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "UIWidgetPowerBarContainerFrame",
@@ -3452,14 +3452,23 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("POWERBAR", false) then
+	if PlayerPowerBarAlt and MoveAny:IsEnabled("POWERBAR", false) then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "PlayerPowerBarAlt",
 				["lstr"] = "LID_POWERBAR",
 				["userplaced"] = true,
 				["sw"] = 36 * 6,
-				["sh"] = 36 * 1
+				["sh"] = 36 * 1,
+				["setup"] = function()
+					PlayerPowerBarAlt.OldClearAllPoints = PlayerPowerBarAlt.ClearAllPoints
+					PlayerPowerBarAlt.OldSetPoint = PlayerPowerBarAlt.SetPoint
+					function PlayerPowerBarAlt:SetPoint(...)
+					end
+
+					function PlayerPowerBarAlt:ClearAllPoints()
+					end
+				end
 			}
 		)
 	end
