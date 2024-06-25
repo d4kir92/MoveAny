@@ -411,8 +411,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.218")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.218"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.219")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.219"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1041,7 +1041,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.218"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.219"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3461,9 +3461,11 @@ function MoveAny:LoadAddon()
 				["sw"] = 36 * 6,
 				["sh"] = 36 * 1,
 				["setup"] = function()
-					UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAlt"] = nil
-					for k, v in next, UIPARENT_MANAGED_FRAME_POSITIONS do
-						v.playerPowerBarAlt = nil
+					if UIPARENT_MANAGED_FRAME_POSITIONS then
+						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAlt"] = nil
+						for k, v in next, UIPARENT_MANAGED_FRAME_POSITIONS do
+							v.playerPowerBarAlt = nil
+						end
 					end
 
 					PlayerPowerBarAlt.ignoreFramePositionManager = true
