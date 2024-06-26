@@ -131,9 +131,12 @@ end
 
 local EnableMouseFrames = {"PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton"}
 local HookedEnableMouseFrames = {}
-local retries = 10
 local run = false
-function MoveAny:UpdateMoveFrames()
+function MoveAny:UpdateMoveFrames(force)
+	if force then
+		run = false
+	end
+
 	if run then return end
 	run = true
 	if MoveAny:IsEnabled("MOVEFRAMES", true) then
@@ -154,8 +157,9 @@ function MoveAny:UpdateMoveFrames()
 		end
 
 		if not InCombatLockdown() then
-			local notFound = false
+			local count = 0
 			for i, name in pairs(MAFS) do
+				count = count + 1
 				local frame = MoveAny:GetFrame(_G[name], name)
 				if frame ~= nil then
 					MAFS[name] = nil
@@ -414,30 +418,26 @@ function MoveAny:UpdateMoveFrames()
 					notFound = true
 				end
 			end
-
-			if notFound and retries > 0 then
-				if MAFS["WeakAurasOptions"] == nil then
-					retries = retries - 1
-				end
-
-				C_Timer.After(
-					1,
-					function()
-						run = false
-						MoveAny:UpdateMoveFrames()
-					end
-				)
-			end
 		else
 			C_Timer.After(
-				0.1,
+				0.04,
 				function()
 					run = false
-					MoveAny:UpdateMoveFrames()
+					MoveAny:UpdateMoveFrames(false)
 				end
 			)
 		end
 	end
+end
+
+function MoveAny:ThinkMoveFrames()
+	MoveAny:UpdateMoveFrames(false)
+	C_Timer.After(
+		1,
+		function()
+			MoveAny:ThinkMoveFrames()
+		end
+	)
 end
 
 function MoveAny:MoveFrames()
@@ -458,11 +458,12 @@ function MoveAny:MoveFrames()
 	f:SetScript(
 		"OnEvent",
 		function(sel, event, ...)
-			MoveAny:UpdateMoveFrames()
+			MoveAny:UpdateMoveFrames(true)
 		end
 	)
 
-	MoveAny:UpdateMoveFrames()
+	MoveAny:UpdateMoveFrames(true)
+	MoveAny:ThinkMoveFrames()
 	if BattlefieldFrame then
 		BattlefieldFrame:EnableMouse(false)
 	end
