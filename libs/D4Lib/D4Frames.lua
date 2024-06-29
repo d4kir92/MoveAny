@@ -87,7 +87,7 @@ function D4:CreateSlider(tab)
     tab.sh = tab.sh or 25
     tab.parent = tab.parent or UIParent
     tab.pTab = tab.pTab or "CENTER"
-    tab.value = tab.value or nil
+    tab.value = tab.value or 1
     tab.vmin = tab.vmin or 1
     tab.vmax = tab.vmax or 1
     tab.steps = tab.steps or 1
@@ -250,6 +250,10 @@ end
 
 function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     Y = Y - 15
+    if TAB[key] == nil then
+        TAB[key] = value
+    end
+
     local slider = {}
     slider.key = key
     slider.parent = PARENT

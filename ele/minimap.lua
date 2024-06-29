@@ -41,7 +41,7 @@ function MoveAny:InitMinimap()
 	end
 
 	local debugMinimap = false
-	local miniMapTab = {"MiniMapMailFrame", "GarrisonLandingPageMinimapButton", "QueueStatusMinimapButton", "MiniMapInstanceDifficulty", "MiniMapChallengeMode", "MiniMapLFGFrame", "MiniMapBattlefieldFrame", "MiniMapTracking"}
+	local miniMapTab = {"MiniMapMailFrame", "GarrisonLandingPageMinimapButton", "QueueStatusMinimapButton", "MiniMapInstanceDifficulty", "MiniMapChallengeMode", "GuildInstanceDifficulty", "MiniMapLFGFrame", "MiniMapBattlefieldFrame", "MiniMapTracking"}
 	if debugMinimap then
 		for i, name in pairs(miniMapTab) do
 			local btn = _G[name]

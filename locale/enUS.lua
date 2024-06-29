@@ -221,6 +221,7 @@ function MoveAny:LangenUS()
 		["LID_MINIMAPFLAG"] = "Minimap Flag",
 		["LID_MiniMapInstanceDifficulty"] = "Minimap Flag Instance Difficulty",
 		["LID_MiniMapChallengeMode"] = "Minimap Flag Challenge Mode",
+		["LID_GuildInstanceDifficulty"] = "Minimap Flag Guild-Instance Difficulty",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
