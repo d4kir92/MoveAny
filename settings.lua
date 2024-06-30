@@ -413,8 +413,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.223")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.223"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.224")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.224"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1043,7 +1043,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.223"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.224"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3471,6 +3471,38 @@ function MoveAny:LoadAddon()
 					end
 
 					PlayerPowerBarAlt.ignoreFramePositionManager = true
+				end
+			}
+		)
+
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "PlayerPowerBarAltCounterBar",
+				["lstr"] = "LID_POWERBARCOUNTERBAR",
+				["userplaced"] = true,
+				["sw"] = 36 * 2,
+				["sh"] = 36,
+				["setup"] = function()
+					if UIPARENT_MANAGED_FRAME_POSITIONS then
+						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAltCounterBar"] = nil
+					end
+
+					PlayerPowerBarAltCounterBar.ignoreFramePositionManager = true
+				end
+			}
+		)
+
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "BuffTimer1",
+				["lstr"] = "LID_BUFFTIMER1",
+				["userplaced"] = true,
+				["setup"] = function()
+					if UIPARENT_MANAGED_FRAME_POSITIONS then
+						UIPARENT_MANAGED_FRAME_POSITIONS["BuffTimer1"] = nil
+					end
+
+					BuffTimer1.ignoreFramePositionManager = true
 				end
 			}
 		)

@@ -216,6 +216,8 @@ function MoveAny:LangdeDE()
 		["LID_MiniMapInstanceDifficulty"] = "Minimap Flagge Instanz Schwierigkeit",
 		["LID_MiniMapChallengeMode"] = "Minimap Flagge Herausforderungsmodus",
 		["LID_GuildInstanceDifficulty"] = "Minimap Flagge Gilden-Instanz Schwierigkeit",
+		["LID_POWERBARCOUNTERBAR"] = "Machtleiste Gegenleiste",
+		["LID_BUFFTIMER1"] = "Stärkungszeit 1",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
