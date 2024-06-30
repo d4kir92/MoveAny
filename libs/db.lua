@@ -362,14 +362,11 @@ end
 function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
-	if MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then
-		MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
-		MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
-		MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3
-		MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
-		MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
-	end
-
+	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
+	MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"] = p2
+	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3
+	MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
+	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
 	local frame = _G[key]
 	if frame and p1 and p3 then
 		frame:ClearAllPoints()
