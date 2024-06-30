@@ -413,8 +413,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.224")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.224"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.225")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.225"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1043,7 +1043,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.224"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.225"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3480,8 +3480,6 @@ function MoveAny:LoadAddon()
 				["name"] = "PlayerPowerBarAltCounterBar",
 				["lstr"] = "LID_POWERBARCOUNTERBAR",
 				["userplaced"] = true,
-				["sw"] = 36 * 2,
-				["sh"] = 36,
 				["setup"] = function()
 					if UIPARENT_MANAGED_FRAME_POSITIONS then
 						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAltCounterBar"] = nil

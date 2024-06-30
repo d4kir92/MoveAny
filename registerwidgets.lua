@@ -106,7 +106,10 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 		"OnClick",
 		function()
 			local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-			MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y)
+			if p1 and p3 and p4 and p5 then
+				MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y)
+			end
+
 			p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
 			parent.pos:SetText(format("Position X: %d Y:%d", p4, p5))
 		end
