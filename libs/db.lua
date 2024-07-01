@@ -446,19 +446,17 @@ end
 function MoveAny:GetEleScale(key)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
-	if MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
-		local scale = MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"]
-		if scale and type(scale) ~= "number" then
-			MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = tonumber(scale)
-		end
+	local scale = MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"]
+	if scale and type(scale) ~= "number" then
+		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = tonumber(scale)
+	end
 
-		if scale and tonumber(scale) > 0 then
-			return tonumber(scale)
-		elseif scale then
-			MoveAny:MSG("[GetEleScale] SCALE <= 0, key: " .. tostring(key))
+	if scale and tonumber(scale) > 0 then
+		return tonumber(scale)
+	elseif scale then
+		MoveAny:MSG("[GetEleScale] SCALE <= 0, key: " .. tostring(key))
 
-			return 1
-		end
+		return 1
 	end
 
 	return 1
