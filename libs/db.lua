@@ -472,17 +472,15 @@ function MoveAny:SetEleScale(key, scale)
 		return
 	end
 
-	if MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
-		if scale > 0 then
-			MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
-			MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = scale
-			local frame = _G[key]
-			if frame then
-				frame:SetScale(scale)
-			end
-		else
-			MoveAny:MSG("[SetEleScale] SCALE <= 0, key: " .. tostring(key))
+	if scale > 0 then
+		MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
+		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = scale
+		local frame = _G[key]
+		if frame then
+			frame:SetScale(scale)
 		end
+	else
+		MoveAny:MSG("[SetEleScale] SCALE <= 0, key: " .. tostring(key))
 	end
 
 	if key ~= "MALock" then
@@ -521,15 +519,21 @@ end
 function MoveAny:GetFrameScale(key)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["FRAMES"]["SIZES"][key] = MoveAny:GetTab()["FRAMES"]["SIZES"][key] or {}
-	local scale = MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"]
+	if MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
+		local scale = MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"]
 
-	return scale
+		return scale
+	end
+
+	return 1
 end
 
 function MoveAny:SetFrameScale(key, scale)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["FRAMES"]["SIZES"][key] = MoveAny:GetTab()["FRAMES"]["SIZES"][key] or {}
-	MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"] = scale
+	if MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
+		MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"] = scale
+	end
 end
 
 function MoveAny:GetMinimapTable()
