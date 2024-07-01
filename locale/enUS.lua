@@ -224,6 +224,9 @@ function MoveAny:LangenUS()
 		["LID_GuildInstanceDifficulty"] = "Minimap Flag Guild-Instance Difficulty",
 		["LID_POWERBARCOUNTERBAR"] = "Powerbar Counterbar",
 		["LID_BUFFTIMER1"] = "BuffTimer 1",
+		["LID_FRAMES"] = "Windows",
+		["LID_SCALEFRAMES"] = "Scale Windows",
+		["LID_RESETFRAMES"] = "Reset Windows",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

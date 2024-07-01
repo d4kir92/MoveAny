@@ -194,6 +194,9 @@ function MoveAny:UpdateMoveFrames(force)
 									if dbp1 and dbp3 and not InCombatLockdown() then
 										frame:ClearAllPoints()
 										frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+									else
+										frame:ClearAllPoints()
+										frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
 									end
 								end
 

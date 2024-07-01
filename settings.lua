@@ -135,7 +135,11 @@ function MoveAny:GetLastSelected()
 	return lastSelected
 end
 
-local function AddCategory(key)
+local function AddCategory(key, layer)
+	if layer == nil then
+		layer = 1
+	end
+
 	if cas[key] == nil then
 		cas[key] = CreateFrame("Frame", key .. "_Category", MALock.SC)
 		local ca = cas[key]
@@ -152,7 +156,7 @@ local function AddCategory(key)
 			posy = posy - 10
 		end
 
-		cas[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", 6, posy)
+		cas[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", 6 + (layer - 1) * 20, posy)
 		posy = posy - 24
 	else
 		cas[key]:Hide()
@@ -413,8 +417,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.228")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.228"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.229")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.229"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -434,9 +438,9 @@ function MoveAny:InitMALock()
 		local cb1 = cbs["FRAMESKEYDRAG"]
 		local cb2 = cbs["FRAMESKEYSCALE"]
 		local cb3 = cbs["FRAMESKEYRESET"]
-		cb1.f:SetText("|cFFFFFF00" .. format(MoveAny:GT("LID_FRAMESKEYDRAG"), MoveAny:GT("LID_" .. keybind)))
-		cb2.f:SetText("|cFFFFFF00" .. format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:GT("LID_" .. keybind)))
-		cb3.f:SetText("|cFFFFFF00" .. format(MoveAny:GT("LID_FRAMESKEYRESET"), MoveAny:GT("LID_" .. keybind)))
+		cb1.f:SetText("|cFFFFFFFF" .. format(MoveAny:GT("LID_FRAMESKEYDRAG"), MoveAny:GT("LID_" .. keybind)))
+		cb2.f:SetText("|cFFFFFFFF" .. format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:GT("LID_" .. keybind)))
+		cb3.f:SetText("|cFFFFFFFF" .. format(MoveAny:GT("LID_FRAMESKEYRESET"), MoveAny:GT("LID_" .. keybind)))
 	end
 
 	function MoveAny:UpdateFrameKeybind()
@@ -455,16 +459,20 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
 		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
 		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
-		AddSlider(8, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1)
+		AddCategory("FRAMES")
 		AddCheckBox(4, "MOVEFRAMES", true)
 		AddCheckBox(24, "MOVESMALLBAGS", false)
 		AddCheckBox(24, "MOVELOOTFRAME", false)
 		AddSlider(26, "KEYBINDWINDOW", 1, MoveAny.UpdateFrameKeybind, 1, 3, 1, keybinds)
-		AddCheckBox(24, "SAVEFRAMEPOSITION", true)
-		AddCheckBox(40, "FRAMESKEYDRAG", false)
-		AddCheckBox(24, "SAVEFRAMESCALE", true)
-		AddCheckBox(40, "FRAMESKEYSCALE", false)
-		AddCheckBox(24, "FRAMESKEYRESET", false)
+		AddCategory("MOVEFRAMES", 2)
+		AddCheckBox(36, "SAVEFRAMEPOSITION", true)
+		AddCheckBox(36, "FRAMESKEYDRAG", false)
+		AddSlider(40, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1)
+		AddCategory("SCALEFRAMES", 2)
+		AddCheckBox(36, "SAVEFRAMESCALE", true)
+		AddCheckBox(36, "FRAMESKEYSCALE", false)
+		AddCategory("RESETFRAMES", 2)
+		AddCheckBox(36, "FRAMESKEYRESET", false)
 		MoveAny:UpdateFrameKeybindText()
 		AddCategory("BUILTIN")
 		local posx = 4
@@ -1043,7 +1051,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.228"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.229"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
