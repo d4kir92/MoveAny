@@ -39,13 +39,13 @@ function D4:AddTrans(lang, key, value)
     end
 
     if key == nil then
-        D4:MSG("[D4:AddTrans] key is nil")
+        D4:MSG("[D4][AddTrans] key is nil")
 
         return false
     end
 
     if value == nil then
-        D4:MSG("[D4:AddTrans] value is nil")
+        D4:MSG("[D4][AddTrans] value is nil")
 
         return false
     end

@@ -523,7 +523,7 @@ function MoveAny:GetFrameScale(key)
 		return scale
 	end
 
-	return 1
+	return nil
 end
 
 function MoveAny:SetFrameScale(key, scale)
