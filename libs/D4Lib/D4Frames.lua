@@ -103,7 +103,7 @@ function D4:CreateSlider(tab)
     tab.steps = tab.steps or 1
     tab.decimals = tab.decimals or 0
     tab.key = tab.key or tab.name or ""
-    local slider = CreateFrame("Slider", tab.name, tab.parent, "OptionsSliderTemplate")
+    local slider = CreateFrame("Slider", tab.key, tab.parent, "OptionsSliderTemplate")
     slider:SetWidth(tab.sw)
     slider:SetPoint(unpack(tab.pTab))
     slider.Low:SetText(tab.vmin)
@@ -136,7 +136,7 @@ function D4:CreateSlider(tab)
             if struct2 then
                 slider.Text:SetText(string.format(struct2, val))
             else
-                D4:MSG("[D4] Missing format string:", tab.key)
+                D4:MSG("[D4][CreateSlider][OnValueChanged] Missing format string:", tab.key)
             end
         end
     )
@@ -248,7 +248,7 @@ function D4:AppendCheckbox(key, value, func, x, y)
             ["funcV"] = function(sel, checked)
                 TAB[key] = checked
                 if func then
-                    func()
+                    func(sel, checked)
                 end
             end
         }
