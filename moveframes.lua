@@ -417,8 +417,6 @@ function MoveAny:UpdateMoveFrames(force)
 							MoveAny:MAFrameUpdatePos(frame)
 						end
 					end
-				else
-					notFound = true
 				end
 			end
 		else
