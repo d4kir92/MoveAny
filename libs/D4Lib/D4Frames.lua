@@ -1,4 +1,7 @@
 local _, D4 = ...
+local Y = 0
+local PARENT = nil
+local TAB = nil
 --[[ INPUTS ]]
 function D4:AddCategory(tab)
     tab.sw = tab.sw or 25
@@ -124,6 +127,10 @@ function D4:CreateSlider(tab)
         "OnValueChanged",
         function(sel, val)
             val = string.format("%." .. tab.decimals .. "f", val)
+            if TAB then
+                TAB[tab.key] = val
+            end
+
             if tab.funcV then
                 tab:funcV(val)
             end
@@ -188,9 +195,6 @@ function D4:CreateFrame(tab)
     return fra
 end
 
-local Y = 0
-local PARENT = nil
-local TAB = nil
 function D4:SetAppendY(newY)
     Y = newY
 end
