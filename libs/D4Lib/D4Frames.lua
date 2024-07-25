@@ -2,6 +2,7 @@ local _, D4 = ...
 local Y = 0
 local PARENT = nil
 local TAB = nil
+local TABIsNil = false
 --[[ INPUTS ]]
 function D4:AddCategory(tab)
     tab.sw = tab.sw or 25
@@ -238,6 +239,15 @@ end
 function D4:AppendCheckbox(key, value, func, x, y)
     value = value or false
     x = x or 5
+    if TAB == nil then
+        if TABIsNil == false then
+            TABIsNil = true
+            D4:MSG("TAB is nil #1")
+        end
+
+        return Y
+    end
+
     local val = TAB[key]
     if val == nil then
         val = value
@@ -273,6 +283,15 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
         D4:MSG("[D4][AppendSlider] Missing value:", tab.key, tab.value)
 
         return
+    end
+
+    if TAB == nil then
+        if TABIsNil == false then
+            TABIsNil = true
+            D4:MSG("TAB is nil #2")
+        end
+
+        return Y
     end
 
     if TAB[key] == nil then
