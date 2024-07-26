@@ -128,6 +128,7 @@ function D4:CreateSlider(tab)
         "OnValueChanged",
         function(sel, val)
             val = string.format("%." .. tab.decimals .. "f", val)
+            val = tonumber(val)
             if TAB then
                 TAB[tab.key] = val
             end

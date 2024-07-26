@@ -134,7 +134,12 @@ function MoveAny:InitMicroMenu()
 							function(sel, scale)
 								if sel.ma_set_s then return end
 								sel.ma_set_s = true
-								mb:SetScale(MAMenuBar:GetScale())
+								if MoveAny:GetCVar("useUiScale") == "0" then
+									mb:SetScale(MAMenuBar:GetScale() / UIParent:GetScale())
+								else
+									mb:SetScale(MAMenuBar:GetScale())
+								end
+
 								sel.ma_set_s = false
 							end
 						)
