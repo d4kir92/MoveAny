@@ -75,8 +75,6 @@ function MoveAny:InitMicroMenu()
 						end
 					end
 				end
-
-				print(parent, MAHIDDEN)
 			end
 		)
 
