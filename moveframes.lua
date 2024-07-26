@@ -367,6 +367,10 @@ function MoveAny:UpdateMoveFrames(force)
 								end
 
 								if sca and sca > 0 and (currentFrame == nil or currentFrame ~= sel) then
+									if sel:GetName() == "WorldMapFrame" then
+										print("#1", sel:GetName(), sca)
+									end
+
 									sel:SetScale(sca)
 								end
 							end
@@ -375,16 +379,30 @@ function MoveAny:UpdateMoveFrames(force)
 						end
 					)
 
+					if MoveAny:GetFrameScale(name) then
+						print(name, MoveAny:GetFrameScale(name))
+					end
+
 					if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 						if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
-							if GetScreenHeight() / frame:GetHeight() > 0 then
-								MoveAny:SetFrameScale(name, GetScreenHeight() / frame:GetHeight())
+							frame:SetScale(MoveAny:GetFrameScale(name))
+							C_Timer.After(
+								4,
+								function()
+									if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
+										if GetScreenHeight() / frame:GetHeight() > 0 then
+											MoveAny:SetFrameScale(name, GetScreenHeight() / frame:GetHeight())
+										end
+
+										frame:SetScale(MoveAny:GetFrameScale(name))
+									end
+								end
+							)
+						elseif MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
+							if name == "WorldMapFrame" then
+								print("SET SCALE", name)
 							end
 
-							frame:SetScale(MoveAny:GetFrameScale(name))
-						end
-
-						if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 							frame:SetScale(MoveAny:GetFrameScale(name))
 						end
 					else
