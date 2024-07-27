@@ -120,7 +120,7 @@ function D4:IsSpellInRange(spellID, spellType, unit)
 end
 
 function D4:GetMouseFocus()
-    if GetMouseFoci then return GetMouseFoci() end
+    if GetMouseFoci then return GetMouseFoci()[1] end
     if GetMouseFocus then return GetMouseFocus() end
     D4:MSG("[D4][GetMouseFocus] FAILED")
 
