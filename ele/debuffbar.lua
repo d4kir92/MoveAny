@@ -60,8 +60,7 @@ function MoveAny:InitDebuffBar()
 								end
 
 								sel:SetParent(MADebuffBar)
-								sel:ClearAllPoints()
-								sel:SetPoint("TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0)
+								MoveAny:SetPoint(sel, "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0)
 								sel.debuffsetpoint = false
 							end
 						)
@@ -83,8 +82,7 @@ function MoveAny:InitDebuffBar()
 								end
 
 								sel:SetParent(MADebuffBar)
-								sel:ClearAllPoints()
-								sel:SetPoint(p1, p2, p3, p4, p5)
+								MoveAny:SetPoint(sel, p1, p2, p3, p4, p5)
 								sel.debuffsetpoint = false
 							end
 						)
@@ -158,25 +156,24 @@ function MoveAny:InitDebuffBar()
 								local id = i
 								local caly = (id - 0.1) / 10
 								local cy = caly - caly % 1
-								sel:ClearAllPoints()
 								if i == 1 then
 									if rel == "RIGHT" then
-										sel:SetPoint(bp1, MADebuffBar, bp3, 0, 0)
+										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, 0)
 									else
-										sel:SetPoint(bp1, MADebuffBar, bp3, 0, 0)
+										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, 0)
 									end
 								else
 									if id % 10 == 1 then
 										if dirV == "BOTTOM" then
-											sel:SetPoint(bp1, MADebuffBar, bp3, 0, -cy * (sh + 10))
+											MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh + 10))
 										else
-											sel:SetPoint(bp1, MADebuffBar, bp3, 0, cy * (sh + 10))
+											MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh + 10))
 										end
 									else
 										if rel == "RIGHT" then
-											sel:SetPoint(rel, _G["DebuffButton" .. (i - 1)], dirH, -4, 0)
+											MoveAny:SetPoint(sel, rel, _G["DebuffButton" .. (i - 1)], dirH, -4, 0)
 										else
-											sel:SetPoint(rel, _G["DebuffButton" .. (i - 1)], dirH, 4, 0)
+											MoveAny:SetPoint(sel, rel, _G["DebuffButton" .. (i - 1)], dirH, 4, 0)
 										end
 									end
 								end

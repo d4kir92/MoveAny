@@ -83,8 +83,7 @@ function MoveAny:InitPetBar()
 							bb:SetUserPlaced(false)
 						end
 
-						bb:ClearAllPoints()
-						bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
+						MoveAny:SetPoint(bb, "TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
 					end
 				)
 

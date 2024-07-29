@@ -104,8 +104,7 @@ function MoveAny:InitBuffBar()
 								function(sel, o1, o2, o3, o4, o5)
 									if sel.ma_db_setpoint then return end
 									sel.ma_db_setpoint = true
-									sel:ClearAllPoints()
-									sel:SetPoint(dbtab[i]["p1"], dbtab[i]["p2"], dbtab[i]["p3"], dbtab[i]["p4"], dbtab[i]["p5"])
+									MoveAny:SetPoint(sel, dbtab[i]["p1"], dbtab[i]["p2"], dbtab[i]["p3"], dbtab[i]["p4"], dbtab[i]["p5"])
 									sel.ma_db_setpoint = false
 								end
 							)
@@ -211,8 +210,7 @@ function MoveAny:InitBuffBar()
 				end
 
 				sel:SetParent(MABuffBar)
-				sel:ClearAllPoints()
-				sel:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
+				MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
 				sel.buffsetpoint = false
 			end
 		)
@@ -280,11 +278,9 @@ function MoveAny:InitBuffBar()
 					end
 
 					if dirH == "LEFT" then
-						sel:ClearAllPoints()
-						sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
+						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
 					else
-						sel:ClearAllPoints()
-						sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 					end
 
 					sel.setpoint_te1 = false
@@ -318,11 +314,9 @@ function MoveAny:InitBuffBar()
 					end
 
 					if dirH == "LEFT" then
-						sel:ClearAllPoints()
-						sel:SetPoint(bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
+						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
 					else
-						sel:ClearAllPoints()
-						sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 					end
 
 					sel.setpoint_te2 = false
@@ -351,11 +345,9 @@ function MoveAny:InitBuffBar()
 					end
 
 					if dirH == "LEFT" then
-						sel:ClearAllPoints()
-						sel:SetPoint(bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
+						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
 					else
-						sel:ClearAllPoints()
-						sel:SetPoint(bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 					end
 
 					sel.setpoint_te3 = false
@@ -440,7 +432,6 @@ function MoveAny:InitBuffBar()
 								local caly = (id - 0.1) / MABUFFLIMIT
 								local cy = caly - caly % 1
 								if bbtn:GetParent() == BuffFrame then
-									sel:ClearAllPoints()
 									if numBuffs == 1 then
 										local posx = 0
 										if rel == "RIGHT" then
@@ -459,19 +450,19 @@ function MoveAny:InitBuffBar()
 											end
 										end
 
-										sel:SetPoint(bp1, MABuffBar, bp3, posx, posy)
+										MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, posx, posy)
 									else
 										if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
 											if dirV == "BOTTOM" then
-												sel:SetPoint(bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
+												MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
 											else
-												sel:SetPoint(bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
+												MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
 											end
 										elseif prevBuff then
 											if rel == "RIGHT" then
-												sel:SetPoint(rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
 											else
-												sel:SetPoint(rel, prevBuff, dirH, MABUFFSPACINGX, 0)
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
 											end
 										end
 									end

@@ -54,6 +54,20 @@ if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
 	ScriptErrorsFrame.DragArea:SetParent(MAHIDDEN)
 end
 
+function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
+	window.ma_ignore_setpointbase = window.ma_ignore_setpointbase or false
+	if InCombatLockdown() and window:IsProtected() then return false end
+	if p1 then
+		window:ClearAllPoints()
+		local SetPoint = window.SetPointBase or window.SetPoint
+		window.ma_ignore_setpointbase = true
+		SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
+		window.ma_ignore_setpointbase = false
+	end
+
+	return true
+end
+
 local currentFrame = nil
 local currentFrameName = nil
 local prevMouseX = nil
@@ -189,11 +203,10 @@ function MoveAny:UpdateMoveFrames(force)
 									fM.ma_y = fM:GetTop() - fM:GetHeight()
 									fM.ma_x = MoveAny:Snap(fM.ma_x, MoveAny:GetSnapWindowSize())
 									fM.ma_y = MoveAny:Snap(fM.ma_y, MoveAny:GetSnapWindowSize())
-									MoveAny:SetFramePoint(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
+									MoveAny:SaveFramePointToDB(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 									if dbp1 and dbp3 and not InCombatLockdown() then
-										frame:ClearAllPoints()
-										frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+										MoveAny:SetPoint(frame, dbp1, nil, dbp3, dbp4, dbp5)
 									else
 										frame:ClearAllPoints()
 										frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
@@ -221,7 +234,7 @@ function MoveAny:UpdateMoveFrames(force)
 
 					function MoveAny:CheckSave(frameObj)
 						if not MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then
-							MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
+							MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
 							frameObj:SetMovable(true)
 							if frameObj.SetUserPlaced then
 								frameObj:SetUserPlaced(false)
@@ -284,10 +297,9 @@ function MoveAny:UpdateMoveFrames(force)
 
 								fm:UpdatePreview()
 							elseif (MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsFrameKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsResetButtonDown(btn)) then
-								MoveAny:SetFramePoint(name, nil, nil, nil, nil, nil)
+								MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
 								MoveAny:SetFrameScale(name, nil)
 								frame:SetScale(1)
-								--frame:ClearAllPoints()
 								MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
 							else
 								if MoveAny:IsResetButtonDown(btn) then
@@ -306,24 +318,6 @@ function MoveAny:UpdateMoveFrames(force)
 						end
 					)
 
-					function MoveAny:MAFrameRetrySetPoint(frameObj)
-						frameObj.maretrysetpoint = true
-						if not InCombatLockdown() then
-							if frameObj:GetPoint() then
-								frameObj:SetPoint(frameObj:GetPoint())
-							else
-								frameObj:SetPoint("CENTER")
-							end
-						else
-							C_Timer.After(
-								0.01,
-								function()
-									MoveAny:MAFrameRetrySetPoint(frameObj)
-								end
-							)
-						end
-					end
-
 					hooksecurefunc(
 						frame,
 						"SetPoint",
@@ -337,16 +331,12 @@ function MoveAny:UpdateMoveFrames(force)
 
 							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 							if dbp1 and dbp3 then
-								if not InCombatLockdown() then
-									sel.maretrysetpoint = nil
-									local w, h = sel:GetSize()
-									sel:ClearAllPoints()
-									sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-									if sel:GetNumPoints() > 1 then
-										sel:SetSize(w, h)
-									end
-								elseif sel.maretrysetpoint == nil and MoveAny.MAFrameRetrySetPoint then
-									MoveAny:MAFrameRetrySetPoint(frame)
+								--if not InCombatLockdown() then
+								sel.maretrysetpoint = nil
+								local w, h = sel:GetSize()
+								MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
+								if sel:GetNumPoints() > 1 then
+									sel:SetSize(w, h)
 								end
 							end
 
@@ -402,26 +392,7 @@ function MoveAny:UpdateMoveFrames(force)
 
 					if frame.GetPoint and frame:GetPoint() then
 						local p1, p2, p3, p4, p5 = frame:GetPoint()
-						if not InCombatLockdown() then
-							frame:ClearAllPoints()
-							frame:SetPoint(p1, p2, p3, p4, p5)
-						else
-							function MoveAny:MAFrameUpdatePos(frameObj)
-								if not InCombatLockdown() then
-									frameObj:ClearAllPoints()
-									frameObj:SetPoint(p1, p2, p3, p4, p5)
-								else
-									C_Timer.After(
-										0.03,
-										function()
-											MoveAny:MAFrameUpdatePos(frameObj)
-										end
-									)
-								end
-							end
-
-							MoveAny:MAFrameUpdatePos(frame)
-						end
+						MoveAny:SetPoint(frame, p1, p2, p3, p4, p5)
 					end
 				end
 			end

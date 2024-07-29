@@ -502,7 +502,7 @@ function MoveAny:GetFramePoint(key)
 	return nil, nil, nil, nil, nil
 end
 
-function MoveAny:SetFramePoint(key, p1, p2, p3, p4, p5)
+function MoveAny:SaveFramePointToDB(key, p1, p2, p3, p4, p5)
 	MoveAny:CheckDB()
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key] = MoveAny:GetTab()["FRAMES"]["POINTS"][key] or {}
 	if MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then

@@ -1322,36 +1322,6 @@ function MoveAny:RegisterWidget(tab)
 		MoveAny:SetEleSize(name, sw, sh)
 	end
 
-	if frame.SetPointBase then
-		--frame.layoutApplyInProgress = true
-		function frame:MAUpdatePoint()
-			if frame.ma_retry_setpoint and not InCombatLockdown() then
-				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-				if not InCombatLockdown() and frame.SetPointBase then
-					frame:ClearAllPoints()
-					if noreparent then
-						frame:SetPoint(dbp1, frame:GetParent(), dbp3, dbp4, dbp5)
-					else
-						frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-					end
-				elseif not frame.SetPointBase then
-					frame:ClearAllPoints()
-					if noreparent then
-						frame:SetPoint(dbp1, frame:GetParent(), dbp3, dbp4, dbp5)
-					else
-						frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-					end
-				end
-
-				frame.ma_retry_setpoint = false
-			end
-
-			if frame.ma_retry_setpoint then
-				C_Timer.After(0.1, frame.MAUpdate)
-			end
-		end
-	end
-
 	hooksecurefunc(
 		frame,
 		"SetPoint",
@@ -1370,38 +1340,7 @@ function MoveAny:RegisterWidget(tab)
 				sel.elesetpoint = true
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 				if dbp1 and dbp3 then
-					if not InCombatLockdown() and sel.SetPointBase then
-						if noreparent then
-							sel:ClearAllPointsBase()
-							sel:SetPointBase(dbp1, sel:GetParent(), dbp3, dbp4, dbp5)
-						else
-							sel:ClearAllPointsBase()
-							sel:SetPointBase(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-						end
-					elseif not sel.SetPointBase then
-						if MoveAny:GetWoWBuild() ~= "RETAIL" and sel.OldSetPoint and sel.ClearAllPoints then
-							if not InCombatLockdown() then
-								if noreparent then
-									sel:OldClearAllPoints()
-									sel:OldSetPoint(dbp1, sel:GetParent(), dbp3, dbp4, dbp5)
-								else
-									sel:OldClearAllPoints()
-									sel:OldSetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-								end
-							end
-						else
-							if noreparent then
-								sel:ClearAllPoints()
-								sel:SetPoint(dbp1, sel:GetParent(), dbp3, dbp4, dbp5)
-							else
-								sel:ClearAllPoints()
-								sel:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-							end
-						end
-					elseif sel.ma_retry_setpoint == false then
-						sel.ma_retry_setpoint = true
-						frame:MAUpdatePoint()
-					end
+					MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
 				end
 
 				sel.elesetpoint = false
@@ -1413,15 +1352,9 @@ function MoveAny:RegisterWidget(tab)
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 		if dbp1 and dbp3 then
 			if noreparent then
-				frame:ClearAllPoints()
-				frame:SetPoint(dbp1, frame:GetParent(), dbp3, dbp4, dbp5)
-				frame:ClearAllPoints()
-				frame:SetPoint(dbp1, frame:GetParent(), dbp3, dbp4, dbp5)
+				MoveAny:SetPoint(frame, dbp1, frame:GetParent(), dbp3, dbp4, dbp5)
 			else
-				frame:ClearAllPoints()
-				frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-				frame:ClearAllPoints()
-				frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+				MoveAny:SetPoint(frame, dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 			end
 		end
 	end

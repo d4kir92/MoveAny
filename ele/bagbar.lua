@@ -23,7 +23,7 @@ function MoveAny:UpdateBags()
 	local sw, sh = 0, 0
 	for i, mbname in pairs(BAGS) do
 		local bb = _G[mbname]
-		if bb ~= nil and bb:IsShown() and bb:GetParent"someString":IsShown() then
+		if bb ~= nil and bb:IsShown() and bb:GetParent():IsShown() then
 			if not tContains(hookedBags, mbname) then
 				tinsert(hookedBags, mbname)
 				hooksecurefunc(
@@ -70,7 +70,7 @@ function MoveAny:UpdateBags()
 		local x = 0
 		for i, mbname in pairs(BAGS) do
 			local bb = _G[mbname]
-			if bb ~= nil and bb:IsShown() and bb:GetParent"someString":IsShown() then
+			if bb ~= nil and bb:IsShown() and bb:GetParent():IsShown() then
 				local w, h = bb:GetSize()
 				if bb:GetParent() == MainMenuBarArtFrame then
 					bb:SetParent(BagsBar)
@@ -84,8 +84,7 @@ function MoveAny:UpdateBags()
 						function(sel, ...)
 							if sel.ma_bags_setpoint then return end
 							sel.ma_bags_setpoint = true
-							sel:ClearAllPoints()
-							sel:SetPoint("TOPLEFT", BagsBar, "TOPLEFT", sel.px, -(sel.psh / 2 - sel.ph / 2))
+							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", sel.px, -(sel.psh / 2 - sel.ph / 2))
 							sel.ma_bags_setpoint = false
 						end
 					)

@@ -417,8 +417,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.242")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.242"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.243")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.243"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1051,7 +1051,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.242"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.243"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3084,8 +3084,7 @@ function MoveAny:LoadAddon()
 									end
 
 									sel:SetParent(ObjectiveTrackerFrame)
-									sel:ClearAllPoints()
-									sel:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+									MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
 									sel.qwfsetpoint = false
 								end
 							)
@@ -3114,8 +3113,7 @@ function MoveAny:LoadAddon()
 									end
 
 									sel:SetParent(ObjectiveTrackerFrame)
-									sel:ClearAllPoints()
-									sel:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+									MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
 									sel.wfsetpoint = false
 								end
 							)
@@ -3202,16 +3200,14 @@ function MoveAny:LoadAddon()
 			function(sel, ...)
 				if sel.ma_setpoint then return end
 				sel.ma_setpoint = true
-				PetFrame:SetParent(MAPetFrame)
-				PetFrame:ClearAllPoints()
-				PetFrame:SetPoint("CENTER", MAPetFrame, "CENTER", 0, 0)
+				sel:SetParent(MAPetFrame)
+				MoveAny:SetPoint(sel, "CENTER", MAPetFrame, "CENTER", 0, 0)
 				sel.ma_setpoint = false
 			end
 		)
 
 		PetFrame:SetParent(MAPetFrame)
-		PetFrame:ClearAllPoints()
-		PetFrame:SetPoint("CENTER", MAPetFrame, "CENTER", 0, 0)
+		MoveAny:SetPoint(PetFrame, "CENTER", MAPetFrame, "CENTER", 0, 0)
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MAPetFrame",
@@ -3318,8 +3314,7 @@ function MoveAny:LoadAddon()
 				end
 
 				if not InCombatLockdown() then
-					sel:ClearAllPoints()
-					sel:SetPoint("RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
+					MoveAny:SetPoint(sel, "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
 				end
 
 				sel.crfmsetpoint = false
@@ -3372,8 +3367,7 @@ function MoveAny:LoadAddon()
 						function(sel, ...)
 							if sel.ma_ktb_setpoint then return end
 							sel.ma_ktb_setpoint = true
-							sel:ClearAllPoints()
-							sel:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+							MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
 							sel.ma_ktb_setpoint = false
 						end
 					)
@@ -4004,8 +3998,7 @@ function MoveAny:LoadAddon()
 					sel:SetUserPlaced(false)
 					if MoveAny:GameTooltipOnDefaultPosition() then
 						local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-						sel:ClearAllPoints()
-						sel:SetPoint(p1, MAGameTooltip, p3, 0, 0)
+						MoveAny:SetPoint(sel, p1, MAGameTooltip, p3, 0, 0)
 					end
 
 					sel.gtsetpoint = false
@@ -4027,8 +4020,7 @@ function MoveAny:LoadAddon()
 						mX = mX / scale
 						mY = mY / scale
 						GameTooltip.gtsetpoint = true
-						GameTooltip:ClearAllPoints()
-						GameTooltip:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
+						MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
 						GameTooltip.gtsetpoint = false
 						GameTooltip.default = 1
 					end
@@ -4161,8 +4153,7 @@ function MoveAny:LoadAddon()
 								sel:SetUserPlaced(false)
 							end
 
-							sel:ClearAllPoints()
-							sel:SetPoint("BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
+							MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
 							sel.glfsetpoint = false
 						end
 					)
@@ -4495,8 +4486,7 @@ function MoveAny:LoadAddon()
 								function()
 									local ssw, _ = _G["ChatFrame" .. i .. "ButtonFrame"]:GetSize()
 									sel:SetSize(ssw, ssw * 6)
-									sel:ClearAllPoints()
-									sel:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
+									MoveAny:SetPoint(sel, "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
 									sel.cbfsetpoint = false
 								end
 							)
@@ -4551,8 +4541,7 @@ function MoveAny:LoadAddon()
 							sel.cebsetpoint = true
 							if _G["ChatFrame" .. 1 .. "EditBox"] then
 								sel:SetSize(_G["ChatFrame" .. 1 .. "EditBox"]:GetSize())
-								sel:ClearAllPoints()
-								sel:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
+								MoveAny:SetPoint(sel, "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
 							end
 
 							sel.cebsetpoint = false
