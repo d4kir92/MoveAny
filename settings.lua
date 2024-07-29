@@ -417,8 +417,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.243")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.243"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.244")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.244"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1051,7 +1051,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.243"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.244"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3800,12 +3800,24 @@ function MoveAny:LoadAddon()
 				end
 			end
 
+			function MoveAny:BossCount()
+				local count = 0
+				for i = 1, 5 do
+					local frame = _G["Boss" .. i .. "TargetFrame"]
+					if frame and UnitExists("boss" .. i) then
+						count = count + 1
+					end
+				end
+
+				return count
+			end
+
 			function MoveAny:HandleBossFrames()
 				for i = 1, 6 do
 					local frame = _G["Boss" .. i .. "TargetFrame"]
 					local unit = "boss" .. i
 					if frame then
-						if UnitExists(unit) then
+						if UnitExists(unit) and MoveAny:BossCount() > 1 then
 							frame.ma_show = true
 							frame:SetAlpha(1)
 						else
