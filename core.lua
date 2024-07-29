@@ -63,7 +63,12 @@ hooksecurefunc(
 if MoveAny:GetCVar("useUiScale") == "1" then
 	MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
 else
-	MAUIP:SetScale(UIParent:GetScale())
+	C_Timer.After(
+		0,
+		function()
+			MAUIP:SetScale(UIParent:GetScale())
+		end
+	)
 end
 
 MoveAny:SetMAUIPAlpha(UIParent:GetAlpha())
@@ -183,7 +188,10 @@ function MoveAny:ShowMALock()
 
 		if MALock then
 			MALock:Show()
-			MAGridFrame:Show()
+			if MAGridFrame then
+				MAGridFrame:Show()
+			end
+
 			MALock:UpdateShowErrors()
 		else
 			MoveAny:MSG("[ShowMALock] Settings Frame couldn't be created, please tell dev.")
@@ -208,7 +216,10 @@ function MoveAny:HideMALock(onlyHide)
 
 		if MALock then
 			MALock:Hide()
-			MAGridFrame:Hide()
+			if MAGridFrame then
+				MAGridFrame:Hide()
+			end
+
 			MALock:UpdateShowErrors()
 		else
 			MoveAny:MSG("[HideMALock] Settings Frame couldn't be created, please tell dev.")
