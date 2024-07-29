@@ -417,8 +417,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.245")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.245"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.246")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.246"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -455,7 +455,7 @@ function MoveAny:InitMALock()
 		-- AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		AddCategory("GENERAL")
 		AddCheckBox(4, "SHOWTIPS", true)
-		AddCheckBox(4, "SHOWMINIMAPBUTTON", true, MoveAny.MinimapButtonCB, nil, nil, false)
+		AddCheckBox(4, "SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL", MoveAny.MinimapButtonCB, nil, nil, false)
 		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
 		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
 		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
@@ -1059,7 +1059,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.245"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.246"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4684,6 +4684,37 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		if AddonCompartmentFrame then
+			AddonCompartmentFrame:RegisterAddon(
+				{
+					text = AddonName,
+					icon = 135994,
+					registerForAnyClick = true,
+					notCheckable = true,
+					func = function(button, menuInputData, menu)
+						local mouseButton = menuInputData.buttonName
+						if mouseButton == "LeftButton" then
+							MoveAny:ToggleMALock()
+						end
+					end,
+					funcOnEnter = function(button)
+						MenuUtil.ShowTooltip(
+							button,
+							function(tooltip)
+								if not tooltip or not tooltip.AddLine then return end
+								tooltip:AddDoubleLine("MoveAny |T135994:16:16:0:0|t", format("v|cff3FC7EB%s", "1.6.246"))
+								tooltip:AddLine(MoveAny:GT("LID_MMBTNLEFT"))
+							end
+						)
+					end,
+					--tooltip:AddLine(MoveAny:GT("LID_MMBTNRIGHT"))
+					funcOnLeave = function(button)
+						MenuUtil.HideTooltip(button)
+					end,
+				}
+			)
+		end
+
 		local MoveAnyMinimapIcon = LibStub("LibDataBroker-1.1"):NewDataObject(
 			"MoveAnyMinimapIcon",
 			{
@@ -4699,7 +4730,7 @@ function MoveAny:LoadAddon()
 				end,
 				OnTooltipShow = function(tooltip)
 					if not tooltip or not tooltip.AddLine then return end
-					tooltip:AddLine("MoveAny")
+					tooltip:AddDoubleLine("MoveAny |T135994:16:16:0:0|t", format("v|cff3FC7EB%s", "1.6.246"))
 					tooltip:AddLine(MoveAny:GT("LID_MMBTNLEFT"))
 					tooltip:AddLine(MoveAny:GT("LID_MMBTNRIGHT"))
 				end,
@@ -4722,7 +4753,7 @@ function MoveAny:LoadAddon()
 		end
 
 		function MoveAny:HideMinimapButton()
-			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+			if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL") then
 				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
 			end
 
@@ -4732,8 +4763,8 @@ function MoveAny:LoadAddon()
 		end
 
 		function MoveAny:ShowMinimapButton()
-			if not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
-				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", true)
+			if not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL") then
+				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL")
 			end
 
 			if MoveAny:GetMinimapButton() then
@@ -4743,7 +4774,7 @@ function MoveAny:LoadAddon()
 
 		function MoveAny:UpdateMinimapButton()
 			if MoveAny:GetMinimapButton() then
-				if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true) then
+				if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL") then
 					MoveAny:ShowMinimapButton()
 				else
 					MoveAny:HideMinimapButton()
@@ -4752,7 +4783,7 @@ function MoveAny:LoadAddon()
 		end
 
 		function MoveAny:ToggleMinimapButton()
-			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", true))
+			MoveAny:SetEnabled("SHOWMINIMAPBUTTON", not MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL"))
 			MoveAny:UpdateMinimapButton()
 		end
 
