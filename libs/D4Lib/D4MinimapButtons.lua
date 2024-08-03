@@ -30,7 +30,7 @@ function D4:CreateMinimapButton(tab)
                 OnTooltipShow = function(tooltip)
                     if not tooltip or not tooltip.AddLine then return end
                     for i, v in pairs(tab.vTT) do
-                        tooltip:AddLine(v)
+                        tooltip:AddDoubleLine(v[1], v[2])
                     end
                 end,
             }
@@ -38,6 +38,43 @@ function D4:CreateMinimapButton(tab)
 
         if mmbtn and D4:GetLibDBIcon() then
             D4:GetLibDBIcon():Register(tab.name, mmbtn, tab.dbtab)
+        end
+
+        if AddonCompartmentFrame then
+            AddonCompartmentFrame:RegisterAddon(
+                {
+                    text = tab.name,
+                    icon = tab.icon,
+                    registerForAnyClick = true,
+                    notCheckable = true,
+                    func = function(button, menuInputData, menu)
+                        local btnName = menuInputData.buttonName
+                        if btnName == "LeftButton" and IsShiftKeyDown() and tab.funcSL then
+                            tab:funcSL()
+                        elseif btnName == "RightButton" and IsShiftKeyDown() and tab.funcSR then
+                            tab:funcSR()
+                        elseif btnName == "LeftButton" and tab.funcL then
+                            tab:funcL()
+                        elseif btnName == "RightButton" and tab.funcR then
+                            tab:funcR()
+                        end
+                    end,
+                    funcOnEnter = function(button)
+                        MenuUtil.ShowTooltip(
+                            button,
+                            function(tooltip)
+                                if not tooltip or not tooltip.AddLine then return end
+                                for i, v in pairs(tab.vTT) do
+                                    tooltip:AddDoubleLine(v[1], v[2])
+                                end
+                            end
+                        )
+                    end,
+                    funcOnLeave = function(button)
+                        MenuUtil.HideTooltip(button)
+                    end,
+                }
+            )
         end
     end
 end

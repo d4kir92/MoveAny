@@ -8,7 +8,7 @@ end
 
 function MoveAny:LangenUS()
 	local tab = {
-		["LID_MMBTNLEFT"] = "Left Click => Locks/Unlocks + Options",
+		["LID_MMBTNLEFT"] = "Locks/Unlocks + Options",
 		["LID_MMBTNRIGHT"] = "Shift + Right Click => Hide Minimap Button",
 		["LID_GENERAL"] = "General",
 		["LID_SHOWMINIMAPBUTTON"] = "Show Minimap Button",
