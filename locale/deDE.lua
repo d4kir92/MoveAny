@@ -2,8 +2,10 @@
 local _, MoveAny = ...
 function MoveAny:LangdeDE()
 	local tab = {
-		["LID_MMBTNLEFT"] = "Linksklick => Sperren/Entsperren + Optionen",
-		["LID_MMBTNRIGHT"] = "Shift + Rechtsklick => Minimapknopf verstecken",
+		["LID_LEFTCLICK"] = "Linksklick",
+		["LID_RIGHTCLICK"] = "Rechtsklick",
+		["LID_MMBTNLEFT"] = "Sperren/Entsperren + Optionen",
+		["LID_MMBTNRIGHT"] = "Minimapknopf verstecken",
 		["LID_GENERAL"] = "Allgemein",
 		["LID_SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
 		["LID_GRIDSIZE"] = "Rastergröße (Grid)",

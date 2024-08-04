@@ -40,7 +40,7 @@ function D4:CreateMinimapButton(tab)
             D4:GetLibDBIcon():Register(tab.name, mmbtn, tab.dbtab)
         end
 
-        if AddonCompartmentFrame then
+        if AddonCompartmentFrame and (tab.addoncomp == nil or tab.addoncomp == true) then
             AddonCompartmentFrame:RegisterAddon(
                 {
                     text = tab.name,

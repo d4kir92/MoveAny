@@ -2,8 +2,10 @@
 local _, MoveAny = ...
 function MoveAny:LangesES()
 	local tab = {
-		["LID_MMBTNLEFT"] = "Clic izquierdo => Bloquear/Desbloquear + Opciones",
-		["LID_MMBTNRIGHT"] = "Mayúsculas + Clic derecho => Ocultar botón del minimapa",
+		["LID_LEFTCLICK"] = "Clic izquierdo",
+		["LID_RIGHTCLICK"] = "Clic derecho",
+		["LID_MMBTNLEFT"] = "Bloquear/Desbloquear + Opciones",
+		["LID_MMBTNRIGHT"] = "Ocultar botón del minimapa",
 		["LID_GENERAL"] = "General",
 		["LID_SHOWMINIMAPBUTTON"] = "Mostrar el botón del mapa mínimo",
 		["LID_GRIDSIZE"] = "Tamaño de la cuadrícula",
