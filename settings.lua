@@ -417,8 +417,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.249")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.249"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.250")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.250"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -707,6 +707,7 @@ function MoveAny:InitMALock()
 
 		AddCategory("ADVANCED")
 		AddCheckBox(4, "MINIMAPFLAG", false)
+		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then
 			AddCheckBox(4, "TOTEMFRAME", false)
 		end
@@ -1059,7 +1060,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.249"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.250"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3905,7 +3906,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if ExpansionLandingPageMinimapButton then
+	if ExpansionLandingPageMinimapButton and MoveAny:IsEnabled("ExpansionLandingPageMinimapButton", false) then
 		ExpansionLandingPageMinimapButton:SetParent(UIParent)
 		hooksecurefunc(
 			ExpansionLandingPageMinimapButton,
@@ -4713,7 +4714,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.6.249"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.6.250"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
