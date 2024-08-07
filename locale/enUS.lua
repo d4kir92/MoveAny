@@ -229,6 +229,7 @@ function MoveAny:LangenUS()
 		["LID_FRAMES"] = "Windows",
 		["LID_SCALEFRAMES"] = "Scale Windows",
 		["LID_RESETFRAMES"] = "Reset Windows",
+		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
