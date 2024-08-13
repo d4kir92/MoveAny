@@ -462,7 +462,7 @@ function MoveAny:InitBuffBar()
 											if rel == "RIGHT" then
 												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
 											else
-												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, MABUFFSPACINGX, 0)
 											end
 										end
 									end
