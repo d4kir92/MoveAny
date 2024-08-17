@@ -205,6 +205,7 @@ function MoveAny:UpdateMoveFrames(force)
 									fM.ma_y = MoveAny:Snap(fM.ma_y, MoveAny:GetSnapWindowSize())
 									MoveAny:SaveFramePointToDB(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
 									local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
+									if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 									if dbp1 and dbp3 and not InCombatLockdown() then
 										MoveAny:SetPoint(frame, dbp1, nil, dbp3, dbp4, dbp5)
 									else
@@ -329,6 +330,7 @@ function MoveAny:UpdateMoveFrames(force)
 								sel:SetUserPlaced(false)
 							end
 
+							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 							if dbp1 and dbp3 then
 								--if not InCombatLockdown() then
@@ -350,6 +352,7 @@ function MoveAny:UpdateMoveFrames(force)
 						function(sel, scale)
 							if sel.masetscale_frame then return end
 							sel.masetscale_frame = true
+							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 							if MoveAny:GetFrameScale(name) or scale then
 								local sca = MoveAny:GetFrameScale(name) or scale
 								if sel.isMaximized and sca and sca > 1 then
@@ -392,7 +395,9 @@ function MoveAny:UpdateMoveFrames(force)
 
 					if frame.GetPoint and frame:GetPoint() then
 						local p1, p2, p3, p4, p5 = frame:GetPoint()
-						MoveAny:SetPoint(frame, p1, p2, p3, p4, p5)
+						if name ~= "LootFrame" or MoveAny:IsEnabled("MOVELOOTFRAME", false) then
+							MoveAny:SetPoint(frame, p1, p2, p3, p4, p5)
+						end
 					end
 				end
 			end
@@ -429,7 +434,7 @@ function MoveAny:MoveFrames()
 		end
 	end
 
-	if MoveAny:IsEnabled("MOVELOOTFRAME", false) then
+	if MoveAny:IsEnabled("MOVELOOTFRAME", false) or MoveAny:IsEnabled("SCALELOOTFRAME", false) then
 		MAFS["LootFrame"] = "LootFrame"
 	end
 

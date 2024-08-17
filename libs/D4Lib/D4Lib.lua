@@ -97,7 +97,6 @@ end
 
 function D4:GetSpellInfo(spellID)
     if spellID == nil then return nil end
-    if GetSpellInfo then return GetSpellInfo(spellID) end
     if C_Spell and C_Spell.GetSpellInfo then
         local tab = C_Spell.GetSpellInfo(spellID)
         if tab then return tab.name, tab.rank, tab.iconID, tab.castTime, tab.minRange, tab.maxRange, tab.spellID end
@@ -105,6 +104,7 @@ function D4:GetSpellInfo(spellID)
         return tab
     end
 
+    if GetSpellInfo then return GetSpellInfo(spellID) end
     D4:MSG("[D4][GetSpellInfo] FAILED")
 
     return nil
@@ -112,8 +112,8 @@ end
 
 function D4:IsSpellInRange(spellID, spellType, unit)
     if spellID == nil then return nil end
-    if IsSpellInRange then return IsSpellInRange(spellID, spellType, unit) end
     if C_Spell and C_Spell.IsSpellInRange then return C_Spell.IsSpellInRange(spellID, spellType, unit) end
+    if IsSpellInRange then return IsSpellInRange(spellID, spellType, unit) end
     D4:MSG("[D4][IsSpellInRange] FAILED")
 
     return nil
@@ -123,6 +123,14 @@ function D4:GetMouseFocus()
     if GetMouseFoci then return GetMouseFoci()[1] end
     if GetMouseFocus then return GetMouseFocus() end
     D4:MSG("[D4][GetMouseFocus] FAILED")
+
+    return nil
+end
+
+function D4:UnitAura(...)
+    if C_UnitAuras and C_UnitAuras.GetAuraDataByIndex then return C_UnitAuras.GetAuraDataByIndex(...) end
+    if UnitAura then return UnitAura(...) end
+    D4:MSG("[D4][UnitAura] FAILED")
 
     return nil
 end

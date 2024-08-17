@@ -417,8 +417,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.6.252")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.252"))
+	MoveAny:SetVersion(AddonName, 135994, "1.6.253")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.253"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -463,6 +463,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "MOVEFRAMES", true)
 		AddCheckBox(24, "MOVESMALLBAGS", false)
 		AddCheckBox(24, "MOVELOOTFRAME", false)
+		AddCheckBox(24, "SCALELOOTFRAME", false)
 		AddSlider(26, "KEYBINDWINDOW", 1, MoveAny.UpdateFrameKeybind, 1, 3, 1, keybinds)
 		AddCategory("MOVEFRAMES", 2)
 		AddCheckBox(36, "SAVEFRAMEPOSITION", true)
@@ -1060,7 +1061,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.252"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.6.253"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4712,7 +4713,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.6.252"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.6.253"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
