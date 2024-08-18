@@ -179,7 +179,7 @@ function MoveAny:LangenUS()
 		["LID_NEEDSARELOAD"] = "Needs a Reload",
 		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emote Frame",
 		["LID_STARTHELP"] = "Click the MoveAny Minimap Button to open the settings.",
-		["LID_STARTHELP2"] = "Or tap /move or /moveany in chat to open the settings.",
+		["LID_STARTHELP2"] = "Or type /move or /moveany in chat to open the settings.",
 		["LID_STARTHELP3"] = "To hide these messages deactivate tips in the MoveAny menu.",
 		["LID_SHOWTIPS"] = "Show Tips",
 		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
@@ -231,6 +231,7 @@ function MoveAny:LangenUS()
 		["LID_SCALEFRAMES"] = "Scale Windows",
 		["LID_RESETFRAMES"] = "Reset Windows",
 		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
+		["LID_MOVEANYINFO"] = "Select the things you want to modify",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

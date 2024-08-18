@@ -848,18 +848,10 @@ function MoveAny:RegisterWidget(tab)
 	tab.delay = tab.delay or 0.2
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
-	if enabled1 or enabled2 then
-		if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
-			MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
+	if (enabled1 or enabled2) and (not forced1 and not forced2) then
+		MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
 
-			return
-		end
-
-		if not forced1 and not forced2 then
-			MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
-
-			return
-		end
+		return
 	end
 
 	C_Timer.After(
@@ -867,18 +859,10 @@ function MoveAny:RegisterWidget(tab)
 		function()
 			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
-			if enabled1 or enabled2 then
-				if not MoveAny:IsEnabled("EDITMODE", MoveAny:GetWoWBuildNr() < 100000) then
-					MoveAny:MSG("YOU NEED EDITMODE IN MOVEANY ENABLED")
+			if (enabled1 or enabled2) and (not forced1 and not forced2) then
+				MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
 
-					return
-				end
-
-				if not forced1 and not forced2 then
-					MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
-
-					return
-				end
+				return
 			end
 		end
 	)

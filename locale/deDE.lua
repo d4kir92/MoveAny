@@ -224,6 +224,7 @@ function MoveAny:LangdeDE()
 		["LID_FRAMES"] = "Fenster",
 		["LID_SCALEFRAMES"] = "Fenster skalieren",
 		["LID_RESETFRAMES"] = "Fenster resetten",
+		["LID_MOVEANYINFO"] = "Wählen Sie die Dinge aus, die Sie ändern möchten",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

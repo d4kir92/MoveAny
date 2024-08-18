@@ -191,8 +191,6 @@ function MoveAny:ShowMALock()
 			if MAGridFrame then
 				MAGridFrame:Show()
 			end
-
-			MALock:UpdateShowErrors()
 		else
 			MoveAny:MSG("[ShowMALock] Settings Frame couldn't be created, please tell dev.")
 		end
@@ -219,8 +217,6 @@ function MoveAny:HideMALock(onlyHide)
 			if MAGridFrame then
 				MAGridFrame:Hide()
 			end
-
-			MALock:UpdateShowErrors()
 		else
 			MoveAny:MSG("[HideMALock] Settings Frame couldn't be created, please tell dev.")
 		end
