@@ -444,7 +444,7 @@ function MoveAny:InitMALock()
 	local rb = CreateFrame("Button", nil, MALock)
 	rb:EnableMouse("true")
 	rb:SetPoint("BOTTOMRIGHT")
-	rb:SetSize(16, 16)
+	rb:SetSize(32, 32)
 	rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
 	rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
 	rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
@@ -462,8 +462,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.1")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.1"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.2")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.2"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -936,7 +936,7 @@ function MoveAny:InitMALock()
 	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock, "InputBoxTemplate")
 	MALock.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 	MALock.DISCORD:SetSize(160, 24)
-	MALock.DISCORD:SetPoint("BOTTOMRIGHT", MALock, "BOTTOMRIGHT", -4 - 10, 4)
+	MALock.DISCORD:SetPoint("BOTTOMRIGHT", MALock, "BOTTOMRIGHT", -4 - 20, 4)
 	MALock.DISCORD:SetAutoFocus(false)
 	C_Timer.After(
 		0.1,
@@ -1075,7 +1075,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.1"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.2"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1100,10 +1100,15 @@ function MoveAny:ShowProfiles()
 
 		MAProfiles:SetResizable(true)
 		MAProfiles:SetResizeBounds(sw, 200, sw + 200, 2000)
+		MAProfiles.DISCORD = CreateFrame("EditBox", "MAProfiles" .. ".DISCORD", MAProfiles, "InputBoxTemplate")
+		MAProfiles.DISCORD:SetText("discord.gg/qxpK6PKYAD")
+		MAProfiles.DISCORD:SetSize(160, 24)
+		MAProfiles.DISCORD:SetPoint("BOTTOMRIGHT", MAProfiles, "BOTTOMRIGHT", -4 - 20, 4)
+		MAProfiles.DISCORD:SetAutoFocus(false)
 		local rb2 = CreateFrame("Button", nil, MAProfiles)
 		rb2:EnableMouse("true")
 		rb2:SetPoint("BOTTOMRIGHT")
-		rb2:SetSize(16, 16)
+		rb2:SetSize(32, 32)
 		rb2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
 		rb2:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
 		rb2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
@@ -4772,7 +4777,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.1"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.2"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
