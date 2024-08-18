@@ -135,7 +135,7 @@ function MoveAny:GetLastSelected()
 	return lastSelected
 end
 
-local function AddCategory(key, layer)
+local function AddCategory(key, layer, hud)
 	if layer == nil then
 		layer = 1
 	end
@@ -146,7 +146,11 @@ local function AddCategory(key, layer)
 		ca:SetSize(24, 24)
 		ca.f = ca:CreateFontString(nil, nil, "GameFontNormal")
 		ca.f:SetPoint("LEFT", ca, "LEFT", 0, 0)
-		ca.f:SetText(MoveAny:GT("LID_" .. key))
+		if hud then
+			ca.f:SetText(MoveAny:GT("LID_" .. key) .. " (" .. MoveAny:GT("LID_MOVEANYINFO") .. ")")
+		else
+			ca.f:SetText(MoveAny:GT("LID_" .. key))
+		end
 	end
 
 	cas[key]:ClearAllPoints()
@@ -458,12 +462,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MALock.fh = MALock:CreateFontString(nil, nil, "GameFontNormal")
-	MALock.fh:SetPoint("TOP", MALock, "TOP", 0, 50)
-	MALock.fh:SetText(MoveAny:GT("LID_MOVEANYINFO"))
-	MALock.fh:SetFont(STANDARD_TEXT_FONT, 36, "THINOUTLINE")
-	MoveAny:SetVersion(AddonName, 135994, "1.7.0")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.0"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.1")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.1"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -520,7 +520,7 @@ function MoveAny:InitMALock()
 		AddCategory("RESETFRAMES", 2)
 		AddCheckBox(36, "FRAMESKEYRESET", false)
 		MoveAny:UpdateFrameKeybindText()
-		AddCategory("BUILTIN")
+		AddCategory("BUILTIN", 1, true)
 		local posx = 4
 		AddCheckBox(posx, "PLAYERFRAME", false)
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
@@ -629,7 +629,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "VEHICLESEATINDICATOR", false)
 		end
 
-		AddCategory("NORMAL")
+		AddCategory("NORMAL", 1, true)
 		AddCheckBox(4, "TARGETOFTARGETFRAME", false)
 		if FocusFrameToT then
 			AddCheckBox(4, "TARGETOFFOCUSFRAME", false)
@@ -695,7 +695,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "GHOSTFRAME", false)
 		end
 
-		AddCategory("CLASSSPECIFIC")
+		AddCategory("CLASSSPECIFIC", 1, true)
 		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then
 			AddCheckBox(4, "RUNEFRAME", false)
 		end
@@ -746,7 +746,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "PALADINPOWERBAR", false)
 		end
 
-		AddCategory("ADVANCED")
+		AddCategory("ADVANCED", 1, true)
 		AddCheckBox(4, "MINIMAPFLAG", false)
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then
@@ -840,7 +840,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "TARGETFRAMENAMEBACKGROUND", false)
 		end
 
-		if MoveAny:IsAddOnLoaded("ImproveAny") then
+		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
 			AddCategory("ImproveAny")
 			if MoveAny:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(4, "IASKILLS", true)
@@ -854,7 +854,7 @@ function MoveAny:InitMALock()
 		end
 
 		if MoveAny:IsAddOnLoaded("!KalielsTracker") then
-			AddCategory("!KalielsTracker")
+			AddCategory("!KalielsTracker", 1, true)
 			AddCheckBox(4, "!KalielsTrackerButtons", false)
 		end
 
@@ -1075,7 +1075,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.0"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.1"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4772,7 +4772,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.0"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.1"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
