@@ -4,7 +4,7 @@
 ## Interface-Cata: 40400
 ## Interface: 110002
 
-## Version: 1.6.254
+## Version: 1.6.255
 ## Title: MoveAny by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
