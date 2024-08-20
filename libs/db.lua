@@ -220,14 +220,14 @@ function MoveAny:GetTab()
 	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
-function MoveAny:GV(key, val)
+function MoveAny:MAGV(key, val)
 	MoveAny:CheckDB()
 	if MATAB[key] ~= nil then return MATAB[key] end
 
 	return val
 end
 
-function MoveAny:SV(key, val)
+function MoveAny:MASV(key, val)
 	local oldVal = MATAB[key]
 	MoveAny:CheckDB()
 	MATAB[key] = val
@@ -340,7 +340,7 @@ function MoveAny:SetEleOption(element, key, value)
 	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
-	MoveAny:EnableSave("SetEleOption", key, true, false)
+	MoveAny:EnableSave("SetEleOption", key, true, false, false)
 end
 
 function MoveAny:GetElePoint(key)
@@ -411,7 +411,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	end
 
 	if key ~= "MALock" then
-		MoveAny:EnableSave("SetElePoint", key, true, false)
+		MoveAny:EnableSave("SetElePoint", key, true, false, false)
 	end
 end
 
@@ -484,7 +484,7 @@ function MoveAny:SetEleScale(key, scale)
 	end
 
 	if key ~= "MALock" then
-		MoveAny:EnableSave("SetEleScale", key, true, false)
+		MoveAny:EnableSave("SetEleScale", key, true, false, false)
 	end
 end
 
@@ -544,15 +544,15 @@ function MoveAny:GetMinimapTable()
 end
 
 function MoveAny:GetGridSize()
-	return MoveAny:GV("GRIDSIZE", 10)
+	return MoveAny:MAGV("GRIDSIZE", 10)
 end
 
 function MoveAny:GetSnapSize()
-	return MoveAny:GV("GRIDSIZE", 10)
+	return MoveAny:MAGV("GRIDSIZE", 10)
 end
 
 function MoveAny:GetSnapWindowSize()
-	return MoveAny:GV("SNAPWINDOWSIZE", 1)
+	return MoveAny:MAGV("SNAPWINDOWSIZE", 1)
 end
 
 function MoveAny:InitDB()

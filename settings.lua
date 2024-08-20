@@ -318,22 +318,22 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x + 5, posy)
 		sls[key].Low:SetText(vmin)
 		sls[key].High:SetText(vmax)
-		if tab and tab[MoveAny:GV(key, val)] then
-			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[MoveAny:GV(key, val)])
+		if tab and tab[MoveAny:MAGV(key, val)] then
+			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[MoveAny:MAGV(key, val)])
 		else
-			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GV(key, val))
+			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:MAGV(key, val))
 		end
 
 		sls[key]:SetMinMaxValues(vmin, vmax)
 		sls[key]:SetObeyStepOnDrag(true)
 		sls[key]:SetValueStep(steps)
-		sls[key]:SetValue(MoveAny:GV(key, val))
+		sls[key]:SetValue(MoveAny:MAGV(key, val))
 		sls[key]:SetScript(
 			"OnValueChanged",
 			function(sel, valu)
 				valu = tonumber(string.format("%" .. steps .. "f", valu))
-				if valu and valu ~= MoveAny:GV(key) then
-					MoveAny:SV(key, valu)
+				if valu and valu ~= MoveAny:MAGV(key) then
+					MoveAny:SV(MATAB, key, valu)
 					if tab and tab[valu] then
 						sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[valu])
 					else
@@ -363,13 +363,16 @@ end
 
 local saved = false
 local est = {}
-function MoveAny:EnableSave(from, key, val, oldVal)
+function MoveAny:EnableSave(from, key, val, oldVal, ignoreReload)
+	ignoreReload = ignoreReload or false
 	if MALock == nil then return end
 	if not MALock:IsVisible() then return end
-	if est[key] == nil then
-		est[key] = oldVal
-	elseif est[key] == val then
-		est[key] = nil
+	if ignoreReload then
+		if est[key] == nil then
+			est[key] = oldVal
+		elseif est[key] == val then
+			est[key] = nil
+		end
 	end
 
 	local c = 0
@@ -379,29 +382,35 @@ function MoveAny:EnableSave(from, key, val, oldVal)
 		end
 	end
 
-	if c ~= 0 then
-		saved = true
-		if MALock.save then
-			MALock.save:Enable()
-		end
+	if ignoreReload then
+		if c ~= 0 then
+			saved = true
+			if MALock.save then
+				MALock.save:Enable()
+			end
 
-		if MALock.CloseButton then
-			MALock.CloseButton:Disable()
+			if MALock.CloseButton then
+				MALock.CloseButton:Disable()
+			end
+		else
+			saved = false
+			if MALock.save then
+				MALock.save:Disable()
+			end
+
+			if MALock.CloseButton then
+				MALock.CloseButton:Enable()
+			end
 		end
 	else
-		saved = false
 		if MALock.save then
-			MALock.save:Disable()
-		end
-
-		if MALock.CloseButton then
-			MALock.CloseButton:Enable()
+			MALock.save:Enable()
 		end
 	end
 end
 
 function MoveAny:IsFrameKeyDown()
-	local keybind = MoveAny:GV("KEYBINDWINDOWKEY", "SHIFT")
+	local keybind = MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")
 	if keybind == "SHIFT" then
 		return IsShiftKeyDown()
 	elseif keybind == "CTRL" then
@@ -462,13 +471,13 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.2")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.2"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.3")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.3"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
 			MoveAny:ToggleMALock()
-			if saved then
+			if saved and needReload then
 				C_UI.Reload()
 			end
 		end
@@ -479,7 +488,7 @@ function MoveAny:InitMALock()
 	keybinds[2] = "CTRL"
 	keybinds[3] = "ALT"
 	function MoveAny:UpdateFrameKeybindText()
-		local keybind = keybinds[MoveAny:GV("KEYBINDWINDOW", 1)]
+		local keybind = keybinds[MoveAny:MAGV("KEYBINDWINDOW", 1)]
 		local cb1 = cbs["FRAMESKEYDRAG"]
 		local cb2 = cbs["FRAMESKEYSCALE"]
 		local cb3 = cbs["FRAMESKEYRESET"]
@@ -489,8 +498,8 @@ function MoveAny:InitMALock()
 	end
 
 	function MoveAny:UpdateFrameKeybind()
-		local keybind = keybinds[MoveAny:GV("KEYBINDWINDOW", 1)]
-		MoveAny:SV("KEYBINDWINDOWKEY", keybind)
+		local keybind = keybinds[MoveAny:MAGV("KEYBINDWINDOW", 1)]
+		MoveAny:MASV("KEYBINDWINDOWKEY", keybind)
 		MoveAny:UpdateFrameKeybindText()
 	end
 
@@ -1075,7 +1084,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.2"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.3"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4777,7 +4786,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.2"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.3"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,

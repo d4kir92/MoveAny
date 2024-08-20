@@ -127,34 +127,28 @@ function MoveAny:InitMicroMenu()
 						end
 					)
 
-					if MoveAny:GetWoWBuild() == "RETAIL" and mb ~= HelpMicroButton and mb ~= MainMenuMicroButton then
-						hooksecurefunc(
-							mb,
-							"SetScale",
-							function(sel, scale)
-								if sel.ma_set_s then return end
-								sel.ma_set_s = true
-								if MoveAny:GetCVar("useUiScale") == "0" then
-									mb:SetScale(MAMenuBar:GetScale() / UIParent:GetScale())
-								else
-									mb:SetScale(MAMenuBar:GetScale())
-								end
+					--if MoveAny:GetWoWBuild() == "RETAIL" and mb ~= HelpMicroButton and mb ~= MainMenuMicroButton then
+					hooksecurefunc(
+						mb,
+						"SetScale",
+						function(sel, scale)
+							if sel.ma_set_s then return end
+							sel.ma_set_s = true
+							mb:SetScale(MAMenuBar:GetScale())
+							sel.ma_set_s = false
+						end
+					)
 
-								sel.ma_set_s = false
-							end
-						)
+					hooksecurefunc(
+						MAMenuBar,
+						"SetScale",
+						function(sel, scale)
+							mb:SetScale(scale)
+						end
+					)
 
-						hooksecurefunc(
-							MAMenuBar,
-							"SetScale",
-							function(sel, scale)
-								mb:SetScale(scale)
-							end
-						)
-
-						mb:SetScale(MAMenuBar:GetScale())
-					end
-
+					mb:SetScale(MAMenuBar:GetScale())
+					--end
 					hooksecurefunc(
 						MAMenuBar,
 						"Hide",
