@@ -794,10 +794,3 @@ function MoveAny:LoadEmp()
         }
     )
 end
-
-C_Timer.After(
-    4,
-    function()
-        MoveAny:LoadEmp()
-    end
-)
