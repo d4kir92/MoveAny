@@ -231,7 +231,7 @@ function MoveAny:MASV(key, val)
 	local oldVal = MATAB[key]
 	MoveAny:CheckDB()
 	MATAB[key] = val
-	MoveAny:EnableSave("SV", key, val, oldVal)
+	MoveAny:EnableSave("MASV", key, val, oldVal, true)
 end
 
 function MoveAny:FixTable(tab)
@@ -267,7 +267,7 @@ function MoveAny:SetEnabled(element, value)
 	local oldVal = MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
 	if element ~= "MALOCK" then
-		MoveAny:EnableSave("SetEnabled", element, value, oldVal)
+		MoveAny:EnableSave("SetEnabled", element, value, oldVal, false)
 	end
 end
 
@@ -411,7 +411,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	end
 
 	if key ~= "MALock" then
-		MoveAny:EnableSave("SetElePoint", key, true, false, false)
+		MoveAny:EnableSave("SetElePoint", key, true, false, true)
 	end
 end
 
@@ -484,7 +484,7 @@ function MoveAny:SetEleScale(key, scale)
 	end
 
 	if key ~= "MALock" then
-		MoveAny:EnableSave("SetEleScale", key, true, false, false)
+		MoveAny:EnableSave("SetEleScale", key, true, false, true)
 	end
 end
 
