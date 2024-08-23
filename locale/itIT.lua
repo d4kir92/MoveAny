@@ -50,7 +50,7 @@ function MoveAny:LangitIT()
 		["LID_CHAT"] = "Chatframe %d",
 		["LID_CHATBUTTONFRAME"] = "Pulsanti di chat",
 		["LID_CHATQUICKJOIN"] = "Partecipazione rapida alla chat",
-		["LID_CHATEDITBOX"] = "Chat Inputbox",
+		["LID_CHATEDITBOX"] = "Chat Inputbox %s",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
 		["LID_BNToastFrame"] = "Notifiche amici Battlenet",
 		["LID_ZONETEXTFRAME"] = "Testo zona",

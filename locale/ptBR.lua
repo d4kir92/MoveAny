@@ -50,7 +50,7 @@ function MoveAny:LangptBR()
 		["LID_CHAT"] = "Chatframe %d",
 		["LID_CHATBUTTONFRAME"] = "Botões de Chat",
 		["LID_CHATQUICKJOIN"] = "Chat Quick Join",
-		["LID_CHATEDITBOX"] = "Chat Inputbox",
+		["LID_CHATEDITBOX"] = "Chat Inputbox %s",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "Gerente de Raid",
 		["LID_BNToastFrame"] = "Battlenet Friends Notifications",
 		["LID_ZONETEXTFRAME"] = "Texto da zona",

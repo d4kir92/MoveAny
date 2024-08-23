@@ -469,8 +469,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.9")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.9"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.10")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.10"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -824,7 +824,7 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		AddCheckBox(4, "CHATEDITBOX", false)
+		AddCheckBox(4, "CHATEDITBOX", false, nil, "")
 		if BNToastFrame then
 			AddCheckBox(4, "BNToastFrame", false)
 		end
@@ -1082,7 +1082,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.9"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.10"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3056,42 +3056,20 @@ function MoveAny:LoadAddon()
 				)
 
 				ceb:SetClampRectInsets(2, 2, 2, 2)
-				if i > 1 then
-					local cebPoint = "SetPoint"
-					if ceb.SetPointBase then
-						cebPoint = "SetPointBase"
-					end
-
-					hooksecurefunc(
-						ceb,
-						cebPoint,
-						function(sel)
-							if sel.ma_setpo then return end
-							sel.ma_setpo = true
-							MoveAny:SetPoint(sel, "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
-							sel.ma_setpo = false
-						end
-					)
-
-					MoveAny:SetPoint(ceb, "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
-				end
 			end
 		end
 
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ChatFrame" .. 1 .. "EditBox",
-				["lstr"] = "LID_CHATEDITBOX",
-				["setup"] = function()
-					for i = 2, 12 do
-						if _G["ChatFrame" .. i .. "EditBox"] then
-							tinsert(MoveAny:GetAlphaFrames(), _G["ChatFrame" .. i .. "EditBox"])
-							MoveAny:AddFrameName(_G["ChatFrame" .. i .. "EditBox"], "ChatFrame" .. 1 .. "EditBox")
-						end
-					end
-				end
-			}
-		)
+		for i = 1, 12 do
+			if i ~= 2 and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ChatFrame" .. i .. "EditBox",
+						["lstr"] = "LID_CHATEDITBOX",
+						["lstri"] = i,
+					}
+				)
+			end
+		end
 	end
 
 	if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
@@ -4813,7 +4791,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.9"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.10"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,

@@ -50,7 +50,7 @@ function MoveAny:LangesES()
 		["LID_CHAT"] = "Marco de chat %d",
 		["LID_CHATBUTTONFRAME"] = "Botones de chat",
 		["LID_CHATQUICKJOIN"] = "Chat Quick Join",
-		["LID_CHATEDITBOX"] = "Caja de entrada del chat",
+		["LID_CHATEDITBOX"] = "Caja de entrada del chat %s",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "Gestor de incursiones",
 		["LID_BNToastFrame"] = "Notificaciones de amigos de Battlenet",
 		["LID_ZONETEXTFRAME"] = "Texto de la zona",

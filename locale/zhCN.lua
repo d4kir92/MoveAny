@@ -50,7 +50,7 @@ function MoveAny:LangzhCN()
         ["LID_CHAT"] = "Chatframe %d",
         ["LID_CHATBUTTONFRAME"] = "聊天按钮",
         ["LID_CHATQUICKJOIN"] = "聊天快速加入",
-        ["LID_CHATEDITBOX"] = "聊天输入框",
+        ["LID_CHATEDITBOX"] = "聊天输入框 %s",
         ["LID_COMPACTRAIDFRAMEMANAGER"] = "突击队经理",
         ["LID_BNToastFrame"] = "Battlenet朋友的通知",
         ["LID_ZONETEXTFRAME"] = "区域文本",

@@ -50,7 +50,7 @@ function MoveAny:LangfrFR()
 		["LID_CHAT"] = "Cadre de chat %d",
 		["LID_CHATBUTTONFRAME"] = "Boutons de chat",
 		["LID_CHATQUICKJOIN"] = "Participation rapide au chat",
-		["LID_CHATEDITBOX"] = "Boîte de saisie du chat",
+		["LID_CHATEDITBOX"] = "Boîte de saisie du chat %s",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
 		["LID_BNToastFrame"] = "Notifications des amis Battlenet",
 		["LID_ZONETEXTFRAME"] = "Texte de la zone",

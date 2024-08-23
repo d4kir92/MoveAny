@@ -50,7 +50,7 @@ function MoveAny:LangruRU()
         ["LID_CHAT"] = "Рамка чата %d",
         ["LID_CHATBUTTONFRAME"] = "Кнопки чата",
         ["LID_CHATQUICKJOIN"] = "Быстрое присоединение к чату",
-        ["LID_CHATEDITBOX"] = "Поле ввода чата",
+        ["LID_CHATEDITBOX"] = "Поле ввода чата %s",
         ["LID_COMPACTRAIDFRAMEMANAGER"] = "Менеджер рейдов",
         ["LID_BNToastFrame"] = "Уведомления друзей Battlenet",
         ["LID_ZONETEXTFRAME"] = "Текст зоны",
