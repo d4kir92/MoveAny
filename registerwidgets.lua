@@ -1469,6 +1469,7 @@ local incombat = nil
 local inpetbattle = nil
 local isstealthed = nil
 local ischatclosed = nil
+local lastchatab = nil
 local lastEle = nil
 local lastSize = 0
 local fullHP = false
@@ -1497,10 +1498,19 @@ end
 
 function MoveAny:IsChatClosed()
 	for i = 1, 12 do
-		if _G["ChatFrame" .. i .. "EditBox"] and _G["ChatFrame" .. i .. "EditBox"]:GetText() ~= "" then return false end
+		if _G["ChatFrame" .. i .. "EditBox"] and _G["ChatFrame" .. i .. "EditBox"]:HasFocus() then return false end
 	end
 
 	return true
+end
+
+function MoveAny:CurrentChatTab()
+	for i = 1, 12 do
+		local ct = _G["ChatFrame" .. i .. "EditBox"]
+		if ct and ct:IsShown() then return i end
+	end
+
+	return 0
 end
 
 function MoveAny:CheckAlphas()
@@ -1530,6 +1540,9 @@ function MoveAny:CheckAlphas()
 		if ischatclosed then
 			MoveAny:UpdateAlphas()
 		end
+	elseif MoveAny.CurrentChatTab and lastchatab ~= MoveAny:CurrentChatTab() then
+		lastchatab = MoveAny:CurrentChatTab()
+		MoveAny:UpdateAlphas()
 	end
 
 	if lastSize ~= getn(MoveAny:GetAlphaFrames()) then
