@@ -232,6 +232,8 @@ function MoveAny:LangenUS()
 		["LID_RESETFRAMES"] = "Reset Windows",
 		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
 		["LID_MOVEANYINFO"] = "Select the things you want to modify",
+		["LID_PLEASESWITCHPROFILE1"] = "Please Switch Profile in Editmode (from Blizzard) to a CUSTOM one.",
+		["LID_PLEASESWITCHPROFILE2"] = "MoveAny don't work with a Preset Profile, its mostly readonly.",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
