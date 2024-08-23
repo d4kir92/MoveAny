@@ -97,6 +97,9 @@ function MoveAny:LangruRU()
         ["LID_MABUFFSPACINGX"] = "Горизонтальное расстояние между баффами",
         ["LID_MABUFFSPACINGY"] = "Расстояние между буферами по вертикали",
         ["LID_RESETELEMENT"] = "Reset Element",
+        ["LID_PLEASESWITCHPROFILE1"] = "Пожалуйста, переключите LAYOUT в режиме Editmode (от Blizzard) на CUSTOM LAYOUT.",
+        ["LID_PLEASESWITCHPROFILE2"] = "MoveAny не работает c предустановленным профилем, он в основном доступен только для чтения.",
+        ["LID_PLEASESWITCHPROFILE3"] = "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (нет предустановленного макета)",
     }
 
     if MoveAny:GetWoWBuild() ~= "RETAIL" then

@@ -225,8 +225,9 @@ function MoveAny:LangdeDE()
 		["LID_SCALEFRAMES"] = "Fenster skalieren",
 		["LID_RESETFRAMES"] = "Fenster resetten",
 		["LID_MOVEANYINFO"] = "Wählen Sie die Dinge aus, die Sie ändern möchten",
-		["LID_PLEASESWITCHPROFILE1"] = "Bitte wechselt das Profil im Editmode (von Blizzard) zu einem CUSTOM Profil.",
-		["LID_PLEASESWITCHPROFILE2"] = "MoveAny funktioniert nicht mit einem voreingestellten Profil, es ist meist schreibgeschützt.",
+		["LID_PLEASESWITCHPROFILE1"] = "Bitte wechselt das LAYOUT im Bearbeitungsmodus (von Blizzard) zu einem BENUTZERDEFINIERTEN Layout.",
+		["LID_PLEASESWITCHPROFILE2"] = "MoveAny funktioniert nicht mit einem voreingestellten Layout, es ist meist schreibgeschützt.",
+		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
