@@ -834,13 +834,15 @@ function MoveAny:IsPresetProfileActive()
 	return true
 end
 
-if MoveAny:GetWoWBuild() == "RETAIL" then
+--[[if MoveAny:GetWoWBuild() == "RETAIL" then
 	C_Timer.After(
-		4,
+		1,
 		function()
-			local MA_HelpProfileFrame = CreateFrame("FRAME", "MoveAnyHelpFrame", MoveAny:GetMainPanel())
-			MA_HelpProfileFrame:SetSize(100, 100)
-			MA_HelpProfileFrame:SetPoint("CENTER")
+			local MA_HelpProfileFrame = CreateFrame("FRAME", "MoveAnyHelpFrame")
+			MA_HelpProfileFrame:SetParent(MoveAny:GetMainPanel())
+			MA_HelpProfileFrame:SetSize(1200, 200)
+			MA_HelpProfileFrame:ClearAllPoints()
+			MA_HelpProfileFrame:SetPoint("TOP", MoveAny:GetMainPanel(), "TOP", 0, -100)
 			MA_HelpProfileFrame:EnableMouse(false)
 			MA_HelpProfileFrame.t1 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
 			MA_HelpProfileFrame.t1:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, 0)
@@ -863,7 +865,35 @@ if MoveAny:GetWoWBuild() == "RETAIL" then
 					C_Timer.After(0.5, MoveAny.ThinkHelpFrame)
 				else
 					MA_HelpProfileFrame:Hide()
-					C_Timer.After(2, MoveAny.ThinkHelpFrame)
+					C_Timer.After(1.1, MoveAny.ThinkHelpFrame)
+				end
+			end
+
+			MoveAny:ThinkHelpFrame()
+		end
+	)
+end]]
+if MoveAny:GetWoWBuild() == "RETAIL" then
+	C_Timer.After(
+		1,
+		function()
+			local lastCheck = false
+			local wasPreset = MoveAny:IsPresetProfileActive()
+			function MoveAny:ThinkHelpFrame()
+				local isPreset = MoveAny:IsPresetProfileActive()
+				if lastCheck ~= isPreset then
+					lastCheck = isPreset
+					if isPreset then
+						MoveAny:MSG(MoveAny:GT("LID_PLEASESWITCHPROFILE1") .. " " .. MoveAny:GT("LID_PLEASESWITCHPROFILE2") .. " " .. MoveAny:GT("LID_PLEASESWITCHPROFILE3"))
+					elseif wasPreset then
+						MoveAny:MSG("ALL GOOD.")
+					end
+				end
+
+				if isPreset then
+					C_Timer.After(0.5, MoveAny.ThinkHelpFrame)
+				else
+					C_Timer.After(1.1, MoveAny.ThinkHelpFrame)
 				end
 			end
 
