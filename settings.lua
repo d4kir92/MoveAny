@@ -266,7 +266,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 				local ele = MoveAny:GetSelectEleName("LID_" .. key)
 				if ele then
 					MoveAny:SelectEle(_G[ele .. "_MA_DRAG"])
-					cb:UpdateText()
+					cb:UpdateText(cb:GetChecked())
 				end
 			end
 		)
@@ -469,8 +469,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.13")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.13"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.14")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.14"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -531,10 +531,6 @@ function MoveAny:InitMALock()
 		local posx = 4
 		AddCheckBox(posx, "PLAYERFRAME", false)
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
-		if ComboFrame then
-			AddCheckBox(posx, "COMBOFRAME", false)
-		end
-
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
 			AddCheckBox(posx, "TARGETFRAMEDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
@@ -734,6 +730,8 @@ function MoveAny:InitMALock()
 
 		if (MoveAny:IsValidFrame(RogueComboPointBarFrame) or MoveAny:IsValidFrame(DruidComboPointBarFrame)) and (class == "ROGUE" or class == "DRUID") then
 			AddCheckBox(4, "COMBOPOINTPLAYERFRAME", false)
+		elseif ComboFrame then
+			AddCheckBox(posx, "COMBOFRAME", false)
 		end
 
 		if class == "DRUID" and MoveAny:IsValidFrame(EclipseBarFrame) then
@@ -1082,7 +1080,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.13"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.14"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2167,6 +2165,29 @@ function MoveAny:LoadAddon()
 				}
 			)
 		end
+	elseif ComboFrame and MoveAny:IsEnabled("COMBOFRAME", false) then
+		local cpsw, cpsh = 12, 12
+		for i = 1, 5 do
+			local cp = _G["ComboPoint" .. i]
+			if cp then
+				cpsw, cpsh = cp:GetSize()
+				cp:ClearAllPoints()
+				if i == 1 then
+					cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
+				else
+					cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
+				end
+			end
+		end
+
+		ComboFrame:SetSize(cpsw * 5, cpsh)
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "ComboFrame",
+				["lstr"] = "LID_COMBOFRAME",
+				["userplaced"] = true
+			}
+		)
 	end
 
 	if EclipseBarFrame and MoveAny:IsEnabled("EclipseBarFrame", false) then
@@ -2540,31 +2561,6 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "TargetFrame",
 				["lstr"] = "LID_TARGETFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("COMBOFRAME", false) then
-		local cpsw, cpsh = 12, 12
-		for i = 1, 5 do
-			local cp = _G["ComboPoint" .. i]
-			if cp then
-				cpsw, cpsh = cp:GetSize()
-				cp:ClearAllPoints()
-				if i == 1 then
-					cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
-				else
-					cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
-				end
-			end
-		end
-
-		ComboFrame:SetSize(cpsw * 5, cpsh)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ComboFrame",
-				["lstr"] = "LID_COMBOFRAME",
 				["userplaced"] = true
 			}
 		)
@@ -4791,7 +4787,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = CVTAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.13"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.14"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
