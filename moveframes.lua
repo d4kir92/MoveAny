@@ -281,60 +281,83 @@ function MoveAny:UpdateMoveFrames(force)
 						frame:SetMovable(true)
 					end
 
+					if frame.Header then
+						if frame.Header:HasScript("OnMouseDown") then
+							frame.Header:SetScript(
+								"OnMouseDown",
+								function(sel, btn)
+									frame:MA_OnMouseDown(frame, btn)
+								end
+							)
+						end
+
+						if frame.Header:HasScript("OnMouseUp") then
+							frame.Header:SetScript(
+								"OnMouseUp",
+								function(sel, btn)
+									frame:MA_OnMouseUp(frame, btn)
+								end
+							)
+						end
+					end
+
+					function frame:MA_OnMouseDown(sel, btn)
+						if frame:GetPoint() then
+							fm:SetSize(frame:GetSize())
+							fm:ClearAllPoints()
+							if frame:GetLeft() then
+								local x = frame:GetLeft()
+								local y = frame:GetTop() - frame:GetHeight()
+								x = MoveAny:Snap(x, MoveAny:GetSnapWindowSize())
+								y = MoveAny:Snap(y, MoveAny:GetSnapWindowSize())
+								fm:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", x, y)
+							else
+								fm:SetAllPoints(frame)
+							end
+						end
+
+						if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
+							currentFrame = frame
+							currentFrameName = name
+							MoveAny:UpdateCurrentFrame()
+							GameTooltip:Hide()
+						elseif (MoveAny:IsEnabled("FRAMESKEYDRAG", false) and MoveAny:IsFrameKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESKEYDRAG", false) and btn == "LeftButton") then
+							if not InCombatLockdown() then
+								fm:StartMoving()
+								fm:SetUserPlaced(false)
+								fm.ma_ismoving = true
+							end
+
+							fm:UpdatePreview()
+						elseif (MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsFrameKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsResetButtonDown(btn)) then
+							MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
+							MoveAny:SetFrameScale(name, nil)
+							frame:SetScale(1)
+							MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
+						else
+							if MoveAny:IsResetButtonDown(btn) then
+								MoveAny:FrameDragInfo(0)
+							else
+								MoveAny:FrameDragInfo(20)
+							end
+						end
+					end
+
+					function frame:MA_OnMouseUp(sel, btn)
+						MoveAny:MAFrameStopMoving(sel)
+					end
+
 					frame:HookScript(
 						"OnMouseDown",
 						function(sel, btn)
-							if frame:GetPoint() then
-								fm:SetSize(frame:GetSize())
-								fm:ClearAllPoints()
-								if frame:GetLeft() then
-									local x = frame:GetLeft()
-									local y = frame:GetTop() - frame:GetHeight()
-									x = MoveAny:Snap(x, MoveAny:GetSnapWindowSize())
-									y = MoveAny:Snap(y, MoveAny:GetSnapWindowSize())
-									fm:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", x, y)
-								else
-									fm:SetAllPoints(frame)
-								end
-							end
-
-							if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
-								currentFrame = frame
-								currentFrameName = name
-								MoveAny:UpdateCurrentFrame()
-								GameTooltip:Hide()
-							elseif (MoveAny:IsEnabled("FRAMESKEYDRAG", false) and MoveAny:IsFrameKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESKEYDRAG", false) and btn == "LeftButton") then
-								if not InCombatLockdown() then
-									fm:StartMoving()
-									fm:SetUserPlaced(false)
-									fm.ma_ismoving = true
-								end
-
-								fm:UpdatePreview()
-							elseif (MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsFrameKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsResetButtonDown(btn)) then
-								MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
-								MoveAny:SetFrameScale(name, nil)
-								frame:SetScale(1)
-								MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
-							else
-								if MoveAny:IsResetButtonDown(btn) then
-									MoveAny:FrameDragInfo(0)
-								else
-									MoveAny:FrameDragInfo(20)
-								end
-							end
+							frame:MA_OnMouseDown(sel, btn)
 						end
 					)
 
 					frame:HookScript(
 						"OnMouseUp",
 						function(sel)
-							C_Timer.After(
-								0.1,
-								function()
-									MoveAny:MAFrameStopMoving(sel)
-								end
-							)
+							frame:MA_OnMouseUp(sel, btn)
 						end
 					)
 
