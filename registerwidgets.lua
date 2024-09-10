@@ -749,6 +749,43 @@ function MoveAny:MenuOptions(opt, frame)
 	end
 end
 
+function MoveAny:GetWindow(name)
+	local frame = _G[name]
+	if frame ~= nil and type(frame) == "table" then
+		return frame
+	elseif strfind(name, ".", 1, true) then
+		for i, v in pairs({strsplit(".", name)}) do
+			if i == 1 then
+				if type(_G[v]) == "table" then
+					frame = _G[v]
+				elseif i > 1 then
+					return nil
+				end
+			elseif frame then
+				if type(frame[v]) == "table" then
+					frame = frame[v]
+				elseif i > 1 then
+					return nil
+				end
+			else
+				return nil
+			end
+		end
+
+		if type(frame) == "table" then return frame end
+	elseif name:find("%[[0-9]+%]") then
+		local f = _G[name:gsub("%[[0-9]+%]", "")]
+		if f then
+			local regions = {f:GetRegions()}
+			local num = tonumber(name:match("[0-9]+"))
+
+			return regions[num]
+		end
+	end
+
+	return nil
+end
+
 function MoveAny:GetFrame(ele, name)
 	if ele == nil then return ele end
 	local _, e1 = strfind(name, ".", 1, true)

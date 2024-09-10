@@ -174,7 +174,7 @@ function MoveAny:UpdateMoveFrames(force)
 			local count = 0
 			for i, name in pairs(MAFS) do
 				count = count + 1
-				local frame = MoveAny:GetFrame(_G[name], name)
+				local frame = MoveAny:GetWindow(name)
 				if frame ~= nil then
 					MAFS[name] = nil
 					local fm = _G[name .. "Move"]
@@ -222,11 +222,13 @@ function MoveAny:UpdateMoveFrames(force)
 					frame:SetClampedToScreen(true)
 					function MoveAny:MAFrameStopMoving(frameObj)
 						local name2 = frameObj:GetName()
-						local fM = _G[name2 .. "Move"]
-						if fM.ma_ismoving then
-							fM.ma_ismoving = false
-							fM:StopMovingOrSizing()
-							fM:SetUserPlaced(false)
+						if name2 then
+							local fM = _G[name2 .. "Move"]
+							if fM.ma_ismoving then
+								fM.ma_ismoving = false
+								fM:StopMovingOrSizing()
+								fM:SetUserPlaced(false)
+							end
 						end
 
 						currentFrame = nil
@@ -267,6 +269,18 @@ function MoveAny:UpdateMoveFrames(force)
 					end
 
 					frame:RegisterForDrag("LeftClick")
+					if frame:IsMovable() then
+						if frame:HasScript("OnMouseDown") then
+							frame:SetScript("OnMouseDown", function() end)
+						end
+
+						if frame:HasScript("OnMouseUp") then
+							frame:SetScript("OnMouseUp", function() end)
+						end
+					else
+						frame:SetMovable(true)
+					end
+
 					frame:HookScript(
 						"OnMouseDown",
 						function(sel, btn)
@@ -315,7 +329,12 @@ function MoveAny:UpdateMoveFrames(force)
 					frame:HookScript(
 						"OnMouseUp",
 						function(sel)
-							MoveAny:MAFrameStopMoving(sel)
+							C_Timer.After(
+								0.1,
+								function()
+									MoveAny:MAFrameStopMoving(sel)
+								end
+							)
 						end
 					)
 
