@@ -314,3 +314,63 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     D4:CreateSlider(slider)
     Y = Y - 30
 end
+
+function D4:CreateDropdown(key, value, choices, parent)
+    if TAB[key] == nil then
+        TAB[key] = value
+    end
+
+    local text = parent:CreateFontString(nil, nil, "GameFontNormal")
+    text:SetPoint("TOPLEFT", 10, Y)
+    text:SetText(D4:Trans(key))
+    Y = Y - 18
+    if D4:GetWoWBuild() == "RETAIL" then
+        local Dropdown = CreateFrame("DropdownButton", key, parent, "WowStyle1DropdownTemplate")
+        Dropdown:SetDefaultText(choices[TAB[key]])
+        Dropdown:SetPoint("TOPLEFT", 10, Y)
+        Dropdown:SetWidth(200)
+        Dropdown:SetupMenu(
+            function(dropdown, rootDescription)
+                rootDescription:CreateTitle(D4:Trans(key))
+                for i, v in pairs(choices) do
+                    rootDescription:CreateButton(
+                        i,
+                        function()
+                            TAB[key] = v
+                            Dropdown:SetDefaultText(i)
+                        end
+                    )
+                end
+            end
+        )
+    else
+        local dropDown = CreateFrame("Frame", "WPDemoDropDown", PARENT, "UIDropDownMenuTemplate")
+        dropDown:SetPoint("TOPLEFT", -10, Y)
+        UIDropDownMenu_SetWidth(dropDown, 200)
+        function WPDropDownDemo_Menu(frame, level, menuList)
+            local info = UIDropDownMenu_CreateInfo()
+            if level == 1 then
+                for i, v in pairs(choices) do
+                    info.text = v
+                    info.arg1 = i
+                    info.checked = v == choices[TAB[key]]
+                    info.func = dropDown.SetValue
+                    UIDropDownMenu_AddButton(info)
+                end
+            end
+        end
+
+        UIDropDownMenu_Initialize(dropDown, WPDropDownDemo_Menu)
+        UIDropDownMenu_SetText(dropDown, choices[TAB[key]])
+        function dropDown:SetValue(newValue)
+            TAB[key] = newValue
+            UIDropDownMenu_SetText(dropDown, newValue)
+            CloseDropDownMenus()
+        end
+    end
+end
+
+function D4:AppendDropdown(key, value, choices)
+    D4:CreateDropdown(key, value, choices, PARENT)
+    Y = Y - 30
+end

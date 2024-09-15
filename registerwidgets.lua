@@ -1495,7 +1495,10 @@ function MoveAny:RegisterWidget(tab)
 		function(sel, w, h)
 			local isToSmall = false
 			local df = _G[name .. "_MA_DRAG"]
-			df:SetSize(w, h)
+			if df.SetSize then
+				df:SetSize(w, h)
+			end
+
 			if w < sw then
 				w = sw
 				isToSmall = true
@@ -1507,8 +1510,13 @@ function MoveAny:RegisterWidget(tab)
 			end
 
 			if bToSmall and isToSmall then
-				df:SetSize(w, h)
-				sel:SetSize(w, h)
+				if df.SetSize then
+					df:SetSize(w, h)
+				end
+
+				if sel.SetSize then
+					sel:SetSize(w, h)
+				end
 			end
 		end
 	)
