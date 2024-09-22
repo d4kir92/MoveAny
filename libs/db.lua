@@ -371,8 +371,10 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
 	local frame = _G[key]
 	if frame and p1 and p3 then
-		frame:ClearAllPoints()
-		frame:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
+		local cap = frame.FClearAllPoints or frame.ClearAllPoints
+		cap(frame)
+		local point = frame.FSetPointBase or frame.FSetPoint or frame.SetPointBase or frame.SetPoint
+		point(frame, p1, MoveAny:GetMainPanel(), p3, p4, p5)
 		local systemFrame = frame
 		local systemInfo = frame.systemInfo
 		if frame.GetRealEle then

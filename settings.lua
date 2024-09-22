@@ -464,8 +464,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.21")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.21"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.22")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.22"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1075,7 +1075,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.21"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.22"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3439,34 +3439,60 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
 		C_Timer.After(
-			1,
+			2,
 			function()
-				local ktb = _G["!KalielsTrackerButtons"]
-				if ktb then
-					local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
-					local size = 28
-					local kbr = 6
-					MAKTB:SetSize(size, size * 3 + kbr * 2)
-					hooksecurefunc(
-						ktb,
-						"SetPoint",
-						function(sel, ...)
-							if sel.ma_ktb_setpoint then return end
-							sel.ma_ktb_setpoint = true
-							MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
-							sel.ma_ktb_setpoint = false
-						end
-					)
+				local KTF = _G["!KalielsTrackerFrame"]
+				if KTF and KTF.Buttons then
+					_G["KTFButtons"] = KTF.Buttons
+					function KTFButtons:GetName()
+						return "KTFButtons"
+					end
 
-					ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+					KTFButtons.FSetPoint = KTBSetPoint or KTFButtons.SetPoint
+					function KTFButtons:SetPoint(...)
+					end
+
+					KTFButtons.FClearAllPoints = KTFButtons.ClearAllPoints
+					function KTFButtons:ClearAllPoints()
+					end
+
+					function KTBSetPoint(...)
+					end
+
 					MoveAny:RegisterWidget(
 						{
-							["name"] = "MAKTB",
+							["name"] = "KTFButtons",
 							["lstr"] = "LID_!KalielsTrackerButtons",
 						}
 					)
 				else
-					MoveAny:MSG("FAILED TO ADD !KalielsTrackerButtons")
+					local ktb = _G["!KalielsTrackerButtons"]
+					if ktb then
+						local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
+						local size = 28
+						local kbr = 6
+						MAKTB:SetSize(size, size * 3 + kbr * 2)
+						hooksecurefunc(
+							ktb,
+							"SetPoint",
+							function(sel, ...)
+								if sel.ma_ktb_setpoint then return end
+								sel.ma_ktb_setpoint = true
+								MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
+								sel.ma_ktb_setpoint = false
+							end
+						)
+
+						ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "MAKTB",
+								["lstr"] = "LID_!KalielsTrackerButtons",
+							}
+						)
+					else
+						MoveAny:MSG("FAILED TO ADD !KalielsTrackerButtons")
+					end
 				end
 			end
 		)
@@ -4789,7 +4815,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.21"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.22"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,

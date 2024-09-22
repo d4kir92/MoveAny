@@ -53,8 +53,9 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	window.ma_ignore_setpointbase = window.ma_ignore_setpointbase or false
 	if InCombatLockdown() and window:IsProtected() then return false end
 	if p1 then
-		window:ClearAllPoints()
-		local SetPoint = window.SetPointBase or window.SetPoint
+		local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
+		ClearAllPoints(window)
+		local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
 		window.ma_ignore_setpointbase = true
 		SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
 		window.ma_ignore_setpointbase = false
