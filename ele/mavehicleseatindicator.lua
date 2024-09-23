@@ -26,7 +26,9 @@ function MoveAny:InitMAVehicleSeatIndicator()
 			MAVehicleSeatIndicator,
 			"SetScale",
 			function(sel, scale)
-				VehicleSeatIndicator:SetScale(scale)
+				if scale and type(scale) == "number" then
+					VehicleSeatIndicator:SetScale(scale)
+				end
 			end
 		)
 

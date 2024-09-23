@@ -391,13 +391,13 @@ function MoveAny:UpdateMoveFrames(force)
 							if sel.masetscale_frame then return end
 							sel.masetscale_frame = true
 							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
-							if MoveAny:GetFrameScale(name) or scale then
+							if MoveAny:GetFrameScale(name) or (scale and type(scale) == "number") then
 								local sca = MoveAny:GetFrameScale(name) or scale
 								if sel.isMaximized and sca and sca > 1 then
 									sca = 1
 								end
 
-								if sca and sca > 0 and (currentFrame == nil or currentFrame ~= sel) then
+								if sca and type(sca) == "number" and sca > 0 and (currentFrame == nil or currentFrame ~= sel) then
 									sel:SetScale(sca)
 								end
 							end

@@ -464,8 +464,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.23")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.23"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.24")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.24"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1075,7 +1075,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.23"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.24"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2536,7 +2536,9 @@ function MoveAny:LoadAddon()
 				TargetFrame,
 				"SetScale",
 				function(sel, scale)
-					ComboFrame:SetScale(scale)
+					if scale and type(scale) == "number" then
+						ComboFrame:SetScale(scale)
+					end
 				end
 			)
 
@@ -4307,7 +4309,9 @@ function MoveAny:LoadAddon()
 						GroupLootFrame1,
 						"SetScale",
 						function(sel, scale)
-							glf:SetScale(scale)
+							if scale and type(scale) == "number" then
+								glf:SetScale(scale)
+							end
 						end
 					)
 
@@ -4588,7 +4592,9 @@ function MoveAny:LoadAddon()
 							AlertFrame,
 							"SetScale",
 							function(sel, scale)
-								frame:SetScale(scale)
+								if scale and type(scale) == "number" then
+									frame:SetScale(scale)
+								end
 							end
 						)
 
@@ -4815,7 +4821,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.23"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.24"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,

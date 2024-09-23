@@ -54,7 +54,7 @@ hooksecurefunc(
 	UIParent,
 	"SetScale",
 	function(self, scale)
-		if MoveAny:GetCVar("useUiScale") == "0" then
+		if MoveAny:GetCVar("useUiScale") == "0" and type(scale) == "number" then
 			MAUIP:SetScale(scale)
 		end
 	end

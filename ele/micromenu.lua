@@ -132,7 +132,9 @@ function MoveAny:InitMicroMenu()
 							MAMenuBar,
 							"SetScale",
 							function(sel, scale)
-								mb:SetScale(scale)
+								if scale and type(scale) == "number" then
+									mb:SetScale(scale)
+								end
 							end
 						)
 

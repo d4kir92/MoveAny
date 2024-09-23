@@ -26,7 +26,9 @@ function MoveAny:InitArenaEnemyFrames()
 				MAArenaEnemyFrames,
 				"SetScale",
 				function(sel, scale)
-					ArenaEnemyFrames:SetScale(scale)
+					if scale and type(scale) == "number" then
+						ArenaEnemyFrames:SetScale(scale)
+					end
 				end
 			)
 
@@ -97,7 +99,9 @@ function MoveAny:InitArenaPrepFrames()
 				MAArenaPrepFrames,
 				"SetScale",
 				function(sel, scale)
-					ArenaPrepFrames:SetScale(scale)
+					if scale and type(scale) == "number" then
+						ArenaPrepFrames:SetScale(scale)
+					end
 				end
 			)
 
