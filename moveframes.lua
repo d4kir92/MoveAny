@@ -185,7 +185,7 @@ function MoveAny:UpdateMoveFrames(force)
 							frame,
 							"SetScale",
 							function(sel, scale)
-								if scale and scale > 0 and (currentFrame == nil or currentFrame ~= sel) then
+								if scale and type(scale) == "number" and scale > 0 and (currentFrame == nil or currentFrame ~= sel) then
 									fm:SetScale(scale)
 								end
 							end
