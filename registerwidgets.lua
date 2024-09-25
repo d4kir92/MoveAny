@@ -119,7 +119,7 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 end
 
 function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
-	local slider = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate")
+	local slider = CreateFrame("Slider", nil, parent, "UISliderTemplate")
 	slider:SetWidth(parent:GetWidth() - 20 - x)
 	slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 	slider.Low:SetText(vmin)
@@ -439,7 +439,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local offset = opts["OFFSET"] or 0
 			local PY = -20
 			if frame ~= MAMenuBar and frame ~= StanceBar then
-				slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				slides.sliderCount = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				local sliderCount = slides.sliderCount
 				sliderCount:SetWidth(content:GetWidth() - 110)
 				sliderCount:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
@@ -474,7 +474,7 @@ function MoveAny:MenuOptions(opt, frame)
 			end
 
 			if #items >= 1 then
-				slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				slides.sliderRows = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				local sliderRows = slides.sliderRows
 				sliderRows:SetWidth(content:GetWidth() - 110)
 				sliderRows:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
@@ -508,7 +508,7 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			slides.offset = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			local sliderOffset = slides.offset
 			sliderOffset:SetWidth(content:GetWidth() - 110)
 			sliderOffset:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
@@ -556,7 +556,7 @@ function MoveAny:MenuOptions(opt, frame)
 			flipped.text:SetText(MoveAny:GT("LID_FLIPPED"))
 			PY = PY - 40
 			opts["SPACING"] = opts["SPACING"] or 2
-			local slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			local slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			slider:SetWidth(content:GetWidth() - 110)
 			slider:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
 			slider.Low:SetText(0)
@@ -698,7 +698,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local width = opts["WIDTH"]
 			opts["HEIGHT"] = opts["HEIGHT"] or 15
 			local height = opts["HEIGHT"]
-			local sliderW = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			local sliderW = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			sliderW:SetWidth(content:GetWidth() - 30)
 			sliderW:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -30)
 			sliderW.Low:SetText(100)
@@ -722,7 +722,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
-			local sliderH = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			local sliderH = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			sliderH:SetWidth(content:GetWidth() - 30)
 			sliderH:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -60)
 			sliderH.Low:SetText(2)

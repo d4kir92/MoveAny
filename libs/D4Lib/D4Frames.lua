@@ -107,9 +107,30 @@ function D4:CreateSlider(tab)
     tab.steps = tab.steps or 1
     tab.decimals = tab.decimals or 0
     tab.key = tab.key or tab.name or ""
-    local slider = CreateFrame("Slider", tab.key, tab.parent, "OptionsSliderTemplate")
-    slider:SetWidth(tab.sw)
+    local slider = CreateFrame("Slider", tab.key, tab.parent, "UISliderTemplate")
+    slider:SetSize(tab.sw, 16)
     slider:SetPoint(unpack(tab.pTab))
+    if slider.Low == nil then
+        slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
+        slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
+        slider.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+        slider.Low:SetTextColor(1, 1, 1)
+    end
+
+    if slider.High == nil then
+        slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
+        slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
+        slider.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+        slider.High:SetTextColor(1, 1, 1)
+    end
+
+    if slider.Text == nil then
+        slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
+        slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
+        slider.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+        slider.Text:SetTextColor(1, 1, 1)
+    end
+
     slider.Low:SetText(tab.vmin)
     slider.High:SetText(tab.vmax)
     local struct = D4:Trans(tab.key)

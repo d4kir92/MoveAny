@@ -308,9 +308,31 @@ end
 local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 	if sls[key] == nil then
 		posy = posy - 10
-		sls[key] = CreateFrame("Slider", "sls[" .. key .. "]", MALock.SC, "OptionsSliderTemplate")
-		sls[key]:SetWidth(MALock.SC:GetWidth() - 30 - x)
+		local name = "sls[" .. key .. "]"
+		sls[key] = CreateFrame("Slider", name, MALock.SC, "UISliderTemplate")
 		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x + 5, posy)
+		sls[key]:SetSize(MALock.SC:GetWidth() - 30 - x, 16)
+		if sls[key].Low == nil then
+			sls[key].Low = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
+			sls[key].Low:SetPoint("BOTTOMLEFT", sls[key], "BOTTOMLEFT", 0, -12)
+			sls[key].Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+			sls[key].Low:SetTextColor(1, 1, 1)
+		end
+
+		if sls[key].High == nil then
+			sls[key].High = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
+			sls[key].High:SetPoint("BOTTOMRIGHT", sls[key], "BOTTOMRIGHT", 0, -12)
+			sls[key].High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+			sls[key].High:SetTextColor(1, 1, 1)
+		end
+
+		if sls[key].Text == nil then
+			sls[key].Text = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
+			sls[key].Text:SetPoint("TOP", sls[key], "TOP", 0, 16)
+			sls[key].Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+			sls[key].Text:SetTextColor(1, 1, 1)
+		end
+
 		sls[key].Low:SetText(vmin)
 		sls[key].High:SetText(vmax)
 		if tab and tab[MoveAny:MAGV(key, val)] then
@@ -464,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.24")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.24"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.25")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.25"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1075,7 +1097,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.24"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.25"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1183,7 +1205,7 @@ function MoveAny:ShowProfiles()
 						tinsert(profileNames, name)
 					end
 
-					local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "OptionsSliderTemplate")
+					local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
 					sliderProfiles:SetWidth(MAAddProfile:GetWidth() - 20)
 					sliderProfiles:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br)
 					sliderProfiles.Low:SetText("")
@@ -3443,58 +3465,32 @@ function MoveAny:LoadAddon()
 		C_Timer.After(
 			2,
 			function()
-				local KTF = _G["!KalielsTrackerFrame"]
-				if KTF and KTF.Buttons then
-					_G["KTFButtons"] = KTF.Buttons
-					function KTFButtons:GetName()
-						return "KTFButtons"
-					end
+				local ktb = _G["!KalielsTrackerButtons"]
+				if ktb then
+					local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
+					local size = 28
+					local kbr = 6
+					MAKTB:SetSize(size, size * 3 + kbr * 2)
+					hooksecurefunc(
+						ktb,
+						"SetPoint",
+						function(sel, ...)
+							if sel.ma_ktb_setpoint then return end
+							sel.ma_ktb_setpoint = true
+							MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
+							sel.ma_ktb_setpoint = false
+						end
+					)
 
-					KTFButtons.FSetPoint = KTBSetPoint or KTFButtons.SetPoint
-					function KTFButtons:SetPoint(...)
-					end
-
-					KTFButtons.FClearAllPoints = KTFButtons.ClearAllPoints
-					function KTFButtons:ClearAllPoints()
-					end
-
-					function KTBSetPoint(...)
-					end
-
+					ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
 					MoveAny:RegisterWidget(
 						{
-							["name"] = "KTFButtons",
+							["name"] = "MAKTB",
 							["lstr"] = "LID_!KalielsTrackerButtons",
 						}
 					)
 				else
-					local ktb = _G["!KalielsTrackerButtons"]
-					if ktb then
-						local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
-						local size = 28
-						local kbr = 6
-						MAKTB:SetSize(size, size * 3 + kbr * 2)
-						hooksecurefunc(
-							ktb,
-							"SetPoint",
-							function(sel, ...)
-								if sel.ma_ktb_setpoint then return end
-								sel.ma_ktb_setpoint = true
-								MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
-								sel.ma_ktb_setpoint = false
-							end
-						)
-
-						ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
-						MoveAny:RegisterWidget(
-							{
-								["name"] = "MAKTB",
-								["lstr"] = "LID_!KalielsTrackerButtons",
-							}
-						)
-					else
-						MoveAny:MSG("FAILED TO ADD !KalielsTrackerButtons")
-					end
+					MoveAny:MSG("FAILED TO ADD !KalielsTrackerButtons")
 				end
 			end
 		)
@@ -4821,7 +4817,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.24"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.25"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
