@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.25")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.25"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.26")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.26"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1097,7 +1097,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.25"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.26"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1208,6 +1208,27 @@ function MoveAny:ShowProfiles()
 					local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
 					sliderProfiles:SetWidth(MAAddProfile:GetWidth() - 20)
 					sliderProfiles:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br)
+					if slidersliderProfiles.Low == nil then
+						slidersliderProfiles.Low = slidersliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
+						slidersliderProfiles.Low:SetPoint("BOTTOMLEFT", slidersliderProfiles, "BOTTOMLEFT", 0, -12)
+						slidersliderProfiles.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+						slidersliderProfiles.Low:SetTextColor(1, 1, 1)
+					end
+
+					if slidersliderProfiles.High == nil then
+						slidersliderProfiles.High = slidersliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
+						slidersliderProfiles.High:SetPoint("BOTTOMRIGHT", slidersliderProfiles, "BOTTOMRIGHT", 0, -12)
+						slidersliderProfiles.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+						slidersliderProfiles.High:SetTextColor(1, 1, 1)
+					end
+
+					if slidersliderProfiles.Text == nil then
+						slidersliderProfiles.Text = slidersliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
+						slidersliderProfiles.Text:SetPoint("TOP", slidersliderProfiles, "TOP", 0, 16)
+						slidersliderProfiles.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+						slidersliderProfiles.Text:SetTextColor(1, 1, 1)
+					end
+
 					sliderProfiles.Low:SetText("")
 					sliderProfiles.High:SetText("")
 					sliderProfiles.Text:SetText(MoveAny:GT("LID_INHERITFROM") .. ": " .. MAAddProfile.inheritFrom)
@@ -4817,7 +4838,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.25"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.26"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
