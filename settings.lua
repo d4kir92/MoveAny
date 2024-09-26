@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.26")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.26"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.27")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.27"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1097,7 +1097,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.26"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.27"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2395,6 +2395,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetScale",
 						function(sel)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_bb_set_scale then return end
 							sel.ma_bb_set_scale = true
 							frame:UpdateBuffScaleAlpha()
@@ -2450,6 +2451,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetScale",
 						function(sel)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
 							frame:UpdateDebuffScaleAlpha()
@@ -2505,6 +2507,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetScale",
 						function(sel)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
 							frame:UpdateBuffScaleAlpha()
@@ -2560,6 +2563,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetScale",
 						function(sel)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
 							frame:UpdateDebuffScaleAlpha()
@@ -2579,6 +2583,7 @@ function MoveAny:LoadAddon()
 				TargetFrame,
 				"SetScale",
 				function(sel, scale)
+					if InCombatLockdown() and sel:IsProtected() then return false end
 					if scale and type(scale) == "number" then
 						ComboFrame:SetScale(scale)
 					end
@@ -2648,6 +2653,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetScale",
 						function(sel)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
 							frame:UpdateBuffScaleAlpha()
@@ -2703,6 +2709,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetScale",
 						function(sel)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
 							frame:UpdateDebuffScaleAlpha()
@@ -4096,6 +4103,7 @@ function MoveAny:LoadAddon()
 			GameTooltip,
 			"SetScale",
 			function(sel, ...)
+				if InCombatLockdown() and sel:IsProtected() then return false end
 				if sel.gtsetscale then return end
 				sel.gtsetscale = true
 				sel:SetScale(MAGameTooltip:GetScale())
@@ -4107,6 +4115,7 @@ function MoveAny:LoadAddon()
 			MAGameTooltip,
 			"SetScale",
 			function(sel, ...)
+				if InCombatLockdown() and sel:IsProtected() then return false end
 				if sel.gtsetscale2 then return end
 				sel.gtsetscale2 = true
 				GameTooltip:SetScale(sel:GetScale())
@@ -4326,6 +4335,7 @@ function MoveAny:LoadAddon()
 						GroupLootFrame1,
 						"SetScale",
 						function(sel, scale)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if scale and type(scale) == "number" then
 								glf:SetScale(scale)
 							end
@@ -4609,6 +4619,7 @@ function MoveAny:LoadAddon()
 							AlertFrame,
 							"SetScale",
 							function(sel, scale)
+								if InCombatLockdown() and sel:IsProtected() then return false end
 								if scale and type(scale) == "number" then
 									frame:SetScale(scale)
 								end
@@ -4838,7 +4849,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.26"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.27"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,

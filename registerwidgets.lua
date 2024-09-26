@@ -1616,6 +1616,7 @@ function MoveAny:RegisterWidget(tab)
 		frame,
 		"SetScale",
 		function(sel, scale)
+			if InCombatLockdown() and sel:IsProtected() then return false end
 			if sel.masetscale_ele then return end
 			sel.masetscale_ele = true
 			local newScale = MoveAny:GetEleScale(name) or 1

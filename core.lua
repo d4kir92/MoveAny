@@ -53,7 +53,8 @@ uiscalecvar:SetScript(
 hooksecurefunc(
 	UIParent,
 	"SetScale",
-	function(self, scale)
+	function(sel, scale)
+		if InCombatLockdown() and sel:IsProtected() then return false end
 		if MoveAny:GetCVar("useUiScale") == "0" and type(scale) == "number" then
 			MAUIP:SetScale(scale)
 		end

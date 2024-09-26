@@ -185,6 +185,7 @@ function MoveAny:UpdateMoveFrames(force)
 							frame,
 							"SetScale",
 							function(sel, scale)
+								if InCombatLockdown() and sel:IsProtected() then return false end
 								if scale and type(scale) == "number" and scale > 0 and (currentFrame == nil or currentFrame ~= sel) then
 									fm:SetScale(scale)
 								end
@@ -388,6 +389,7 @@ function MoveAny:UpdateMoveFrames(force)
 						frame,
 						"SetScale",
 						function(sel, scale)
+							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.masetscale_frame then return end
 							sel.masetscale_frame = true
 							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end

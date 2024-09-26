@@ -26,6 +26,7 @@ function MoveAny:InitArenaEnemyFrames()
 				MAArenaEnemyFrames,
 				"SetScale",
 				function(sel, scale)
+					if InCombatLockdown() and sel:IsProtected() then return false end
 					if scale and type(scale) == "number" then
 						ArenaEnemyFrames:SetScale(scale)
 					end
@@ -99,6 +100,7 @@ function MoveAny:InitArenaPrepFrames()
 				MAArenaPrepFrames,
 				"SetScale",
 				function(sel, scale)
+					if InCombatLockdown() and sel:IsProtected() then return false end
 					if scale and type(scale) == "number" then
 						ArenaPrepFrames:SetScale(scale)
 					end
