@@ -14,7 +14,11 @@ function D4:AddCategory(tab)
     tab.parent.f:SetText(D4:Trans(tab.name))
 end
 
-function D4:CreateCheckbox(tab)
+function D4:CreateCheckbox(tab, text)
+    if text == nil then
+        text = true
+    end
+
     tab.sw = tab.sw or 25
     tab.sh = tab.sh or 25
     tab.parent = tab.parent or UIParent
@@ -31,9 +35,11 @@ function D4:CreateCheckbox(tab)
         end
     )
 
-    cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
-    cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-    cb.f:SetText(D4:Trans(tab.name))
+    if text then
+        cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
+        cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
+        cb.f:SetText(D4:Trans(tab.name))
+    end
 
     return cb
 end
@@ -58,6 +64,22 @@ function D4:CreateCheckboxForCVAR(tab)
     )
 
     cb.f:SetPoint("LEFT", cb, "RIGHT", 25, 0)
+
+    return cb
+end
+
+function D4:CreateSliderForCVAR(tab)
+    tab.sw = tab.sw or 25
+    tab.sh = tab.sh or 25
+    tab.parent = tab.parent or UIParent
+    tab.pTab = tab.pTab or "CENTER"
+    tab.value = tab.value or nil
+    local cb = D4:CreateCheckbox(tab, false)
+    tab.sw = 460
+    tab.value = tab.value2
+    tab.key = tab.key or tab.name or ""
+    tab.pTab = {tab.pTab[1], tab.pTab[2] + 32, tab.pTab[3] - 18}
+    D4:CreateSlider(tab)
 
     return cb
 end
@@ -91,7 +113,7 @@ function D4:CreateSlider(tab)
         D4:MSG("[D4][CreateSlider] Missing format string:", tab.key, tab.value)
 
         return
-    elseif tab.value == nil then
+    elseif tab.value == nil or type(tonumber(tab.value)) ~= "number" then
         D4:MSG("[D4][CreateSlider] Missing value:", tab.key, tab.value)
 
         return
@@ -154,7 +176,9 @@ function D4:CreateSlider(tab)
                 TAB[tab.key] = val
             end
 
-            if tab.funcV then
+            if tab.funcV2 then
+                tab:funcV2(val)
+            elseif tab.funcV then
                 tab:funcV(val)
             end
 
