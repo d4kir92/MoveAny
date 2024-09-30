@@ -82,7 +82,7 @@ function MoveAny:LangdeDE()
 		["LID_CHATBUTTONFRAME10"] = "Chat Knöpfe für Tab 10",
 		["LID_CHATQUICKJOIN"] = "Chat Schnellbeitritt",
 		["LID_CHATEDITBOX"] = "Chat Eingabefeld %s",
-		["LID_COMPACTRAIDFRAMEMANAGER"] = "SchlachzugsManager",
+		["LID_COMPACTRAIDFRAMEMANAGER"] = "SchlachtzugsManager",
 		["LID_BNToastFrame"] = "Benachrichtigungen von Battlenet Freunden",
 		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Zauber-Aktivierungs-Overlay (Class Proc)",
 		["LID_ZONETEXTFRAME"] = "Zonentext",
