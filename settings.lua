@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.30")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.30"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.31")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.31"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1097,7 +1097,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.30"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.31"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3344,7 +3344,7 @@ function MoveAny:LoadAddon()
 			end
 		)
 
-		PetFrame:SetParent(MAPetFrame)
+		--PetFrame:SetParent(MAPetFrame)
 		MoveAny:SetPoint(PetFrame, "CENTER", MAPetFrame, "CENTER", 0, 0)
 		MoveAny:RegisterWidget(
 			{
@@ -4858,7 +4858,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.30"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.31"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
