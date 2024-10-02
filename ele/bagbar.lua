@@ -56,6 +56,7 @@ function MoveAny:UpdateBags()
 					BagsBar_MA_DRAG,
 					"SetSize",
 					function(sel, w, h)
+						if InCombatLockdown() and sel:IsProtected() then return false end
 						if sel.ma_bags_setsize then return end
 						sel.ma_bags_setsize = true
 						MoveAny:UpdateBags()
@@ -124,6 +125,7 @@ function MoveAny:InitBags()
 				BagsBar,
 				"SetSize",
 				function(sel, w, h)
+					if InCombatLockdown() and sel:IsProtected() then return false end
 					if sel.ma_bags_setsize then return end
 					sel.ma_bags_setsize = true
 					MoveAny:UpdateBags()

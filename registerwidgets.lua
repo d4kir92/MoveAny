@@ -1641,6 +1641,7 @@ function MoveAny:RegisterWidget(tab)
 		frame,
 		"SetSize",
 		function(sel, w, h)
+			if InCombatLockdown() and sel:IsProtected() then return false end
 			local isToSmall = false
 			local df = _G[name .. "_MA_DRAG"]
 			if df.SetSize then
