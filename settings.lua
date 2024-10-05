@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.33")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.33"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.34")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.34"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1085,7 +1085,13 @@ function MoveAny:ShowProfiles()
 		MAProfiles:SetMovable(true)
 		MAProfiles:EnableMouse(true)
 		MAProfiles:RegisterForDrag("LeftButton")
-		MAProfiles:SetScript("OnDragStart", MAProfiles.StartMoving)
+		MAProfiles:SetScript(
+			"OnDragStart",
+			function()
+				MAProfiles:StartMoving()
+			end
+		)
+
 		MAProfiles:SetScript(
 			"OnDragStop",
 			function()
@@ -1097,7 +1103,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.33"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.34"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1105,18 +1111,6 @@ function MoveAny:ShowProfiles()
 				MAProfiles:Hide()
 				MoveAny:Unlock()
 				MoveAny:ShowMALock()
-			end
-		)
-
-		MAProfiles:SetScript("OnDragStart", MAProfiles.StartMoving)
-		MAProfiles:SetScript(
-			"OnDragStop",
-			function()
-				MALock:StopMovingOrSizing()
-				local p1, _, p3, p4, p5 = MAProfiles:GetPoint()
-				p4 = MoveAny:Snap(p4)
-				p5 = MoveAny:Snap(p5)
-				MoveAny:SetElePoint("MAProfiles", p1, _, p3, p4, p5)
 			end
 		)
 
@@ -1206,7 +1200,7 @@ function MoveAny:ShowProfiles()
 					end
 
 					local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
-					sliderProfiles:SetWidth(MAAddProfile:GetWidth() - 20)
+					sliderProfiles:SetSize(MAAddProfile:GetWidth() - 20, 16)
 					sliderProfiles:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br)
 					if sliderProfiles.Low == nil then
 						sliderProfiles.Low = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
@@ -4866,7 +4860,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.33"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.34"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
