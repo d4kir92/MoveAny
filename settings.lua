@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.32")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.32"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.33")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.33"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1097,7 +1097,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.32"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.33"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3334,18 +3334,25 @@ function MoveAny:LoadAddon()
 		end
 
 		hooksecurefunc(
-			PetFrame,
-			"SetPoint",
-			function(sel, ...)
-				if sel.ma_setpoint then return end
-				sel.ma_setpoint = true
-				sel:SetParent(MAPetFrame)
-				MoveAny:SetPoint(sel, "CENTER", MAPetFrame, "CENTER", 0, 0)
-				sel.ma_setpoint = false
+			MAPetFrame,
+			"SetAlpha",
+			function(sel, alpha)
+				PetFrame:SetAlpha(alpha)
 			end
 		)
 
-		--PetFrame:SetParent(MAPetFrame)
+		local secureFlagPetFrame = false
+		hooksecurefunc(
+			PetFrame,
+			"SetPoint",
+			function(sel, ...)
+				if secureFlagPetFrame then return end
+				secureFlagPetFrame = true
+				MoveAny:SetPoint(sel, "CENTER", MAPetFrame, "CENTER", 0, 0)
+				secureFlagPetFrame = false
+			end
+		)
+
 		MoveAny:SetPoint(PetFrame, "CENTER", MAPetFrame, "CENTER", 0, 0)
 		MoveAny:RegisterWidget(
 			{
@@ -4859,7 +4866,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.32"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.33"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
