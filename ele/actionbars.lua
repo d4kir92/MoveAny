@@ -532,34 +532,36 @@ function MoveAny:CustomBars()
 	-- Masque
 	if once then
 		once = false
-		local MSQ = LibStub("Masque", true)
-		if MSQ then
-			MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
-			local MAMasqueGroups = {}
-			MAMasqueGroups.Groups = {}
-			for x, bar in pairs(abs) do
-				for y, btn in pairs(bar.btns) do
-					if btn then
-						local btnName = btn:GetName()
-						if _G[btnName .. "FloatingBG"] then
-							_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
-						end
+		if LibStub then
+			local MSQ = LibStub("Masque", true)
+			if MSQ then
+				MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
+				local MAMasqueGroups = {}
+				MAMasqueGroups.Groups = {}
+				for x, bar in pairs(abs) do
+					for y, btn in pairs(bar.btns) do
+						if btn then
+							local btnName = btn:GetName()
+							if _G[btnName .. "FloatingBG"] then
+								_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
+							end
 
-						local parent = btn:GetParent():GetName()
-						local group = nil
-						if MAMasqueGroups.Groups["MA " .. parent] == nil then
-							MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
-						end
+							local parent = btn:GetParent():GetName()
+							local group = nil
+							if MAMasqueGroups.Groups["MA " .. parent] == nil then
+								MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
+							end
 
-						group = MAMasqueGroups.Groups["MA " .. parent]
-						if not btn.MasqueButtonData then
-							btn.MasqueButtonData = {
-								Button = btn,
-								Icon = _G[btnName .. "IconTexture"],
-							}
-						end
+							group = MAMasqueGroups.Groups["MA " .. parent]
+							if not btn.MasqueButtonData then
+								btn.MasqueButtonData = {
+									Button = btn,
+									Icon = _G[btnName .. "IconTexture"],
+								}
+							end
 
-						group:AddButton(btn, btn.MasqueButtonData, "Item")
+							group:AddButton(btn, btn.MasqueButtonData, "Item")
+						end
 					end
 				end
 			end

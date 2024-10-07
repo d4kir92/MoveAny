@@ -1,9 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
-<Include file="LibDBIcon-1.0\embeds.xml"/>
-<Include file="LibDBIcon-1.0\LibDBIcon-1.0\lib.xml"/>
-
 <Script file="D4Lib.lua"/>
 
 <Script file="D4Math.lua"/>
