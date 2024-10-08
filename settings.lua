@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.37")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.37"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.38")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.38"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1103,7 +1103,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.37"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.38"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2098,8 +2098,6 @@ function MoveAny:LoadAddon()
 	end
 
 	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
-		RuneFrame.unit = "player"
-		RuneFrame:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "RuneFrame",
@@ -2111,8 +2109,6 @@ function MoveAny:LoadAddon()
 	end
 
 	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
-		WarlockPowerFrame.unit = "player"
-		WarlockPowerFrame:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "WarlockPowerFrame",
@@ -2135,21 +2131,19 @@ function MoveAny:LoadAddon()
 	end
 
 	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
-		MonkHarmonyBarFrame.unit = "player"
-		MonkHarmonyBarFrame:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MonkHarmonyBarFrame",
 				["lstr"] = "LID_MONKHARMONYBARFRAME",
 				["userplaced"] = true,
 				["secure"] = true,
+				["sw"] = 118,
+				["sh"] = 28,
 			}
 		)
 	end
 
 	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
-		MonkStaggerBar.unit = "player"
-		MonkStaggerBar:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MonkStaggerBar",
@@ -2161,8 +2155,6 @@ function MoveAny:LoadAddon()
 	end
 
 	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
-		MageArcaneChargesFrame.unit = "player"
-		MageArcaneChargesFrame:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MageArcaneChargesFrame",
@@ -2175,25 +2167,25 @@ function MoveAny:LoadAddon()
 
 	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
 		if class == "ROGUE" then
-			RogueComboPointBarFrame.unit = "player"
-			RogueComboPointBarFrame:SetParent(MoveAny:GetMainPanel())
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "RogueComboPointBarFrame",
 					["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
 					["userplaced"] = true,
 					["secure"] = true,
+					["sw"] = 120,
+					["sh"] = 30,
 				}
 			)
 		elseif class == "DRUID" then
-			DruidComboPointBarFrame.unit = "player"
-			DruidComboPointBarFrame:SetParent(MoveAny:GetMainPanel())
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "DruidComboPointBarFrame",
 					["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
 					["userplaced"] = true,
 					["secure"] = true,
+					["sw"] = 116,
+					["sh"] = 28,
 				}
 			)
 		end
@@ -2239,8 +2231,6 @@ function MoveAny:LoadAddon()
 			EssencePlayerFrame,
 			"Setup",
 			function()
-				EssencePlayerFrame.unit = "player"
-				EssencePlayerFrame:SetParent(MoveAny:GetMainPanel())
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "EssencePlayerFrame",
@@ -2258,8 +2248,6 @@ function MoveAny:LoadAddon()
 			4,
 			function()
 				if not wasrun then
-					EssencePlayerFrame.unit = "player"
-					EssencePlayerFrame:SetParent(MoveAny:GetMainPanel())
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "EssencePlayerFrame",
@@ -2274,8 +2262,6 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsValidFrame(PaladinPowerBarFrame) and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
-		PaladinPowerBarFrame.unit = "player"
-		PaladinPowerBarFrame:SetParent(MoveAny:GetMainPanel())
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "PaladinPowerBarFrame",
@@ -4860,7 +4846,7 @@ function MoveAny:LoadAddon()
 						["name"] = "MoveAny",
 						["icon"] = 135994,
 						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.37"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.38"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 						["funcL"] = function()
 							MoveAny:ToggleMALock()
 						end,
