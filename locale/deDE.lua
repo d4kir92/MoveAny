@@ -135,7 +135,7 @@ function MoveAny:LangdeDE()
 		["LID_MABUFFLIMIT"] = "Stärkungszauber Grenze",
 		["LID_MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
 		["LID_MABUFFSPACINGY"] = "Stärkungszauber Abstand Vertikal",
-		["LID_ISENABLEDINEDITMODE"] = "(Deaktiviere es im Bearbeitungsmodus)",
+		["LID_ISENABLEDINEDITMODE"] = "(Deaktiviere es im Spielmenü-Bearbeitungsmodus)",
 		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(Kann Error verursachen, wegen Bearbeitungsmodus)",
 		["LID_HELPTEXT"] = "\"%s\" ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
 		["LID_BUILTIN"] = "Eingebaut",

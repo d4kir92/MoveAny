@@ -141,7 +141,7 @@ function MoveAny:LangenUS()
 		["LID_MABUFFLIMIT"] = "Buff limit",
 		["LID_MABUFFSPACINGX"] = "Buff Spacing Horizontal",
 		["LID_MABUFFSPACINGY"] = "Buff Spacing Vertical",
-		["LID_ISENABLEDINEDITMODE"] = "(Disable it in EditMode)",
+		["LID_ISENABLEDINEDITMODE"] = "(Disable it GameMenu's Edit Mode)",
 		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(May cause error due to edit mode)",
 		["LID_HELPTEXT"] = "\"%s\" is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
 		["LID_BUILTIN"] = "Built-In",

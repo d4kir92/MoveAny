@@ -76,8 +76,8 @@ function D4:CreateMinimapButton(params)
     end
 
     params.dbtab[params.name] = params.dbtab[params.name] or {}
-    _G["D4Lib_MMBTN_" .. params.name] = CreateFrame("Button", "D4Lib_MMBTN_" .. params.name, Minimap)
-    local btn = _G["D4Lib_MMBTN_" .. params.name]
+    _G["MinimapButton_D4Lib_" .. params.name] = CreateFrame("Button", "MinimapButton_D4Lib_" .. params.name, Minimap)
+    local btn = _G["MinimapButton_D4Lib_" .. params.name]
     btn.border = params.border
     btn.db = params.dbtab
     btn.db.minimapPos = btn.db.minimapPos or 0
@@ -241,7 +241,12 @@ function D4:ShowMMBtn(name)
         return
     end
 
-    D4:GetMMBtn("D4Lib_MMBTN_" .. name):Show()
+    local btn = D4:GetMMBtn("MinimapButton_D4Lib_" .. name)
+    if btn then
+        btn:Show()
+    else
+        D4:MSG("[ShowMMBtn] Missing Button", name)
+    end
 end
 
 function D4:HideMMBtn(name)
@@ -251,5 +256,10 @@ function D4:HideMMBtn(name)
         return
     end
 
-    D4:GetMMBtn("D4Lib_MMBTN_" .. name):Hide()
+    local btn = D4:GetMMBtn("MinimapButton_D4Lib_" .. name)
+    if btn then
+        btn:Hide()
+    else
+        D4:MSG("[HideMMBtn] Missing Button", name)
+    end
 end
