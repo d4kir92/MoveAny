@@ -19,6 +19,36 @@ local MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
 MAHIDDEN:Hide()
 MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
+local sethidden = {}
+local sethiddenSetup = {}
+function MoveAny:HideFrame(frame)
+	sethidden[frame] = true
+	if sethiddenSetup[frame] == nil then
+		sethiddenSetup[frame] = true
+		local setalpha = false
+		hooksecurefunc(
+			frame,
+			"SetAlpha",
+			function(sel, alpha)
+				if sethidden[sel] == nil then return end
+				if setalpha then return end
+				setalpha = true
+				sel:SetAlpha(0)
+				setalpha = false
+			end
+		)
+	end
+
+	frame:SetAlpha(0)
+	frame:EnableMouse(false)
+end
+
+function MoveAny:ShowFrame(frame)
+	sethidden[frame] = nil
+	frame:SetAlpha(1)
+	frame:EnableMouse(true)
+end
+
 --[[ HIDEPANEL ]]
 --[[ NEW ]]
 local MAUIP = CreateFrame("Frame", "UIParent")

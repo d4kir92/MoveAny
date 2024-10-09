@@ -314,22 +314,9 @@ function MoveAny:MenuOptions(opt, frame)
 				function()
 					local checked = hide:GetChecked()
 					MoveAny:SetEleOption(name, "Hide", checked)
-					local maframe1 = _G["MA" .. name]
-					local maframe2 = _G[string.gsub(name, "MA", "")]
 					local dragf = _G[name .. "_MA_DRAG"]
 					if checked then
-						frame.oldparent = frame.oldparent or frame:GetParent()
-						frame:SetParent(MAHIDDEN)
-						if maframe1 then
-							maframe1.oldparent = maframe1.oldparent or maframe1:GetParent()
-							maframe1:SetParent(MAHIDDEN)
-						end
-
-						if maframe2 then
-							maframe2.oldparent = maframe2.oldparent or maframe2:GetParent()
-							maframe2:SetParent(MAHIDDEN)
-						end
-
+						MoveAny:HideFrame(frame)
 						dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 						if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 							dragf:Hide()
@@ -337,15 +324,7 @@ function MoveAny:MenuOptions(opt, frame)
 							dragf:Show()
 						end
 					else
-						frame:SetParent(frame.oldparent)
-						if maframe1 then
-							maframe1:SetParent(maframe1.oldparent)
-						end
-
-						if maframe2 then
-							maframe2:SetParent(maframe2.oldparent)
-						end
-
+						MoveAny:ShowFrame(frame)
 						if MACurrentEle == frame then
 							dragf.t:SetVertexColor(MoveAny:GetColor("se"))
 						else
@@ -1366,37 +1345,12 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetClampedToScreen(true)
 	end
 
-	local maframe1 = _G["MA" .. name]
-	local maframe2 = _G[string.gsub(name, "MA", "")]
+	if frame ~= Minimap and frame ~= MinimapCluster and frame.SetIgnoreParentAlpha ~= nil then
+		frame:SetIgnoreParentAlpha(true)
+	end
+
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
-		frame.oldparent = frame.oldparent or frame:GetParent()
-		hooksecurefunc(
-			frame,
-			"SetParent",
-			function(sel, newParent)
-				if sel.ma_setparent then return end
-				sel.ma_setparent = true
-				if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
-					sel:SetParent(MAHIDDEN)
-				else
-					sel:SetParent(sel.oldparent)
-				end
-
-				sel.ma_setparent = false
-			end
-		)
-
-		frame:SetParent(MAHIDDEN)
-		if maframe1 then
-			maframe1.oldparent = maframe1.oldparent or frame:GetParent()
-			maframe1:SetParent(MAHIDDEN)
-		end
-
-		if maframe2 then
-			maframe2.oldparent = maframe2.oldparent or frame:GetParent()
-			maframe2:SetParent(MAHIDDEN)
-		end
-
+		MoveAny:HideFrame(frame)
 		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 			dragf:Hide()
@@ -1443,7 +1397,7 @@ function MoveAny:RegisterWidget(tab)
 				)
 
 				frame:UpdateBuffMouse()
-			elseif frame == MADebuffBar then
+			elseif frame == MoveAny:GetDebuffBar() then
 				function frame:UpdateDebuffMouse()
 					for i = 1, 32 do
 						local db = _G["DebuffButton" .. i]

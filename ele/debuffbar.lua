@@ -1,6 +1,12 @@
 local _, MoveAny = ...
 local btnsize = 36
 local debuffs = {}
+local once = true
+local MADebuffBar = nil
+function MoveAny:GetDebuffBar()
+	return MADebuffBar
+end
+
 function MoveAny:GetDebuffPosition(p1, p3)
 	MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] = MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] or 0
 	if MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 0 then
@@ -26,7 +32,6 @@ function MoveAny:GetDebuffPosition(p1, p3)
 	return "TOPRIGHT", "TOPRIGHT"
 end
 
-local once = true
 function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled("DEBUFFS", false) then
 		MADebuffBar = CreateFrame("Frame", nil, MoveAny:GetMainPanel())
@@ -38,7 +43,7 @@ function MoveAny:InitDebuffBar()
 			MADebuffBar:SetSize(sw1, sh1)
 		end
 
-		function MALoadDebuff()
+		function MoveAny:LoadDebuffButtons()
 			for i = 1, 32 do
 				local debuffBtn = _G["DebuffButton" .. i]
 				if debuffBtn and not tContains(debuffs, debuffBtn) then
@@ -93,10 +98,10 @@ function MoveAny:InitDebuffBar()
 				end
 			end
 
-			C_Timer.After(0.3, MALoadDebuff)
+			C_Timer.After(0.3, MoveAny.LoadDebuffButtons)
 		end
 
-		MALoadDebuff()
+		MoveAny:LoadDebuffButtons()
 		if MoveAny:DEBUG() then
 			DebuffButton1.t = DebuffButton1:CreateTexture()
 			DebuffButton1.t:SetAllPoints(DebuffButton1)
@@ -258,7 +263,7 @@ function MoveAny:InitDebuffBar()
 			"OnEvent",
 			function(sel, event, ...)
 				if event == "UNIT_AURA" then
-					unit = ...
+					local unit = ...
 					if unit and unit == "player" then
 						MoveAny:UpdateDebuffs()
 					end
