@@ -1345,7 +1345,7 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetClampedToScreen(true)
 	end
 
-	if frame ~= Minimap and frame ~= MinimapCluster and frame.SetIgnoreParentAlpha ~= nil then
+	if frame ~= Minimap and frame ~= MinimapCluster and frame.SetIgnoreParentAlpha ~= nil and frame:GetParent() == UIParent then
 		frame:SetIgnoreParentAlpha(true)
 	end
 
