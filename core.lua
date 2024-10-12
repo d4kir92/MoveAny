@@ -21,7 +21,24 @@ MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
 local sethidden = {}
 local sethiddenSetup = {}
-function MoveAny:HideFrame(frame)
+function MoveAny:HideFrame(frame, force)
+	if force then
+		if InCombatLockdown() then
+			C_Timer.After(
+				0.1,
+				function()
+					MoveAny:HideFrame(frame, force)
+				end
+			)
+
+			return
+		end
+
+		frame:SetParent(MAHIDDEN)
+
+		return
+	end
+
 	sethidden[frame] = true
 	if sethiddenSetup[frame] == nil then
 		sethiddenSetup[frame] = true
@@ -58,7 +75,7 @@ function MoveAny:HideFrame(frame)
 		C_Timer.After(
 			0.1,
 			function()
-				MoveAny:HideFrame(frame)
+				MoveAny:HideFrame(frame, force)
 			end
 		)
 	end
