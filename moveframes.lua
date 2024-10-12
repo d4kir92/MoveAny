@@ -77,38 +77,41 @@ function MoveAny:UpdateCurrentFrame()
 			GameTooltip:Hide()
 		end
 
-		local curMouseX, curMouseY = GetCursorPosition()
-		if prevMouseX and prevMouseY then
-			if curMouseY > prevMouseY then
-				local newScale = math.min(currentFrame:GetScale() + 0.006, 2.5)
-				if newScale > 0 then
-					newScale = tonumber(string.format("%.3f", newScale))
-					currentFrame:SetScale(newScale)
-					if currentFrame.isMaximized and newScale > 1 then
-						newScale = 1
-					end
+		if currentFrame then
+			local curMouseX, curMouseY = GetCursorPosition()
+			if prevMouseX and prevMouseY then
+				if curMouseY > prevMouseY then
+					local newScale = math.min(currentFrame:GetScale() + 0.006, 2.5)
+					if newScale > 0 then
+						newScale = tonumber(string.format("%.3f", newScale))
+						currentFrame:SetScale(newScale)
+						if currentFrame.isMaximized and newScale > 1 then
+							newScale = 1
+						end
 
-					MoveAny:SetFrameScale(currentFrameName, newScale)
-				end
-			elseif curMouseY < prevMouseY then
-				local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
-				if newScale > 0 then
-					newScale = tonumber(string.format("%.3f", newScale))
-					currentFrame:SetScale(newScale)
-					if currentFrame.isMaximized and newScale > 1 then
-						newScale = 1
+						MoveAny:SetFrameScale(currentFrameName, newScale)
 					end
+				elseif curMouseY < prevMouseY then
+					local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
+					if newScale > 0 then
+						newScale = tonumber(string.format("%.3f", newScale))
+						currentFrame:SetScale(newScale)
+						if currentFrame.isMaximized and newScale > 1 then
+							newScale = 1
+						end
 
-					MoveAny:SetFrameScale(currentFrameName, newScale)
+						MoveAny:SetFrameScale(currentFrameName, newScale)
+					end
 				end
 			end
+
+			GameTooltip:SetOwner(currentFrame)
+			GameTooltip:SetText(MoveAny:MathR(currentFrame:GetScale() * 100) .. "%")
+			prevMouseX = curMouseX
+			prevMouseY = curMouseY
 		end
 
-		GameTooltip:SetOwner(currentFrame)
-		GameTooltip:SetText(MoveAny:MathR(currentFrame:GetScale() * 100) .. "%")
-		prevMouseX = curMouseX
-		prevMouseY = curMouseY
-		C_Timer.After(0.01, MoveAny.UpdateCurrentFrame)
+		C_Timer.After(0.02, MoveAny.UpdateCurrentFrame)
 	end
 end
 

@@ -34,6 +34,19 @@ function MoveAny:HideFrame(frame)
 				if setalpha then return end
 				setalpha = true
 				sel:SetAlpha(0)
+				if not InCombatLockdown() then
+					sel:EnableMouse(false)
+				end
+
+				if sel.GetChildren then
+					for i, v in pairs({sel:GetChildren()}) do
+						v:SetAlpha(0)
+						if not InCombatLockdown() then
+							v:EnableMouse(false)
+						end
+					end
+				end
+
 				setalpha = false
 			end
 		)
@@ -41,12 +54,29 @@ function MoveAny:HideFrame(frame)
 
 	frame:SetAlpha(0)
 	frame:EnableMouse(false)
+	if InCombatLockdown() then
+		C_Timer.After(
+			0.1,
+			function()
+				MoveAny:HideFrame(frame)
+			end
+		)
+	end
 end
 
 function MoveAny:ShowFrame(frame)
 	sethidden[frame] = nil
 	frame:SetAlpha(1)
-	frame:EnableMouse(true)
+	if not InCombatLockdown() then
+		frame:EnableMouse(true)
+	else
+		C_Timer.After(
+			0.1,
+			function()
+				MoveAny:ShowFrame(frame)
+			end
+		)
+	end
 end
 
 --[[ HIDEPANEL ]]
