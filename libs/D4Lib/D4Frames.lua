@@ -369,7 +369,7 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     Y = Y - 30
 end
 
-function D4:CreateDropdown(key, value, choices, parent)
+function D4:CreateDropdown(key, value, choices, parent, func)
     if TAB[key] == nil then
         TAB[key] = value
     end
@@ -392,6 +392,9 @@ function D4:CreateDropdown(key, value, choices, parent)
                         function()
                             TAB[key] = data
                             Dropdown:SetDefaultText(D4:Trans(name))
+                            if func then
+                                func(data)
+                            end
                         end
                     )
                 end
@@ -420,12 +423,15 @@ function D4:CreateDropdown(key, value, choices, parent)
             TAB[key] = newValue
             UIDropDownMenu_SetText(dropDown, newValue)
             CloseDropDownMenus()
+            if func then
+                func(newValue)
+            end
         end
     end
 end
 
-function D4:AppendDropdown(key, value, choices)
+function D4:AppendDropdown(key, value, choices, func)
     Y = Y - 10
-    D4:CreateDropdown(key, value, choices, PARENT)
+    D4:CreateDropdown(key, value, choices, PARENT, func)
     Y = Y - 30
 end

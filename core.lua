@@ -35,6 +35,22 @@ function MoveAny:HideFrame(frame, force)
 		end
 
 		frame:SetParent(MAHIDDEN)
+		sethidden[frame] = true
+		if sethiddenSetup[frame] == nil then
+			sethiddenSetup[frame] = true
+			local setparent = false
+			hooksecurefunc(
+				frame,
+				"SetParent",
+				function(sel, parent)
+					if sethidden[sel] == nil then return end
+					if setparent then return end
+					setparent = true
+					sel:SetParent(MAHIDDEN)
+					setparent = false
+				end
+			)
+		end
 
 		return
 	end
