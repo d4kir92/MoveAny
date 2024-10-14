@@ -21,13 +21,13 @@ MAHIDDEN.unit = "player"
 MAHIDDEN.auraRows = 0
 local sethidden = {}
 local sethiddenSetup = {}
-function MoveAny:HideFrame(frame, force)
-	if force then
+function MoveAny:HideFrame(frame, soft)
+	if not soft then
 		if InCombatLockdown() then
 			C_Timer.After(
 				0.1,
 				function()
-					MoveAny:HideFrame(frame, force)
+					MoveAny:HideFrame(frame, soft)
 				end
 			)
 
@@ -91,7 +91,7 @@ function MoveAny:HideFrame(frame, force)
 		C_Timer.After(
 			0.1,
 			function()
-				MoveAny:HideFrame(frame, force)
+				MoveAny:HideFrame(frame, soft)
 			end
 		)
 	end

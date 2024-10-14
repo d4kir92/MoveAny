@@ -157,7 +157,7 @@ function D4:GetName(frameOrTexture)
     return nil
 end
 
-local function FixIconChat(self, event, message, author, ...)
+local function FixIconChat(sel, event, message, author, ...)
     if ICON_LIST then
         for tag in string.gmatch(message, "%b{}") do
             local term = strlower(string.gsub(tag, "[{}]", ""))

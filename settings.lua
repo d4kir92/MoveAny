@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.44")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.44"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.45")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.45"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1103,7 +1103,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.44"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.45"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -4837,32 +4837,27 @@ function MoveAny:LoadAddon()
 			end
 		end
 
-		C_Timer.After(
-			0,
-			function()
-				MoveAny:CreateMinimapButton(
-					{
-						["name"] = "MoveAny",
-						["icon"] = 135994,
-						["dbtab"] = MATAB,
-						["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.44"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
-						["funcL"] = function()
-							MoveAny:ToggleMALock()
-						end,
-						["funcR"] = function()
-							MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
-							MoveAny:HideMMBtn("MoveAny")
-						end
-					}
-				)
-
-				if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL") then
-					MoveAny:ShowMMBtn("MoveAny")
-				else
+		MoveAny:CreateMinimapButton(
+			{
+				["name"] = "MoveAny",
+				["icon"] = 135994,
+				["dbtab"] = MATAB,
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.45"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["funcL"] = function()
+					MoveAny:ToggleMALock()
+				end,
+				["funcR"] = function()
+					MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
 					MoveAny:HideMMBtn("MoveAny")
 				end
-			end
+			}
 		)
+
+		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL") then
+			MoveAny:ShowMMBtn("MoveAny")
+		else
+			MoveAny:HideMMBtn("MoveAny")
+		end
 
 		if MoveAny:IsEnabled("MALOCK", false) then
 			MoveAny:ShowMALock()

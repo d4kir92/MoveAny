@@ -316,7 +316,7 @@ function MoveAny:MenuOptions(opt, frame)
 					MoveAny:SetEleOption(name, "Hide", checked)
 					local dragf = _G[name .. "_MA_DRAG"]
 					if checked then
-						MoveAny:HideFrame(frame, frame == TalkingHeadFrame)
+						MoveAny:HideFrame(frame)
 						dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 						if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 							dragf:Hide()
@@ -1088,6 +1088,7 @@ function MoveAny:RegisterWidget(tab)
 	local posx = tab.posx
 	local posy = tab.posy
 	local setup = tab.setup
+	local soft = tab.soft
 	tab.delay = tab.delay or 0.2
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
@@ -1350,7 +1351,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
-		MoveAny:HideFrame(frame, frame == TalkingHeadFrame)
+		MoveAny:HideFrame(frame, soft)
 		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 			dragf:Hide()

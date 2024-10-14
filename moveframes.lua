@@ -64,54 +64,58 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	return true
 end
 
-local currentFrame = nil
-local currentFrameName = nil
+local currentWindow = nil
+local currentWindowName = nil
 local prevMouseX = nil
 local prevMouseY = nil
-function MoveAny:UpdateCurrentFrame()
-	if currentFrame ~= nil then
-		if not currentFrame:IsShown() then
-			currentFrame:SetAlpha(1)
-			currentFrame = nil
-			currentFrameName = nil
+local updatingFrame = false
+function MoveAny:UpdateCurrentWindow()
+	if currentWindow ~= nil then
+		if updatingFrame then return end
+		updatingFrame = true
+		if not currentWindow:IsShown() then
+			currentWindow:SetAlpha(1)
+			currentWindow = nil
+			currentWindowName = nil
 			GameTooltip:Hide()
 		end
 
-		if currentFrame then
+		if currentWindow ~= nil then
 			local curMouseX, curMouseY = GetCursorPosition()
 			if prevMouseX and prevMouseY then
 				if curMouseY > prevMouseY then
-					local newScale = math.min(currentFrame:GetScale() + 0.006, 2.5)
+					local newScale = math.min(currentWindow:GetScale() + 0.006, 2.5)
 					if newScale > 0 then
 						newScale = tonumber(string.format("%.3f", newScale))
-						currentFrame:SetScale(newScale)
-						if currentFrame.isMaximized and newScale > 1 then
+						currentWindow:SetScale(newScale)
+						if currentWindow.isMaximized and newScale > 1 then
 							newScale = 1
 						end
 
-						MoveAny:SetFrameScale(currentFrameName, newScale)
+						MoveAny:SetFrameScale(currentWindowName, newScale)
 					end
 				elseif curMouseY < prevMouseY then
-					local newScale = math.max(currentFrame:GetScale() - 0.006, 0.5)
+					local newScale = math.max(currentWindow:GetScale() - 0.006, 0.5)
 					if newScale > 0 then
 						newScale = tonumber(string.format("%.3f", newScale))
-						currentFrame:SetScale(newScale)
-						if currentFrame.isMaximized and newScale > 1 then
+						currentWindow:SetScale(newScale)
+						if currentWindow.isMaximized and newScale > 1 then
 							newScale = 1
 						end
 
-						MoveAny:SetFrameScale(currentFrameName, newScale)
+						MoveAny:SetFrameScale(currentWindowName, newScale)
 					end
 				end
 			end
 
-			GameTooltip:SetOwner(currentFrame)
-			GameTooltip:SetText(MoveAny:MathR(currentFrame:GetScale() * 100) .. "%")
+			GameTooltip:SetOwner(currentWindow)
+			GameTooltip:SetText(MoveAny:MathR(currentWindow:GetScale() * 100) .. "%")
 			prevMouseX = curMouseX
 			prevMouseY = curMouseY
 		end
 
-		C_Timer.After(0.02, MoveAny.UpdateCurrentFrame)
+		updatingFrame = false
+		C_Timer.After(0.02, MoveAny.UpdateCurrentWindow)
 	end
 end
 
@@ -192,7 +196,7 @@ function MoveAny:UpdateMoveFrames(force)
 							"SetScale",
 							function(sel, scale)
 								if InCombatLockdown() and sel:IsProtected() then return false end
-								if scale and type(scale) == "number" and scale > 0 and (currentFrame == nil or currentFrame ~= sel) then
+								if scale and type(scale) == "number" and scale > 0 and (currentWindow == nil or currentWindow ~= sel) then
 									fm:SetScale(scale)
 								end
 							end
@@ -234,8 +238,8 @@ function MoveAny:UpdateMoveFrames(force)
 							end
 						end
 
-						currentFrame = nil
-						currentFrameName = nil
+						currentWindow = nil
+						currentWindowName = nil
 					end
 
 					function MoveAny:CheckSave(frameObj)
@@ -320,9 +324,9 @@ function MoveAny:UpdateMoveFrames(force)
 						end
 
 						if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
-							currentFrame = frame
-							currentFrameName = name
-							MoveAny:UpdateCurrentFrame()
+							currentWindow = frame
+							currentWindowName = name
+							MoveAny:UpdateCurrentWindow()
 							GameTooltip:Hide()
 						elseif (MoveAny:IsEnabled("FRAMESKEYDRAG", false) and MoveAny:IsFrameKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESKEYDRAG", false) and btn == "LeftButton") then
 							if not InCombatLockdown() then
@@ -406,7 +410,7 @@ function MoveAny:UpdateMoveFrames(force)
 								end
 
 								--scale > 0.001 fix for TSM - TradeSkillMaster, they "hide" it with low scale
-								if sca and type(sca) == "number" and sca > 0 and (currentFrame == nil or currentFrame ~= sel) and scale > 0.001 then
+								if sca and type(sca) == "number" and sca > 0 and (currentWindow == nil or currentWindow ~= sel) and scale > 0.001 then
 									sel:SetScale(sca)
 								end
 							end

@@ -13,6 +13,9 @@
 <Script file="D4MinimapButtons.lua"/>
 <Script file="D4SlashCmds.lua"/>
 <Script file="D4Translations.lua"/>
+
 <Script file="D4Versions.lua"/>
+
+<Script file="D4Realms.lua"/>
 
 </Ui>
