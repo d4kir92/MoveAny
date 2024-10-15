@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.45")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.45"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.46")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.46"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1103,7 +1103,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.45"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.46"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2104,6 +2104,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_RUNEFRAME",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2115,6 +2116,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_WARLOCKPOWERFRAME",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2126,6 +2128,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_SHARDBARFRAME",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2139,6 +2142,7 @@ function MoveAny:LoadAddon()
 				["secure"] = true,
 				["sw"] = 118,
 				["sh"] = 28,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2150,6 +2154,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_MONKSTAGGERBAR",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2161,6 +2166,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_MAGEARCANECHARGESFRAME",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2175,6 +2181,7 @@ function MoveAny:LoadAddon()
 					["secure"] = true,
 					["sw"] = 120,
 					["sh"] = 30,
+					["soft"] = true,
 				}
 			)
 		elseif class == "DRUID" then
@@ -2186,6 +2193,7 @@ function MoveAny:LoadAddon()
 					["secure"] = true,
 					["sw"] = 116,
 					["sh"] = 28,
+					["soft"] = true,
 				}
 			)
 		end
@@ -2209,7 +2217,8 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "ComboFrame",
 				["lstr"] = "LID_COMBOFRAME",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2221,6 +2230,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_EclipseBarFrame",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2237,6 +2247,7 @@ function MoveAny:LoadAddon()
 						["lstr"] = "LID_ESSENCEPLAYERFRAME",
 						["userplaced"] = true,
 						["secure"] = true,
+						["soft"] = true,
 					}
 				)
 
@@ -2254,6 +2265,7 @@ function MoveAny:LoadAddon()
 							["lstr"] = "LID_ESSENCEPLAYERFRAME",
 							["userplaced"] = true,
 							["secure"] = true,
+							["soft"] = true,
 						}
 					)
 				end
@@ -2268,6 +2280,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_PALADINPOWERBARFRAME",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -2279,6 +2292,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_PALADINPOWERBAR",
 				["userplaced"] = true,
 				["secure"] = true,
+				["soft"] = true,
 			}
 		)
 	end
@@ -4587,7 +4601,8 @@ function MoveAny:LoadAddon()
 					["name"] = "MultiCastActionBarFrame",
 					["lstr"] = "LID_TOTEMBAR",
 					["userplaced"] = true,
-					["secure"] = true
+					["secure"] = true,
+					["soft"] = true,
 				}
 			)
 		end
@@ -4842,7 +4857,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.45"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.46"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
