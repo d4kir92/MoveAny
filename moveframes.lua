@@ -129,7 +129,7 @@ function MoveAny:FrameDragInfo(c)
 				end
 			)
 		end
-	elseif MoveAny:IsEnabled("SHOWTIPS", true) then
+	else
 		if IsMouseButtonDown("RightButton") then
 			if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
 				MoveAny:MSG(format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. ".")
