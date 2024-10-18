@@ -8,6 +8,22 @@ local regions = {
     ["TW"] = 4,
 }
 
+local function IsUkrainianLetters(str)
+    return str:match("[\192-\199]") ~= nil
+end
+
+local function IsRussianLetters(str)
+    return str:match("[\192-\255]") ~= nil
+end
+
+local function IsChineseLetters(str)
+    return str:match("[\228-\233]") ~= nil
+end
+
+local function IsKoreanLetters(str)
+    return str:match("[\234-\237]") ~= nil
+end
+
 local missingRegionOnce = true
 local missingWoWBuildOnce = true
 if D4:GetWoWBuild() == "RETAIL" then
@@ -3066,10 +3082,15 @@ else
     end
 end
 
+local withoutSpaces = {}
 for name, val in pairs(realms) do
-    if string.find(name, " ", 1, true) then
-        realms[name:gsub("%s+", "")] = val
+    if string.find(name, " ", 1, true) ~= nil then
+        withoutSpaces[name:gsub(" ", "")] = val
     end
+end
+
+for name, val in pairs(withoutSpaces) do
+    realms[name] = val
 end
 
 local missingRealmNameOnce = true
@@ -3086,12 +3107,22 @@ function D4:GetRealmLang(realmName)
     end
 
     if realms[realmName] == nil then
-        if missingRealms[realmName] == nil then
-            missingRealms[realmName] = true
-            D4:MSG("[D4] Missing Realmname", realmName)
-        end
+        if IsUkrainianLetters(realmName) then
+            return "ukUA"
+        elseif IsRussianLetters(realmName) then
+            return "ruRU"
+        elseif IsChineseLetters(realmName) then
+            return "zhCN"
+        elseif IsKoreanLetters(realmName) then
+            return "koKR"
+        else
+            if missingRealms[realmName] == nil then
+                missingRealms[realmName] = true
+                D4:MSG("[D4][GetRealmLang] Missing Realm-Language", realmName)
+            end
 
-        return ""
+            return ""
+        end
     end
 
     return realms[realmName]
@@ -3113,21 +3144,40 @@ realmLangs["Lateinamerika"] = "esES"
 realmLangs["Latin America"] = "esES"
 realmLangs["西班牙"] = "esES"
 --[[ enUS ]]
-realmLangs["English"] = "enUS"
-realmLangs["Englisch"] = "enUS"
-realmLangs["영어"] = "enUS"
-realmLangs["美國"] = "enUS"
-realmLangs["미국"] = "enUS"
-realmLangs["Vereinigte Staaten"] = "enUS"
-realmLangs["United States"] = "enUS"
-realmLangs["Global"] = "enUS"
-realmLangs["글로벌"] = "enUS"
-realmLangs["全球"] = "enUS"
-realmLangs["Saisonbedingt"] = "enUS"
-realmLangs["Hardcore"] = "enUS"
-realmLangs["Classic-Ära"] = "enUS"
-realmLangs["Seasonal"] = "enUS"
-realmLangs["Classic Era"] = "enUS"
+if region == regions["EU"] then
+    realmLangs["English"] = "enGB"
+    realmLangs["Englisch"] = "enGB"
+    realmLangs["영어"] = "enGB"
+    realmLangs["美國"] = "enGB"
+    realmLangs["미국"] = "enGB"
+    realmLangs["Vereinigte Staaten"] = "enGB"
+    realmLangs["United States"] = "enGB"
+    realmLangs["Global"] = "enGB"
+    realmLangs["글로벌"] = "enGB"
+    realmLangs["全球"] = "enGB"
+    realmLangs["Saisonbedingt"] = "enGB"
+    realmLangs["Hardcore"] = "enGB"
+    realmLangs["Classic-Ära"] = "enGB"
+    realmLangs["Seasonal"] = "enGB"
+    realmLangs["Classic Era"] = "enGB"
+else
+    realmLangs["English"] = "enUS"
+    realmLangs["Englisch"] = "enUS"
+    realmLangs["영어"] = "enUS"
+    realmLangs["美國"] = "enUS"
+    realmLangs["미국"] = "enUS"
+    realmLangs["Vereinigte Staaten"] = "enUS"
+    realmLangs["United States"] = "enUS"
+    realmLangs["Global"] = "enUS"
+    realmLangs["글로벌"] = "enUS"
+    realmLangs["全球"] = "enUS"
+    realmLangs["Saisonbedingt"] = "enUS"
+    realmLangs["Hardcore"] = "enUS"
+    realmLangs["Classic-Ära"] = "enUS"
+    realmLangs["Seasonal"] = "enUS"
+    realmLangs["Classic Era"] = "enUS"
+end
+
 --[[ enGB ]]
 realmLangs["大洋洲"] = "enGB"
 realmLangs["오세아니아"] = "enGB"
@@ -3168,12 +3218,16 @@ function D4:GetRealmFlag(realmName)
     local realmLang = D4:GetRealmLang(realmName)
     if realmLang == nil then return "" end
     if realmLangs[realmLang] == nil then
-        if missingRealmLangs[realmLang] == nil then
-            missingRealmLangs[realmLang] = true
-            D4:MSG("[D4] Missing realmsLangs", realmName, realmLang)
+        if realmLang == nil then
+            if missingRealmLangs[realmLang] == nil then
+                missingRealmLangs[realmLang] = true
+                D4:MSG("[D4] Missing realmsLangs", realmName, realmLang)
+            end
+
+            return ""
         end
 
-        return ""
+        return realmLang
     end
 
     return realmLangs[realmLang]

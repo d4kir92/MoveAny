@@ -119,29 +119,35 @@ function MoveAny:UpdateCurrentWindow()
 	end
 end
 
-function MoveAny:FrameDragInfo(c)
+function MoveAny:FrameDragInfo(frame, c)
 	if c > 0 then
 		if IsMouseButtonDown("RightButton") or IsMouseButtonDown("LeftButton") or IsMouseButtonDown("MiddleButton") then
 			C_Timer.After(
 				0.01,
 				function()
-					MoveAny:FrameDragInfo(c - 1)
+					MoveAny:FrameDragInfo(frame, c - 1)
 				end
 			)
 		end
 	else
+		local text = nil
 		if IsMouseButtonDown("RightButton") then
 			if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
-				MoveAny:MSG(format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. ".")
+				text = format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
 			end
 		elseif IsMouseButtonDown("LeftButton") then
 			if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then
-				MoveAny:MSG(format(MoveAny:GT("LID_FRAMESKEYDRAG"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. ".")
+				text = format(MoveAny:GT("LID_FRAMESKEYDRAG"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
 			end
 		elseif IsMouseButtonDown("MiddleButton") then
 			if MoveAny:IsEnabled("FRAMESKEYRESET", false) then
-				MoveAny:MSG(format(MoveAny:GT("LID_FRAMESKEYRESET"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. ".")
+				text = format(MoveAny:GT("LID_FRAMESKEYRESET"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
 			end
+		end
+
+		if text then
+			GameTooltip:SetOwner(frame)
+			GameTooltip:SetText(text)
 		end
 	end
 end
@@ -343,9 +349,9 @@ function MoveAny:UpdateMoveFrames(force)
 							MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
 						else
 							if MoveAny:IsResetButtonDown(btn) then
-								MoveAny:FrameDragInfo(0)
+								MoveAny:FrameDragInfo(frame, 0)
 							else
-								MoveAny:FrameDragInfo(20)
+								MoveAny:FrameDragInfo(frame, 20)
 							end
 						end
 					end
