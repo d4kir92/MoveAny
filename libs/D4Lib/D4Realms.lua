@@ -3106,6 +3106,10 @@ function D4:GetRealmLang(realmName)
         return ""
     end
 
+    if realmName == "" then
+        realmName = GetRealmName()
+    end
+
     if realms[realmName] == nil then
         if IsUkrainianLetters(realmName) then
             return "ukUA"
@@ -3214,6 +3218,10 @@ realmLangs["대만"] = "chTW"
 realmLangs["台灣"] = "chTW"
 local missingRealmLangs = {}
 function D4:GetRealmFlag(realmName)
+    if realmName == "" then
+        realmName = GetRealmName()
+    end
+
     if not (GetLocale() == "enUS" or GetLocale() == "deDE" or GetLocale() == "koKR" or GetLocale() == "zhTW") then return "" end
     local realmLang = D4:GetRealmLang(realmName)
     if realmLang == nil then return "" end
