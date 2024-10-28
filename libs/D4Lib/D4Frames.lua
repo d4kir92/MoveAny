@@ -275,7 +275,7 @@ function D4:AppendCategory(name, x, y)
     if Y == 0 then
         Y = Y - 5
     else
-        Y = Y - 30
+        Y = Y - 50
     end
 
     D4:AddCategory(
@@ -329,7 +329,7 @@ function D4:AppendCheckbox(key, value, func, x, y)
 end
 
 function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
-    Y = Y - 15
+    Y = Y - 24
     if key == nil then
         D4:MSG("[D4][AppendSlider] Missing key:", tab.key, tab.value)
 

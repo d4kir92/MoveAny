@@ -955,14 +955,17 @@ function MoveAny:ClearSelectEle()
 end
 
 function MoveAny:SelectEle(ele)
+	if ele == nil then return end
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
 		MACurrentEle.name:Hide()
 	end
 
 	MACurrentEle = ele
-	MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
-	MACurrentEle.name:Show()
+	if MACurrentEle and MACurrentEle.t then
+		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
+		MACurrentEle.name:Show()
+	end
 end
 
 function MoveAny:GetSelectEleName(lstr)

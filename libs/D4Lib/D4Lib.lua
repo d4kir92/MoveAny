@@ -119,6 +119,24 @@ function D4:IsSpellInRange(spellID, spellType, unit)
     return nil
 end
 
+function D4:GetSpellCharges(spellID)
+    if spellID == nil then return nil end
+    if C_Spell and C_Spell.GetSpellCharges then return C_Spell.GetSpellCharges(spellID) end
+    if GetSpellCharges then return GetSpellCharges(spellID) end
+    D4:MSG("[D4][GetSpellCharges] FAILED")
+
+    return nil
+end
+
+function D4:GetSpellCastCount(...)
+    if spellID == nil then return nil end
+    if C_Spell and C_Spell.GetSpellCastCount then return C_Spell.GetSpellCastCount(...) end
+    if GetSpellCastCount then return GetSpellCastCount(...) end
+    D4:MSG("[D4][GetSpellCastCount] FAILED")
+
+    return nil
+end
+
 function D4:GetMouseFocus()
     if GetMouseFoci then return GetMouseFoci()[1] end
     if GetMouseFocus then return GetMouseFocus() end

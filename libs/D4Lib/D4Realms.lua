@@ -2286,7 +2286,9 @@ if D4:GetWoWBuild() == "RETAIL" then
     elseif region ~= 5 then
         if missingRegionOnce then
             missingRegionOnce = false
-            D4:MSG("[D4] Missing REGION", region)
+            if region ~= 72 then
+                D4:MSG("[D4] Missing REGION", region)
+            end
         end
     end
 elseif D4:GetWoWBuild() == "CATA" then
@@ -2561,7 +2563,9 @@ elseif D4:GetWoWBuild() == "CATA" then
     elseif region ~= 5 then
         if missingRegionOnce then
             missingRegionOnce = false
-            D4:MSG("[D4] Missing REGION", region)
+            if region ~= 72 then
+                D4:MSG("[D4] Missing REGION", region)
+            end
         end
     end
 elseif D4:GetWoWBuild() == "CLASSIC" then
@@ -3072,7 +3076,9 @@ elseif D4:GetWoWBuild() == "CLASSIC" then
     elseif region ~= 5 then
         if missingRegionOnce then
             missingRegionOnce = false
-            D4:MSG("[D4] Missing REGION", region)
+            if region ~= 72 then
+                D4:MSG("[D4] Missing REGION", region)
+            end
         end
     end
 else
@@ -3084,6 +3090,10 @@ end
 
 local withoutSpaces = {}
 for name, val in pairs(realms) do
+    if string.find(name, "-", 1, true) ~= nil then
+        withoutSpaces[name:gsub("-", "")] = val
+    end
+
     if string.find(name, " ", 1, true) ~= nil then
         withoutSpaces[name:gsub(" ", "")] = val
     end
