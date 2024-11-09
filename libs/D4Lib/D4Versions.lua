@@ -1,7 +1,7 @@
 local AddonName, D4 = ...
 local pre = AddonName .. "D4PREFIX"
 local f = CreateFrame("FRAME")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
+D4:RegisterEvent(f, "PLAYER_ENTERING_WORLD")
 f:SetScript(
     "OnEvent",
     function(sel, event, isInitialLogin, isReloadingUi)
@@ -30,7 +30,7 @@ f:SetScript(
 )
 
 local r = CreateFrame("FRAME")
-r:RegisterEvent("CHAT_MSG_ADDON")
+D4:RegisterEvent(r, "CHAT_MSG_ADDON")
 r:SetScript(
     "OnEvent",
     function(sel, event, pref, msg, ...)

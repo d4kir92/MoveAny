@@ -1,3 +1,4 @@
+-- deDE German Deutsch
 local _, MoveAny = ...
 local ltab = {}
 function MoveAny:GetLangTab()

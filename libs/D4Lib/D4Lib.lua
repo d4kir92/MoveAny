@@ -62,6 +62,16 @@ function D4:IsOldWow()
     return D4.oldWow
 end
 
+function D4:RegisterEvent(frame, event, unit)
+    if C_EventUtils.IsEventValid(event) then
+        if unit then
+            frame:RegisterUnitEvent(event, "player")
+        else
+            frame:RegisterEvent(event)
+        end
+    end
+end
+
 --[[ QOL ]]
 local ICON_TAG_LIST_EN = {
     ["star"] = 1,
