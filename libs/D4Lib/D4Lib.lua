@@ -354,3 +354,61 @@ if D4:GetWoWBuild() == "CLASSIC" then
         end
     )
 end
+
+function D4:ReplaceStr(text, old, new)
+    if text == nil then return "" end
+    local b, e = text:find(old, 1, true)
+    if b == nil then
+        return text
+    else
+        return text:sub(1, b - 1) .. new .. text:sub(e + 1)
+    end
+end
+
+local genderNames = {"", "Male", "Female"}
+function D4:GetClassAtlas(class)
+    return ("classicon-%s"):format(class)
+end
+
+function D4:GetClassIcon(class)
+    return "|A:" .. D4:GetClassAtlas(class) .. ":16:16:0:0|a"
+end
+
+function D4:GetRaceAtlas(race, gender)
+    return ("raceicon-%s-%s"):format(race, gender)
+end
+
+function D4:GetRaceIcon(race, gender)
+    return "|A:" .. D4:GetRaceAtlas(race, genderNames[gender]) .. ":16:16:0:0|a"
+end
+
+local units = {"player"}
+for i = 1, 4 do
+    table.insert(units, "party" .. i)
+end
+
+for i = 1, 40 do
+    table.insert(units, "raid" .. i)
+end
+
+function D4:GetRoleByGuid(guid)
+    if UnitGroupRolesAssigned == nil then return "" end
+    for i, unit in pairs(units) do
+        if UnitGUID(unit) == guid then return UnitGroupRolesAssigned(unit) end
+    end
+
+    return ""
+end
+
+function D4:GetRoleIcon(role)
+    if role == "" then return "" end
+    if role == "DAMAGER" then
+        return "UI-LFG-RoleIcon-DPS"
+    elseif role == "HEALER" then
+        return "UI-LFG-RoleIcon-HEALER"
+    elseif role == "TANK" then
+        return "UI-LFG-RoleIcon-TANK"
+    end
+
+    return ""
+end

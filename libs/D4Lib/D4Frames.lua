@@ -322,7 +322,8 @@ function D4:AppendCheckbox(key, value, func, x, y)
 
     local val = TAB[key]
     if val == nil then
-        val = value
+        TAB[key] = value
+        val = TAB[key]
     end
 
     D4:CreateCheckbox(
