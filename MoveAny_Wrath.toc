@@ -1,5 +1,5 @@
 ## Interface: 30403
-## Version: 1.7.52
+## Version: 1.7.53
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -43,5 +43,3 @@ core.lua
 registerwidgets.lua
 moveframes.lua
 settings.lua
-
-Bindings.xml
