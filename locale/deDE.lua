@@ -228,6 +228,7 @@ function MoveAny:LangdeDE()
 		["LID_PLEASESWITCHPROFILE1"] = "Bitte wechsel das LAYOUT im Bearbeitungsmodus (von Blizzard) zu einem BENUTZERDEFINIERTEN Layout.",
 		["LID_PLEASESWITCHPROFILE2"] = "MoveAny funktioniert nicht mit einem voreingestellten Layout, es ist meist schreibgeschützt.",
 		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)",
+		["LID_LFGMinimapFrame"] = "LFG Minimapknopf",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

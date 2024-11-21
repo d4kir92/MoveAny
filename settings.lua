@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.53")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.53"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.54")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.54"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -770,6 +770,7 @@ function MoveAny:InitMALock()
 
 		AddCategory("ADVANCED", 1, true)
 		AddCheckBox(4, "MINIMAPFLAG", false)
+		AddCheckBox(4, "LFGMinimapFrame", false)
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then
 			AddCheckBox(4, "TOTEMFRAME", false)
@@ -1103,7 +1104,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.53"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.54"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2027,6 +2028,18 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "ReadyCheckListenerFrame",
 				["lstr"] = "LID_READYCHECKLISTENERFRAME"
+			}
+		)
+	end
+
+	if MoveAny:IsEnabled("LFGMinimapFrame", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "LFGMinimapFrame",
+				["lstr"] = "LID_LFGMINIMAPFRAME",
+				["setup"] = function()
+					LFGMinimapFrame:SetParent(MoveAny:GetMainPanel())
+				end
 			}
 		)
 	end
@@ -4857,7 +4870,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.53"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.54"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
