@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.54")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.54"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.55")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.55"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1104,7 +1104,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.54"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.55"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3452,7 +3452,16 @@ function MoveAny:LoadAddon()
 
 	if CompactRaidFrameManager and MoveAny:IsEnabled("COMPACTRAIDFRAMEMANAGER", false) then
 		local MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", MoveAny:GetMainPanel())
-		MACompactRaidFrameManager:SetSize(20, 135)
+		if CompactRaidFrameManager then
+			local _, rsh = CompactRaidFrameManager:GetSize()
+			MACompactRaidFrameManager:SetSize(20, rsh)
+		end
+
+		local _, h = MACompactRaidFrameManager:GetSize()
+		if h < 10 then
+			MACompactRaidFrameManager:SetSize(20, 135)
+		end
+
 		MACompactRaidFrameManager:SetPoint("TOPLEFT", MoveAny:GetMainPanel(), "TOPLEFT", 0, -250)
 		hooksecurefunc(
 			CompactRaidFrameManager,
@@ -3475,9 +3484,24 @@ function MoveAny:LoadAddon()
 
 		CompactRaidFrameManager:SetPoint("RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
 		hooksecurefunc(
+			MACompactRaidFrameManager,
+			"SetParent",
+			function(sel, parent)
+				if parent == MAHIDDEN then
+					CompactRaidFrameManager:SetAlpha(0)
+					for i, v in pairs({CompactRaidFrameManager:GetChildren()}) do
+						if v ~= CompactRaidFrameManagerBg and v ~= CompactRaidFrameManagerBorderRight and v ~= CompactRaidFrameManagerToggleButton then
+							v:SetIgnoreParentAlpha(true)
+						end
+					end
+				end
+			end
+		)
+
+		hooksecurefunc(
 			CompactRaidFrameManager,
 			"SetParent",
-			function(sel, ...)
+			function(sel, parent)
 				sel:SetFrameStrata("LOW")
 			end
 		)
@@ -4870,7 +4894,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.54"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.55"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,

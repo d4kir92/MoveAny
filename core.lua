@@ -34,7 +34,6 @@ function MoveAny:HideFrame(frame, soft)
 			return
 		end
 
-		frame:SetParent(MAHIDDEN)
 		sethidden[frame] = true
 		if sethiddenSetup[frame] == nil then
 			sethiddenSetup[frame] = true
@@ -51,6 +50,8 @@ function MoveAny:HideFrame(frame, soft)
 				end
 			)
 		end
+
+		frame:SetParent(MAHIDDEN)
 
 		return
 	end
