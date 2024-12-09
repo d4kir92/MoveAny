@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.59")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.59"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.60")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.60"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1104,7 +1104,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.59"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.60"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2002,6 +2002,10 @@ function MoveAny:LoadAddon()
 		if MoveAny.InitArenaPrepFrames then
 			MoveAny:InitArenaPrepFrames()
 		end
+	end
+
+	if ContainerFrameContainer then
+		ContainerFrameContainer:EnableMouse(false) -- Contains all bags
 	end
 
 	if MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
@@ -3208,7 +3212,8 @@ function MoveAny:LoadAddon()
 		C_Timer.After(
 			3,
 			function()
-				if MoveAny:IsAddOnLoaded("Questie") and Questie.db ~= nil and Questie.db.profile ~= nil and Questie.db.profile.trackerEnabled then
+				local name = GetUnitName("player") .. " - " .. GetRealmName()
+				if MoveAny:IsAddOnLoaded("Questie") and QuestieConfig and QuestieConfig.profileKeys and QuestieConfig.profiles and QuestieConfig.profiles[QuestieConfig.profileKeys[name]] and QuestieConfig.profiles[QuestieConfig.profileKeys[name]].trackerEnabled then
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "Questie_BaseFrame",
@@ -4083,7 +4088,10 @@ function MoveAny:LoadAddon()
 			function(sel)
 				if sel.ma_set_parent_elpmb then return end
 				sel.ma_set_parent_elpmb = true
-				sel:SetParent(UIParent)
+				if sel:GetParent() ~= MAHIDDEN then
+					sel:SetParent(UIParent)
+				end
+
 				sel.ma_set_parent_elpmb = false
 			end
 		)
@@ -4896,7 +4904,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.59"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.60"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
