@@ -236,6 +236,7 @@ function MoveAny:LangenUS()
 		["LID_PLEASESWITCHPROFILE2"] = "MoveAny doesn't work with a Preset Profile, it's mostly readonly.",
 		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (no Preset Layout)",
 		["LID_LFGMinimapFrame"] = "LFG Minimap Button",
+		["LID_QUESTTIMERFRAME"] = "Quest Timer Frame",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

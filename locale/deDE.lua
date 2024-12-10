@@ -229,6 +229,7 @@ function MoveAny:LangdeDE()
 		["LID_PLEASESWITCHPROFILE2"] = "MoveAny funktioniert nicht mit einem voreingestellten Layout, es ist meist schreibgeschützt.",
 		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)",
 		["LID_LFGMinimapFrame"] = "LFG Minimapknopf",
+		["LID_QUESTTIMERFRAME"] = "Questzeit-Fenster",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

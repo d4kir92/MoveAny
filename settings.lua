@@ -486,8 +486,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.60")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.60"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.61")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.61"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -616,6 +616,10 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "MINIMAP", false)
 		AddCheckBox(posx, "QUESTTRACKER", false)
+		if QuestTimerFrame then
+			AddCheckBox(posx, "QUESTTIMERFRAME", false)
+		end
+
 		AddCheckBox(posx, "MAPETFRAME", false)
 		if PetFrameHappiness then
 			AddCheckBox(posx, "PETFRAMEHAPPINESS", false)
@@ -1104,7 +1108,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.60"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.61"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -3208,25 +3212,66 @@ function MoveAny:LoadAddon()
 		)
 	end
 
+	if MoveAny:IsEnabled("QUESTTIMERFRAME", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "QuestTimerFrame",
+				["lstr"] = "LID_QUESTTIMERFRAME",
+			}
+		)
+	end
+
 	if MoveAny:IsEnabled("QUESTTRACKER", false) then
 		C_Timer.After(
-			3,
+			1,
 			function()
 				local name = GetUnitName("player") .. " - " .. GetRealmName()
 				if MoveAny:IsAddOnLoaded("Questie") and QuestieConfig and QuestieConfig.profileKeys and QuestieConfig.profiles and QuestieConfig.profiles[QuestieConfig.profileKeys[name]] and QuestieConfig.profiles[QuestieConfig.profileKeys[name]].trackerEnabled then
+					local questieHelper = CreateFrame("Frame", "questieHelper", UIParent)
+					questieHelper:SetSize(300, 300)
+					questieHelper:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					local function appendQuestie()
+						if Questie_BaseFrame then
+							hooksecurefunc(
+								Questie_BaseFrame,
+								"SetPoint",
+								function(sel, ...)
+									if sel.ma_helper_setpoint then return end
+									sel.ma_helper_setpoint = true
+									Questie_BaseFrame:ClearAllPoints()
+									Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
+									sel.ma_helper_setpoint = false
+								end
+							)
+
+							Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
+						else
+							C_Timer.After(
+								0.1,
+								function()
+									appendQuestie()
+								end
+							)
+						end
+					end
+
 					MoveAny:RegisterWidget(
 						{
-							["name"] = "Questie_BaseFrame",
+							["name"] = "questieHelper",
 							["lstr"] = "LID_QUESTTRACKER",
 							["userplaced"] = true,
 							["secure"] = true,
-							["sh"] = 600,
+							["sh"] = 300,
+							["sw"] = 300,
+							["setup"] = function()
+								appendQuestie()
+							end
 						}
 					)
 				else
 					if ObjectiveTrackerFrame == nil then
 						ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
-						ObjectiveTrackerFrame:SetSize(224, 600)
+						ObjectiveTrackerFrame:SetSize(240, 600)
 						ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
 						if QuestWatchFrame then
 							hooksecurefunc(
@@ -4904,7 +4949,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.60"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.61"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
