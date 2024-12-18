@@ -88,7 +88,7 @@ function MoveAny:LangzhCN()
         ["LID_STATUS"] = "状态",
         ["LID_DONE"] = "已完成",
         ["LID_WAITINGFOROWNER"] = "等待主人",
-        ["LID_WAITFORPLAYERPROFILE"] = "等待其他玩家按下 \"获取配置文件\.",
+        ["LID_WAITFORPLAYERPROFILE"] = "等待其他玩家按下 \"获取配置文件\"",
         ["LID_WAITFORPLAYERPROFILE2"] = "等待其他玩家按下 \"分享\".",
         ["LID_ALPHAINCOMBAT"] = "阿尔法 (在战斗中)",
         ["LID_ALPHANOTINCOMBAT"] = "阿尔法 (未参加战斗)",
