@@ -464,7 +464,16 @@ function MoveAny:InitMALock()
 	)
 
 	MALock:SetResizable(true)
-	MALock:SetResizeBounds(sw, 200, sw + 200, 2000)
+	C_Timer.After(
+		0,
+		function()
+			MALock:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
+			if MALock:GetHeight() > GetScreenHeight() then
+				MALock:SetHeight(GetScreenHeight())
+			end
+		end
+	)
+
 	local rb = CreateFrame("Button", nil, MALock)
 	rb:EnableMouse("true")
 	rb:SetPoint("BOTTOMRIGHT")
@@ -919,7 +928,16 @@ function MoveAny:InitMALock()
 	)
 
 	MALock.Profiles:SetResizable(true)
-	MALock.Profiles:SetResizeBounds(sw, 200, sw + 200, 2000)
+	C_Timer.After(
+		0,
+		function()
+			MALock.Profiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
+			if MALock.Profiles:GetHeight() > GetScreenHeight() then
+				MALock.Profiles:SetHeight(GetScreenHeight())
+			end
+		end
+	)
+
 	MALock.SF = CreateFrame("ScrollFrame", "MALock_SF", MALock, "UIPanelScrollFrameTemplate")
 	MALock.SF:SetPoint("TOPLEFT", MALock, br, -30 - 24)
 	MALock.SF:SetPoint("BOTTOMRIGHT", MALock, -32, 24 + br)
@@ -1120,7 +1138,16 @@ function MoveAny:ShowProfiles()
 		)
 
 		MAProfiles:SetResizable(true)
-		MAProfiles:SetResizeBounds(sw, 200, sw + 200, 2000)
+		C_Timer.After(
+			0,
+			function()
+				MAProfiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
+				if MAProfiles:GetHeight() > GetScreenHeight() then
+					MAProfiles:SetHeight(GetScreenHeight())
+				end
+			end
+		)
+
 		MAProfiles.DISCORD = CreateFrame("EditBox", "MAProfiles" .. ".DISCORD", MAProfiles, "InputBoxTemplate")
 		MAProfiles.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 		MAProfiles.DISCORD:SetSize(160, 24)

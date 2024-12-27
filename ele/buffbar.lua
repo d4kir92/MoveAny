@@ -66,7 +66,7 @@ function MoveAny:InitBuffBar()
 				DebuffFrame:SetPoint("CENTER", 0, 0)
 			end
 
-			function DebuffFrame:UpdatePoint()
+			function MoveAny:UpdateDebuffs()
 				MABUFFLIMIT = MoveAny:GetEleOption("MABuffBar", "MABUFFLIMIT", 10)
 				MABUFFSPACINGX = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGX", 4)
 				MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
@@ -165,7 +165,10 @@ function MoveAny:InitBuffBar()
 				function(sel, ...)
 					if sel.debuffsetpoint then return end
 					sel.debuffsetpoint = true
-					DebuffFrame:UpdatePoint()
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs()
+					end
+
 					sel.debuffsetpoint = false
 				end
 			)
@@ -176,7 +179,10 @@ function MoveAny:InitBuffBar()
 				function(sel, ...)
 					if sel.debuffsetpoint then return end
 					sel.debuffsetpoint = true
-					DebuffFrame:UpdatePoint()
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs()
+					end
+
 					sel.debuffsetpoint = false
 				end
 			)
@@ -186,8 +192,8 @@ function MoveAny:InitBuffBar()
 			f:SetScript(
 				"OnEvent",
 				function(sel, event, ...)
-					if event == "UNIT_AURA" then
-						DebuffFrame:UpdatePoint()
+					if event == "UNIT_AURA" and MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs()
 					end
 				end
 			)

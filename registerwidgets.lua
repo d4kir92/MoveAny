@@ -678,8 +678,13 @@ function MoveAny:MenuOptions(opt, frame)
 					0,
 					4,
 					function()
-						MoveAny:UpdateBuffs()
-						DebuffFrame:UpdatePoint()
+						if MoveAny.UpdateBuffs then
+							MoveAny:UpdateBuffs()
+						end
+
+						if MoveAny.UpdateDebuffs then
+							MoveAny:UpdateDebuffs()
+						end
 					end,
 					{
 						[0] = "AUTO",
@@ -704,8 +709,13 @@ function MoveAny:MenuOptions(opt, frame)
 				1,
 				20,
 				function()
-					MoveAny:UpdateBuffs()
-					DebuffFrame:UpdatePoint()
+					if MoveAny.UpdateBuffs then
+						MoveAny:UpdateBuffs()
+					end
+
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs()
+					end
 				end
 			)
 
@@ -721,8 +731,13 @@ function MoveAny:MenuOptions(opt, frame)
 				0,
 				30,
 				function()
-					MoveAny:UpdateBuffs()
-					DebuffFrame:UpdatePoint()
+					if MoveAny.UpdateBuffs then
+						MoveAny:UpdateBuffs()
+					end
+
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs()
+					end
 				end
 			)
 
@@ -738,8 +753,13 @@ function MoveAny:MenuOptions(opt, frame)
 				0,
 				30,
 				function()
-					MoveAny:UpdateBuffs()
-					DebuffFrame:UpdatePoint()
+					if MoveAny.UpdateBuffs then
+						MoveAny:UpdateBuffs()
+					end
+
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs()
+					end
 				end
 			)
 
