@@ -1611,10 +1611,6 @@ function MoveAny:RegisterWidget(tab)
 		end
 	)
 
-	if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then
-		frame:SetScale(MoveAny:GetEleScale(name))
-	end
-
 	hooksecurefunc(
 		frame,
 		"SetSize",
@@ -1648,9 +1644,15 @@ function MoveAny:RegisterWidget(tab)
 		end
 	)
 
-	if not InCombatLockdown() then
-		frame:SetSize(sw, sh)
-	end
+	MoveAny:SafeExec(
+		frame,
+		function()
+			frame:SetSize(sw, sh)
+			if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then
+				frame:SetScale(MoveAny:GetEleScale(name))
+			end
+		end
+	)
 
 	local dragframe = _G[name .. "_MA_DRAG"]
 	dragframe:SetSize(sw, sh)

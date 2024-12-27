@@ -3,6 +3,10 @@ local MAMaxAB = 10
 local btns = {}
 local abpoints = {}
 local abs = {}
+function MoveAny:GetAllActionBars()
+	return abs
+end
+
 btns[1] = "ActionButton"
 btns[3] = "MultiBarRightButton" --"MultiBarRightButton"
 btns[4] = "MultiBarLeftButton" --"MultiBarLeftButton"
@@ -54,249 +58,255 @@ end
 
 MoveAny:UpdateVisi()
 function MoveAny:UpdateActionBar(frame)
-	local name = frame:GetName() or BarNames[frame]
-	local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
-	opts["ROWS"] = opts["ROWS"] or nil
-	opts["OFFSET"] = opts["OFFSET"] or nil
-	opts["SPACING"] = opts["SPACING"] or dSpacing
-	opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
-	local flipped = opts["FLIPPED"]
-	if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then
-		opts["ROWS"] = abpoints[name]["ROWS"]
-	end
+	if frame.ma_setpoint_ab then return end
+	MoveAny:SafeExec(
+		frame,
+		function()
+			local name = frame:GetName() or BarNames[frame]
+			local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
+			opts["ROWS"] = opts["ROWS"] or nil
+			opts["OFFSET"] = opts["OFFSET"] or nil
+			opts["SPACING"] = opts["SPACING"] or dSpacing
+			opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
+			local flipped = opts["FLIPPED"]
+			if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then
+				opts["ROWS"] = abpoints[name]["ROWS"]
+			end
 
-	local offset = opts["OFFSET"] or 0
-	local rows = opts["ROWS"] or 1
-	rows = tonumber(rows)
-	local parent = MicroMenu or MAMenuBar
-	if frame == MAMenuBar then
-		if MoveAny:GetWoWBuild() == "RETAIL" then
-			if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(parent)
-				end
+			local offset = opts["OFFSET"] or 0
+			local rows = opts["ROWS"] or 1
+			rows = tonumber(rows)
+			local parent = MicroMenu or MAMenuBar
+			if frame == MAMenuBar then
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(parent)
+						end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
-				end
-			elseif rows == 11 or rows == 1 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 11 or rows == 1 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
-				end
-			elseif rows == 10 or rows == 5 or rows == 2 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 10 or rows == 5 or rows == 2 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(MAHIDDEN)
-				end
-			else
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(MAHIDDEN)
+						end
+					else
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					end
+				elseif MoveAny:GetWoWBuild() == "CATA" then
+					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(parent)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 11 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 10 or rows == 5 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(MAHIDDEN)
+						end
+					else
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					end
+				elseif MoveAny:GetWoWBuild() == "WRATH" then
+					if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(parent)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 10 or rows == 5 or rows == 2 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					else
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(MAHIDDEN)
+						end
+					end
 				end
 			end
-		elseif MoveAny:GetWoWBuild() == "CATA" then
-			if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(parent)
-				end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
-				end
-			elseif rows == 11 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
-
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
-				end
-			elseif rows == 10 or rows == 5 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
-
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(MAHIDDEN)
-				end
-			else
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
-
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
+			local maxbtns = 0
+			for i, abtn in pairs(frame.btns) do
+				if abtn:GetParent() ~= MAHIDDEN then
+					maxbtns = maxbtns + 1
 				end
 			end
-		elseif MoveAny:GetWoWBuild() == "WRATH" then
-			if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(parent)
-				end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
-				end
-			elseif rows == 10 or rows == 5 or rows == 2 then
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
+			if maxbtns == 0 then
+				maxbtns = 1
+			end
 
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(parent)
+			opts["COUNT"] = opts["COUNT"] or maxbtns
+			local count = opts["COUNT"] or maxbtns
+			count = tonumber(count)
+			local maxB = maxbtns
+			if frame ~= MAMenuBar and frame ~= StanceBar then
+				if count > 0 then
+					maxB = count
 				end
 			else
-				if HelpMicroButton then
-					HelpMicroButton:SetParent(MAHIDDEN)
-				end
-
-				if MainMenuMicroButton then
-					MainMenuMicroButton:SetParent(MAHIDDEN)
-				end
+				maxB = maxbtns
 			end
-		end
-	end
 
-	local maxbtns = 0
-	for i, abtn in pairs(frame.btns) do
-		if abtn:GetParent() ~= MAHIDDEN then
-			maxbtns = maxbtns + 1
-		end
-	end
-
-	if maxbtns == 0 then
-		maxbtns = 1
-	end
-
-	opts["COUNT"] = opts["COUNT"] or maxbtns
-	local count = opts["COUNT"] or maxbtns
-	count = tonumber(count)
-	local maxB = maxbtns
-	if frame ~= MAMenuBar and frame ~= StanceBar then
-		if count > 0 then
-			maxB = count
-		end
-	else
-		maxB = maxbtns
-	end
-
-	local cols = maxB / rows
-	--[[if cols % 1 ~= 0 then
+			local cols = maxB / rows
+			--[[if cols % 1 ~= 0 then
 		rows = maxB
 		cols = maxB / rows
 	end]]
-	if cols % 1 ~= 0 then
-		cols = math.ceil(cols)
-	end
+			if cols % 1 ~= 0 then
+				cols = math.ceil(cols)
+			end
 
-	local spacing = opts["SPACING"]
-	spacing = tonumber(spacing)
-	if frame.btns and frame.btns[1] then
-		local fSizeW, fSizeH = frame.btns[1]:GetSize()
-		local ofx = frame.btns[1].ofx or 0
-		local ofy = frame.btns[1].ofy or 0
-		local rsw = frame.btns[1].rsw
-		local rsh = frame.btns[1].rsh
-		if rsw then
-			fSizeW = MoveAny:MathR(rsw, 0)
-		else
-			fSizeW = MoveAny:MathR(fSizeW, 0)
-		end
-
-		if rsh then
-			fSizeH = MoveAny:MathR(rsh, 0)
-		else
-			fSizeH = MoveAny:MathR(fSizeH, 0)
-		end
-
-		local id = 1
-		for i, abtn in pairs(frame.btns) do
-			if not InCombatLockdown() then
-				abtn:ClearAllPoints()
-				if flipped then
-					abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+			local spacing = opts["SPACING"]
+			spacing = tonumber(spacing)
+			if frame.btns and frame.btns[1] then
+				local fSizeW, fSizeH = frame.btns[1]:GetSize()
+				local ofx = frame.btns[1].ofx or 0
+				local ofy = frame.btns[1].ofy or 0
+				local rsw = frame.btns[1].rsw
+				local rsh = frame.btns[1].rsh
+				if rsw then
+					fSizeW = MoveAny:MathR(rsw, 0)
 				else
-					abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+					fSizeW = MoveAny:MathR(fSizeW, 0)
 				end
 
-				if abtn.setup == nil then
-					abtn.setup = true
-					if frame == MAMenuBar then
-						hooksecurefunc(
-							abtn,
-							"Hide",
-							function(sel)
-								if sel.ma_abtn_hide then return end
-								sel.ma_abtn_hide = true
-								sel:Show()
-								sel.ma_abtn_hide = false
+				if rsh then
+					fSizeH = MoveAny:MathR(rsh, 0)
+				else
+					fSizeH = MoveAny:MathR(fSizeH, 0)
+				end
+
+				local id = 1
+				for i, abtn in pairs(frame.btns) do
+					if not InCombatLockdown() then
+						abtn:ClearAllPoints()
+						if flipped then
+							abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+						else
+							abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+						end
+
+						if abtn.setup == nil then
+							abtn.setup = true
+							if frame == MAMenuBar then
+								hooksecurefunc(
+									abtn,
+									"Hide",
+									function(sel)
+										if sel.ma_abtn_hide then return end
+										sel.ma_abtn_hide = true
+										sel:Show()
+										sel.ma_abtn_hide = false
+									end
+								)
+							else
+								hooksecurefunc(
+									abtn,
+									"Show",
+									function(sel)
+										if sel.ma_abtn_hide then return end
+										sel.ma_abtn_hide = true
+										if sel.hide and sel:IsShown() then
+											sel:Hide()
+										end
+
+										sel.ma_abtn_hide = false
+									end
+								)
 							end
-						)
-					else
-						hooksecurefunc(
-							abtn,
-							"Show",
-							function(sel)
-								if sel.ma_abtn_hide then return end
-								sel.ma_abtn_hide = true
-								if sel.hide and sel:IsShown() then
-									sel:Hide()
-								end
+						end
 
-								sel.ma_abtn_hide = false
+						abtn.oldparent = abtn.oldparent or abtn:GetParent()
+						if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
+							abtn.hide = true
+							abtn:SetParent(MAHIDDEN)
+							if abtn:IsShown() then
+								abtn:Hide()
 							end
-						)
+						end
+
+						if frame == MAMenuBar then
+							abtn.hide = false
+							if not abtn:IsShown() then
+								abtn:Show()
+							end
+						end
+
+						if abtn:GetParent() ~= MAHIDDEN then
+							id = id + 1
+						end
 					end
 				end
 
-				abtn.oldparent = abtn.oldparent or abtn:GetParent()
-				if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
-					abtn.hide = true
-					abtn:SetParent(MAHIDDEN)
-					if abtn:IsShown() then
-						abtn:Hide()
+				if not InCombatLockdown() then
+					frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
+					local mover = _G[name .. "_MA_DRAG"]
+					local sw, sh = frame:GetSize()
+					local osw, osh = MoveAny:GetEleSize(name)
+					sw = MoveAny:MathR(sw)
+					sh = MoveAny:MathR(sh)
+					if osw ~= sw or osh ~= sh then
+						MoveAny:SetEleSize(name, sw, sh)
 					end
-				end
 
-				if frame == MAMenuBar then
-					abtn.hide = false
-					if not abtn:IsShown() then
-						abtn:Show()
+					if mover then
+						mover:SetSize(frame:GetSize())
 					end
-				end
-
-				if abtn:GetParent() ~= MAHIDDEN then
-					id = id + 1
 				end
 			end
 		end
-
-		if not InCombatLockdown() then
-			frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
-			local mover = _G[name .. "_MA_DRAG"]
-			local sw, sh = frame:GetSize()
-			local osw, osh = MoveAny:GetEleSize(name)
-			sw = MoveAny:MathR(sw)
-			sh = MoveAny:MathR(sh)
-			if osw ~= sw or osh ~= sh then
-				MoveAny:SetEleSize(name, sw, sh)
-			end
-
-			if mover then
-				mover:SetSize(frame:GetSize())
-			end
-		end
-	end
+	)
 end
 
 function MoveAny:InitActionBarLayouts()
@@ -518,10 +528,43 @@ function MoveAny:CustomBars()
 				end
 
 				btn.maid = id
-				btn:ClearAllPoints()
 				btn:SetParent(bar)
+				btn:ClearAllPoints()
 				btn:SetPoint("TOPLEFT", btn:GetParent(), "TOPLEFT", (x - 1) * 36, 0)
 				btn:SetSize(36, 36)
+				hooksecurefunc(
+					btn,
+					"SetPoint",
+					function(sel, ...)
+						if _G[name].ma_setpoint_ab then return end
+						_G[name].ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						_G[name].ma_setpoint_ab = false
+					end
+				)
+
+				hooksecurefunc(
+					btn,
+					"SetParent",
+					function(sel, ...)
+						if _G[name].ma_setpoint_ab then return end
+						_G[name].ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						_G[name].ma_setpoint_ab = false
+					end
+				)
+
+				hooksecurefunc(
+					btn,
+					"SetSize",
+					function(sel, ...)
+						if _G[name].ma_setpoint_ab then return end
+						_G[name].ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						_G[name].ma_setpoint_ab = false
+					end
+				)
+
 				tinsert(bar.btns, btn)
 			end
 

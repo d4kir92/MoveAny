@@ -1,5 +1,8 @@
 local _, MoveAny = ...
 local btnsize = 36
+local MADEBUFFLIMIT = 10
+local MADEBUFFSPACINGX = 4
+local MADEBUFFSPACINGY = 10
 local debuffs = {}
 local once = true
 local MADebuffBar = nil
@@ -43,13 +46,13 @@ function MoveAny:InitDebuffBar()
 			MADebuffBar:SetSize(sw1, sh1)
 		end
 
-		function MoveAny:LoadDebuffButtons()
+		--[[function MoveAny:LoadDebuffButtons()
 			for i = 1, 32 do
 				local debuffBtn = _G["DebuffButton" .. i]
 				if debuffBtn and not tContains(debuffs, debuffBtn) then
 					table.insert(debuffs, debuffBtn)
 					function debuffBtn:GetMAEle()
-						return MABuffBar
+						return MADebuffBar or MABuffBar
 					end
 
 					if i == 1 then
@@ -100,8 +103,7 @@ function MoveAny:InitDebuffBar()
 
 			C_Timer.After(0.3, MoveAny.LoadDebuffButtons)
 		end
-
-		MoveAny:LoadDebuffButtons()
+		MoveAny:LoadDebuffButtons()]]
 		if MoveAny:DEBUG() then
 			DebuffButton1.t = DebuffButton1:CreateTexture()
 			DebuffButton1.t:SetAllPoints(DebuffButton1)
@@ -143,52 +145,87 @@ function MoveAny:InitDebuffBar()
 
 		MoveAny:UpdateDebuffDirections()
 		function MoveAny:UpdateDebuffs()
+			MADEBUFFLIMIT = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFLIMIT", 10)
+			MADEBUFFSPACINGX = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGX", 4)
+			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
-			for i = 1, 32 do
-				local dbtn = _G["DebuffButton" .. i]
-				if dbtn then
-					if dbtn.masetup == nil then
-						dbtn.masetup = true
+			for bid = 1, 32 do
+				local bbtn = _G["DebuffButton" .. bid]
+				if bbtn then
+					if bbtn.masetup == nil then
+						bbtn.masetup = true
+						function bbtn:GetMAEle()
+							return MADebuffBar
+						end
+
 						hooksecurefunc(
-							dbtn,
+							bbtn,
 							"SetPoint",
 							function(sel, ...)
-								if sel.setpoint_dbtn then return end
-								sel.setpoint_dbtn = true
+								if sel.setpoint_bbtn then return end
+								sel.setpoint_bbtn = true
 								local p1, _, p3, _, _ = MADebuffBar:GetPoint()
 								local bp1, bp3 = MoveAny:GetDebuffPosition(p1, p3)
-								local _, sh = sel:GetSize()
-								local id = i
-								local caly = (id - 0.1) / 10
-								local cy = caly - caly % 1
-								if i == 1 then
-									if rel == "RIGHT" then
-										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, 0)
-									else
-										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, 0)
+								local sw2, sh2 = sel:GetSize()
+								local numBuffs = 1
+								local prevBuff = nil
+								for i = 1, 32 do
+									local btn = _G["DebuffButton" .. i]
+									if i == bid then break end
+									if btn and btn:GetParent() == BuffFrame then
+										numBuffs = numBuffs + 1
+										prevBuff = btn
 									end
-								else
-									if id % 10 == 1 then
-										if dirV == "BOTTOM" then
-											MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh + 10))
-										else
-											MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh + 10))
-										end
-									else
+								end
+
+								local count = 0
+								local id = numBuffs + count
+								local caly = (id - 0.1) / MADEBUFFLIMIT
+								local cy = caly - caly % 1
+								if bbtn:GetParent() == BuffFrame then
+									if numBuffs == 1 then
+										local posx = 0
 										if rel == "RIGHT" then
-											MoveAny:SetPoint(sel, rel, _G["DebuffButton" .. (i - 1)], dirH, -4, 0)
+											posx = -count * (sw2 + MADEBUFFSPACINGX)
 										else
-											MoveAny:SetPoint(sel, rel, _G["DebuffButton" .. (i - 1)], dirH, 4, 0)
+											posx = count * (sw2 + MADEBUFFSPACINGX)
+										end
+
+										local posy = 0
+										if MADEBUFFLIMIT == 1 then
+											posx = 0
+											if dirV == "BOTTOM" then
+												posy = 0
+											else
+												posy = 30 + MADEBUFFSPACINGY
+											end
+										end
+
+										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, posx, posy)
+									else
+										if id % MADEBUFFLIMIT == 1 or MADEBUFFLIMIT == 1 then
+											if dirV == "BOTTOM" then
+												MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh2 + MADEBUFFSPACINGY))
+											else
+												MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh2 + MADEBUFFSPACINGY))
+											end
+										elseif prevBuff then
+											if rel == "RIGHT" then
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MADEBUFFSPACINGX, 0)
+											else
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, MADEBUFFSPACINGX, 0)
+											end
 										end
 									end
 								end
 
-								sel.setpoint_dbtn = false
+								sel.setpoint_bbtn = false
 							end
 						)
 					end
 
-					dbtn:SetPoint("CENTER", 0, 0)
+					bbtn:ClearAllPoints()
+					bbtn:SetPoint("CENTER", 0, 0)
 				end
 			end
 
@@ -203,33 +240,11 @@ function MoveAny:InitDebuffBar()
 					end
 
 					for i = 1, 32 do
-						local btn = _G["BuffButton" .. i]
+						local btn = _G["DebuffButton" .. i]
 						if btn and not btn.MasqueButtonData then
 							btn.MasqueButtonData = {
 								Button = btn,
-								Icon = _G["BuffButton" .. "IconTexture"],
-							}
-
-							MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")
-						end
-
-						local btn2 = _G["DebuffButton" .. i]
-						if btn2 and not btn2.MasqueButtonData then
-							btn2.MasqueButtonData = {
-								Button = btn2,
 								Icon = _G["DebuffButton" .. "IconTexture"],
-							}
-
-							MAMasqueBuffs:AddButton(btn2, btn2.MasqueButtonData, "Item")
-						end
-					end
-
-					for i = 1, 3 do
-						local btn = _G["TempEnchant" .. i]
-						if btn and not btn.MasqueButtonData then
-							btn.MasqueButtonData = {
-								Button = btn,
-								Icon = _G["TempEnchant" .. i .. "IconTexture"],
 							}
 
 							MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")
@@ -239,23 +254,15 @@ function MoveAny:InitDebuffBar()
 			end
 		end
 
-		if MABuffBar then
+		if MADebuffBar then
 			hooksecurefunc(
-				MABuffBar,
+				MADebuffBar,
 				"SetPoint",
 				function(sel, ...)
 					MoveAny:UpdateDebuffs()
 				end
 			)
 		end
-
-		hooksecurefunc(
-			MADebuffBar,
-			"SetPoint",
-			function(sel, ...)
-				MoveAny:UpdateDebuffs()
-			end
-		)
 
 		local f = CreateFrame("FRAME")
 		f:RegisterEvent("UNIT_AURA")
