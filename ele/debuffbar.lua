@@ -46,64 +46,6 @@ function MoveAny:InitDebuffBar()
 			MADebuffBar:SetSize(sw1, sh1)
 		end
 
-		--[[function MoveAny:LoadDebuffButtons()
-			for i = 1, 32 do
-				local debuffBtn = _G["DebuffButton" .. i]
-				if debuffBtn and not tContains(debuffs, debuffBtn) then
-					table.insert(debuffs, debuffBtn)
-					function debuffBtn:GetMAEle()
-						return MADebuffBar or MABuffBar
-					end
-
-					if i == 1 then
-						hooksecurefunc(
-							debuffBtn,
-							"SetPoint",
-							function(sel, ...)
-								if sel.debuffsetpoint then return end
-								sel.debuffsetpoint = true
-								sel:SetMovable(true)
-								if sel.SetUserPlaced and sel:IsMovable() then
-									sel:SetUserPlaced(false)
-								end
-
-								sel:SetParent(MADebuffBar)
-								MoveAny:SetPoint(sel, "TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0)
-								sel.debuffsetpoint = false
-							end
-						)
-
-						debuffBtn:ClearAllPoints()
-						debuffBtn:SetPoint("TOPRIGHT", MADebuffBar, "TOPRIGHT", 0, 0)
-					else
-						local op1, op2, op3, op4, op5 = debuffBtn:GetPoint()
-						hooksecurefunc(
-							debuffBtn,
-							"SetPoint",
-							function(sel, ...)
-								if sel.debuffsetpoint then return end
-								sel.debuffsetpoint = true
-								local p1, p2, p3, p4, p5 = ...
-								sel:SetMovable(true)
-								if sel.SetUserPlaced and sel:IsMovable() then
-									sel:SetUserPlaced(false)
-								end
-
-								sel:SetParent(MADebuffBar)
-								MoveAny:SetPoint(sel, p1, p2, p3, p4, p5)
-								sel.debuffsetpoint = false
-							end
-						)
-
-						debuffBtn:ClearAllPoints()
-						debuffBtn:SetPoint(op1, op2, op3, op4, op5)
-					end
-				end
-			end
-
-			C_Timer.After(0.3, MoveAny.LoadDebuffButtons)
-		end
-		MoveAny:LoadDebuffButtons()]]
 		if MoveAny:DEBUG() then
 			DebuffButton1.t = DebuffButton1:CreateTexture()
 			DebuffButton1.t:SetAllPoints(DebuffButton1)
@@ -154,6 +96,7 @@ function MoveAny:InitDebuffBar()
 				if bbtn then
 					if bbtn.masetup == nil then
 						bbtn.masetup = true
+						bbtn:SetParent(MADebuffBar)
 						function bbtn:GetMAEle()
 							return MADebuffBar
 						end
@@ -172,7 +115,7 @@ function MoveAny:InitDebuffBar()
 								for i = 1, 32 do
 									local btn = _G["DebuffButton" .. i]
 									if i == bid then break end
-									if btn and btn:GetParent() == BuffFrame then
+									if btn and btn:GetParent() == MADebuffBar then
 										numBuffs = numBuffs + 1
 										prevBuff = btn
 									end
@@ -182,7 +125,7 @@ function MoveAny:InitDebuffBar()
 								local id = numBuffs + count
 								local caly = (id - 0.1) / MADEBUFFLIMIT
 								local cy = caly - caly % 1
-								if bbtn:GetParent() == BuffFrame then
+								if bbtn:GetParent() == MADebuffBar then
 									if numBuffs == 1 then
 										local posx = 0
 										if rel == "RIGHT" then
