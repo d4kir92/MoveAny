@@ -99,7 +99,7 @@ function MoveAny:IsInEditModeEnabled(val)
 		end
 
 		if EMMap[val] and editModeEnum == nil then
-			MoveAny:MSG("MISSING ENUM FOR val: " .. tostring(val))
+			MoveAny:ERR("MISSING ENUM FOR val: " .. tostring(val))
 		end
 	end
 
@@ -117,7 +117,7 @@ function MoveAny:IsInEditModeEnabled(val)
 		onceDebug = false
 		for i, v in pairs(Enum.EditModeAccountSetting) do
 			if string.find(strlower(i), "arena") then
-				MoveAny:MSG("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
+				MoveAny:ERR("ENUM i: " .. tostring(i) .. " v: " .. tostring(v))
 			end
 		end
 	end
@@ -186,7 +186,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 	end
 
 	if oldVal == nil then
-		MoveAny:MSG("Missing Value For: " .. tostring(key))
+		MoveAny:ERR("Missing Value For: " .. tostring(key))
 		oldVal = true
 	end
 
@@ -495,8 +495,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.64")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.64"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.65")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.65"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1126,7 +1126,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.64"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.65"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1401,7 +1401,7 @@ function MoveAny:ShowProfiles()
 												MoveAny:ImportProfile(profileName, WebProfileData)
 												C_UI.Reload()
 											else
-												MoveAny:MSG("[AddProfile] can't add, Name already exists.")
+												MoveAny:ERR("[AddProfile] can't add, Name already exists.")
 											end
 										end
 									)
@@ -1831,7 +1831,7 @@ function MoveAny:ShowProfiles()
 									if MARenameProfile.oldname ~= MARenameProfile.name then
 										MoveAny:RenameProfile(MARenameProfile.oldname, MARenameProfile.name)
 									else
-										MoveAny:MSG("[RENAME PROFILE] New name is same as old name.")
+										MoveAny:ERR("[RENAME PROFILE] New name is same as old name.")
 									end
 								end
 							)
@@ -1956,16 +1956,16 @@ function MoveAny:LoadAddon()
 	local _, class = UnitClass("player")
 	if MoveAny:IsEnabled("SHOWTIPS", true) then
 		if MoveAny:IsAddOnLoaded("Dominos") then
-			MoveAny:MSG("Dominos Detected, please make sure that an element is only controlled by one addon at a time!")
+			MoveAny:INFO("Dominos Detected, please make sure that an element is only controlled by one addon at a time!")
 		end
 
 		if MoveAny:IsAddOnLoaded("Bartender4") then
-			MoveAny:MSG("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!")
+			MoveAny:INFO("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!")
 		end
 	end
 
 	if MoveAny:IsAddOnLoaded("D4KiR MoveAndImprove") then
-		MoveAny:MSG("DON'T use MoveAndImprove, when you use MoveAny")
+		MoveAny:INFO("DON'T use MoveAndImprove, when you use MoveAny")
 	end
 
 	if MoveAny.InitSlash then
@@ -2406,115 +2406,129 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameBuff1",
-				["lstr"] = "LID_TARGETFRAMEBUFF1",
-				["userplaced"] = true,
-				["setup"] = function()
-					local frame = TargetFrameBuff1
-					function frame:UpdateBuffScaleAlpha()
-						if _G["TargetFrameBuff" .. 1] == nil then return end
-						local scale = _G["TargetFrameBuff" .. 1]:GetScale()
-						local alpha = _G["TargetFrameBuff" .. 1]:GetAlpha()
-						for i = 1, 32 do
-							local bb = _G["TargetFrameBuff" .. i]
-							if bb and i > 1 then
-								bb:SetScale(scale)
-								bb:SetAlpha(alpha)
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameBuff1",
+					["lstr"] = "LID_TARGETFRAMEBUFF1",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameBuff1
+						function frame:UpdateBuffScaleAlpha()
+							if _G["TargetFrameBuff" .. 1] == nil then return end
+							local scale = _G["TargetFrameBuff" .. 1]:GetScale()
+							local alpha = _G["TargetFrameBuff" .. 1]:GetAlpha()
+							for i = 1, 32 do
+								local bb = _G["TargetFrameBuff" .. i]
+								if bb and i > 1 then
+									bb:SetScale(scale)
+									bb:SetAlpha(alpha)
+								end
 							end
 						end
-					end
 
-					local bbf = CreateFrame("FRAME")
-					bbf:RegisterEvent("UNIT_AURA")
-					bbf:SetScript(
-						"OnEvent",
-						function()
-							frame:UpdateBuffScaleAlpha()
-						end
-					)
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterEvent("UNIT_AURA")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
 
-					hooksecurefunc(
-						frame,
-						"SetPoint",
-						function()
-							frame:UpdateBuffScaleAlpha()
-						end
-					)
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateBuffScaleAlpha()
+							end
+						)
 
-					hooksecurefunc(
-						frame,
-						"SetScale",
-						function(sel)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_bb_set_scale then return end
-							sel.ma_bb_set_scale = true
-							frame:UpdateBuffScaleAlpha()
-							sel.ma_bb_set_scale = false
-						end
-					)
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if InCombatLockdown() and sel:IsProtected() then return false end
+								if sel.ma_bb_set_scale then return end
+								sel.ma_bb_set_scale = true
+								frame:UpdateBuffScaleAlpha()
+								sel.ma_bb_set_scale = false
+							end
+						)
 
-					frame:UpdateBuffScaleAlpha()
-				end,
-			}
-		)
+						frame:UpdateBuffScaleAlpha()
+					end,
+				}
+			)
+		else
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEBUFF1 enabled in MoveAny.")
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+			end
+		end
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEDEBUFF1", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameDebuff1",
-				["lstr"] = "LID_TARGETFRAMEDEBUFF1",
-				["userplaced"] = true,
-				["setup"] = function()
-					local frame = TargetFrameDebuff1
-					function frame:UpdateDebuffScaleAlpha()
-						if _G["TargetFrameDebuff" .. 1] == nil then return end
-						local scale = _G["TargetFrameDebuff" .. 1]:GetScale()
-						local alpha = _G["TargetFrameDebuff" .. 1]:GetAlpha()
-						for i = 1, 32 do
-							local db = _G["TargetFrameDebuff" .. i]
-							if db then
-								db:SetScale(scale)
-								db:SetAlpha(alpha)
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameDebuff1",
+					["lstr"] = "LID_TARGETFRAMEDEBUFF1",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameDebuff1
+						function frame:UpdateDebuffScaleAlpha()
+							if _G["TargetFrameDebuff" .. 1] == nil then return end
+							local scale = _G["TargetFrameDebuff" .. 1]:GetScale()
+							local alpha = _G["TargetFrameDebuff" .. 1]:GetAlpha()
+							for i = 1, 32 do
+								local db = _G["TargetFrameDebuff" .. i]
+								if db then
+									db:SetScale(scale)
+									db:SetAlpha(alpha)
+								end
 							end
 						end
-					end
 
-					local bbf = CreateFrame("FRAME")
-					bbf:RegisterEvent("UNIT_AURA")
-					bbf:SetScript(
-						"OnEvent",
-						function()
-							frame:UpdateDebuffScaleAlpha()
-						end
-					)
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterEvent("UNIT_AURA")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								frame:UpdateDebuffScaleAlpha()
+							end
+						)
 
-					hooksecurefunc(
-						frame,
-						"SetPoint",
-						function()
-							frame:UpdateDebuffScaleAlpha()
-						end
-					)
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateDebuffScaleAlpha()
+							end
+						)
 
-					hooksecurefunc(
-						frame,
-						"SetScale",
-						function(sel)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_db_set_scale then return end
-							sel.ma_db_set_scale = true
-							frame:UpdateDebuffScaleAlpha()
-							sel.ma_db_set_scale = false
-						end
-					)
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if InCombatLockdown() and sel:IsProtected() then return false end
+								if sel.ma_db_set_scale then return end
+								sel.ma_db_set_scale = true
+								frame:UpdateDebuffScaleAlpha()
+								sel.ma_db_set_scale = false
+							end
+						)
 
-					frame:UpdateDebuffScaleAlpha()
-				end,
-			}
-		)
+						frame:UpdateDebuffScaleAlpha()
+					end,
+				}
+			)
+		else
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFF1 enabled in MoveAny.")
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+			end
+		end
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTBUFF1", false) then
@@ -2942,7 +2956,7 @@ function MoveAny:LoadAddon()
 
 							table.insert(ab.btns, abtn)
 						else
-							MoveAny:MSG("ACTION BUTTON NOT FOUND " .. name)
+							MoveAny:ERR("ACTION BUTTON NOT FOUND " .. name)
 						end
 					end
 				end
@@ -3015,8 +3029,8 @@ function MoveAny:LoadAddon()
 				end
 
 				if scale < 0 and SHOW_MULTI_ACTIONBAR_3 == "1" and MoveAny:IsEnabled("ACTIONBAR" .. 4, false) then
-					MoveAny:MSG("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
-					MoveAny:MSG("Actionbar4 will still be shown.")
+					MoveAny:INFO("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
+					MoveAny:INFO("Actionbar4 will still be shown.")
 				end
 			end
 		)
@@ -3484,9 +3498,9 @@ function MoveAny:LoadAddon()
 				}
 			)
 		else
-			MoveAny:MSG("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMESPELLBAR enabled in MoveAny.")
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMESPELLBAR enabled in MoveAny.")
 			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 			end
 		end
 	end
@@ -3510,9 +3524,9 @@ function MoveAny:LoadAddon()
 				}
 			)
 		else
-			MoveAny:MSG("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMESPELLBAR enabled in MoveAny.")
+			MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMESPELLBAR enabled in MoveAny.")
 			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:MSG("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 			end
 		end
 	end
@@ -3645,7 +3659,7 @@ function MoveAny:LoadAddon()
 						}
 					)
 				else
-					MoveAny:MSG("FAILED TO ADD !KalielsTrackerButtons")
+					MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons")
 				end
 			end
 		)
@@ -4986,7 +5000,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.64"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.65"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,

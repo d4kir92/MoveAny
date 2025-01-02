@@ -216,6 +216,121 @@ function D4:CreateSlider(tab)
     return slider
 end
 
+function D4:GetColor(name, from)
+    if TAB == nil then
+        D4:MSG("[GetColor] Missing TAB", from)
+
+        return 0, 0, 0, 0
+    end
+
+    local r = TAB[name .. "_R"] or 0
+    local g = TAB[name .. "_G"] or 0
+    local b = TAB[name .. "_B"] or 0
+    local a = TAB[name .. "_A"] or 0
+
+    return r, g, b, a
+end
+
+function D4:SetColor(name, r, g, b, a)
+    if TAB == nil then
+        D4:MSG("[SetColor] Missing TAB")
+
+        return
+    end
+
+    TAB[name .. "_R"] = r or 0
+    TAB[name .. "_G"] = g or 0
+    TAB[name .. "_B"] = b or 0
+    TAB[name .. "_A"] = a or 0
+end
+
+function D4:ShowColorPicker(r, g, b, a, changedCallback, revertCallback)
+    if ColorPickerFrame.SetupColorPickerAndShow then
+        local info = {}
+        info.swatchFunc = changedCallback
+        info.hasOpacity = true
+        info.opacityFunc = changedCallback
+        info.cancelFunc = function() end
+        info.extraInfo = "TEST"
+        info.r = r
+        info.g = g
+        info.b = b
+        info.opacity = a
+        ColorPickerFrame:SetupColorPickerAndShow(info)
+    else
+        D4:MSG("[ShowColorPicker] Missing ColorPicker")
+    end
+end
+
+function D4:AddColorPicker(key, value, func, x, y)
+    if TAB == nil then
+        D4:MSG("[AddColorPicker] Missing TAB")
+
+        return
+    end
+
+    if TAB[key .. "_R"] == nil then
+        TAB[key .. "_R"] = value.R
+    end
+
+    if TAB[key .. "_G"] == nil then
+        TAB[key .. "_G"] = value.G
+    end
+
+    if TAB[key .. "_B"] == nil then
+        TAB[key .. "_B"] = value.B
+    end
+
+    if TAB[key .. "_A"] == nil then
+        TAB[key .. "_A"] = value.A
+    end
+
+    local btn = CreateFrame("Button", key, PARENT, "UIPanelButtonTemplate")
+    btn:SetSize(180, 25)
+    btn:SetPoint("TOPLEFT", PARENT, "TOPLEFT", x, Y)
+    btn:SetText(D4:Trans(key))
+    btn:SetScript(
+        "OnClick",
+        function()
+            local r, g, b, a = D4:GetColor(key)
+            if D4:GetWoWBuild() ~= "RETAIL" then
+                a = 1 - a
+            end
+
+            D4:ShowColorPicker(
+                r,
+                g,
+                b,
+                a,
+                function(restore)
+                    local newR, newG, newB, newA
+                    if restore then
+                        newR, newG, newB, newA = unpack(restore)
+                    else
+                        local alpha = 1
+                        if ColorPickerFrame.GetColorAlpha then
+                            alpha = ColorPickerFrame:GetColorAlpha()
+                        else
+                            alpha = OpacitySliderFrame:GetValue()
+                        end
+
+                        if D4:GetWoWBuild() ~= "RETAIL" then
+                            alpha = 1 - alpha
+                        end
+
+                        newA, newR, newG, newB = alpha, ColorPickerFrame:GetColorRGB()
+                    end
+
+                    D4:SetColor(key, newR, newG, newB, newA)
+                    if func then
+                        func()
+                    end
+                end
+            )
+        end
+    )
+end
+
 --[[ FRAMES ]]
 function D4:CreateFrame(tab)
     tab.sw = tab.sw or 100
@@ -384,6 +499,11 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     slider.func = func
     slider.pTab = {"TOPLEFT", X + 5, Y}
     D4:CreateSlider(slider)
+    Y = Y - 30
+end
+
+function D4:AppendColorPicker(key, value, func, x)
+    D4:AddColorPicker(key, value, func, x)
     Y = Y - 30
 end
 
