@@ -201,7 +201,7 @@ function D4:CreateSlider(tab)
             end
 
             if tab.func then
-                tab:func()
+                tab:func(val)
             end
 
             local struct2 = D4:Trans(tab.key)
@@ -484,6 +484,12 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
 
     if TAB[key] == nil then
         TAB[key] = value
+    end
+
+    if TAB[key] and not (type(TAB[key]) == "number" or type(TAB[key]) == "string") then
+        D4:MSG("[D4][AppendSlider] WRONG TYPE value:", TAB[key])
+
+        return
     end
 
     local slider = {}
