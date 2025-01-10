@@ -162,7 +162,7 @@ function MoveAny:InitMicroMenu()
 						end
 					)
 
-					if MicroMenu then
+					if MicroMenu and MicroMenu.SetScaleAdjustment then
 						hooksecurefunc(
 							MicroMenu,
 							"SetScaleAdjustment",
