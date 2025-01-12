@@ -237,6 +237,7 @@ function MoveAny:LangenUS()
 		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (no Preset Layout)",
 		["LID_LFGMinimapFrame"] = "LFG Minimap Button",
 		["LID_QUESTTIMERFRAME"] = "Quest Timer Frame",
+		["LID_BATTLEFIELDMAPFRAME"] = "Battlefield Map",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

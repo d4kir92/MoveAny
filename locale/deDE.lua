@@ -230,6 +230,7 @@ function MoveAny:LangdeDE()
 		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)",
 		["LID_LFGMinimapFrame"] = "LFG Minimapknopf",
 		["LID_QUESTTIMERFRAME"] = "Questzeit-Fenster",
+		["LID_BATTLEFIELDMAPFRAME"] = "Schlachtfeld Karte",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
