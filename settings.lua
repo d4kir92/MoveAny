@@ -495,8 +495,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.67")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.67"))
+	MoveAny:SetVersion(AddonName, 135994, "1.7.68")
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.68"))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -823,6 +823,10 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "COMPACTARENAFRAME", false)
 		end
 
+		if MoveAny:IsValidFrame(BattlefieldMapFrame) then
+			AddCheckBox(4, "BATTLEFIELDMAPFRAME", false)
+		end
+
 		if RolePollPopup then
 			AddCheckBox(4, "ROLEPOLLPOPUP", false)
 		end
@@ -1126,7 +1130,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.67"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.68"))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2045,6 +2049,15 @@ function MoveAny:LoadAddon()
 
 	if ContainerFrameContainer then
 		ContainerFrameContainer:EnableMouse(false) -- Contains all bags
+	end
+
+	if MoveAny:IsEnabled("BATTLEFIELDMAPFRAME", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "BattlefieldMapFrame",
+				["lstr"] = "LID_BATTLEFIELDMAPFRAME"
+			}
+		)
 	end
 
 	if MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
@@ -5000,7 +5013,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.67"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.68"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
