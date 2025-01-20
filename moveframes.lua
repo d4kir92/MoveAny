@@ -184,7 +184,7 @@ function MoveAny:UpdateMoveFrames(force)
 			for i, name in pairs(MAFS) do
 				count = count + 1
 				local frame = MoveAny:GetWindow(name)
-				if frame ~= nil then
+				if frame ~= nil and frame:IsShown() then
 					MAFS[name] = nil
 					local fm = _G[name .. "Move"]
 					if fm == nil then
@@ -458,26 +458,34 @@ function MoveAny:UpdateMoveFrames(force)
 					end
 				end
 			end
-		else
-			C_Timer.After(
-				0.04,
-				function()
-					run = false
-					MoveAny:UpdateMoveFrames(false)
-				end
-			)
 		end
 	end
+
+	C_Timer.After(
+		0.011,
+		function()
+			run = false
+		end
+	)
 end
 
 function MoveAny:ThinkMoveFrames()
-	MoveAny:UpdateMoveFrames(false)
-	C_Timer.After(
-		1,
-		function()
-			MoveAny:ThinkMoveFrames()
-		end
-	)
+	if InCombatLockdown() then
+		C_Timer.After(
+			1,
+			function()
+				MoveAny:ThinkMoveFrames()
+			end
+		)
+	else
+		MoveAny:UpdateMoveFrames(false)
+		C_Timer.After(
+			0.1,
+			function()
+				MoveAny:ThinkMoveFrames()
+			end
+		)
+	end
 end
 
 function MoveAny:MoveFrames()
