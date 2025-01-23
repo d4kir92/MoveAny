@@ -155,13 +155,14 @@ end
 local EnableMouseFrames = {"PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton"}
 local HookedEnableMouseFrames = {}
 local run = false
-function MoveAny:UpdateMoveFrames(force)
-	if force then
-		run = false
-	end
-
+local id = 0
+local waitingFrames = {}
+local waitingFramesDone = {}
+function MoveAny:UpdateMoveFrames(from)
+	id = id + 1
 	if run then return end
 	run = true
+	local runId = id
 	if MoveAny:IsEnabled("MOVEFRAMES", true) then
 		for i, name in pairs(EnableMouseFrames) do
 			local frame = _G[name]
@@ -385,15 +386,15 @@ function MoveAny:UpdateMoveFrames(force)
 					end
 				end
 
-				if frame == CharacterFrame and PaperDollItemsFrame then
-					PaperDollItemsFrame:HookScript(
+				if CharacterNameText and frame == CharacterFrame and PaperDollItemsFrame then
+					CharacterNameText:HookScript(
 						"OnMouseDown",
 						function(sel, btn)
 							frame:MA_OnMouseDown(frame, btn)
 						end
 					)
 
-					PaperDollItemsFrame:HookScript(
+					CharacterNameText:HookScript(
 						"OnMouseUp",
 						function(sel, btn)
 							frame:MA_OnMouseUp(frame, btn)
@@ -401,7 +402,6 @@ function MoveAny:UpdateMoveFrames(force)
 					)
 				end
 
-				frame:EnableMouse(true)
 				frame:HookScript(
 					"OnMouseDown",
 					function(sel, btn)
@@ -498,31 +498,38 @@ function MoveAny:UpdateMoveFrames(force)
 						MoveAny:SetPoint(frame, p1, p2, p3, p4, p5)
 					end
 				end
+			elseif frame ~= nil and waitingFrames[name] == nil and frame.Show then
+				waitingFrames[name] = true
+				hooksecurefunc(
+					frame,
+					"Show",
+					function()
+						if waitingFramesDone[name] == nil then
+							waitingFramesDone[name] = true
+							MoveAny:UpdateMoveFrames(from)
+						end
+					end
+				)
 			end
 		end
 	end
 
 	C_Timer.After(
-		0.1,
+		0.4,
 		function()
 			run = false
+			if runId ~= id then
+				MoveAny:UpdateMoveFrames("RETRY")
+			end
 		end
 	)
 end
 
-function MoveAny:ThinkMoveFrames()
-	MoveAny:UpdateMoveFrames(false)
-	C_Timer.After(
-		0.11,
-		function()
-			MoveAny:ThinkMoveFrames()
-		end
-	)
-end
-
+local allowedFrameTypes = {}
+allowedFrameTypes["frame"] = true
+allowedFrameTypes["Frame"] = true
+allowedFrameTypes["FRAME"] = true
 function MoveAny:MoveFrames()
-	local f = CreateFrame("FRAME")
-	f:RegisterEvent("ADDON_LOADED")
 	if MoveAny:IsEnabled("MOVESMALLBAGS", false) then
 		for i = 1, 20 do
 			if _G["ContainerFrame" .. i] and not MAFS["ContainerFrame" .. i] then
@@ -535,15 +542,16 @@ function MoveAny:MoveFrames()
 		MAFS["LootFrame"] = "LootFrame"
 	end
 
-	f:SetScript(
-		"OnEvent",
-		function(sel, event, ...)
-			MoveAny:UpdateMoveFrames(true)
+	hooksecurefunc(
+		"CreateFrame",
+		function(frameType, frameName, parent, template)
+			if allowedFrameTypes[frameType] then
+				MoveAny:UpdateMoveFrames("CreateFrame")
+			end
 		end
 	)
 
-	MoveAny:UpdateMoveFrames(true)
-	MoveAny:ThinkMoveFrames()
+	MoveAny:UpdateMoveFrames("Start")
 	if BattlefieldFrame then
 		BattlefieldFrame:EnableMouse(false)
 	end
