@@ -125,21 +125,21 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 	if slider.Low == nil then
 		slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
 		slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-		slider.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+		MoveAny:SetFontSize(slider.Low, 10, "THINOUTLINE")
 		slider.Low:SetTextColor(1, 1, 1)
 	end
 
 	if slider.High == nil then
 		slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
 		slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-		slider.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+		MoveAny:SetFontSize(slider.High, 10, "THINOUTLINE")
 		slider.High:SetTextColor(1, 1, 1)
 	end
 
 	if slider.Text == nil then
 		slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
 		slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-		slider.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+		MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
 		slider.Text:SetTextColor(1, 1, 1)
 	end
 
@@ -335,7 +335,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			hide.text = hide:CreateFontString(nil, "ARTWORK")
-			hide.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(getglobal("HIDE"))
 			local clickthrough = CreateFrame("CheckButton", "clickthrough", content, "ChatConfigCheckButtonTemplate")
@@ -369,7 +369,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK")
-			clickthrough.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
 			local fullhp = CreateFrame("CheckButton", "FULLHPENABLED", content, "ChatConfigCheckButtonTemplate")
@@ -446,21 +446,21 @@ function MoveAny:MenuOptions(opt, frame)
 				if sliderCount.Low == nil then
 					sliderCount.Low = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
 					sliderCount.Low:SetPoint("BOTTOMLEFT", sliderCount, "BOTTOMLEFT", 0, -12)
-					sliderCount.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+					MoveAny:SetFontSize(sliderCount.Low, 10, "THINOUTLINE")
 					sliderCount.Low:SetTextColor(1, 1, 1)
 				end
 
 				if sliderCount.High == nil then
 					sliderCount.High = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
 					sliderCount.High:SetPoint("BOTTOMRIGHT", sliderCount, "BOTTOMRIGHT", 0, -12)
-					sliderCount.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+					MoveAny:SetFontSize(sliderCount.High, 10, "THINOUTLINE")
 					sliderCount.High:SetTextColor(1, 1, 1)
 				end
 
 				if sliderCount.Text == nil then
 					sliderCount.Text = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
 					sliderCount.Text:SetPoint("TOP", sliderCount, "TOP", 0, 16)
-					sliderCount.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+					MoveAny:SetFontSize(sliderCount.Text, 12, "THINOUTLINE")
 					sliderCount.Text:SetTextColor(1, 1, 1)
 				end
 
@@ -502,21 +502,21 @@ function MoveAny:MenuOptions(opt, frame)
 				if sliderRows.Low == nil then
 					sliderRows.Low = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
 					sliderRows.Low:SetPoint("BOTTOMLEFT", sliderRows, "BOTTOMLEFT", 0, -12)
-					sliderRows.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+					MoveAny:SetFontSize(sliderRows.Low, 10, "THINOUTLINE")
 					sliderRows.Low:SetTextColor(1, 1, 1)
 				end
 
 				if sliderRows.High == nil then
 					sliderRows.High = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
 					sliderRows.High:SetPoint("BOTTOMRIGHT", sliderRows, "BOTTOMRIGHT", 0, -12)
-					sliderRows.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+					MoveAny:SetFontSize(sliderRows.High, 10, "THINOUTLINE")
 					sliderRows.High:SetTextColor(1, 1, 1)
 				end
 
 				if sliderRows.Text == nil then
 					sliderRows.Text = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
 					sliderRows.Text:SetPoint("TOP", sliderRows, "TOP", 0, 16)
-					sliderRows.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+					MoveAny:SetFontSize(sliderRows.Text, 12, "THINOUTLINE")
 					sliderRows.Text:SetTextColor(1, 1, 1)
 				end
 
@@ -557,21 +557,21 @@ function MoveAny:MenuOptions(opt, frame)
 			if sliderOffset.Low == nil then
 				sliderOffset.Low = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
 				sliderOffset.Low:SetPoint("BOTTOMLEFT", sliderOffset, "BOTTOMLEFT", 0, -12)
-				sliderOffset.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderOffset.Low, 10, "THINOUTLINE")
 				sliderOffset.Low:SetTextColor(1, 1, 1)
 			end
 
 			if sliderOffset.High == nil then
 				sliderOffset.High = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
 				sliderOffset.High:SetPoint("BOTTOMRIGHT", sliderOffset, "BOTTOMRIGHT", 0, -12)
-				sliderOffset.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderOffset.High, 10, "THINOUTLINE")
 				sliderOffset.High:SetTextColor(1, 1, 1)
 			end
 
 			if sliderOffset.Text == nil then
 				sliderOffset.Text = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
 				sliderOffset.Text:SetPoint("TOP", sliderOffset, "TOP", 0, 16)
-				sliderOffset.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderOffset.Text, 12, "THINOUTLINE")
 				sliderOffset.Text:SetTextColor(1, 1, 1)
 			end
 
@@ -614,7 +614,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			flipped.text = flipped:CreateFontString(nil, "ARTWORK")
-			flipped.text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+			MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
 			flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
 			flipped.text:SetText(MoveAny:GT("LID_FLIPPED"))
 			PY = PY - 40
@@ -625,21 +625,21 @@ function MoveAny:MenuOptions(opt, frame)
 			if slider.Low == nil then
 				slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
 				slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-				slider.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(slider.Low, 10, "THINOUTLINE")
 				slider.Low:SetTextColor(1, 1, 1)
 			end
 
 			if slider.High == nil then
 				slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
 				slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-				slider.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(slider.High, 10, "THINOUTLINE")
 				slider.High:SetTextColor(1, 1, 1)
 			end
 
 			if slider.Text == nil then
 				slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
 				slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-				slider.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+				MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
 				slider.Text:SetTextColor(1, 1, 1)
 			end
 
@@ -808,21 +808,21 @@ function MoveAny:MenuOptions(opt, frame)
 			if sliderW.Low == nil then
 				sliderW.Low = sliderW:CreateFontString(nil, nil, "GameFontNormal")
 				sliderW.Low:SetPoint("BOTTOMLEFT", sliderW, "BOTTOMLEFT", 0, -12)
-				sliderW.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderW.Low, 10, "THINOUTLINE")
 				sliderW.Low:SetTextColor(1, 1, 1)
 			end
 
 			if sliderW.High == nil then
 				sliderW.High = sliderW:CreateFontString(nil, nil, "GameFontNormal")
 				sliderW.High:SetPoint("BOTTOMRIGHT", sliderW, "BOTTOMRIGHT", 0, -12)
-				sliderW.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderW.High, 10, "THINOUTLINE")
 				sliderW.High:SetTextColor(1, 1, 1)
 			end
 
 			if sliderW.Text == nil then
 				sliderW.Text = sliderW:CreateFontString(nil, nil, "GameFontNormal")
 				sliderW.Text:SetPoint("TOP", sliderW, "TOP", 0, 16)
-				sliderW.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderW.Text, 12, "THINOUTLINE")
 				sliderW.Text:SetTextColor(1, 1, 1)
 			end
 
@@ -853,21 +853,21 @@ function MoveAny:MenuOptions(opt, frame)
 			if sliderH.Low == nil then
 				sliderH.Low = sliderH:CreateFontString(nil, nil, "GameFontNormal")
 				sliderH.Low:SetPoint("BOTTOMLEFT", sliderH, "BOTTOMLEFT", 0, -12)
-				sliderH.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderH.Low, 10, "THINOUTLINE")
 				sliderH.Low:SetTextColor(1, 1, 1)
 			end
 
 			if sliderH.High == nil then
 				sliderH.High = sliderH:CreateFontString(nil, nil, "GameFontNormal")
 				sliderH.High:SetPoint("BOTTOMRIGHT", sliderH, "BOTTOMRIGHT", 0, -12)
-				sliderH.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderH.High, 10, "THINOUTLINE")
 				sliderH.High:SetTextColor(1, 1, 1)
 			end
 
 			if sliderH.Text == nil then
 				sliderH.Text = sliderH:CreateFontString(nil, nil, "GameFontNormal")
 				sliderH.Text:SetPoint("TOP", sliderH, "TOP", 0, 16)
-				sliderH.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+				MoveAny:SetFontSize(sliderH.Text, 12, "THINOUTLINE")
 				sliderH.Text:SetTextColor(1, 1, 1)
 			end
 

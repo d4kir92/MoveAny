@@ -236,6 +236,12 @@ function MoveAny:UpdateMoveFrames(force)
 					local name2 = frameObj:GetName()
 					if name2 then
 						local fM = _G[name2 .. "Move"]
+						if not fM then
+							MoveAny:MSG("FAILED TO STOP MOVING", name)
+
+							return
+						end
+
 						if fM.ma_ismoving then
 							fM.ma_ismoving = false
 							fM:StopMovingOrSizing()
@@ -293,26 +299,6 @@ function MoveAny:UpdateMoveFrames(force)
 					frame:SetMovable(true)
 				end
 
-				if frame.Header then
-					if frame.Header:HasScript("OnMouseDown") then
-						frame.Header:SetScript(
-							"OnMouseDown",
-							function(sel, btn)
-								frame:MA_OnMouseDown(frame, btn)
-							end
-						)
-					end
-
-					if frame.Header:HasScript("OnMouseUp") then
-						frame.Header:SetScript(
-							"OnMouseUp",
-							function(sel, btn)
-								frame:MA_OnMouseUp(frame, btn)
-							end
-						)
-					end
-				end
-
 				function frame:MA_OnMouseDown(sel, btn)
 					if frame:GetPoint() then
 						fm:SetSize(frame:GetSize())
@@ -359,6 +345,63 @@ function MoveAny:UpdateMoveFrames(force)
 					MoveAny:MAFrameStopMoving(sel)
 				end
 
+				if frame.Header then
+					if frame.Header:HasScript("OnMouseDown") then
+						frame.Header:SetScript(
+							"OnMouseDown",
+							function(sel, btn)
+								frame:MA_OnMouseDown(frame, btn)
+							end
+						)
+					end
+
+					if frame.Header:HasScript("OnMouseUp") then
+						frame.Header:SetScript(
+							"OnMouseUp",
+							function(sel, btn)
+								frame:MA_OnMouseUp(frame, btn)
+							end
+						)
+					end
+				end
+
+				if frame.TitleContainer then
+					if frame.TitleContainer:HasScript("OnMouseDown") then
+						frame.TitleContainer:SetScript(
+							"OnMouseDown",
+							function(sel, btn)
+								frame:MA_OnMouseDown(frame, btn)
+							end
+						)
+					end
+
+					if frame.TitleContainer:HasScript("OnMouseUp") then
+						frame.TitleContainer:SetScript(
+							"OnMouseUp",
+							function(sel, btn)
+								frame:MA_OnMouseUp(frame, btn)
+							end
+						)
+					end
+				end
+
+				if frame == CharacterFrame and PaperDollItemsFrame then
+					PaperDollItemsFrame:HookScript(
+						"OnMouseDown",
+						function(sel, btn)
+							frame:MA_OnMouseDown(frame, btn)
+						end
+					)
+
+					PaperDollItemsFrame:HookScript(
+						"OnMouseUp",
+						function(sel, btn)
+							frame:MA_OnMouseUp(frame, btn)
+						end
+					)
+				end
+
+				frame:EnableMouse(true)
 				frame:HookScript(
 					"OnMouseDown",
 					function(sel, btn)
@@ -368,7 +411,7 @@ function MoveAny:UpdateMoveFrames(force)
 
 				frame:HookScript(
 					"OnMouseUp",
-					function(sel)
+					function(sel, btn)
 						frame:MA_OnMouseUp(sel, btn)
 					end
 				)

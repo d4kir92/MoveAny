@@ -224,6 +224,7 @@ function MoveAny:LangdeDE()
 		["LID_FRAMES"] = "Fenster",
 		["LID_SCALEFRAMES"] = "Fenster skalieren",
 		["LID_RESETFRAMES"] = "Fenster resetten",
+		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
 		["LID_MOVEANYINFO"] = "Wählen Sie die Dinge aus, die Sie ändern möchten",
 		["LID_PLEASESWITCHPROFILE1"] = "Bitte wechsel das LAYOUT im Bearbeitungsmodus (von Blizzard) zu einem BENUTZERDEFINIERTEN Layout.",
 		["LID_PLEASESWITCHPROFILE2"] = "MoveAny funktioniert nicht mit einem voreingestellten Layout, es ist meist schreibgeschützt.",

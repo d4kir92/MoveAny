@@ -4,6 +4,20 @@ local Y = 0
 local PARENT = nil
 local TAB = nil
 local TABIsNil = false
+function D4:SetFontSize(element, fontSize, newFontFlags)
+    if not element then return end
+    if element.GetFont == nil then return end
+    if not fontSize then return end
+    local fontType, _, fontFlags = element:GetFont()
+    if fontType == nil then
+        print("SetFontSize FAILED #1:", element:GetName())
+
+        return
+    end
+
+    element:SetFont(fontType, fontSize, newFontFlags or fontFlags)
+end
+
 --[[ INPUTS ]]
 function D4:AddCategory(tab)
     tab.sw = tab.sw or 25
@@ -153,21 +167,21 @@ function D4:CreateSlider(tab)
     if slider.Low == nil then
         slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-        slider.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+        D4:SetFontSize(slider.Low, 10, "THINOUTLINE")
         slider.Low:SetTextColor(1, 1, 1)
     end
 
     if slider.High == nil then
         slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-        slider.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+        D4:SetFontSize(slider.High, 10, "THINOUTLINE")
         slider.High:SetTextColor(1, 1, 1)
     end
 
     if slider.Text == nil then
         slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-        slider.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+        D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
         slider.Text:SetTextColor(1, 1, 1)
     end
 

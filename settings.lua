@@ -1,4 +1,5 @@
 local AddonName, MoveAny = ...
+local version = "1.8.0"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -9,12 +10,16 @@ local WebProfileData = {}
 local searchStr = ""
 local br = 8
 local sw = 550
-local sh = 520
+local sh = 680
 local posy = -4
 local cas = {}
 local cbs = {}
 local sls = {}
 local EMMapForced = {}
+local keybinds = {}
+keybinds[1] = "SHIFT"
+keybinds[2] = "CTRL"
+keybinds[3] = "ALT"
 function MoveAny:AddToEMMapForced(key)
 	EMMapForced[key] = true
 	EMMapForced[strupper(key)] = true
@@ -205,6 +210,11 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 				lstr = format(lstr, id)
 			end
 
+			if string.find(lkey, "FRAMESKEY", 1, true) then
+				local keybind = keybinds[MoveAny:MAGV("KEYBINDWINDOW", 1)]
+				lstr = format(MoveAny:GT("LID_" .. lkey), MoveAny:GT("LID_" .. keybind))
+			end
+
 			local ele = MoveAny:GetSelectEleName("LID_" .. key)
 			if ele and _G[ele .. "_MA_DRAG"] and MoveAny:GetCurrentEle() == _G[ele .. "_MA_DRAG"] then
 				lstr = "|cFFFFFF00" .. lstr .. "|r"
@@ -315,28 +325,26 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 		if sls[key].Low == nil then
 			sls[key].Low = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
 			sls[key].Low:SetPoint("BOTTOMLEFT", sls[key], "BOTTOMLEFT", 0, -12)
-			sls[key].Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
 			sls[key].Low:SetTextColor(1, 1, 1)
 		end
 
 		if sls[key].High == nil then
 			sls[key].High = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
 			sls[key].High:SetPoint("BOTTOMRIGHT", sls[key], "BOTTOMRIGHT", 0, -12)
-			sls[key].High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
 			sls[key].High:SetTextColor(1, 1, 1)
 		end
 
 		if sls[key].Text == nil then
 			sls[key].Text = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
 			sls[key].Text:SetPoint("TOP", sls[key], "TOP", 0, 16)
-			sls[key].Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
 			sls[key].Text:SetTextColor(1, 1, 1)
+			sls[key].Text:SetText("")
 		end
 
 		sls[key].Low:SetText(vmin)
 		sls[key].High:SetText(vmax)
 		if tab and tab[MoveAny:MAGV(key, val)] then
-			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[MoveAny:MAGV(key, val)])
+			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GT("LID_" .. tab[MoveAny:MAGV(key, val)]))
 		else
 			sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:MAGV(key, val))
 		end
@@ -352,7 +360,7 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 				if valu and valu ~= MoveAny:MAGV(key) then
 					MoveAny:SV(MATAB, key, valu)
 					if tab and tab[valu] then
-						sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. tab[valu])
+						sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GT("LID_" .. tab[valu]))
 					else
 						sls[key].Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. valu)
 					end
@@ -364,6 +372,9 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 			end
 		)
 
+		MoveAny:SetFontSize(sls[key].Low, 10, "THINOUTLINE")
+		MoveAny:SetFontSize(sls[key].High, 10, "THINOUTLINE")
+		MoveAny:SetFontSize(sls[key].Text, 12, "THINOUTLINE")
 		posy = posy - 10
 	end
 
@@ -495,8 +506,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, "1.7.71")
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.71"))
+	MoveAny:SetVersion(AddonName, 135994, version)
+	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", version))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -507,18 +518,10 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	local keybinds = {}
-	keybinds[1] = "SHIFT"
-	keybinds[2] = "CTRL"
-	keybinds[3] = "ALT"
 	function MoveAny:UpdateFrameKeybindText()
-		local keybind = keybinds[MoveAny:MAGV("KEYBINDWINDOW", 1)]
-		local cb1 = cbs["FRAMESKEYDRAG"]
-		local cb2 = cbs["FRAMESKEYSCALE"]
-		local cb3 = cbs["FRAMESKEYRESET"]
-		cb1.f:SetText("|cFFFFFFFF" .. format(MoveAny:GT("LID_FRAMESKEYDRAG"), MoveAny:GT("LID_" .. keybind)))
-		cb2.f:SetText("|cFFFFFFFF" .. format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:GT("LID_" .. keybind)))
-		cb3.f:SetText("|cFFFFFFFF" .. format(MoveAny:GT("LID_FRAMESKEYRESET"), MoveAny:GT("LID_" .. keybind)))
+		cbs["FRAMESKEYDRAG"]:UpdateText(cbs["FRAMESKEYDRAG"]:GetChecked())
+		cbs["FRAMESKEYSCALE"]:UpdateText(cbs["FRAMESKEYSCALE"]:GetChecked())
+		cbs["FRAMESKEYRESET"]:UpdateText(cbs["FRAMESKEYRESET"]:GetChecked())
 	end
 
 	function MoveAny:UpdateFrameKeybind()
@@ -1130,7 +1133,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", "1.7.71"))
+		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", version))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1241,21 +1244,21 @@ function MoveAny:ShowProfiles()
 					if sliderProfiles.Low == nil then
 						sliderProfiles.Low = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
 						sliderProfiles.Low:SetPoint("BOTTOMLEFT", sliderProfiles, "BOTTOMLEFT", 0, -12)
-						sliderProfiles.Low:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+						MoveAny:SetFontSize(sliderProfiles.Low, 10, "THINOUTLINE")
 						sliderProfiles.Low:SetTextColor(1, 1, 1)
 					end
 
 					if sliderProfiles.High == nil then
 						sliderProfiles.High = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
 						sliderProfiles.High:SetPoint("BOTTOMRIGHT", sliderProfiles, "BOTTOMRIGHT", 0, -12)
-						sliderProfiles.High:SetFont(STANDARD_TEXT_FONT, 10, "THINOUTLINE")
+						MoveAny:SetFontSize(sliderProfiles.High, 10, "THINOUTLINE")
 						sliderProfiles.High:SetTextColor(1, 1, 1)
 					end
 
 					if sliderProfiles.Text == nil then
 						sliderProfiles.Text = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
 						sliderProfiles.Text:SetPoint("TOP", sliderProfiles, "TOP", 0, 16)
-						sliderProfiles.Text:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+						MoveAny:SetFontSize(sliderProfiles.Text, 12, "THINOUTLINE")
 						sliderProfiles.Text:SetTextColor(1, 1, 1)
 					end
 
@@ -5013,7 +5016,7 @@ function MoveAny:LoadAddon()
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB1.7.71"}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB" .. version}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
