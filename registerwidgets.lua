@@ -334,7 +334,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
-			hide.text = hide:CreateFontString(nil, "ARTWORK")
+			hide.text = hide:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(getglobal("HIDE"))
@@ -368,7 +368,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
-			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK")
+			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
@@ -613,7 +613,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
-			flipped.text = flipped:CreateFontString(nil, "ARTWORK")
+			flipped.text = flipped:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
 			flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
 			flipped.text:SetText(MoveAny:GT("LID_FLIPPED"))
@@ -1149,8 +1149,7 @@ function MoveAny:RegisterWidget(tab)
 		dragframe:SetClampedToScreen(true)
 		dragframe:SetFrameStrata("MEDIUM")
 		dragframe:SetFrameLevel(99)
-		dragframe:SetAlpha(0)
-		dragframe:EnableMouse(false)
+		dragframe:Hide()
 		if MoveAny:GetEleSize(name) then
 			dragframe:SetSize(MoveAny:GetEleSize(name))
 		else
@@ -1659,11 +1658,9 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
 	if MoveAny:IsEnabled("MALOCK", false) then
-		dragframe:SetAlpha(1)
-		dragframe:EnableMouse(true)
+		dragframe:Show()
 	else
-		dragframe:SetAlpha(0)
-		dragframe:EnableMouse(false)
+		dragframe:Hide()
 	end
 
 	if setup then

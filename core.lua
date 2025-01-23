@@ -274,8 +274,7 @@ function MoveAny:ShowMALock()
 	MoveAny:Unlock()
 	if MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
-			df:EnableMouse(true)
-			df:SetAlpha(1)
+			df:Show()
 			if df.opt then
 				df.opt:Show()
 			end
@@ -300,8 +299,7 @@ function MoveAny:HideMALock(onlyHide)
 
 	if not MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
-			df:EnableMouse(false)
-			df:SetAlpha(0)
+			df:Hide()
 			if df.opt then
 				df.opt:Hide()
 			end

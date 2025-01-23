@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.1"
+local version = "1.8.2"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -338,7 +338,6 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 			sls[key].Text = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
 			sls[key].Text:SetPoint("TOP", sls[key], "TOP", 0, 16)
 			sls[key].Text:SetTextColor(1, 1, 1)
-			sls[key].Text:SetText("")
 		end
 
 		sls[key].Low:SetText(vmin)
