@@ -366,7 +366,7 @@ function MoveAny:UpdateMoveFrames(from)
 					end
 				end
 
-				if frame.TitleContainer then
+				if frame == CharacterFrame and frame.TitleContainer then
 					if frame.TitleContainer:HasScript("OnMouseDown") then
 						frame.TitleContainer:SetScript(
 							"OnMouseDown",
@@ -515,7 +515,7 @@ function MoveAny:UpdateMoveFrames(from)
 	end
 
 	C_Timer.After(
-		0.4,
+		0.2,
 		function()
 			run = false
 			if runId ~= id then
@@ -552,6 +552,15 @@ function MoveAny:MoveFrames()
 	)
 
 	MoveAny:UpdateMoveFrames("Start")
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("ADDON_LOADED")
+	f:SetScript(
+		"OnEvent",
+		function(sel, event, ...)
+			MoveAny:UpdateMoveFrames("ADDON_LOADED")
+		end
+	)
+
 	if BattlefieldFrame then
 		BattlefieldFrame:EnableMouse(false)
 	end
