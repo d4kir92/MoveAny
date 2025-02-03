@@ -158,7 +158,7 @@ local run = false
 local id = 0
 local waitingFrames = {}
 local waitingFramesDone = {}
-function MoveAny:UpdateMoveFrames(from)
+function MoveAny:UpdateMoveFrames(from, force)
 	id = id + 1
 	if run then return end
 	run = true
@@ -506,7 +506,7 @@ function MoveAny:UpdateMoveFrames(from)
 					function()
 						if waitingFramesDone[name] == nil then
 							waitingFramesDone[name] = true
-							MoveAny:UpdateMoveFrames(from)
+							MoveAny:UpdateMoveFrames(from, true)
 						end
 					end
 				)
@@ -515,7 +515,7 @@ function MoveAny:UpdateMoveFrames(from)
 	end
 
 	C_Timer.After(
-		0.2,
+		0.3,
 		function()
 			run = false
 			if runId ~= id then
@@ -557,7 +557,7 @@ function MoveAny:MoveFrames()
 	f:SetScript(
 		"OnEvent",
 		function(sel, event, ...)
-			MoveAny:UpdateMoveFrames("ADDON_LOADED")
+			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
 		end
 	)
 

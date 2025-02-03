@@ -167,21 +167,18 @@ function D4:CreateSlider(tab)
     if slider.Low == nil then
         slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-        D4:SetFontSize(slider.Low, 10, "THINOUTLINE")
         slider.Low:SetTextColor(1, 1, 1)
     end
 
     if slider.High == nil then
         slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-        D4:SetFontSize(slider.High, 10, "THINOUTLINE")
         slider.High:SetTextColor(1, 1, 1)
     end
 
     if slider.Text == nil then
         slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-        D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
         slider.Text:SetTextColor(1, 1, 1)
     end
 
@@ -192,6 +189,9 @@ function D4:CreateSlider(tab)
         slider.Text:SetText(string.format(struct, tab.value))
     end
 
+    D4:SetFontSize(slider.Low, 10, "THINOUTLINE")
+    D4:SetFontSize(slider.High, 10, "THINOUTLINE")
+    D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
     slider:SetMinMaxValues(tab.vmin, tab.vmax)
     slider:SetObeyStepOnDrag(true)
     slider:SetValueStep(tab.steps)

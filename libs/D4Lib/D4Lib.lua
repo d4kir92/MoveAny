@@ -417,10 +417,3 @@ function D4:GetRoleIcon(role)
 
     return ""
 end
-
---[[ Fix for Classic Era ]]
-for i = 2, 5 do
-    if _G["FriendsFrameTab" .. i] == nil then
-        _G["FriendsFrameTab" .. i] = CreateFrame("Frame")
-    end
-end

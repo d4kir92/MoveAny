@@ -616,14 +616,14 @@ function MoveAny:InitDB()
 	end
 end
 
-function MoveAny:AddonLoaded(event, addonName, ...)
-	if event == "ADDON_LOADED" and addonName == AddonName then
+function MoveAny:AddonLoaded(event, ...)
+	if event == "PLAYER_LOGIN" then
 		MoveAny:LoadAddon()
 	end
 end
 
 local mf = CreateFrame("FRAME")
-mf:RegisterEvent("ADDON_LOADED")
+mf:RegisterEvent("PLAYER_LOGIN")
 mf:SetScript("OnEvent", MoveAny.AddonLoaded)
 --[[ FIX ]]
 function MoveAny:TrySaveEditMode()

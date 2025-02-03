@@ -87,7 +87,7 @@ function D4:CreateMinimapButton(params)
     btn.icon:SetPoint("CENTER")
     if params.icon ~= nil then
         btn.icon:SetTexture(params.icon)
-        btn.icon:SetMask("Interface\\AddOns\\ImproveAny\\media\\minimap_mask_round")
+        --btn.icon:SetMask("Interface\\AddOns\\ImproveAny\\media\\minimap_mask_round")
     elseif params.atlas ~= nil then
         local info = C_Texture.GetAtlasInfo(params.atlas)
         btn.icon:SetTexture(info.file)
