@@ -546,8 +546,7 @@ function MoveAny:MoveFrames()
 		"CreateFrame",
 		function(frameType, frameName, parent, template)
 			if allowedFrameTypes[frameType] then
-				local name = frameName or "X"
-				MoveAny:UpdateMoveFrames("CreateFrame" .. name)
+				MoveAny:UpdateMoveFrames("CreateFrame")
 			end
 		end
 	)
