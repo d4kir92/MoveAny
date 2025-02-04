@@ -506,7 +506,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 					function()
 						if waitingFramesDone[name] == nil then
 							waitingFramesDone[name] = true
-							MoveAny:UpdateMoveFrames(from, true)
+							MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true)
 						end
 					end
 				)
@@ -519,7 +519,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 		function()
 			run = false
 			if runId ~= id then
-				MoveAny:UpdateMoveFrames("RETRY")
+				MoveAny:UpdateMoveFrames("RETRY: " .. from)
 			end
 		end
 	)
@@ -546,7 +546,8 @@ function MoveAny:MoveFrames()
 		"CreateFrame",
 		function(frameType, frameName, parent, template)
 			if allowedFrameTypes[frameType] then
-				MoveAny:UpdateMoveFrames("CreateFrame")
+				local name = frameName or "X"
+				MoveAny:UpdateMoveFrames("CreateFrame" .. name)
 			end
 		end
 	)
@@ -557,7 +558,12 @@ function MoveAny:MoveFrames()
 	f:SetScript(
 		"OnEvent",
 		function(sel, event, ...)
-			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
+			C_Timer.After(
+				0.04,
+				function()
+					MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
+				end
+			)
 		end
 	)
 

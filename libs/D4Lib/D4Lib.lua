@@ -396,17 +396,255 @@ for i = 1, 40 do
     table.insert(units, "raid" .. i)
 end
 
+local specIcons = {
+    ["DEATHKNIGHT"] = {
+        [1] = 135770,
+        [2] = 135773,
+        [3] = 135775,
+    },
+    ["DEMONHUNTER"] = {
+        [1] = 1247264,
+        [2] = 1247265,
+    },
+    ["DRUID"] = {
+        [1] = 136096,
+        [2] = 132115,
+        [3] = 132276,
+        [4] = 136041,
+    },
+    ["EVOKER"] = {
+        [1] = 4511811,
+        [2] = 4511812,
+        [3] = 5198700,
+    },
+    ["HUNTER"] = {
+        [1] = 132164,
+        [2] = 132222,
+        [3] = 132215,
+    },
+    ["MAGE"] = {
+        [1] = 135932,
+        [2] = 135812,
+        [3] = 135846,
+    },
+    ["MONK"] = {
+        [1] = 608951,
+        [2] = 608952,
+        [3] = 608953,
+    },
+    ["PALADIN"] = {
+        [1] = 135920,
+        [2] = 135893,
+        [3] = 135873,
+    },
+    ["PRIEST"] = {
+        [1] = 135940,
+        [2] = 135920,
+        [3] = 136207,
+    },
+    ["ROGUE"] = {
+        [1] = 136189,
+        [2] = 132282,
+        [3] = 132320,
+    },
+    ["SHAMAN"] = {
+        [1] = 136048,
+        [2] = 132314,
+        [3] = 136043,
+    },
+    ["WARLOCK"] = {
+        [1] = 136145,
+        [2] = 136172,
+        [3] = 136186,
+    },
+    ["WARRIOR"] = {
+        [1] = 132292,
+        [2] = 132347,
+        [3] = 134952,
+    },
+}
+
+local classIds = {
+    ["WARRIOR"] = 1,
+    ["PALADIN"] = 2,
+    ["HUNTER"] = 3,
+    ["ROGUE"] = 4,
+    ["PRIEST"] = 5,
+    ["DEATHKNIGHT"] = 6,
+    ["SHAMAN"] = 7,
+    ["MAGE"] = 8,
+    ["WARLOCK"] = 9,
+    ["MONK"] = 10,
+    ["DRUID"] = 11,
+    ["DEMONHUNTER"] = 12,
+    ["EVOKER"] = 13,
+}
+
+local specRoless = {
+    ["DEATHKNIGHT"] = {
+        [1] = "TANK",
+        [2] = "DAMAGER",
+        [3] = "DAMAGER",
+    },
+    ["DEMONHUNTER"] = {
+        [1] = "DAMAGER",
+        [2] = "TANK",
+    },
+    ["DRUID"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "TANK",
+        [4] = "HEALER",
+    },
+    ["EVOKER"] = {
+        [1] = "DAMAGER",
+        [2] = "HEALER",
+        [3] = "HEALER",
+    },
+    ["HUNTER"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "DAMAGER",
+    },
+    ["MAGE"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "DAMAGER",
+    },
+    ["MONK"] = {
+        [1] = "TANK",
+        [2] = "HEALER",
+        [3] = "DAMAGER",
+    },
+    ["PALADIN"] = {
+        [1] = "HEALER",
+        [2] = "TANK",
+        [3] = "DAMAGER",
+    },
+    ["PRIEST"] = {
+        [1] = "HEALER",
+        [2] = "HEALER",
+        [3] = "DAMAGER",
+    },
+    ["ROGUE"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "DAMAGER",
+    },
+    ["SHAMAN"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "HEALER",
+    },
+    ["WARLOCK"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "DAMAGER",
+    },
+    ["WARRIOR"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "TANK",
+    },
+}
+
+function D4:GetRole(className, specId)
+    return specRoless[className][specId]
+end
+
+function D4:GetSpecIcon(className, specId)
+    if GetSpecializationInfoForClassID then
+        local classId = classIds[className]
+        if classId then
+            local _, _, _, icon = GetSpecializationInfoForClassID(classId, specId)
+            if icon then return icon end
+        end
+    end
+
+    return specIcons[className][specId]
+end
+
+function D4:GetTalentInfo()
+    local specid, icon
+    if GetSpecialization then
+        specid = GetSpecialization()
+        if GetSpecializationInfo then
+            _, _, _, icon = GetSpecializationInfo(specid)
+        end
+
+        return specid, icon
+    else
+        local ps = 0
+        for i = 1, 4 do
+            local _, _, _, iconTexture, pointsSpent = GetTalentTabInfo(i)
+            if pointsSpent ~= nil and pointsSpent > ps then
+                ps = pointsSpent
+                specid = i
+                icon = iconTexture
+                local _, class = UnitClass("PLAYER")
+                if GetActiveTalentGroup and class == "DRUID" and D4:GetWoWBuild() ~= "CATA" then
+                    local group = GetActiveTalentGroup()
+                    local role = GetTalentGroupRole(group)
+                    if role == "DAMAGER" then
+                        specid = 2
+                        icon = 132115
+                    elseif role == "TANK" then
+                        specid = 3
+                    end
+                end
+            end
+
+            if icon == nil then
+                local _, class = UnitClass("PLAYER")
+                icon = D4:GetSpecIcon(class, specid)
+                if icon == nil then
+                    if class == "DRUID" then
+                        icon = 625999
+                    elseif class == "HUNTER" then
+                        icon = 626000
+                    elseif class == "MAGE" then
+                        icon = 626001
+                    elseif class == "PALADIN" then
+                        if specid == 1 then
+                            icon = 135920
+                        elseif specid == 2 then
+                            icon = 135893
+                        elseif specid == 3 then
+                            icon = 135873
+                        end
+                    elseif class == "PRIEST" then
+                        icon = 626004
+                    elseif class == "ROGUE" then
+                        icon = 626005
+                    elseif class == "SHAMAN" then
+                        icon = 626006
+                    elseif class == "WARLOCK" then
+                        icon = 626007
+                    elseif class == "WARRIOR" then
+                        icon = 626008
+                    end
+                end
+            end
+        end
+
+        return specid, icon
+    end
+
+    return nil, nil
+end
+
 function D4:GetRoleByGuid(guid)
-    if UnitGroupRolesAssigned == nil then return "" end
+    if UnitGroupRolesAssigned == nil then return "NONE" end
     for i, unit in pairs(units) do
         if UnitGUID(unit) == guid then return UnitGroupRolesAssigned(unit) end
     end
 
-    return ""
+    return "NONE"
 end
 
 function D4:GetRoleIcon(role)
     if role == "" then return "" end
+    if role == "NONE" then return "" end
     if role == "DAMAGER" then
         return "UI-LFG-RoleIcon-DPS"
     elseif role == "HEALER" then
