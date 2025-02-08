@@ -1,4 +1,4 @@
-local _, MoveAny = ...
+local AddonName, MoveAny = ...
 local MADEBUG = false
 function MoveAny:DEBUG()
 	return MADEBUG
@@ -616,14 +616,21 @@ function MoveAny:InitDB()
 	end
 end
 
+local mf = CreateFrame("FRAME")
+mf:RegisterEvent("PLAYER_LOGIN")
+mf:RegisterEvent("ADDON_LOADED")
 function MoveAny:AddonLoaded(event, ...)
-	if event == "PLAYER_LOGIN" then
-		MoveAny:LoadAddon()
+	if event == "ADDON_LOADED" then
+		if select(1, ...) == AddonName then
+			MoveAny:LoadAddon()
+			mf:UnregisterEvent(event)
+		end
+	elseif event == "PLAYER_LOGIN" then
+		MoveAny:PlayerLogin()
+		mf:UnregisterEvent(event)
 	end
 end
 
-local mf = CreateFrame("FRAME")
-mf:RegisterEvent("PLAYER_LOGIN")
 mf:SetScript("OnEvent", MoveAny.AddonLoaded)
 --[[ FIX ]]
 function MoveAny:TrySaveEditMode()

@@ -490,12 +490,6 @@ local specRoless = {
         [1] = "DAMAGER",
         [2] = "TANK",
     },
-    ["DRUID"] = {
-        [1] = "DAMAGER",
-        [2] = "DAMAGER",
-        [3] = "TANK",
-        [4] = "HEALER",
-    },
     ["EVOKER"] = {
         [1] = "DAMAGER",
         [2] = "HEALER",
@@ -547,6 +541,21 @@ local specRoless = {
         [3] = "TANK",
     },
 }
+
+if D4:GetWoWBuild() == "RETAIL" then
+    specRoless["DRUID"] = {
+        [1] = "DAMAGER",
+        [2] = "DAMAGER",
+        [3] = "TANK",
+        [4] = "HEALER",
+    }
+else
+    specRoless["DRUID"] = {
+        [1] = "DAMAGER",
+        [2] = "TANK",
+        [3] = "HEALER",
+    }
+end
 
 function D4:GetRole(className, specId)
     return specRoless[className][specId]

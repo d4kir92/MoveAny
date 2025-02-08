@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.7"
+local version = "1.8.8"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -589,6 +589,8 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
 		if ExtraAbilityContainer then
 			AddCheckBox(posx, "EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
+		elseif MoveAny:GetWoWBuild() == "CATA" then
+			AddCheckBox(posx, "EXTRAACTIONBARFRAME", false, nil, nil, "ShowExtraAbilities")
 		end
 
 		AddCheckBox(posx, "CASTINGBAR", false, nil, nil, "ShowCastBar")
@@ -1955,6 +1957,16 @@ f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", OnEvent)
 local hookedRep = false
 local hookedRepStatus = false
+function MoveAny:PlayerLogin()
+	MoveAny:InitActionBarLayouts()
+	if MoveAny:AnyActionbarEnabled() then
+		MoveAny:CustomBars()
+		for i, bar in pairs(MoveAny:GetAllActionBars()) do
+			MoveAny:UpdateActionBar(bar)
+		end
+	end
+end
+
 function MoveAny:LoadAddon()
 	MoveAny.init = MoveAny.init or false
 	if MoveAny.init then return end
@@ -2016,19 +2028,6 @@ function MoveAny:LoadAddon()
 		if MainMenuBarExpText then
 			MainMenuBarExpText:SetParent(MainMenuExpBar)
 		end
-	end
-
-	MoveAny:InitActionBarLayouts()
-	if MoveAny:AnyActionbarEnabled() then
-		MoveAny:CustomBars()
-		C_Timer.After(
-			0,
-			function()
-				for i, bar in pairs(MoveAny:GetAllActionBars()) do
-					MoveAny:UpdateActionBar(bar)
-				end
-			end
-		)
 	end
 
 	if MoveAny.InitStanceBar then
@@ -2908,6 +2907,17 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "ExtraAbilityContainer",
 				["lstr"] = "LID_EXTRAABILITYCONTAINER",
+				["userplaced"] = true
+			}
+		)
+	elseif MoveAny:GetWoWBuild() == "CATA" and MoveAny:IsEnabled("EXTRAACTIONBARFRAME", false) then
+		ExtraActionBarFrame = CreateFrame("Frame", "ExtraActionBarFrame", UIParent)
+		ExtraActionBarFrame:SetSize(180, 100)
+		ExtraActionBarFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "ExtraActionBarFrame",
+				["lstr"] = "LID_EXTRAACTIONBARFRAME",
 				["userplaced"] = true
 			}
 		)
@@ -5022,15 +5032,10 @@ function MoveAny:LoadAddon()
 				["funcR"] = function()
 					MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
 					MoveAny:HideMMBtn("MoveAny")
-				end
+				end,
+				["dbkey"] = "SHOWMINIMAPBUTTON"
 			}
 		)
-
-		if MoveAny:IsEnabled("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL") then
-			MoveAny:ShowMMBtn("MoveAny")
-		else
-			MoveAny:HideMMBtn("MoveAny")
-		end
 
 		if MoveAny:IsEnabled("MALOCK", false) then
 			MoveAny:ShowMALock()

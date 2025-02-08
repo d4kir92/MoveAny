@@ -238,6 +238,7 @@ function MoveAny:LangenUS()
 		["LID_LFGMinimapFrame"] = "LFG Minimap Button",
 		["LID_QUESTTIMERFRAME"] = "Quest Timer Frame",
 		["LID_BATTLEFIELDMAPFRAME"] = "Battlefield Map",
+		["LID_EXTRAACTIONBARFRAME"] = "Extra Actionbar (ExtraActionButton1)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
