@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.8"
+local version = "1.8.9"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -532,10 +532,21 @@ function MoveAny:InitMALock()
 	function MoveAny:UpdateElementList()
 		local _, class = UnitClass("player")
 		posy = -4
-		-- AddCheckBox(x, key, val, func, id, editModeEnum, showReload)
 		AddCategory("GENERAL")
 		AddCheckBox(4, "SHOWTIPS", true)
-		AddCheckBox(4, "SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL", MoveAny.MinimapButtonCB, nil, nil, false)
+		AddCheckBox(
+			4,
+			"SHOWMINIMAPBUTTON",
+			MoveAny:GetWoWBuild() ~= "RETAIL",
+			function(sel, value)
+				if value then
+					MoveAny:ShowMMBtn("MoveAny")
+				else
+					MoveAny:HideMMBtn("MoveAny")
+				end
+			end, nil, nil, false
+		)
+
 		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
 		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
 		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
@@ -1965,6 +1976,23 @@ function MoveAny:PlayerLogin()
 			MoveAny:UpdateActionBar(bar)
 		end
 	end
+
+	MoveAny:CreateMinimapButton(
+		{
+			["name"] = "MoveAny",
+			["icon"] = 135994,
+			["dbtab"] = MATAB,
+			["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB" .. version}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+			["funcL"] = function()
+				MoveAny:ToggleMALock()
+			end,
+			["funcR"] = function()
+				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+				MoveAny:HideMMBtn("MoveAny")
+			end,
+			["dbkey"] = "SHOWMINIMAPBUTTON"
+		}
+	)
 end
 
 function MoveAny:LoadAddon()
@@ -5019,23 +5047,6 @@ function MoveAny:LoadAddon()
 				end
 			end
 		end
-
-		MoveAny:CreateMinimapButton(
-			{
-				["name"] = "MoveAny",
-				["icon"] = 135994,
-				["dbtab"] = MATAB,
-				["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB" .. version}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
-				["funcL"] = function()
-					MoveAny:ToggleMALock()
-				end,
-				["funcR"] = function()
-					MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
-					MoveAny:HideMMBtn("MoveAny")
-				end,
-				["dbkey"] = "SHOWMINIMAPBUTTON"
-			}
-		)
 
 		if MoveAny:IsEnabled("MALOCK", false) then
 			MoveAny:ShowMALock()

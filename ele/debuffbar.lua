@@ -3,7 +3,6 @@ local btnsize = 36
 local MADEBUFFLIMIT = 10
 local MADEBUFFSPACINGX = 4
 local MADEBUFFSPACINGY = 10
-local debuffs = {}
 local once = true
 local MADebuffBar = nil
 function MoveAny:GetDebuffBar()
