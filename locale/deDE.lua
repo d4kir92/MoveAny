@@ -232,7 +232,7 @@ function MoveAny:LangdeDE()
 		["LID_LFGMinimapFrame"] = "LFG Minimapknopf",
 		["LID_QUESTTIMERFRAME"] = "Questzeit-Fenster",
 		["LID_BATTLEFIELDMAPFRAME"] = "Schlachtfeld Karte",
-		["LID_EXTRAACTIONBARFRAME"] = "Extra Aktionsleiste (ExtraActionButton1)",
+		["LID_ExtraActionButton1"] = "Extra Aktionsleiste (ExtraActionButton1)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
