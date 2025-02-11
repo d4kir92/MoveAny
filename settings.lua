@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.10"
+local version = "1.8.12"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
