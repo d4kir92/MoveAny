@@ -664,3 +664,18 @@ function D4:GetRoleIcon(role)
 
     return ""
 end
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("PLAYER_LOGIN")
+f:SetScript(
+    "OnEvent",
+    function(self, event, ...)
+        if GetTrackingTexture then
+            local trackingTexture = GetTrackingTexture()
+            if trackingTexture and MiniMapTracking and MiniMapTrackingIcon and not MiniMapTrackingIcon:GetTexture() then
+                MiniMapTrackingIcon:SetTexture(trackingTexture)
+                MiniMapTracking:Show()
+            end
+        end
+    end
+)
