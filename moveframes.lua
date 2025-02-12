@@ -238,7 +238,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 					if name2 then
 						local fM = _G[name2 .. "Move"]
 						if not fM then
-							MoveAny:MSG("FAILED TO STOP MOVING", name)
+							MoveAny:INFO("FAILED TO STOP MOVING", name)
 
 							return
 						end

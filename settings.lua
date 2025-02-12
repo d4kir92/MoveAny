@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.12"
+local version = "1.8.13"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -4201,6 +4201,16 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MINIMAP", false) then
+		C_Timer.After(
+			3,
+			function()
+				local ltpEnhancedMinimap = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
+				if ltpEnhancedMinimap then
+					MoveAny:INFO("LeatrixPlus \"EnhancedMinimap\" is enabled, which will block moving the minimap.")
+				end
+			end
+		)
+
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			MoveAny:RegisterWidget(
 				{

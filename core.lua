@@ -319,13 +319,13 @@ end
 function MoveAny:ToggleMALock()
 	if MoveAny:IsMALockNotReady() then return end
 	if InCombatLockdown() then
-		MoveAny:MSG("You are in Combat")
+		MoveAny:INFO("You are in Combat")
 
 		return
 	end
 
 	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then
-		MoveAny:MSG("Can't Toggle Settings Frame when it is not saved.")
+		MoveAny:INFO("Can't Toggle Settings Frame when it is not saved.")
 
 		return
 	end
