@@ -80,7 +80,7 @@ function MoveAny:UpdateCurrentWindow()
 			GameTooltip:Hide()
 		end
 
-		if currentWindow ~= nil then
+		if currentWindow ~= nil and MoveAny:IsEnabled("SCALEFRAMES", false) then
 			local curMouseX, curMouseY = GetCursorPosition()
 			if prevMouseX and prevMouseY then
 				if curMouseY > prevMouseY then
@@ -202,6 +202,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 						"SetScale",
 						function(sel, scale)
 							if InCombatLockdown() and sel:IsProtected() then return false end
+							if MoveAny:IsEnabled("SCALEFRAMES", false) == false then return false end
 							if scale and type(scale) == "number" and scale > 0 and (currentWindow == nil or currentWindow ~= sel) then
 								fm:SetScale(scale)
 							end
@@ -458,7 +459,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 							end
 
 							--scale > 0.001 fix for TSM - TradeSkillMaster, they "hide" it with low scale
-							if sca and type(sca) == "number" and sca > 0 and (currentWindow == nil or currentWindow ~= sel) and scale > 0.001 then
+							if MoveAny:IsEnabled("SCALEFRAMES", false) and sca and type(sca) == "number" and sca > 0 and (currentWindow == nil or currentWindow ~= sel) and scale > 0.001 then
 								sel:SetScale(sca)
 							end
 						end
@@ -467,28 +468,30 @@ function MoveAny:UpdateMoveFrames(from, force)
 					end
 				)
 
-				if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
-					if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
-						frame:SetScale(MoveAny:GetFrameScale(name))
-						C_Timer.After(
-							4,
-							function()
-								if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
-									if GetScreenHeight() / frame:GetHeight() > 0 then
-										MoveAny:SetFrameScale(name, GetScreenHeight() / frame:GetHeight())
-									end
+				if MoveAny:IsEnabled("SCALEFRAMES", false) then
+					if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
+						if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
+							frame:SetScale(MoveAny:GetFrameScale(name))
+							C_Timer.After(
+								4,
+								function()
+									if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
+										if GetScreenHeight() / frame:GetHeight() > 0 then
+											MoveAny:SetFrameScale(name, GetScreenHeight() / frame:GetHeight())
+										end
 
-									frame:SetScale(MoveAny:GetFrameScale(name))
+										frame:SetScale(MoveAny:GetFrameScale(name))
+									end
 								end
-							end
-						)
-					elseif MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
-						frame:SetScale(MoveAny:GetFrameScale(name))
-					end
-				else
-					local scale = frame:GetScale()
-					if scale and scale > 0 then
-						frame:SetScale(scale)
+							)
+						elseif MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
+							frame:SetScale(MoveAny:GetFrameScale(name))
+						end
+					else
+						local scale = frame:GetScale()
+						if scale and scale > 0 then
+							frame:SetScale(scale)
+						end
 					end
 				end
 

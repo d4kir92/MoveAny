@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.14"
+local version = "1.8.15"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -557,14 +557,15 @@ function MoveAny:InitMALock()
 		AddCheckBox(24, "SCALELOOTFRAME", false)
 		AddSlider(26, "KEYBINDWINDOW", 1, MoveAny.UpdateFrameKeybind, 1, 3, 1, keybinds)
 		AddCategory("MOVEFRAMES", 2)
-		AddCheckBox(36, "SAVEFRAMEPOSITION", true)
-		AddCheckBox(36, "FRAMESKEYDRAG", false)
+		AddCheckBox(24, "SAVEFRAMEPOSITION", true)
+		AddCheckBox(24, "FRAMESKEYDRAG", false)
 		AddSlider(40, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1)
 		AddCategory("SCALEFRAMES", 2)
+		AddCheckBox(24, "SCALEFRAMES", true)
 		AddCheckBox(36, "SAVEFRAMESCALE", true)
 		AddCheckBox(36, "FRAMESKEYSCALE", false)
 		AddCategory("RESETFRAMES", 2)
-		AddCheckBox(36, "FRAMESKEYRESET", false)
+		AddCheckBox(24, "FRAMESKEYRESET", false)
 		MoveAny:UpdateFrameKeybindText()
 		AddCategory("BUILTIN", 1, true)
 		local posx = 4
