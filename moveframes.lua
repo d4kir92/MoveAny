@@ -561,7 +561,14 @@ function MoveAny:MoveFrames()
 		"OnEvent",
 		function(sel, event, ...)
 			C_Timer.After(
-				0.04,
+				0.01,
+				function()
+					MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
+				end
+			)
+
+			C_Timer.After(
+				0.1,
 				function()
 					MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
 				end
