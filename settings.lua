@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.17"
+local version = "1.8.18"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -3123,8 +3123,8 @@ function MoveAny:LoadAddon()
 			MainMenuBarRightEndCap:SetParent(MAHIDDEN)
 		end
 
-		MA_LeftEndCap:SetFrameLevel(3)
-		MA_RightEndCap:SetFrameLevel(3)
+		MA_LeftEndCap:SetFrameLevel(10)
+		MA_RightEndCap:SetFrameLevel(10)
 		MA_LeftEndCap.tex:SetDrawLayer("OVERLAY", 2)
 		MA_RightEndCap.tex:SetDrawLayer("OVERLAY", 2)
 		MA_LeftEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
