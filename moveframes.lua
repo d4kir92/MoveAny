@@ -518,7 +518,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 	end
 
 	C_Timer.After(
-		0.3,
+		0.2,
 		function()
 			run = false
 			if runId ~= id then
@@ -560,13 +560,7 @@ function MoveAny:MoveFrames()
 	f:SetScript(
 		"OnEvent",
 		function(sel, event, ...)
-			C_Timer.After(
-				0.01,
-				function()
-					MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
-				end
-			)
-
+			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
 			C_Timer.After(
 				0.1,
 				function()
