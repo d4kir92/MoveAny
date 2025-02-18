@@ -17,7 +17,7 @@ function MoveAny:LangdeDE()
 		["LID_CTRL"] = "STRG",
 		["LID_ALT"] = "ALT",
 		["LID_FRAMESKEYDRAG"] = "Fenster mit %s + Linksklick-ziehen bewegen",
-		["LID_FRAMESKEYSCALE"] = "Fenster mit %s + Rechtsklick-ziehen skalieren",
+		["LID_FRAMESKEYSCALE"] = "Fenster mit %s + Rechtsklick-ziehen zum skalieren",
 		["LID_FRAMESKEYRESET"] = "Fenster mit %s + Mausradklick resetten",
 		["LID_PLAYERFRAME"] = "Spielerfenster",
 		["LID_PLAYERLEVELTEXT"] = "Spielerfenster-Level",
@@ -222,7 +222,7 @@ function MoveAny:LangdeDE()
 		["LID_POWERBARCOUNTERBAR"] = "Machtleiste Gegenleiste",
 		["LID_BUFFTIMER1"] = "Stärkungszeit 1",
 		["LID_FRAMES"] = "Fenster",
-		["LID_SCALEFRAMES"] = "Fenster skalieren",
+		["LID_SCALEFRAMES"] = "Fenster skalieren (Fenster größe ändern)",
 		["LID_RESETFRAMES"] = "Fenster resetten",
 		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
 		["LID_MOVEANYINFO"] = "Wählen Sie die Dinge aus, die Sie ändern möchten",
@@ -233,6 +233,7 @@ function MoveAny:LangdeDE()
 		["LID_QUESTTIMERFRAME"] = "Questzeit-Fenster",
 		["LID_BATTLEFIELDMAPFRAME"] = "Schlachtfeld Karte",
 		["LID_ExtraActionButton1"] = "Extra Aktionsleiste (ExtraActionButton1)",
+		["LID_FRAMESCALEDISABLED"] = "\"Fenster skalieren (Fenster größe ändern)\" ist deaktiviert, bitte aktivieren."
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

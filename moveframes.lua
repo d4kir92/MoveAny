@@ -132,8 +132,12 @@ function MoveAny:FrameDragInfo(frame, c)
 	else
 		local text = nil
 		if IsMouseButtonDown("RightButton") then
-			if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
-				text = format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+			if MoveAny:IsEnabled("SCALEFRAMES", false) then
+				if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
+					text = format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+				end
+			else
+				text = MoveAny:GT("LID_FRAMESCALEDISABLED")
 			end
 		elseif IsMouseButtonDown("LeftButton") then
 			if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then

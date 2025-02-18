@@ -228,7 +228,7 @@ function MoveAny:LangenUS()
 		["LID_POWERBARCOUNTERBAR"] = "Powerbar Counterbar",
 		["LID_BUFFTIMER1"] = "BuffTimer 1",
 		["LID_FRAMES"] = "Windows",
-		["LID_SCALEFRAMES"] = "Scale Windows",
+		["LID_SCALEFRAMES"] = "Scale Windows (Resize Windows)",
 		["LID_RESETFRAMES"] = "Reset Windows",
 		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
 		["LID_MOVEANYINFO"] = "Select the things you want to modify",
@@ -239,6 +239,7 @@ function MoveAny:LangenUS()
 		["LID_QUESTTIMERFRAME"] = "Quest Timer Frame",
 		["LID_BATTLEFIELDMAPFRAME"] = "Battlefield Map",
 		["LID_ExtraActionButton1"] = "Extra Actionbar (ExtraActionButton1)",
+		["LID_FRAMESCALEDISABLED"] = "\"Scale Windows (Resize Windows)\" is disabled, please enable it."
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
