@@ -236,6 +236,43 @@ function D4:CreateMinimapButton(params)
         )
     end
 
+    btn.fadeOut = btn:CreateAnimationGroup()
+    local animOut = btn.fadeOut:CreateAnimation("Alpha")
+    animOut:SetOrder(1)
+    animOut:SetDuration(0.2)
+    animOut:SetFromAlpha(1)
+    animOut:SetToAlpha(0)
+    animOut:SetStartDelay(1)
+    btn.fadeOut:SetToFinalAlpha(true)
+    Minimap:HookScript(
+        "OnEnter",
+        function()
+            if btn:GetParent() == Minimap then
+                btn.fadeOut:Stop()
+                btn:SetAlpha(1)
+            else
+                btn.fadeOut:Stop()
+                btn:SetAlpha(1)
+            end
+        end
+    )
+
+    Minimap:HookScript(
+        "OnLeave",
+        function()
+            if btn:GetParent() == Minimap then
+                btn.fadeOut:Play()
+            else
+                btn.fadeOut:Stop()
+                btn:SetAlpha(1)
+            end
+        end
+    )
+
+    if btn:GetParent() == Minimap then
+        btn.fadeOut:Play()
+    end
+
     if params.dbkey and params.dbkey ~= "" then
         if D4.IsEnabled then
             if D4:IsEnabled(params.dbkey, D4:GetWoWBuild() ~= "RETAIL") then
@@ -289,7 +326,7 @@ function D4:UpdateLTP()
     local MinimapModder = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
     if MinimapModder then
         local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"
-        local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
+        --local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
         local btnParent = _G["LeaPlusGlobalMinimapCombinedButtonFrame"]
         local childs = {Minimap:GetChildren()}
         for i, btn in pairs(childs) do
@@ -301,31 +338,6 @@ function D4:UpdateLTP()
                     D4:UpdatePosition(btn, btn.pos)
                     if CombineAddonButtons and btnParent then
                         btn:SetParent(btnParent)
-                    elseif HideMiniAddonButtons then
-                        btn.fadeOut = btn:CreateAnimationGroup()
-                        local animOut = btn.fadeOut:CreateAnimation("Alpha")
-                        animOut:SetOrder(1)
-                        animOut:SetDuration(0.2)
-                        animOut:SetFromAlpha(1)
-                        animOut:SetToAlpha(0)
-                        animOut:SetStartDelay(1)
-                        btn.fadeOut:SetToFinalAlpha(true)
-                        Minimap:HookScript(
-                            "OnEnter",
-                            function()
-                                btn.fadeOut:Stop()
-                                btn:SetAlpha(1)
-                            end
-                        )
-
-                        Minimap:HookScript(
-                            "OnLeave",
-                            function()
-                                btn.fadeOut:Play()
-                            end
-                        )
-
-                        btn.fadeOut:Play()
                     end
                 end
             end
