@@ -88,6 +88,7 @@ function MoveAny:LangenUS()
 		["LID_CHATBUTTONFRAME10"] = "Chat Buttons for Tab 10",
 		["LID_CHATQUICKJOIN"] = "Chat Quick Join",
 		["LID_CHATEDITBOX"] = "Chat Inputbox %s",
+		["LID_CHATTAB"] = "Chat Tab %s",
 		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
 		["LID_BNToastFrame"] = "Battlenet Friends Notifications",
 		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay (Class Proc)",

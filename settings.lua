@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.19"
+local version = "1.8.20"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -874,6 +874,7 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "CHATEDITBOX", false, nil, "")
+		AddCheckBox(4, "CHATTAB", false, nil, "")
 		if BNToastFrame then
 			AddCheckBox(4, "BNToastFrame", false)
 		end
@@ -3200,8 +3201,8 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("CHATEDITBOX", false) then
-		for i = 1, 12 do
+	for i = 1, 12 do
+		if MoveAny:IsEnabled("CHATEDITBOX", false) then
 			local ceb = _G["ChatFrame" .. i .. "EditBox"]
 			if ceb then
 				hooksecurefunc(
@@ -3218,17 +3219,27 @@ function MoveAny:LoadAddon()
 				ceb:SetClampRectInsets(2, 2, 2, 2)
 			end
 		end
+	end
 
-		for i = 1, 12 do
-			if _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "ChatFrame" .. i .. "EditBox",
-						["lstr"] = "LID_CHATEDITBOX",
-						["lstri"] = i,
-					}
-				)
-			end
+	for i = 1, 12 do
+		if MoveAny:IsEnabled("CHATEDITBOX", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ChatFrame" .. i .. "EditBox",
+					["lstr"] = "LID_CHATEDITBOX",
+					["lstri"] = i,
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("CHATTAB", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ChatFrame" .. i .. "Tab",
+					["lstr"] = "LID_CHATTAB",
+					["lstri"] = i,
+				}
+			)
 		end
 	end
 
