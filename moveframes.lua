@@ -35,30 +35,32 @@ for i, v in pairs(MAFRAMES) do
 end
 
 if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
+	local setParent = false
 	hooksecurefunc(
 		ScriptErrorsFrame.DragArea,
 		"SetParent",
 		function(sel)
-			if sel.ma_setparent then return end
-			sel.ma_setparent = true
+			if setParent then return end
+			setParent = true
 			sel:SetParent(MAHIDDEN)
-			sel.ma_setparent = false
+			setParent = false
 		end
 	)
 
 	ScriptErrorsFrame.DragArea:SetParent(MAHIDDEN)
 end
 
+local tab = {}
 function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
-	window.ma_ignore_setpointbase = window.ma_ignore_setpointbase or false
+	tab[window] = tab[window] or false
 	if InCombatLockdown() and window:IsProtected() then return false end
 	if p1 then
 		local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
 		ClearAllPoints(window)
 		local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
-		window.ma_ignore_setpointbase = true
+		tab[window] = true
 		SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
-		window.ma_ignore_setpointbase = false
+		tab[window] = false
 	end
 
 	return true
@@ -162,12 +164,15 @@ local run = false
 local id = 0
 local waitingFrames = {}
 local waitingFramesDone = {}
-function MoveAny:UpdateMoveFrames(from, force)
+local maframesetpoint = {}
+local masetscale_frame = {}
+local ma_ismoving = {}
+function MoveAny:UpdateMoveFrames(from, force, ts)
 	id = id + 1
 	if run then return end
 	run = true
 	local runId = id
-	if MoveAny:IsEnabled("MOVEFRAMES", true) then
+	if MoveAny:Loaded() and MoveAny:IsEnabled("MOVEFRAMES", true) then
 		for i, name in pairs(EnableMouseFrames) do
 			local frame = _G[name]
 			if frame and HookedEnableMouseFrames[name] == nil then
@@ -215,7 +220,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 
 					function fm:UpdatePreview()
 						local fM = _G[name .. "Move"]
-						if fM and fM.ma_ismoving then
+						if fM and ma_ismoving[fM] then
 							if fM:GetLeft() then
 								fM.ma_x = fM:GetLeft()
 								fM.ma_y = fM:GetTop() - fM:GetHeight()
@@ -248,8 +253,8 @@ function MoveAny:UpdateMoveFrames(from, force)
 							return
 						end
 
-						if fM.ma_ismoving then
-							fM.ma_ismoving = false
+						if ma_ismoving[fM] then
+							ma_ismoving[fM] = false
 							fM:StopMovingOrSizing()
 							fM:SetUserPlaced(false)
 						end
@@ -329,7 +334,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 						if not InCombatLockdown() then
 							fm:StartMoving()
 							fm:SetUserPlaced(false)
-							fm.ma_ismoving = true
+							ma_ismoving[fM] = true
 						end
 
 						fm:UpdatePreview()
@@ -425,8 +430,8 @@ function MoveAny:UpdateMoveFrames(from, force)
 					frame,
 					"SetPoint",
 					function(sel, p1, p2, p3, p4, p5)
-						if sel.maframesetpoint then return end
-						sel.maframesetpoint = true
+						if maframesetpoint[sel] then return end
+						maframesetpoint[sel] = true
 						sel:SetMovable(true)
 						if sel.SetUserPlaced and sel:IsMovable() then
 							sel:SetUserPlaced(false)
@@ -444,7 +449,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 							end
 						end
 
-						sel.maframesetpoint = false
+						maframesetpoint[sel] = false
 					end
 				)
 
@@ -453,8 +458,8 @@ function MoveAny:UpdateMoveFrames(from, force)
 					"SetScale",
 					function(sel, scale)
 						if InCombatLockdown() and sel:IsProtected() then return false end
-						if sel.masetscale_frame then return end
-						sel.masetscale_frame = true
+						if masetscale_frame[sel] then return end
+						masetscale_frame[sel] = true
 						if name == "LootFrame" and MoveAny:IsEnabled("SCALELOOTFRAME", false) == false then return end
 						if MoveAny:GetFrameScale(name) or (scale and type(scale) == "number") then
 							local sca = MoveAny:GetFrameScale(name) or scale
@@ -468,7 +473,7 @@ function MoveAny:UpdateMoveFrames(from, force)
 							end
 						end
 
-						sel.masetscale_frame = false
+						masetscale_frame[sel] = false
 					end
 				)
 
@@ -513,7 +518,24 @@ function MoveAny:UpdateMoveFrames(from, force)
 					function()
 						if waitingFramesDone[name] == nil then
 							waitingFramesDone[name] = true
-							MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true)
+							MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true, ts)
+						end
+					end
+				)
+			end
+		end
+	else
+		for i, name in pairs(MAFS) do
+			local frame = MoveAny:GetWindow(name)
+			if frame ~= nil and waitingFrames[name] == nil and frame.Show then
+				waitingFrames[name] = true
+				hooksecurefunc(
+					frame,
+					"Show",
+					function()
+						if waitingFramesDone[name] == nil then
+							waitingFramesDone[name] = true
+							MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true, ts)
 						end
 					end
 				)
@@ -521,21 +543,34 @@ function MoveAny:UpdateMoveFrames(from, force)
 		end
 	end
 
-	C_Timer.After(
-		0.2,
-		function()
-			run = false
-			if runId ~= id then
-				MoveAny:UpdateMoveFrames("RETRY: " .. from)
+	if ts ~= nil then
+		C_Timer.After(
+			ts,
+			function()
+				run = false
+				if runId ~= id then
+					MoveAny:UpdateMoveFrames("RETRY: " .. from, force, ts)
+				end
 			end
-		end
-	)
+		)
+	else
+		run = false
+	end
 end
 
 local allowedFrameTypes = {}
 allowedFrameTypes["frame"] = true
 allowedFrameTypes["Frame"] = true
 allowedFrameTypes["FRAME"] = true
+hooksecurefunc(
+	"CreateFrame",
+	function(frameType, frameName, parent, template)
+		if allowedFrameTypes[frameType] then
+			MoveAny:UpdateMoveFrames("CreateFrame", 0.1)
+		end
+	end
+)
+
 function MoveAny:MoveFrames()
 	if MoveAny:IsEnabled("MOVESMALLBAGS", false) then
 		for i = 1, 20 do
@@ -549,28 +584,13 @@ function MoveAny:MoveFrames()
 		MAFS["LootFrame"] = "LootFrame"
 	end
 
-	hooksecurefunc(
-		"CreateFrame",
-		function(frameType, frameName, parent, template)
-			if allowedFrameTypes[frameType] then
-				MoveAny:UpdateMoveFrames("CreateFrame")
-			end
-		end
-	)
-
-	MoveAny:UpdateMoveFrames("Start")
+	MoveAny:UpdateMoveFrames("Start", true)
 	local f = CreateFrame("Frame")
 	f:RegisterEvent("ADDON_LOADED")
 	f:SetScript(
 		"OnEvent",
 		function(sel, event, ...)
 			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
-			C_Timer.After(
-				0.1,
-				function()
-					MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
-				end
-			)
 		end
 	)
 

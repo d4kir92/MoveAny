@@ -1417,7 +1417,7 @@ function MoveAny:ShowProfiles()
 										"OnClick",
 										function()
 											local profileName = MADownloadProfile.ProfileName:GetText()
-											MoveAny:CheckDB()
+											MoveAny:CheckDB("PROFILES")
 											if MATAB["PROFILES"][profileName] == nil then
 												MoveAny:ImportProfile(profileName, WebProfileData)
 												C_UI.Reload()
@@ -1578,7 +1578,7 @@ function MoveAny:ShowProfiles()
 								function()
 									local delay = 0.01
 									C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";0", "WHISPER", source)
-									MoveAny:CheckDB()
+									MoveAny:CheckDB("MAShareProfile")
 									if MATAB["PROFILES"][profile] then
 										local max = 0
 										local count = 0
