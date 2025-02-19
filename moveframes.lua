@@ -66,58 +66,59 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	return true
 end
 
-local currentWindow = nil
 local currentWindowName = nil
 local prevMouseX = nil
 local prevMouseY = nil
 local updatingFrame = false
 function MoveAny:UpdateCurrentWindow()
-	if currentWindow ~= nil then
-		if updatingFrame then return end
-		updatingFrame = true
-		if not currentWindow:IsShown() then
-			currentWindow:SetAlpha(1)
-			currentWindow = nil
-			currentWindowName = nil
-			GameTooltip:Hide()
-		end
-
-		if currentWindow ~= nil and MoveAny:IsEnabled("SCALEFRAMES", false) then
-			local curMouseX, curMouseY = GetCursorPosition()
-			if prevMouseX and prevMouseY then
-				if curMouseY > prevMouseY then
-					local newScale = math.min(currentWindow:GetScale() + 0.006, 2.5)
-					if newScale > 0 then
-						newScale = tonumber(string.format("%.3f", newScale))
-						currentWindow:SetScale(newScale)
-						if currentWindow.isMaximized and newScale > 1 then
-							newScale = 1
-						end
-
-						MoveAny:SetFrameScale(currentWindowName, newScale)
-					end
-				elseif curMouseY < prevMouseY then
-					local newScale = math.max(currentWindow:GetScale() - 0.006, 0.5)
-					if newScale > 0 then
-						newScale = tonumber(string.format("%.3f", newScale))
-						currentWindow:SetScale(newScale)
-						if currentWindow.isMaximized and newScale > 1 then
-							newScale = 1
-						end
-
-						MoveAny:SetFrameScale(currentWindowName, newScale)
-					end
-				end
+	if currentWindowName ~= nil then
+		local currentWindow = _G[currentWindowName]
+		if currentWindow then
+			if updatingFrame then return end
+			updatingFrame = true
+			if not currentWindow:IsShown() then
+				currentWindow:SetAlpha(1)
+				currentWindowName = nil
+				GameTooltip:Hide()
 			end
 
-			GameTooltip:SetOwner(currentWindow)
-			GameTooltip:SetText(MoveAny:MathR(currentWindow:GetScale() * 100) .. "%")
-			prevMouseX = curMouseX
-			prevMouseY = curMouseY
-		end
+			if currentWindowName ~= nil and MoveAny:IsEnabled("SCALEFRAMES", false) then
+				local curMouseX, curMouseY = GetCursorPosition()
+				if prevMouseX and prevMouseY then
+					if curMouseY > prevMouseY then
+						local newScale = math.min(currentWindow:GetScale() + 0.006, 2.5)
+						if newScale > 0 then
+							newScale = tonumber(string.format("%.3f", newScale))
+							currentWindow:SetScale(newScale)
+							if currentWindow.isMaximized and newScale > 1 then
+								newScale = 1
+							end
 
-		updatingFrame = false
-		C_Timer.After(0.02, MoveAny.UpdateCurrentWindow)
+							MoveAny:SetFrameScale(currentWindowName, newScale)
+						end
+					elseif curMouseY < prevMouseY then
+						local newScale = math.max(currentWindow:GetScale() - 0.006, 0.5)
+						if newScale > 0 then
+							newScale = tonumber(string.format("%.3f", newScale))
+							currentWindow:SetScale(newScale)
+							if currentWindow.isMaximized and newScale > 1 then
+								newScale = 1
+							end
+
+							MoveAny:SetFrameScale(currentWindowName, newScale)
+						end
+					end
+				end
+
+				GameTooltip:SetOwner(currentWindow)
+				GameTooltip:SetText(MoveAny:MathR(currentWindow:GetScale() * 100) .. "%")
+				prevMouseX = curMouseX
+				prevMouseY = curMouseY
+			end
+
+			updatingFrame = false
+			C_Timer.After(0.02, MoveAny.UpdateCurrentWindow)
+		end
 	end
 end
 
@@ -212,7 +213,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						function(sel, scale)
 							if InCombatLockdown() and sel:IsProtected() then return false end
 							if MoveAny:IsEnabled("SCALEFRAMES", false) == false then return false end
-							if scale and type(scale) == "number" and scale > 0 and (currentWindow == nil or currentWindow ~= sel) then
+							if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then
 								fm:SetScale(scale)
 							end
 						end
@@ -253,14 +254,13 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							return
 						end
 
-						if ma_ismoving[fM] then
+						if fM and ma_ismoving[fM] then
 							ma_ismoving[fM] = false
 							fM:StopMovingOrSizing()
 							fM:SetUserPlaced(false)
 						end
 					end
 
-					currentWindow = nil
 					currentWindowName = nil
 				end
 
@@ -326,7 +326,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					end
 
 					if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
-						currentWindow = frame
 						currentWindowName = name
 						MoveAny:UpdateCurrentWindow()
 						GameTooltip:Hide()
@@ -334,7 +333,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						if not InCombatLockdown() then
 							fm:StartMoving()
 							fm:SetUserPlaced(false)
-							ma_ismoving[fM] = true
+							ma_ismoving[fm] = true
 						end
 
 						fm:UpdatePreview()
@@ -468,7 +467,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 
 							--scale > 0.001 fix for TSM - TradeSkillMaster, they "hide" it with low scale
-							if MoveAny:IsEnabled("SCALEFRAMES", false) and sca and type(sca) == "number" and sca > 0 and (currentWindow == nil or currentWindow ~= sel) and scale > 0.001 then
+							if MoveAny:IsEnabled("SCALEFRAMES", false) and sca and type(sca) == "number" and sca > 0 and (currentWindowName == nil) and scale > 0.001 then
 								sel:SetScale(sca)
 							end
 						end
