@@ -199,6 +199,14 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
 	end
 
+	if string.find(name, "TargetFrameBuff1") then
+		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
+	end
+
+	if string.find(name, "TargetFrameDebuff1") then
+		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
+	end
+
 	if string.find(name, "MainMenuExpBar") then
 		table.insert(tabs, MoveAny:GT("LID_MAINMENUEXPBAR"))
 	end
@@ -670,7 +678,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if MoveAny:GetWoWBuild() ~= "RETAIL" and name == "MABuffBar" then
 				MoveAny:CreateSlider(
 					content,
 					10,
@@ -771,7 +779,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if MoveAny:GetWoWBuild() ~= "RETAIL" and name == "MADebuffBar" then
 				MoveAny:CreateSlider(
 					content,
 					10,

@@ -9,9 +9,9 @@ function MoveAny:GetDebuffBar()
 	return MADebuffBar
 end
 
-function MoveAny:GetDebuffPosition(p1, p3)
-	MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] = MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] or 0
-	if MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 0 then
+function MoveAny:GetDebuffPosition(name, p1, p3)
+	MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] = MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] or 0
+	if MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 0 then
 		if p1 == "TOPLEFT" or p1 == "LEFT" then
 			return "TOPLEFT", "TOPLEFT"
 		elseif p1 == "TOPRIGHT" or p1 == "RIGHT" or p1 == "TOP" or p1 == "CENTER" then
@@ -21,13 +21,13 @@ function MoveAny:GetDebuffPosition(p1, p3)
 		elseif p1 == "BOTTOMRIGHT" or p1 == "BOTTOM" then
 			return "BOTTOMRIGHT", "BOTTOMRIGHT"
 		end
-	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 1 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 1 then
 		return "TOPRIGHT", "TOPRIGHT"
-	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 2 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 2 then
 		return "TOPLEFT", "TOPLEFT"
-	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 3 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 3 then
 		return "BOTTOMRIGHT", "BOTTOMRIGHT"
-	elseif MoveAny:GetEleOptions("MADebuffBar", "GetBuffPosition")["MADEBUFFMODE"] == 4 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 4 then
 		return "BOTTOMLEFT", "BOTTOMLEFT"
 	end
 
@@ -59,7 +59,7 @@ function MoveAny:InitDebuffBar()
 		local dirV = "BOTTOM"
 		function MoveAny:UpdateDebuffDirections()
 			local p1, _, p3, _, _ = MADebuffBar:GetPoint()
-			local bp1, bp3 = MoveAny:GetDebuffPosition(p1, p3)
+			local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
 			rel = "RIGHT"
 			if bp1 == "TOPLEFT" then
 				rel = "LEFT"
@@ -107,7 +107,7 @@ function MoveAny:InitDebuffBar()
 								if sel.setpoint_bbtn then return end
 								sel.setpoint_bbtn = true
 								local p1, _, p3, _, _ = MADebuffBar:GetPoint()
-								local bp1, bp3 = MoveAny:GetDebuffPosition(p1, p3)
+								local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
 								local sw2, sh2 = sel:GetSize()
 								local numBuffs = 1
 								local prevBuff = nil

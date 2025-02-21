@@ -4,9 +4,9 @@ local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
 local MADEBUFFSPACING = 140
-function MoveAny:GetBuffPosition(p1, p3)
-	MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] = MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] or 0
-	if MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 0 then
+function MoveAny:GetBuffPosition(name, p1, p3)
+	MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] = MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] or 0
+	if MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 0 then
 		if p1 == "TOPLEFT" or p1 == "LEFT" then
 			return "TOPLEFT", "TOPLEFT"
 		elseif p1 == "TOPRIGHT" or p1 == "RIGHT" or p1 == "TOP" or p1 == "CENTER" then
@@ -16,13 +16,13 @@ function MoveAny:GetBuffPosition(p1, p3)
 		elseif p1 == "BOTTOMRIGHT" or p1 == "BOTTOM" then
 			return "BOTTOMRIGHT", "BOTTOMRIGHT"
 		end
-	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 1 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 1 then
 		return "TOPRIGHT", "TOPRIGHT"
-	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 2 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 2 then
 		return "TOPLEFT", "TOPLEFT"
-	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 3 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 3 then
 		return "BOTTOMRIGHT", "BOTTOMRIGHT"
-	elseif MoveAny:GetEleOptions("MABuffBar", "GetBuffPosition")["MABUFFMODE"] == 4 then
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 4 then
 		return "BOTTOMLEFT", "BOTTOMLEFT"
 	end
 
@@ -71,7 +71,7 @@ function MoveAny:InitBuffBar()
 				MABUFFSPACINGX = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGX", 4)
 				MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
 				local p1, _, p3 = MABuffBar:GetPoint()
-				local bp1 = MoveAny:GetBuffPosition(p1, p3)
+				local bp1 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 				local left = bp1 == "TOPLEFT" or bp1 == "LEFT" or bp1 == "BOTTOMLEFT"
 				local bottom = bp1 == "BOTTOMLEFT" or bp1 == "BOTTOM" or bp1 == "BOTTOMRIGHT"
 				if left then
@@ -237,7 +237,7 @@ function MoveAny:InitBuffBar()
 		local dirV = "BOTTOM"
 		function MoveAny:UpdateBuffDirections()
 			local p1, _, p3, _, _ = MABuffBar:GetPoint()
-			local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+			local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 			rel = "RIGHT"
 			if bp1 == "TOPLEFT" then
 				rel = "LEFT"
@@ -277,7 +277,7 @@ function MoveAny:InitBuffBar()
 
 					sel:SetParent(MABuffBar)
 					local p1, _, p3, _, _ = MABuffBar:GetPoint()
-					local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 					local x = 0
 					if GetCVarBool("consolidateBuffs") then
 						x = x + 1
@@ -308,7 +308,7 @@ function MoveAny:InitBuffBar()
 
 					sel:SetParent(MABuffBar)
 					local p1, _, p3, _, _ = MABuffBar:GetPoint()
-					local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 					local x = 1
 					if GetCVarBool("consolidateBuffs") then
 						x = x + 1
@@ -344,7 +344,7 @@ function MoveAny:InitBuffBar()
 
 					sel:SetParent(MABuffBar)
 					local p1, _, p3, _, _ = MABuffBar:GetPoint()
-					local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 					local x = 2
 					if GetCVarBool("consolidateBuffs") then
 						x = x + 1
@@ -416,7 +416,7 @@ function MoveAny:InitBuffBar()
 								if sel.setpoint_bbtn then return end
 								sel.setpoint_bbtn = true
 								local p1, _, p3, _, _ = MABuffBar:GetPoint()
-								local bp1, bp3 = MoveAny:GetBuffPosition(p1, p3)
+								local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 								local sw2, sh2 = sel:GetSize()
 								local numBuffs = 1
 								local prevBuff = nil

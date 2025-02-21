@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.23"
+local version = "1.8.24"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -2451,6 +2451,9 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFLIMIT", 10)
+			local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGX", 4)
+			local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGY", 10)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "TargetFrameBuff1",
@@ -2471,6 +2474,34 @@ function MoveAny:LoadAddon()
 							end
 						end
 
+						function frame:Update()
+							local obb = _G["TargetFrameBuff" .. 1]
+							for i = 1, 32 do
+								local bb = _G["TargetFrameBuff" .. i]
+								if bb and i > 1 then
+									local setPoint = false
+									local sobb = obb
+									hooksecurefunc(
+										bb,
+										"SetPoint",
+										function(sel, ...)
+											if setPoint then return end
+											setPoint = true
+											local row = math.floor((i - 1) / MABUFFLIMIT)
+											sel:ClearAllPoints()
+											sel:SetPoint("LEFT", sobb, "RIGHT", MABUFFSPACINGX, row * MABUFFSPACINGY)
+											setPoint = false
+										end
+									)
+
+									bb:ClearAllPoints()
+									bb:SetPoint("LEFT", obb, "RIGHT", MABUFFSPACINGX, 0)
+									obb = bb
+								end
+							end
+						end
+
+						frame:Update()
 						local bbf = CreateFrame("FRAME")
 						bbf:RegisterEvent("UNIT_AURA")
 						bbf:SetScript(
@@ -2514,6 +2545,9 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEDEBUFF1", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFLIMIT", 10)
+			local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGX", 4)
+			local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGY", 10)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "TargetFrameDebuff1",
@@ -2534,6 +2568,34 @@ function MoveAny:LoadAddon()
 							end
 						end
 
+						function frame:Update()
+							local obb = _G["TargetFrameDebuff" .. 1]
+							for i = 1, 32 do
+								local bb = _G["TargetFrameDebuff" .. i]
+								if bb and i > 1 then
+									local setPoint = false
+									local sobb = obb
+									hooksecurefunc(
+										bb,
+										"SetPoint",
+										function(sel, ...)
+											if setPoint then return end
+											setPoint = true
+											local row = math.floor((i - 1) / MADEBUFFLIMIT)
+											sel:ClearAllPoints()
+											sel:SetPoint("LEFT", sobb, "RIGHT", MADEBUFFSPACINGX, row * MADEBUFFSPACINGY)
+											setPoint = false
+										end
+									)
+
+									bb:ClearAllPoints()
+									bb:SetPoint("LEFT", obb, "RIGHT", MADEBUFFSPACINGX, 0)
+									obb = bb
+								end
+							end
+						end
+
+						frame:Update()
 						local bbf = CreateFrame("FRAME")
 						bbf:RegisterEvent("UNIT_AURA")
 						bbf:SetScript(
