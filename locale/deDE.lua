@@ -234,7 +234,10 @@ function MoveAny:LangdeDE()
 		["LID_QUESTTIMERFRAME"] = "Questzeit-Fenster",
 		["LID_BATTLEFIELDMAPFRAME"] = "Schlachtfeld Karte",
 		["LID_ExtraActionButton1"] = "Extra Aktionsleiste (ExtraActionButton1)",
-		["LID_FRAMESCALEDISABLED"] = "\"Fenster skalieren (Fenster größe ändern)\" ist deaktiviert, bitte aktivieren."
+		["LID_FRAMESCALEDISABLED"] = "\"Fenster skalieren (Fenster größe ändern)\" ist deaktiviert, bitte aktivieren.",
+		["LID_BAGEXTRAS"] = "Extras",
+		["LID_HIDESMALLBAGS"] = "Kleine Taschen",
+		["LID_HIDEKEYBAG"] = "Schlüsselbund Tasche",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

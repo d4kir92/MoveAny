@@ -1,4 +1,6 @@
 local _, MoveAny = ...
+local KEYBAG = {"KeyRingButton"}
+local SMALLBAGS = {"CharacterBag3Slot", "CharacterBag2Slot", "CharacterBag1Slot", "CharacterBag0Slot"}
 local BAGS = {"CharacterBag3Slot", "CharacterBag2Slot", "CharacterBag1Slot", "CharacterBag0Slot"}
 function MoveAny:BAGSTryAdd(fra, index)
 	if _G[fra] == nil then return end
@@ -14,7 +16,40 @@ end
 local hookedBags = {}
 local run = false
 function MoveAny:UpdateBags()
+	if run then return end
 	run = true
+	if MoveAny:GetEleOption("BagsBar", "HideSmallBags", false) then
+		for i, v in pairs(SMALLBAGS) do
+			local bag = _G[v]
+			if bag then
+				MoveAny:HideFrame(bag, true)
+			end
+		end
+	else
+		for i, v in pairs(SMALLBAGS) do
+			local bag = _G[v]
+			if bag then
+				MoveAny:ShowFrame(bag)
+			end
+		end
+	end
+
+	if MoveAny:GetEleOption("BagsBar", "HideKeyBag", false) then
+		for i, v in pairs(KEYBAG) do
+			local bag = _G[v]
+			if bag then
+				MoveAny:HideFrame(bag, true)
+			end
+		end
+	else
+		for i, v in pairs(KEYBAG) do
+			local bag = _G[v]
+			if bag then
+				MoveAny:ShowFrame(bag)
+			end
+		end
+	end
+
 	MoveAny:BAGSTryAdd("CharacterReagentBag0Slot", 1)
 	MoveAny:BAGSTryAdd("KeyRingButton", 1)
 	MoveAny:BAGSTryAdd("BagBarExpandToggle", #BAGS + 1)
@@ -23,7 +58,7 @@ function MoveAny:UpdateBags()
 	local sw, sh = 0, 0
 	for i, mbname in pairs(BAGS) do
 		local bb = _G[mbname]
-		if bb ~= nil and bb:IsShown() and bb:GetParent():IsShown() then
+		if bb ~= nil and bb:IsShown() and bb:GetParent():IsShown() and bb:GetAlpha() > 0 then
 			if not tContains(hookedBags, mbname) then
 				tinsert(hookedBags, mbname)
 				hooksecurefunc(
@@ -71,7 +106,7 @@ function MoveAny:UpdateBags()
 		local x = 0
 		for i, mbname in pairs(BAGS) do
 			local bb = _G[mbname]
-			if bb ~= nil and bb:IsShown() and bb:GetParent():IsShown() then
+			if bb ~= nil and bb:IsShown() and bb:GetParent():IsShown() and bb:GetAlpha() > 0 then
 				local w, h = bb:GetSize()
 				if bb:GetParent() == MainMenuBarArtFrame then
 					bb:SetParent(BagsBar)

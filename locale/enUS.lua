@@ -240,7 +240,10 @@ function MoveAny:LangenUS()
 		["LID_QUESTTIMERFRAME"] = "Quest Timer Frame",
 		["LID_BATTLEFIELDMAPFRAME"] = "Battlefield Map",
 		["LID_ExtraActionButton1"] = "Extra Actionbar (ExtraActionButton1)",
-		["LID_FRAMESCALEDISABLED"] = "\"Scale Windows (Resize Windows)\" is disabled, please enable it."
+		["LID_FRAMESCALEDISABLED"] = "\"Scale Windows (Resize Windows)\" is disabled, please enable it.",
+		["LID_BAGEXTRAS"] = "Extras",
+		["LID_HIDESMALLBAGS"] = "Small Bags",
+		["LID_HIDEKEYBAG"] = "KeyRing Bag",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

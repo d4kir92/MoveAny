@@ -207,6 +207,10 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, MoveAny:GT("LID_REPUTATIONWATCHBAR"))
 	end
 
+	if string.find(name, "BagsBar") then
+		table.insert(tabs, MoveAny:GT("LID_BAGEXTRAS"))
+	end
+
 	CreateTabs(opt, tabs)
 	for i, tab in pairs(opt.tabs) do
 		local content = tab.content
@@ -891,6 +895,43 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				end
 			)
+		elseif string.find(content.name, MoveAny:GT("LID_BAGEXTRAS")) then
+			local hide = CreateFrame("CheckButton", "HideSmallBags", content, "ChatConfigCheckButtonTemplate")
+			hide:SetSize(btnsize, btnsize)
+			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
+			hide:SetChecked(MoveAny:GetEleOption(name, "HideSmallBags", false, "Hide1"))
+			hide:SetScript(
+				"OnClick",
+				function()
+					local checked = hide:GetChecked()
+					MoveAny:SetEleOption(name, "HideSmallBags", checked)
+					MoveAny:UpdateBags()
+				end
+			)
+
+			hide.text = hide:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
+			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
+			hide.text:SetText(HIDE .. " (" .. MoveAny:GT("LID_HIDESMALLBAGS") .. ")")
+			if KeyRingButton then
+				local hide2 = CreateFrame("CheckButton", "HideKeyBag", content, "ChatConfigCheckButtonTemplate")
+				hide2:SetSize(btnsize, btnsize)
+				hide2:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -20)
+				hide2:SetChecked(MoveAny:GetEleOption(name, "HideKeyBag", false, "Hide1"))
+				hide2:SetScript(
+					"OnClick",
+					function()
+						local checked = hide2:GetChecked()
+						MoveAny:SetEleOption(name, "HideKeyBag", checked)
+						MoveAny:UpdateBags()
+					end
+				)
+
+				hide2.text = hide2:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+				MoveAny:SetFontSize(hide2.text, 12, "THINOUTLINE")
+				hide2.text:SetPoint("LEFT", hide2, "RIGHT", 0, 0)
+				hide2.text:SetText(HIDE .. " (" .. MoveAny:GT("LID_HIDEKEYBAG") .. ")")
+			end
 		end
 	end
 end

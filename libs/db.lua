@@ -6,7 +6,7 @@ end
 
 function MoveAny:CheckDB(from)
 	if MoveAny:Loaded() == false then
-		print(from)
+		MoveAny:INFO("CheckDB", from)
 	end
 
 	--[[GLOBAL]]
