@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.25"
+local version = "1.8.26"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -601,7 +601,9 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
 		if ExtraAbilityContainer then
 			AddCheckBox(posx, "EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
-		elseif MoveAny:GetWoWBuild() == "CATA" then
+		elseif ExtraActionBarFrame then
+			AddCheckBox(posx, "ExtraActionBarFrame", true, nil, nil, "ShowExtraAbilities")
+		elseif ExtraActionButton1 then
 			AddCheckBox(posx, "ExtraActionButton1", true, nil, nil, "ShowExtraAbilities")
 		end
 
@@ -3002,7 +3004,17 @@ function MoveAny:LoadAddon()
 				["userplaced"] = true
 			}
 		)
-	elseif MoveAny:GetWoWBuild() == "CATA" and MoveAny:IsEnabled("ExtraActionButton1", true) then
+	elseif ExtraActionBarFrame and MoveAny:IsEnabled("ExtraActionBarFrame", true) then
+		ExtraActionBarFrame:SetParent(UIParent)
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "ExtraActionBarFrame",
+				["lstr"] = "LID_ExtraActionBarFrame",
+				["userplaced"] = true
+			}
+		)
+	elseif ExtraActionButton1 and MoveAny:IsEnabled("ExtraActionButton1", true) then
+		ExtraActionButton1:SetParent(UIParent)
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "ExtraActionButton1",
