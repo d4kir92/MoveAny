@@ -82,7 +82,7 @@ function MoveAny:UpdateCurrentWindow()
 				GameTooltip:Hide()
 			end
 
-			if currentWindowName ~= nil and MoveAny:IsEnabled("SCALEFRAMES", false) then
+			if currentWindowName ~= nil and MoveAny:IsEnabled("SCALEFRAMES", true) then
 				local curMouseX, curMouseY = GetCursorPosition()
 				if prevMouseX and prevMouseY then
 					if curMouseY > prevMouseY then
@@ -135,7 +135,7 @@ function MoveAny:FrameDragInfo(frame, c)
 	else
 		local text = nil
 		if IsMouseButtonDown("RightButton") then
-			if MoveAny:IsEnabled("SCALEFRAMES", false) then
+			if MoveAny:IsEnabled("SCALEFRAMES", true) then
 				if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
 					text = format(MoveAny:GT("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
 				end
@@ -212,7 +212,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						"SetScale",
 						function(sel, scale)
 							if InCombatLockdown() and sel:IsProtected() then return false end
-							if MoveAny:IsEnabled("SCALEFRAMES", false) == false then return false end
+							if MoveAny:IsEnabled("SCALEFRAMES", true) == false then return false end
 							if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then
 								fm:SetScale(scale)
 							end
@@ -467,7 +467,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 
 							--scale > 0.001 fix for TSM - TradeSkillMaster, they "hide" it with low scale
-							if MoveAny:IsEnabled("SCALEFRAMES", false) and sca and type(sca) == "number" and sca > 0 and (currentWindowName == nil) and scale > 0.001 then
+							if MoveAny:IsEnabled("SCALEFRAMES", true) and sca and type(sca) == "number" and sca > 0 and (currentWindowName == nil) and scale > 0.001 then
 								sel:SetScale(sca)
 							end
 						end
@@ -476,7 +476,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					end
 				)
 
-				if MoveAny:IsEnabled("SCALEFRAMES", false) then
+				if MoveAny:IsEnabled("SCALEFRAMES", true) then
 					if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 						if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
 							frame:SetScale(MoveAny:GetFrameScale(name))
