@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.28"
+local version = "1.8.29"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -4225,7 +4225,7 @@ function MoveAny:LoadAddon()
 					local frame = _G["Boss" .. i .. "TargetFrame"]
 					local unit = "boss" .. i
 					if frame then
-						if UnitExists(unit) and MoveAny:BossCount() > 1 then
+						if UnitExists(unit) then
 							frame.ma_show = true
 							frame:SetAlpha(1)
 						else
