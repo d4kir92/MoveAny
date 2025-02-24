@@ -1,8 +1,9 @@
 ## Interface: 20504
-## Version: 1.8.27
+## Version: 1.8.28
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
+## X-Category: D4KiR
 ## DefaultState: enabled
 ## SavedVariables: MATAB
 ## SavedVariablesPerCharacter: MATABPC

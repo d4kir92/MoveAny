@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local version = "1.8.27"
+local version = "1.8.28"
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -716,7 +716,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "ZONEABILITYFRAME", false)
 		end
 
-		if MoveAny:IsValidFrame(PlayerPowerBarAlt) then
+		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then
 			AddCheckBox(4, "POWERBAR", false)
 		end
 
@@ -3878,7 +3878,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_POWERBAR",
 				["userplaced"] = true,
 				["sw"] = 36 * 6,
-				["sh"] = 36 * 1,
+				["sh"] = 36 * 2,
 				["setup"] = function()
 					if UIPARENT_MANAGED_FRAME_POSITIONS then
 						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAlt"] = nil
@@ -3892,20 +3892,13 @@ function MoveAny:LoadAddon()
 			}
 		)
 
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PlayerPowerBarAltCounterBar",
-				["lstr"] = "LID_POWERBARCOUNTERBAR",
-				["userplaced"] = true,
-				["setup"] = function()
-					if UIPARENT_MANAGED_FRAME_POSITIONS then
-						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAltCounterBar"] = nil
-					end
-
-					PlayerPowerBarAltCounterBar.ignoreFramePositionManager = true
-				end
-			}
-		)
+		if BuffTimer1 == nil then
+			BuffTimer1 = CreateFrame("Frame", "BuffTimer" .. 1, UIParent, "UnitPowerBarAltTemplate")
+			BuffTimer1.unit = "player"
+			BuffTimer1:SetScript("OnEvent", nil)
+			BuffTimer1:SetScript("OnUpdate", PlayerBuffTimer_OnUpdate)
+			BuffTimer1:SetSize(256, 64)
+		end
 
 		MoveAny:RegisterWidget(
 			{

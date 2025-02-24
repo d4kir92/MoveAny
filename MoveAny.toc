@@ -4,10 +4,11 @@
 ## Interface-Cata: 40401, 40402
 ## Interface: 110007, 110100
 
-## Version: 1.8.27
+## Version: 1.8.28
 ## Title: MoveAny by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
+## X-Category: D4KiR
 ## DefaultState: enabled
 ## SavedVariables: MATAB
 ## SavedVariablesPerCharacter: MATABPC
