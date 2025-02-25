@@ -2,10 +2,6 @@
 local _, MoveAny = ...
 function MoveAny:LangitIT()
 	local tab = {
-		["LID_LEFTCLICK"] = "Click sinistro",
-		["LID_RIGHTCLICK"] = "Clic destro",
-		["LID_MMBTNLEFT"] = "Blocca/Sblocca + Opzioni",
-		["LID_MMBTNRIGHT"] = "Nascondi pulsante Minimap",
 		["LID_GENERAL"] = "Generale",
 		["LID_SHOWMINIMAPBUTTON"] = "Mostra pulsante Minimap",
 		["LID_GRIDSIZE"] = "Gridsize",

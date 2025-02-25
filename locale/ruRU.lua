@@ -2,10 +2,6 @@
 local _, MoveAny = ...
 function MoveAny:LangruRU()
     local tab = {
-        ["LID_LEFTCLICK"] = "Левый клик",
-        ["LID_RIGHTCLICK"] = "правый клик ",
-        ["LID_MMBTNLEFT"] = "блокировка/разблокировка + опции",
-        ["LID_MMBTNRIGHT"] = "скрыть кнопку мини-картинки",
         ["LID_GENERAL"] = "Общие",
         ["LID_SHOWMINIMAPBUTTON"] = "Показать кнопку мини-картинки",
         ["LID_GRIDSIZE"] = "Размер сетки",

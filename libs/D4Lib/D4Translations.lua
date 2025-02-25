@@ -49,3 +49,26 @@ function D4:AddTrans(lang, key, value)
     D4.trans[lang] = D4.trans[lang] or {}
     D4.trans[lang][key] = value
 end
+
+-- enUS
+D4:AddTrans("enUS", "LID_LEFTCLICK", "Leftclick")
+D4:AddTrans("enUS", "LID_RIGHTCLICK", "Rightclick")
+D4:AddTrans("enUS", "LID_SHIFTLEFTCLICK", "Shift + Leftclick")
+D4:AddTrans("enUS", "LID_SHIFTRIGHTCLICK", "Shift + Rightclick")
+D4:AddTrans("enUS", "LID_CTRLLEFTCLICK", "Ctrl + Leftclick")
+D4:AddTrans("enUS", "LID_CTRLRIGHTCLICK", "Ctrl + Rightclick")
+D4:AddTrans("enUS", "LID_ALTLEFTCLICK", "Alt + Leftclick")
+D4:AddTrans("enUS", "LID_ALTRIGHTCLICK", "Alt + Rightclick")
+D4:AddTrans("enUS", "LID_OPENSETTINGS", "Open Settings")
+D4:AddTrans("enUS", "LID_HIDEMINIMAPBUTTON", "Hide Minimap Button")
+-- deDE
+D4:AddTrans("deDE", "LID_LEFTCLICK", "Linksklick")
+D4:AddTrans("deDE", "LID_RIGHTCLICK", "Rechtsklick")
+D4:AddTrans("deDE", "LID_SHIFTLEFTCLICK", "Shift + Linksklick")
+D4:AddTrans("deDE", "LID_SHIFTRIGHTCLICK", "Shift + Rechtsklick")
+D4:AddTrans("deDE", "LID_CTRLLEFTCLICK", "Strg + Linksklick")
+D4:AddTrans("deDE", "LID_CTRLRIGHTCLICK", "Strg + Rechtsklick")
+D4:AddTrans("deDE", "LID_ALTLEFTCLICK", "Alt + Linksklick")
+D4:AddTrans("deDE", "LID_ALTRIGHTCLICK", "Alt + Rechtsklick")
+D4:AddTrans("deDE", "LID_OPENSETTINGS", "Einstellungen öffnen")
+D4:AddTrans("deDE", "LID_HIDEMINIMAPBUTTON", "Minimapknopf verstecken")

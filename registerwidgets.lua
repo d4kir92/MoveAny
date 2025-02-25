@@ -1090,45 +1090,6 @@ function MoveAny:IsPresetProfileActive()
 	return true
 end
 
---[[if MoveAny:GetWoWBuild() == "RETAIL" then
-	C_Timer.After(
-		1,
-		function()
-			local MA_HelpProfileFrame = CreateFrame("FRAME", "MoveAnyHelpFrame")
-			MA_HelpProfileFrame:SetParent(MoveAny:GetMainPanel())
-			MA_HelpProfileFrame:SetSize(1200, 200)
-			MA_HelpProfileFrame:ClearAllPoints()
-			MA_HelpProfileFrame:SetPoint("TOP", MoveAny:GetMainPanel(), "TOP", 0, -100)
-			MA_HelpProfileFrame:EnableMouse(false)
-			MA_HelpProfileFrame.t1 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
-			MA_HelpProfileFrame.t1:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, 0)
-			local font, _, fontFlags = MA_HelpProfileFrame.t1:GetFont()
-			MA_HelpProfileFrame.t1:SetFont(font, 32, fontFlags)
-			MA_HelpProfileFrame.t1:SetText(MoveAny:GT("LID_PLEASESWITCHPROFILE1"))
-			MA_HelpProfileFrame.t2 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
-			MA_HelpProfileFrame.t2:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, -40)
-			local font2, _, fontFlags2 = MA_HelpProfileFrame.t2:GetFont()
-			MA_HelpProfileFrame.t2:SetFont(font2, 24, fontFlags2)
-			MA_HelpProfileFrame.t2:SetText(MoveAny:GT("LID_PLEASESWITCHPROFILE2"))
-			MA_HelpProfileFrame.t3 = MA_HelpProfileFrame:CreateFontString(nil, nil, "GameFontNormal")
-			MA_HelpProfileFrame.t3:SetPoint("CENTER", MA_HelpProfileFrame, "CENTER", 0, -90)
-			local font3, _, fontFlags3 = MA_HelpProfileFrame.t3:GetFont()
-			MA_HelpProfileFrame.t3:SetFont(font3, 32, fontFlags3)
-			MA_HelpProfileFrame.t3:SetText(MoveAny:GT("LID_PLEASESWITCHPROFILE3"))
-			function MoveAny:ThinkHelpFrame()
-				if MoveAny:IsPresetProfileActive() then
-					MA_HelpProfileFrame:Show()
-					C_Timer.After(0.5, MoveAny.ThinkHelpFrame)
-				else
-					MA_HelpProfileFrame:Hide()
-					C_Timer.After(1.1, MoveAny.ThinkHelpFrame)
-				end
-			end
-
-			MoveAny:ThinkHelpFrame()
-		end
-	)
-end]]
 if MoveAny:GetWoWBuild() == "RETAIL" then
 	C_Timer.After(
 		1,

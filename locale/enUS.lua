@@ -8,10 +8,6 @@ end
 
 function MoveAny:LangenUS()
 	local tab = {
-		["LID_LEFTCLICK"] = "Leftclick",
-		["LID_RIGHTCLICK"] = "Rightclick",
-		["LID_MMBTNLEFT"] = "Locks/Unlocks + Options",
-		["LID_MMBTNRIGHT"] = "Hide Minimap Button",
 		["LID_GENERAL"] = "General",
 		["LID_SHOWMINIMAPBUTTON"] = "Show Minimap Button",
 		["LID_GRIDSIZE"] = "Gridsize (Grid)",

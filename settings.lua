@@ -1,5 +1,4 @@
-local AddonName, MoveAny = ...
-local version = "1.8.30"
+local _, MoveAny = ...
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -505,8 +504,8 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(AddonName, 135994, version)
-	MALock.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", version))
+	MoveAny:SetVersion(135994, "1.8.31")
+	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1149,7 +1148,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("MoveAny |T135994:16:16:0:0|t v|cff3FC7EB%s", version))
+		MAProfiles.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -1986,7 +1985,7 @@ function MoveAny:PlayerLogin()
 			["name"] = "MoveAny",
 			["icon"] = 135994,
 			["dbtab"] = MATAB,
-			["vTT"] = {{"MoveAny |T135994:16:16:0:0|t", "v|cff3FC7EB" .. version}, {MoveAny:GT("LID_LEFTCLICK"), MoveAny:GT("LID_MMBTNLEFT")}, {MoveAny:GT("LID_RIGHTCLICK"), MoveAny:GT("LID_MMBTNRIGHT")}},
+			["vTT"] = {{"|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r", "v|cff3FC7EB" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
 			["funcL"] = function()
 				MoveAny:ToggleMALock()
 			end,

@@ -2,10 +2,6 @@
 local _, MoveAny = ...
 function MoveAny:LangfrFR()
 	local tab = {
-		["LID_LEFTCLICK"] = "Clic gauche",
-		["LID_RIGHTCLICK"] = "Clic droit",
-		["LID_MMBTNLEFT"] = "Verrouillage/Déverrouillage + Options",
-		["LID_MMBTNRIGHT"] = "Bouton Masquer la Minimap",
 		["LID_GENERAL"] = "Général",
 		["LID_SHOWMINIMAPBUTTON"] = "Afficher le bouton de Minimap",
 		["LID_GRIDSIZE"] = "Taille de la grille",

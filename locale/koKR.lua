@@ -2,10 +2,6 @@
 local _, MoveAny = ...
 function MoveAny:LangkoKR()
 	local tab = {
-		["LID_LEFTCLICK"] = "왼쪽 클릭",
-		["LID_RIGHTCLICK"] = "오른쪽 클릭",
-		["LID_MMBTNLEFT"] = "잠금/잠금해제 + 옵션",
-		["LID_MMBTNRIGHT"] = "미니맵 버튼 숨기기",
 		["LID_GENERAL"] = "일반",
 		["LID_SHOWMINIMAPBUTTON"] = "미니맵 버튼 표시",
 		["LID_GRIDSIZE"] = "그리드 크기 (그리드)",
