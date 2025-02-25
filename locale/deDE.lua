@@ -239,6 +239,7 @@ function MoveAny:LangdeDE()
 		["LID_BAGEXTRAS"] = "Extras",
 		["LID_HIDESMALLBAGS"] = "Kleine Taschen",
 		["LID_HIDEKEYBAG"] = "Schlüsselbund Tasche",
+		["LID_CHANGEONCATSTEALTH"] = "Wechsel Leiste wenn in Katzen-Unsichtbarkeit (Lädt Ui neu bei Änderung)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

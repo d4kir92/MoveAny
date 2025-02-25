@@ -675,6 +675,27 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				end
 			)
+
+			if frame == MAActionBar1 then
+				PY = PY - 30
+				local catstealth = CreateFrame("CheckButton", "catstealth", content, "ChatConfigCheckButtonTemplate")
+				catstealth:SetSize(btnsize, btnsize)
+				catstealth:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
+				catstealth:SetChecked(MoveAny:IsEnabled("CHANGEONCATSTEALTH", true))
+				catstealth:SetScript(
+					"OnClick",
+					function()
+						local checked = catstealth:GetChecked()
+						MoveAny:SetEnabled("CHANGEONCATSTEALTH", checked)
+						C_UI.Reload()
+					end
+				)
+
+				catstealth.text = catstealth:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+				MoveAny:SetFontSize(catstealth.text, 12, "THINOUTLINE")
+				catstealth.text:SetPoint("LEFT", catstealth, "RIGHT", 0, 0)
+				catstealth.text:SetText(MoveAny:GT("LID_CHANGEONCATSTEALTH"))
+			end
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20

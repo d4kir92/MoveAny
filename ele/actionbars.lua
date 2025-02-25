@@ -636,30 +636,42 @@ f:SetScript(
 			if frame and frame.init == nil then
 				frame.init = true
 				frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
-				if newstate == "possess" or newstate == "dragon" or newstate == "11" then
-					if HasVehicleActionBar() then
-						newstate = GetVehicleBarIndex()
-					elseif HasOverrideActionBar() then
-						newstate = GetOverrideBarIndex()
-					elseif HasTempShapeshiftActionBar() then
-						newstate = GetTempShapeshiftBarIndex()
-					elseif HasBonusActionBar() then
-						newstate = GetBonusBarIndex()
-					else
-						newstate = nil
+					if newstate == "possess" or newstate == "dragon" or newstate == "11" then
+						if HasVehicleActionBar() then
+							newstate = GetVehicleBarIndex()
+						elseif HasOverrideActionBar() then
+							newstate = GetOverrideBarIndex()
+						elseif HasTempShapeshiftActionBar() then
+							newstate = GetTempShapeshiftBarIndex()
+						elseif HasBonusActionBar() then
+							newstate = GetBonusBarIndex()
+						else
+							newstate = nil
+						end
+						
+						if not newstate then
+							print("[MOVEANY] FAILED TO FIND NEWSTATE!: " .. tostring(newstate))
+							newstate = 12
+						end
 					end
 
-					if not newstate then
-						print("[MOVEANY] FAILED TO FIND NEWSTATE!: " .. tostring(newstate))
-						newstate = 12
-					end
-				end
-				self:SetAttribute( "actionpage", newstate );
-			]])
+					self:SetAttribute("actionpage", newstate);
+				]])
 				if MoveAny:GetWoWBuild() ~= "RETAIL" then
+					--[[
+					Stances:
+					cat-stealth: 10?
+					cat: 7
+					bear: 9
+					moonkin: 1
+					]]
 					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;"
 					for i = 6, 2, -1 do
 						bars = bars .. "[bonusbar:5,bar:" .. i .. "]" .. i .. ";[bonusbar:4,bar:" .. i .. "]" .. i .. ";[bonusbar:3,bar:" .. i .. "]" .. i .. ";[bonusbar:2,bar:" .. i .. "]" .. i .. ";[bonusbar:1,bar:" .. i .. "]" .. i .. ";"
+					end
+
+					if MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
+						bars = bars .. "[bonusbar:1,stealth]10;"
 					end
 
 					bars = bars .. "[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
@@ -669,38 +681,38 @@ f:SetScript(
 				end
 
 				local _onAttributeChanged = [[
-				if name == 'statehidden' then
-					if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
-						for i = 1, 12 do
-							if overridebuttons[i] and overridebuttons[i]:GetAttribute('statehidden') then
-								buttons[i]:SetAttribute('statehidden', true)
-								buttons[i]:Hide()
-							elseif buttons[i] then
-								buttons[i]:SetAttribute('statehidden', false)
-								buttons[i]:Show()
+					if name == 'statehidden' then
+						if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
+							for i = 1, 12 do
+								if overridebuttons[i] and overridebuttons[i]:GetAttribute('statehidden') then
+									buttons[i]:SetAttribute('statehidden', true)
+									buttons[i]:Hide()
+								elseif buttons[i] then
+									buttons[i]:SetAttribute('statehidden', false)
+									buttons[i]:Show()
+								end
 							end
-						end
-					else
-						for i = 1, 12 do
-							if buttons[i] then
-								buttons[i]:SetAttribute('statehidden', false)
-								buttons[i]:Show()
+						else
+							for i = 1, 12 do
+								if buttons[i] then
+									buttons[i]:SetAttribute('statehidden', false)
+									buttons[i]:Show()
+								end
 							end
 						end
 					end
-				end
-			]]
+				]]
 				if MoveAny:GetWoWBuild() == "CLASSIC" then
 					_onAttributeChanged = [[
-				if name == 'statehidden' then
-					for i = 1, 12 do
-						if buttons[i] then
-							buttons[i]:SetAttribute('statehidden', false)
-							buttons[i]:Show()
+						if name == 'statehidden' then
+							for i = 1, 12 do
+								if buttons[i] then
+									buttons[i]:SetAttribute('statehidden', false)
+									buttons[i]:Show()
+								end
+							end
 						end
-					end
-				end
-			]]
+					]]
 				end
 
 				local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
@@ -717,16 +729,16 @@ f:SetScript(
 				end
 
 				AttributeChangedFrame:Execute([[
-				buttons = table.new()
-				for i = 1, 12 do
-					buttons[i] = self:GetFrameRef('ActionButton'..i)
-				end
-			
-				overridebuttons = table.new()
-				for j = 1, 12 do
-					overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
-				end
-			]])
+					buttons = table.new()
+					for i = 1, 12 do
+						buttons[i] = self:GetFrameRef('ActionButton'..i)
+					end
+				
+					overridebuttons = table.new()
+					for j = 1, 12 do
+						overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
+					end
+				]])
 				AttributeChangedFrame:SetAttribute("_onattributechanged", _onAttributeChanged)
 				RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
 			end

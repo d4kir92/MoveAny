@@ -245,6 +245,7 @@ function MoveAny:LangenUS()
 		["LID_BAGEXTRAS"] = "Extras",
 		["LID_HIDESMALLBAGS"] = "Small Bags",
 		["LID_HIDEKEYBAG"] = "KeyRing Bag",
+		["LID_CHANGEONCATSTEALTH"] = "Change bar on cat stealth (Reloads on Change)",
 	}
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then

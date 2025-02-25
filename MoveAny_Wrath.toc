@@ -1,5 +1,5 @@
 ## Interface: 30403
-## Version: 1.8.29
+## Version: 1.8.30
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t 
 ## Notes: Move Any Ui or Frame
 ## Author: D4KiR
@@ -9,6 +9,7 @@
 ## SavedVariablesPerCharacter: MATABPC
 ## X-Curse-Project-ID: 646134
 ## X-Wago-ID: e56n3pK9
+## IconTexture: 135994
 
 libs\D4Lib\D4Lib.xml
 
