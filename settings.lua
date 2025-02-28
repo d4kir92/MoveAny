@@ -504,7 +504,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.33")
+	MoveAny:SetVersion(135994, "1.8.34")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4423,7 +4423,25 @@ function MoveAny:LoadAddon()
 			return MAGameTooltip
 		end
 
-		local children = {GameTooltip:GetChildren()}
+		local texts = {"GameTooltipStatusBar"}
+		for i = 1, 12 do
+			tinsert(texts, "GameTooltipTextLeft" .. i)
+			tinsert(texts, "GameTooltipTextRight" .. i)
+		end
+
+		GameTooltip:HookScript(
+			"OnUpdate",
+			function(sel)
+				local alpha = MAGameTooltip:GetAlpha()
+				for i, textName in pairs(texts) do
+					local text = _G[textName]
+					if text then
+						text:SetAlpha(alpha)
+					end
+				end
+			end
+		)
+
 		hooksecurefunc(
 			GameTooltip,
 			"SetAlpha",
@@ -4431,8 +4449,8 @@ function MoveAny:LoadAddon()
 				if sel.gtsetalpha then return end
 				sel.gtsetalpha = true
 				sel:SetAlpha(MAGameTooltip:GetAlpha())
-				for i, v in pairs(children) do
-					v:SetAlpha(MAGameTooltip:GetAlpha())
+				if sel.NineSlice then
+					sel.NineSlice:SetAlpha(MAGameTooltip:GetAlpha())
 				end
 
 				sel.gtsetalpha = false
