@@ -665,6 +665,15 @@ function D4:GetRoleIcon(role)
     return ""
 end
 
+function D4:GetHeroSpecId()
+    local heroSpecID = nil
+    if C_ClassTalents and C_ClassTalents.GetActiveHeroTalentSpec then
+        heroSpecID = C_ClassTalents.GetActiveHeroTalentSpec()
+    end
+
+    return heroSpecID
+end
+
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript(

@@ -670,7 +670,8 @@ f:SetScript(
 						bars = bars .. "[bonusbar:5,bar:" .. i .. "]" .. i .. ";[bonusbar:4,bar:" .. i .. "]" .. i .. ";[bonusbar:3,bar:" .. i .. "]" .. i .. ";[bonusbar:2,bar:" .. i .. "]" .. i .. ";[bonusbar:1,bar:" .. i .. "]" .. i .. ";"
 					end
 
-					if MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
+					local _, class = UnitClass("player")
+					if class == "DRUID" and MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
 						bars = bars .. "[bonusbar:1,stealth]10;"
 					end
 
