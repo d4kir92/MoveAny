@@ -122,10 +122,15 @@ function D4:CreateEditBox(tab)
     tab.parent = tab.parent or UIParent
     tab.pTab = tab.pTab or "CENTER"
     tab.value = tab.value or nil
+    tab.prefix = tab.prefix or ""
+    tab.suffix = tab.suffix or ""
+    tab.numeric = tab.numeric or false
     local cb = CreateFrame("EditBox", tab.name, tab.parent, "InputBoxTemplate")
     cb:SetSize(tab.sw, tab.sh)
     cb:SetPoint(unpack(tab.pTab))
     cb:SetText(tab.value)
+    cb:SetAutoFocus(false)
+    cb:SetNumeric(tab.numeric)
     cb:SetScript(
         "OnTextChanged",
         function(sel)
@@ -134,8 +139,8 @@ function D4:CreateEditBox(tab)
     )
 
     cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
-    cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-    cb.f:SetText(D4:Trans(tab.name))
+    cb.f:SetPoint("LEFT", cb, "RIGHT", 10, 0)
+    cb.f:SetText(tab.prefix .. D4:Trans(tab.name) .. tab.suffix)
 
     return cb
 end
@@ -478,11 +483,11 @@ end
 function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     Y = Y - 24
     if key == nil then
-        D4:MSG("[D4][AppendSlider] Missing key:", tab.key, tab.value)
+        D4:MSG("[D4][AppendSlider] Missing key:", key, value)
 
         return
     elseif value == nil then
-        D4:MSG("[D4][AppendSlider] Missing value:", tab.key, tab.value)
+        D4:MSG("[D4][AppendSlider] Missing value:", key, value)
 
         return
     end
@@ -525,6 +530,52 @@ end
 function D4:AppendColorPicker(key, value, func, x)
     D4:AddColorPicker(key, value, func, x)
     Y = Y - 30
+end
+
+function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix)
+    value = value or false
+    x = x or X
+    if tab == nil and TAB == nil then
+        if TABIsNil == false then
+            TABIsNil = true
+            D4:MSG("TAB is nil #1")
+        end
+
+        return Y
+    end
+
+    local t = tab or TAB
+    local val = t[key]
+    if val == nil then
+        t[key] = value
+        val = t[key]
+    end
+
+    D4:CreateEditBox(
+        {
+            ["name"] = key,
+            ["parent"] = PARENT,
+            ["pTab"] = {"TOPLEFT", x or X, y or Y},
+            ["value"] = val,
+            ["funcV"] = function(sel, text)
+                if numeric then
+                    text = tonumber(text)
+                end
+
+                t[key] = text
+                if func then
+                    func(sel, text)
+                end
+            end,
+            ["prefix"] = prefix,
+            ["suffix"] = suffix,
+            ["numeric"] = numeric
+        }
+    )
+
+    Y = Y - 20
+
+    return Y
 end
 
 function D4:CreateDropdown(key, value, choices, parent, func)
