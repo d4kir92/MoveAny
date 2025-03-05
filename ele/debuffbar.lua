@@ -90,84 +90,90 @@ function MoveAny:InitDebuffBar()
 			MADEBUFFSPACINGX = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGX", 4)
 			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
-			for bid = 1, 32 do
-				local bbtn = _G["DebuffButton" .. bid]
-				if bbtn then
-					if bbtn.masetup == nil then
-						bbtn.masetup = true
-						bbtn:SetParent(MADebuffBar)
-						function bbtn:GetMAEle()
-							return MADebuffBar
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				for i, bbtn in pairs({DebuffFrame.AuraContainer:GetChildren()}) do
+					bbtn:SetParent(MADebuffBar)
+				end
+			else
+				for bid = 1, 32 do
+					local bbtn = _G["DebuffButton" .. bid]
+					if bbtn then
+						if bbtn.masetup == nil then
+							bbtn.masetup = true
+							bbtn:SetParent(MADebuffBar)
+							function bbtn:GetMAEle()
+								return MADebuffBar
+							end
+
+							hooksecurefunc(
+								bbtn,
+								"SetPoint",
+								function(sel, ...)
+									if sel.setpoint_bbtn then return end
+									sel.setpoint_bbtn = true
+									local p1, _, p3, _, _ = MADebuffBar:GetPoint()
+									local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
+									local sw2, sh2 = sel:GetSize()
+									local numBuffs = 1
+									local prevBuff = nil
+									for i = 1, 32 do
+										local btn = _G["DebuffButton" .. i]
+										if i == bid then break end
+										if btn and btn:GetParent() == MADebuffBar then
+											numBuffs = numBuffs + 1
+											prevBuff = btn
+										end
+									end
+
+									local count = 0
+									local id = numBuffs + count
+									local caly = (id - 0.1) / MADEBUFFLIMIT
+									local cy = caly - caly % 1
+									if bbtn:GetParent() == MADebuffBar then
+										if numBuffs == 1 then
+											local posx = 0
+											if rel == "RIGHT" then
+												posx = -count * (sw2 + MADEBUFFSPACINGX)
+											else
+												posx = count * (sw2 + MADEBUFFSPACINGX)
+											end
+
+											local posy = 0
+											if MADEBUFFLIMIT == 1 then
+												posx = 0
+												if dirV == "BOTTOM" then
+													posy = 0
+												else
+													posy = 30 + MADEBUFFSPACINGY
+												end
+											end
+
+											MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, posx, posy)
+										else
+											if id % MADEBUFFLIMIT == 1 or MADEBUFFLIMIT == 1 then
+												if dirV == "BOTTOM" then
+													MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh2 + MADEBUFFSPACINGY))
+												else
+													MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh2 + MADEBUFFSPACINGY))
+												end
+											elseif prevBuff then
+												if rel == "RIGHT" then
+													MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MADEBUFFSPACINGX, 0)
+												else
+													MoveAny:SetPoint(sel, rel, prevBuff, dirH, MADEBUFFSPACINGX, 0)
+												end
+											end
+										end
+									end
+
+									sel.setpoint_bbtn = false
+								end
+							)
 						end
 
-						hooksecurefunc(
-							bbtn,
-							"SetPoint",
-							function(sel, ...)
-								if sel.setpoint_bbtn then return end
-								sel.setpoint_bbtn = true
-								local p1, _, p3, _, _ = MADebuffBar:GetPoint()
-								local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
-								local sw2, sh2 = sel:GetSize()
-								local numBuffs = 1
-								local prevBuff = nil
-								for i = 1, 32 do
-									local btn = _G["DebuffButton" .. i]
-									if i == bid then break end
-									if btn and btn:GetParent() == MADebuffBar then
-										numBuffs = numBuffs + 1
-										prevBuff = btn
-									end
-								end
-
-								local count = 0
-								local id = numBuffs + count
-								local caly = (id - 0.1) / MADEBUFFLIMIT
-								local cy = caly - caly % 1
-								if bbtn:GetParent() == MADebuffBar then
-									if numBuffs == 1 then
-										local posx = 0
-										if rel == "RIGHT" then
-											posx = -count * (sw2 + MADEBUFFSPACINGX)
-										else
-											posx = count * (sw2 + MADEBUFFSPACINGX)
-										end
-
-										local posy = 0
-										if MADEBUFFLIMIT == 1 then
-											posx = 0
-											if dirV == "BOTTOM" then
-												posy = 0
-											else
-												posy = 30 + MADEBUFFSPACINGY
-											end
-										end
-
-										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, posx, posy)
-									else
-										if id % MADEBUFFLIMIT == 1 or MADEBUFFLIMIT == 1 then
-											if dirV == "BOTTOM" then
-												MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh2 + MADEBUFFSPACINGY))
-											else
-												MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh2 + MADEBUFFSPACINGY))
-											end
-										elseif prevBuff then
-											if rel == "RIGHT" then
-												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MADEBUFFSPACINGX, 0)
-											else
-												MoveAny:SetPoint(sel, rel, prevBuff, dirH, MADEBUFFSPACINGX, 0)
-											end
-										end
-									end
-								end
-
-								sel.setpoint_bbtn = false
-							end
-						)
+						bbtn:ClearAllPoints()
+						bbtn:SetPoint("CENTER", 0, 0)
 					end
-
-					bbtn:ClearAllPoints()
-					bbtn:SetPoint("CENTER", 0, 0)
 				end
 			end
 
