@@ -1,4 +1,5 @@
 local _, D4 = ...
+local missingTranslationsEn = {}
 local missingTranslations = {}
 function D4:Trans(key, lang, t1, t2, t3)
     D4.trans = D4.trans or {}
@@ -7,6 +8,11 @@ function D4:Trans(key, lang, t1, t2, t3)
     end
 
     D4.trans[lang] = D4.trans[lang] or {}
+    if key and key ~= "" and D4.trans["enUS"] and D4.trans["enUS"][key] == nil and key and key ~= "" and missingTranslationsEn[key] == nil then
+        missingTranslationsEn[key] = true
+        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", D4:GetVersion(), "(", t1, t2, t3, ")")
+    end
+
     local result = nil
     if D4.trans[lang][key] ~= nil then
         result = D4.trans[lang][key]
@@ -15,7 +21,7 @@ function D4:Trans(key, lang, t1, t2, t3)
     else
         if key and key ~= "" and missingTranslations[key] == nil then
             missingTranslations[key] = true
-            D4:MSG("MISSING TRANSLATION KEY [" .. key .. "]", "(", lang, t1, t2, t3, ")")
+            D4:MSG("TRANSLATION MISSING [" .. key .. "]", D4:GetVersion(), "(", lang, t1, t2, t3, ")")
         end
 
         return key
