@@ -148,7 +148,7 @@ function MoveAny:LangenUS()
 		["LID_ADVANCED"] = "Advanced",
 		["LID_ImproveAny"] = "ImproveAny",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
-		["LID_UIERRORSFRAME"] = "Ui Error Messages, Quest Progress",
+		["LID_UIERRORSFRAME"] = "Ui Error Messages (Quest Progress, Event Messages)",
 		["LID_COMBOPOINTPLAYERFRAME"] = "Combo Points",
 		["LID_PARTYFRAME"] = "Party Frame",
 		["LID_PARTYMEMBERFRAME"] = "Party Member Frame %s",

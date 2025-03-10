@@ -142,7 +142,7 @@ function MoveAny:LangdeDE()
 		["LID_ADVANCED"] = "Erweitert",
 		["LID_ImproveAny"] = "ImproveAny",
 		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Fortschrittsanzeige der archäologischen Ausgrabungsstätte",
-		["LID_UIERRORSFRAME"] = "Ui-Fehler Meldungen, Quest Fortschritt",
+		["LID_UIERRORSFRAME"] = "Ui-Fehler Meldungen (Quest Fortschritt, Event Nachrichten)",
 		["LID_COMBOPOINTPLAYERFRAME"] = "Kombopunkte",
 		["LID_PARTYFRAME"] = "Gruppenfenster",
 		["LID_PARTYMEMBERFRAME"] = "Gruppenmitgliedfenster %s",
