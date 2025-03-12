@@ -157,8 +157,6 @@ function MoveAny:LangkoKR()
 		["LID_TargetFrameNumericalThreat"] = "위협 비율",
 		["LID_EventToastManagerFrame"] = "이벤트 토스트 관리자 프레임 (레벨업, 구역 텍스트)",
 		["LID_BUFFTIMER1"] = "버프 타이머",
-		["LID_!KalielsTracker"] = "!KalielsTracker",
-		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
 		["LID_ENDCAPLEFT"] = "엔드캡 왼쪽 (그리폰)",
 		["LID_ENDCAPRIGHT"] = "엔드캡 오른쪽 (그리폰)",
 		["LID_ENDCAPS"] = "엔드 캡 (그리폰)",

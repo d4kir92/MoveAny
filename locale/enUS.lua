@@ -163,8 +163,6 @@ function MoveAny:LangenUS()
 		["LID_TargetFrameNumericalThreat"] = "Threat Percentage",
 		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Levelup, Zonetext)",
 		["LID_BUFFTIMER1"] = "Buff Timer",
-		["LID_!KalielsTracker"] = "!KalielsTracker",
-		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
 		["LID_ENDCAPLEFT"] = "End Cap Left (Gryphon)",
 		["LID_ENDCAPRIGHT"] = "End Cap Right (Gryphon)",
 		["LID_ENDCAPS"] = "End Caps (Gryphons)",

@@ -157,8 +157,6 @@ function MoveAny:LangdeDE()
 		["LID_TargetFrameNumericalThreat"] = "Bedrohungs Prozente",
 		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Stufenaufstieg, Zonentext)",
 		["LID_BUFFTIMER1"] = "Stärkungsanzeige",
-		["LID_!KalielsTracker"] = "!KalielsTracker",
-		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
 		["LID_ENDCAPLEFT"] = "Abschlusskappe links (Greif)",
 		["LID_ENDCAPRIGHT"] = "Abschlusskappe rechts (Greif)",
 		["LID_ENDCAPS"] = "Abschlusskappen (Greifen)",
