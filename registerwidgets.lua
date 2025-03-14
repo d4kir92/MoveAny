@@ -366,6 +366,11 @@ function MoveAny:MenuOptions(opt, frame)
 							dragf:Show()
 							dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
 							frame:EnableMouse(false)
+							for x, child in pairs({frame:GetChildren()}) do
+								if C_Widget.IsWidget(child) then
+									child:EnableMouse(false)
+								end
+							end
 						else
 							dragf:Hide()
 						end
@@ -373,6 +378,11 @@ function MoveAny:MenuOptions(opt, frame)
 						if frame then
 							dragf.t:SetVertexColor(MoveAny:GetColor("el"))
 							frame:EnableMouse(true)
+							for x, child in pairs({frame:GetChildren()}) do
+								if C_Widget.IsWidget(child) then
+									child:EnableMouse(true)
+								end
+							end
 						else
 							dragf:Hide()
 						end
@@ -716,7 +726,7 @@ function MoveAny:MenuOptions(opt, frame)
 						end
 
 						if MoveAny.UpdateDebuffs then
-							MoveAny:UpdateDebuffs()
+							MoveAny:UpdateDebuffs("Slider 4")
 						end
 					end,
 					{
@@ -747,7 +757,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 
 					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs()
+						MoveAny:UpdateDebuffs("Slider 3")
 					end
 				end
 			)
@@ -769,7 +779,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 
 					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs()
+						MoveAny:UpdateDebuffs("Slider 2")
 					end
 				end
 			)
@@ -791,7 +801,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 
 					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs()
+						MoveAny:UpdateDebuffs("Slider")
 					end
 				end
 			)
@@ -811,7 +821,9 @@ function MoveAny:MenuOptions(opt, frame)
 					1,
 					0,
 					4,
-					MoveAny.UpdateDebuffs,
+					function()
+						MoveAny:UpdateDebuffs("MenuOptions")
+					end,
 					{
 						[0] = "AUTO",
 						[1] = "TOPRIGHT",
@@ -824,11 +836,53 @@ function MoveAny:MenuOptions(opt, frame)
 				y = y - 40
 			end
 
-			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFLIMIT", 10, 1, 1, 20, MoveAny.UpdateDebuffs)
+			MoveAny:CreateSlider(
+				content,
+				10,
+				y,
+				name,
+				"MADEBUFFLIMIT",
+				10,
+				1,
+				1,
+				20,
+				function()
+					MoveAny:UpdateDebuffs("CreateSlider1")
+				end
+			)
+
 			y = y - 40
-			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFSPACINGX", 4, 1, 0, 30, MoveAny.UpdateDebuffs)
+			MoveAny:CreateSlider(
+				content,
+				10,
+				y,
+				name,
+				"MADEBUFFSPACINGX",
+				4,
+				1,
+				0,
+				30,
+				function()
+					MoveAny:UpdateDebuffs("CreateSlider2")
+				end
+			)
+
 			y = y - 40
-			MoveAny:CreateSlider(content, 10, y, name, "MADEBUFFSPACINGY", 10, 1, 0, 30, MoveAny.UpdateDebuffs)
+			MoveAny:CreateSlider(
+				content,
+				10,
+				y,
+				name,
+				"MADEBUFFSPACINGY",
+				10,
+				1,
+				0,
+				30,
+				function()
+					MoveAny:UpdateDebuffs("CreateSlider3")
+				end
+			)
+
 			y = y - 40
 		elseif string.find(content.name, MoveAny:GT("LID_MAINMENUEXPBAR")) or string.find(content.name, MoveAny:GT("LID_REPUTATIONWATCHBAR")) then
 			opts["WIDTH"] = opts["WIDTH"] or 1024
@@ -1539,6 +1593,12 @@ function MoveAny:RegisterWidget(tab)
 				if sel.ma_enablemouse then return end
 				sel.ma_enablemouse = true
 				sel:EnableMouse(false)
+				for x, child in pairs({sel:GetChildren()}) do
+					if C_Widget.IsWidget(child) then
+						child:EnableMouse(false)
+					end
+				end
+
 				sel.ma_enablemouse = false
 			end
 		)

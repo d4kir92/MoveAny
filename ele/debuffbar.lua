@@ -34,6 +34,7 @@ function MoveAny:GetDebuffPosition(name, p1, p3)
 	return "TOPRIGHT", "TOPRIGHT"
 end
 
+local started = false
 function MoveAny:InitDebuffBar()
 	if MoveAny:IsEnabled("DEBUFFS", false) then
 		MADebuffBar = CreateFrame("Frame", "MADebuffBar", MoveAny:GetMainPanel())
@@ -85,14 +86,40 @@ function MoveAny:InitDebuffBar()
 		end
 
 		MoveAny:UpdateDebuffDirections()
-		function MoveAny:UpdateDebuffs()
+		function MoveAny:UpdateDebuffs(from)
+			started = true
 			MADEBUFFLIMIT = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFLIMIT", 10)
 			MADEBUFFSPACINGX = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGX", 4)
 			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
 			if MoveAny:GetWoWBuild() == "RETAIL" then
-				for i, bbtn in pairs({DebuffFrame.AuraContainer:GetChildren()}) do
-					bbtn:SetParent(MADebuffBar)
+				if DebuffFrame and DebuffFrame.AuraContainer then
+					local num = DebuffFrame.AuraContainer:GetNumChildren()
+					if num then
+						for i = 1, num do
+							local bbtn = select(i, DebuffFrame.AuraContainer:GetChildren())
+							if bbtn then
+								bbtn:SetParent(MADebuffBar)
+								if bbtn.masetup == nil then
+									bbtn.masetup = true
+									if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough4") then
+										hooksecurefunc(
+											bbtn,
+											"EnableMouse",
+											function(sel, bo)
+												if sel.ma_enablemouse then return end
+												sel.ma_enablemouse = true
+												sel:EnableMouse(false)
+												sel.ma_enablemouse = false
+											end
+										)
+
+										bbtn:EnableMouse(false)
+									end
+								end
+							end
+						end
+					end
 				end
 			else
 				for bid = 1, 32 do
@@ -100,6 +127,21 @@ function MoveAny:InitDebuffBar()
 					if bbtn then
 						if bbtn.masetup == nil then
 							bbtn.masetup = true
+							if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough5") then
+								hooksecurefunc(
+									bbtn,
+									"EnableMouse",
+									function(sel, bo)
+										if sel.ma_enablemouse then return end
+										sel.ma_enablemouse = true
+										sel:EnableMouse(false)
+										sel.ma_enablemouse = false
+									end
+								)
+
+								bbtn:EnableMouse(false)
+							end
+
 							bbtn:SetParent(MADebuffBar)
 							function bbtn:GetMAEle()
 								return MADebuffBar
@@ -207,25 +249,32 @@ function MoveAny:InitDebuffBar()
 				MADebuffBar,
 				"SetPoint",
 				function(sel, ...)
-					MoveAny:UpdateDebuffs()
+					MoveAny:UpdateDebuffs("SetPoint")
 				end
 			)
 		end
 
 		local f = CreateFrame("FRAME")
-		f:RegisterEvent("UNIT_AURA")
+		MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
 		f:SetScript(
 			"OnEvent",
 			function(sel, event, ...)
 				if event == "UNIT_AURA" then
 					local unit = ...
 					if unit and unit == "player" then
-						MoveAny:UpdateDebuffs()
+						MoveAny:UpdateDebuffs("event")
 					end
 				end
 			end
 		)
 
-		C_Timer.After(1, MoveAny.UpdateDebuffs)
+		C_Timer.After(
+			1,
+			function()
+				if not started then
+					MoveAny:UpdateDebuffs("Init")
+				end
+			end
+		)
 	end
 end
