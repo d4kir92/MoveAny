@@ -1,16 +1,44 @@
 local _, D4 = ...
 local missingTranslationsEn = {}
 local missingTranslations = {}
-function D4:Trans(key, lang, t1, t2, t3)
+local missingLang = {}
+local langs = {}
+langs["enUS"] = true
+langs["deDE"] = true
+langs["esES"] = true
+langs["esMX"] = true
+langs["frFR"] = true
+langs["itIT"] = true
+langs["koKR"] = true
+langs["ptBR"] = true
+langs["ruRU"] = true
+langs["zhCN"] = true
+langs["zhTW"] = true
+function D4:Trans(key, lang, ...)
     D4.trans = D4.trans or {}
     if lang == nil then
         lang = GetLocale()
     end
 
+    if langs[lang] == nil then
+        missingLang[lang] = true
+        local ver = "MISSING"
+        if D4.GetVersion then
+            ver = D4:GetVersion()
+        end
+
+        D4:MSG("[GET] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", t1, t2, t3, ")")
+    end
+
     D4.trans[lang] = D4.trans[lang] or {}
     if key and key ~= "" and D4.trans["enUS"] and D4.trans["enUS"][key] == nil and key and key ~= "" and missingTranslationsEn[key] == nil then
         missingTranslationsEn[key] = true
-        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", D4:GetVersion(), "(", t1, t2, t3, ")")
+        local ver = "MISSING"
+        if D4.GetVersion then
+            ver = D4:GetVersion()
+        end
+
+        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", ver, "(", t1, t2, t3, ")")
     end
 
     local result = nil
@@ -21,18 +49,19 @@ function D4:Trans(key, lang, t1, t2, t3)
     else
         if key and key ~= "" and missingTranslations[key] == nil then
             missingTranslations[key] = true
-            D4:MSG("TRANSLATION MISSING [" .. key .. "]", D4:GetVersion(), "(", lang, t1, t2, t3, ")")
+            local ver = "MISSING"
+            if D4.GetVersion then
+                ver = D4:GetVersion()
+            end
+
+            D4:MSG("TRANSLATION MISSING [" .. key .. "]", ver, "(", lang, t1, t2, t3, ")")
         end
 
         return key
     end
 
-    if t1 and t2 and t3 then
-        result = string.format(result, t1, t2, t3)
-    elseif t1 and t2 then
-        result = string.format(result, t1, t2)
-    elseif t1 then
-        result = string.format(result, t1)
+    if select(1, ...) then
+        result = string.format(result, ...)
     end
 
     return result or key
@@ -44,6 +73,16 @@ function D4:AddTrans(lang, key, value)
         D4:MSG("[D4:AddTrans] lang is nil")
 
         return false
+    end
+
+    if langs[lang] == nil then
+        missingLang[lang] = true
+        local ver = "MISSING"
+        if D4.GetVersion then
+            ver = D4:GetVersion()
+        end
+
+        D4:MSG("[ADD] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", t1, t2, t3, ")")
     end
 
     if key == nil then

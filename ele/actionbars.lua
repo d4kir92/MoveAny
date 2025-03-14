@@ -477,6 +477,7 @@ function MoveAny:CustomBars()
 					btnname = btns[i] .. x
 				end
 
+				_G["BINDING_NAME_CLICK " .. btnname .. ":LeftButton"] = MoveAny:Trans("LID_BINDINGFORMAT", nil, i, x)
 				local btn = _G[btnname]
 				local id = (i - 1) * 12 + x
 				if btn == nil then

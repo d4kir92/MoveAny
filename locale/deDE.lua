@@ -236,6 +236,7 @@ function MoveAny:LangdeDE()
 		["LID_CHANGEONCATSTEALTH"] = "Wechsel Leiste wenn in Katzen-Unsichtbarkeit (Lädt Ui neu bei Änderung)",
 	}
 
+	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		tab["LID_ACTIONBARS"] = "Aktionsleisten 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)"

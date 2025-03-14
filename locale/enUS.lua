@@ -242,6 +242,7 @@ function MoveAny:LangenUS()
 		["LID_CHANGEONCATSTEALTH"] = "Change bar on cat stealth (Reloads on Change)",
 	}
 
+	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		tab["LID_ACTIONBARS"] = "Actionbars 1 + 5 + 6"
 		tab["LID_ACTIONBAR1"] = "Actionbars 1 (Main Bar)"

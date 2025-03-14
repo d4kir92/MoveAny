@@ -1,5 +1,5 @@
-local _, D4 = ...
-local nam = ""
+local AddonName, D4 = ...
+local nam = AddonName
 local ico = ""
 function D4:SetAddonOutput(name, icon)
     nam = name
