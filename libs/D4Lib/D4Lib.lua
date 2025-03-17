@@ -94,7 +94,36 @@ function D4:ForeachChildren(frame, callback, from)
     for x = 1, frame:GetNumChildren() do
         local child = select(x, frame:GetChildren())
         if child then
-            callback(child)
+            callback(child, x)
+        else
+            return
+        end
+    end
+end
+
+function D4:ForeachRegions(frame, callback, from)
+    if frame == nil then
+        D4:MSG("[ForeachRegions] frame == nil", from)
+
+        return
+    end
+
+    if frame.GetNumRegions == nil or frame.GetRegions == nil then
+        D4:MSG("[ForeachRegions] frame.GetNumRegions == nil or  frame.GetRegions == nil", from)
+
+        return
+    end
+
+    if callback == nil then
+        D4:MSG("[ForeachRegions] Missing Callback", from)
+
+        return
+    end
+
+    for x = 1, frame:GetNumRegions() do
+        local region = select(x, frame:GetRegions())
+        if region then
+            callback(region, x)
         else
             return
         end

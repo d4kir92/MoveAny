@@ -504,7 +504,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.44")
+	MoveAny:SetVersion(135994, "1.8.45")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4761,24 +4761,27 @@ function MoveAny:LoadAddon()
 						ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
 						local last = nil
 						local id = 0
-						for i, v in pairs({ReputationWatchBar.StatusBar:GetRegions()}) do
-							if i == 5 or i == 6 or i == 7 or i == 8 or i == 9 or i == 10 or i == 11 or i == 12 then
-								if i < 9 then
-									v:SetTexCoord(0.01, 1.01, 0.03, 0.17)
-								end
+						MoveAny:ForeachRegions(
+							ReputationWatchBar.StatusBar,
+							function(region, x)
+								if x == 5 or x == 6 or x == 7 or x == 8 or x == 9 or x == 10 or x == 11 or x == 12 then
+									if x < 9 then
+										region:SetTexCoord(0.01, 1.01, 0.03, 0.17)
+									end
 
-								v:ClearAllPoints()
-								if i == 5 or i == 9 then
-									v:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
-								else
-									v:SetPoint("LEFT", last, "RIGHT", 0, 0)
-								end
+									region:ClearAllPoints()
+									if x == 5 or x == 9 then
+										region:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
+									else
+										region:SetPoint("LEFT", last, "RIGHT", 0, 0)
+									end
 
-								v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
-								last = v
-								id = id + 1
-							end
-						end
+									region:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+									last = region
+									id = id + 1
+								end
+							end, "REPBAR"
+						)
 					end
 
 					if ReputationWatchBar.OverlayFrame and ReputationWatchBar.OverlayFrame.Text then
@@ -4815,23 +4818,26 @@ function MoveAny:LoadAddon()
 					end
 
 					local last = nil
-					for i, v in pairs({MainMenuExpBar:GetRegions()}) do
-						if i == 1 then
-							v:SetSize(opts["WIDTH"], opts["HEIGHT"])
-						end
-
-						if i == 2 or i == 3 or i == 4 or i == 5 then
-							v:ClearAllPoints()
-							if i == 2 then
-								v:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
-							else
-								v:SetPoint("LEFT", last, "RIGHT", 0, 0)
+					MoveAny:ForeachRegions(
+						MainMenuExpBar,
+						function(region, x)
+							if x == 1 then
+								region:SetSize(opts["WIDTH"], opts["HEIGHT"])
 							end
 
-							v:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
-							last = v
-						end
-					end
+							if x == 2 or x == 3 or x == 4 or x == 5 then
+								region:ClearAllPoints()
+								if x == 2 then
+									region:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
+								else
+									region:SetPoint("LEFT", last, "RIGHT", 0, 0)
+								end
+
+								region:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+								last = region
+							end
+						end, "XPBar"
+					)
 
 					if MainMenuBarExpText then
 						MainMenuBarExpText:SetText(MainMenuBarExpText:GetText())
