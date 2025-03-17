@@ -329,20 +329,22 @@ function D4:UpdateLTP()
         local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"
         --local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
         local btnParent = _G["LeaPlusGlobalMinimapCombinedButtonFrame"]
-        local childs = {Minimap:GetChildren()}
-        for i, btn in pairs(childs) do
-            if btn and btn:GetName() then
-                local s1 = string.find(string.lower(btn:GetName()), "libdbicon")
-                if s1 and s1 > 1 and btn.ltp == nil then
-                    btn.ltp = true
-                    btn:SetScale(0.75)
-                    D4:UpdatePosition(btn, pos[btn])
-                    if CombineAddonButtons and btnParent then
-                        btn:SetParent(btnParent)
+        MoveAny:ForeachChildren(
+            Minimap,
+            function(child)
+                if child and child:GetName() then
+                    local s1 = string.find(string.lower(child:GetName()), "libdbicon")
+                    if s1 and s1 > 1 and child.ltp == nil then
+                        child.ltp = true
+                        child:SetScale(0.75)
+                        D4:UpdatePosition(child, pos[child])
+                        if CombineAddonButtons and btnParent then
+                            child:SetParent(btnParent)
+                        end
                     end
                 end
-            end
-        end
+            end, "MMBtns"
+        )
     end
 end
 

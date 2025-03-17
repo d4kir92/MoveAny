@@ -504,7 +504,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.43")
+	MoveAny:SetVersion(135994, "1.8.44")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -3721,11 +3721,14 @@ function MoveAny:LoadAddon()
 			function(sel, parent)
 				if parent == MAHIDDEN then
 					CompactRaidFrameManager:SetAlpha(0)
-					for i, v in pairs({CompactRaidFrameManager:GetChildren()}) do
-						if v ~= CompactRaidFrameManagerBg and v ~= CompactRaidFrameManagerBorderRight and v ~= CompactRaidFrameManagerToggleButton then
-							v:SetIgnoreParentAlpha(true)
-						end
-					end
+					MoveAny:ForeachChildren(
+						CompactRaidFrameManager,
+						function(child)
+							if child ~= CompactRaidFrameManagerBg and child ~= CompactRaidFrameManagerBorderRight and child ~= CompactRaidFrameManagerToggleButton then
+								child:SetIgnoreParentAlpha(true)
+							end
+						end, "MACompactRaidFrameManager"
+					)
 				end
 			end
 		)

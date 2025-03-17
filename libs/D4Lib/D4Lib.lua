@@ -72,6 +72,35 @@ function D4:RegisterEvent(frame, event, unit)
     end
 end
 
+function D4:ForeachChildren(frame, callback, from)
+    if frame == nil then
+        D4:MSG("[ForeachChildren] frame == nil", from)
+
+        return
+    end
+
+    if frame.GetNumChildren == nil or frame.GetChildren == nil then
+        D4:MSG("[ForeachChildren] frame.GetNumChildren == nil or  frame.GetChildren == nil", from)
+
+        return
+    end
+
+    if callback == nil then
+        D4:MSG("[ForeachChildren] Missing Callback", from)
+
+        return
+    end
+
+    for x = 1, frame:GetNumChildren() do
+        local child = select(x, frame:GetChildren())
+        if child then
+            callback(child)
+        else
+            return
+        end
+    end
+end
+
 --[[ QOL ]]
 local ICON_TAG_LIST_EN = {
     ["star"] = 1,

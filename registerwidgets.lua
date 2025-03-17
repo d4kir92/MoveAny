@@ -366,11 +366,14 @@ function MoveAny:MenuOptions(opt, frame)
 							dragf:Show()
 							dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
 							frame:EnableMouse(false)
-							for x, child in pairs({frame:GetChildren()}) do
-								if C_Widget.IsWidget(child) then
-									child:EnableMouse(false)
-								end
-							end
+							MoveAny:ForeachChildren(
+								frame,
+								function(child)
+									if C_Widget.IsWidget(child) then
+										child:EnableMouse(false)
+									end
+								end, "clickthrough 1"
+							)
 						else
 							dragf:Hide()
 						end
@@ -378,11 +381,14 @@ function MoveAny:MenuOptions(opt, frame)
 						if frame then
 							dragf.t:SetVertexColor(MoveAny:GetColor("el"))
 							frame:EnableMouse(true)
-							for x, child in pairs({frame:GetChildren()}) do
-								if C_Widget.IsWidget(child) then
-									child:EnableMouse(true)
-								end
-							end
+							MoveAny:ForeachChildren(
+								frame,
+								function(child)
+									if C_Widget.IsWidget(child) then
+										child:EnableMouse(true)
+									end
+								end, "clickthrough 2"
+							)
 						else
 							dragf:Hide()
 						end
@@ -1430,11 +1436,14 @@ function MoveAny:RegisterWidget(tab)
 	tinsert(MoveAny:GetEleFrames(), frame)
 	tinsert(MoveAny:GetAlphaFrames(), frame)
 	if frame and frame.GetChildren then
-		for i, btn in pairs({frame:GetChildren()}) do
-			function btn:GetMAEle()
-				return frame
-			end
-		end
+		MoveAny:ForeachChildren(
+			frame,
+			function(child)
+				function child:GetMAEle()
+					return frame
+				end
+			end, "GetMAEle 1"
+		)
 	end
 
 	frame.ignoreFramePositionManager = true
@@ -1593,11 +1602,14 @@ function MoveAny:RegisterWidget(tab)
 				if sel.ma_enablemouse then return end
 				sel.ma_enablemouse = true
 				sel:EnableMouse(false)
-				for x, child in pairs({sel:GetChildren()}) do
-					if C_Widget.IsWidget(child) then
-						child:EnableMouse(false)
-					end
-				end
+				MoveAny:ForeachChildren(
+					sel,
+					function(child)
+						if C_Widget.IsWidget(child) then
+							child:EnableMouse(false)
+						end
+					end, "EnableMouse 1"
+				)
 
 				sel.ma_enablemouse = false
 			end

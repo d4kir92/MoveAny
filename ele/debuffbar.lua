@@ -93,34 +93,31 @@ function MoveAny:InitDebuffBar()
 			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
 			if MoveAny:GetWoWBuild() == "RETAIL" then
-				if DebuffFrame and DebuffFrame.AuraContainer then
-					local num = DebuffFrame.AuraContainer:GetNumChildren()
-					if num then
-						for i = 1, num do
-							local bbtn = select(i, DebuffFrame.AuraContainer:GetChildren())
-							if bbtn then
-								bbtn:SetParent(MADebuffBar)
-								if bbtn.masetup == nil then
-									bbtn.masetup = true
-									if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough4") then
-										hooksecurefunc(
-											bbtn,
-											"EnableMouse",
-											function(sel, bo)
-												if sel.ma_enablemouse then return end
-												sel.ma_enablemouse = true
-												sel:EnableMouse(false)
-												sel.ma_enablemouse = false
-											end
-										)
+				MoveAny:ForeachChildren(
+					DebuffFrame.AuraContainer,
+					function(child)
+						if child then
+							child:SetParent(MADebuffBar)
+							if child.masetup == nil then
+								child.masetup = true
+								if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough4") then
+									hooksecurefunc(
+										child,
+										"EnableMouse",
+										function(sel, bo)
+											if sel.ma_enablemouse then return end
+											sel.ma_enablemouse = true
+											sel:EnableMouse(false)
+											sel.ma_enablemouse = false
+										end
+									)
 
-										bbtn:EnableMouse(false)
-									end
+									child:EnableMouse(false)
 								end
 							end
 						end
-					end
-				end
+					end, "Debuffbar"
+				)
 			else
 				for bid = 1, 32 do
 					local bbtn = _G["DebuffButton" .. bid]

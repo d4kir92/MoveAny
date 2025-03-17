@@ -73,12 +73,15 @@ function MoveAny:HideFrame(frame, soft)
 				end
 
 				if sel.GetChildren then
-					for i, v in pairs({sel:GetChildren()}) do
-						v:SetAlpha(0)
-						if not InCombatLockdown() then
-							v:EnableMouse(false)
-						end
-					end
+					MoveAny:ForeachChildren(
+						sel,
+						function(child)
+							child:SetAlpha(0)
+							if not InCombatLockdown() then
+								child:EnableMouse(false)
+							end
+						end, "HideFrame"
+					)
 				end
 
 				setalpha = false

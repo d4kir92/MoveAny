@@ -401,19 +401,18 @@ function MoveAny:InitBuffBar()
 			end
 
 			if MoveAny:GetWoWBuild() == "RETAIL" then
-				local num = BuffFrame.AuraContainer:GetNumChildren()
-				if num then
-					for i = 1, num do
-						local bbtn = select(i, BuffFrame.AuraContainer:GetChildren())
-						if bbtn and bbtn.masetup == nil then
-							bbtn.masetup = true
-							function bbtn:GetMAEle()
+				MoveAny:ForeachChildren(
+					BuffFrame.AuraContainer,
+					function(child)
+						if child and child.masetup == nil then
+							child.masetup = true
+							function child:GetMAEle()
 								return MABuffBar
 							end
 
 							if MoveAny:GetEleOption("MABuffBar", "ClickThrough", false, "ClickThrough6") then
 								hooksecurefunc(
-									bbtn,
+									child,
 									"EnableMouse",
 									function(sel, bo)
 										if sel.ma_enablemouse then return end
@@ -423,11 +422,11 @@ function MoveAny:InitBuffBar()
 									end
 								)
 
-								bbtn:EnableMouse(false)
+								child:EnableMouse(false)
 							end
 						end
-					end
-				end
+					end, "Buffbar"
+				)
 			else
 				for bid = 1, 32 do
 					local bbtn = _G["BuffButton" .. bid]
