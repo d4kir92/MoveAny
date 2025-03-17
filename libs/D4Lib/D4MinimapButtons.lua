@@ -329,7 +329,7 @@ function D4:UpdateLTP()
         local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"
         --local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
         local btnParent = _G["LeaPlusGlobalMinimapCombinedButtonFrame"]
-        MoveAny:ForeachChildren(
+        D4:ForeachChildren(
             Minimap,
             function(child)
                 if child and child:GetName() then
