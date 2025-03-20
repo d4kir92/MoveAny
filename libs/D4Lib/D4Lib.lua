@@ -732,6 +732,30 @@ function D4:GetHeroSpecId()
     return heroSpecID
 end
 
+function D4:GetFrameByName(name)
+    local frame = _G[name]
+    if type(frame) == "table" then return frame end
+    if name:find("%.") then
+        local parts = {strsplit(".", name)}
+        frame = _G[parts[1]]
+        for i = 2, #parts do
+            if type(frame) ~= "table" then return nil end
+            frame = frame[parts[i]]
+        end
+
+        return type(frame) == "table" and frame or nil
+    end
+
+    local baseName, index = name:match("([^%[]+)%[(%d+)%]")
+    if baseName and index then
+        local f = _G[baseName]
+
+        return f and select(tonumber(index), f:GetRegions()) or nil
+    end
+
+    return nil
+end
+
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript(

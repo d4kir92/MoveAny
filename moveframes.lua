@@ -193,7 +193,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		local count = 0
 		for i, name in pairs(MAFS) do
 			count = count + 1
-			local frame = MoveAny:GetWindow(name)
+			local frame = MoveAny:GetFrameByName(name)
 			if frame ~= nil and frame:IsShown() and (not InCombatLockdown() or not frame:IsProtected()) then
 				MAFS[name] = nil
 				local fm = _G[name .. "Move"]
@@ -525,7 +525,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		end
 	else
 		for i, name in pairs(MAFS) do
-			local frame = MoveAny:GetWindow(name)
+			local frame = MoveAny:GetFrameByName(name)
 			if frame ~= nil and waitingFrames[name] == nil and frame.Show then
 				waitingFrames[name] = true
 				hooksecurefunc(
