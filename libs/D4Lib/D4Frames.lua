@@ -10,7 +10,7 @@ function D4:SetFontSize(element, fontSize, newFontFlags)
     if not fontSize then return end
     local fontType, _, fontFlags = element:GetFont()
     if fontType == nil then
-        print("SetFontSize FAILED #1:", element:GetName())
+        D4:MSG("SetFontSize FAILED #1:", element:GetName())
 
         return
     end
