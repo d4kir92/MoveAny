@@ -24,6 +24,8 @@ function MoveAny:GetBuffPosition(name, p1, p3)
 		return "BOTTOMRIGHT", "BOTTOMRIGHT"
 	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 4 then
 		return "BOTTOMLEFT", "BOTTOMLEFT"
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 5 then
+		return "CENTER", "CENTER"
 	end
 
 	return "TOPRIGHT", "TOPRIGHT"

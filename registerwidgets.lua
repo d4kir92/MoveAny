@@ -715,34 +715,58 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" and name == "MABuffBar" then
-				MoveAny:CreateSlider(
-					content,
-					10,
-					y,
-					name,
-					"MABUFFMODE",
-					0,
-					1,
-					0,
-					4,
-					function()
-						if MoveAny.UpdateBuffs then
-							MoveAny:UpdateBuffs()
-						end
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				if name == "MABuffBar" then
+					MoveAny:CreateSlider(
+						content,
+						10,
+						y,
+						name,
+						"MABUFFMODE",
+						0,
+						1,
+						0,
+						5,
+						function()
+							if MoveAny.UpdateBuffs then
+								MoveAny:UpdateBuffs()
+							end
 
-						if MoveAny.UpdateDebuffs then
-							MoveAny:UpdateDebuffs("Slider 4")
-						end
-					end,
-					{
-						[0] = "AUTO",
-						[1] = "TOPRIGHT",
-						[2] = "TOPLEFT",
-						[3] = "BOTTOMRIGHT",
-						[4] = "BOTTOMLEFT"
-					}
-				)
+							if MoveAny.UpdateDebuffs then
+								MoveAny:UpdateDebuffs("Slider 4")
+							end
+						end,
+						{
+							[0] = "AUTO",
+							[1] = "TOPRIGHT",
+							[2] = "TOPLEFT",
+							[3] = "BOTTOMRIGHT",
+							[4] = "BOTTOMLEFT",
+							[5] = "CENTER",
+						}
+					)
+				else
+					MoveAny:CreateSlider(
+						content,
+						10,
+						y,
+						name,
+						"MABUFFMODE",
+						0,
+						1,
+						0,
+						1,
+						function()
+							if MoveAny.UpdateTargetBuffs then
+								MoveAny:UpdateTargetBuffs()
+							end
+						end,
+						{
+							[0] = "DOWN",
+							[1] = "TOP",
+						}
+					)
+				end
 
 				y = y - 40
 			end
@@ -764,6 +788,10 @@ function MoveAny:MenuOptions(opt, frame)
 
 					if MoveAny.UpdateDebuffs then
 						MoveAny:UpdateDebuffs("Slider 3")
+					end
+
+					if MoveAny.UpdateTargetBuffs then
+						MoveAny:UpdateTargetBuffs()
 					end
 				end
 			)
@@ -787,6 +815,10 @@ function MoveAny:MenuOptions(opt, frame)
 					if MoveAny.UpdateDebuffs then
 						MoveAny:UpdateDebuffs("Slider 2")
 					end
+
+					if MoveAny.UpdateTargetBuffs then
+						MoveAny:UpdateTargetBuffs()
+					end
 				end
 			)
 
@@ -809,6 +841,10 @@ function MoveAny:MenuOptions(opt, frame)
 					if MoveAny.UpdateDebuffs then
 						MoveAny:UpdateDebuffs("Slider")
 					end
+
+					if MoveAny.UpdateTargetBuffs then
+						MoveAny:UpdateTargetBuffs()
+					end
 				end
 			)
 
@@ -816,28 +852,52 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" and name == "MADebuffBar" then
-				MoveAny:CreateSlider(
-					content,
-					10,
-					y,
-					name,
-					"MADEBUFFMODE",
-					0,
-					1,
-					0,
-					4,
-					function()
-						MoveAny:UpdateDebuffs("MenuOptions")
-					end,
-					{
-						[0] = "AUTO",
-						[1] = "TOPRIGHT",
-						[2] = "TOPLEFT",
-						[3] = "BOTTOMRIGHT",
-						[4] = "BOTTOMLEFT"
-					}
-				)
+			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				if name == "MADebuffBar" then
+					MoveAny:CreateSlider(
+						content,
+						10,
+						y,
+						name,
+						"MADEBUFFMODE",
+						0,
+						1,
+						0,
+						5,
+						function()
+							MoveAny:UpdateDebuffs("MenuOptions")
+						end,
+						{
+							[0] = "AUTO",
+							[1] = "TOPRIGHT",
+							[2] = "TOPLEFT",
+							[3] = "BOTTOMRIGHT",
+							[4] = "BOTTOMLEFT",
+							[5] = "CENTER",
+						}
+					)
+				else
+					MoveAny:CreateSlider(
+						content,
+						10,
+						y,
+						name,
+						"MADEBUFFMODE",
+						0,
+						1,
+						0,
+						1,
+						function()
+							if MoveAny.UpdateTargetDebuffs then
+								MoveAny:UpdateTargetDebuffs()
+							end
+						end,
+						{
+							[0] = "DOWN",
+							[1] = "TOP",
+						}
+					)
+				end
 
 				y = y - 40
 			end
@@ -854,6 +914,9 @@ function MoveAny:MenuOptions(opt, frame)
 				20,
 				function()
 					MoveAny:UpdateDebuffs("CreateSlider1")
+					if MoveAny.UpdateTargetDebuffs then
+						MoveAny:UpdateTargetDebuffs()
+					end
 				end
 			)
 
@@ -870,6 +933,9 @@ function MoveAny:MenuOptions(opt, frame)
 				30,
 				function()
 					MoveAny:UpdateDebuffs("CreateSlider2")
+					if MoveAny.UpdateTargetDebuffs then
+						MoveAny:UpdateTargetDebuffs()
+					end
 				end
 			)
 
@@ -886,6 +952,9 @@ function MoveAny:MenuOptions(opt, frame)
 				30,
 				function()
 					MoveAny:UpdateDebuffs("CreateSlider3")
+					if MoveAny.UpdateTargetDebuffs then
+						MoveAny:UpdateTargetDebuffs()
+					end
 				end
 			)
 

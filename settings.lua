@@ -504,7 +504,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.46")
+	MoveAny:SetVersion(135994, "1.8.47")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2447,9 +2447,18 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFLIMIT", 10)
-			local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGX", 4)
-			local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGY", 10)
+			function MoveAny:UpdateTargetBuffs()
+				for i = 1, 32 do
+					local name = "TargetFrameBuff" .. i
+					if _G[name] ~= nil then
+						local p1, p2, p3, p4, p5 = _G[name]:GetPoint()
+						if p1 and p3 then
+							_G[name]:SetPoint(p1, p2, p3, p4, p5)
+						end
+					end
+				end
+			end
+
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "TargetFrameBuff1",
@@ -2470,31 +2479,47 @@ function MoveAny:LoadAddon()
 							end
 						end
 
+						local added = {}
 						function frame:Update()
 							local obb = _G["TargetFrameBuff" .. 1]
 							for i = 1, 32 do
 								local bb = _G["TargetFrameBuff" .. i]
-								if bb and i > 1 then
+								if bb and i > 1 and added[bb] == nil then
+									added[bb] = true
 									local setPoint = false
-									local sobb = obb
 									hooksecurefunc(
 										bb,
 										"SetPoint",
 										function(sel, ...)
 											if setPoint then return end
+											local MABUFFMODE = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFMODE", 0)
+											local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFLIMIT", 10)
+											local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGX", 4)
+											local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGY", 10)
 											setPoint = true
 											local row = math.floor((i - 1) / MABUFFLIMIT)
 											sel:ClearAllPoints()
-											sel:SetPoint("LEFT", sobb, "RIGHT", MABUFFSPACINGX, row * MABUFFSPACINGY)
+											if MABUFFMODE == 1 then
+												sel:SetPoint("LEFT", _G["TargetFrameBuff" .. 1], "LEFT", ((i - 1) % MABUFFLIMIT) * (_G["TargetFrameBuff" .. 1]:GetWidth() + MABUFFSPACINGX), row * (_G["TargetFrameBuff" .. 1]:GetHeight() + MABUFFSPACINGY))
+											else
+												sel:SetPoint("LEFT", _G["TargetFrameBuff" .. 1], "LEFT", ((i - 1) % MABUFFLIMIT) * (_G["TargetFrameBuff" .. 1]:GetWidth() + MABUFFSPACINGX), -(row * (_G["TargetFrameBuff" .. 1]:GetHeight() + MABUFFSPACINGY)))
+											end
+
 											setPoint = false
 										end
 									)
 
 									bb:ClearAllPoints()
-									bb:SetPoint("LEFT", obb, "RIGHT", MABUFFSPACINGX, 0)
-									obb = bb
+									bb:SetPoint("LEFT", obb, "RIGHT", 0, 0)
 								end
 							end
+
+							C_Timer.After(
+								0.1,
+								function()
+									frame:Update()
+								end
+							)
 						end
 
 						frame:Update()
@@ -2541,9 +2566,18 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEDEBUFF1", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFLIMIT", 10)
-			local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGX", 4)
-			local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGY", 10)
+			function MoveAny:UpdateTargetDebuffs()
+				for i = 1, 32 do
+					local name = "TargetFrameDebuff" .. i
+					if _G[name] ~= nil then
+						local p1, p2, p3, p4, p5 = _G[name]:GetPoint()
+						if p1 and p3 then
+							_G[name]:SetPoint(p1, p2, p3, p4, p5)
+						end
+					end
+				end
+			end
+
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "TargetFrameDebuff1",
@@ -2564,31 +2598,47 @@ function MoveAny:LoadAddon()
 							end
 						end
 
+						local added = {}
 						function frame:Update()
 							local obb = _G["TargetFrameDebuff" .. 1]
 							for i = 1, 32 do
 								local bb = _G["TargetFrameDebuff" .. i]
-								if bb and i > 1 then
+								if bb and i > 1 and added[bb] == nil then
+									added[bb] = true
 									local setPoint = false
-									local sobb = obb
 									hooksecurefunc(
 										bb,
 										"SetPoint",
 										function(sel, ...)
 											if setPoint then return end
+											local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFMODE", 0)
+											local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFLIMIT", 10)
+											local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGX", 4)
+											local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGY", 10)
 											setPoint = true
 											local row = math.floor((i - 1) / MADEBUFFLIMIT)
 											sel:ClearAllPoints()
-											sel:SetPoint("LEFT", sobb, "RIGHT", MADEBUFFSPACINGX, row * MADEBUFFSPACINGY)
+											if MADEBUFFMODE == 1 then
+												sel:SetPoint("LEFT", _G["TargetFrameDebuff" .. 1], "LEFT", ((i - 1) % MADEBUFFLIMIT) * (_G["TargetFrameDebuff" .. 1]:GetWidth() + MADEBUFFSPACINGX), row * (_G["TargetFrameDebuff" .. 1]:GetHeight() + MADEBUFFSPACINGY))
+											else
+												sel:SetPoint("LEFT", _G["TargetFrameDebuff" .. 1], "LEFT", ((i - 1) % MADEBUFFLIMIT) * (_G["TargetFrameDebuff" .. 1]:GetWidth() + MADEBUFFSPACINGX), -(row * (_G["TargetFrameDebuff" .. 1]:GetHeight() + MADEBUFFSPACINGY)))
+											end
+
 											setPoint = false
 										end
 									)
 
 									bb:ClearAllPoints()
-									bb:SetPoint("LEFT", obb, "RIGHT", MADEBUFFSPACINGX, 0)
-									obb = bb
+									bb:SetPoint("LEFT", obb, "RIGHT", 0, 0)
 								end
 							end
+
+							C_Timer.After(
+								0.1,
+								function()
+									frame:Update()
+								end
+							)
 						end
 
 						frame:Update()

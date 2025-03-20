@@ -29,6 +29,8 @@ function MoveAny:GetDebuffPosition(name, p1, p3)
 		return "BOTTOMRIGHT", "BOTTOMRIGHT"
 	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 4 then
 		return "BOTTOMLEFT", "BOTTOMLEFT"
+	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 5 then
+		return "CENTER", "CENTER"
 	end
 
 	return "TOPRIGHT", "TOPRIGHT"
