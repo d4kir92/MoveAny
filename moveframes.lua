@@ -230,7 +230,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SaveFramePointToDB(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
 								local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 								if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
-								if dbp1 and dbp3 and not InCombatLockdown() then
+								if dbp1 and dbp3 then
 									MoveAny:SetPoint(frame, dbp1, nil, dbp3, dbp4, dbp5)
 								else
 									frame:ClearAllPoints()
@@ -330,12 +330,9 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						MoveAny:UpdateCurrentWindow()
 						GameTooltip:Hide()
 					elseif (MoveAny:IsEnabled("FRAMESKEYDRAG", false) and MoveAny:IsFrameKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESKEYDRAG", false) and btn == "LeftButton") then
-						if not InCombatLockdown() then
-							fm:StartMoving()
-							fm:SetUserPlaced(false)
-							ma_ismoving[fm] = true
-						end
-
+						fm:StartMoving()
+						fm:SetUserPlaced(false)
+						ma_ismoving[fm] = true
 						fm:UpdatePreview()
 					elseif (MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsFrameKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsResetButtonDown(btn)) then
 						MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
@@ -439,7 +436,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 						if dbp1 and dbp3 then
-							--if not InCombatLockdown() then
 							sel.maretrysetpoint = nil
 							local w, h = sel:GetSize()
 							MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)

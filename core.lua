@@ -203,50 +203,12 @@ function MoveAny:GetMainPanel()
 end
 
 --[[ NEW ]]
-local pausedKeybinds = {"UP", "DOWN", "LEFT", "RIGHT"}
-local oldKeybinds = {}
 local isToggling = false
-local wasDisabled = false
-function MoveAny:UnlockBindings()
-	if not InCombatLockdown() then
-		if MoveAny:IsEnabled("DISABLEMOVEMENT", false) then
-			for i, name in pairs(pausedKeybinds) do
-				oldKeybinds[name] = GetBindingAction(name)
-				SetBinding(name, nil)
-			end
-
-			wasDisabled = true
-		end
-
-		isToggling = false
-	else
-		C_Timer.After(0.1, MoveAny.UnlockBindings)
-	end
-end
-
-function MoveAny:LockBindings()
-	if not InCombatLockdown() then
-		if MoveAny:IsEnabled("DISABLEMOVEMENT", false) or wasDisabled then
-			for i, name in pairs(pausedKeybinds) do
-				if oldKeybinds[name] then
-					SetBinding(name, oldKeybinds[name])
-				end
-			end
-
-			wasDisabled = false
-		end
-
-		isToggling = false
-	else
-		C_Timer.After(0.1, MoveAny.LockBindings)
-	end
-end
-
 function MoveAny:Unlock()
 	if not isToggling then
 		isToggling = true
 		MoveAny:SetEnabled("MALOCK", true)
-		MoveAny:UnlockBindings()
+		isToggling = false
 	else
 		MoveAny:MSG("[Unlock] Settings Frame is toggling. ShowMenu: " .. tostring(MoveAny:IsEnabled("MALOCK", false)))
 	end
@@ -256,7 +218,7 @@ function MoveAny:Lock()
 	if not isToggling then
 		isToggling = true
 		MoveAny:SetEnabled("MALOCK", false)
-		MoveAny:LockBindings()
+		isToggling = false
 	else
 		MoveAny:MSG("[Lock] Settings Frame is toggling. ShowMenu: " .. tostring(MoveAny:IsEnabled("MALOCK", false)))
 	end
@@ -321,12 +283,6 @@ end
 
 function MoveAny:ToggleMALock()
 	if MoveAny:IsMALockNotReady() then return end
-	if InCombatLockdown() then
-		MoveAny:INFO("You are in Combat")
-
-		return
-	end
-
 	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then
 		MoveAny:INFO("Can't Toggle Settings Frame when it is not saved.")
 
