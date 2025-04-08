@@ -54,6 +54,27 @@ function D4:GetMMBtn(name)
     return _G[name]
 end
 
+if GetD4MinimapHover == nil then
+    local MinimapHover = false
+    local minimapHover = CreateFrame("Frame")
+    minimapHover:HookScript(
+        "OnUpdate",
+        function()
+            local mouseFocus = D4:GetMouseFocus()
+            local btnFocus = false
+            if mouseFocus and mouseFocus.GetParent then
+                btnFocus = mouseFocus:GetParent() == Minimap
+            end
+
+            MinimapHover = MouseIsOver(Minimap) or btnFocus
+        end
+    )
+
+    function GetD4MinimapHover()
+        return MinimapHover
+    end
+end
+
 function D4:CreateMinimapButton(params)
     if params.icon == nil and params.atlas == nil then
         D4:MSG("[CreateMinimapButton] Missing Icon/Atlas")
@@ -245,27 +266,28 @@ function D4:CreateMinimapButton(params)
     animOut:SetToAlpha(0)
     animOut:SetStartDelay(1)
     btn.fadeOut:SetToFinalAlpha(true)
-    Minimap:HookScript(
-        "OnEnter",
+    btn.ia_visible = false
+    btn:HookScript(
+        "OnUpdate",
         function()
-            if btn:GetParent() == Minimap then
-                btn.fadeOut:Stop()
-                btn:SetAlpha(1)
-            else
-                btn.fadeOut:Stop()
-                btn:SetAlpha(1)
-            end
-        end
-    )
-
-    Minimap:HookScript(
-        "OnLeave",
-        function()
-            if btn:GetParent() == Minimap then
-                btn.fadeOut:Play()
-            else
-                btn.fadeOut:Stop()
-                btn:SetAlpha(1)
+            if btn.ia_visible_old ~= GetD4MinimapHover() then
+                btn.ia_visible_old = GetD4MinimapHover()
+                if GetD4MinimapHover() then
+                    if btn:GetParent() == Minimap then
+                        btn.fadeOut:Stop()
+                        btn:SetAlpha(1)
+                    else
+                        btn.fadeOut:Stop()
+                        btn:SetAlpha(1)
+                    end
+                else
+                    if btn:GetParent() == Minimap then
+                        btn.fadeOut:Play()
+                    else
+                        btn.fadeOut:Stop()
+                        btn:SetAlpha(1)
+                    end
+                end
             end
         end
     )
