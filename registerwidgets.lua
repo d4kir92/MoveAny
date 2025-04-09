@@ -65,7 +65,7 @@ local function CreateTabs(frame, args)
 			template = "PanelTabButtonTemplate"
 		end
 
-		frame.tabs[i] = CreateFrame("Button", frame:GetName() .. "Tab" .. i, frame, template)
+		frame.tabs[i] = CreateFrame("Button", MoveAny:GetName(frame) .. "Tab" .. i, frame, template)
 		local tab = frame.tabs[i]
 		tab:SetID(i)
 		tab:SetText(args[i])
@@ -76,7 +76,7 @@ local function CreateTabs(frame, args)
 			end
 		)
 
-		tab.content = CreateFrame("Frame", frame:GetName() .. "Tab" .. i .. "Content", frame)
+		tab.content = CreateFrame("Frame", MoveAny:GetName(frame) .. "Tab" .. i .. "Content", frame)
 		tab.content.name = args[i]
 		tab.content:SetSize(sw - 12, sh - 26 - 6)
 		tab.content:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -26)
@@ -85,7 +85,7 @@ local function CreateTabs(frame, args)
 		if i == 1 then
 			tab:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 5, 2)
 		else
-			tab:SetPoint("TOPLEFT", _G[frame:GetName() .. "Tab" .. (i - 1)], "TOPRIGHT", 4, 0)
+			tab:SetPoint("TOPLEFT", _G[MoveAny:GetName(frame) .. "Tab" .. (i - 1)], "TOPRIGHT", 4, 0)
 		end
 	end
 

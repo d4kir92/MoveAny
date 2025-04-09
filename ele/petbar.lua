@@ -17,7 +17,7 @@ function MoveAny:UpdatePetBar()
 
 				for y, btn in pairs(bar.btns) do
 					if btn then
-						local btnName = btn:GetName()
+						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
 							_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
 						end

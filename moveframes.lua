@@ -245,7 +245,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 				frame:SetClampedToScreen(true)
 				function MoveAny:MAFrameStopMoving(frameObj)
-					local name2 = frameObj:GetName()
+					local name2 = MoveAny:GetName(frameObj)
 					if name2 then
 						local fM = _G[name2 .. "Move"]
 						if not fM then

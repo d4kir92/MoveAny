@@ -62,7 +62,7 @@ function MoveAny:UpdateActionBar(frame)
 	MoveAny:SafeExec(
 		frame,
 		function()
-			local name = frame:GetName() or BarNames[frame]
+			local name = MoveAny:GetName(frame) or BarNames[frame]
 			local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
 			opts["ROWS"] = opts["ROWS"] or nil
 			opts["OFFSET"] = opts["OFFSET"] or nil
@@ -339,7 +339,7 @@ local function UpdateActionBarBackground(show)
 		local ab = bar
 		if ab and ab.btns then
 			for id, abtn in pairs(ab.btns) do
-				local btnname = abtn:GetName()
+				local btnname = MoveAny:GetName(abtn)
 				if btnname and _G[btnname .. "FloatingBG"] then
 					_G[btnname .. "FloatingBG"]:Show()
 				end
@@ -585,12 +585,12 @@ function MoveAny:CustomBars()
 				for x, bar in pairs(abs) do
 					for y, btn in pairs(bar.btns) do
 						if btn then
-							local btnName = btn:GetName()
+							local btnName = MoveAny:GetName(btn)
 							if _G[btnName .. "FloatingBG"] then
 								_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
 							end
 
-							local parent = btn:GetParent():GetName()
+							local parent = MoveAny:GetName(btn:GetParent())
 							local group = nil
 							if MAMasqueGroups.Groups["MA " .. parent] == nil then
 								MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)

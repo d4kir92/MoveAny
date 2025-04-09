@@ -60,12 +60,12 @@ function MoveAny:UpdateStanceBar()
 
 				for y, btn in pairs(StanceBar.btns) do
 					if btn then
-						local btnName = btn:GetName()
+						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
 							_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
 						end
 
-						local parent = btn:GetParent():GetName()
+						local parent = MoveAny:GetName(btn:GetParent())
 						local group = nil
 						if MAMasqueGroups.Groups["MA " .. parent] == nil then
 							MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
