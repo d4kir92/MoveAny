@@ -354,8 +354,9 @@ function D4:UpdateLTP()
         D4:ForeachChildren(
             Minimap,
             function(child)
-                if child and child:GetName() then
-                    local s1 = string.find(string.lower(child:GetName()), "libdbicon")
+                local name = DarkMode:GetName(child)
+                if name then
+                    local s1 = string.find(string.lower(name), "libdbicon")
                     if s1 and s1 > 1 and child.ltp == nil then
                         child.ltp = true
                         child:SetScale(0.75)

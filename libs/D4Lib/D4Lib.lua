@@ -242,12 +242,6 @@ function D4:IsAddOnLoaded(name)
     return nil
 end
 
-function D4:GetName(frameOrTexture)
-    if frameOrTexture and frameOrTexture.GetName then return frameOrTexture:GetName() end
-
-    return nil
-end
-
 local function FixIconChat(sel, event, message, author, ...)
     if ICON_LIST then
         for tag in string.gmatch(message, "%b{}") do
