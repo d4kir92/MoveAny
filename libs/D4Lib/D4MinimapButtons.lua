@@ -354,7 +354,7 @@ function D4:UpdateLTP()
         D4:ForeachChildren(
             Minimap,
             function(child)
-                local name = DarkMode:GetName(child)
+                local name = D4:GetName(child)
                 if name then
                     local s1 = string.find(string.lower(name), "libdbicon")
                     if s1 and s1 > 1 and child.ltp == nil then

@@ -447,6 +447,7 @@ function MoveAny:IsFrameKeyDown()
 end
 
 function MoveAny:InitMALock()
+	sh = MoveAny:MClamp(640, 200, GetScreenHeight())
 	MALock = CreateFrame("Frame", "MALock", MoveAny:GetMainPanel(), "BasicFrameTemplate")
 	MALock:SetSize(sw, sh)
 	MALock:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
@@ -504,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.59")
+	MoveAny:SetVersion(135994, "1.8.60")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
