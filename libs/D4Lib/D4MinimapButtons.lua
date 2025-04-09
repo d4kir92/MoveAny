@@ -292,7 +292,7 @@ function D4:CreateMinimapButton(params)
         end
     )
 
-    if MoveAny:GetParent(btn) == Minimap then
+    if D4:GetParent(btn) == Minimap then
         btn.fadeOut:Play()
     end
 
