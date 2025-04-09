@@ -45,13 +45,13 @@ end
 
 local framelevel = 1100
 local function SelectTab(sel)
-	PanelTemplates_SetTab(sel:GetParent(), sel:GetID())
-	local content = sel:GetParent().currentcontent
+	PanelTemplates_SetTab(MoveAny:GetParent(sel), sel:GetID())
+	local content = MoveAny:GetParent(sel).currentcontent
 	if content then
 		content:Hide()
 	end
 
-	sel:GetParent().currentcontent = sel.content
+	MoveAny:GetParent(sel).currentcontent = sel.content
 	sel.content:Show()
 end
 
@@ -1475,7 +1475,7 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetClampedToScreen(true)
 	end
 
-	if frame ~= TalkingHeadFrame and frame ~= Minimap and frame ~= MinimapCluster and frame.SetIgnoreParentAlpha ~= nil and frame:GetParent() ~= UIParent and frame:GetParent() ~= MoveAny:GetMainPanel() then
+	if frame ~= TalkingHeadFrame and frame ~= Minimap and frame ~= MinimapCluster and frame.SetIgnoreParentAlpha ~= nil and MoveAny:GetParent(frame) ~= UIParent and MoveAny:GetParent(frame) ~= MoveAny:GetMainPanel() then
 		frame:SetIgnoreParentAlpha(true)
 	end
 
@@ -1698,7 +1698,7 @@ function MoveAny:RegisterWidget(tab)
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 		if dbp1 and dbp3 then
 			if noreparent then
-				MoveAny:SetPoint(frame, dbp1, frame:GetParent(), dbp3, dbp4, dbp5)
+				MoveAny:SetPoint(frame, dbp1, MoveAny:GetParent(frame), dbp3, dbp4, dbp5)
 			else
 				MoveAny:SetPoint(frame, dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 			end

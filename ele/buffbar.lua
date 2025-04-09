@@ -468,7 +468,7 @@ function MoveAny:InitBuffBar()
 									for i = 1, 32 do
 										local btn = _G["BuffButton" .. i]
 										if i == bid then break end
-										if btn and btn:GetParent() == BuffFrame then
+										if btn and MoveAny:GetParent(btn) == BuffFrame then
 											numBuffs = numBuffs + 1
 											prevBuff = btn
 										end
@@ -482,7 +482,7 @@ function MoveAny:InitBuffBar()
 									local id = numBuffs + count
 									local caly = (id - 0.1) / MABUFFLIMIT
 									local cy = caly - caly % 1
-									if bbtn:GetParent() == BuffFrame then
+									if MoveAny:GetParent(bbtn) == BuffFrame then
 										if numBuffs == 1 then
 											local posx = 0
 											if rel == "RIGHT" then

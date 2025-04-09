@@ -160,7 +160,7 @@ function MoveAny:InitDebuffBar()
 									for i = 1, 32 do
 										local btn = _G["DebuffButton" .. i]
 										if i == bid then break end
-										if btn and btn:GetParent() == MADebuffBar then
+										if btn and MoveAny:GetParent(btn) == MADebuffBar then
 											numBuffs = numBuffs + 1
 											prevBuff = btn
 										end
@@ -170,7 +170,7 @@ function MoveAny:InitDebuffBar()
 									local id = numBuffs + count
 									local caly = (id - 0.1) / MADEBUFFLIMIT
 									local cy = caly - caly % 1
-									if bbtn:GetParent() == MADebuffBar then
+									if MoveAny:GetParent(bbtn) == MADebuffBar then
 										if numBuffs == 1 then
 											local posx = 0
 											if rel == "RIGHT" then

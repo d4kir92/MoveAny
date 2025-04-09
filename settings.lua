@@ -493,18 +493,18 @@ function MoveAny:InitMALock()
 	rb:SetScript(
 		"OnMouseDown",
 		function(sel)
-			sel:GetParent():StartSizing("BOTTOMRIGHT")
+			MoveAny:GetParent(sel):StartSizing("BOTTOMRIGHT")
 		end
 	)
 
 	rb:SetScript(
 		"OnMouseUp",
 		function(sel)
-			sel:GetParent():StopMovingOrSizing("BOTTOMRIGHT")
+			MoveAny:GetParent(sel):StopMovingOrSizing("BOTTOMRIGHT")
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.56")
+	MoveAny:SetVersion(135994, "1.8.57")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -635,7 +635,7 @@ function MoveAny:InitMALock()
 		end
 
 		for i = 1, 10 do
-			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:GetParent() ~= GeneralDockManager or i == 1 then
+			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and MoveAny:GetParent(_G["ChatFrame" .. i .. "Tab"]) ~= GeneralDockManager or i == 1 then
 				AddCheckBox(posx, "CHAT", false, nil, i)
 			end
 		end
@@ -1180,14 +1180,14 @@ function MoveAny:ShowProfiles()
 		rb2:SetScript(
 			"OnMouseDown",
 			function(sel)
-				sel:GetParent():StartSizing("BOTTOMRIGHT")
+				MoveAny:GetParent(sel):StartSizing("BOTTOMRIGHT")
 			end
 		)
 
 		rb2:SetScript(
 			"OnMouseUp",
 			function(sel)
-				sel:GetParent():StopMovingOrSizing("BOTTOMRIGHT")
+				MoveAny:GetParent(sel):StopMovingOrSizing("BOTTOMRIGHT")
 			end
 		)
 
@@ -4336,7 +4336,7 @@ function MoveAny:LoadAddon()
 			function(sel)
 				if sel.ma_set_parent_elpmb then return end
 				sel.ma_set_parent_elpmb = true
-				if sel:GetParent() ~= MAHIDDEN then
+				if MoveAny:GetParent(sel) ~= MAHIDDEN then
 					sel:SetParent(UIParent)
 				end
 

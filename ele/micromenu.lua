@@ -200,12 +200,12 @@ function MoveAny:InitMicroMenu()
 								overrideChanged = true
 							end
 
-							if CharacterMicroButton.curparent ~= CharacterMicroButton:GetParent() then
-								CharacterMicroButton.curparent = CharacterMicroButton:GetParent()
+							if CharacterMicroButton.curparent ~= MoveAny:GetParent(CharacterMicroButton) then
+								CharacterMicroButton.curparent = MoveAny:GetParent(CharacterMicroButton)
 								parentChanged = true
 							end
 
-							if CharacterMicroButton:GetParent() ~= MAMenuBar and parentChanged and (MAMenuBar.redots == nil or GetTime() + 0.11 > MAMenuBar.redots) then
+							if MoveAny:GetParent(CharacterMicroButton) ~= MAMenuBar and parentChanged and (MAMenuBar.redots == nil or GetTime() + 0.11 > MAMenuBar.redots) then
 								MAMenuBar.redots = GetTime() + 0.11
 							end
 

@@ -62,8 +62,8 @@ if GetD4MinimapHover == nil then
         function()
             local mouseFocus = D4:GetMouseFocus()
             local btnFocus = false
-            if mouseFocus and mouseFocus.GetParent and mouseFocus:GetParent() ~= nil then
-                btnFocus = mouseFocus:GetParent() == Minimap
+            if mouseFocus and D4:GetParent(mouseFocus) ~= nil then
+                btnFocus = D4:GetParent(mouseFocus) == Minimap
             end
 
             MinimapHover = MouseIsOver(Minimap) or btnFocus
@@ -273,7 +273,7 @@ function D4:CreateMinimapButton(params)
             if btn.ia_visible_old ~= GetD4MinimapHover() then
                 btn.ia_visible_old = GetD4MinimapHover()
                 if GetD4MinimapHover() then
-                    if btn:GetParent() == Minimap then
+                    if D4:GetParent(btn) == Minimap then
                         btn.fadeOut:Stop()
                         btn:SetAlpha(1)
                     else
@@ -281,7 +281,7 @@ function D4:CreateMinimapButton(params)
                         btn:SetAlpha(1)
                     end
                 else
-                    if btn:GetParent() == Minimap then
+                    if D4:GetParent(btn) == Minimap then
                         btn.fadeOut:Play()
                     else
                         btn.fadeOut:Stop()
@@ -292,7 +292,7 @@ function D4:CreateMinimapButton(params)
         end
     )
 
-    if btn:GetParent() == Minimap then
+    if MoveAny:GetParent(btn) == Minimap then
         btn.fadeOut:Play()
     end
 

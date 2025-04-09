@@ -177,7 +177,7 @@ function MoveAny:UpdateActionBar(frame)
 
 			local maxbtns = 0
 			for i, abtn in pairs(frame.btns) do
-				if abtn:GetParent() ~= MAHIDDEN then
+				if MoveAny:GetParent(abtn) ~= MAHIDDEN then
 					maxbtns = maxbtns + 1
 				end
 			end
@@ -267,7 +267,7 @@ function MoveAny:UpdateActionBar(frame)
 							end
 						end
 
-						abtn.oldparent = abtn.oldparent or abtn:GetParent()
+						abtn.oldparent = abtn.oldparent or MoveAny:GetParent(abtn)
 						if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
 							abtn.hide = true
 							abtn:SetParent(MAHIDDEN)
@@ -283,7 +283,7 @@ function MoveAny:UpdateActionBar(frame)
 							end
 						end
 
-						if abtn:GetParent() ~= MAHIDDEN then
+						if MoveAny:GetParent(abtn) ~= MAHIDDEN then
 							id = id + 1
 						end
 					end
@@ -531,7 +531,7 @@ function MoveAny:CustomBars()
 				btn.maid = id
 				btn:SetParent(bar)
 				btn:ClearAllPoints()
-				btn:SetPoint("TOPLEFT", btn:GetParent(), "TOPLEFT", (x - 1) * 36, 0)
+				btn:SetPoint("TOPLEFT", MoveAny:GetParent(btn), "TOPLEFT", (x - 1) * 36, 0)
 				btn:SetSize(36, 36)
 				hooksecurefunc(
 					btn,
@@ -590,7 +590,7 @@ function MoveAny:CustomBars()
 								_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
 							end
 
-							local parent = MoveAny:GetName(btn:GetParent())
+							local parent = MoveAny:GetName(MoveAny:GetParent(btn))
 							local group = nil
 							if MAMasqueGroups.Groups["MA " .. parent] == nil then
 								MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
