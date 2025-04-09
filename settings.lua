@@ -9,7 +9,7 @@ local WebProfileData = {}
 local searchStr = ""
 local br = 8
 local sw = 550
-local sh = 680
+local sh = MoveAny:MClamp(640, 200, GetScreenHeight())
 local posy = -4
 local cas = {}
 local cbs = {}
@@ -504,7 +504,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.58")
+	MoveAny:SetVersion(135994, "1.8.59")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
