@@ -62,7 +62,7 @@ if GetD4MinimapHover == nil then
         function()
             local mouseFocus = D4:GetMouseFocus()
             local btnFocus = false
-            if mouseFocus and mouseFocus.GetParent then
+            if mouseFocus and mouseFocus.GetParent and mouseFocus:GetParent() ~= nil then
                 btnFocus = mouseFocus:GetParent() == Minimap
             end
 
