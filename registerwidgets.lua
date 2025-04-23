@@ -1112,6 +1112,7 @@ function MoveAny:ClearSelectEle()
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
 		MACurrentEle.name:Hide()
+		MACurrentEle.desc:Hide()
 	end
 
 	MACurrentEle = nil
@@ -1122,12 +1123,14 @@ function MoveAny:SelectEle(ele)
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
 		MACurrentEle.name:Hide()
+		MACurrentEle.desc:Hide()
 	end
 
 	MACurrentEle = ele
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
 		MACurrentEle.name:Show()
+		MACurrentEle.desc:Show()
 	end
 end
 
@@ -1273,22 +1276,35 @@ function MoveAny:RegisterWidget(tab)
 
 		dragframe.t:SetVertexColor(MoveAny:GetColor("el"))
 		dragframe.t:SetAlpha(0.4)
-		dragframe.name = dragframe:CreateFontString(nil, nil, "GameFontHighlightLarge")
-		dragframe.name:SetPoint("CENTER", dragframe, "CENTER", 0, 0)
-		local font, _, fontFlags = dragframe.name:GetFont()
-		dragframe.name:SetFont(font, 15, fontFlags)
-		local enab, forc = MoveAny:IsInEditModeEnabled(name)
-		if enab and not forc then
-			lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT("LID_ISENABLEDINEDITMODE")
+		do
+			dragframe.name = dragframe:CreateFontString(nil, nil, "GameFontHighlightLarge")
+			dragframe.name:SetPoint("CENTER", dragframe, "CENTER", 0, 6)
+			local font, _, fontFlags = dragframe.name:GetFont()
+			dragframe.name:SetFont(font, 15, fontFlags)
+			local enab, forc = MoveAny:IsInEditModeEnabled(name)
+			if enab and not forc then
+				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT("LID_ISENABLEDINEDITMODE")
+			end
+
+			dragframe.name:SetText(lstr)
+			dragframe.name:Hide()
 		end
 
-		dragframe.name:SetText(lstr)
-		dragframe.name:Hide()
+		do
+			dragframe.desc = dragframe:CreateFontString(nil, nil, "GameFontHighlightLarge")
+			dragframe.desc:SetPoint("CENTER", dragframe, "CENTER", 0, -9)
+			local font2, _, fontFlags2 = dragframe.name:GetFont()
+			dragframe.desc:SetFont(font2, 10, fontFlags2)
+			dragframe.desc:SetText(MoveAny:GT("LID_RIGHTCLICKFOROPTIONS"))
+			dragframe.desc:Hide()
+		end
+
 		dragframe:SetScript(
 			"OnEnter",
 			function()
 				if dragframe ~= MACurrentEle then
 					dragframe.name:Show()
+					dragframe.desc:Show()
 				end
 
 				dragframe.t:SetAlpha(0.8)
@@ -1324,6 +1340,7 @@ function MoveAny:RegisterWidget(tab)
 			function()
 				if dragframe ~= MACurrentEle then
 					dragframe.name:Hide()
+					dragframe.desc:Hide()
 				end
 
 				dragframe.t:SetAlpha(0.4)

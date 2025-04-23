@@ -240,6 +240,7 @@ function MoveAny:LangenUS()
 		["LID_HIDESMALLBAGS"] = "Small Bags",
 		["LID_HIDEKEYBAG"] = "KeyRing Bag",
 		["LID_CHANGEONCATSTEALTH"] = "Change bar on cat stealth (Reloads on Change)",
+		["LID_RIGHTCLICKFOROPTIONS"] = "Rightclick for Options",
 	}
 
 	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")

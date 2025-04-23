@@ -234,6 +234,7 @@ function MoveAny:LangdeDE()
 		["LID_HIDESMALLBAGS"] = "Kleine Taschen",
 		["LID_HIDEKEYBAG"] = "Schlüsselbund Tasche",
 		["LID_CHANGEONCATSTEALTH"] = "Wechsel Leiste wenn in Katzen-Unsichtbarkeit (Lädt Ui neu bei Änderung)",
+		["LID_RIGHTCLICKFOROPTIONS"] = "Rechtsklick für Einstellungen",
 	}
 
 	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")
