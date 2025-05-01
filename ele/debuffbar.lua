@@ -38,13 +38,29 @@ end
 
 local started = false
 function MoveAny:InitDebuffBar()
-	if MoveAny:IsEnabled("DEBUFFS", false) then
+	if MoveAny:IsEnabled("DEBUFFS", false) and DebuffFrame == nil then
 		MADebuffBar = CreateFrame("Frame", "MADebuffBar", MoveAny:GetMainPanel())
-		MADebuffBar:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -165, -132)
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
-			MADebuffBar:SetSize(btnsize * 10, btnsize * 3)
+		local sw1, sh1 = (BuffFrame or DebuffFrame):GetSize()
+		MADebuffBar:SetSize(sw1, sh1)
+		MADebuffBar:SetPoint((BuffFrame or DebuffFrame):GetPoint())
+		function MADebuffBar:GetRealEle()
+			return BuffFrame or DebuffFrame
+		end
+
+		if DebuffFrame then
+			MADebuffBar:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -165, -32)
 		else
-			local sw1, sh1 = BuffFrame:GetSize()
+			MADebuffBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+		end
+
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if MoveAny:IsEnabled("BUFFS", false) then
+				MADebuffBar:SetSize(btnsize * 10, btnsize * 3)
+			else
+				MADebuffBar:SetSize(btnsize * 10, btnsize * 6)
+			end
+		else
+			sw1, sh1 = (BuffFrame or DebuffFrame):GetSize()
 			MADebuffBar:SetSize(sw1, sh1)
 		end
 

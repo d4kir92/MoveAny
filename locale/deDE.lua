@@ -235,6 +235,9 @@ function MoveAny:LangdeDE()
 		["LID_HIDEKEYBAG"] = "Schlüsselbund Tasche",
 		["LID_CHANGEONCATSTEALTH"] = "Wechsel Leiste wenn in Katzen-Unsichtbarkeit (Lädt Ui neu bei Änderung)",
 		["LID_RIGHTCLICKFOROPTIONS"] = "Rechtsklick für Einstellungen",
+		["LID_EssentialCooldownViewer"] = "Wesentliche Abklingzeit Betrachter (Abklingzeitmanager)",
+		["LID_BuffIconCooldownViewer"] = "Stärkungssymbole Abklingzeit Betrachter (Abklingzeitmanager)",
+		["LID_BuffBarCooldownViewer"] = "Stärkungsleisten Abklingzeit Betrachter (Abklingzeitmanager)",
 	}
 
 	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")

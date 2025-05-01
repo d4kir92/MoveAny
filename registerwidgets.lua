@@ -191,11 +191,11 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, ACTIONBARS_LABEL)
 	end
 
-	if string.find(name, "MABuffBar") then
+	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") then
 		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
 	end
 
-	if string.find(name, "MADebuffBar") then
+	if string.find(name, "MADebuffBar") or string.find(name, "DebuffFrame") then
 		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
 	end
 
@@ -1515,7 +1515,7 @@ function MoveAny:RegisterWidget(tab)
 						local bb = _G["BuffButton" .. i]
 						if bb then
 							function bb:GetMAEle()
-								return MABuffBar
+								return MABuffBar or BuffFrame
 							end
 
 							bb:EnableMouse(false)
@@ -1525,7 +1525,7 @@ function MoveAny:RegisterWidget(tab)
 							local db = _G["DebuffButton" .. i]
 							if db then
 								function db:GetMAEle()
-									return MABuffBar
+									return MABuffBar or BuffFrame
 								end
 
 								db:EnableMouse(false)
@@ -1550,7 +1550,7 @@ function MoveAny:RegisterWidget(tab)
 						local db = _G["DebuffButton" .. i]
 						if db then
 							function db:GetMAEle()
-								return MABuffBar
+								return MADebuffBar or DebuffFrame
 							end
 
 							db:EnableMouse(false)

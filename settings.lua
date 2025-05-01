@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.62")
+	MoveAny:SetVersion(135994, "1.8.63")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -800,6 +800,18 @@ function MoveAny:InitMALock()
 		end
 
 		AddCategory("ADVANCED", 1, true)
+		if MoveAny:IsValidFrame(EssentialCooldownViewer) then
+			AddCheckBox(4, "EssentialCooldownViewer", false)
+		end
+
+		if MoveAny:IsValidFrame(BuffIconCooldownViewer) then
+			AddCheckBox(4, "BuffIconCooldownViewer", false)
+		end
+
+		if MoveAny:IsValidFrame(BuffBarCooldownViewer) then
+			AddCheckBox(4, "BuffBarCooldownViewer", false)
+		end
+
 		AddCheckBox(4, "MINIMAPFLAG", false)
 		AddCheckBox(4, "LFGMinimapFrame", false)
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
@@ -2077,6 +2089,33 @@ function MoveAny:LoadAddon()
 
 	if ContainerFrameContainer then
 		ContainerFrameContainer:EnableMouse(false) -- Contains all bags
+	end
+
+	if MoveAny:IsEnabled("EssentialCooldownViewer", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "EssentialCooldownViewer",
+				["lstr"] = "LID_EssentialCooldownViewer"
+			}
+		)
+	end
+
+	if MoveAny:IsEnabled("BuffIconCooldownViewer", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "BuffIconCooldownViewer",
+				["lstr"] = "LID_BuffIconCooldownViewer"
+			}
+		)
+	end
+
+	if MoveAny:IsEnabled("BuffBarCooldownViewer", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "BuffBarCooldownViewer",
+				["lstr"] = "LID_BuffBarCooldownViewer"
+			}
+		)
 	end
 
 	if MoveAny:IsEnabled("BATTLEFIELDMAPFRAME", false) then
@@ -3956,21 +3995,39 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("BUFFS", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MABuffBar",
-				["lstr"] = "LID_BUFFS"
-			}
-		)
+		if MoveAny:GetWoWBuild() == "RETAIL" and BuffFrame then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BuffFrame",
+					["lstr"] = "LID_BUFFS"
+				}
+			)
+		else
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MABuffBar",
+					["lstr"] = "LID_BUFFS"
+				}
+			)
+		end
 	end
 
 	if MoveAny:IsEnabled("DEBUFFS", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MADebuffBar",
-				["lstr"] = "LID_DEBUFFS"
-			}
-		)
+		if MoveAny:GetWoWBuild() == "RETAIL" and DebuffFrame then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "DebuffFrame",
+					["lstr"] = "LID_DEBUFFS"
+				}
+			)
+		else
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MADebuffBar",
+					["lstr"] = "LID_DEBUFFS"
+				}
+			)
+		end
 	end
 
 	if MoveAny:IsEnabled("GAMETOOLTIP", false) then

@@ -241,6 +241,9 @@ function MoveAny:LangenUS()
 		["LID_HIDEKEYBAG"] = "KeyRing Bag",
 		["LID_CHANGEONCATSTEALTH"] = "Change bar on cat stealth (Reloads on Change)",
 		["LID_RIGHTCLICKFOROPTIONS"] = "Rightclick for Options",
+		["LID_EssentialCooldownViewer"] = "Essential Cooldown Viewer (Cooldown-Manager)",
+		["LID_BuffIconCooldownViewer"] = "Buff Icon Cooldown Viewer (Cooldown-Manager)",
+		["LID_BuffBarCooldownViewer"] = "Buff Bar Cooldown Viewer (Cooldown-Manager)",
 	}
 
 	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")

@@ -34,7 +34,7 @@ end
 local once = true
 function MoveAny:InitBuffBar()
 	local dbtab = {}
-	if MoveAny:IsEnabled("BUFFS", false) then
+	if MoveAny:IsEnabled("BUFFS", false) and (MoveAny:GetWoWBuild() ~= "RETAIL" or BuffFrame == nil) then
 		local MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
 		local sw1, sh1 = BuffFrame:GetSize()
 		MABuffBar:SetSize(sw1, sh1)
