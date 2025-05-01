@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.63")
+	MoveAny:SetVersion(135994, "1.8.64")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -840,7 +840,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
 		AddCheckBox(4, "UIWIDGETBELOWMINIMAP", false)
 		AddCheckBox(4, "MIRRORTIMER1", false)
-		if TimerTrackerTimer1 then
+		if TimerTracker then
 			AddCheckBox(4, "TIMERTRACKER1", false)
 		end
 
@@ -3885,7 +3885,11 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if TimerTrackerTimer1 and MoveAny:IsEnabled("TIMERTRACKER1", false) then
+	if MoveAny:IsEnabled("TIMERTRACKER1", false) then
+		if TimerTrackerTimer1 == nil and TimerTracker and TimerTracker_StartTimerOfType then
+			TimerTracker_StartTimerOfType(TimerTracker, 2, 0, 0)
+		end
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "TimerTrackerTimer1",
