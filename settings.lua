@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.67")
+	MoveAny:SetVersion(135994, "1.8.68")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -3864,41 +3864,41 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_COMPACTRAIDFRAMEMANAGER"
 			}
 		)
+	end
 
-		if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
-			C_Timer.After(
-				2,
-				function()
-					local ktb = _G["!KalielsTrackerButtons"]
-					if ktb then
-						local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
-						local size = 28
-						local kbr = 6
-						MAKTB:SetSize(size, size * 3 + kbr * 2)
-						hooksecurefunc(
-							ktb,
-							"SetPoint",
-							function(sel, ...)
-								if sel.ma_ktb_setpoint then return end
-								sel.ma_ktb_setpoint = true
-								MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
-								sel.ma_ktb_setpoint = false
-							end
-						)
+	if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
+		C_Timer.After(
+			2,
+			function()
+				local ktb = _G["!KalielsTrackerButtons"]
+				if ktb then
+					local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
+					local size = 28
+					local kbr = 6
+					MAKTB:SetSize(size, size * 3 + kbr * 2)
+					hooksecurefunc(
+						ktb,
+						"SetPoint",
+						function(sel, ...)
+							if sel.ma_ktb_setpoint then return end
+							sel.ma_ktb_setpoint = true
+							MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
+							sel.ma_ktb_setpoint = false
+						end
+					)
 
-						ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
-						MoveAny:RegisterWidget(
-							{
-								["name"] = "MAKTB",
-								["lstr"] = "LID_!KalielsTrackerButtons",
-							}
-						)
-					else
-						MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons")
-					end
+					ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "MAKTB",
+							["lstr"] = "LID_!KalielsTrackerButtons",
+						}
+					)
+				else
+					MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons, button ís not created")
 				end
-			)
-		end
+			end
+		)
 	end
 
 	-- TOP
@@ -4272,22 +4272,6 @@ function MoveAny:LoadAddon()
 		)
 	else
 		for i = 1, 5 do
-			local name = "Boss" .. i .. "TargetFrame"
-			local frame = _G[name]
-			if MoveAny:IsEnabled("BOSS" .. i, false) then
-				MoveAny:SetPoint(frame, "CENTER", UIParent, "CENTER", 0, 0)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = name,
-						["lstr"] = "LID_BOSS" .. i,
-						["userplaced"] = true,
-						["secure"] = true,
-					}
-				)
-			end
-		end
-
-		for i = 1, 5 do
 			local frame = _G["Boss" .. i .. "TargetFrame"]
 			if frame then
 				frame:SetParent(MoveAny:GetMainPanel())
@@ -4334,14 +4318,17 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "Boss" .. i .. "TargetFrame",
-						["lstr"] = "LID_BOSS" .. i,
-						["userplaced"] = true,
-						["secure"] = true
-					}
-				)
+				if MoveAny:IsEnabled("BOSS" .. i, false) then
+					MoveAny:SetPoint(frame, "CENTER", UIParent, "CENTER", 0, 0)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "Boss" .. i .. "TargetFrame",
+							["lstr"] = "LID_BOSS" .. i,
+							["userplaced"] = true,
+							["secure"] = true
+						}
+					)
+				end
 			end
 		end
 
