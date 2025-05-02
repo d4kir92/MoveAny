@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.66")
+	MoveAny:SetVersion(135994, "1.8.67")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -660,8 +660,15 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames")
 		end
 
-		if BossTargetFrameContainer or Boss1TargetFrame then
+		if BossTargetFrameContainer then
 			AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames")
+		end
+
+		for i = 1, 5 do
+			local name = "Boss" .. i .. "TargetFrame"
+			if _G[name] then
+				AddCheckBox(posx, "BOSS" .. i, false)
+			end
 		end
 
 		if MainStatusTrackingBarContainer then
@@ -4253,108 +4260,122 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) then
-		if BossTargetFrameContainer then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "BossTargetFrameContainer",
-					["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
-					["userplaced"] = true,
-					["secure"] = true,
-					["sw"] = 214,
-					["sh"] = 305
-				}
-			)
-		else
-			for i = 1, 6 do
-				local frame = _G["Boss" .. i .. "TargetFrame"]
-				if frame then
-					frame:SetParent(MoveAny:GetMainPanel())
-					frame:SetScale(1)
-					if MoveAny:GetWoWBuild() ~= "RETAIL" then
-						hooksecurefunc(
-							frame,
-							"Show",
-							function(sel)
-								sel.ma_show = true
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "BossTargetFrameContainer",
+				["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
+				["userplaced"] = true,
+				["secure"] = true,
+				["sw"] = 214,
+				["sh"] = 305
+			}
+		)
+	else
+		for i = 1, 5 do
+			local name = "Boss" .. i .. "TargetFrame"
+			local frame = _G[name]
+			if MoveAny:IsEnabled("BOSS" .. i, false) then
+				MoveAny:SetPoint(frame, "CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = name,
+						["lstr"] = "LID_BOSS" .. i,
+						["userplaced"] = true,
+						["secure"] = true,
+					}
+				)
+			end
+		end
+
+		for i = 1, 5 do
+			local frame = _G["Boss" .. i .. "TargetFrame"]
+			if frame then
+				frame:SetParent(MoveAny:GetMainPanel())
+				frame:SetScale(1)
+				if MoveAny:GetWoWBuild() ~= "RETAIL" then
+					hooksecurefunc(
+						frame,
+						"Show",
+						function(sel)
+							sel.ma_show = true
+							sel:SetAlpha(1)
+						end
+					)
+
+					hooksecurefunc(
+						frame,
+						"Hide",
+						function(sel)
+							sel.ma_show = false
+							sel:SetAlpha(0)
+						end
+					)
+
+					hooksecurefunc(
+						frame,
+						"SetAlpha",
+						function(sel, alpha)
+							if sel.ma_set_alpha then return end
+							sel.ma_set_alpha = true
+							if UnitExists(frame.unit) or sel.ma_show or alpha > 0 then
+								local a = alpha or 1
+								sel:SetAlpha(a)
+							else
 								sel:SetAlpha(1)
 							end
-						)
 
-						hooksecurefunc(
-							frame,
-							"Hide",
-							function(sel)
-								sel.ma_show = false
-								sel:SetAlpha(0)
-							end
-						)
-
-						hooksecurefunc(
-							frame,
-							"SetAlpha",
-							function(sel, alpha)
-								if sel.ma_set_alpha then return end
-								sel.ma_set_alpha = true
-								if UnitExists(frame.unit) or sel.ma_show or alpha > 0 then
-									local a = alpha or 1
-									sel:SetAlpha(a)
-								else
-									sel:SetAlpha(1)
-								end
-
-								sel.ma_set_alpha = false
-							end
-						)
-
-						-- So Blizzard dont do shit with them
-						function frame:IsShown()
-							return false
+							sel.ma_set_alpha = false
 						end
-					end
-
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "Boss" .. i .. "TargetFrame",
-							["lstr"] = "LID_BOSS" .. i,
-							["userplaced"] = true,
-							["secure"] = true
-						}
 					)
-				end
-			end
 
-			function MoveAny:BossCount()
-				local count = 0
-				for i = 1, 5 do
-					local frame = _G["Boss" .. i .. "TargetFrame"]
-					if frame and UnitExists("boss" .. i) then
-						count = count + 1
+					-- So Blizzard dont do shit with them
+					function frame:IsShown()
+						return false
 					end
 				end
 
-				return count
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "Boss" .. i .. "TargetFrame",
+						["lstr"] = "LID_BOSS" .. i,
+						["userplaced"] = true,
+						["secure"] = true
+					}
+				)
 			end
-
-			function MoveAny:HandleBossFrames()
-				for i = 1, 6 do
-					local frame = _G["Boss" .. i .. "TargetFrame"]
-					local unit = "boss" .. i
-					if frame then
-						if UnitExists(unit) then
-							frame.ma_show = true
-							frame:SetAlpha(1)
-						else
-							frame.ma_show = false
-							frame:SetAlpha(0)
-						end
-					end
-				end
-
-				C_Timer.After(1, MoveAny.HandleBossFrames)
-			end
-
-			MoveAny:HandleBossFrames()
 		end
+
+		function MoveAny:BossCount()
+			local count = 0
+			for i = 1, 5 do
+				local frame = _G["Boss" .. i .. "TargetFrame"]
+				if frame and UnitExists("boss" .. i) then
+					count = count + 1
+				end
+			end
+
+			return count
+		end
+
+		function MoveAny:HandleBossFrames()
+			for i = 1, 5 do
+				local frame = _G["Boss" .. i .. "TargetFrame"]
+				local unit = "boss" .. i
+				if frame then
+					if UnitExists(unit) then
+						frame.ma_show = true
+						frame:SetAlpha(1)
+					else
+						frame.ma_show = false
+						frame:SetAlpha(0)
+					end
+				end
+			end
+
+			C_Timer.After(1, MoveAny.HandleBossFrames)
+		end
+
+		MoveAny:HandleBossFrames()
 	end
 
 	if TicketStatusFrame and MoveAny:IsEnabled("TICKETSTATUSFRAME", false) then
