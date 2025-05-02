@@ -216,6 +216,8 @@ function MoveAny:LangdeDE()
 		["LID_GuildInstanceDifficulty"] = "Minimap Flagge Gilden-Instanz Schwierigkeit",
 		["LID_POWERBARCOUNTERBAR"] = "Machtleiste Gegenleiste (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)",
 		["LID_BUFFTIMER1"] = "Stärkungszeit 1 (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)",
+		["LID_!KalielsTracker"] = "!KalielsTracker",
+		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
 		["LID_FRAMES"] = "Fenster",
 		["LID_SCALEFRAMES"] = "Fenster skalieren (Fenster größe ändern)",
 		["LID_RESETFRAMES"] = "Fenster resetten",

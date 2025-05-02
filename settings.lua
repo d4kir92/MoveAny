@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.65")
+	MoveAny:SetVersion(135994, "1.8.66")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -922,6 +922,11 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "IAILVLBAR", true)
 			AddCheckBox(4, "IAPingFrame", true)
 			AddCheckBox(4, "IACoordsFrame", true)
+		end
+
+		if MoveAny:IsAddOnLoaded("!KalielsTracker") then
+			AddCategory("!KalielsTracker", 1, true)
+			AddCheckBox(4, "!KalielsTrackerButtons", false)
 		end
 
 		AddCheckBox(4, "DISABLEMOVEMENT", false)
@@ -3852,6 +3857,41 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_COMPACTRAIDFRAMEMANAGER"
 			}
 		)
+
+		if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
+			C_Timer.After(
+				2,
+				function()
+					local ktb = _G["!KalielsTrackerButtons"]
+					if ktb then
+						local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
+						local size = 28
+						local kbr = 6
+						MAKTB:SetSize(size, size * 3 + kbr * 2)
+						hooksecurefunc(
+							ktb,
+							"SetPoint",
+							function(sel, ...)
+								if sel.ma_ktb_setpoint then return end
+								sel.ma_ktb_setpoint = true
+								MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
+								sel.ma_ktb_setpoint = false
+							end
+						)
+
+						ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "MAKTB",
+								["lstr"] = "LID_!KalielsTrackerButtons",
+							}
+						)
+					else
+						MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons")
+					end
+				end
+			)
+		end
 	end
 
 	-- TOP
