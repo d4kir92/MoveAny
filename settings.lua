@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.69")
+	MoveAny:SetVersion(135994, "1.8.70")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4271,10 +4271,17 @@ function MoveAny:LoadAddon()
 			}
 		)
 	else
+		if BossTargetFrameContainer then
+			print(BossTargetFrameContainer:GetSize())
+			print(BossTargetFrameContainer:GetPoint())
+			BossTargetFrameContainer:SetSize(100, 100)
+			print(BossTargetFrameContainer:GetSize())
+			print(BossTargetFrameContainer:GetPoint())
+		end
+
 		for i = 1, 5 do
 			local frame = _G["Boss" .. i .. "TargetFrame"]
 			if frame then
-				frame:SetParent(MoveAny:GetMainPanel())
 				frame:SetScale(1)
 				if MoveAny:GetWoWBuild() ~= "RETAIL" then
 					hooksecurefunc(

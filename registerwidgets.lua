@@ -779,7 +779,7 @@ function MoveAny:MenuOptions(opt, frame)
 				"MABUFFLIMIT",
 				10,
 				1,
-				1,
+				2,
 				20,
 				function()
 					if MoveAny.UpdateBuffs then
@@ -850,7 +850,6 @@ function MoveAny:MenuOptions(opt, frame)
 
 			y = y - 40
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
-			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
 			if MoveAny:GetWoWBuild() ~= "RETAIL" then
 				if name == "MADebuffBar" then
@@ -910,7 +909,7 @@ function MoveAny:MenuOptions(opt, frame)
 				"MADEBUFFLIMIT",
 				10,
 				1,
-				1,
+				2,
 				20,
 				function()
 					MoveAny:UpdateDebuffs("CreateSlider1")
