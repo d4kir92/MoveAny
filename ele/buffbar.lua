@@ -476,6 +476,11 @@ function MoveAny:InitBuffBar()
 
 									local count = MoveAny:GetEnchantCount()
 									if GetCVarBool("consolidateBuffs") then
+										if MoveAny:GetWoWBuild() == "CLASSIC" then
+											SetCVar("consolidateBuffs", false)
+											MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
+										end
+
 										count = count + 1
 									end
 
