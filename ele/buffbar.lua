@@ -282,7 +282,12 @@ function MoveAny:InitBuffBar()
 					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 					local x = 0
 					if GetCVarBool("consolidateBuffs") then
-						x = x + 1
+						if MoveAny:GetWoWBuild() == "CLASSIC" then
+							SetCVar("consolidateBuffs", false)
+							MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
+						else
+							x = x + 1
+						end
 					end
 
 					if dirH == "LEFT" then
@@ -313,7 +318,12 @@ function MoveAny:InitBuffBar()
 					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 					local x = 1
 					if GetCVarBool("consolidateBuffs") then
-						x = x + 1
+						if MoveAny:GetWoWBuild() == "CLASSIC" then
+							SetCVar("consolidateBuffs", false)
+							MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
+						else
+							x = x + 1
+						end
 					end
 
 					local posy = 0
@@ -349,7 +359,12 @@ function MoveAny:InitBuffBar()
 					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
 					local x = 2
 					if GetCVarBool("consolidateBuffs") then
-						x = x + 1
+						if MoveAny:GetWoWBuild() == "CLASSIC" then
+							SetCVar("consolidateBuffs", false)
+							MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
+						else
+							x = x + 1
+						end
 					end
 
 					if dirH == "LEFT" then
@@ -479,9 +494,9 @@ function MoveAny:InitBuffBar()
 										if MoveAny:GetWoWBuild() == "CLASSIC" then
 											SetCVar("consolidateBuffs", false)
 											MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
+										else
+											count = count + 1
 										end
-
-										count = count + 1
 									end
 
 									local id = numBuffs + count

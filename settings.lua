@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.73")
+	MoveAny:SetVersion(135994, "1.8.74")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1132,6 +1132,202 @@ function MoveAny:UpdateGrid()
 	end
 end
 
+function MoveAny:AddUploadProfileLine(source, profile)
+	local delay = 0.01
+	C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";0", "WHISPER", source)
+	MoveAny:CheckDB("MAShareProfile")
+	if MATAB["PROFILES"][profile] then
+		local max = 0
+		local count = 0
+		local cur = 0
+		for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["POINTS"]) do
+			for j, w in pairs(v) do
+				max = max + 1
+			end
+		end
+
+		for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["SIZES"]) do
+			for j, w in pairs(v) do
+				max = max + 1
+			end
+		end
+
+		for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["OPTIONS"]) do
+			for j, w in pairs(v) do
+				max = max + 1
+			end
+		end
+
+		for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["POINTS"]) do
+			for j, w in pairs(v) do
+				count = count + 1
+				C_Timer.After(
+					count * delay,
+					function()
+						cur = cur + 1
+						local per = string.format("%0.1f", cur / max * 100)
+						WebStatus = tonumber(per)
+						C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
+						if w ~= nil then
+							local typ = type(w)
+							local val = w
+							if typ == "boolean" then
+								if w then
+									val = 1
+								else
+									val = 0
+								end
+							elseif typ == "table" then
+								val = ""
+							end
+
+							if typ ~= "table" then
+								C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "POINTS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
+							end
+						end
+					end
+				)
+			end
+		end
+
+		C_Timer.After(
+			count * delay,
+			function()
+				count = 0
+				for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["SIZES"]) do
+					for j, w in pairs(v) do
+						count = count + 1
+						C_Timer.After(
+							count * delay,
+							function()
+								cur = cur + 1
+								local per = string.format("%0.1f", cur / max * 100)
+								WebStatus = tonumber(per)
+								C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
+								if w ~= nil then
+									local typ = type(w)
+									local val = w
+									if typ == "boolean" then
+										if w then
+											val = 1
+										else
+											val = 0
+										end
+									elseif typ == "table" then
+										val = ""
+									end
+
+									if typ ~= "table" then
+										C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "SIZES" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
+									end
+								end
+							end
+						)
+					end
+				end
+
+				C_Timer.After(
+					count * delay,
+					function()
+						count = 0
+						for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["OPTIONS"]) do
+							for j, w in pairs(v) do
+								count = count + 1
+								C_Timer.After(
+									count * delay,
+									function()
+										cur = cur + 1
+										local per = string.format("%0.1f", cur / max * 100)
+										WebStatus = tonumber(per)
+										C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
+										if w ~= nil then
+											local typ = type(w)
+											local val = w
+											if typ == "boolean" then
+												if w then
+													val = 1
+												else
+													val = 0
+												end
+											elseif typ == "table" then
+												val = ""
+											end
+
+											if typ ~= "table" then
+												C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "OPTIONS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
+											end
+										end
+									end
+								)
+							end
+						end
+					end
+				)
+			end
+		)
+	end
+
+	MAShareProfile:Hide()
+	if MAUploadProfile == nil then
+		MAUploadProfile = CreateFrame("Frame", "MAUploadProfile", MoveAny:GetMainPanel(), "BasicFrameTemplate")
+		MAUploadProfile:SetSize(120, 120)
+		MAUploadProfile:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+		MAUploadProfile:SetFrameStrata("HIGH")
+		MAUploadProfile:SetFrameLevel(1010)
+		MAUploadProfile:SetClampedToScreen(true)
+		MAUploadProfile:SetMovable(true)
+		MAUploadProfile:EnableMouse(true)
+		MAUploadProfile:RegisterForDrag("LeftButton")
+		MAUploadProfile:SetScript("OnDragStart", MAUploadProfile.StartMoving)
+		MAUploadProfile:SetScript("OnDragStop", MAUploadProfile.StopMovingOrSizing)
+		MAUploadProfile.TitleText:SetText(MoveAny:GT("LID_DOWNLOAD"))
+		MAUploadProfile.CloseButton:SetScript(
+			"OnClick",
+			function()
+				MAUploadProfile:Hide()
+			end
+		)
+
+		MAUploadProfile.name = MAUploadProfile:CreateFontString(nil, nil, "GameFontNormal")
+		MAUploadProfile.name:SetPoint("TOPLEFT", MAUploadProfile, "TOPLEFT", 12, -26)
+		MAUploadProfile.btn = CreateFrame("Button", "MAUploadProfile.X", MAUploadProfile, "UIPanelButtonTemplate")
+		MAUploadProfile.btn:SetPoint("TOPLEFT", MAUploadProfile, "TOPLEFT", 12, -78)
+		MAUploadProfile.btn:SetSize(100, 24)
+		MAUploadProfile.btn:SetText("X")
+		MAUploadProfile.btn:SetScript(
+			"OnClick",
+			function()
+				MAUploadProfile:Hide()
+			end
+		)
+
+		function MAUploadProfile:UpdateStatus()
+			if WebStatus == 0 or WebStatus == 0.0 then
+				MAUploadProfile.name:SetText(MoveAny:GT("LID_WAITINGFOROWNER"))
+				MAUploadProfile.btn:SetEnabled(false)
+			elseif WebStatus == 100 or WebStatus == 100.0 then
+				MAUploadProfile.name:SetText(MoveAny:GT("LID_DONE"))
+				MAUploadProfile.btn:SetEnabled(true)
+			else
+				MAUploadProfile.name:SetText(MoveAny:GT("LID_STATUS") .. ": " .. WebStatus .. "%")
+				MAUploadProfile.btn:SetEnabled(false)
+			end
+
+			C_Timer.After(0.1, MAUploadProfile.UpdateStatus)
+		end
+
+		MAUploadProfile:UpdateStatus()
+		MAUploadProfile.CloseButton:SetScript(
+			"OnClick",
+			function()
+				MAUploadProfile:Hide()
+			end
+		)
+	else
+		MAUploadProfile:Show()
+	end
+end
+
 function MoveAny:ShowProfiles()
 	if MAProfiles == nil then
 		MAProfiles = CreateFrame("Frame", "MAProfiles", MoveAny:GetMainPanel(), "BasicFrameTemplate")
@@ -1590,199 +1786,7 @@ function MoveAny:ShowProfiles()
 							MAShareProfile.lines[id].btn:SetScript(
 								"OnClick",
 								function()
-									local delay = 0.01
-									C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";0", "WHISPER", source)
-									MoveAny:CheckDB("MAShareProfile")
-									if MATAB["PROFILES"][profile] then
-										local max = 0
-										local count = 0
-										local cur = 0
-										for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["POINTS"]) do
-											for j, w in pairs(v) do
-												max = max + 1
-											end
-										end
-
-										for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["SIZES"]) do
-											for j, w in pairs(v) do
-												max = max + 1
-											end
-										end
-
-										for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["OPTIONS"]) do
-											for j, w in pairs(v) do
-												max = max + 1
-											end
-										end
-
-										for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["POINTS"]) do
-											for j, w in pairs(v) do
-												count = count + 1
-												C_Timer.After(
-													count * delay,
-													function()
-														cur = cur + 1
-														local per = string.format("%0.1f", cur / max * 100)
-														WebStatus = tonumber(per)
-														C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
-														if w ~= nil then
-															local typ = type(w)
-															local val = w
-															if typ == "boolean" then
-																if w then
-																	val = 1
-																else
-																	val = 0
-																end
-															elseif typ == "table" then
-																val = ""
-															end
-
-															if typ ~= "table" then
-																C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "POINTS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
-															end
-														end
-													end
-												)
-											end
-										end
-
-										C_Timer.After(
-											count * delay,
-											function()
-												count = 0
-												for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["SIZES"]) do
-													for j, w in pairs(v) do
-														count = count + 1
-														C_Timer.After(
-															count * delay,
-															function()
-																cur = cur + 1
-																local per = string.format("%0.1f", cur / max * 100)
-																WebStatus = tonumber(per)
-																C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
-																if w ~= nil then
-																	local typ = type(w)
-																	local val = w
-																	if typ == "boolean" then
-																		if w then
-																			val = 1
-																		else
-																			val = 0
-																		end
-																	elseif typ == "table" then
-																		val = ""
-																	end
-
-																	if typ ~= "table" then
-																		C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "SIZES" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
-																	end
-																end
-															end
-														)
-													end
-												end
-
-												C_Timer.After(
-													count * delay,
-													function()
-														count = 0
-														for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["OPTIONS"]) do
-															for j, w in pairs(v) do
-																count = count + 1
-																C_Timer.After(
-																	count * delay,
-																	function()
-																		cur = cur + 1
-																		local per = string.format("%0.1f", cur / max * 100)
-																		WebStatus = tonumber(per)
-																		C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
-																		if w ~= nil then
-																			local typ = type(w)
-																			local val = w
-																			if typ == "boolean" then
-																				if w then
-																					val = 1
-																				else
-																					val = 0
-																				end
-																			elseif typ == "table" then
-																				val = ""
-																			end
-
-																			if typ ~= "table" then
-																				C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "OPTIONS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
-																			end
-																		end
-																	end
-																)
-															end
-														end
-													end
-												)
-											end
-										)
-									end
-
-									MAShareProfile:Hide()
-									if MAUploadProfile == nil then
-										MAUploadProfile = CreateFrame("Frame", "MAUploadProfile", MoveAny:GetMainPanel(), "BasicFrameTemplate")
-										MAUploadProfile:SetSize(120, 120)
-										MAUploadProfile:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-										MAUploadProfile:SetFrameStrata("HIGH")
-										MAUploadProfile:SetFrameLevel(1010)
-										MAUploadProfile:SetClampedToScreen(true)
-										MAUploadProfile:SetMovable(true)
-										MAUploadProfile:EnableMouse(true)
-										MAUploadProfile:RegisterForDrag("LeftButton")
-										MAUploadProfile:SetScript("OnDragStart", MAUploadProfile.StartMoving)
-										MAUploadProfile:SetScript("OnDragStop", MAUploadProfile.StopMovingOrSizing)
-										MAUploadProfile.TitleText:SetText(MoveAny:GT("LID_DOWNLOAD"))
-										MAUploadProfile.CloseButton:SetScript(
-											"OnClick",
-											function()
-												MAUploadProfile:Hide()
-											end
-										)
-
-										MAUploadProfile.name = MAUploadProfile:CreateFontString(nil, nil, "GameFontNormal")
-										MAUploadProfile.name:SetPoint("TOPLEFT", MAUploadProfile, "TOPLEFT", 12, -26)
-										MAUploadProfile.btn = CreateFrame("Button", name, MAUploadProfile, "UIPanelButtonTemplate")
-										MAUploadProfile.btn:SetPoint("TOPLEFT", MAUploadProfile, "TOPLEFT", 12, -78)
-										MAUploadProfile.btn:SetSize(100, 24)
-										MAUploadProfile.btn:SetText("X")
-										MAUploadProfile.btn:SetScript(
-											"OnClick",
-											function()
-												MAUploadProfile:Hide()
-											end
-										)
-
-										function MAUploadProfile:UpdateStatus()
-											if WebStatus == 0 or WebStatus == 0.0 then
-												MAUploadProfile.name:SetText(MoveAny:GT("LID_WAITINGFOROWNER"))
-												MAUploadProfile.btn:SetEnabled(false)
-											elseif WebStatus == 100 or WebStatus == 100.0 then
-												MAUploadProfile.name:SetText(MoveAny:GT("LID_DONE"))
-												MAUploadProfile.btn:SetEnabled(true)
-											else
-												MAUploadProfile.name:SetText(MoveAny:GT("LID_STATUS") .. ": " .. WebStatus .. "%")
-												MAUploadProfile.btn:SetEnabled(false)
-											end
-
-											C_Timer.After(0.1, MAUploadProfile.UpdateStatus)
-										end
-
-										MAUploadProfile:UpdateStatus()
-										MAUploadProfile.CloseButton:SetScript(
-											"OnClick",
-											function()
-												MAUploadProfile:Hide()
-											end
-										)
-									else
-										MAUploadProfile:Show()
-									end
+									MoveAny:AddUploadProfileLine(source, profile)
 								end
 							)
 						end
