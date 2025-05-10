@@ -14,6 +14,13 @@ langs["ptBR"] = true
 langs["ruRU"] = true
 langs["zhCN"] = true
 langs["zhTW"] = true
+function D4:TryTrans(key, lang, ...)
+    if key == nil then return "" end
+    if key:find("LID_") then return D4:Trans(key, lang, ...) end
+
+    return key
+end
+
 function D4:Trans(key, lang, ...)
     D4.trans = D4.trans or {}
     if lang == nil then
@@ -38,7 +45,7 @@ function D4:Trans(key, lang, ...)
             ver = D4:GetVersion()
         end
 
-        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", ver, "(", t1, t2, t3, ")")
+        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", ver, "(", lang, t1, t2, t3, ")")
     end
 
     local result = nil
