@@ -219,7 +219,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					fm = CreateFrame("FRAME", name .. "Move", MoveAny:GetMainPanel())
 					fm:SetMovable(true)
 					fm:SetUserPlaced(false)
-					if MAFRAMESIGNORECLAMP[name] == nil then
+					if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPFRAMESTOSCREEN", false) then
 						fm:SetClampedToScreen(true)
 					end
 
@@ -264,7 +264,10 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					end
 				end
 
-				frame:SetClampedToScreen(true)
+				if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPFRAMESTOSCREEN", false) then
+					frame:SetClampedToScreen(true)
+				end
+
 				function MoveAny:MAFrameStopMoving(frameObj)
 					local name2 = MoveAny:GetName(frameObj)
 					if name2 then
