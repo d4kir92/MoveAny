@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.77")
+	MoveAny:SetVersion(135994, "1.8.78")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -552,7 +552,7 @@ function MoveAny:InitMALock()
 		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
 		AddCategory("FRAMES")
 		AddCheckBox(4, "MOVEFRAMES", true)
-		AddCheckBox(24, "CLAMPFRAMESTOSCREEN", false)
+		AddCheckBox(24, "CLAMPWINDOWTOSCREEN", true)
 		AddCheckBox(24, "MOVESMALLBAGS", false)
 		AddCheckBox(24, "MOVELOOTFRAME", false)
 		AddCheckBox(24, "SCALELOOTFRAME", false)

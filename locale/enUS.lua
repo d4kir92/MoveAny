@@ -246,7 +246,7 @@ function MoveAny:LangenUS()
 		["LID_EssentialCooldownViewer"] = "Essential Cooldown Viewer (Cooldown-Manager)",
 		["LID_BuffIconCooldownViewer"] = "Buff Icon Cooldown Viewer (Cooldown-Manager)",
 		["LID_BuffBarCooldownViewer"] = "Buff Bar Cooldown Viewer (Cooldown-Manager)",
-		["LID_CLAMPFRAMESTOSCREEN"] = "Clamp Windows to Screen (Can't drag off Screen)",
+		["LID_CLAMPWINDOWTOSCREEN"] = "Clamp Windows to Screen (Can't drag off Screen)",
 	}
 
 	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")

@@ -240,7 +240,7 @@ function MoveAny:LangdeDE()
 		["LID_EssentialCooldownViewer"] = "Wesentliche Abklingzeit Betrachter (Abklingzeitmanager)",
 		["LID_BuffIconCooldownViewer"] = "Stärkungssymbole Abklingzeit Betrachter (Abklingzeitmanager)",
 		["LID_BuffBarCooldownViewer"] = "Stärkungsleisten Abklingzeit Betrachter (Abklingzeitmanager)",
-		["LID_CLAMPFRAMESTOSCREEN"] = "Fenster an den Bildschirm klemmen (Nicht aus dem Bildschirm ziehen)",
+		["LID_CLAMPWINDOWTOSCREEN"] = "Fenster an den Bildschirm klemmen (Nicht aus dem Bildschirm ziehen)",
 	}
 
 	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")
