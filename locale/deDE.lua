@@ -241,6 +241,7 @@ function MoveAny:LangdeDE()
 		["LID_BuffIconCooldownViewer"] = "Stärkungssymbole Abklingzeit Betrachter (Abklingzeitmanager)",
 		["LID_BuffBarCooldownViewer"] = "Stärkungsleisten Abklingzeit Betrachter (Abklingzeitmanager)",
 		["LID_CLAMPWINDOWTOSCREEN"] = "Fenster an den Bildschirm klemmen (Nicht aus dem Bildschirm ziehen)",
+		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Gegner Fenster Kontainer (Schlachtfeld Bosse)",
 	}
 
 	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")

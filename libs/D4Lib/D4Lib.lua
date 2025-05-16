@@ -440,11 +440,20 @@ function D4:GetClassIcon(class)
 end
 
 function D4:GetRaceAtlas(race, gender)
-    return ("raceicon-%s-%s"):format(race, gender)
+    return ("raceicon-%s-%s"):format(race:lower(), gender:lower())
 end
 
 function D4:GetRaceIcon(race, gender)
-    return "|A:" .. D4:GetRaceAtlas(race, genderNames[gender]) .. ":16:16:0:0|a"
+    if race:lower() == "scourge" and C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
+        race = "Undead"
+    end
+
+    local atlas = "|A:" .. D4:GetRaceAtlas(race, genderNames[gender]) .. ":16:16:0:0|a"
+    if C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
+        D4:INFO("[D4][GetRaceIcon] INVALID ATLAS", race, gender)
+    end
+
+    return atlas
 end
 
 local units = {"player"}

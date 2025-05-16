@@ -5,6 +5,7 @@ local PARENT = nil
 local TAB = nil
 local TABIsNil = false
 function D4:GetName(frame)
+    if frame == nil then return nil end
     local ok, name = pcall(
         function()
             if type(frame) == "table" and type(frame.GetName) == "function" then return frame:GetName() end
@@ -17,6 +18,7 @@ function D4:GetName(frame)
 end
 
 function D4:GetParent(frame)
+    if frame == nil then return nil end
     local ok, parent = pcall(
         function()
             if type(frame) == "table" and type(frame.GetParent) == "function" then return frame:GetParent() end
@@ -26,6 +28,32 @@ function D4:GetParent(frame)
     if ok then return parent end
 
     return nil
+end
+
+function D4:TrySetParent(frame, parent)
+    if frame == nil then
+        D4:INFO("[D4] Missing Frame for TrySetParent", frame)
+
+        return false
+    end
+
+    if parent == nil then
+        D4:INFO("[D4] Missing Parent for TrySetParent", parent)
+
+        return false
+    end
+
+    local ok = pcall(
+        function()
+            if type(frame) == "table" and type(frame.SetParent) == "function" then
+                frame:SetParent(parent)
+            end
+        end
+    )
+
+    if ok then return true end
+
+    return false
 end
 
 function D4:SetFontSize(element, fontSize, newFontFlags)

@@ -505,7 +505,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.78")
+	MoveAny:SetVersion(135994, "1.8.79")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -845,9 +845,13 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "TIMERTRACKER1", false)
 		end
 
-		if Arena_LoadUI then
-			AddCheckBox(4, "ARENAENEMYFRAMES", false)
-			AddCheckBox(4, "ARENAPREPFRAMES", false)
+		if ArenaEnemyFramesContainer then
+			AddCheckBox(4, "ARENAENEMYFRAMESCONTAINER", false)
+		else
+			if Arena_LoadUI then
+				AddCheckBox(4, "ARENAENEMYFRAMES", false)
+				AddCheckBox(4, "ARENAPREPFRAMES", false)
+			end
 		end
 
 		if MoveAny:IsValidFrame(CompactArenaFrame) then
@@ -4233,27 +4237,47 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if Arena_LoadUI then
-		if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) then
+	if ArenaEnemyFramesContainer then
+		if MoveAny:IsEnabled("ARENAENEMYFRAMESCONTAINER", false) then
+			if ArenaEnemyFramesContainer:GetPoint() == nil then
+				MoveAny:TrySetParent(ArenaEnemyFramesContainer, UIParent)
+				MoveAny:SetPoint(ArenaEnemyFramesContainer, "CENTER", UIParent, "CENTER", 0, 0)
+			end
+
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "MAArenaEnemyFrames",
-					["lstr"] = "LID_ARENAENEMYFRAMES",
+					["name"] = "ArenaEnemyFramesContainer",
+					["lstr"] = "LID_ARENAENEMYFRAMESCONTAINER",
 					["userplaced"] = true,
-					["secure"] = true
+					["secure"] = true,
+					["sw"] = 245,
+					["sh"] = 305,
 				}
 			)
 		end
+	else
+		if Arena_LoadUI then
+			if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MAArenaEnemyFrames",
+						["lstr"] = "LID_ARENAENEMYFRAMES",
+						["userplaced"] = true,
+						["secure"] = true
+					}
+				)
+			end
 
-		if MoveAny:IsEnabled("ARENAPREPFRAMES", false) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MAArenaPrepFrames",
-					["lstr"] = "LID_ARENAPREPFRAMES",
-					["userplaced"] = true,
-					["secure"] = true
-				}
-			)
+			if MoveAny:IsEnabled("ARENAPREPFRAMES", false) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MAArenaPrepFrames",
+						["lstr"] = "LID_ARENAPREPFRAMES",
+						["userplaced"] = true,
+						["secure"] = true
+					}
+				)
+			end
 		end
 	end
 

@@ -45,13 +45,13 @@ function MoveAny:HideFrame(frame, soft)
 					if sethidden[sel] == nil then return end
 					if setparent then return end
 					setparent = true
-					sel:SetParent(MAHIDDEN)
+					MoveAny:TrySetParent(sel, MAHIDDEN)
 					setparent = false
 				end
 			)
 		end
 
-		frame:SetParent(MAHIDDEN)
+		MoveAny:TrySetParent(frame, MAHIDDEN)
 
 		return
 	end

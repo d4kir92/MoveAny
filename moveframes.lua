@@ -50,12 +50,12 @@ if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
 		function(sel)
 			if setParent then return end
 			setParent = true
-			sel:SetParent(MAHIDDEN)
+			MoveAny:TrySetParent(sel, MAHIDDEN)
 			setParent = false
 		end
 	)
 
-	ScriptErrorsFrame.DragArea:SetParent(MAHIDDEN)
+	MoveAny:TrySetParent(ScriptErrorsFrame.DragArea, MAHIDDEN)
 end
 
 local tab = {}
