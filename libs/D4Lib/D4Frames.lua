@@ -679,7 +679,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         end
 
         UIDropDownMenu_Initialize(dropDown, WPDropDownDemo_Menu)
-        UIDropDownMenu_SetText(dropDown, choices[TAB[key]])
+        UIDropDownMenu_SetText(dropDown, D4:Trans(choices[TAB[key]]))
         function dropDown:SetValue(newValue)
             TAB[key] = newValue
             UIDropDownMenu_SetText(dropDown, newValue)
