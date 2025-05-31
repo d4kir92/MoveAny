@@ -1631,14 +1631,25 @@ function MoveAny:RegisterWidget(tab)
 				if sel.ma_enablemouse then return end
 				sel.ma_enablemouse = true
 				sel:EnableMouse(false)
-				MoveAny:ForeachChildren(
-					sel,
-					function(child)
-						if C_Widget.IsWidget(child) then
-							child:EnableMouse(false)
-						end
-					end, "EnableMouse 1"
-				)
+				if sel.AuraContainer then
+					MoveAny:ForeachChildren(
+						sel.AuraContainer,
+						function(child)
+							if C_Widget.IsWidget(child) then
+								child:EnableMouse(false)
+							end
+						end, "EnableMouse 2"
+					)
+				else
+					MoveAny:ForeachChildren(
+						sel,
+						function(child)
+							if C_Widget.IsWidget(child) then
+								child:EnableMouse(false)
+							end
+						end, "EnableMouse 1"
+					)
+				end
 
 				sel.ma_enablemouse = false
 			end
