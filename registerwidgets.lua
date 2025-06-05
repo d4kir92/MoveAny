@@ -366,14 +366,25 @@ function MoveAny:MenuOptions(opt, frame)
 							dragf:Show()
 							dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
 							frame:EnableMouse(false)
-							MoveAny:ForeachChildren(
-								frame,
-								function(child)
-									if C_Widget.IsWidget(child) then
-										child:EnableMouse(false)
-									end
-								end, "clickthrough 1"
-							)
+							if frame.AuraContainer then
+								MoveAny:ForeachChildren(
+									frame.AuraContainer,
+									function(child)
+										if C_Widget.IsWidget(child) then
+											child:EnableMouse(false)
+										end
+									end, "clickthrough 2"
+								)
+							else
+								MoveAny:ForeachChildren(
+									frame,
+									function(child)
+										if C_Widget.IsWidget(child) then
+											child:EnableMouse(false)
+										end
+									end, "clickthrough 1"
+								)
+							end
 						else
 							dragf:Hide()
 						end
@@ -381,14 +392,25 @@ function MoveAny:MenuOptions(opt, frame)
 						if frame then
 							dragf.t:SetVertexColor(MoveAny:GetColor("el"))
 							frame:EnableMouse(true)
-							MoveAny:ForeachChildren(
-								frame,
-								function(child)
-									if C_Widget.IsWidget(child) then
-										child:EnableMouse(true)
-									end
-								end, "clickthrough 2"
-							)
+							if frame.AuraContainer then
+								MoveAny:ForeachChildren(
+									frame.AuraContainer,
+									function(child)
+										if C_Widget.IsWidget(child) then
+											child:EnableMouse(true)
+										end
+									end, "clickthrough 2"
+								)
+							else
+								MoveAny:ForeachChildren(
+									frame,
+									function(child)
+										if C_Widget.IsWidget(child) then
+											child:EnableMouse(true)
+										end
+									end, "clickthrough 1"
+								)
+							end
 						else
 							dragf:Hide()
 						end
