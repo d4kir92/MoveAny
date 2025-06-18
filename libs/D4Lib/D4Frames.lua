@@ -30,6 +30,19 @@ function D4:GetParent(frame)
     return nil
 end
 
+function D4:GetText(frame)
+    if frame == nil then return nil end
+    local ok, parent = pcall(
+        function()
+            if type(frame) == "table" and type(frame.GetText) == "function" then return frame:GetText() end
+        end
+    )
+
+    if ok then return parent end
+
+    return nil
+end
+
 function D4:TrySetParent(frame, parent)
     if frame == nil then
         D4:INFO("[D4] Missing Frame for TrySetParent", frame)
@@ -584,7 +597,7 @@ function D4:AppendColorPicker(key, value, func, x)
     Y = Y - 30
 end
 
-function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix)
+function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix, lstr)
     value = value or false
     x = x or X
     if tab == nil and TAB == nil then
@@ -603,9 +616,10 @@ function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix)
         val = t[key]
     end
 
-    D4:CreateEditBox(
+    Y = Y - 4
+    local eb = D4:CreateEditBox(
         {
-            ["name"] = key,
+            ["name"] = lstr or "LID_" .. key,
             ["parent"] = PARENT,
             ["pTab"] = {"TOPLEFT", x or X, y or Y},
             ["value"] = val,
@@ -627,7 +641,7 @@ function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix)
 
     Y = Y - 20
 
-    return Y
+    return Y, eb
 end
 
 function D4:CreateDropdown(key, value, choices, parent, func)

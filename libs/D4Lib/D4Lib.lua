@@ -73,7 +73,7 @@ end
 function D4:RegisterEvent(frame, event, unit)
     if C_EventUtils.IsEventValid(event) then
         if unit then
-            frame:RegisterUnitEvent(event, "player")
+            frame:RegisterUnitEvent(event, unit)
         else
             frame:RegisterEvent(event)
         end
