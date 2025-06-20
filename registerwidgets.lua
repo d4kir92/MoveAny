@@ -1274,7 +1274,7 @@ function MoveAny:RegisterWidget(tab)
 	if _G[name .. "_MA_DRAG"] == nil then
 		_G[name .. "_MA_DRAG"] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
 		local dragframe = _G[name .. "_MA_DRAG"]
-		dragframe:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(dragframe, true)
 		dragframe:SetFrameStrata("MEDIUM")
 		dragframe:SetFrameLevel(99)
 		dragframe:Hide()
@@ -1394,7 +1394,7 @@ function MoveAny:RegisterWidget(tab)
 						framelevel = framelevel + 100
 						dragframe.opt:SetSize(500, 500)
 						dragframe.opt:SetPoint("CENTER")
-						dragframe.opt:SetClampedToScreen(true)
+						MoveAny:SetClampedToScreen(dragframe.opt, true)
 						dragframe.opt:SetMovable(true)
 						dragframe.opt:EnableMouse(true)
 						dragframe.opt:RegisterForDrag("LeftButton")
@@ -1509,10 +1509,7 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetDontSavePosition(true)
 	end
 
-	if frame.SetClampedToScreen then
-		frame:SetClampedToScreen(true)
-	end
-
+	MoveAny:SetClampedToScreen(frame, true)
 	if frame ~= TalkingHeadFrame and frame ~= Minimap and frame ~= MinimapCluster and frame.SetIgnoreParentAlpha ~= nil and MoveAny:GetParent(frame) ~= UIParent and MoveAny:GetParent(frame) ~= MoveAny:GetMainPanel() then
 		frame:SetIgnoreParentAlpha(true)
 	end

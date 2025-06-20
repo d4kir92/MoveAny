@@ -210,7 +210,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					fm:SetMovable(true)
 					fm:SetUserPlaced(false)
 					if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPWINDOWTOSCREEN", true) then
-						fm:SetClampedToScreen(true)
+						MoveAny:SetClampedToScreen(fm, true)
 					end
 
 					fm:RegisterForDrag("LeftClick")
@@ -255,7 +255,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 				end
 
 				if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPWINDOWTOSCREEN", true) then
-					frame:SetClampedToScreen(true)
+					MoveAny:SetClampedToScreen(frame, true)
 				end
 
 				function MoveAny:MAFrameStopMoving(frameObj)
@@ -553,31 +553,31 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	end
 
 	if WorldMapFrame then
-		WorldMapFrame:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(WorldMapFrame, true)
 	end
 
 	if GameMenuFrame then
-		GameMenuFrame:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(GameMenuFrame, true)
 	end
 
 	if PVPReadyDialog then
-		PVPReadyDialog:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(PVPReadyDialog, true)
 	end
 
 	if ReadyCheckFrame then
-		ReadyCheckFrame:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(ReadyCheckFrame, true)
 	end
 
 	if RolePollPopup then
-		RolePollPopup:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(RolePollPopup, true)
 	end
 
 	if StaticPopup1 then
-		StaticPopup1:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(StaticPopup1, true)
 	end
 
 	if StaticPopup2 then
-		StaticPopup2:SetClampedToScreen(true)
+		MoveAny:SetClampedToScreen(StaticPopup2, true)
 	end
 
 	if ts ~= nil then

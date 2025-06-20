@@ -43,6 +43,20 @@ function D4:GetText(frame)
     return nil
 end
 
+function D4:SetClampedToScreen(frame, value)
+    if frame == nil then return end
+    if value == nil then return end
+    local ok = pcall(
+        function()
+            if type(frame) == "table" and type(frame.SetClampedToScreen) == "function" then
+                frame:SetClampedToScreen(value)
+            end
+        end
+    )
+
+    return ok
+end
+
 function D4:TrySetParent(frame, parent)
     if frame == nil then
         D4:INFO("[D4] Missing Frame for TrySetParent", frame)
@@ -445,7 +459,7 @@ function D4:CreateFrame(tab)
 
     fra:SetSize(tab.sw, tab.sh)
     fra:SetPoint(unpack(tab.pTab))
-    fra:SetClampedToScreen(true)
+    D4:SetClampedToScreen(fra, true)
     fra:SetMovable(true)
     fra:EnableMouse(true)
     fra:RegisterForDrag("LeftButton")
