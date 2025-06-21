@@ -43,7 +43,7 @@ function D4:GetText(frame)
     return nil
 end
 
-function D4:SetClampedToScreen(frame, value)
+function D4:SetClampedToScreen(frame, value, from)
     if frame == nil then return end
     if value == nil then return end
     local ok = pcall(
@@ -83,6 +83,14 @@ function D4:TrySetParent(frame, parent)
     return false
 end
 
+function D4:RunSec(callback, ...)
+    if callback == nil then return end
+    local ok, ret = pcall(function(...) return callback(...) end, ...)
+    if ok then return ret end
+
+    return nil
+end
+
 function D4:SetFontSize(element, fontSize, newFontFlags)
     if not element then return end
     if element.GetFont == nil then return end
@@ -105,7 +113,11 @@ function D4:AddCategory(tab)
     tab.pTab = tab.pTab or "CENTER"
     tab.parent.f = tab.parent:CreateFontString(nil, nil, "GameFontNormal")
     tab.parent.f:SetPoint(unpack(tab.pTab))
-    tab.parent.f:SetText(D4:Trans(tab.name))
+    if tab.key and tab.name and tab.name == "" then
+        D4:INFO("[D4][AddCategory] " .. tab.key .. " has no name")
+    end
+
+    tab.parent.f:SetText(D4:Trans("LID_" .. tab.name))
 end
 
 function D4:CreateCheckbox(tab, text)
@@ -137,7 +149,11 @@ function D4:CreateCheckbox(tab, text)
     if text then
         cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
         cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-        cb.f:SetText(D4:Trans(tab.name))
+        if tab.key and tab.name and tab.name == "" then
+            D4:INFO("[D4][CreateCheckbox] " .. tab.key .. " has no name")
+        end
+
+        cb.f:SetText(D4:Trans("LID_" .. tab.name))
     end
 
     return cb
@@ -219,7 +235,11 @@ function D4:CreateEditBox(tab)
 
     cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
     cb.f:SetPoint("LEFT", cb, "RIGHT", 10, 0)
-    cb.f:SetText(tab.prefix .. D4:Trans(tab.name) .. tab.suffix)
+    if tab.key and tab.name and tab.name == "" then
+        D4:INFO("[D4][CreateEditBox] " .. tab.key .. " has no name")
+    end
+
+    cb.f:SetText(tab.prefix .. D4:Trans("LID_" .. tab.name) .. tab.suffix)
 
     return cb
 end
@@ -268,7 +288,11 @@ function D4:CreateSlider(tab)
 
     slider.Low:SetText(tab.vmin)
     slider.High:SetText(tab.vmax)
-    local struct = D4:Trans(tab.key)
+    if tab.name and tab.key and tab.key == "" then
+        D4:INFO("[D4][CreateSlider] " .. tab.name .. " has no key")
+    end
+
+    local struct = D4:Trans("LID_" .. tab.key)
     if struct and tab.value then
         slider.Text:SetText(string.format(struct, tab.value))
     end
@@ -302,7 +326,7 @@ function D4:CreateSlider(tab)
                 tab:func(val)
             end
 
-            local struct2 = D4:Trans(tab.key)
+            local struct2 = D4:Trans("LID_" .. tab.key)
             if struct2 then
                 slider.Text:SetText(string.format(struct2, val))
             else
@@ -362,7 +386,13 @@ end
 
 function D4:AddColorPicker(key, value, func, x, y)
     if TAB == nil then
-        D4:MSG("[AddColorPicker] Missing TAB")
+        D4:MSG("[D4][AddColorPicker] Missing TAB")
+
+        return
+    end
+
+    if key and key == "" then
+        D4:INFO("[D4][AddColorPicker] has no key")
 
         return
     end
@@ -386,7 +416,7 @@ function D4:AddColorPicker(key, value, func, x, y)
     local btn = CreateFrame("Button", key, PARENT, "UIPanelButtonTemplate")
     btn:SetSize(180, 25)
     btn:SetPoint("TOPLEFT", PARENT, "TOPLEFT", x, Y)
-    btn:SetText(D4:Trans(key))
+    btn:SetText(D4:Trans("LID_" .. key))
     btn:SetScript(
         "OnClick",
         function()
@@ -633,7 +663,7 @@ function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix, 
     Y = Y - 4
     local eb = D4:CreateEditBox(
         {
-            ["name"] = lstr or "LID_" .. key,
+            ["name"] = lstr or key,
             ["parent"] = PARENT,
             ["pTab"] = {"TOPLEFT", x or X, y or Y},
             ["value"] = val,
@@ -663,24 +693,38 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         TAB[key] = value
     end
 
+    if key and key == "" then
+        D4:INFO("[D4][CreateDropdown] has no key")
+
+        return nil
+    end
+
     local text = parent:CreateFontString(nil, nil, "GameFontNormal")
     text:SetPoint("TOPLEFT", X + 5, Y)
-    text:SetText(D4:Trans(key))
+    text:SetText(D4:Trans("LID_" .. key))
     Y = Y - 18
     if D4:GetWoWBuild() == "RETAIL" then
         local Dropdown = CreateFrame("DropdownButton", key, parent, "WowStyle1DropdownTemplate")
-        Dropdown:SetDefaultText(D4:Trans(choices[TAB[key]]))
+        Dropdown:SetDefaultText(D4:Trans("LID_" .. choices[TAB[key]]))
         Dropdown:SetPoint("TOPLEFT", X + 5, Y)
         Dropdown:SetWidth(200)
         Dropdown:SetupMenu(
             function(dropdown, rootDescription)
-                rootDescription:CreateTitle(D4:Trans(key))
+                if key and key == "" then
+                    D4:INFO("[D4][CreateDropdown] has no key")
+                end
+
+                rootDescription:CreateTitle(D4:Trans("LID_" .. key))
                 for data, name in pairs(choices) do
+                    if key and name and name == "" then
+                        D4:INFO("[D4][CreateDropdown] " .. key .. " has no name")
+                    end
+
                     rootDescription:CreateButton(
-                        D4:Trans(name),
+                        D4:Trans("LID_" .. name),
                         function()
                             TAB[key] = data
-                            Dropdown:SetDefaultText(D4:Trans(name))
+                            Dropdown:SetDefaultText(D4:Trans("LID_" .. name))
                             if func then
                                 func(data)
                             end
@@ -697,7 +741,13 @@ function D4:CreateDropdown(key, value, choices, parent, func)
             local info = UIDropDownMenu_CreateInfo()
             if level == 1 then
                 for data, name in pairs(choices) do
-                    info.text = D4:Trans(name)
+                    if name and name == "" then
+                        D4:INFO("[D4][CreateDropdown] has no name")
+
+                        return nil
+                    end
+
+                    info.text = D4:Trans("LID_" .. name)
                     info.arg1 = data
                     info.checked = name == choices[TAB[key]]
                     info.func = dropDown.SetValue
@@ -707,7 +757,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         end
 
         UIDropDownMenu_Initialize(dropDown, WPDropDownDemo_Menu)
-        UIDropDownMenu_SetText(dropDown, D4:Trans(choices[TAB[key]]))
+        UIDropDownMenu_SetText(dropDown, D4:Trans("LID_" .. choices[TAB[key]]))
         function dropDown:SetValue(newValue)
             TAB[key] = newValue
             UIDropDownMenu_SetText(dropDown, newValue)

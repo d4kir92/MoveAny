@@ -1,4 +1,9 @@
 local _, D4 = ...
+local TAB = nil
+function D4:SetDbTab(newTab)
+    TAB = newTab
+end
+
 function D4:GV(db, key, value)
     if db == nil then
         D4:MSG("[D4:GV] db is nil", "db", tostring(db), "key", tostring(key), "value", tostring(value))
@@ -31,4 +36,30 @@ function D4:SV(db, key, value)
     end
 
     db[key] = value
+end
+
+function D4:DBGV(key, value)
+    if TAB == nil then
+        D4:INFO("[D4:DBGV] Missing DB TAB in DBGV")
+
+        return value
+    end
+
+    if TAB[key] == nil then
+        TAB[key] = value
+    end
+
+    return TAB[key]
+end
+
+function D4:DBSV(key, value)
+    if TAB == nil then
+        D4:INFO("[D4:DBSV] Missing DB TAB in DBSV")
+
+        return false
+    end
+
+    TAB[key] = value
+
+    return true
 end
