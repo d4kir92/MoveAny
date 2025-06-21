@@ -48,8 +48,12 @@ function D4:SetClampedToScreen(frame, value, from)
     if value == nil then return end
     local ok = pcall(
         function()
+            if frame == nil then return false end
+            if InCombatLockdown() and frame:IsProtected() then return false end
             if type(frame) == "table" and type(frame.SetClampedToScreen) == "function" then
                 frame:SetClampedToScreen(value)
+
+                return true
             end
         end
     )
