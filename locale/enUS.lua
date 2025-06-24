@@ -248,6 +248,8 @@ function MoveAny:LangenUS()
 		["LID_BuffBarCooldownViewer"] = "Buff Bar Cooldown Viewer (Cooldown-Manager)",
 		["LID_CLAMPWINDOWTOSCREEN"] = "Clamp Windows to Screen (Can't drag off Screen)",
 		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Enemy Frames Container (Battleground Bosses)",
+		["LID_FOCUSFRAMETOTBUFFMOVER"] = "Target of Focus Frame Buffs",
+		["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "Target of Focus Frame Debuffs",
 	}
 
 	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")

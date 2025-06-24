@@ -242,6 +242,8 @@ function MoveAny:LangdeDE()
 		["LID_BuffBarCooldownViewer"] = "Stärkungsleisten Abklingzeit Betrachter (Abklingzeitmanager)",
 		["LID_CLAMPWINDOWTOSCREEN"] = "Fenster an den Bildschirm klemmen (Nicht aus dem Bildschirm ziehen)",
 		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Gegner Fenster Kontainer (Schlachtfeld Bosse)",
+		["LID_FOCUSFRAMETOTBUFFMOVER"] = "Ziel des Fokusfenster Buffs",
+		["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "Ziel des Fokusfenster Debuffs",
 	}
 
 	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")

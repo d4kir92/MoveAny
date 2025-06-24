@@ -73,6 +73,7 @@ end
 
 local targetDebuffs = {}
 function MoveAny:UpdateTargetFrameDebuffs()
+	targetDebuffs = {}
 	MoveAny:CheckBuffs(TargetFrame, targetDebuffs, true)
 
 	return targetDebuffs
@@ -80,6 +81,7 @@ end
 
 local targetBuffsTOT = {}
 function MoveAny:UpdateTargetFrameToTBuffs()
+	targetBuffsTOT = {}
 	MoveAny:CheckBuffs(TargetFrameToT, targetBuffsTOT, false)
 
 	return targetBuffsTOT
@@ -87,6 +89,7 @@ end
 
 local targetDebuffsTOT = {}
 function MoveAny:UpdateTargetFrameToTDebuffs()
+	targetDebuffsTOT = {}
 	MoveAny:CheckBuffs(TargetFrameToT, targetDebuffsTOT, true)
 
 	return targetDebuffsTOT
@@ -94,6 +97,7 @@ end
 
 local focusBuffs = {}
 function MoveAny:UpdateFocusFrameBuffs()
+	focusBuffs = {}
 	MoveAny:CheckBuffs(FocusFrame, focusBuffs, false)
 
 	return focusBuffs
@@ -101,9 +105,26 @@ end
 
 local focusDebuffs = {}
 function MoveAny:UpdateFocusFrameDebuffs()
+	focusDebuffs = {}
 	MoveAny:CheckBuffs(FocusFrame, focusDebuffs, true)
 
 	return focusDebuffs
+end
+
+local focusBuffsTOT = {}
+function MoveAny:UpdateFocusFrameToTBuffs()
+	focusBuffsTOT = {}
+	MoveAny:CheckBuffs(FocusFrameToT, focusBuffsTOT, false)
+
+	return focusBuffsTOT
+end
+
+local focusDebuffsTOT = {}
+function MoveAny:UpdateFocusFrameToTDebuffs()
+	focusDebuffsTOT = {}
+	MoveAny:CheckBuffs(FocusFrameToT, focusDebuffsTOT, true)
+
+	return focusDebuffsTOT
 end
 
 keybinds[1] = "SHIFT"
@@ -595,7 +616,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.87")
+	MoveAny:SetVersion(135994, "1.8.88")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -673,6 +694,10 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
 			AddCheckBox(posx, "FOCUSFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 			AddCheckBox(posx, "FOCUSFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			if FocusFrameToT then
+				AddCheckBox(posx, "FOCUSFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+				AddCheckBox(posx, "FOCUSFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			end
 		end
 
 		AddCheckBox(posx, "BUFFS", false, nil, nil, "ShowBuffFrame")
@@ -3190,116 +3215,575 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFFMOVER", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "FocusFrameBuffMover",
-				["lstr"] = "LID_FOCUSFRAMEBUFFMOVER",
-				["userplaced"] = true,
-				["setup"] = function()
-					local frame = FocusFrameBuffMover
-					function frame:UpdateScaleAndAlpha()
-						if _G["FocusFrameBuff" .. 1] == nil then return end
-						local scale = _G["FocusFrameBuff" .. 1]:GetScale()
-						local alpha = _G["FocusFrameBuff" .. 1]:GetAlpha()
-						for i = 1, 32 do
-							local bb = _G["FocusFrameBuff" .. i]
-							if bb and i > 1 then
-								bb:SetScale(scale)
-								bb:SetAlpha(alpha)
+	if FocusFrame then
+		if MoveAny:IsEnabled("FOCUSFRAMEBUFFMOVER", false) then
+			if MoveAny:IsEnabled("FOCUSFRAME", false) then
+				function MoveAny:UpdateFocusBuffs()
+					for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
+						if bb ~= nil then
+							local p1, p2, p3, p4, p5 = bb:GetPoint()
+							if p1 and p3 then
+								bb:SetPoint(p1, p2, p3, p4, p5)
 							end
 						end
 					end
+				end
 
-					local bbf = CreateFrame("FRAME")
-					bbf:RegisterEvent("UNIT_AURA")
-					bbf:SetScript(
-						"OnEvent",
-						function()
+				local FocusFrameBuffMover = CreateFrame("Frame", "FocusFrameBuffMover", UIParent)
+				FocusFrameBuffMover:SetSize(21, 21)
+				FocusFrameBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "FocusFrameBuffMover",
+						["lstr"] = "LID_FOCUSFRAMEBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = FocusFrameBuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
+								for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
+									if bb then
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
+									end
+								end
+							end
+
+							local added = {}
+							function frame:Update()
+								if FocusFrame and FocusFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+									local focusEffectiveScale = FocusFrame:GetScale()
+									local focusAbsoluteX = focusCenterX / focusEffectiveScale
+									local focusAbsoluteY = focusCenterY / focusEffectiveScale
+									frame.PX = frameAbsoluteX - focusAbsoluteX
+									frame.PY = frameAbsoluteY - focusAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MABUFFMODE = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFMODE", 0)
+														local MABUFFLIMIT = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFLIMIT", 10)
+														local MABUFFSPACINGX = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFSPACINGX", 4)
+														local MABUFFSPACINGY = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+														sel:ClearAllPoints()
+														if MABUFFMODE == 1 then
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+														end
+
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
+								C_Timer.After(
+									0.1,
+									function()
+										frame:Update()
+									end
+								)
+							end
+
+							frame:Update()
+							FocusFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:UpdateFocusBuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							local bbf = CreateFrame("FRAME")
+							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
+							bbf:SetScript(
+								"OnEvent",
+								function()
+									MoveAny:UpdateFocusBuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
 							frame:UpdateScaleAndAlpha()
-						end
-					)
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FocusFrameBuffMover enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:MSG("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				end
+			end
+		end
 
-					hooksecurefunc(
-						frame,
-						"SetPoint",
-						function()
-							frame:UpdateScaleAndAlpha()
-						end
-					)
-
-					hooksecurefunc(
-						frame,
-						"SetScale",
-						function(sel)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_db_set_scale then return end
-							sel.ma_db_set_scale = true
-							frame:UpdateScaleAndAlpha()
-							sel.ma_db_set_scale = false
-						end
-					)
-
-					frame:UpdateScaleAndAlpha()
-				end,
-			}
-		)
-	end
-
-	if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEDEBUFFMOVER", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "FocusFrameDebuffMover",
-				["lstr"] = "LID_FOCUSFRAMEDEBUFFMOVER",
-				["userplaced"] = true,
-				["setup"] = function()
-					local frame = FocusFrameDebuffMover
-					function frame:UpdateScaleAndAlpha()
-						if _G["FocusFrameDebuff" .. 1] == nil then return end
-						local scale = _G["FocusFrameDebuff" .. 1]:GetScale()
-						local alpha = _G["FocusFrameDebuff" .. 1]:GetAlpha()
-						for i = 1, 32 do
-							local db = _G["FocusFrameDebuff" .. i]
-							if db and i > 1 then
-								db:SetScale(scale)
-								db:SetAlpha(alpha)
+		if MoveAny:IsEnabled("FOCUSFRAMEDEBUFFMOVER", false) then
+			if MoveAny:IsEnabled("FOCUSFRAME", false) then
+				function MoveAny:UpdateFocusDebuffs()
+					for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
+						if bb then
+							local p1, p2, p3, p4, p5 = bb:GetPoint()
+							if p1 and p3 then
+								bb:ClearAllPoints()
+								bb:SetPoint(p1, p2, p3, p4, p5)
 							end
 						end
 					end
+				end
 
-					local bbf = CreateFrame("FRAME")
-					bbf:RegisterEvent("UNIT_AURA")
-					bbf:SetScript(
-						"OnEvent",
-						function()
+				local FocusFrameDebuffMover = CreateFrame("Frame", "FocusFrameDebuffMover", UIParent)
+				FocusFrameDebuffMover:SetSize(21, 21)
+				FocusFrameDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "FocusFrameDebuffMover",
+						["lstr"] = "LID_FOCUSFRAMEDEBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = FocusFrameDebuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
+								for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
+									if bb then
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
+									end
+								end
+							end
+
+							local added = {}
+							function frame:Update()
+								if FocusFrame and FocusFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+									local focusEffectiveScale = FocusFrame:GetScale()
+									local focusAbsoluteX = focusCenterX / focusEffectiveScale
+									local focusAbsoluteY = focusCenterY / focusEffectiveScale
+									frame.PX = frameAbsoluteX - focusAbsoluteX
+									frame.PY = frameAbsoluteY - focusAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MADEBUFFMODE = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFMODE", 0)
+														local MADEBUFFLIMIT = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFLIMIT", 10)
+														local MADEBUFFSPACINGX = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFSPACINGX", 4)
+														local MADEBUFFSPACINGY = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+														sel:ClearAllPoints()
+														if MADEBUFFMODE == 1 then
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+														end
+
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
+								C_Timer.After(
+									0.1,
+									function()
+										frame:Update()
+									end
+								)
+							end
+
+							frame:Update()
+							FocusFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:UpdateFocusDebuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							local bbf = CreateFrame("FRAME")
+							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
+							bbf:SetScript(
+								"OnEvent",
+								function()
+									MoveAny:UpdateFocusDebuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
 							frame:UpdateScaleAndAlpha()
-						end
-					)
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEDEBUFFMOVER enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				end
+			end
+		end
 
-					hooksecurefunc(
-						frame,
-						"SetPoint",
-						function()
+		if MoveAny:IsEnabled("FOCUSFRAMETOTDEBUFFMOVER", false) then
+			if MoveAny:IsEnabled("FOCUSFRAME", false) then
+				function MoveAny:UpdateFocusToTDebuffs()
+					for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
+						if bb then
+							local p1, p2, p3, p4, p5 = bb:GetPoint()
+							if p1 and p3 then
+								bb:SetPoint(p1, p2, p3, p4, p5)
+							end
+						end
+					end
+				end
+
+				local FocusFrameToTDebuffMover = CreateFrame("Frame", "FocusFrameToTDebuffMover", UIParent)
+				FocusFrameToTDebuffMover:SetSize(21, 21)
+				FocusFrameToTDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "FocusFrameToTDebuffMover",
+						["lstr"] = "LID_FOCUSFRAMETOTDEBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = FocusFrameToTDebuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
+								for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
+									if bb then
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
+									end
+								end
+							end
+
+							local added = {}
+							function frame:Update()
+								if FocusFrame and FocusFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+									local focusEffectiveScale = FocusFrame:GetScale()
+									local focusAbsoluteX = focusCenterX / focusEffectiveScale
+									local focusAbsoluteY = focusCenterY / focusEffectiveScale
+									frame.PX = frameAbsoluteX - focusAbsoluteX
+									frame.PY = frameAbsoluteY - focusAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MADEBUFFMODE = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFMODE", 0)
+														local MADEBUFFLIMIT = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
+														local MADEBUFFSPACINGX = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
+														local MADEBUFFSPACINGY = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+														sel:ClearAllPoints()
+														if MADEBUFFMODE == 1 then
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+														end
+
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
+								C_Timer.After(
+									0.1,
+									function()
+										frame:Update()
+									end
+								)
+							end
+
+							frame:Update()
+							FocusFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:UpdateFocusToTDebuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							local bbf = CreateFrame("FRAME")
+							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
+							bbf:SetScript(
+								"OnEvent",
+								function()
+									MoveAny:UpdateFocusToTDebuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
 							frame:UpdateScaleAndAlpha()
-						end
-					)
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEDEBUFFMOVER enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				end
+			end
+		end
 
-					hooksecurefunc(
-						frame,
-						"SetScale",
-						function(sel)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_db_set_scale then return end
-							sel.ma_db_set_scale = true
+		if MoveAny:IsEnabled("FOCUSFRAMETOTBUFFMOVER", false) then
+			if MoveAny:IsEnabled("FOCUSFRAME", false) then
+				function MoveAny:UpdateFocusToTBuffs()
+					for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
+						if bb then
+							local p1, p2, p3, p4, p5 = bb:GetPoint()
+							if p1 and p3 then
+								bb:SetPoint(p1, p2, p3, p4, p5)
+							end
+						end
+					end
+				end
+
+				local FocusFrameToTBuffMover = CreateFrame("Frame", "FocusFrameToTBuffMover", UIParent)
+				FocusFrameToTBuffMover:SetSize(21, 21)
+				FocusFrameToTBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "FocusFrameToTBuffMover",
+						["lstr"] = "LID_FOCUSFRAMETOTBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = FocusFrameToTBuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
+								for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
+									if bb then
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
+									end
+								end
+							end
+
+							local added = {}
+							function frame:Update()
+								if FocusFrame and FocusFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+									local focusEffectiveScale = FocusFrame:GetScale()
+									local focusAbsoluteX = focusCenterX / focusEffectiveScale
+									local focusAbsoluteY = focusCenterY / focusEffectiveScale
+									frame.PX = frameAbsoluteX - focusAbsoluteX
+									frame.PY = frameAbsoluteY - focusAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MABUFFMODE = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFMODE", 0)
+														local MABUFFLIMIT = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFLIMIT", 10)
+														local MABUFFSPACINGX = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFSPACINGX", 4)
+														local MABUFFSPACINGY = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+														sel:ClearAllPoints()
+														if MABUFFMODE == 1 then
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+														end
+
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
+								C_Timer.After(
+									0.1,
+									function()
+										frame:Update()
+									end
+								)
+							end
+
+							frame:Update()
+							FocusFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:UpdateFocusToTBuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							local bbf = CreateFrame("FRAME")
+							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
+							bbf:SetScript(
+								"OnEvent",
+								function()
+									MoveAny:UpdateFocusToTBuffs()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
 							frame:UpdateScaleAndAlpha()
-							sel.ma_db_set_scale = false
-						end
-					)
-
-					frame:UpdateScaleAndAlpha()
-				end,
-			}
-		)
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEBUFFMOVER enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				end
+			end
+		end
 	end
 
 	if (FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false)) or (FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false)) then

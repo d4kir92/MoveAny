@@ -207,6 +207,14 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
 	end
 
+	if string.find(name, "FocusFrameBuffMover") then
+		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
+	end
+
+	if string.find(name, "FocusFrameDebuffMover") then
+		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
+	end
+
 	if string.find(name, "MainMenuExpBar") then
 		table.insert(tabs, MoveAny:GT("LID_MAINMENUEXPBAR"))
 	end
