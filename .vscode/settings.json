@@ -79,7 +79,7 @@
         "ChatFrameChannelButton",
         "GameTooltipDefaultContainer",
         "GeneralDockManager",
-        "TargetFrameToTDebuff1",
+        "TargetFrameToTDebuffMover",
         "VERTICAL_MULTI_BAR_WIDTH",
         "GetUnitName",
         "PlayerPowerBarAltCounterBar",

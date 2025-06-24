@@ -16,6 +16,96 @@ local cbs = {}
 local sls = {}
 local EMMapForced = {}
 local keybinds = {}
+function MoveAny:CheckBuffType(id, child, tab, isDebuff)
+	if child == nil then return 0 end
+	if child:IsShown() == false then return 0 end
+	local csw, csh = child:GetSize()
+	if csw < 20 or csw > 22 or csh < 20 or csh > 22 then return 0 end
+	local debuff = false
+	local childName = MoveAny:GetName(child)
+	if childName then
+		if strfind(childName, "Debuff", 1, true) ~= nil then
+			debuff = true
+		end
+	else
+		MoveAny:ForeachRegions(
+			child,
+			function(region, x)
+				if region and MoveAny:GetName(region) and (MoveAny:GetName(region) == "TargetFrameBorder" or MoveAny:GetName(region) == "FocusFrameBorder") then
+					debuff = true
+				end
+			end
+		)
+	end
+
+	if not isDebuff and not debuff or isDebuff and debuff then
+		if tab[id] == nil then
+			tab[id] = child
+		end
+
+		return 1
+	end
+
+	return 0
+end
+
+function MoveAny:CheckBuffs(frame, tab, isDebuff)
+	local id = 1
+	if frame then
+		MoveAny:ForeachChildren(
+			frame,
+			function(child, i)
+				id = id + MoveAny:CheckBuffType(id, child, tab, isDebuff)
+			end
+		)
+	end
+
+	return tab
+end
+
+local targetBuffs = {}
+function MoveAny:UpdateTargetFrameBuffs()
+	targetBuffs = {}
+	MoveAny:CheckBuffs(TargetFrame, targetBuffs, false)
+
+	return targetBuffs
+end
+
+local targetDebuffs = {}
+function MoveAny:UpdateTargetFrameDebuffs()
+	MoveAny:CheckBuffs(TargetFrame, targetDebuffs, true)
+
+	return targetDebuffs
+end
+
+local targetBuffsTOT = {}
+function MoveAny:UpdateTargetFrameToTBuffs()
+	MoveAny:CheckBuffs(TargetFrameToT, targetBuffsTOT, false)
+
+	return targetBuffsTOT
+end
+
+local targetDebuffsTOT = {}
+function MoveAny:UpdateTargetFrameToTDebuffs()
+	MoveAny:CheckBuffs(TargetFrameToT, targetDebuffsTOT, true)
+
+	return targetDebuffsTOT
+end
+
+local focusBuffs = {}
+function MoveAny:UpdateFocusFrameBuffs()
+	MoveAny:CheckBuffs(FocusFrame, focusBuffs, false)
+
+	return focusBuffs
+end
+
+local focusDebuffs = {}
+function MoveAny:UpdateFocusFrameDebuffs()
+	MoveAny:CheckBuffs(FocusFrame, focusDebuffs, true)
+
+	return focusDebuffs
+end
+
 keybinds[1] = "SHIFT"
 keybinds[2] = "CTRL"
 keybinds[3] = "ALT"
@@ -572,22 +662,17 @@ function MoveAny:InitMALock()
 		local posx = 4
 		AddCheckBox(posx, "PLAYERFRAME", false)
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
-			AddCheckBox(posx, "TARGETFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox(posx, "TARGETFRAMEDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
-		end
-
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then
-			AddCheckBox(posx, "TARGETFRAMETOTBUFF1", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox(posx, "TARGETFRAMETOTDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox(posx, "TARGETFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox(posx, "TARGETFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		if TargetFrameToT then
+			AddCheckBox(posx, "TARGETFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox(posx, "TARGETFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		if FocusFrame then
 			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
-				AddCheckBox(posx, "FOCUSFRAMEBUFF1", false, nil, nil, "ShowTargetAndFocus")
-				AddCheckBox(posx, "FOCUSFRAMEDEBUFF1", false, nil, nil, "ShowTargetAndFocus")
-			end
+			AddCheckBox(posx, "FOCUSFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox(posx, "FOCUSFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		AddCheckBox(posx, "BUFFS", false, nil, nil, "ShowBuffFrame")
@@ -682,7 +767,10 @@ function MoveAny:InitMALock()
 		end
 
 		AddCategory("NORMAL", 1, true)
-		AddCheckBox(4, "TARGETOFTARGETFRAME", false)
+		if TargetFrameToT then
+			AddCheckBox(4, "TARGETOFTARGETFRAME", false)
+		end
+
 		if FocusFrameToT then
 			AddCheckBox(4, "TARGETOFFOCUSFRAME", false)
 		end
@@ -2499,34 +2587,34 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEBUFF1", false) then
+	if MoveAny:IsEnabled("TARGETFRAMEBUFFMOVER", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			function MoveAny:UpdateTargetBuffs()
-				for i = 1, 32 do
-					local name = "TargetFrameBuff" .. i
-					if _G[name] ~= nil then
-						local p1, p2, p3, p4, p5 = _G[name]:GetPoint()
+				for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
+					if bb ~= nil then
+						local p1, p2, p3, p4, p5 = bb:GetPoint()
 						if p1 and p3 then
-							_G[name]:SetPoint(p1, p2, p3, p4, p5)
+							bb:SetPoint(p1, p2, p3, p4, p5)
 						end
 					end
 				end
 			end
 
+			local TargetFrameBuffMover = CreateFrame("Frame", "TargetFrameBuffMover", UIParent)
+			TargetFrameBuffMover:SetSize(21, 21)
+			TargetFrameBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "TargetFrameBuff1",
-					["lstr"] = "LID_TARGETFRAMEBUFF1",
+					["name"] = "TargetFrameBuffMover",
+					["lstr"] = "LID_TARGETFRAMEBUFFMOVER",
 					["userplaced"] = true,
 					["setup"] = function()
-						local frame = TargetFrameBuff1
-						function frame:UpdateBuffScaleAlpha()
-							if _G["TargetFrameBuff" .. 1] == nil then return end
-							local scale = _G["TargetFrameBuff" .. 1]:GetScale()
-							local alpha = _G["TargetFrameBuff" .. 1]:GetAlpha()
-							for i = 1, 32 do
-								local bb = _G["TargetFrameBuff" .. i]
-								if bb and i > 1 then
+						local frame = TargetFrameBuffMover
+						function frame:UpdateScaleAndAlpha()
+							local scale = frame:GetScale()
+							local alpha = frame:GetAlpha()
+							for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
+								if bb then
 									bb:SetScale(scale)
 									bb:SetAlpha(alpha)
 								end
@@ -2535,36 +2623,50 @@ function MoveAny:LoadAddon()
 
 						local added = {}
 						function frame:Update()
-							local obb = _G["TargetFrameBuff" .. 1]
-							for i = 1, 32 do
-								local bb = _G["TargetFrameBuff" .. i]
-								if bb and i > 1 and added[bb] == nil then
-									added[bb] = true
-									local setPoint = false
-									hooksecurefunc(
-										bb,
-										"SetPoint",
-										function(sel, ...)
-											if setPoint then return end
-											local MABUFFMODE = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFMODE", 0)
-											local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFLIMIT", 10)
-											local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGX", 4)
-											local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuff1", "MABUFFSPACINGY", 10)
-											setPoint = true
-											local row = math.floor((i - 1) / MABUFFLIMIT)
-											sel:ClearAllPoints()
-											if MABUFFMODE == 1 then
-												sel:SetPoint("LEFT", _G["TargetFrameBuff" .. 1], "LEFT", ((i - 1) % MABUFFLIMIT) * (_G["TargetFrameBuff" .. 1]:GetWidth() + MABUFFSPACINGX), row * (_G["TargetFrameBuff" .. 1]:GetHeight() + MABUFFSPACINGY))
-											else
-												sel:SetPoint("LEFT", _G["TargetFrameBuff" .. 1], "LEFT", ((i - 1) % MABUFFLIMIT) * (_G["TargetFrameBuff" .. 1]:GetWidth() + MABUFFSPACINGX), -(row * (_G["TargetFrameBuff" .. 1]:GetHeight() + MABUFFSPACINGY)))
-											end
+							if TargetFrame and TargetFrame:GetLeft() then
+								local frameCenterX, frameCenterY = frame:GetCenter()
+								local frameEffectiveScale = frame:GetScale()
+								local frameAbsoluteX = frameCenterX / frameEffectiveScale
+								local frameAbsoluteY = frameCenterY / frameEffectiveScale
+								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+								local targetEffectiveScale = TargetFrame:GetScale()
+								local targetAbsoluteX = targetCenterX / targetEffectiveScale
+								local targetAbsoluteY = targetCenterY / targetEffectiveScale
+								frame.PX = frameAbsoluteX - targetAbsoluteX
+								frame.PY = frameAbsoluteY - targetAbsoluteY
+								for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
+									if bb then
+										if added[bb] == nil then
+											local setPoint = false
+											hooksecurefunc(
+												bb,
+												"SetPoint",
+												function(sel, ...)
+													if setPoint then return end
+													setPoint = true
+													local MABUFFMODE = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFMODE", 0)
+													local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFLIMIT", 10)
+													local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGX", 4)
+													local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGY", 10)
+													local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+													sel:ClearAllPoints()
+													if MABUFFMODE == 1 then
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+													else
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+													end
 
-											setPoint = false
+													setPoint = false
+												end
+											)
 										end
-									)
 
-									bb:ClearAllPoints()
-									bb:SetPoint("LEFT", obb, "RIGHT", 0, 0)
+										if added[bb] ~= i then
+											added[bb] = i
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+										end
+									end
 								end
 							end
 
@@ -2577,12 +2679,21 @@ function MoveAny:LoadAddon()
 						end
 
 						frame:Update()
+						TargetFrame:HookScript(
+							"OnShow",
+							function()
+								MoveAny:UpdateTargetBuffs()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
+
 						local bbf = CreateFrame("FRAME")
-						bbf:RegisterEvent("UNIT_AURA")
+						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
 						bbf:SetScript(
 							"OnEvent",
 							function()
-								frame:UpdateBuffScaleAlpha()
+								MoveAny:UpdateTargetBuffs()
+								frame:UpdateScaleAndAlpha()
 							end
 						)
 
@@ -2590,7 +2701,7 @@ function MoveAny:LoadAddon()
 							frame,
 							"SetPoint",
 							function()
-								frame:UpdateBuffScaleAlpha()
+								frame:UpdateScaleAndAlpha()
 							end
 						)
 
@@ -2601,89 +2712,104 @@ function MoveAny:LoadAddon()
 								if InCombatLockdown() and sel:IsProtected() then return false end
 								if sel.ma_bb_set_scale then return end
 								sel.ma_bb_set_scale = true
-								frame:UpdateBuffScaleAlpha()
+								frame:UpdateScaleAndAlpha()
 								sel.ma_bb_set_scale = false
 							end
 						)
 
-						frame:UpdateBuffScaleAlpha()
+						frame:UpdateScaleAndAlpha()
 					end,
 				}
 			)
 		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEBUFF1 enabled in MoveAny.")
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TargetFrameBuffMover enabled in MoveAny.")
 			if MoveAny:GetWoWBuild() == "RETAIL" then
 				MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 			end
 		end
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMEDEBUFF1", false) then
+	if MoveAny:IsEnabled("TARGETFRAMEDEBUFFMOVER", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			function MoveAny:UpdateTargetDebuffs()
-				for i = 1, 32 do
-					local name = "TargetFrameDebuff" .. i
-					if _G[name] ~= nil then
-						local p1, p2, p3, p4, p5 = _G[name]:GetPoint()
+				for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
+					if bb then
+						local p1, p2, p3, p4, p5 = bb:GetPoint()
 						if p1 and p3 then
-							_G[name]:SetPoint(p1, p2, p3, p4, p5)
+							bb:ClearAllPoints()
+							bb:SetPoint(p1, p2, p3, p4, p5)
 						end
 					end
 				end
 			end
 
+			local TargetFrameDebuffMover = CreateFrame("Frame", "TargetFrameDebuffMover", UIParent)
+			TargetFrameDebuffMover:SetSize(21, 21)
+			TargetFrameDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "TargetFrameDebuff1",
-					["lstr"] = "LID_TARGETFRAMEDEBUFF1",
+					["name"] = "TargetFrameDebuffMover",
+					["lstr"] = "LID_TARGETFRAMEDEBUFFMOVER",
 					["userplaced"] = true,
 					["setup"] = function()
-						local frame = TargetFrameDebuff1
-						function frame:UpdateDebuffScaleAlpha()
-							if _G["TargetFrameDebuff" .. 1] == nil then return end
-							local scale = _G["TargetFrameDebuff" .. 1]:GetScale()
-							local alpha = _G["TargetFrameDebuff" .. 1]:GetAlpha()
-							for i = 1, 32 do
-								local db = _G["TargetFrameDebuff" .. i]
-								if db then
-									db:SetScale(scale)
-									db:SetAlpha(alpha)
+						local frame = TargetFrameDebuffMover
+						function frame:UpdateScaleAndAlpha()
+							local scale = frame:GetScale()
+							local alpha = frame:GetAlpha()
+							for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
+								if bb then
+									bb:SetScale(scale)
+									bb:SetAlpha(alpha)
 								end
 							end
 						end
 
 						local added = {}
 						function frame:Update()
-							local obb = _G["TargetFrameDebuff" .. 1]
-							for i = 1, 32 do
-								local bb = _G["TargetFrameDebuff" .. i]
-								if bb and i > 1 and added[bb] == nil then
-									added[bb] = true
-									local setPoint = false
-									hooksecurefunc(
-										bb,
-										"SetPoint",
-										function(sel, ...)
-											if setPoint then return end
-											local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFMODE", 0)
-											local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFLIMIT", 10)
-											local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGX", 4)
-											local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuff1", "MADEBUFFSPACINGY", 10)
-											setPoint = true
-											local row = math.floor((i - 1) / MADEBUFFLIMIT)
-											sel:ClearAllPoints()
-											if MADEBUFFMODE == 1 then
-												sel:SetPoint("LEFT", _G["TargetFrameDebuff" .. 1], "LEFT", ((i - 1) % MADEBUFFLIMIT) * (_G["TargetFrameDebuff" .. 1]:GetWidth() + MADEBUFFSPACINGX), row * (_G["TargetFrameDebuff" .. 1]:GetHeight() + MADEBUFFSPACINGY))
-											else
-												sel:SetPoint("LEFT", _G["TargetFrameDebuff" .. 1], "LEFT", ((i - 1) % MADEBUFFLIMIT) * (_G["TargetFrameDebuff" .. 1]:GetWidth() + MADEBUFFSPACINGX), -(row * (_G["TargetFrameDebuff" .. 1]:GetHeight() + MADEBUFFSPACINGY)))
-											end
+							if TargetFrame and TargetFrame:GetLeft() then
+								local frameCenterX, frameCenterY = frame:GetCenter()
+								local frameEffectiveScale = frame:GetScale()
+								local frameAbsoluteX = frameCenterX / frameEffectiveScale
+								local frameAbsoluteY = frameCenterY / frameEffectiveScale
+								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+								local targetEffectiveScale = TargetFrame:GetScale()
+								local targetAbsoluteX = targetCenterX / targetEffectiveScale
+								local targetAbsoluteY = targetCenterY / targetEffectiveScale
+								frame.PX = frameAbsoluteX - targetAbsoluteX
+								frame.PY = frameAbsoluteY - targetAbsoluteY
+								for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
+									if bb then
+										if added[bb] == nil then
+											local setPoint = false
+											hooksecurefunc(
+												bb,
+												"SetPoint",
+												function(sel, ...)
+													if setPoint then return end
+													setPoint = true
+													local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFMODE", 0)
+													local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFLIMIT", 10)
+													local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGX", 4)
+													local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGY", 10)
+													local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+													sel:ClearAllPoints()
+													if MADEBUFFMODE == 1 then
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+													else
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+													end
 
-											setPoint = false
+													setPoint = false
+												end
+											)
 										end
-									)
 
-									bb:ClearAllPoints()
-									bb:SetPoint("LEFT", obb, "RIGHT", 0, 0)
+										if added[bb] ~= i then
+											added[bb] = i
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+										end
+									end
 								end
 							end
 
@@ -2696,12 +2822,21 @@ function MoveAny:LoadAddon()
 						end
 
 						frame:Update()
+						TargetFrame:HookScript(
+							"OnShow",
+							function()
+								MoveAny:UpdateTargetDebuffs()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
+
 						local bbf = CreateFrame("FRAME")
-						bbf:RegisterEvent("UNIT_AURA")
+						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
 						bbf:SetScript(
 							"OnEvent",
 							function()
-								frame:UpdateDebuffScaleAlpha()
+								MoveAny:UpdateTargetDebuffs()
+								frame:UpdateScaleAndAlpha()
 							end
 						)
 
@@ -2709,7 +2844,7 @@ function MoveAny:LoadAddon()
 							frame,
 							"SetPoint",
 							function()
-								frame:UpdateDebuffScaleAlpha()
+								frame:UpdateScaleAndAlpha()
 							end
 						)
 
@@ -2718,135 +2853,307 @@ function MoveAny:LoadAddon()
 							"SetScale",
 							function(sel)
 								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_db_set_scale then return end
-								sel.ma_db_set_scale = true
-								frame:UpdateDebuffScaleAlpha()
-								sel.ma_db_set_scale = false
+								if sel.ma_bb_set_scale then return end
+								sel.ma_bb_set_scale = true
+								frame:UpdateScaleAndAlpha()
+								sel.ma_bb_set_scale = false
 							end
 						)
 
-						frame:UpdateDebuffScaleAlpha()
+						frame:UpdateScaleAndAlpha()
 					end,
 				}
 			)
 		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFF1 enabled in MoveAny.")
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFFMOVER enabled in MoveAny.")
 			if MoveAny:GetWoWBuild() == "RETAIL" then
 				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 			end
 		end
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTBUFF1", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameToTBuff1",
-				["lstr"] = "LID_TARGETFRAMETOTBUFF1",
-				["userplaced"] = true,
-				["setup"] = function()
-					local frame = TargetFrameToTBuff1
-					function frame:UpdateBuffScaleAlpha()
-						if _G["TargetFrameToTBuff" .. 1] == nil then return end
-						local scale = _G["TargetFrameToTBuff" .. 1]:GetScale()
-						local alpha = _G["TargetFrameToTBuff" .. 1]:GetAlpha()
-						for i = 1, 32 do
-							local bb = _G["TargetFrameToTBuff" .. i]
-							if bb and i > 1 then
-								bb:SetScale(scale)
-								bb:SetAlpha(alpha)
-							end
+	if MoveAny:IsEnabled("TARGETFRAMETOTDEBUFFMOVER", false) then
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			function MoveAny:UpdateTargetToTDebuffs()
+				for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
+					if bb then
+						local p1, p2, p3, p4, p5 = bb:GetPoint()
+						if p1 and p3 then
+							bb:SetPoint(p1, p2, p3, p4, p5)
 						end
 					end
+				end
+			end
 
-					local bbf = CreateFrame("FRAME")
-					bbf:RegisterEvent("UNIT_AURA")
-					bbf:SetScript(
-						"OnEvent",
-						function()
-							frame:UpdateBuffScaleAlpha()
+			local TargetFrameToTDebuffMover = CreateFrame("Frame", "TargetFrameToTDebuffMover", UIParent)
+			TargetFrameToTDebuffMover:SetSize(21, 21)
+			TargetFrameToTDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameToTDebuffMover",
+					["lstr"] = "LID_TARGETFRAMETOTDEBUFFMOVER",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameToTDebuffMover
+						function frame:UpdateScaleAndAlpha()
+							local scale = frame:GetScale()
+							local alpha = frame:GetAlpha()
+							for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
+								if bb then
+									bb:SetScale(scale)
+									bb:SetAlpha(alpha)
+								end
+							end
 						end
-					)
 
-					hooksecurefunc(
-						frame,
-						"SetPoint",
-						function()
-							frame:UpdateBuffScaleAlpha()
+						local added = {}
+						function frame:Update()
+							if TargetFrame and TargetFrame:GetLeft() then
+								local frameCenterX, frameCenterY = frame:GetCenter()
+								local frameEffectiveScale = frame:GetScale()
+								local frameAbsoluteX = frameCenterX / frameEffectiveScale
+								local frameAbsoluteY = frameCenterY / frameEffectiveScale
+								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+								local targetEffectiveScale = TargetFrame:GetScale()
+								local targetAbsoluteX = targetCenterX / targetEffectiveScale
+								local targetAbsoluteY = targetCenterY / targetEffectiveScale
+								frame.PX = frameAbsoluteX - targetAbsoluteX
+								frame.PY = frameAbsoluteY - targetAbsoluteY
+								for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
+									if bb then
+										if added[bb] == nil then
+											local setPoint = false
+											hooksecurefunc(
+												bb,
+												"SetPoint",
+												function(sel, ...)
+													if setPoint then return end
+													setPoint = true
+													local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFMODE", 0)
+													local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
+													local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
+													local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
+													local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+													sel:ClearAllPoints()
+													if MADEBUFFMODE == 1 then
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+													else
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+													end
+
+													setPoint = false
+												end
+											)
+										end
+
+										if added[bb] ~= i then
+											added[bb] = i
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+										end
+									end
+								end
+							end
+
+							C_Timer.After(
+								0.1,
+								function()
+									frame:Update()
+								end
+							)
 						end
-					)
 
-					hooksecurefunc(
-						frame,
-						"SetScale",
-						function(sel)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_db_set_scale then return end
-							sel.ma_db_set_scale = true
-							frame:UpdateBuffScaleAlpha()
-							sel.ma_db_set_scale = false
-						end
-					)
+						frame:Update()
+						TargetFrame:HookScript(
+							"OnShow",
+							function()
+								MoveAny:UpdateTargetToTDebuffs()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
 
-					frame:UpdateBuffScaleAlpha()
-				end,
-			}
-		)
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								MoveAny:UpdateTargetToTDebuffs()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if InCombatLockdown() and sel:IsProtected() then return false end
+								if sel.ma_bb_set_scale then return end
+								sel.ma_bb_set_scale = true
+								frame:UpdateScaleAndAlpha()
+								sel.ma_bb_set_scale = false
+							end
+						)
+
+						frame:UpdateScaleAndAlpha()
+					end,
+				}
+			)
+		else
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFFMOVER enabled in MoveAny.")
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+			end
+		end
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("TARGETFRAMETOTDEBUFF1", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameToTDebuff1",
-				["lstr"] = "LID_TARGETFRAMETOTDEBUFF1",
-				["userplaced"] = true,
-				["setup"] = function()
-					local frame = TargetFrameToTDebuff1
-					function frame:UpdateDebuffScaleAlpha()
-						if _G["TargetFrameToTDebff" .. 1] == nil then return end
-						local scale = _G["TargetFrameToTDebff" .. 1]:GetScale()
-						local alpha = _G["TargetFrameToTDebff" .. 1]:GetAlpha()
-						for i = 1, 32 do
-							local bb = _G["TargetFrameToTDebff" .. i]
-							if bb and i > 1 then
-								bb:SetScale(scale)
-								bb:SetAlpha(alpha)
-							end
+	if MoveAny:IsEnabled("TARGETFRAMETOTBUFFMOVER", false) then
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			function MoveAny:UpdateTargetToTBuffs()
+				for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
+					if bb then
+						local p1, p2, p3, p4, p5 = bb:GetPoint()
+						if p1 and p3 then
+							bb:SetPoint(p1, p2, p3, p4, p5)
 						end
 					end
+				end
+			end
 
-					local bbf = CreateFrame("FRAME")
-					bbf:RegisterEvent("UNIT_AURA")
-					bbf:SetScript(
-						"OnEvent",
-						function()
-							frame:UpdateDebuffScaleAlpha()
+			local TargetFrameToTBuffMover = CreateFrame("Frame", "TargetFrameToTBuffMover", UIParent)
+			TargetFrameToTBuffMover:SetSize(21, 21)
+			TargetFrameToTBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameToTBuffMover",
+					["lstr"] = "LID_TARGETFRAMETOTBUFFMOVER",
+					["userplaced"] = true,
+					["setup"] = function()
+						local frame = TargetFrameToTBuffMover
+						function frame:UpdateScaleAndAlpha()
+							local scale = frame:GetScale()
+							local alpha = frame:GetAlpha()
+							for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
+								if bb then
+									bb:SetScale(scale)
+									bb:SetAlpha(alpha)
+								end
+							end
 						end
-					)
 
-					hooksecurefunc(
-						frame,
-						"SetPoint",
-						function()
-							frame:UpdateDebuffScaleAlpha()
+						local added = {}
+						function frame:Update()
+							if TargetFrame and TargetFrame:GetLeft() then
+								local frameCenterX, frameCenterY = frame:GetCenter()
+								local frameEffectiveScale = frame:GetScale()
+								local frameAbsoluteX = frameCenterX / frameEffectiveScale
+								local frameAbsoluteY = frameCenterY / frameEffectiveScale
+								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+								local targetEffectiveScale = TargetFrame:GetScale()
+								local targetAbsoluteX = targetCenterX / targetEffectiveScale
+								local targetAbsoluteY = targetCenterY / targetEffectiveScale
+								frame.PX = frameAbsoluteX - targetAbsoluteX
+								frame.PY = frameAbsoluteY - targetAbsoluteY
+								for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
+									if bb then
+										if added[bb] == nil then
+											local setPoint = false
+											hooksecurefunc(
+												bb,
+												"SetPoint",
+												function(sel, ...)
+													if setPoint then return end
+													setPoint = true
+													local MABUFFMODE = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFMODE", 0)
+													local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFLIMIT", 10)
+													local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGX", 4)
+													local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGY", 10)
+													local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+													sel:ClearAllPoints()
+													if MABUFFMODE == 1 then
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+													else
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+													end
+
+													setPoint = false
+												end
+											)
+										end
+
+										if added[bb] ~= i then
+											added[bb] = i
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+										end
+									end
+								end
+							end
+
+							C_Timer.After(
+								0.1,
+								function()
+									frame:Update()
+								end
+							)
 						end
-					)
 
-					hooksecurefunc(
-						frame,
-						"SetScale",
-						function(sel)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_db_set_scale then return end
-							sel.ma_db_set_scale = true
-							frame:UpdateDebuffScaleAlpha()
-							sel.ma_db_set_scale = false
-						end
-					)
+						frame:Update()
+						TargetFrame:HookScript(
+							"OnShow",
+							function()
+								MoveAny:UpdateTargetToTBuffs()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
 
-					frame:UpdateDebuffScaleAlpha()
-				end,
-			}
-		)
+						local bbf = CreateFrame("FRAME")
+						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
+						bbf:SetScript(
+							"OnEvent",
+							function()
+								MoveAny:UpdateTargetToTBuffs()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetPoint",
+							function()
+								frame:UpdateScaleAndAlpha()
+							end
+						)
+
+						hooksecurefunc(
+							frame,
+							"SetScale",
+							function(sel)
+								if InCombatLockdown() and sel:IsProtected() then return false end
+								if sel.ma_bb_set_scale then return end
+								sel.ma_bb_set_scale = true
+								frame:UpdateScaleAndAlpha()
+								sel.ma_bb_set_scale = false
+							end
+						)
+
+						frame:UpdateScaleAndAlpha()
+					end,
+				}
+			)
+		else
+			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEBUFFMOVER enabled in MoveAny.")
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+			end
+		end
 	end
 
 	if MoveAny:IsEnabled("TARGETFRAME", false) then
@@ -2883,15 +3190,15 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFF1", false) then
+	if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEBUFFMOVER", false) then
 		MoveAny:RegisterWidget(
 			{
-				["name"] = "FocusFrameBuff1",
-				["lstr"] = "LID_FOCUSFRAMEBUFF1",
+				["name"] = "FocusFrameBuffMover",
+				["lstr"] = "LID_FOCUSFRAMEBUFFMOVER",
 				["userplaced"] = true,
 				["setup"] = function()
-					local frame = FocusFrameBuff1
-					function frame:UpdateBuffScaleAlpha()
+					local frame = FocusFrameBuffMover
+					function frame:UpdateScaleAndAlpha()
 						if _G["FocusFrameBuff" .. 1] == nil then return end
 						local scale = _G["FocusFrameBuff" .. 1]:GetScale()
 						local alpha = _G["FocusFrameBuff" .. 1]:GetAlpha()
@@ -2909,7 +3216,7 @@ function MoveAny:LoadAddon()
 					bbf:SetScript(
 						"OnEvent",
 						function()
-							frame:UpdateBuffScaleAlpha()
+							frame:UpdateScaleAndAlpha()
 						end
 					)
 
@@ -2917,7 +3224,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetPoint",
 						function()
-							frame:UpdateBuffScaleAlpha()
+							frame:UpdateScaleAndAlpha()
 						end
 					)
 
@@ -2928,26 +3235,26 @@ function MoveAny:LoadAddon()
 							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
-							frame:UpdateBuffScaleAlpha()
+							frame:UpdateScaleAndAlpha()
 							sel.ma_db_set_scale = false
 						end
 					)
 
-					frame:UpdateBuffScaleAlpha()
+					frame:UpdateScaleAndAlpha()
 				end,
 			}
 		)
 	end
 
-	if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEDEBUFF1", false) then
+	if FocusFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("FOCUSFRAMEDEBUFFMOVER", false) then
 		MoveAny:RegisterWidget(
 			{
-				["name"] = "FocusFrameDebuff1",
-				["lstr"] = "LID_FOCUSFRAMEDEBUFF1",
+				["name"] = "FocusFrameDebuffMover",
+				["lstr"] = "LID_FOCUSFRAMEDEBUFFMOVER",
 				["userplaced"] = true,
 				["setup"] = function()
-					local frame = FocusFrameDebuff1
-					function frame:UpdateDebuffScaleAlpha()
+					local frame = FocusFrameDebuffMover
+					function frame:UpdateScaleAndAlpha()
 						if _G["FocusFrameDebuff" .. 1] == nil then return end
 						local scale = _G["FocusFrameDebuff" .. 1]:GetScale()
 						local alpha = _G["FocusFrameDebuff" .. 1]:GetAlpha()
@@ -2965,7 +3272,7 @@ function MoveAny:LoadAddon()
 					bbf:SetScript(
 						"OnEvent",
 						function()
-							frame:UpdateDebuffScaleAlpha()
+							frame:UpdateScaleAndAlpha()
 						end
 					)
 
@@ -2973,7 +3280,7 @@ function MoveAny:LoadAddon()
 						frame,
 						"SetPoint",
 						function()
-							frame:UpdateDebuffScaleAlpha()
+							frame:UpdateScaleAndAlpha()
 						end
 					)
 
@@ -2984,12 +3291,12 @@ function MoveAny:LoadAddon()
 							if InCombatLockdown() and sel:IsProtected() then return false end
 							if sel.ma_db_set_scale then return end
 							sel.ma_db_set_scale = true
-							frame:UpdateDebuffScaleAlpha()
+							frame:UpdateScaleAndAlpha()
 							sel.ma_db_set_scale = false
 						end
 					)
 
-					frame:UpdateDebuffScaleAlpha()
+					frame:UpdateScaleAndAlpha()
 				end,
 			}
 		)

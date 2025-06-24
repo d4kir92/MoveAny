@@ -199,11 +199,11 @@ function MoveAny:MenuOptions(opt, frame)
 		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
 	end
 
-	if string.find(name, "TargetFrameBuff1") then
+	if string.find(name, "TargetFrameBuffMover") then
 		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
 	end
 
-	if string.find(name, "TargetFrameDebuff1") then
+	if string.find(name, "TargetFrameDebuffMover") then
 		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
 	end
 
@@ -737,8 +737,8 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
-				if name == "MABuffBar" then
+			if name == "MABuffBar" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" then
 					MoveAny:CreateSlider(
 						content,
 						10,
@@ -754,8 +754,20 @@ function MoveAny:MenuOptions(opt, frame)
 								MoveAny:UpdateBuffs()
 							end
 
-							if MoveAny.UpdateDebuffs then
-								MoveAny:UpdateDebuffs("Slider 4")
+							if MoveAny.UpdateTargetBuffs then
+								MoveAny:UpdateTargetBuffs()
+							end
+
+							if MoveAny.UpdateTargetToTBuffs then
+								MoveAny:UpdateTargetToTBuffs()
+							end
+
+							if MoveAny.UpdateFocusBuffs then
+								MoveAny:UpdateFocusBuffs()
+							end
+
+							if MoveAny.UpdateFocusToTBuffs then
+								MoveAny:UpdateFocusToTBuffs()
 							end
 						end,
 						{
@@ -767,28 +779,46 @@ function MoveAny:MenuOptions(opt, frame)
 							[5] = "CENTER",
 						}
 					)
-				else
-					MoveAny:CreateSlider(
-						content,
-						10,
-						y,
-						name,
-						"MABUFFMODE",
-						0,
-						1,
-						0,
-						1,
-						function()
-							if MoveAny.UpdateTargetBuffs then
-								MoveAny:UpdateTargetBuffs()
-							end
-						end,
-						{
-							[0] = "DOWN",
-							[1] = "TOP",
-						}
-					)
+
+					y = y - 40
 				end
+			else
+				MoveAny:CreateSlider(
+					content,
+					10,
+					y,
+					name,
+					"MABUFFMODE",
+					0,
+					1,
+					0,
+					1,
+					function()
+						if MoveAny.UpdateBuffs then
+							MoveAny:UpdateBuffs()
+						end
+
+						if MoveAny.UpdateTargetBuffs then
+							MoveAny:UpdateTargetBuffs()
+						end
+
+						if MoveAny.UpdateTargetToTBuffs then
+							MoveAny:UpdateTargetToTBuffs()
+						end
+
+						if MoveAny.UpdateFocusBuffs then
+							MoveAny:UpdateFocusBuffs()
+						end
+
+						if MoveAny.UpdateFocusToTBuffs then
+							MoveAny:UpdateFocusToTBuffs()
+						end
+					end,
+					{
+						[0] = "DOWN",
+						[1] = "TOP",
+					}
+				)
 
 				y = y - 40
 			end
@@ -808,12 +838,20 @@ function MoveAny:MenuOptions(opt, frame)
 						MoveAny:UpdateBuffs()
 					end
 
-					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs("Slider 3")
-					end
-
 					if MoveAny.UpdateTargetBuffs then
 						MoveAny:UpdateTargetBuffs()
+					end
+
+					if MoveAny.UpdateTargetToTBuffs then
+						MoveAny:UpdateTargetToTBuffs()
+					end
+
+					if MoveAny.UpdateFocusBuffs then
+						MoveAny:UpdateFocusBuffs()
+					end
+
+					if MoveAny.UpdateFocusToTBuffs then
+						MoveAny:UpdateFocusToTBuffs()
 					end
 				end
 			)
@@ -834,12 +872,20 @@ function MoveAny:MenuOptions(opt, frame)
 						MoveAny:UpdateBuffs()
 					end
 
-					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs("Slider 2")
-					end
-
 					if MoveAny.UpdateTargetBuffs then
 						MoveAny:UpdateTargetBuffs()
+					end
+
+					if MoveAny.UpdateTargetToTBuffs then
+						MoveAny:UpdateTargetToTBuffs()
+					end
+
+					if MoveAny.UpdateFocusBuffs then
+						MoveAny:UpdateFocusBuffs()
+					end
+
+					if MoveAny.UpdateFocusToTBuffs then
+						MoveAny:UpdateFocusToTBuffs()
 					end
 				end
 			)
@@ -860,12 +906,20 @@ function MoveAny:MenuOptions(opt, frame)
 						MoveAny:UpdateBuffs()
 					end
 
-					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs("Slider")
-					end
-
 					if MoveAny.UpdateTargetBuffs then
 						MoveAny:UpdateTargetBuffs()
+					end
+
+					if MoveAny.UpdateTargetToTBuffs then
+						MoveAny:UpdateTargetToTBuffs()
+					end
+
+					if MoveAny.UpdateFocusBuffs then
+						MoveAny:UpdateFocusBuffs()
+					end
+
+					if MoveAny.UpdateFocusToTBuffs then
+						MoveAny:UpdateFocusToTBuffs()
 					end
 				end
 			)
@@ -873,8 +927,8 @@ function MoveAny:MenuOptions(opt, frame)
 			y = y - 40
 		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
 			local y = -20
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
-				if name == "MADebuffBar" then
+			if name == "MADebuffBar" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" then
 					MoveAny:CreateSlider(
 						content,
 						10,
@@ -897,28 +951,42 @@ function MoveAny:MenuOptions(opt, frame)
 							[5] = "CENTER",
 						}
 					)
-				else
-					MoveAny:CreateSlider(
-						content,
-						10,
-						y,
-						name,
-						"MADEBUFFMODE",
-						0,
-						1,
-						0,
-						1,
-						function()
-							if MoveAny.UpdateTargetDebuffs then
-								MoveAny:UpdateTargetDebuffs()
-							end
-						end,
-						{
-							[0] = "DOWN",
-							[1] = "TOP",
-						}
-					)
+
+					y = y - 40
 				end
+			else
+				MoveAny:CreateSlider(
+					content,
+					10,
+					y,
+					name,
+					"MADEBUFFMODE",
+					0,
+					1,
+					0,
+					1,
+					function()
+						if MoveAny.UpdateTargetDebuffs then
+							MoveAny:UpdateTargetDebuffs()
+						end
+
+						if MoveAny.UpdateTargetToTDebuffs then
+							MoveAny:UpdateTargetToTDebuffs()
+						end
+
+						if MoveAny.UpdateFocusDebuffs then
+							MoveAny:UpdateFocusDebuffs()
+						end
+
+						if MoveAny.UpdateFocusToTDebuffs then
+							MoveAny:UpdateFocusToTDebuffs()
+						end
+					end,
+					{
+						[0] = "DOWN",
+						[1] = "TOP",
+					}
+				)
 
 				y = y - 40
 			end
@@ -934,9 +1002,24 @@ function MoveAny:MenuOptions(opt, frame)
 				2,
 				20,
 				function()
-					MoveAny:UpdateDebuffs("CreateSlider1")
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs("CreateSlider1")
+					end
+
 					if MoveAny.UpdateTargetDebuffs then
 						MoveAny:UpdateTargetDebuffs()
+					end
+
+					if MoveAny.UpdateTargetToTDebuffs then
+						MoveAny:UpdateTargetToTDebuffs()
+					end
+
+					if MoveAny.UpdateFocusDebuffs then
+						MoveAny:UpdateFocusDebuffs()
+					end
+
+					if MoveAny.UpdateFocusToTDebuffs then
+						MoveAny:UpdateFocusToTDebuffs()
 					end
 				end
 			)
@@ -953,9 +1036,24 @@ function MoveAny:MenuOptions(opt, frame)
 				0,
 				30,
 				function()
-					MoveAny:UpdateDebuffs("CreateSlider2")
+					if MoveAny.UpdateDebuffs then
+						MoveAny:UpdateDebuffs("CreateSlider2")
+					end
+
 					if MoveAny.UpdateTargetDebuffs then
 						MoveAny:UpdateTargetDebuffs()
+					end
+
+					if MoveAny.UpdateTargetToTDebuffs then
+						MoveAny:UpdateTargetToTDebuffs()
+					end
+
+					if MoveAny.UpdateFocusDebuffs then
+						MoveAny:UpdateFocusDebuffs()
+					end
+
+					if MoveAny.UpdateFocusToTDebuffs then
+						MoveAny:UpdateFocusToTDebuffs()
 					end
 				end
 			)
@@ -975,6 +1073,18 @@ function MoveAny:MenuOptions(opt, frame)
 					MoveAny:UpdateDebuffs("CreateSlider3")
 					if MoveAny.UpdateTargetDebuffs then
 						MoveAny:UpdateTargetDebuffs()
+					end
+
+					if MoveAny.UpdateTargetToTDebuffs then
+						MoveAny:UpdateTargetToTDebuffs()
+					end
+
+					if MoveAny.UpdateFocusDebuffs then
+						MoveAny:UpdateFocusDebuffs()
+					end
+
+					if MoveAny.UpdateFocusToTDebuffs then
+						MoveAny:UpdateFocusToTDebuffs()
 					end
 				end
 			)
@@ -1586,15 +1696,15 @@ function MoveAny:RegisterWidget(tab)
 				)
 
 				frame:UpdateDebuffMouse()
-			elseif frame == TargetFrameBuff1 then
+			elseif frame == TargetFrameBuffMover then
 				function frame:UpdateBuffMouse()
-					for i = 1, 32 do
-						local bb = _G["TargetFrameBuff" .. i]
+					for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
 						if bb then
 							bb:EnableMouse(false)
 						end
+					end
 
-						local db = _G["TargetFrameDebuff" .. i]
+					for i, db in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
 						if db then
 							db:EnableMouse(false)
 						end
@@ -1611,7 +1721,7 @@ function MoveAny:RegisterWidget(tab)
 				)
 
 				frame:UpdateBuffMouse()
-			elseif frame == FocusFrameBuff1 then
+			elseif frame == FocusFrameBuffMover then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
 						local bb = _G["FocusFrameBuff" .. i]
