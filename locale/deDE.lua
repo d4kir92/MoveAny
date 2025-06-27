@@ -244,6 +244,7 @@ function MoveAny:LangdeDE()
 		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Gegner Fenster Kontainer (Schlachtfeld Bosse)",
 		["LID_FOCUSFRAMETOTBUFFMOVER"] = "Ziel des Fokusfenster Buffs",
 		["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "Ziel des Fokusfenster Debuffs",
+		["LID_PRESSESCTOLEAVE"] = "Drück ESC um diese Ansicht zu verlassen",
 	}
 
 	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")

@@ -250,6 +250,7 @@ function MoveAny:LangenUS()
 		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Enemy Frames Container (Battleground Bosses)",
 		["LID_FOCUSFRAMETOTBUFFMOVER"] = "Target of Focus Frame Buffs",
 		["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "Target of Focus Frame Debuffs",
+		["LID_PRESSESCTOLEAVE"] = "Press ESC to leave the Picker",
 	}
 
 	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")

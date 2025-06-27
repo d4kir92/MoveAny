@@ -557,6 +557,27 @@ function MoveAny:IsFrameKeyDown()
 	return false
 end
 
+local find = false
+function MoveAny:SetFinder(val)
+	find = val
+end
+
+function MoveAny:GetFinder()
+	return find
+end
+
+function MoveAny:GetAllParents(hoverFrame)
+	local parents = {}
+	local currentFrame = hoverFrame
+	table.insert(parents, currentFrame)
+	while currentFrame and currentFrame:GetParent() and currentFrame:GetParent() ~= UIParent and currentFrame:GetParent() ~= MoveAny:GetMainPanel() do
+		currentFrame = currentFrame:GetParent()
+		table.insert(parents, currentFrame)
+	end
+
+	return parents
+end
+
 function MoveAny:InitMALock()
 	sh = MoveAny:MClamp(640, 200, GetScreenHeight())
 	MALock = CreateFrame("Frame", "MALock", MoveAny:GetMainPanel(), "BasicFrameTemplate")
@@ -616,7 +637,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.89")
+	MoveAny:SetVersion(135994, "1.8.90")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1050,12 +1071,26 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "DISABLEMOVEMENT", false)
 	end
 
+	MALock.Pipette = CreateFrame("Button", "MALock_Pipette", MALock, "UIPanelButtonTemplate")
+	MALock.Pipette:SetSize(24, 24)
+	MALock.Pipette:SetText("P")
+	MALock.Pipette:SetScript(
+		"OnClick",
+		function()
+			MoveAny:Lock()
+			MoveAny:HideMALock()
+			MoveAny:SetFinder(true)
+		end
+	)
+
 	MALock.Search = CreateFrame("EditBox", "MALock_Search", MALock, "InputBoxTemplate")
 	MALock.Search:SetAutoFocus(false)
 	MALock.Search.f = MALock.Search:CreateFontString(nil, nil, "GameFontNormal")
 	MALock.Search.f:SetText(MoveAny:GT("LID_SEARCH") .. ":")
 	local searchLen = MALock.Search.f:GetStringWidth() + 10
-	MALock.Search:SetPoint("TOPLEFT", MALock, "TOPLEFT", 12 + searchLen, -26)
+	MALock.Pipette:SetPoint("TOPLEFT", MALock, "TOPLEFT", br, -26)
+	MALock.Search:SetPoint("TOPLEFT", MALock, "TOPLEFT", 12 + searchLen + br + 24 + br, -26)
+	MALock.Search:SetPoint("TOPRIGHT", MALock, "TOPRIGHT", -br - 100 - br, 20)
 	MALock.Search:SetSize(sw - 2 * br - br - 100 - searchLen, 24)
 	MALock.Search.f:SetPoint("RIGHT", MALock.Search, "LEFT", -10, 0)
 	MALock.Search:SetScript(
@@ -1067,7 +1102,7 @@ function MoveAny:InitMALock()
 	)
 
 	MALock.Profiles = CreateFrame("Button", "MALock_Profiles", MALock, "UIPanelButtonTemplate")
-	MALock.Profiles:SetPoint("TOPLEFT", MALock, "TOPLEFT", sw - 100 - br, -26)
+	MALock.Profiles:SetPoint("TOPRIGHT", MALock, "TOPRIGHT", -br, -26)
 	MALock.Profiles:SetSize(100, 24)
 	MALock.Profiles:SetText(MoveAny:GT("LID_PROFILES"))
 	MALock.Profiles:SetScript(
@@ -1136,6 +1171,102 @@ function MoveAny:InitMALock()
 	MALock.DISCORD:SetSize(160, 24)
 	MALock.DISCORD:SetPoint("BOTTOMRIGHT", MALock, "BOTTOMRIGHT", -4 - 20, 4)
 	MALock.DISCORD:SetAutoFocus(false)
+	local finder = CreateFrame("FRAME", "MoveAny_finder", UIParent)
+	local hovers = {}
+	for i = 1, 6 do
+		local hover = CreateFrame("FRAME", "Moveany_hover", UIParent)
+		hover:EnableMouse(false)
+		hover:SetFrameLevel(2000)
+		hover.f = hover:CreateTexture("MoveAny_hover_f", "OVERLAY")
+		hover.f:SetAllPoints(hover)
+		hover.f:SetColorTexture(1, 1, 1, 0.5)
+		hover.t = hover:CreateFontString("MoveAny_hover_t", nil, "GameFontNormal")
+		hover.t:SetPoint("CENTER", hover, "CENTER", 0, 0)
+		MoveAny:SetFontSize(hover.t, 16, "THINOUTLINE")
+		if i == 1 then
+			hover.t2 = hover:CreateFontString("MoveAny_hover_t", nil, "GameFontNormal")
+			hover.t2:SetPoint("CENTER", hover, "CENTER", 0, -20)
+			MoveAny:SetFontSize(hover.t2, 14, "THINOUTLINE")
+			hover.t2:SetText(MoveAny:GT("LID_PRESSESCTOLEAVE"))
+		end
+
+		hovers[i] = hover
+	end
+
+	local hoverFrames = nil
+	local finding = false
+	function MoveAny:HoverLogic()
+		if MoveAny:GetFinder() then
+			hoverFrames = MoveAny:GetAllParents(MoveAny:GetMouseFocus())
+			if finder:GetScript("OnKeyDown") == nil then
+				finder:SetScript(
+					"OnKeyDown",
+					function(sel, key, ...)
+						if key == "ESCAPE" then
+							MoveAny:SetFinder(false)
+							finder:SetScript("OnKeyDown", nil)
+						end
+					end
+				)
+			end
+
+			C_Timer.After(
+				0.3,
+				function()
+					MoveAny:HoverLogic()
+				end
+			)
+		else
+			C_Timer.After(
+				0.5,
+				function()
+					MoveAny:HoverLogic()
+				end
+			)
+		end
+	end
+
+	MoveAny:HoverLogic()
+	finder:SetScript(
+		"OnUpdate",
+		function()
+			if MoveAny:GetFinder() then
+				finding = true
+				if hoverFrames then
+					for i = 1, 10 do
+						if hovers[i] then
+							hovers[i]:Hide()
+						end
+					end
+
+					for i, hoverFrame in pairs(hoverFrames) do
+						if hovers[i] and hoverFrame then
+							hovers[i]:Show()
+							hovers[i]:SetSize(hoverFrame:GetSize())
+							hovers[i]:ClearAllPoints()
+							hovers[i]:SetPoint(hoverFrame:GetPoint())
+							hovers[i]:SetScale(hoverFrame:GetScale())
+							hovers[i].t:SetText(MoveAny:GetName(hoverFrame))
+						end
+					end
+				else
+					for i = 1, 10 do
+						if hovers[i] then
+							hovers[i]:Hide()
+						end
+					end
+				end
+			elseif finding then
+				finding = false
+				for i = 1, 10 do
+					if hovers[i] then
+						hovers[i]:Hide()
+					end
+				end
+			end
+		end
+	)
+
 	C_Timer.After(
 		0.1,
 		function()
