@@ -1835,7 +1835,7 @@ function MoveAny:RegisterWidget(tab)
 	hooksecurefunc(
 		frame,
 		pointFunc,
-		function(sel, ...)
+		function(sel, p1, p2, p3, p4, p5)
 			if sel.elesetpoint then return end
 			--sel.layoutApplyInProgress = true
 			if not sel.ma_secure then

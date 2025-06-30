@@ -100,14 +100,16 @@ function MoveAny:InitMicroMenu()
 					hooksecurefunc(
 						mb,
 						"SetPoint",
-						function(sel)
-							if MAMenuBar.ma_set_po then return end
-							MAMenuBar.ma_set_po = true
-							if MoveAny.UpdateActionBar then
-								MoveAny:UpdateActionBar(MAMenuBar)
-							end
+						function(sel, p1, p2, p3, p4, p5)
+							if p2 ~= MicroMenu then
+								if MAMenuBar.ma_set_po then return end
+								MAMenuBar.ma_set_po = true
+								if MoveAny.UpdateActionBar then
+									MoveAny:UpdateActionBar(MAMenuBar)
+								end
 
-							MAMenuBar.ma_set_po = false
+								MAMenuBar.ma_set_po = false
+							end
 						end
 					)
 
@@ -181,6 +183,23 @@ function MoveAny:InitMicroMenu()
 					tinsert(MAMenuBar.btns, mb)
 				end
 			end
+
+			local f = CreateFrame("Frame")
+			MoveAny:RegisterEvent(f, "UNIT_EXITED_VEHICLE", "player")
+			f:SetScript(
+				"OnEvent",
+				function(sel, event, unit)
+					if event == "UNIT_EXITED_VEHICLE" and unit == "player" then
+						if MAMenuBar.ma_set_po then return end
+						MAMenuBar.ma_set_po = true
+						if MoveAny.UpdateActionBar then
+							MoveAny:UpdateActionBar(MAMenuBar)
+						end
+
+						MAMenuBar.ma_set_po = false
+					end
+				end
+			)
 		end
 
 		if MoveAny.UpdateActionBar then
