@@ -186,10 +186,25 @@ function MoveAny:InitMicroMenu()
 
 			local f = CreateFrame("Frame")
 			MoveAny:RegisterEvent(f, "UNIT_EXITED_VEHICLE", "player")
+			MoveAny:RegisterEvent(f, "ACTIONBAR_PAGE_CHANGED")
+			MoveAny:RegisterEvent(f, "UPDATE_OVERRIDE_ACTIONBAR")
+			MoveAny:RegisterEvent(f, "UPDATE_BONUS_ACTIONBAR")
+			MoveAny:RegisterEvent(f, "UPDATE_VEHICLE_ACTIONBAR")
 			f:SetScript(
 				"OnEvent",
 				function(sel, event, unit)
 					if event == "UNIT_EXITED_VEHICLE" and unit == "player" then
+						if MAMenuBar.ma_set_po then return end
+						MAMenuBar.ma_set_po = true
+						if MoveAny.UpdateActionBar then
+							MoveAny:UpdateActionBar(MAMenuBar)
+						end
+
+						MAMenuBar.ma_set_po = false
+					else
+						local parent = MoveAny:GetParent(CharacterMicroButton)
+						local _, p2 = parent:GetPoint()
+						if p2 == OverrideActionBar then return end
 						if MAMenuBar.ma_set_po then return end
 						MAMenuBar.ma_set_po = true
 						if MoveAny.UpdateActionBar then
