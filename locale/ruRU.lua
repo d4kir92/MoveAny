@@ -1,125 +1,118 @@
 -- ruRU Russian
 local _, MoveAny = ...
-function MoveAny:LangruRU()
-    local tab = {
-        ["LID_GENERAL"] = "Общие",
-        ["LID_SHOWMINIMAPBUTTON"] = "Показать кнопку мини-картинки",
-        ["LID_GRIDSIZE"] = "Размер сетки",
-        ["LID_MOVEFRAMES"] = "Переместить кадры/окна",
-        ["LID_FRAMESKEYDRAG"] = "Перемещение рамки с помощью %s + перетаскивание левой кнопкой мыши",
-        ["LID_FRAMESKEYSCALE"] = "Масштабировать рамку с помощью %s + перетаскивание вправо",
-        ["LID_FRAMESKEYRESET"] = "Сбросить рамку с помощью %s + перетаскивание мыши",
-        ["LID_PLAYERFRAME"] = "Рамка игрока",
-        ["LID_PETFRAME"] = "Рамка питомца",
-        ["LID_TARGETFRAME"] = "Рамка цели",
-        ["LID_TARGETOFTARGETFRAME"] = "Рамка цели",
-        ["LID_TARGETFRAMESPELLBAR"] = "Кастбар от цели",
-        ["LID_FOCUSFRAME"] = "Рамка фокуса",
-        ["LID_FOCUSFRAMESPELLBAR"] = "Затвор от фокуса",
-        ["LID_TARGETOFFOCUSFRAME"] = "Цель из фокусного кадра",
-        ["LID_RUNEFRAME"] = "Deathknight - Runes Frame",
-        ["LID_TOTEMFRAME"] = "Таймеры тотемов",
-        ["LID_WARLOCKPOWERFRAME"] = "Рамка силы колдуна",
-        ["LID_MONKHARMONYBARFRAME"] = "Рамка гармонии монаха",
-        ["LID_MAGEARCANECHARGESFRAME"] = "Рамка Mage Arcane Charges",
-        ["LID_ESSENCEPLAYERFRAME"] = "Рамка игрока эссенции (эвокера)",
-        ["LID_MAFPSFrame"] = "FPS",
-        ["LID_MINIMAP"] = "Мини-карта",
-        ["LID_BUFFS"] = "Баффы",
-        ["LID_DEBUFFS"] = "Дебаффы",
-        ["LID_VEHICLESEATINDICATOR"] = "Индикатор места в автомобиле",
-        ["LID_ARENAENEMYFRAMES"] = "Рамки врагов арены",
-        ["LID_ARENAPREPFRAMES"] = "Кадры подготовки арены",
-        ["LID_QUESTTRACKER"] = "Квесттрекер",
-        ["LID_MICROMENU"] = "Микроменю",
-        ["LID_BAGS"] = "Сумки",
-        ["LID_GAMETOOLTIP"] = "Подсказка",
-        ["LID_GAMETOOLTIP_ONCURSOR"] = "Всплывающая подсказка на курсоре",
-        ["LID_QUEUESTATUSBUTTON"] = "Статус LFG",
-        ["LID_PETBAR"] = "Бар для домашних животных",
-        ["LID_STANCEBAR"] = "Stance Bar",
-        ["LID_TOTEMBAR"] = "Shaman - Totem Bar",
-        ["LID_LEAVEVEHICLE"] = "Кнопка покинуть транспортное средство",
-        ["LID_GROUPLOOTCONTAINER"] = "Рамка для лута",
-        ["LID_STATUSTRACKINGBARMANAGER"] = "Менеджер панели отслеживания статуса (XP, репутация)",
-        ["LID_ALERTFRAME"] = "Рамка оповещения (бонусный лут, достижения, ...)",
-        ["LID_CHAT"] = "Рамка чата %d",
-        ["LID_CHATBUTTONFRAME"] = "Кнопки чата",
-        ["LID_CHATQUICKJOIN"] = "Быстрое присоединение к чату",
-        ["LID_CHATEDITBOX"] = "Поле ввода чата %s",
-        ["LID_COMPACTRAIDFRAMEMANAGER"] = "Менеджер рейдов",
-        ["LID_BNToastFrame"] = "Уведомления друзей Battlenet",
-        ["LID_ZONETEXTFRAME"] = "Текст зоны",
-        ["LID_UIWIDGETTOPCENTER"] = "Верхний центр виджета (статус на BGs/Dungeons)",
-        ["LID_IASKILLS"] = "Панели умений",
-        ["LID_UIWIDGETBELOWMINIMAP"] = "Виджет ниже минимальной карты (статус захвата)",
-        ["LID_DURABILITY"] = "Кукла прочности",
-        ["LID_MONEYBAR"] = "Money Bar",
-        ["LID_TOKENBAR"] = "Бар жетонов",
-        ["LID_IAILVLBAR"] = "Бар уровня предметов",
-        ["LID_CASTINGBAR"] = "Бар литья",
-        ["LID_TALKINGHEAD"] = "Диалог говорящей головы",
-        ["LID_POSSESSBAR"] = "Панель владения (управление NPC/транспортным средством)",
-        ["LID_ZONEABILITYFRAME"] = "Способность зоны",
-        ["LID_EXTRAABILITYCONTAINER"] = "Дополнительная способность",
-        ["LID_MAINMENUEXPBAR"] = "Exp Bar",
-        ["LID_REPUTATIONWATCHBAR"] = "Бар репутации",
-        ["LID_UIWIDGETPOWERBAR"] = "Бар энергии",
-        ["LID_ROWS"] = "Строки",
-        ["LID_SPACING"] = "Промежутки",
-        ["LID_PROFILE"] = "Профиль",
-        ["LID_PROFILES"] = "Профили",
-        ["LID_ADDPROFILE"] = "Добавить профиль",
-        ["LID_CURRENT"] = "Текущий",
-        ["LID_SHARE"] = "Поделиться",
-        ["LID_SHAREPROFILE"] = "Поделиться профилем",
-        ["LID_GETPROFILE"] = "Получить профиль",
-        ["LID_INHERITFROM"] = "Наследовать от",
-        ["LID_ADD"] = "Добавить",
-        ["LID_REMOVE"] = "Удалить",
-        ["LID_RENAME"] = "Переименовать",
-        ["LID_PLAYER"] = "Проигрыватель",
-        ["LID_DOWNLOAD"] = "Загрузить",
-        ["LID_UPLOAD"] = "Загрузить",
-        ["LID_STATUS"] = "Статус",
-        ["LID_DONE"] = "Выполнено",
-        ["LID_WAITINGFOROWNER"] = "Ожидание владельца",
-        ["LID_WAITFORPLAYERPROFILE"] = "Ждать, пока другой игрок нажмет \"Получить профили\"",
-        ["LID_WAITFORPLAYERPROFILE2"] = "Ждать, пока другой игрок нажмет \"Поделиться\".",
-        ["LID_ALPHAINCOMBAT"] = "Альфа (в бою)",
-        ["LID_ALPHANOTINCOMBAT"] = "Альфа (не в бою)",
-        ["LID_ALPHAINVEHICLE"] = "Альфа (в транспортном средстве)",
-        ["LID_MABUFFLIMIT"] = "Предел баффа",
-        ["LID_MABUFFSPACINGX"] = "Горизонтальное расстояние между баффами",
-        ["LID_MABUFFSPACINGY"] = "Расстояние между буферами по вертикали",
-        ["LID_RESETELEMENT"] = "Reset Element",
-        ["LID_PLEASESWITCHPROFILE1"] = "Пожалуйста, переключите LAYOUT в режиме Editmode (от Blizzard) на CUSTOM LAYOUT.",
-        ["LID_PLEASESWITCHPROFILE2"] = "MoveAny не работает c предустановленным профилем, он в основном доступен только для чтения.",
-        ["LID_PLEASESWITCHPROFILE3"] = "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (нет предустановленного макета)",
-    }
-
-    if MoveAny:GetWoWBuild() ~= "RETAIL" then
-        tab["LID_ACTIONBARS"] = "Панели действий 1 + 5 + 6"
-        tab["LID_ACTIONBAR1"] = "Панель действий 1 (главная панель)"
-        tab["LID_ACTIONBAR2"] = "Панель действий 2 (2. Страница панели действий 1)"
-        tab["LID_ACTIONBAR3"] = "Панель действий 3 (правая панель)"
-        tab["LID_ACTIONBAR4"] = "Панель действий 4 (левая панель)"
-        tab["LID_ACTIONBAR5"] = "Панель действий 5 (правая верхняя панель)"
-        tab["LID_ACTIONBAR6"] = "Панель действий 6 (левая верхняя панель)"
-        tab["LID_ACTIONBAR7"] = "Панель действий 7 (пользовательская)"
-        tab["LID_ACTIONBAR8"] = "Панель действий 8 (пользовательская)"
-        tab["LID_ACTIONBAR9"] = "Панель действий 9 (пользовательская)"
-        tab["LID_ACTIONBAR10"] = "Панель действий 10 (пользовательская)"
-    else
-        tab["LID_ACTIONBAR1"] = "Панель действий 1 (главная панель)"
-        tab["LID_ACTIONBAR2"] = "Панель действий 2 (Над главным баром)"
-        tab["LID_ACTIONBAR3"] = "Панель действий 3 (над второй панелью)"
-        tab["LID_ACTIONBAR4"] = "Панель действия 4 (правая панель)"
-        tab["LID_ACTIONBAR5"] = "Панель действия 5 (левая панель)"
-        tab["LID_ACTIONBAR6"] = "Панель действия 6"
-        tab["LID_ACTIONBAR7"] = "Панель действия 7"
-        tab["LID_ACTIONBAR8"] = "Панель действий 8"
-    end
-
-    MoveAny:UpdateLanguageTab(tab)
+MoveAny:AddTrans("ruRU", "LID_GENERAL", "Общие")
+MoveAny:AddTrans("ruRU", "LID_SHOWMINIMAPBUTTON", "Показать кнопку мини-картинки")
+MoveAny:AddTrans("ruRU", "LID_GRIDSIZE", "Размер сетки")
+MoveAny:AddTrans("ruRU", "LID_MOVEFRAMES", "Переместить кадры/окна")
+MoveAny:AddTrans("ruRU", "LID_FRAMESKEYDRAG", "Перемещение рамки с помощью %s + перетаскивание левой кнопкой мыши")
+MoveAny:AddTrans("ruRU", "LID_FRAMESKEYSCALE", "Масштабировать рамку с помощью %s + перетаскивание вправо")
+MoveAny:AddTrans("ruRU", "LID_FRAMESKEYRESET", "Сбросить рамку с помощью %s + перетаскивание мыши")
+MoveAny:AddTrans("ruRU", "LID_PLAYERFRAME", "Рамка игрока")
+MoveAny:AddTrans("ruRU", "LID_PETFRAME", "Рамка питомца")
+MoveAny:AddTrans("ruRU", "LID_TARGETFRAME", "Рамка цели")
+MoveAny:AddTrans("ruRU", "LID_TARGETOFTARGETFRAME", "Рамка цели")
+MoveAny:AddTrans("ruRU", "LID_TARGETFRAMESPELLBAR", "Кастбар от цели")
+MoveAny:AddTrans("ruRU", "LID_FOCUSFRAME", "Рамка фокуса")
+MoveAny:AddTrans("ruRU", "LID_FOCUSFRAMESPELLBAR", "Затвор от фокуса")
+MoveAny:AddTrans("ruRU", "LID_TARGETOFFOCUSFRAME", "Цель из фокусного кадра")
+MoveAny:AddTrans("ruRU", "LID_RUNEFRAME", "Deathknight - Runes Frame")
+MoveAny:AddTrans("ruRU", "LID_TOTEMFRAME", "Таймеры тотемов")
+MoveAny:AddTrans("ruRU", "LID_WARLOCKPOWERFRAME", "Рамка силы колдуна")
+MoveAny:AddTrans("ruRU", "LID_MONKHARMONYBARFRAME", "Рамка гармонии монаха")
+MoveAny:AddTrans("ruRU", "LID_MAGEARCANECHARGESFRAME", "Рамка Mage Arcane Charges")
+MoveAny:AddTrans("ruRU", "LID_ESSENCEPLAYERFRAME", "Рамка игрока эссенции (эвокера)")
+MoveAny:AddTrans("ruRU", "LID_MAFPSFrame", "FPS")
+MoveAny:AddTrans("ruRU", "LID_MINIMAP", "Мини-карта")
+MoveAny:AddTrans("ruRU", "LID_BUFFS", "Баффы")
+MoveAny:AddTrans("ruRU", "LID_DEBUFFS", "Дебаффы")
+MoveAny:AddTrans("ruRU", "LID_VEHICLESEATINDICATOR", "Индикатор места в автомобиле")
+MoveAny:AddTrans("ruRU", "LID_ARENAENEMYFRAMES", "Рамки врагов арены")
+MoveAny:AddTrans("ruRU", "LID_ARENAPREPFRAMES", "Кадры подготовки арены")
+MoveAny:AddTrans("ruRU", "LID_QUESTTRACKER", "Квесттрекер")
+MoveAny:AddTrans("ruRU", "LID_MICROMENU", "Микроменю")
+MoveAny:AddTrans("ruRU", "LID_BAGS", "Сумки")
+MoveAny:AddTrans("ruRU", "LID_GAMETOOLTIP", "Подсказка")
+MoveAny:AddTrans("ruRU", "LID_GAMETOOLTIP_ONCURSOR", "Всплывающая подсказка на курсоре")
+MoveAny:AddTrans("ruRU", "LID_QUEUESTATUSBUTTON", "Статус LFG")
+MoveAny:AddTrans("ruRU", "LID_PETBAR", "Бар для домашних животных")
+MoveAny:AddTrans("ruRU", "LID_STANCEBAR", "Stance Bar")
+MoveAny:AddTrans("ruRU", "LID_TOTEMBAR", "Shaman - Totem Bar")
+MoveAny:AddTrans("ruRU", "LID_LEAVEVEHICLE", "Кнопка покинуть транспортное средство")
+MoveAny:AddTrans("ruRU", "LID_GROUPLOOTCONTAINER", "Рамка для лута")
+MoveAny:AddTrans("ruRU", "LID_STATUSTRACKINGBARMANAGER", "Менеджер панели отслеживания статуса (XP, репутация)")
+MoveAny:AddTrans("ruRU", "LID_ALERTFRAME", "Рамка оповещения (бонусный лут, достижения, ...)")
+MoveAny:AddTrans("ruRU", "LID_CHAT", "Рамка чата %d")
+MoveAny:AddTrans("ruRU", "LID_CHATBUTTONFRAME", "Кнопки чата")
+MoveAny:AddTrans("ruRU", "LID_CHATQUICKJOIN", "Быстрое присоединение к чату")
+MoveAny:AddTrans("ruRU", "LID_CHATEDITBOX", "Поле ввода чата %s")
+MoveAny:AddTrans("ruRU", "LID_COMPACTRAIDFRAMEMANAGER", "Менеджер рейдов")
+MoveAny:AddTrans("ruRU", "LID_BNToastFrame", "Уведомления друзей Battlenet")
+MoveAny:AddTrans("ruRU", "LID_ZONETEXTFRAME", "Текст зоны")
+MoveAny:AddTrans("ruRU", "LID_UIWIDGETTOPCENTER", "Верхний центр виджета (статус на BGs/Dungeons)")
+MoveAny:AddTrans("ruRU", "LID_IASKILLS", "Панели умений")
+MoveAny:AddTrans("ruRU", "LID_UIWIDGETBELOWMINIMAP", "Виджет ниже минимальной карты (статус захвата)")
+MoveAny:AddTrans("ruRU", "LID_DURABILITY", "Кукла прочности")
+MoveAny:AddTrans("ruRU", "LID_MONEYBAR", "Money Bar")
+MoveAny:AddTrans("ruRU", "LID_TOKENBAR", "Бар жетонов")
+MoveAny:AddTrans("ruRU", "LID_IAILVLBAR", "Бар уровня предметов")
+MoveAny:AddTrans("ruRU", "LID_CASTINGBAR", "Бар литья")
+MoveAny:AddTrans("ruRU", "LID_TALKINGHEAD", "Диалог говорящей головы")
+MoveAny:AddTrans("ruRU", "LID_POSSESSBAR", "Панель владения (управление NPC/транспортным средством)")
+MoveAny:AddTrans("ruRU", "LID_ZONEABILITYFRAME", "Способность зоны")
+MoveAny:AddTrans("ruRU", "LID_EXTRAABILITYCONTAINER", "Дополнительная способность")
+MoveAny:AddTrans("ruRU", "LID_MAINMENUEXPBAR", "Exp Bar")
+MoveAny:AddTrans("ruRU", "LID_REPUTATIONWATCHBAR", "Бар репутации")
+MoveAny:AddTrans("ruRU", "LID_UIWIDGETPOWERBAR", "Бар энергии")
+MoveAny:AddTrans("ruRU", "LID_ROWS", "Строки")
+MoveAny:AddTrans("ruRU", "LID_SPACING", "Промежутки")
+MoveAny:AddTrans("ruRU", "LID_PROFILE", "Профиль")
+MoveAny:AddTrans("ruRU", "LID_PROFILES", "Профили")
+MoveAny:AddTrans("ruRU", "LID_ADDPROFILE", "Добавить профиль")
+MoveAny:AddTrans("ruRU", "LID_CURRENT", "Текущий")
+MoveAny:AddTrans("ruRU", "LID_SHARE", "Поделиться")
+MoveAny:AddTrans("ruRU", "LID_SHAREPROFILE", "Поделиться профилем")
+MoveAny:AddTrans("ruRU", "LID_GETPROFILE", "Получить профиль")
+MoveAny:AddTrans("ruRU", "LID_INHERITFROM", "Наследовать от")
+MoveAny:AddTrans("ruRU", "LID_ADD", "Добавить")
+MoveAny:AddTrans("ruRU", "LID_REMOVE", "Удалить")
+MoveAny:AddTrans("ruRU", "LID_RENAME", "Переименовать")
+MoveAny:AddTrans("ruRU", "LID_PLAYER", "Проигрыватель")
+MoveAny:AddTrans("ruRU", "LID_DOWNLOAD", "Загрузить")
+MoveAny:AddTrans("ruRU", "LID_UPLOAD", "Загрузить")
+MoveAny:AddTrans("ruRU", "LID_STATUS", "Статус")
+MoveAny:AddTrans("ruRU", "LID_DONE", "Выполнено")
+MoveAny:AddTrans("ruRU", "LID_WAITINGFOROWNER", "Ожидание владельца")
+MoveAny:AddTrans("ruRU", "LID_WAITFORPLAYERPROFILE", "Ждать, пока другой игрок нажмет \"Получить профили\"")
+MoveAny:AddTrans("ruRU", "LID_WAITFORPLAYERPROFILE2", "Ждать, пока другой игрок нажмет \"Поделиться\".")
+MoveAny:AddTrans("ruRU", "LID_ALPHAINCOMBAT", "Альфа (в бою)")
+MoveAny:AddTrans("ruRU", "LID_ALPHANOTINCOMBAT", "Альфа (не в бою)")
+MoveAny:AddTrans("ruRU", "LID_ALPHAINVEHICLE", "Альфа (в транспортном средстве)")
+MoveAny:AddTrans("ruRU", "LID_MABUFFLIMIT", "Предел баффа")
+MoveAny:AddTrans("ruRU", "LID_MABUFFSPACINGX", "Горизонтальное расстояние между баффами")
+MoveAny:AddTrans("ruRU", "LID_MABUFFSPACINGY", "Расстояние между буферами по вертикали")
+MoveAny:AddTrans("ruRU", "LID_RESETELEMENT", "Reset Element")
+MoveAny:AddTrans("ruRU", "LID_PLEASESWITCHPROFILE1", "Пожалуйста, переключите LAYOUT в режиме Editmode (от Blizzard) на CUSTOM LAYOUT.")
+MoveAny:AddTrans("ruRU", "LID_PLEASESWITCHPROFILE2", "MoveAny не работает c предустановленным профилем, он в основном доступен только для чтения.")
+MoveAny:AddTrans("ruRU", "LID_PLEASESWITCHPROFILE3", "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (нет предустановленного макета)")
+if MoveAny:GetWoWBuild() ~= "RETAIL" then
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR2", "Панель действий 2 (2. Страница панели действий 1)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR3", "Панель действий 3 (правая панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR4", "Панель действий 4 (левая панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR5", "Панель действий 5 (правая верхняя панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR6", "Панель действий 6 (левая верхняя панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR7", "Панель действий 7 (пользовательская)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR8", "Панель действий 8 (пользовательская)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR9", "Панель действий 9 (пользовательская)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR10", "Панель действий 10 (пользовательская)")
+else
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR2", "Панель действий 2 (Над главным баром)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR3", "Панель действий 3 (над второй панелью)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR4", "Панель действия 4 (правая панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR5", "Панель действия 5 (левая панель)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR6", "Панель действия 6")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR7", "Панель действия 7")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR8", "Панель действий 8")
 end

@@ -1,275 +1,268 @@
 -- deDE German Deutsch
 local _, MoveAny = ...
-function MoveAny:LangdeDE()
-	local tab = {
-		["LID_GENERAL"] = "Allgemein",
-		["LID_SHOWMINIMAPBUTTON"] = "Minimapknopf anzeigen",
-		["LID_GRIDSIZE"] = "Rastergröße (Grid)",
-		["LID_SNAPSIZE"] = "Snapgröße (Grid)",
-		["LID_MOVEFRAMES"] = "Fenster bewegen",
-		["LID_SAVEFRAMEPOSITION"] = "Fenster Position abspeichern",
-		["LID_SAVEFRAMESCALE"] = "Fenster Skalierung abspeichern",
-		["LID_SHIFT"] = "SHIFT",
-		["LID_CTRL"] = "STRG",
-		["LID_ALT"] = "ALT",
-		["LID_FRAMESKEYDRAG"] = "Fenster mit %s + Linksklick-ziehen bewegen",
-		["LID_FRAMESKEYSCALE"] = "Fenster mit %s + Rechtsklick-ziehen zum skalieren",
-		["LID_FRAMESKEYRESET"] = "Fenster mit %s + Mausradklick resetten",
-		["LID_PLAYERFRAME"] = "Spielerfenster",
-		["LID_PLAYERLEVELTEXT"] = "Spielerfenster-Level",
-		["LID_PLAYERFRAMEBACKGROUND"] = "Spielerfenster Hintergrund",
-		["LID_PETFRAME"] = "Begleiterfenster",
-		["LID_MAPETFRAME"] = "Begleiterfenster",
-		["LID_PETFRAMEHAPPINESS"] = "Begleiterfenster Glücklichkeit",
-		["LID_TARGETFRAME"] = "Zielfenster",
-		["LID_TARGETFRAMENAMEBACKGROUND"] = "Zielfenster Namen-Hintergrund",
-		["LID_TARGETFRAMEBUFFMOVER"] = "Zielfenster Buffs",
-		["LID_TARGETFRAMETOTDEBUFFMOVER"] = "Ziel des Zielfenster Debuffs",
-		["LID_TARGETOFTARGETFRAME"] = "Ziel des Zielfenster",
-		["LID_TARGETFRAMESPELLBAR"] = "Zauberleiste vom Ziel",
-		["LID_FOCUSFRAME"] = "Fokusfenster",
-		["LID_FOCUSFRAMEBUFFMOVER"] = "Fokusfenster Buffs",
-		["LID_FOCUSFRAMESPELLBAR"] = "Zauberleiste vom Fokus",
-		["LID_TARGETOFFOCUSFRAME"] = "Ziel des Fokusfenster",
-		["LID_RUNEFRAME"] = "Todesritter - Runen Fenster",
-		["LID_TOTEMFRAME"] = "Totem Zähler (Auch von anderen Klassen benutzt)",
-		["LID_WARLOCKPOWERFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
-		["LID_MONKHARMONYBARFRAME"] = "Mönch Harmonie Fenster (Chi)",
-		["LID_MONKSTAGGERBAR"] = "Monk Staffeln Leiste  (Chi)",
-		["LID_MAGEARCANECHARGESFRAME"] = "Magier Arkane Ladungen Fenster",
-		["LID_ESSENCEPLAYERFRAME"] = "Essenz Spieler Fenster (Rufer)",
-		["LID_PALADINPOWERBARFRAME"] = "Paladin Machtleiste (Heilige Macht)",
-		["LID_MAFPSFrame"] = "FPS (Neuer FPS-Zähler)",
-		["LID_IAPingFrame"] = "Ping",
-		["LID_IACoordsFrame"] = "Koordinatenfenster",
-		["LID_MINIMAP"] = "Minimap",
-		["LID_MINIMAPZONETEXT"] = "Minimap Zonen Text",
-		["LID_BUFFS"] = "Stärkungszauber",
-		["LID_DEBUFFS"] = "Schwächungszauber",
-		["LID_VEHICLESEATINDICATOR"] = "Fahrzeugsitzanzeige",
-		["LID_ARENAENEMYFRAMES"] = "Arena Gegner Fenster",
-		["LID_ARENAPREPFRAMES"] = "Arena Vorbereitungs Fenster",
-		["LID_QUESTTRACKER"] = "Questverfolgung",
-		["LID_MICROMENU"] = "Mikro Menü (Charakterknopf, Zauberbuchknopf, ...)",
-		["LID_BAGS"] = "Taschen",
-		["LID_GAMETOOLTIP"] = "Tooltip",
-		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip am Zeiger",
-		["LID_QUEUESTATUSBUTTON"] = "SNG Status (LFG)",
-		["LID_QUEUESTATUSFRAME"] = "SNG Status (LFG) Tooltip",
-		["LID_PETBAR"] = "Begleiterleiste",
-		["LID_STANCEBAR"] = "Haltungsleiste",
-		["LID_TOTEMBAR"] = "Schamane - Totemleiste",
-		["LID_LEAVEVEHICLE"] = "Fahrzeug verlassen Taste",
-		["LID_GROUPLOOTFRAME1"] = "Beute-Würfeln Fenster 1 (Beute/Loot)",
-		["LID_GROUPLOOTCONTAINER"] = "Beute-Würfeln Fenster (Beute/Loot)",
-		["LID_BONUSROLLFRAME"] = "Bonus-Würfeln Fenster (Beute/Loot)",
-		["LID_STATUSTRACKINGBARMANAGER"] = "Statusverfolgungsleiste Manager (EP, Ruf)",
-		["LID_ALERTFRAME"] = "Alarmfenster (Bonus Beute, Erfolg, ...) (Beute/Loot)",
-		["LID_CHAT"] = "Chatfenster %d",
-		["LID_CHATBUTTONFRAME1"] = "Chat Knöpfe für Tab 1",
-		["LID_CHATBUTTONFRAME2"] = "Chat Knöpfe für Tab 2",
-		["LID_CHATBUTTONFRAME3"] = "Chat Knöpfe für Tab 3",
-		["LID_CHATBUTTONFRAME4"] = "Chat Knöpfe für Tab 4",
-		["LID_CHATBUTTONFRAME5"] = "Chat Knöpfe für Tab 5",
-		["LID_CHATBUTTONFRAME6"] = "Chat Knöpfe für Tab 6",
-		["LID_CHATBUTTONFRAME7"] = "Chat Knöpfe für Tab 7",
-		["LID_CHATBUTTONFRAME8"] = "Chat Knöpfe für Tab 8",
-		["LID_CHATBUTTONFRAME9"] = "Chat Knöpfe für Tab 9",
-		["LID_CHATBUTTONFRAME10"] = "Chat Knöpfe für Tab 10",
-		["LID_CHATQUICKJOIN"] = "Chat Schnellbeitritt",
-		["LID_CHATEDITBOX"] = "Chat Eingabefeld %s",
-		["LID_CHATTAB"] = "Chat Tab %s",
-		["LID_COMPACTRAIDFRAMEMANAGER"] = "SchlachtzugsManager",
-		["LID_BNToastFrame"] = "Benachrichtigungen von Battlenet Freunden",
-		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Zauber-Aktivierungs-Overlay (Class Proc)",
-		["LID_ZONETEXTFRAME"] = "Zonentext",
-		["LID_UIWIDGETTOPCENTER"] = "Widget Oben-Mittig (Status/Statistik von Schlachtfeldern/Dungeons/Raids)",
-		["LID_MIRRORTIMER1"] = "Atemleiste",
-		["LID_IASKILLS"] = "Fertigkeitsbalken",
-		["LID_UIWIDGETBELOWMINIMAP"] = "Widget Unterhalb der Minimap (Einnehmen-Status)",
-		["LID_DURABILITY"] = "Haltbarkeitspuppe",
-		["LID_MONEYBAR"] = "Geldleiste",
-		["LID_TOKENBAR"] = "Token-Leiste",
-		["LID_IAILVLBAR"] = "Gegenstandsstufe-Leiste (ItemLevel)",
-		["LID_CASTINGBAR"] = "Zauberleiste",
-		["LID_CASTINGBARTIMER"] = "Zauberleiste Timer",
-		["LID_TALKINGHEAD"] = "Weltquestfenster (\"Redekopf\")",
-		["LID_POSSESSBAR"] = "Besitzleiste (NPC/Fahrzeug steuern)",
-		["LID_ZONEABILITYFRAME"] = "Zonen-Fähigkeit",
-		["LID_EXTRAABILITYCONTAINER"] = "Extra-Fähigkeit (Zauber für Quests, Bosse)",
-		["LID_MAINMENUEXPBAR"] = "Erfahrungsleiste",
-		["LID_REPUTATIONWATCHBAR"] = "Rufleiste",
-		["LID_UIWIDGETPOWERBAR"] = "Machtleiste (Zeigt meist Prozente an) (Bossleiste, Elanleiste, Dunkelmond-Jahrmarkt, ...)",
-		["LID_POWERBAR"] = "Machtleiste (Zeigt meist Prozente an) (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)",
-		["LID_COUNT"] = "Anzahl",
-		["LID_ROWS"] = "Reihen",
-		["LID_SPACING"] = "Abstand (Lücke)",
-		["LID_PROFILE"] = "Profil",
-		["LID_PROFILES"] = "Profile",
-		["LID_ADDPROFILE"] = "Profil hinzufügen",
-		["LID_CURRENT"] = "Derzeitiges",
-		["LID_SHARE"] = "Teilen",
-		["LID_SHAREPROFILE"] = "Profil teilen",
-		["LID_GETPROFILE"] = "Profil erhalten",
-		["LID_INHERITFROM"] = "Vererben von",
-		["LID_ADD"] = "Hinzufügen",
-		["LID_REMOVE"] = "Entfernen",
-		["LID_RENAME"] = "Umbenennen",
-		["LID_PLAYER"] = "Spieler",
-		["LID_DOWNLOAD"] = "Herunterladen",
-		["LID_UPLOAD"] = "Hochladen",
-		["LID_STATUS"] = "Status",
-		["LID_DONE"] = "Fertig",
-		["LID_WAITINGFOROWNER"] = "Auf Besitzer warten",
-		["LID_WAITFORPLAYERPROFILE"] = "Auf anderen Spieler warten, der auf \"Profile erhalten\" drückt.",
-		["LID_WAITFORPLAYERPROFILE2"] = "Auf anderen Spieler warten, der auf \"Teilen\" drückt.",
-		["LID_ALPHAINCOMBAT"] = "Sichtbarkeit (im Kampf)",
-		["LID_ALPHANOTINCOMBAT"] = "Sichtbarkeit (Nicht im Kampf)",
-		["LID_ALPHAINVEHICLE"] = "Sichtbarkeit (im Fahrzeug)",
-		["LID_ALPHAINRESTEDAREA"] = "Sichtbarkeit (in Erholung)",
-		["LID_ALPHAISMOUNTED"] = "Sichtbarkeit (auf Mount)",
-		["LID_ALPHAISSTEALTHED"] = "Sichtbarkeit (Unsichtbar)",
-		["LID_MABUFFLIMIT"] = "Stärkungszauber Grenze",
-		["LID_MABUFFSPACINGX"] = "Stärkungszauber Abstand Horizontal",
-		["LID_MABUFFSPACINGY"] = "Stärkungszauber Abstand Vertikal",
-		["LID_ISENABLEDINEDITMODE"] = "(Deaktiviere es im Spielmenü-Bearbeitungsmodus)",
-		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(Kann Error verursachen, wegen Bearbeitungsmodus)",
-		["LID_HELPTEXT"] = "\"%s\" ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.",
-		["LID_BUILTIN"] = "Eingebaut",
-		["LID_EDITMODE"] = "Bearbeitungsmodus überschreiben",
-		["LID_NORMAL"] = "Normal",
-		["LID_CLASSSPECIFIC"] = "Klassenspezifisch",
-		["LID_ADVANCED"] = "Erweitert",
-		["LID_ImproveAny"] = "ImproveAny",
-		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Fortschrittsanzeige der archäologischen Ausgrabungsstätte",
-		["LID_UIERRORSFRAME"] = "Ui-Fehler Meldungen (Quest Fortschritt, Event Nachrichten)",
-		["LID_COMBOPOINTPLAYERFRAME"] = "Kombopunkte",
-		["LID_PARTYFRAME"] = "Gruppenfenster",
-		["LID_PARTYMEMBERFRAME"] = "Gruppenmitgliedfenster %s",
-		["LID_COMPACTRAIDFRAMECONTAINER"] = "Schlachtzugfenster",
-		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Behälter (Bossbehälter) Bis zu 5 Bosse",
-		["LID_FLIPPED"] = "Umgedreht",
-		["LID_GHOSTFRAME"] = "Geisterfenster (Teleport zum Friedhof)",
-		["LID_TICKETSTATUSFRAME"] = "Ticket Fenster",
-		["LID_LOSSOFCONTROLFRAME"] = "Kontrollverlustfenster",
-		["LID_MainStatusTrackingBarContainer"] = "StatusBar1 (Erfahrungsleiste/Rufleiste)",
-		["LID_SecondaryStatusTrackingBarContainer"] = "StatusBar2 (Rufleiste)",
-		["LID_TargetFrameNumericalThreat"] = "Bedrohungs Prozente",
-		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Stufenaufstieg, Zonentext)",
-		["LID_BUFFTIMER1"] = "Stärkungsanzeige",
-		["LID_ENDCAPLEFT"] = "Abschlusskappe links (Greif)",
-		["LID_ENDCAPRIGHT"] = "Abschlusskappe rechts (Greif)",
-		["LID_ENDCAPS"] = "Abschlusskappen (Greifen)",
-		["LID_BLIZZARDACTIONBUTTONSART"] = "Aktionsleiste 1 Blizzard-Kunst",
-		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objektiv Tracker Fenster (World Quest Titel)",
-		["LID_MOVESMALLBAGS"] = "Bewegen/Skalieren von kleinen Taschen",
-		["LID_MOVELOOTFRAME"] = "Bewegen von Beutefenster (Loot)",
-		["LID_SCALELOOTFRAME"] = "Skalieren von Beutefenster (Loot)",
-		["LID_NEEDSARELOAD"] = "Braucht ein Neu laden",
-		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emotionen Fenster",
-		["LID_STARTHELP"] = "Klicken Sie auf die MoveAny Minimap-Schaltfläche, um die Einstellungen zu öffnen",
-		["LID_STARTHELP2"] = "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.",
-		["LID_STARTHELP3"] = "Um diese Nachrichten zu verstecken deaktiviere Tipps im MoveAny Menü.",
-		["LID_SHOWTIPS"] = "Tipps anzeigen",
-		["LID_OVERRIDEACTIONBAR"] = "\"Überschreiben\" Aktionsleiste (Fahrzeugleiste)",
-		["LID_BOSSBANNER"] = "Boss-Banner (Abgelegte Beute/Loot, Boss Titel)",
-		["LID_COMPACTARENAFRAME"] = "Kompaktes Arena Fenster",
-		["LID_ROLEPOLLPOPUP"] = "Rollenabfrage-Popup",
-		["LID_READYCHECKLISTENERFRAME"] = "Bereitschaftsprüfung-Popup",
-		["LID_DISABLEMOVEMENT"] = "Bewegungstastenbelegung deaktivieren, wenn im MoveAny-EditMode",
-		["LID_CLICKTHROUGH"] = "Durchklicken",
-		["LID_MABUFFMODE"] = "Stärkungszauber-Ausrichtung",
-		["LID_MADEBUFFLIMIT"] = "Schwächungszauber Grenze",
-		["LID_MADEBUFFSPACINGX"] = "Schwächungszauber Abstand Horizontal",
-		["LID_MADEBUFFSPACINGY"] = "Schwächungszauber Abstand Vertikal",
-		["LID_MADEBUFFMODE"] = "Schwächungszauber-Ausrichtung",
-		["LID_SEARCH"] = "Suche",
-		["LID_COMBOFRAME"] = "Komboleiste",
-		["LID_WIDTH"] = "Weite",
-		["LID_HEIGHT"] = "Höhe",
-		["LID_ALPHAISFULLHEALTH"] = "Sichtbarkeit (Volle Gesundheit)",
-		["LID_ALPHAISINPETBATTLE"] = "Sichtbarkeit (Ist in Haustierkampf)",
-		["LID_KEYBINDWINDOW"] = "Keybind für Fenster",
-		["LID_SNAPWINDOWSIZE"] = "Snapgröße (Fenster)",
-		["LID_BOSS1"] = "Boss 1",
-		["LID_BOSS2"] = "Boss 2",
-		["LID_BOSS3"] = "Boss 3",
-		["LID_BOSS4"] = "Boss 4",
-		["LID_BOSS5"] = "Boss 5",
-		["LID_BOSS6"] = "Boss 6",
-		["LID_MAPAGES"] = "Aktionsleisten-Seiten",
-		["LID_HIDEHIDDENFRAMES"] = "Verstecke versteckte Elemente",
-		["LID_TIMERTRACKER1"] = "Zeitmesser (erst sichtbar wenn verfügbar)",
-		["LID_PALADINPOWERBAR"] = "Paladin Machtleiste (Heilige Macht)",
-		["LID_SHARDBARFRAME"] = "Hexenmeister Macht Fenster (Splitter)",
-		["LID_OFFSET"] = "Versatz (Offset)",
-		["LID_EclipseBarFrame"] = "Eclipseleiste (Druide)",
-		["LID_REQUIRESFOR"] = "Benötigt: %s",
-		["LID_REQUIREDFOR"] = "Benötigt für: %s",
-		["LID_RESETELEMENT"] = "Element resetten",
-		["LID_TARGETFRAMEDEBUFFMOVER"] = "Zielfenster Debuffs",
-		["LID_FOCUSFRAMEDEBUFFMOVER"] = "Fokusfenster Debuffs",
-		["LID_TARGETFRAMETOTBUFFMOVER"] = "Ziel des Zielfenster Buffs",
-		["LID_MINIMAPFLAG"] = "Minimap Flagge",
-		["LID_MiniMapInstanceDifficulty"] = "Minimap Flagge Instanz Schwierigkeit",
-		["LID_MiniMapChallengeMode"] = "Minimap Flagge Herausforderungsmodus",
-		["LID_GuildInstanceDifficulty"] = "Minimap Flagge Gilden-Instanz Schwierigkeit",
-		["LID_POWERBARCOUNTERBAR"] = "Machtleiste Gegenleiste (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)",
-		["LID_BUFFTIMER1"] = "Stärkungszeit 1 (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)",
-		["LID_!KalielsTracker"] = "!KalielsTracker",
-		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
-		["LID_FRAMES"] = "Fenster",
-		["LID_SCALEFRAMES"] = "Fenster skalieren (Fenster größe ändern)",
-		["LID_RESETFRAMES"] = "Fenster resetten",
-		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
-		["LID_MOVEANYINFO"] = "Wählen Sie die Dinge aus, die Sie ändern möchten",
-		["LID_PLEASESWITCHPROFILE1"] = "Bitte wechsel das LAYOUT im Bearbeitungsmodus (von Blizzard) zu einem BENUTZERDEFINIERTEN Layout.",
-		["LID_PLEASESWITCHPROFILE2"] = "MoveAny funktioniert nicht mit einem voreingestellten Layout, es ist meist schreibgeschützt.",
-		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)",
-		["LID_LFGMinimapFrame"] = "LFG Minimapknopf",
-		["LID_QUESTTIMERFRAME"] = "Questzeit-Fenster",
-		["LID_BATTLEFIELDMAPFRAME"] = "Schlachtfeld Karte",
-		["LID_ExtraActionBarFrame"] = "Extra Aktionsleiste (Klickbarer Knopf) (ExtraActionButton1, ExtraActionBarFrame)",
-		["LID_ExtraActionButton1"] = "Extra Aktionsleiste (Klickbarer Knopf) (ExtraActionButton1, ExtraActionBarFrame)",
-		["LID_FRAMESCALEDISABLED"] = "\"Fenster skalieren (Fenster größe ändern)\" ist deaktiviert, bitte aktivieren.",
-		["LID_BAGEXTRAS"] = "Extras",
-		["LID_HIDESMALLBAGS"] = "Kleine Taschen",
-		["LID_HIDEKEYBAG"] = "Schlüsselbund Tasche",
-		["LID_CHANGEONCATSTEALTH"] = "Wechsel Leiste wenn in Katzen-Unsichtbarkeit (Lädt Ui neu bei Änderung)",
-		["LID_RIGHTCLICKFOROPTIONS"] = "Rechtsklick für Einstellungen",
-		["LID_EssentialCooldownViewer"] = "Wesentliche Abklingzeit Betrachter (Abklingzeitmanager)",
-		["LID_BuffIconCooldownViewer"] = "Stärkungssymbole Abklingzeit Betrachter (Abklingzeitmanager)",
-		["LID_BuffBarCooldownViewer"] = "Stärkungsleisten Abklingzeit Betrachter (Abklingzeitmanager)",
-		["LID_CLAMPWINDOWTOSCREEN"] = "Fenster an den Bildschirm klemmen (Nicht aus dem Bildschirm ziehen)",
-		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Gegner Fenster Kontainer (Schlachtfeld Bosse)",
-		["LID_FOCUSFRAMETOTBUFFMOVER"] = "Ziel des Fokusfenster Buffs",
-		["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "Ziel des Fokusfenster Debuffs",
-		["LID_PRESSESCTOLEAVE"] = "Drück ESC um diese Ansicht zu verlassen",
-	}
-
-	MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Aktionsleisten 1 + 5 + 6"
-		tab["LID_ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)"
-		tab["LID_ACTIONBAR2"] = "Aktionsleiste 2 (2. Seite von Aktionsleiste 1)"
-		tab["LID_ACTIONBAR3"] = "Aktionsleiste 3 (Rechte Leiste)"
-		tab["LID_ACTIONBAR4"] = "Aktionsleiste 4 (Linke Leiste)"
-		tab["LID_ACTIONBAR5"] = "Aktionsleiste 5 (Leiste oben rechts)"
-		tab["LID_ACTIONBAR6"] = "Aktionsleiste 6 (Leiste oben links)"
-		tab["LID_ACTIONBAR7"] = "Aktionsleiste 7 (Benutzerdefinierte)"
-		tab["LID_ACTIONBAR8"] = "Aktionsleiste 8 (Benutzerdefinierte)"
-		tab["LID_ACTIONBAR9"] = "Aktionsleiste 9 (Benutzerdefinierte)"
-		tab["LID_ACTIONBAR10"] = "Aktionsleiste 10 (Benutzerdefinierte)"
-	else
-		tab["LID_ACTIONBAR1"] = "Aktionsleiste 1 (Hauptleiste)"
-		tab["LID_ACTIONBAR2"] = "Aktionsleiste 2 (Zweite Leiste)"
-		tab["LID_ACTIONBAR3"] = "Aktionsleiste 3 (Dritte Leiste)"
-		tab["LID_ACTIONBAR4"] = "Aktionsleiste 4 (Rechte Leiste)"
-		tab["LID_ACTIONBAR5"] = "Aktionsleiste 5 (Linke Leiste)"
-		tab["LID_ACTIONBAR6"] = "Aktionsleiste 6 (Extra)"
-		tab["LID_ACTIONBAR7"] = "Aktionsleiste 7 (Extra)"
-		tab["LID_ACTIONBAR8"] = "Aktionsleiste 8 (Extra)"
-	end
-
-	MoveAny:UpdateLanguageTab(tab)
+MoveAny:AddTrans("deDE", "LID_GENERAL", "Allgemein")
+MoveAny:AddTrans("deDE", "LID_SHOWMINIMAPBUTTON", "Minimapknopf anzeigen")
+MoveAny:AddTrans("deDE", "LID_GRIDSIZE", "Rastergröße (Grid)")
+MoveAny:AddTrans("deDE", "LID_SNAPSIZE", "Snapgröße (Grid)")
+MoveAny:AddTrans("deDE", "LID_MOVEFRAMES", "Fenster bewegen")
+MoveAny:AddTrans("deDE", "LID_SAVEFRAMEPOSITION", "Fenster Position abspeichern")
+MoveAny:AddTrans("deDE", "LID_SAVEFRAMESCALE", "Fenster Skalierung abspeichern")
+MoveAny:AddTrans("deDE", "LID_SHIFT", "SHIFT")
+MoveAny:AddTrans("deDE", "LID_CTRL", "STRG")
+MoveAny:AddTrans("deDE", "LID_ALT", "ALT")
+MoveAny:AddTrans("deDE", "LID_FRAMESKEYDRAG", "Fenster mit %s + Linksklick-ziehen bewegen")
+MoveAny:AddTrans("deDE", "LID_FRAMESKEYSCALE", "Fenster mit %s + Rechtsklick-ziehen zum skalieren")
+MoveAny:AddTrans("deDE", "LID_FRAMESKEYRESET", "Fenster mit %s + Mausradklick resetten")
+MoveAny:AddTrans("deDE", "LID_PLAYERFRAME", "Spielerfenster")
+MoveAny:AddTrans("deDE", "LID_PLAYERLEVELTEXT", "Spielerfenster-Level")
+MoveAny:AddTrans("deDE", "LID_PLAYERFRAMEBACKGROUND", "Spielerfenster Hintergrund")
+MoveAny:AddTrans("deDE", "LID_PETFRAME", "Begleiterfenster")
+MoveAny:AddTrans("deDE", "LID_MAPETFRAME", "Begleiterfenster")
+MoveAny:AddTrans("deDE", "LID_PETFRAMEHAPPINESS", "Begleiterfenster Glücklichkeit")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAME", "Zielfenster")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAMENAMEBACKGROUND", "Zielfenster Namen-Hintergrund")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAMEBUFFMOVER", "Zielfenster Buffs")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAMETOTDEBUFFMOVER", "Ziel des Zielfenster Debuffs")
+MoveAny:AddTrans("deDE", "LID_TARGETOFTARGETFRAME", "Ziel des Zielfenster")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAMESPELLBAR", "Zauberleiste vom Ziel")
+MoveAny:AddTrans("deDE", "LID_FOCUSFRAME", "Fokusfenster")
+MoveAny:AddTrans("deDE", "LID_FOCUSFRAMEBUFFMOVER", "Fokusfenster Buffs")
+MoveAny:AddTrans("deDE", "LID_FOCUSFRAMESPELLBAR", "Zauberleiste vom Fokus")
+MoveAny:AddTrans("deDE", "LID_TARGETOFFOCUSFRAME", "Ziel des Fokusfenster")
+MoveAny:AddTrans("deDE", "LID_RUNEFRAME", "Todesritter - Runen Fenster")
+MoveAny:AddTrans("deDE", "LID_TOTEMFRAME", "Totem Zähler (Auch von anderen Klassen benutzt)")
+MoveAny:AddTrans("deDE", "LID_WARLOCKPOWERFRAME", "Hexenmeister Macht Fenster (Splitter)")
+MoveAny:AddTrans("deDE", "LID_MONKHARMONYBARFRAME", "Mönch Harmonie Fenster (Chi)")
+MoveAny:AddTrans("deDE", "LID_MONKSTAGGERBAR", "Monk Staffeln Leiste  (Chi)")
+MoveAny:AddTrans("deDE", "LID_MAGEARCANECHARGESFRAME", "Magier Arkane Ladungen Fenster")
+MoveAny:AddTrans("deDE", "LID_ESSENCEPLAYERFRAME", "Essenz Spieler Fenster (Rufer)")
+MoveAny:AddTrans("deDE", "LID_PALADINPOWERBARFRAME", "Paladin Machtleiste (Heilige Macht)")
+MoveAny:AddTrans("deDE", "LID_MAFPSFrame", "FPS (Neuer FPS-Zähler)")
+MoveAny:AddTrans("deDE", "LID_IAPingFrame", "Ping")
+MoveAny:AddTrans("deDE", "LID_IACoordsFrame", "Koordinatenfenster")
+MoveAny:AddTrans("deDE", "LID_MINIMAP", "Minimap")
+MoveAny:AddTrans("deDE", "LID_MINIMAPZONETEXT", "Minimap Zonen Text")
+MoveAny:AddTrans("deDE", "LID_BUFFS", "Stärkungszauber")
+MoveAny:AddTrans("deDE", "LID_DEBUFFS", "Schwächungszauber")
+MoveAny:AddTrans("deDE", "LID_VEHICLESEATINDICATOR", "Fahrzeugsitzanzeige")
+MoveAny:AddTrans("deDE", "LID_ARENAENEMYFRAMES", "Arena Gegner Fenster")
+MoveAny:AddTrans("deDE", "LID_ARENAPREPFRAMES", "Arena Vorbereitungs Fenster")
+MoveAny:AddTrans("deDE", "LID_QUESTTRACKER", "Questverfolgung")
+MoveAny:AddTrans("deDE", "LID_MICROMENU", "Mikro Menü (Charakterknopf, Zauberbuchknopf, ...)")
+MoveAny:AddTrans("deDE", "LID_BAGS", "Taschen")
+MoveAny:AddTrans("deDE", "LID_GAMETOOLTIP", "Tooltip")
+MoveAny:AddTrans("deDE", "LID_GAMETOOLTIP_ONCURSOR", "Tooltip am Zeiger")
+MoveAny:AddTrans("deDE", "LID_QUEUESTATUSBUTTON", "SNG Status (LFG)")
+MoveAny:AddTrans("deDE", "LID_QUEUESTATUSFRAME", "SNG Status (LFG) Tooltip")
+MoveAny:AddTrans("deDE", "LID_PETBAR", "Begleiterleiste")
+MoveAny:AddTrans("deDE", "LID_STANCEBAR", "Haltungsleiste")
+MoveAny:AddTrans("deDE", "LID_TOTEMBAR", "Schamane - Totemleiste")
+MoveAny:AddTrans("deDE", "LID_LEAVEVEHICLE", "Fahrzeug verlassen Taste")
+MoveAny:AddTrans("deDE", "LID_GROUPLOOTFRAME1", "Beute-Würfeln Fenster 1 (Beute/Loot)")
+MoveAny:AddTrans("deDE", "LID_GROUPLOOTCONTAINER", "Beute-Würfeln Fenster (Beute/Loot)")
+MoveAny:AddTrans("deDE", "LID_BONUSROLLFRAME", "Bonus-Würfeln Fenster (Beute/Loot)")
+MoveAny:AddTrans("deDE", "LID_STATUSTRACKINGBARMANAGER", "Statusverfolgungsleiste Manager (EP, Ruf)")
+MoveAny:AddTrans("deDE", "LID_ALERTFRAME", "Alarmfenster (Bonus Beute, Erfolg, ...) (Beute/Loot)")
+MoveAny:AddTrans("deDE", "LID_CHAT", "Chatfenster %d")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME1", "Chat Knöpfe für Tab 1")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME2", "Chat Knöpfe für Tab 2")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME3", "Chat Knöpfe für Tab 3")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME4", "Chat Knöpfe für Tab 4")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME5", "Chat Knöpfe für Tab 5")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME6", "Chat Knöpfe für Tab 6")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME7", "Chat Knöpfe für Tab 7")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME8", "Chat Knöpfe für Tab 8")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME9", "Chat Knöpfe für Tab 9")
+MoveAny:AddTrans("deDE", "LID_CHATBUTTONFRAME10", "Chat Knöpfe für Tab 10")
+MoveAny:AddTrans("deDE", "LID_CHATQUICKJOIN", "Chat Schnellbeitritt")
+MoveAny:AddTrans("deDE", "LID_CHATEDITBOX", "Chat Eingabefeld %s")
+MoveAny:AddTrans("deDE", "LID_CHATTAB", "Chat Tab %s")
+MoveAny:AddTrans("deDE", "LID_COMPACTRAIDFRAMEMANAGER", "SchlachtzugsManager")
+MoveAny:AddTrans("deDE", "LID_BNToastFrame", "Benachrichtigungen von Battlenet Freunden")
+MoveAny:AddTrans("deDE", "LID_SPELLACTIVATIONOVERLAYFRAME", "Zauber-Aktivierungs-Overlay (Class Proc)")
+MoveAny:AddTrans("deDE", "LID_ZONETEXTFRAME", "Zonentext")
+MoveAny:AddTrans("deDE", "LID_UIWIDGETTOPCENTER", "Widget Oben-Mittig (Status/Statistik von Schlachtfeldern/Dungeons/Raids)")
+MoveAny:AddTrans("deDE", "LID_MIRRORTIMER1", "Atemleiste")
+MoveAny:AddTrans("deDE", "LID_IASKILLS", "Fertigkeitsbalken")
+MoveAny:AddTrans("deDE", "LID_UIWIDGETBELOWMINIMAP", "Widget Unterhalb der Minimap (Einnehmen-Status)")
+MoveAny:AddTrans("deDE", "LID_DURABILITY", "Haltbarkeitspuppe")
+MoveAny:AddTrans("deDE", "LID_MONEYBAR", "Geldleiste")
+MoveAny:AddTrans("deDE", "LID_TOKENBAR", "Token-Leiste")
+MoveAny:AddTrans("deDE", "LID_IAILVLBAR", "Gegenstandsstufe-Leiste (ItemLevel)")
+MoveAny:AddTrans("deDE", "LID_CASTINGBAR", "Zauberleiste")
+MoveAny:AddTrans("deDE", "LID_CASTINGBARTIMER", "Zauberleiste Timer")
+MoveAny:AddTrans("deDE", "LID_TALKINGHEAD", "Weltquestfenster (\"Redekopf\")")
+MoveAny:AddTrans("deDE", "LID_POSSESSBAR", "Besitzleiste (NPC/Fahrzeug steuern)")
+MoveAny:AddTrans("deDE", "LID_ZONEABILITYFRAME", "Zonen-Fähigkeit")
+MoveAny:AddTrans("deDE", "LID_EXTRAABILITYCONTAINER", "Extra-Fähigkeit (Zauber für Quests, Bosse)")
+MoveAny:AddTrans("deDE", "LID_MAINMENUEXPBAR", "Erfahrungsleiste")
+MoveAny:AddTrans("deDE", "LID_REPUTATIONWATCHBAR", "Rufleiste")
+MoveAny:AddTrans("deDE", "LID_UIWIDGETPOWERBAR", "Machtleiste (Zeigt meist Prozente an) (Bossleiste, Elanleiste, Dunkelmond-Jahrmarkt, ...)")
+MoveAny:AddTrans("deDE", "LID_POWERBAR", "Machtleiste (Zeigt meist Prozente an) (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)")
+MoveAny:AddTrans("deDE", "LID_COUNT", "Anzahl")
+MoveAny:AddTrans("deDE", "LID_ROWS", "Reihen")
+MoveAny:AddTrans("deDE", "LID_SPACING", "Abstand (Lücke)")
+MoveAny:AddTrans("deDE", "LID_PROFILE", "Profil")
+MoveAny:AddTrans("deDE", "LID_PROFILES", "Profile")
+MoveAny:AddTrans("deDE", "LID_ADDPROFILE", "Profil hinzufügen")
+MoveAny:AddTrans("deDE", "LID_CURRENT", "Derzeitiges")
+MoveAny:AddTrans("deDE", "LID_SHARE", "Teilen")
+MoveAny:AddTrans("deDE", "LID_SHAREPROFILE", "Profil teilen")
+MoveAny:AddTrans("deDE", "LID_GETPROFILE", "Profil erhalten")
+MoveAny:AddTrans("deDE", "LID_INHERITFROM", "Vererben von")
+MoveAny:AddTrans("deDE", "LID_ADD", "Hinzufügen")
+MoveAny:AddTrans("deDE", "LID_REMOVE", "Entfernen")
+MoveAny:AddTrans("deDE", "LID_RENAME", "Umbenennen")
+MoveAny:AddTrans("deDE", "LID_PLAYER", "Spieler")
+MoveAny:AddTrans("deDE", "LID_DOWNLOAD", "Herunterladen")
+MoveAny:AddTrans("deDE", "LID_UPLOAD", "Hochladen")
+MoveAny:AddTrans("deDE", "LID_STATUS", "Status")
+MoveAny:AddTrans("deDE", "LID_DONE", "Fertig")
+MoveAny:AddTrans("deDE", "LID_WAITINGFOROWNER", "Auf Besitzer warten")
+MoveAny:AddTrans("deDE", "LID_WAITFORPLAYERPROFILE", "Auf anderen Spieler warten, der auf \"Profile erhalten\" drückt.")
+MoveAny:AddTrans("deDE", "LID_WAITFORPLAYERPROFILE2", "Auf anderen Spieler warten, der auf \"Teilen\" drückt.")
+MoveAny:AddTrans("deDE", "LID_ALPHAINCOMBAT", "Sichtbarkeit (im Kampf)")
+MoveAny:AddTrans("deDE", "LID_ALPHANOTINCOMBAT", "Sichtbarkeit (Nicht im Kampf)")
+MoveAny:AddTrans("deDE", "LID_ALPHAINVEHICLE", "Sichtbarkeit (im Fahrzeug)")
+MoveAny:AddTrans("deDE", "LID_ALPHAINRESTEDAREA", "Sichtbarkeit (in Erholung)")
+MoveAny:AddTrans("deDE", "LID_ALPHAISMOUNTED", "Sichtbarkeit (auf Mount)")
+MoveAny:AddTrans("deDE", "LID_ALPHAISSTEALTHED", "Sichtbarkeit (Unsichtbar)")
+MoveAny:AddTrans("deDE", "LID_MABUFFLIMIT", "Stärkungszauber Grenze")
+MoveAny:AddTrans("deDE", "LID_MABUFFSPACINGX", "Stärkungszauber Abstand Horizontal")
+MoveAny:AddTrans("deDE", "LID_MABUFFSPACINGY", "Stärkungszauber Abstand Vertikal")
+MoveAny:AddTrans("deDE", "LID_ISENABLEDINEDITMODE", "(Deaktiviere es im Spielmenü-Bearbeitungsmodus)")
+MoveAny:AddTrans("deDE", "LID_CANBREAKBECAUSEOFEDITMODE", "(Kann Error verursachen, wegen Bearbeitungsmodus)")
+MoveAny:AddTrans("deDE", "LID_HELPTEXT", "\"%s\" ist bereits im EditMode aktiviert. Bitte deaktivieren Sie im EditMode oder MoveAny.")
+MoveAny:AddTrans("deDE", "LID_BUILTIN", "Eingebaut")
+MoveAny:AddTrans("deDE", "LID_EDITMODE", "Bearbeitungsmodus überschreiben")
+MoveAny:AddTrans("deDE", "LID_NORMAL", "Normal")
+MoveAny:AddTrans("deDE", "LID_CLASSSPECIFIC", "Klassenspezifisch")
+MoveAny:AddTrans("deDE", "LID_ADVANCED", "Erweitert")
+MoveAny:AddTrans("deDE", "LID_ImproveAny", "ImproveAny")
+MoveAny:AddTrans("deDE", "LID_ARCHEOLOGYDIGSITEPROGRESSBAR", "Fortschrittsanzeige der archäologischen Ausgrabungsstätte")
+MoveAny:AddTrans("deDE", "LID_UIERRORSFRAME", "Ui-Fehler Meldungen (Quest Fortschritt, Event Nachrichten)")
+MoveAny:AddTrans("deDE", "LID_COMBOPOINTPLAYERFRAME", "Kombopunkte")
+MoveAny:AddTrans("deDE", "LID_PARTYFRAME", "Gruppenfenster")
+MoveAny:AddTrans("deDE", "LID_PARTYMEMBERFRAME", "Gruppenmitgliedfenster %s")
+MoveAny:AddTrans("deDE", "LID_COMPACTRAIDFRAMECONTAINER", "Schlachtzugfenster")
+MoveAny:AddTrans("deDE", "LID_BOSSTARGETFRAMECONTAINER", "Boss Behälter (Bossbehälter) Bis zu 5 Bosse")
+MoveAny:AddTrans("deDE", "LID_FLIPPED", "Umgedreht")
+MoveAny:AddTrans("deDE", "LID_GHOSTFRAME", "Geisterfenster (Teleport zum Friedhof)")
+MoveAny:AddTrans("deDE", "LID_TICKETSTATUSFRAME", "Ticket Fenster")
+MoveAny:AddTrans("deDE", "LID_LOSSOFCONTROLFRAME", "Kontrollverlustfenster")
+MoveAny:AddTrans("deDE", "LID_MainStatusTrackingBarContainer", "StatusBar1 (Erfahrungsleiste/Rufleiste)")
+MoveAny:AddTrans("deDE", "LID_SecondaryStatusTrackingBarContainer", "StatusBar2 (Rufleiste)")
+MoveAny:AddTrans("deDE", "LID_TargetFrameNumericalThreat", "Bedrohungs Prozente")
+MoveAny:AddTrans("deDE", "LID_EventToastManagerFrame", "EventToastManagerFrame (Stufenaufstieg, Zonentext)")
+MoveAny:AddTrans("deDE", "LID_BUFFTIMER1", "Stärkungsanzeige")
+MoveAny:AddTrans("deDE", "LID_ENDCAPLEFT", "Abschlusskappe links (Greif)")
+MoveAny:AddTrans("deDE", "LID_ENDCAPRIGHT", "Abschlusskappe rechts (Greif)")
+MoveAny:AddTrans("deDE", "LID_ENDCAPS", "Abschlusskappen (Greifen)")
+MoveAny:AddTrans("deDE", "LID_BLIZZARDACTIONBUTTONSART", "Aktionsleiste 1 Blizzard-Kunst")
+MoveAny:AddTrans("deDE", "LID_OBJECTIVETRACKERBONUSBANNERFRAME", "Objektiv Tracker Fenster (World Quest Titel)")
+MoveAny:AddTrans("deDE", "LID_MOVESMALLBAGS", "Bewegen/Skalieren von kleinen Taschen")
+MoveAny:AddTrans("deDE", "LID_MOVELOOTFRAME", "Bewegen von Beutefenster (Loot)")
+MoveAny:AddTrans("deDE", "LID_SCALELOOTFRAME", "Skalieren von Beutefenster (Loot)")
+MoveAny:AddTrans("deDE", "LID_NEEDSARELOAD", "Braucht ein Neu laden")
+MoveAny:AddTrans("deDE", "LID_RAIDBOSSEMOTEFRAME", "Raid Boss Emotionen Fenster")
+MoveAny:AddTrans("deDE", "LID_STARTHELP", "Klicken Sie auf die MoveAny Minimap-Schaltfläche, um die Einstellungen zu öffnen")
+MoveAny:AddTrans("deDE", "LID_STARTHELP2", "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.")
+MoveAny:AddTrans("deDE", "LID_STARTHELP3", "Um diese Nachrichten zu verstecken deaktiviere Tipps im MoveAny Menü.")
+MoveAny:AddTrans("deDE", "LID_SHOWTIPS", "Tipps anzeigen")
+MoveAny:AddTrans("deDE", "LID_OVERRIDEACTIONBAR", "\"Überschreiben\" Aktionsleiste (Fahrzeugleiste)")
+MoveAny:AddTrans("deDE", "LID_BOSSBANNER", "Boss-Banner (Abgelegte Beute/Loot, Boss Titel)")
+MoveAny:AddTrans("deDE", "LID_COMPACTARENAFRAME", "Kompaktes Arena Fenster")
+MoveAny:AddTrans("deDE", "LID_ROLEPOLLPOPUP", "Rollenabfrage-Popup")
+MoveAny:AddTrans("deDE", "LID_READYCHECKLISTENERFRAME", "Bereitschaftsprüfung-Popup")
+MoveAny:AddTrans("deDE", "LID_DISABLEMOVEMENT", "Bewegungstastenbelegung deaktivieren, wenn im MoveAny-EditMode")
+MoveAny:AddTrans("deDE", "LID_CLICKTHROUGH", "Durchklicken")
+MoveAny:AddTrans("deDE", "LID_MABUFFMODE", "Stärkungszauber-Ausrichtung")
+MoveAny:AddTrans("deDE", "LID_MADEBUFFLIMIT", "Schwächungszauber Grenze")
+MoveAny:AddTrans("deDE", "LID_MADEBUFFSPACINGX", "Schwächungszauber Abstand Horizontal")
+MoveAny:AddTrans("deDE", "LID_MADEBUFFSPACINGY", "Schwächungszauber Abstand Vertikal")
+MoveAny:AddTrans("deDE", "LID_MADEBUFFMODE", "Schwächungszauber-Ausrichtung")
+MoveAny:AddTrans("deDE", "LID_SEARCH", "Suche")
+MoveAny:AddTrans("deDE", "LID_COMBOFRAME", "Komboleiste")
+MoveAny:AddTrans("deDE", "LID_WIDTH", "Weite")
+MoveAny:AddTrans("deDE", "LID_HEIGHT", "Höhe")
+MoveAny:AddTrans("deDE", "LID_ALPHAISFULLHEALTH", "Sichtbarkeit (Volle Gesundheit)")
+MoveAny:AddTrans("deDE", "LID_ALPHAISINPETBATTLE", "Sichtbarkeit (Ist in Haustierkampf)")
+MoveAny:AddTrans("deDE", "LID_KEYBINDWINDOW", "Keybind für Fenster")
+MoveAny:AddTrans("deDE", "LID_SNAPWINDOWSIZE", "Snapgröße (Fenster)")
+MoveAny:AddTrans("deDE", "LID_BOSS1", "Boss 1")
+MoveAny:AddTrans("deDE", "LID_BOSS2", "Boss 2")
+MoveAny:AddTrans("deDE", "LID_BOSS3", "Boss 3")
+MoveAny:AddTrans("deDE", "LID_BOSS4", "Boss 4")
+MoveAny:AddTrans("deDE", "LID_BOSS5", "Boss 5")
+MoveAny:AddTrans("deDE", "LID_BOSS6", "Boss 6")
+MoveAny:AddTrans("deDE", "LID_MAPAGES", "Aktionsleisten-Seiten")
+MoveAny:AddTrans("deDE", "LID_HIDEHIDDENFRAMES", "Verstecke versteckte Elemente")
+MoveAny:AddTrans("deDE", "LID_TIMERTRACKER1", "Zeitmesser (erst sichtbar wenn verfügbar)")
+MoveAny:AddTrans("deDE", "LID_PALADINPOWERBAR", "Paladin Machtleiste (Heilige Macht)")
+MoveAny:AddTrans("deDE", "LID_SHARDBARFRAME", "Hexenmeister Macht Fenster (Splitter)")
+MoveAny:AddTrans("deDE", "LID_OFFSET", "Versatz (Offset)")
+MoveAny:AddTrans("deDE", "LID_EclipseBarFrame", "Eclipseleiste (Druide)")
+MoveAny:AddTrans("deDE", "LID_REQUIRESFOR", "Benötigt: %s")
+MoveAny:AddTrans("deDE", "LID_REQUIREDFOR", "Benötigt für: %s")
+MoveAny:AddTrans("deDE", "LID_RESETELEMENT", "Element resetten")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAMEDEBUFFMOVER", "Zielfenster Debuffs")
+MoveAny:AddTrans("deDE", "LID_FOCUSFRAMEDEBUFFMOVER", "Fokusfenster Debuffs")
+MoveAny:AddTrans("deDE", "LID_TARGETFRAMETOTBUFFMOVER", "Ziel des Zielfenster Buffs")
+MoveAny:AddTrans("deDE", "LID_MINIMAPFLAG", "Minimap Flagge")
+MoveAny:AddTrans("deDE", "LID_MiniMapInstanceDifficulty", "Minimap Flagge Instanz Schwierigkeit")
+MoveAny:AddTrans("deDE", "LID_MiniMapChallengeMode", "Minimap Flagge Herausforderungsmodus")
+MoveAny:AddTrans("deDE", "LID_GuildInstanceDifficulty", "Minimap Flagge Gilden-Instanz Schwierigkeit")
+MoveAny:AddTrans("deDE", "LID_POWERBARCOUNTERBAR", "Machtleiste Gegenleiste (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)")
+MoveAny:AddTrans("deDE", "LID_BUFFTIMER1", "Stärkungszeit 1 (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)")
+MoveAny:AddTrans("deDE", "LID_!KalielsTracker", "!KalielsTracker")
+MoveAny:AddTrans("deDE", "LID_!KalielsTrackerButtons", "!KalielsTrackerButtons")
+MoveAny:AddTrans("deDE", "LID_FRAMES", "Fenster")
+MoveAny:AddTrans("deDE", "LID_SCALEFRAMES", "Fenster skalieren (Fenster größe ändern)")
+MoveAny:AddTrans("deDE", "LID_RESETFRAMES", "Fenster resetten")
+MoveAny:AddTrans("deDE", "LID_ExpansionLandingPageMinimapButton", "ExpansionLandingPageMinimapButton")
+MoveAny:AddTrans("deDE", "LID_MOVEANYINFO", "Wählen Sie die Dinge aus, die Sie ändern möchten")
+MoveAny:AddTrans("deDE", "LID_PLEASESWITCHPROFILE1", "Bitte wechsel das LAYOUT im Bearbeitungsmodus (von Blizzard) zu einem BENUTZERDEFINIERTEN Layout.")
+MoveAny:AddTrans("deDE", "LID_PLEASESWITCHPROFILE2", "MoveAny funktioniert nicht mit einem voreingestellten Layout, es ist meist schreibgeschützt.")
+MoveAny:AddTrans("deDE", "LID_PLEASESWITCHPROFILE3", "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)")
+MoveAny:AddTrans("deDE", "LID_LFGMinimapFrame", "LFG Minimapknopf")
+MoveAny:AddTrans("deDE", "LID_QUESTTIMERFRAME", "Questzeit-Fenster")
+MoveAny:AddTrans("deDE", "LID_BATTLEFIELDMAPFRAME", "Schlachtfeld Karte")
+MoveAny:AddTrans("deDE", "LID_ExtraActionBarFrame", "Extra Aktionsleiste (Klickbarer Knopf) (ExtraActionButton1, ExtraActionBarFrame)")
+MoveAny:AddTrans("deDE", "LID_ExtraActionButton1", "Extra Aktionsleiste (Klickbarer Knopf) (ExtraActionButton1, ExtraActionBarFrame)")
+MoveAny:AddTrans("deDE", "LID_FRAMESCALEDISABLED", "\"Fenster skalieren (Fenster größe ändern)\" ist deaktiviert, bitte aktivieren.")
+MoveAny:AddTrans("deDE", "LID_BAGEXTRAS", "Extras")
+MoveAny:AddTrans("deDE", "LID_HIDESMALLBAGS", "Kleine Taschen")
+MoveAny:AddTrans("deDE", "LID_HIDEKEYBAG", "Schlüsselbund Tasche")
+MoveAny:AddTrans("deDE", "LID_CHANGEONCATSTEALTH", "Wechsel Leiste wenn in Katzen-Unsichtbarkeit (Lädt Ui neu bei Änderung)")
+MoveAny:AddTrans("deDE", "LID_RIGHTCLICKFOROPTIONS", "Rechtsklick für Einstellungen")
+MoveAny:AddTrans("deDE", "LID_EssentialCooldownViewer", "Wesentliche Abklingzeit Betrachter (Abklingzeitmanager)")
+MoveAny:AddTrans("deDE", "LID_BuffIconCooldownViewer", "Stärkungssymbole Abklingzeit Betrachter (Abklingzeitmanager)")
+MoveAny:AddTrans("deDE", "LID_BuffBarCooldownViewer", "Stärkungsleisten Abklingzeit Betrachter (Abklingzeitmanager)")
+MoveAny:AddTrans("deDE", "LID_CLAMPWINDOWTOSCREEN", "Fenster an den Bildschirm klemmen (Nicht aus dem Bildschirm ziehen)")
+MoveAny:AddTrans("deDE", "LID_ARENAENEMYFRAMESCONTAINER", "Arena Gegner Fenster Kontainer (Schlachtfeld Bosse)")
+MoveAny:AddTrans("deDE", "LID_FOCUSFRAMETOTBUFFMOVER", "Ziel des Fokusfenster Buffs")
+MoveAny:AddTrans("deDE", "LID_FOCUSFRAMETOTDEBUFFMOVER", "Ziel des Fokusfenster Debuffs")
+MoveAny:AddTrans("deDE", "LID_PRESSESCTOLEAVE", "Drück ESC um diese Ansicht zu verlassen")
+MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")
+if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	MoveAny:AddTrans("deDE", "LID_ACTIONBARS", "Aktionsleisten 1 + 5 + 6")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR2", "Aktionsleiste 2 (2. Seite von Aktionsleiste 1)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR3", "Aktionsleiste 3 (Rechte Leiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR4", "Aktionsleiste 4 (Linke Leiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR5", "Aktionsleiste 5 (Leiste oben rechts)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR6", "Aktionsleiste 6 (Leiste oben links)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Benutzerdefinierte)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Benutzerdefinierte)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR9", "Aktionsleiste 9 (Benutzerdefinierte)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR10", "Aktionsleiste 10 (Benutzerdefinierte)")
+else
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR2", "Aktionsleiste 2 (Zweite Leiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR3", "Aktionsleiste 3 (Dritte Leiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR4", "Aktionsleiste 4 (Rechte Leiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR5", "Aktionsleiste 5 (Linke Leiste)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR6", "Aktionsleiste 6 (Extra)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Extra)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Extra)")
 end

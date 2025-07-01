@@ -146,9 +146,9 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 	slider.Low:SetText(vmin)
 	slider.High:SetText(vmax)
 	if lanArray then
-		slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
+		slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
 	else
-		slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
+		slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
 	end
 
 	slider:SetMinMaxValues(vmin, vmax)
@@ -162,9 +162,9 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 			if val then
 				MoveAny:SetEleOption(name, key, val)
 				if lanArray then
-					slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. lanArray[val])
+					slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[val])
 				else
-					slider.Text:SetText(MoveAny:GT("LID_" .. key) .. ": " .. val)
+					slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. val)
 				end
 
 				if func then
@@ -192,39 +192,39 @@ function MoveAny:MenuOptions(opt, frame)
 	end
 
 	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") then
-		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
+		table.insert(tabs, MoveAny:Trans("LID_BUFFS"))
 	end
 
 	if string.find(name, "MADebuffBar") or string.find(name, "DebuffFrame") then
-		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
+		table.insert(tabs, MoveAny:Trans("LID_DEBUFFS"))
 	end
 
 	if string.find(name, "TargetFrameBuffMover") then
-		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
+		table.insert(tabs, MoveAny:Trans("LID_BUFFS"))
 	end
 
 	if string.find(name, "TargetFrameDebuffMover") then
-		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
+		table.insert(tabs, MoveAny:Trans("LID_DEBUFFS"))
 	end
 
 	if string.find(name, "FocusFrameBuffMover") then
-		table.insert(tabs, MoveAny:GT("LID_BUFFS"))
+		table.insert(tabs, MoveAny:Trans("LID_BUFFS"))
 	end
 
 	if string.find(name, "FocusFrameDebuffMover") then
-		table.insert(tabs, MoveAny:GT("LID_DEBUFFS"))
+		table.insert(tabs, MoveAny:Trans("LID_DEBUFFS"))
 	end
 
 	if string.find(name, "MainMenuExpBar") then
-		table.insert(tabs, MoveAny:GT("LID_MAINMENUEXPBAR"))
+		table.insert(tabs, MoveAny:Trans("LID_MAINMENUEXPBAR"))
 	end
 
 	if string.find(name, "ReputationWatchBar") then
-		table.insert(tabs, MoveAny:GT("LID_REPUTATIONWATCHBAR"))
+		table.insert(tabs, MoveAny:Trans("LID_REPUTATIONWATCHBAR"))
 	end
 
 	if string.find(name, "BagsBar") then
-		table.insert(tabs, MoveAny:GT("LID_BAGEXTRAS"))
+		table.insert(tabs, MoveAny:Trans("LID_BAGEXTRAS"))
 	end
 
 	CreateTabs(opt, tabs)
@@ -312,7 +312,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			local resetDB = CreateFrame("Button", "resetdb", content, "UIPanelButtonTemplate")
-			resetDB:SetText(MoveAny:GT("LID_RESETELEMENT"))
+			resetDB:SetText(MoveAny:Trans("LID_RESETELEMENT"))
 			resetDB:SetSize(btnsize * 6, btnsize)
 			resetDB:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -8)
 			resetDB:SetScript(
@@ -362,7 +362,7 @@ function MoveAny:MenuOptions(opt, frame)
 			clickthrough:SetSize(btnsize, btnsize)
 			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
 			clickthrough:SetChecked(MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"))
-			clickthrough:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
+			clickthrough:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
 			clickthrough:SetScript(
 				"OnClick",
 				function()
@@ -429,7 +429,7 @@ function MoveAny:MenuOptions(opt, frame)
 			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
-			clickthrough.text:SetText(MoveAny:GT("LID_CLICKTHROUGH"))
+			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
 			local fullhp = CreateFrame("CheckButton", "FULLHPENABLED", content, "ChatConfigCheckButtonTemplate")
 			fullhp:SetSize(btnsize, btnsize)
 			fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -220)
@@ -524,7 +524,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 				sliderCount.Low:SetText("")
 				sliderCount.High:SetText("")
-				sliderCount.Text:SetText(MoveAny:GT("LID_COUNT") .. ": " .. count)
+				sliderCount.Text:SetText(MoveAny:Trans("LID_COUNT") .. ": " .. count)
 				sliderCount:SetMinMaxValues(vmin, max)
 				sliderCount:SetObeyStepOnDrag(true)
 				sliderCount:SetValueStep(1)
@@ -535,7 +535,7 @@ function MoveAny:MenuOptions(opt, frame)
 						val = tonumber(string.format("%" .. 0 .. "f", val))
 						if val and val ~= opts["ROWS"] then
 							opts["COUNT"] = val
-							sel.Text:SetText(MoveAny:GT("LID_COUNT") .. ": " .. val)
+							sel.Text:SetText(MoveAny:Trans("LID_COUNT") .. ": " .. val)
 							UpdateRowItems()
 							if slides.sliderRows then
 								slides.sliderRows:SetMinMaxValues(1, #items)
@@ -580,7 +580,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 				sliderRows.Low:SetText("")
 				sliderRows.High:SetText("")
-				sliderRows.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. rows)
+				sliderRows.Text:SetText(MoveAny:Trans("LID_ROWS") .. ": " .. rows)
 				sliderRows:SetMinMaxValues(1, getn(items))
 				sliderRows:SetObeyStepOnDrag(true)
 				sliderRows:SetValueStep(1)
@@ -592,7 +592,7 @@ function MoveAny:MenuOptions(opt, frame)
 						local value = items[val]
 						if value and value ~= opts["ROWS"] then
 							opts["ROWS"] = value
-							sel.Text:SetText(MoveAny:GT("LID_ROWS") .. ": " .. value)
+							sel.Text:SetText(MoveAny:Trans("LID_ROWS") .. ": " .. value)
 							if frame.UpdateSystemSettingNumRows then
 								frame.numRows = value
 								frame:UpdateSystemSettingNumRows()
@@ -635,7 +635,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 			sliderOffset.Low:SetText(-4)
 			sliderOffset.High:SetText(8)
-			sliderOffset.Text:SetText(MoveAny:GT("LID_OFFSET") .. ": " .. offset)
+			sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
 			sliderOffset:SetMinMaxValues(-4, 8)
 			sliderOffset:SetObeyStepOnDrag(true)
 			sliderOffset:SetValueStep(1)
@@ -646,7 +646,7 @@ function MoveAny:MenuOptions(opt, frame)
 					val = tonumber(string.format("%" .. 0 .. "f", value))
 					if value and value ~= opts["OFFSET"] then
 						opts["OFFSET"] = value
-						sel.Text:SetText(MoveAny:GT("LID_OFFSET") .. ": " .. value)
+						sel.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. value)
 						if MoveAny.UpdateActionBar then
 							MoveAny:UpdateActionBar(frame)
 						end
@@ -659,7 +659,7 @@ function MoveAny:MenuOptions(opt, frame)
 			flipped:SetSize(btnsize, btnsize)
 			flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
 			flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"))
-			flipped:SetText(MoveAny:GT("LID_FLIPPED"))
+			flipped:SetText(MoveAny:Trans("LID_FLIPPED"))
 			flipped:SetScript(
 				"OnClick",
 				function()
@@ -674,7 +674,7 @@ function MoveAny:MenuOptions(opt, frame)
 			flipped.text = flipped:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
 			flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
-			flipped.text:SetText(MoveAny:GT("LID_FLIPPED"))
+			flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
 			PY = PY - 40
 			opts["SPACING"] = opts["SPACING"] or 2
 			local slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
@@ -703,7 +703,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 			slider.Low:SetText(0)
 			slider.High:SetText(16)
-			slider.Text:SetText(MoveAny:GT("LID_SPACING") .. ": " .. opts["SPACING"])
+			slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. opts["SPACING"])
 			slider:SetMinMaxValues(0, 16)
 			slider:SetObeyStepOnDrag(true)
 			slider:SetValueStep(1)
@@ -714,7 +714,7 @@ function MoveAny:MenuOptions(opt, frame)
 					val = tonumber(string.format("%" .. 0 .. "f", valu))
 					if val and val ~= opts["SPACING"] then
 						opts["SPACING"] = val
-						slider.Text:SetText(MoveAny:GT("LID_SPACING") .. ": " .. val)
+						slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. val)
 						if MoveAny.UpdateActionBar then
 							MoveAny:UpdateActionBar(frame)
 						end
@@ -740,9 +740,9 @@ function MoveAny:MenuOptions(opt, frame)
 				catstealth.text = catstealth:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 				MoveAny:SetFontSize(catstealth.text, 12, "THINOUTLINE")
 				catstealth.text:SetPoint("LEFT", catstealth, "RIGHT", 0, 0)
-				catstealth.text:SetText(MoveAny:GT("LID_CHANGEONCATSTEALTH"))
+				catstealth.text:SetText(MoveAny:Trans("LID_CHANGEONCATSTEALTH"))
 			end
-		elseif string.find(content.name, MoveAny:GT("LID_BUFFS")) then
+		elseif string.find(content.name, MoveAny:Trans("LID_BUFFS")) then
 			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
 			if name == "MABuffBar" then
@@ -933,7 +933,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			y = y - 40
-		elseif string.find(content.name, MoveAny:GT("LID_DEBUFFS")) then
+		elseif string.find(content.name, MoveAny:Trans("LID_DEBUFFS")) then
 			local y = -20
 			if name == "MADebuffBar" then
 				if MoveAny:GetWoWBuild() ~= "RETAIL" then
@@ -1098,7 +1098,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			y = y - 40
-		elseif string.find(content.name, MoveAny:GT("LID_MAINMENUEXPBAR")) or string.find(content.name, MoveAny:GT("LID_REPUTATIONWATCHBAR")) then
+		elseif string.find(content.name, MoveAny:Trans("LID_MAINMENUEXPBAR")) or string.find(content.name, MoveAny:Trans("LID_REPUTATIONWATCHBAR")) then
 			opts["WIDTH"] = opts["WIDTH"] or 1024
 			local width = opts["WIDTH"]
 			opts["HEIGHT"] = opts["HEIGHT"] or 15
@@ -1129,7 +1129,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 			sliderW.Low:SetText(100)
 			sliderW.High:SetText(1024)
-			sliderW.Text:SetText(MoveAny:GT("LID_WIDTH") .. ": " .. width)
+			sliderW.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. width)
 			sliderW:SetMinMaxValues(100, 1024)
 			sliderW:SetObeyStepOnDrag(true)
 			sliderW:SetValueStep(2)
@@ -1140,7 +1140,7 @@ function MoveAny:MenuOptions(opt, frame)
 					valu = tonumber(string.format("%" .. 0 .. "f", valu))
 					if valu and valu ~= opts["WIDTH"] then
 						opts["WIDTH"] = valu
-						sel.Text:SetText(MoveAny:GT("LID_WIDTH") .. ": " .. valu)
+						sel.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. valu)
 						if frame and frame.UpdateSize then
 							frame:UpdateSize()
 						end
@@ -1174,7 +1174,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 			sliderH.Low:SetText(2)
 			sliderH.High:SetText(64)
-			sliderH.Text:SetText(MoveAny:GT("LID_HEIGHT") .. ": " .. height)
+			sliderH.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. height)
 			sliderH:SetMinMaxValues(2, 64)
 			sliderH:SetObeyStepOnDrag(true)
 			sliderH:SetValueStep(1)
@@ -1185,14 +1185,14 @@ function MoveAny:MenuOptions(opt, frame)
 					val = tonumber(string.format("%" .. 0 .. "f", valu))
 					if val and val ~= opts["HEIGHT"] then
 						opts["HEIGHT"] = val
-						sel.Text:SetText(MoveAny:GT("LID_HEIGHT") .. ": " .. val)
+						sel.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. val)
 						if frame and frame.UpdateSize then
 							frame:UpdateSize()
 						end
 					end
 				end
 			)
-		elseif string.find(content.name, MoveAny:GT("LID_BAGEXTRAS")) then
+		elseif string.find(content.name, MoveAny:Trans("LID_BAGEXTRAS")) then
 			local hide = CreateFrame("CheckButton", "HideSmallBags", content, "ChatConfigCheckButtonTemplate")
 			hide:SetSize(btnsize, btnsize)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
@@ -1209,7 +1209,7 @@ function MoveAny:MenuOptions(opt, frame)
 			hide.text = hide:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
-			hide.text:SetText(HIDE .. " (" .. MoveAny:GT("LID_HIDESMALLBAGS") .. ")")
+			hide.text:SetText(HIDE .. " (" .. MoveAny:Trans("LID_HIDESMALLBAGS") .. ")")
 			if KeyRingButton then
 				local hide2 = CreateFrame("CheckButton", "HideKeyBag", content, "ChatConfigCheckButtonTemplate")
 				hide2:SetSize(btnsize, btnsize)
@@ -1227,7 +1227,7 @@ function MoveAny:MenuOptions(opt, frame)
 				hide2.text = hide2:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 				MoveAny:SetFontSize(hide2.text, 12, "THINOUTLINE")
 				hide2.text:SetPoint("LEFT", hide2, "RIGHT", 0, 0)
-				hide2.text:SetText(HIDE .. " (" .. MoveAny:GT("LID_HIDEKEYBAG") .. ")")
+				hide2.text:SetText(HIDE .. " (" .. MoveAny:Trans("LID_HIDEKEYBAG") .. ")")
 			end
 		end
 	end
@@ -1316,7 +1316,7 @@ if MoveAny:GetWoWBuild() == "RETAIL" then
 				if lastCheck ~= isPreset then
 					lastCheck = isPreset
 					if isPreset then
-						MoveAny:MSG(MoveAny:GT("LID_PLEASESWITCHPROFILE1") .. " " .. MoveAny:GT("LID_PLEASESWITCHPROFILE2") .. " " .. MoveAny:GT("LID_PLEASESWITCHPROFILE3"))
+						MoveAny:MSG(MoveAny:Trans("LID_PLEASESWITCHPROFILE1") .. " " .. MoveAny:Trans("LID_PLEASESWITCHPROFILE2") .. " " .. MoveAny:Trans("LID_PLEASESWITCHPROFILE3"))
 					elseif wasPreset then
 						MoveAny:MSG("ALL GOOD.")
 					end
@@ -1340,9 +1340,9 @@ function MoveAny:RegisterWidget(tab)
 	local lstri = tab.lstri
 	MoveAny:RegisterSelectEle(lstr, name)
 	if lstri then
-		lstr = format(MoveAny:GT(lstr), lstri)
+		lstr = format(MoveAny:Trans(lstr), lstri)
 	else
-		lstr = MoveAny:GT(lstr)
+		lstr = MoveAny:Trans(lstr)
 	end
 
 	local sw = tab.sw
@@ -1362,7 +1362,7 @@ function MoveAny:RegisterWidget(tab)
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 	if (enabled1 or enabled2) and (not forced1 and not forced2) then
-		MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
+		MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
 
 		return
 	end
@@ -1373,7 +1373,7 @@ function MoveAny:RegisterWidget(tab)
 			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 			if (enabled1 or enabled2) and (not forced1 and not forced2) then
-				MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), lstr))
+				MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
 
 				return
 			end
@@ -1422,7 +1422,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe.name:SetFont(font, 15, fontFlags)
 			local enab, forc = MoveAny:IsInEditModeEnabled(name)
 			if enab and not forc then
-				lstr = lstr .. " |cFFFFFF00" .. MoveAny:GT("LID_ISENABLEDINEDITMODE")
+				lstr = lstr .. " |cFFFFFF00" .. MoveAny:Trans("LID_ISENABLEDINEDITMODE")
 			end
 
 			dragframe.name:SetText(lstr)
@@ -1434,7 +1434,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe.desc:SetPoint("CENTER", dragframe, "CENTER", 0, -9)
 			local font2, _, fontFlags2 = dragframe.name:GetFont()
 			dragframe.desc:SetFont(font2, 10, fontFlags2)
-			dragframe.desc:SetText(MoveAny:GT("LID_RIGHTCLICKFOROPTIONS"))
+			dragframe.desc:SetText(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"))
 			dragframe.desc:Hide()
 		end
 

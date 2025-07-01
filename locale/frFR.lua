@@ -1,145 +1,138 @@
 -- frFR French
 local _, MoveAny = ...
-function MoveAny:LangfrFR()
-	local tab = {
-		["LID_GENERAL"] = "Général",
-		["LID_SHOWMINIMAPBUTTON"] = "Afficher le bouton de Minimap",
-		["LID_GRIDSIZE"] = "Taille de la grille",
-		["LID_MOVEFRAMES"] = "Déplacer les cadres/fenêtres",
-		["LID_FRAMESKEYDRAG"] = "Déplacer le cadre avec %s + clic gauche-glisser",
-		["LID_FRAMESKEYSCALE"] = "Mettre à l'échelle le cadre avec %s + clic-droit-glisser",
-		["LID_FRAMESKEYRESET"] = "Réinitialiser le cadre avec %s + Mousewheelclick-drag",
-		["LID_PLAYERFRAME"] = "Cadre du joueur",
-		["LID_PETFRAME"] = "Cadre de l'animal",
-		["LID_TARGETFRAME"] = "Cadre de la cible",
-		["LID_TARGETOFTARGETFRAME"] = "Cible du cadre cible",
-		["LID_TARGETFRAMESPELLBAR"] = "Castbar de la cible",
-		["LID_FOCUSFRAME"] = "Cadre de mise au point",
-		["LID_FOCUSFRAMESPELLBAR"] = "Barre de rayon de la cible",
-		["LID_TARGETOFFOCUSFRAME"] = "Cible du cadre de mise au point",
-		["LID_RUNEFRAME"] = "Deathknight - Runes Frame",
-		["LID_TOTEMFRAME"] = "Totem Timers",
-		["LID_WARLOCKPOWERFRAME"] = "Cadre des pouvoirs du sorcier",
-		["LID_MONKHARMONYBARFRAME"] = "Cadre Harmonie du moine",
-		["LID_MAGEARCANECHARGESFRAME"] = "Cadre des charges arcaniques du mage",
-		["LID_ESSENCEPLAYERFRAME"] = "Cadre de joueur d'essence (Evoker)",
-		["LID_MAFPSFrame"] = "Cadre FPS",
-		["LID_MINIMAP"] = "Mini Carte",
-		["LID_BUFFS"] = "Buffs",
-		["LID_DEBUFFS"] = "Débuffs",
-		["LID_VEHICLESEATINDICATOR"] = "Indicateur de siège de véhicule",
-		["LID_ARENAENEMYFRAMES"] = "Images d'ennemis d'arène",
-		["LID_ARENAPREPFRAMES"] = "Cadres de préparation d'arène",
-		["LID_QUESTTRACKER"] = "Questtracker",
-		["LID_MICROMENU"] = "Micro Menu",
-		["LID_BAGS"] = "Bags",
-		["LID_GAMETOOLTIP"] = "Tooltip",
-		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
-		["LID_QUEUESTATUSBUTTON"] = "Statut LFG",
-		["LID_PETBAR"] = "Pet Bar",
-		["LID_STANCEBAR"] = "Stance Bar",
-		["LID_TOTEMBAR"] = "Shaman - Totem Bar",
-		["LID_LEAVEVEHICLE"] = "Bouton quitter le véhicule",
-		["LID_GROUPLOOTCONTAINER"] = "Cadre de rouleau de butin",
-		["LID_STATUSTRACKINGBARMANAGER"] = "Gestionnaire de barre de suivi de statut (XP, Réputation)",
-		["LID_ALERTFRAME"] = "Cadre d'alerte (Bonus Loot, Achiements, ...)",
-		["LID_CHAT"] = "Cadre de chat %d",
-		["LID_CHATBUTTONFRAME"] = "Boutons de chat",
-		["LID_CHATQUICKJOIN"] = "Participation rapide au chat",
-		["LID_CHATEDITBOX"] = "Boîte de saisie du chat %s",
-		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
-		["LID_BNToastFrame"] = "Notifications des amis Battlenet",
-		["LID_ZONETEXTFRAME"] = "Texte de la zone",
-		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Statut sur BGs/Dungeons)",
-		["LID_IASKILLS"] = "Barres de compétences",
-		["LID_UIWIDGETBELOWMINIMAP"] = "Widget Below Minimap (État des captures)",
-		["LID_DURABILITY"] = "Poupée de durabilité",
-		["LID_MONEYBAR"] = "Money Bar",
-		["LID_TOKENBAR"] = "Token Bar",
-		["LID_IAILVLBAR"] = "Barre de niveau d'objet",
-		["LID_CASTINGBAR"] = "Casting Bar",
-		["LID_TALKINGHEAD"] = "Dialogue de la tête parlante",
-		["LID_POSSESSBAR"] = "Barre de possession (contrôle d'un PNJ/véhicule)",
-		["LID_ZONEABILITYFRAME"] = "Capacité de zone",
-		["LID_EXTRAABILITYCONTAINER"] = "Capacité supplémentaire",
-		["LID_MAINMENUEXPBAR"] = "Barre d'exp",
-		["LID_REPUTATIONWATCHBAR"] = "Barre de Réputation",
-		["LID_UIWIDGETPOWERBAR"] = "Barre de puissance",
-		["LID_ROWS"] = "Rows",
-		["LID_SPACING"] = "Espacement",
-		["LID_PROFILE"] = "Profil",
-		["LID_PROFILES"] = "Profils",
-		["LID_ADDPROFILE"] = "Ajouter un profil",
-		["LID_CURRENT"] = "Actuel",
-		["LID_SHARE"] = "Partage",
-		["LID_SHAREPROFILE"] = "Profil de partage",
-		["LID_GETPROFILE"] = "Obtenir un profil",
-		["LID_INHERITFROM"] = "Hériter de",
-		["LID_ADD"] = "Ajouter",
-		["LID_REMOVE"] = "Supprimer",
-		["LID_RENAME"] = "Renommer",
-		["LID_PLAYER"] = "Player",
-		["LID_DOWNLOAD"] = "Télécharger",
-		["LID_UPLOAD"] = "Upload",
-		["LID_STATUS"] = "Statut",
-		["LID_DONE"] = "Done",
-		["LID_WAITINGFOROWNER"] = "En attente du propriétaire",
-		["LID_WAITFORPLAYERPROFILE"] = "Attend que l'autre joueur appuie sur \"Get Profiles\".",
-		["LID_WAITFORPLAYERPROFILE2"] = "Attend que l'autre joueur appuie sur \"Partager\".",
-		["LID_ALPHAINCOMBAT"] = "Alpha (en combat)",
-		["LID_ALPHANOTINCOMBAT"] = "Alpha (pas en combat)",
-		["LID_ALPHAINVEHICLE"] = "Alpha (en véhicule)",
-		["LID_MABUFFLIMIT"] = "Buff limit",
-		["LID_MABUFFSPACINGX"] = "Espacement horizontal des buffs",
-		["LID_MABUFFSPACINGY"] = "Espacement vertical du tampon",
-		["LID_ISENABLEDINEDITMODE"] = "(Désactivez-le en EditMode)",
-		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(Peut provoquer une erreur due au mode d'édition)",
-		["LID_HELPTEXT"] = "\"%s\" est déjà activé en EditMode. Veuillez le désactiver en EditMode ou MoveAny.",
-		["LID_BUILTIN"] = "Built-In",
-		["LID_EDITMODE"] = "Ecrase le Mode Edition",
-		["LID_NORMAL"] = "Normal",
-		["LID_CLASSSPECIFIC"] = "Classe spécifique",
-		["LID_ADVANCED"] = "Avancé",
-		["LID_ImproveAny"] = "ImproveAny",
-		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Barre de progression du site de fouilles archéologiques",
-		["LID_UIERRORSFRAME"] = "Messages d'erreur de l'interface utilisateur, progression de la quête",
-		["LID_COMBOPOINTPLAYERFRAME"] = "Points de combo",
-		["LID_PARTYFRAME"] = "Cadre de la fête",
-		["LID_PARTYMEMBERFRAME"] = "Cadre de membre du groupe %s",
-		["LID_BOSSTARGETFRAMECONTAINER"] = "Cadres de Boss",
-		["LID_FLIPPED"] = "Renversé",
-		["LID_GHOSTFRAME"] = "Cadre fantôme (téléportation au cimetière)",
-		["LID_TICKETSTATUSFRAME"] = "Cadre des tickets",
-		["LID_LOSSOFCONTROLFRAME"] = "Cadre de perte de contrôle",
-		["LID_TargetFrameNumericalThreat"] = "Pourcentage de menace",
-		["LID_RESETELEMENT"] = "Reset Element",
-		["LID_PLEASESWITCHPROFILE1"] = "S'il vous plaît, changez le LAYOUT en Editmode (de Blizzard) pour un CUSTOM LAYOUT.",
-		["LID_PLEASESWITCHPROFILE2"] = "MoveAny ne fonctionne pas avec un Preset Profile, il est principalement en lecture seule.",
-		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Editmode -> Layout : [CUSTOM-LAYOUT] (pas de Preset Layout)",
-	}
-
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Barre d'action 1 + 5 + 6"
-		tab["LID_ACTIONBAR1"] = "Barre d'action 1 (Barre principale)"
-		tab["LID_ACTIONBAR2"] = "Barre d'action 2 (2. Page of Barre d'action 1)"
-		tab["LID_ACTIONBAR3"] = "Barre d'action 3 (Barre de droite)"
-		tab["LID_ACTIONBAR4"] = "Barre d'action 4 (Barre de gauche)"
-		tab["LID_ACTIONBAR5"] = "Barre d'action 5 (Barre supérieure droite)"
-		tab["LID_ACTIONBAR6"] = "Barre d'action 6 (barre supérieure gauche)"
-		tab["LID_ACTIONBAR7"] = "Barre d'action 7 (personnalisée)"
-		tab["LID_ACTIONBAR8"] = "Barre d'action 8 (personnalisée)"
-		tab["LID_ACTIONBAR9"] = "Barre d'action 9 (personnalisée)"
-		tab["LID_ACTIONBAR10"] = "Barre d'action 10 (personnalisée)"
-	else
-		tab["LID_ACTIONBAR1"] = "Barre d'action 1 (barre principale)"
-		tab["LID_ACTIONBAR2"] = "Barre d'action 2 (au dessus de la barre principale)"
-		tab["LID_ACTIONBAR3"] = "Barre d'action 3 (Au-dessus de la deuxième barre)"
-		tab["LID_ACTIONBAR4"] = "Barre d'action 4 (barre de droite)"
-		tab["LID_ACTIONBAR5"] = "Barre d'action 5 (barre de gauche)"
-		tab["LID_ACTIONBAR6"] = "Barre d'action 6"
-		tab["LID_ACTIONBAR7"] = "Barre d'action 7 (barre d'action 7)"
-		tab["LID_ACTIONBAR8"] = "Barre d'actions 8"
-	end
-
-	MoveAny:UpdateLanguageTab(tab)
+MoveAny:AddTrans("frFR", "LID_GENERAL", "Général")
+MoveAny:AddTrans("frFR", "LID_SHOWMINIMAPBUTTON", "Afficher le bouton de Minimap")
+MoveAny:AddTrans("frFR", "LID_GRIDSIZE", "Taille de la grille")
+MoveAny:AddTrans("frFR", "LID_MOVEFRAMES", "Déplacer les cadres/fenêtres")
+MoveAny:AddTrans("frFR", "LID_FRAMESKEYDRAG", "Déplacer le cadre avec %s + clic gauche-glisser")
+MoveAny:AddTrans("frFR", "LID_FRAMESKEYSCALE", "Mettre à l'échelle le cadre avec %s + clic-droit-glisser")
+MoveAny:AddTrans("frFR", "LID_FRAMESKEYRESET", "Réinitialiser le cadre avec %s + Mousewheelclick-drag")
+MoveAny:AddTrans("frFR", "LID_PLAYERFRAME", "Cadre du joueur")
+MoveAny:AddTrans("frFR", "LID_PETFRAME", "Cadre de l'animal")
+MoveAny:AddTrans("frFR", "LID_TARGETFRAME", "Cadre de la cible")
+MoveAny:AddTrans("frFR", "LID_TARGETOFTARGETFRAME", "Cible du cadre cible")
+MoveAny:AddTrans("frFR", "LID_TARGETFRAMESPELLBAR", "Castbar de la cible")
+MoveAny:AddTrans("frFR", "LID_FOCUSFRAME", "Cadre de mise au point")
+MoveAny:AddTrans("frFR", "LID_FOCUSFRAMESPELLBAR", "Barre de rayon de la cible")
+MoveAny:AddTrans("frFR", "LID_TARGETOFFOCUSFRAME", "Cible du cadre de mise au point")
+MoveAny:AddTrans("frFR", "LID_RUNEFRAME", "Deathknight - Runes Frame")
+MoveAny:AddTrans("frFR", "LID_TOTEMFRAME", "Totem Timers")
+MoveAny:AddTrans("frFR", "LID_WARLOCKPOWERFRAME", "Cadre des pouvoirs du sorcier")
+MoveAny:AddTrans("frFR", "LID_MONKHARMONYBARFRAME", "Cadre Harmonie du moine")
+MoveAny:AddTrans("frFR", "LID_MAGEARCANECHARGESFRAME", "Cadre des charges arcaniques du mage")
+MoveAny:AddTrans("frFR", "LID_ESSENCEPLAYERFRAME", "Cadre de joueur d'essence (Evoker)")
+MoveAny:AddTrans("frFR", "LID_MAFPSFrame", "Cadre FPS")
+MoveAny:AddTrans("frFR", "LID_MINIMAP", "Mini Carte")
+MoveAny:AddTrans("frFR", "LID_BUFFS", "Buffs")
+MoveAny:AddTrans("frFR", "LID_DEBUFFS", "Débuffs")
+MoveAny:AddTrans("frFR", "LID_VEHICLESEATINDICATOR", "Indicateur de siège de véhicule")
+MoveAny:AddTrans("frFR", "LID_ARENAENEMYFRAMES", "Images d'ennemis d'arène")
+MoveAny:AddTrans("frFR", "LID_ARENAPREPFRAMES", "Cadres de préparation d'arène")
+MoveAny:AddTrans("frFR", "LID_QUESTTRACKER", "Questtracker")
+MoveAny:AddTrans("frFR", "LID_MICROMENU", "Micro Menu")
+MoveAny:AddTrans("frFR", "LID_BAGS", "Bags")
+MoveAny:AddTrans("frFR", "LID_GAMETOOLTIP", "Tooltip")
+MoveAny:AddTrans("frFR", "LID_GAMETOOLTIP_ONCURSOR", "Tooltip on Cursor")
+MoveAny:AddTrans("frFR", "LID_QUEUESTATUSBUTTON", "Statut LFG")
+MoveAny:AddTrans("frFR", "LID_PETBAR", "Pet Bar")
+MoveAny:AddTrans("frFR", "LID_STANCEBAR", "Stance Bar")
+MoveAny:AddTrans("frFR", "LID_TOTEMBAR", "Shaman - Totem Bar")
+MoveAny:AddTrans("frFR", "LID_LEAVEVEHICLE", "Bouton quitter le véhicule")
+MoveAny:AddTrans("frFR", "LID_GROUPLOOTCONTAINER", "Cadre de rouleau de butin")
+MoveAny:AddTrans("frFR", "LID_STATUSTRACKINGBARMANAGER", "Gestionnaire de barre de suivi de statut (XP, Réputation)")
+MoveAny:AddTrans("frFR", "LID_ALERTFRAME", "Cadre d'alerte (Bonus Loot, Achiements, ...)")
+MoveAny:AddTrans("frFR", "LID_CHAT", "Cadre de chat %d")
+MoveAny:AddTrans("frFR", "LID_CHATBUTTONFRAME", "Boutons de chat")
+MoveAny:AddTrans("frFR", "LID_CHATQUICKJOIN", "Participation rapide au chat")
+MoveAny:AddTrans("frFR", "LID_CHATEDITBOX", "Boîte de saisie du chat %s")
+MoveAny:AddTrans("frFR", "LID_COMPACTRAIDFRAMEMANAGER", "Raid Manager")
+MoveAny:AddTrans("frFR", "LID_BNToastFrame", "Notifications des amis Battlenet")
+MoveAny:AddTrans("frFR", "LID_ZONETEXTFRAME", "Texte de la zone")
+MoveAny:AddTrans("frFR", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Statut sur BGs/Dungeons)")
+MoveAny:AddTrans("frFR", "LID_IASKILLS", "Barres de compétences")
+MoveAny:AddTrans("frFR", "LID_UIWIDGETBELOWMINIMAP", "Widget Below Minimap (État des captures)")
+MoveAny:AddTrans("frFR", "LID_DURABILITY", "Poupée de durabilité")
+MoveAny:AddTrans("frFR", "LID_MONEYBAR", "Money Bar")
+MoveAny:AddTrans("frFR", "LID_TOKENBAR", "Token Bar")
+MoveAny:AddTrans("frFR", "LID_IAILVLBAR", "Barre de niveau d'objet")
+MoveAny:AddTrans("frFR", "LID_CASTINGBAR", "Casting Bar")
+MoveAny:AddTrans("frFR", "LID_TALKINGHEAD", "Dialogue de la tête parlante")
+MoveAny:AddTrans("frFR", "LID_POSSESSBAR", "Barre de possession (contrôle d'un PNJ/véhicule)")
+MoveAny:AddTrans("frFR", "LID_ZONEABILITYFRAME", "Capacité de zone")
+MoveAny:AddTrans("frFR", "LID_EXTRAABILITYCONTAINER", "Capacité supplémentaire")
+MoveAny:AddTrans("frFR", "LID_MAINMENUEXPBAR", "Barre d'exp")
+MoveAny:AddTrans("frFR", "LID_REPUTATIONWATCHBAR", "Barre de Réputation")
+MoveAny:AddTrans("frFR", "LID_UIWIDGETPOWERBAR", "Barre de puissance")
+MoveAny:AddTrans("frFR", "LID_ROWS", "Rows")
+MoveAny:AddTrans("frFR", "LID_SPACING", "Espacement")
+MoveAny:AddTrans("frFR", "LID_PROFILE", "Profil")
+MoveAny:AddTrans("frFR", "LID_PROFILES", "Profils")
+MoveAny:AddTrans("frFR", "LID_ADDPROFILE", "Ajouter un profil")
+MoveAny:AddTrans("frFR", "LID_CURRENT", "Actuel")
+MoveAny:AddTrans("frFR", "LID_SHARE", "Partage")
+MoveAny:AddTrans("frFR", "LID_SHAREPROFILE", "Profil de partage")
+MoveAny:AddTrans("frFR", "LID_GETPROFILE", "Obtenir un profil")
+MoveAny:AddTrans("frFR", "LID_INHERITFROM", "Hériter de")
+MoveAny:AddTrans("frFR", "LID_ADD", "Ajouter")
+MoveAny:AddTrans("frFR", "LID_REMOVE", "Supprimer")
+MoveAny:AddTrans("frFR", "LID_RENAME", "Renommer")
+MoveAny:AddTrans("frFR", "LID_PLAYER", "Player")
+MoveAny:AddTrans("frFR", "LID_DOWNLOAD", "Télécharger")
+MoveAny:AddTrans("frFR", "LID_UPLOAD", "Upload")
+MoveAny:AddTrans("frFR", "LID_STATUS", "Statut")
+MoveAny:AddTrans("frFR", "LID_DONE", "Done")
+MoveAny:AddTrans("frFR", "LID_WAITINGFOROWNER", "En attente du propriétaire")
+MoveAny:AddTrans("frFR", "LID_WAITFORPLAYERPROFILE", "Attend que l'autre joueur appuie sur \"Get Profiles\".")
+MoveAny:AddTrans("frFR", "LID_WAITFORPLAYERPROFILE2", "Attend que l'autre joueur appuie sur \"Partager\".")
+MoveAny:AddTrans("frFR", "LID_ALPHAINCOMBAT", "Alpha (en combat)")
+MoveAny:AddTrans("frFR", "LID_ALPHANOTINCOMBAT", "Alpha (pas en combat)")
+MoveAny:AddTrans("frFR", "LID_ALPHAINVEHICLE", "Alpha (en véhicule)")
+MoveAny:AddTrans("frFR", "LID_MABUFFLIMIT", "Buff limit")
+MoveAny:AddTrans("frFR", "LID_MABUFFSPACINGX", "Espacement horizontal des buffs")
+MoveAny:AddTrans("frFR", "LID_MABUFFSPACINGY", "Espacement vertical du tampon")
+MoveAny:AddTrans("frFR", "LID_ISENABLEDINEDITMODE", "(Désactivez-le en EditMode)")
+MoveAny:AddTrans("frFR", "LID_CANBREAKBECAUSEOFEDITMODE", "(Peut provoquer une erreur due au mode d'édition)")
+MoveAny:AddTrans("frFR", "LID_HELPTEXT", "\"%s\" est déjà activé en EditMode. Veuillez le désactiver en EditMode ou MoveAny.")
+MoveAny:AddTrans("frFR", "LID_BUILTIN", "Built-In")
+MoveAny:AddTrans("frFR", "LID_EDITMODE", "Ecrase le Mode Edition")
+MoveAny:AddTrans("frFR", "LID_NORMAL", "Normal")
+MoveAny:AddTrans("frFR", "LID_CLASSSPECIFIC", "Classe spécifique")
+MoveAny:AddTrans("frFR", "LID_ADVANCED", "Avancé")
+MoveAny:AddTrans("frFR", "LID_ImproveAny", "ImproveAny")
+MoveAny:AddTrans("frFR", "LID_ARCHEOLOGYDIGSITEPROGRESSBAR", "Barre de progression du site de fouilles archéologiques")
+MoveAny:AddTrans("frFR", "LID_UIERRORSFRAME", "Messages d'erreur de l'interface utilisateur, progression de la quête")
+MoveAny:AddTrans("frFR", "LID_COMBOPOINTPLAYERFRAME", "Points de combo")
+MoveAny:AddTrans("frFR", "LID_PARTYFRAME", "Cadre de la fête")
+MoveAny:AddTrans("frFR", "LID_PARTYMEMBERFRAME", "Cadre de membre du groupe %s")
+MoveAny:AddTrans("frFR", "LID_BOSSTARGETFRAMECONTAINER", "Cadres de Boss")
+MoveAny:AddTrans("frFR", "LID_FLIPPED", "Renversé")
+MoveAny:AddTrans("frFR", "LID_GHOSTFRAME", "Cadre fantôme (téléportation au cimetière)")
+MoveAny:AddTrans("frFR", "LID_TICKETSTATUSFRAME", "Cadre des tickets")
+MoveAny:AddTrans("frFR", "LID_LOSSOFCONTROLFRAME", "Cadre de perte de contrôle")
+MoveAny:AddTrans("frFR", "LID_TargetFrameNumericalThreat", "Pourcentage de menace")
+MoveAny:AddTrans("frFR", "LID_RESETELEMENT", "Reset Element")
+MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE1", "S'il vous plaît, changez le LAYOUT en Editmode (de Blizzard) pour un CUSTOM LAYOUT.")
+MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE2", "MoveAny ne fonctionne pas avec un Preset Profile, il est principalement en lecture seule.")
+MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE3", "ESC -> Editmode -> Layout : [CUSTOM-LAYOUT] (pas de Preset Layout)")
+if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	MoveAny:AddTrans("frFR", "LID_ACTIONBARS", "Barre d'action 1 + 5 + 6")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR1", "Barre d'action 1 (Barre principale)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR2", "Barre d'action 2 (2. Page of Barre d'action 1)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR3", "Barre d'action 3 (Barre de droite)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR4", "Barre d'action 4 (Barre de gauche)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR5", "Barre d'action 5 (Barre supérieure droite)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR6", "Barre d'action 6 (barre supérieure gauche)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR7", "Barre d'action 7 (personnalisée)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR8", "Barre d'action 8 (personnalisée)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR9", "Barre d'action 9 (personnalisée)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR10", "Barre d'action 10 (personnalisée)")
+else
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR1", "Barre d'action 1 (barre principale)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR2", "Barre d'action 2 (au dessus de la barre principale)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR3", "Barre d'action 3 (Au-dessus de la deuxième barre)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR4", "Barre d'action 4 (barre de droite)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR5", "Barre d'action 5 (barre de gauche)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR6", "Barre d'action 6")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR7", "Barre d'action 7 (barre d'action 7)")
+	MoveAny:AddTrans("frFR", "LID_ACTIONBAR8", "Barre d'actions 8")
 end

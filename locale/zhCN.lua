@@ -1,275 +1,268 @@
 -- zhTW Simplified Chinese
 local _, MoveAny = ...
-function MoveAny:LangzhCN()
-    local tab = {
-        ["LID_GENERAL"] = "通用设置",
-        ["LID_SHOWMINIMAPBUTTON"] = "显示小地图按钮",
-        ["LID_GRIDSIZE"] = "网格尺寸 (单位)",
-        ["LID_SNAPSIZE"] = "吸附尺寸 (单位)",
-        ["LID_MOVEFRAMES"] = "移动窗口",
-        ["LID_SAVEFRAMEPOSITION"] = "保存窗口位置",
-        ["LID_SAVEFRAMESCALE"] = "保存窗口缩放",
-        ["LID_SHIFT"] = "SHIFT",
-        ["LID_CTRL"] = "CTRL",
-        ["LID_ALT"] = "ALT",
-        ["LID_FRAMESKEYDRAG"] = "使用 %s + 左键拖曳移动窗口",
-        ["LID_FRAMESKEYSCALE"] = "使用 %s + 右键拖曳缩放窗口",
-        ["LID_FRAMESKEYRESET"] = "使用 %s + 中键重置窗口",
-        ["LID_PLAYERFRAME"] = "玩家框架",
-        ["LID_PLAYERLEVELTEXT"] = "玩家等级文字",
-        ["LID_PLAYERFRAMEBACKGROUND"] = "玩家框架背景",
-        ["LID_PETFRAME"] = "宠物框架",
-        ["LID_MAPETFRAME"] = "宠物框架",
-        ["LID_PETFRAMEHAPPINESS"] = "宠物快乐值",
-        ["LID_TARGETFRAME"] = "目标框架",
-        ["LID_TARGETFRAMENAMEBACKGROUND"] = "目标名称背景",
-        ["LID_TARGETFRAMEBUFFMOVER"] = "目标增益效果",
-        ["LID_TARGETFRAMETOTDEBUFFMOVER"] = "目标的目标减益效果",
-        ["LID_TARGETOFTARGETFRAME"] = "目标的目标框架",
-        ["LID_TARGETFRAMESPELLBAR"] = "目标施法条",
-        ["LID_FOCUSFRAME"] = "焦点框架",
-        ["LID_FOCUSFRAMEBUFFMOVER"] = "焦点增益效果",
-        ["LID_FOCUSFRAMESPELLBAR"] = "焦点施法条",
-        ["LID_TARGETOFFOCUSFRAME"] = "焦点的目标框架",
-        ["LID_RUNEFRAME"] = "死亡骑士符文条",
-        ["LID_TOTEMFRAME"] = "图腾计时器 (其他职业也可用)",
-        ["LID_WARLOCKPOWERFRAME"] = "术士能量条 (灵魂碎片)",
-        ["LID_MONKHARMONYBARFRAME"] = "武僧真气条 (真气)",
-        ["LID_MONKSTAGGERBAR"] = "武僧醉拳条",
-        ["LID_MAGEARCANECHARGESFRAME"] = "法师奥术充能条",
-        ["LID_ESSENCEPLAYERFRAME"] = "唤魔师精华条",
-        ["LID_PALADINPOWERBARFRAME"] = "圣骑士能量条 (神圣能量)",
-        ["LID_MAFPSFrame"] = "帧数 (新FPS计数器)",
-        ["LID_IAPingFrame"] = "延迟",
-        ["LID_IACoordsFrame"] = "坐标框架",
-        ["LID_MINIMAP"] = "小地图",
-        ["LID_MINIMAPZONETEXT"] = "小地图区域文字",
-        ["LID_BUFFS"] = "增益效果",
-        ["LID_DEBUFFS"] = "减益效果",
-        ["LID_VEHICLESEATINDICATOR"] = "载具座位指示器",
-        ["LID_ARENAENEMYFRAMES"] = "竞技场敌方框架",
-        ["LID_ARENAPREPFRAMES"] = "竞技场准备框架",
-        ["LID_QUESTTRACKER"] = "任务追踪",
-        ["LID_MICROMENU"] = "微型菜单 (角色按钮, 法术书按钮等)",
-        ["LID_BAGS"] = "背包",
-        ["LID_GAMETOOLTIP"] = "鼠标提示框",
-        ["LID_GAMETOOLTIP_ONCURSOR"] = "跟随光标的提示框",
-        ["LID_QUEUESTATUSBUTTON"] = "地下城查找器状态",
-        ["LID_QUEUESTATUSFRAME"] = "地下城查找器状态提示",
-        ["LID_PETBAR"] = "宠物动作条",
-        ["LID_STANCEBAR"] = "姿态条",
-        ["LID_TOTEMBAR"] = "萨满图腾栏",
-        ["LID_LEAVEVEHICLE"] = "离开载具按钮",
-        ["LID_GROUPLOOTFRAME1"] = "战利品掷骰框架 1",
-        ["LID_GROUPLOOTCONTAINER"] = "战利品掷骰框架",
-        ["LID_BONUSROLLFRAME"] = "额外掷骰框架",
-        ["LID_STATUSTRACKINGBARMANAGER"] = "状态追踪条管理 (经验值, 声望)",
-        ["LID_ALERTFRAME"] = "警报框架 (额外战利品, 成就等)",
-        ["LID_CHAT"] = "聊天框 %d",
-        ["LID_CHATBUTTONFRAME1"] = "聊天标签 1 按钮",
-        ["LID_CHATBUTTONFRAME2"] = "聊天标签 2 按钮",
-        ["LID_CHATBUTTONFRAME3"] = "聊天标签 3 按钮",
-        ["LID_CHATBUTTONFRAME4"] = "聊天标签 4 按钮",
-        ["LID_CHATBUTTONFRAME5"] = "聊天标签 5 按钮",
-        ["LID_CHATBUTTONFRAME6"] = "聊天标签 6 按钮",
-        ["LID_CHATBUTTONFRAME7"] = "聊天标签 7 按钮",
-        ["LID_CHATBUTTONFRAME8"] = "聊天标签 8 按钮",
-        ["LID_CHATBUTTONFRAME9"] = "聊天标签 9 按钮",
-        ["LID_CHATBUTTONFRAME10"] = "聊天标签 10 按钮",
-        ["LID_CHATQUICKJOIN"] = "聊天快速加入",
-        ["LID_CHATEDITBOX"] = "聊天输入框 %s",
-        ["LID_CHATTAB"] = "聊天标签 %s",
-        ["LID_COMPACTRAIDFRAMEMANAGER"] = "团队框架管理",
-        ["LID_BNToastFrame"] = "战网好友通知",
-        ["LID_SPELLACTIVATIONOVERLAYFRAME"] = "法术触发指示器 (职业特效)",
-        ["LID_ZONETEXTFRAME"] = "区域文字",
-        ["LID_UIWIDGETTOPCENTER"] = "顶部中心部件 (战场/地下城/团队中的状态)",
-        ["LID_MIRRORTIMER1"] = "呼吸条",
-        ["LID_IASKILLS"] = "专业技能条",
-        ["LID_UIWIDGETBELOWMINIMAP"] = "小地图下方部件 (占领状态)",
-        ["LID_DURABILITY"] = "装备耐久度",
-        ["LID_MONEYBAR"] = "金币条",
-        ["LID_TOKENBAR"] = "代币条",
-        ["LID_IAILVLBAR"] = "物品等级条",
-        ["LID_CASTINGBAR"] = "施法条",
-        ["LID_CASTINGBARTIMER"] = "施法条计时器",
-        ["LID_TALKINGHEAD"] = "对话头像框",
-        ["LID_POSSESSBAR"] = "控制动作条 (控制NPC/载具)",
-        ["LID_ZONEABILITYFRAME"] = "区域技能框",
-        ["LID_EXTRAABILITYCONTAINER"] = "额外技能 (任务/首领技能)",
-        ["LID_MAINMENUEXPBAR"] = "经验条",
-        ["LID_REPUTATIONWATCHBAR"] = "声望条",
-        ["LID_UIWIDGETPOWERBAR"] = "屏幕中能量条 (编辑模式中战斗条) (首领条, 活力条, 暗月马戏团等)",
-        ["LID_POWERBAR"] = "能量条 (通常显示百分比) (首领战, 暗月马戏团等)",
-        ["LID_COUNT"] = "数量",
-        ["LID_ROWS"] = "行数",
-        ["LID_SPACING"] = "间距",
-        ["LID_PROFILE"] = "配置文件",
-        ["LID_PROFILES"] = "配置文件",
-        ["LID_ADDPROFILE"] = "添加配置",
-        ["LID_CURRENT"] = "当前",
-        ["LID_SHARE"] = "分享",
-        ["LID_SHAREPROFILE"] = "分享配置",
-        ["LID_GETPROFILE"] = "获取配置",
-        ["LID_INHERITFROM"] = "继承自",
-        ["LID_ADD"] = "添加",
-        ["LID_REMOVE"] = "移除",
-        ["LID_RENAME"] = "重命名",
-        ["LID_PLAYER"] = "玩家",
-        ["LID_DOWNLOAD"] = "下载",
-        ["LID_UPLOAD"] = "上传",
-        ["LID_STATUS"] = "状态",
-        ["LID_DONE"] = "完成",
-        ["LID_WAITINGFOROWNER"] = "等待所有者",
-        ["LID_WAITFORPLAYERPROFILE"] = "等待其他玩家点击\"获取配置\"。",
-        ["LID_WAITFORPLAYERPROFILE2"] = "等待其他玩家点击\"分享\"。",
-        ["LID_ALPHAINCOMBAT"] = "透明度 (战斗中)",
-        ["LID_ALPHANOTINCOMBAT"] = "透明度 (非战斗)",
-        ["LID_ALPHAINVEHICLE"] = "透明度 (载具中)",
-        ["LID_ALPHAINRESTEDAREA"] = "透明度 (休息区)",
-        ["LID_ALPHAISMOUNTED"] = "透明度 (骑乘中)",
-        ["LID_ALPHAISSTEALTHED"] = "透明度 (潜行中)",
-        ["LID_MABUFFLIMIT"] = "增益数量限制",
-        ["LID_MABUFFSPACINGX"] = "增益水平间距",
-        ["LID_MABUFFSPACINGY"] = "增益垂直间距",
-        ["LID_ISENABLEDINEDITMODE"] = "(可在游戏菜单编辑模式中禁用)",
-        ["LID_CANBREAKBECAUSEOFEDITMODE"] = "(可能因编辑模式导致错误)",
-        ["LID_HELPTEXT"] = "\"%s\"已在编辑模式中启用。请在编辑模式或MoveAny中禁用它。",
-        ["LID_BUILTIN"] = "内置",
-        ["LID_EDITMODE"] = "覆盖编辑模式",
-        ["LID_NORMAL"] = "普通",
-        ["LID_CLASSSPECIFIC"] = "职业专用",
-        ["LID_ADVANCED"] = "高级",
-        ["LID_ImproveAny"] = "ImproveAny",
-        ["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "考古挖掘进度条",
-        ["LID_UIERRORSFRAME"] = "界面错误信息 (任务进度, 事件消息)",
-        ["LID_COMBOPOINTPLAYERFRAME"] = "连击点",
-        ["LID_PARTYFRAME"] = "小队框架",
-        ["LID_PARTYMEMBERFRAME"] = "小队成员框架 %s",
-        ["LID_COMPACTRAIDFRAMECONTAINER"] = "团队框架容器",
-        ["LID_BOSSTARGETFRAMECONTAINER"] = "首领目标容器 (最多5个首领)",
-        ["LID_FLIPPED"] = "翻转",
-        ["LID_GHOSTFRAME"] = "灵魂框架 (传送至墓地)",
-        ["LID_TICKETSTATUSFRAME"] = "GM求助框",
-        ["LID_LOSSOFCONTROLFRAME"] = "失去控制框架",
-        ["LID_MainStatusTrackingBarContainer"] = "状态条1 (经验条, 声望条)",
-        ["LID_SecondaryStatusTrackingBarContainer"] = "状态条2 (声望条)",
-        ["LID_TargetFrameNumericalThreat"] = "仇恨百分比",
-        ["LID_EventToastManagerFrame"] = "事件通知框架 (升级, 区域文字)",
-        ["LID_BUFFTIMER1"] = "增益计时器",
-        ["LID_!KalielsTracker"] = "!Kaliels任务追踪",
-        ["LID_!KalielsTrackerButtons"] = "!Kaliels任务追踪按钮",
-        ["LID_ENDCAPLEFT"] = "动作条装饰左 (狮鹫)",
-        ["LID_ENDCAPRIGHT"] = "动作条装饰右 (狮鹫)",
-        ["LID_ENDCAPS"] = "动作条装饰 (狮鹫)",
-        ["LID_BLIZZARDACTIONBUTTONSART"] = "动作条1暴雪风格",
-        ["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "目标追踪横幅 (世界任务标题)",
-        ["LID_MOVESMALLBAGS"] = "移动/缩放小背包",
-        ["LID_MOVELOOTFRAME"] = "移动拾取框",
-        ["LID_SCALELOOTFRAME"] = "缩放拾取框",
-        ["LID_NEEDSARELOAD"] = "需要重载界面",
-        ["LID_RAIDBOSSEMOTEFRAME"] = "团队首领表情框",
-        ["LID_STARTHELP"] = "点击小地图按钮打开设置",
-        ["LID_STARTHELP2"] = "或在聊天框输入 /move 或 /moveany",
-        ["LID_STARTHELP3"] = "在MoveAny菜单中禁用提示可隐藏此消息",
-        ["LID_SHOWTIPS"] = "显示鼠标提示",
-        ["LID_OVERRIDEACTIONBAR"] = "载具覆盖动作条",
-        ["LID_BOSSBANNER"] = "首领横幅 (掉落物品, 首领标题)",
-        ["LID_COMPACTARENAFRAME"] = "精简竞技场框架",
-        ["LID_ROLEPOLLPOPUP"] = "职责选择框",
-        ["LID_READYCHECKLISTENERFRAME"] = "就绪检查框",
-        ["LID_DISABLEMOVEMENT"] = "在MoveAny编辑模式时禁用移动键",
-        ["LID_CLICKTHROUGH"] = "点击穿透",
-        ["LID_MABUFFMODE"] = "增益对齐方式",
-        ["LID_MADEBUFFLIMIT"] = "减益数量限制",
-        ["LID_MADEBUFFSPACINGX"] = "减益水平间距",
-        ["LID_MADEBUFFSPACINGY"] = "减益垂直间距",
-        ["LID_MADEBUFFMODE"] = "减益对齐方式",
-        ["LID_SEARCH"] = "搜索",
-        ["LID_COMBOFRAME"] = "连击点框架",
-        ["LID_WIDTH"] = "宽度",
-        ["LID_HEIGHT"] = "高度",
-        ["LID_ALPHAISFULLHEALTH"] = "透明度 (满血时)",
-        ["LID_ALPHAISINPETBATTLE"] = "透明度 (宠物对战中)",
-        ["LID_KEYBINDWINDOW"] = "窗口快捷键",
-        ["LID_SNAPWINDOWSIZE"] = "吸附尺寸 (窗口)",
-        ["LID_BOSS1"] = "首领1",
-        ["LID_BOSS2"] = "首领2",
-        ["LID_BOSS3"] = "首领3",
-        ["LID_BOSS4"] = "首领4",
-        ["LID_BOSS5"] = "首领5",
-        ["LID_BOSS6"] = "首领6",
-        ["LID_MAPAGES"] = "动作条分页",
-        ["LID_HIDEHIDDENFRAMES"] = "隐藏不可见元素",
-        ["LID_TIMERTRACKER1"] = "计时器追踪 (仅在可用时显示)",
-        ["LID_PALADINPOWERBAR"] = "圣骑士能量条 (神圣能量)",
-        ["LID_SHARDBARFRAME"] = "术士能量框架 (灵魂碎片)",
-        ["LID_OFFSET"] = "偏移量",
-        ["LID_EclipseBarFrame"] = "日月蚀能量条 (德鲁伊)",
-        ["LID_REQUIRESFOR"] = "需要: %s",
-        ["LID_REQUIREDFOR"] = "被需要: %s",
-        ["LID_RESETELEMENT"] = "重置元素",
-        ["LID_TARGETFRAMEDEBUFFMOVER"] = "目标减益效果",
-        ["LID_FOCUSFRAMEDEBUFFMOVER"] = "焦点减益效果",
-        ["LID_TARGETFRAMETOTBUFFMOVER"] = "目标的目标增益效果",
-        ["LID_MINIMAPFLAG"] = "小地图标记",
-        ["LID_MiniMapInstanceDifficulty"] = "小地图副本难度标记",
-        ["LID_MiniMapChallengeMode"] = "小地图挑战模式标记",
-        ["LID_GuildInstanceDifficulty"] = "小地图公会副本难度标记",
-        ["LID_POWERBARCOUNTERBAR"] = "能量条计数条 (首领战, 暗月马戏团等)",
-        ["LID_BUFFTIMER1"] = "增益计时器1 (首领战, 暗月马戏团等)",
-        ["LID_FRAMES"] = "窗口",
-        ["LID_SCALEFRAMES"] = "缩放窗口 (调整大小)",
-        ["LID_RESETFRAMES"] = "重置窗口",
-        ["LID_ExpansionLandingPageMinimapButton"] = "资料片登陆页面小地图按钮",
-        ["LID_MOVEANYINFO"] = "选择要修改的内容",
-        ["LID_PLEASESWITCHPROFILE1"] = "请在编辑模式中选择自定义布局",
-        ["LID_PLEASESWITCHPROFILE2"] = "MoveAny无法在预设配置文件中工作",
-        ["LID_PLEASESWITCHPROFILE3"] = "ESC -> 编辑模式 -> 布局: [自定义布局] (非预设布局)",
-        ["LID_LFGMinimapFrame"] = "地下城查找器小地图按钮",
-        ["LID_QUESTTIMERFRAME"] = "任务计时器框架",
-        ["LID_BATTLEFIELDMAPFRAME"] = "战场地图",
-        ["LID_ExtraActionBarFrame"] = "额外动作条 (可点击按钮)",
-        ["LID_ExtraActionButton1"] = "额外动作按钮",
-        ["LID_FRAMESCALEDISABLED"] = "\"缩放窗口\"已禁用，请启用",
-        ["LID_BAGEXTRAS"] = "背包扩展",
-        ["LID_HIDESMALLBAGS"] = "隐藏小背包",
-        ["LID_HIDEKEYBAG"] = "隐藏钥匙链",
-        ["LID_CHANGEONCATSTEALTH"] = "猎豹形态潜行时切换动作条 (更改后需重载)",
-        ["LID_RIGHTCLICKFOROPTIONS"] = "右键点击打开选项",
-        ["LID_EssentialCooldownViewer"] = "核心冷却监视器",
-        ["LID_BuffIconCooldownViewer"] = "增益图标冷却监视器",
-        ["LID_BuffBarCooldownViewer"] = "增益条冷却监视器",
-        ["LID_CLAMPWINDOWTOSCREEN"] = "限制窗口在屏幕内 (无法拖出屏幕)",
-        ["LID_ARENAENEMYFRAMESCONTAINER"] = "竞技场敌方框架容器 (战场首领)",
-        ["LID_FOCUSFRAMETOTBUFFMOVER"] = "焦点的目标增益效果",
-        ["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "焦点的目标减益效果",
-        ["LID_PRESSESCTOLEAVE"] = "按ESC退出选择模式",
-    }
-
-    MoveAny:AddTrans("zhCN", "LID_BINDINGFORMAT", "动作条 %s 按钮 %s")
-    if MoveAny:GetWoWBuild() ~= "RETAIL" then
-        tab["LID_ACTIONBARS"] = "动作条 1 + 5 + 6"
-        tab["LID_ACTIONBAR1"] = "动作条1 (主栏)"
-        tab["LID_ACTIONBAR2"] = "动作条2 (动作条1的第二页)"
-        tab["LID_ACTIONBAR3"] = "动作条3 (右侧栏)"
-        tab["LID_ACTIONBAR4"] = "动作条4 (左侧栏)"
-        tab["LID_ACTIONBAR5"] = "动作条5 (右上栏)"
-        tab["LID_ACTIONBAR6"] = "动作条6 (左上栏)"
-        tab["LID_ACTIONBAR7"] = "动作条7 (自定义)"
-        tab["LID_ACTIONBAR8"] = "动作条8 (自定义)"
-        tab["LID_ACTIONBAR9"] = "动作条9 (自定义)"
-        tab["LID_ACTIONBAR10"] = "动作条10 (自定义)"
-    else
-        tab["LID_ACTIONBAR1"] = "动作条1 (主栏)"
-        tab["LID_ACTIONBAR2"] = "动作条2 (主栏上方)"
-        tab["LID_ACTIONBAR3"] = "动作条3 (第二栏上方)"
-        tab["LID_ACTIONBAR4"] = "动作条4 (右侧栏)"
-        tab["LID_ACTIONBAR5"] = "动作条5 (左侧栏)"
-        tab["LID_ACTIONBAR6"] = "动作条6"
-        tab["LID_ACTIONBAR7"] = "动作条7"
-        tab["LID_ACTIONBAR8"] = "动作条8"
-    end
-
-    MoveAny:UpdateLanguageTab(tab)
+MoveAny:AddTrans("zhCN", "LID_GENERAL", "通用设置")
+MoveAny:AddTrans("zhCN", "LID_SHOWMINIMAPBUTTON", "显示小地图按钮")
+MoveAny:AddTrans("zhCN", "LID_GRIDSIZE", "网格尺寸 (单位)")
+MoveAny:AddTrans("zhCN", "LID_SNAPSIZE", "吸附尺寸 (单位)")
+MoveAny:AddTrans("zhCN", "LID_MOVEFRAMES", "移动窗口")
+MoveAny:AddTrans("zhCN", "LID_SAVEFRAMEPOSITION", "保存窗口位置")
+MoveAny:AddTrans("zhCN", "LID_SAVEFRAMESCALE", "保存窗口缩放")
+MoveAny:AddTrans("zhCN", "LID_SHIFT", "SHIFT")
+MoveAny:AddTrans("zhCN", "LID_CTRL", "CTRL")
+MoveAny:AddTrans("zhCN", "LID_ALT", "ALT")
+MoveAny:AddTrans("zhCN", "LID_FRAMESKEYDRAG", "使用 %s + 左键拖曳移动窗口")
+MoveAny:AddTrans("zhCN", "LID_FRAMESKEYSCALE", "使用 %s + 右键拖曳缩放窗口")
+MoveAny:AddTrans("zhCN", "LID_FRAMESKEYRESET", "使用 %s + 中键重置窗口")
+MoveAny:AddTrans("zhCN", "LID_PLAYERFRAME", "玩家框架")
+MoveAny:AddTrans("zhCN", "LID_PLAYERLEVELTEXT", "玩家等级文字")
+MoveAny:AddTrans("zhCN", "LID_PLAYERFRAMEBACKGROUND", "玩家框架背景")
+MoveAny:AddTrans("zhCN", "LID_PETFRAME", "宠物框架")
+MoveAny:AddTrans("zhCN", "LID_MAPETFRAME", "宠物框架")
+MoveAny:AddTrans("zhCN", "LID_PETFRAMEHAPPINESS", "宠物快乐值")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAME", "目标框架")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAMENAMEBACKGROUND", "目标名称背景")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAMEBUFFMOVER", "目标增益效果")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAMETOTDEBUFFMOVER", "目标的目标减益效果")
+MoveAny:AddTrans("zhCN", "LID_TARGETOFTARGETFRAME", "目标的目标框架")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAMESPELLBAR", "目标施法条")
+MoveAny:AddTrans("zhCN", "LID_FOCUSFRAME", "焦点框架")
+MoveAny:AddTrans("zhCN", "LID_FOCUSFRAMEBUFFMOVER", "焦点增益效果")
+MoveAny:AddTrans("zhCN", "LID_FOCUSFRAMESPELLBAR", "焦点施法条")
+MoveAny:AddTrans("zhCN", "LID_TARGETOFFOCUSFRAME", "焦点的目标框架")
+MoveAny:AddTrans("zhCN", "LID_RUNEFRAME", "死亡骑士符文条")
+MoveAny:AddTrans("zhCN", "LID_TOTEMFRAME", "图腾计时器 (其他职业也可用)")
+MoveAny:AddTrans("zhCN", "LID_WARLOCKPOWERFRAME", "术士能量条 (灵魂碎片)")
+MoveAny:AddTrans("zhCN", "LID_MONKHARMONYBARFRAME", "武僧真气条 (真气)")
+MoveAny:AddTrans("zhCN", "LID_MONKSTAGGERBAR", "武僧醉拳条")
+MoveAny:AddTrans("zhCN", "LID_MAGEARCANECHARGESFRAME", "法师奥术充能条")
+MoveAny:AddTrans("zhCN", "LID_ESSENCEPLAYERFRAME", "唤魔师精华条")
+MoveAny:AddTrans("zhCN", "LID_PALADINPOWERBARFRAME", "圣骑士能量条 (神圣能量)")
+MoveAny:AddTrans("zhCN", "LID_MAFPSFrame", "帧数 (新FPS计数器)")
+MoveAny:AddTrans("zhCN", "LID_IAPingFrame", "延迟")
+MoveAny:AddTrans("zhCN", "LID_IACoordsFrame", "坐标框架")
+MoveAny:AddTrans("zhCN", "LID_MINIMAP", "小地图")
+MoveAny:AddTrans("zhCN", "LID_MINIMAPZONETEXT", "小地图区域文字")
+MoveAny:AddTrans("zhCN", "LID_BUFFS", "增益效果")
+MoveAny:AddTrans("zhCN", "LID_DEBUFFS", "减益效果")
+MoveAny:AddTrans("zhCN", "LID_VEHICLESEATINDICATOR", "载具座位指示器")
+MoveAny:AddTrans("zhCN", "LID_ARENAENEMYFRAMES", "竞技场敌方框架")
+MoveAny:AddTrans("zhCN", "LID_ARENAPREPFRAMES", "竞技场准备框架")
+MoveAny:AddTrans("zhCN", "LID_QUESTTRACKER", "任务追踪")
+MoveAny:AddTrans("zhCN", "LID_MICROMENU", "微型菜单 (角色按钮, 法术书按钮等)")
+MoveAny:AddTrans("zhCN", "LID_BAGS", "背包")
+MoveAny:AddTrans("zhCN", "LID_GAMETOOLTIP", "鼠标提示框")
+MoveAny:AddTrans("zhCN", "LID_GAMETOOLTIP_ONCURSOR", "跟随光标的提示框")
+MoveAny:AddTrans("zhCN", "LID_QUEUESTATUSBUTTON", "地下城查找器状态")
+MoveAny:AddTrans("zhCN", "LID_QUEUESTATUSFRAME", "地下城查找器状态提示")
+MoveAny:AddTrans("zhCN", "LID_PETBAR", "宠物动作条")
+MoveAny:AddTrans("zhCN", "LID_STANCEBAR", "姿态条")
+MoveAny:AddTrans("zhCN", "LID_TOTEMBAR", "萨满图腾栏")
+MoveAny:AddTrans("zhCN", "LID_LEAVEVEHICLE", "离开载具按钮")
+MoveAny:AddTrans("zhCN", "LID_GROUPLOOTFRAME1", "战利品掷骰框架 1")
+MoveAny:AddTrans("zhCN", "LID_GROUPLOOTCONTAINER", "战利品掷骰框架")
+MoveAny:AddTrans("zhCN", "LID_BONUSROLLFRAME", "额外掷骰框架")
+MoveAny:AddTrans("zhCN", "LID_STATUSTRACKINGBARMANAGER", "状态追踪条管理 (经验值, 声望)")
+MoveAny:AddTrans("zhCN", "LID_ALERTFRAME", "警报框架 (额外战利品, 成就等)")
+MoveAny:AddTrans("zhCN", "LID_CHAT", "聊天框 %d")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME1", "聊天标签 1 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME2", "聊天标签 2 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME3", "聊天标签 3 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME4", "聊天标签 4 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME5", "聊天标签 5 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME6", "聊天标签 6 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME7", "聊天标签 7 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME8", "聊天标签 8 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME9", "聊天标签 9 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATBUTTONFRAME10", "聊天标签 10 按钮")
+MoveAny:AddTrans("zhCN", "LID_CHATQUICKJOIN", "聊天快速加入")
+MoveAny:AddTrans("zhCN", "LID_CHATEDITBOX", "聊天输入框 %s")
+MoveAny:AddTrans("zhCN", "LID_CHATTAB", "聊天标签 %s")
+MoveAny:AddTrans("zhCN", "LID_COMPACTRAIDFRAMEMANAGER", "团队框架管理")
+MoveAny:AddTrans("zhCN", "LID_BNToastFrame", "战网好友通知")
+MoveAny:AddTrans("zhCN", "LID_SPELLACTIVATIONOVERLAYFRAME", "法术触发指示器 (职业特效)")
+MoveAny:AddTrans("zhCN", "LID_ZONETEXTFRAME", "区域文字")
+MoveAny:AddTrans("zhCN", "LID_UIWIDGETTOPCENTER", "顶部中心部件 (战场/地下城/团队中的状态)")
+MoveAny:AddTrans("zhCN", "LID_MIRRORTIMER1", "呼吸条")
+MoveAny:AddTrans("zhCN", "LID_IASKILLS", "专业技能条")
+MoveAny:AddTrans("zhCN", "LID_UIWIDGETBELOWMINIMAP", "小地图下方部件 (占领状态)")
+MoveAny:AddTrans("zhCN", "LID_DURABILITY", "装备耐久度")
+MoveAny:AddTrans("zhCN", "LID_MONEYBAR", "金币条")
+MoveAny:AddTrans("zhCN", "LID_TOKENBAR", "代币条")
+MoveAny:AddTrans("zhCN", "LID_IAILVLBAR", "物品等级条")
+MoveAny:AddTrans("zhCN", "LID_CASTINGBAR", "施法条")
+MoveAny:AddTrans("zhCN", "LID_CASTINGBARTIMER", "施法条计时器")
+MoveAny:AddTrans("zhCN", "LID_TALKINGHEAD", "对话头像框")
+MoveAny:AddTrans("zhCN", "LID_POSSESSBAR", "控制动作条 (控制NPC/载具)")
+MoveAny:AddTrans("zhCN", "LID_ZONEABILITYFRAME", "区域技能框")
+MoveAny:AddTrans("zhCN", "LID_EXTRAABILITYCONTAINER", "额外技能 (任务/首领技能)")
+MoveAny:AddTrans("zhCN", "LID_MAINMENUEXPBAR", "经验条")
+MoveAny:AddTrans("zhCN", "LID_REPUTATIONWATCHBAR", "声望条")
+MoveAny:AddTrans("zhCN", "LID_UIWIDGETPOWERBAR", "屏幕中能量条 (编辑模式中战斗条) (首领条, 活力条, 暗月马戏团等)")
+MoveAny:AddTrans("zhCN", "LID_POWERBAR", "能量条 (通常显示百分比) (首领战, 暗月马戏团等)")
+MoveAny:AddTrans("zhCN", "LID_COUNT", "数量")
+MoveAny:AddTrans("zhCN", "LID_ROWS", "行数")
+MoveAny:AddTrans("zhCN", "LID_SPACING", "间距")
+MoveAny:AddTrans("zhCN", "LID_PROFILE", "配置文件")
+MoveAny:AddTrans("zhCN", "LID_PROFILES", "配置文件")
+MoveAny:AddTrans("zhCN", "LID_ADDPROFILE", "添加配置")
+MoveAny:AddTrans("zhCN", "LID_CURRENT", "当前")
+MoveAny:AddTrans("zhCN", "LID_SHARE", "分享")
+MoveAny:AddTrans("zhCN", "LID_SHAREPROFILE", "分享配置")
+MoveAny:AddTrans("zhCN", "LID_GETPROFILE", "获取配置")
+MoveAny:AddTrans("zhCN", "LID_INHERITFROM", "继承自")
+MoveAny:AddTrans("zhCN", "LID_ADD", "添加")
+MoveAny:AddTrans("zhCN", "LID_REMOVE", "移除")
+MoveAny:AddTrans("zhCN", "LID_RENAME", "重命名")
+MoveAny:AddTrans("zhCN", "LID_PLAYER", "玩家")
+MoveAny:AddTrans("zhCN", "LID_DOWNLOAD", "下载")
+MoveAny:AddTrans("zhCN", "LID_UPLOAD", "上传")
+MoveAny:AddTrans("zhCN", "LID_STATUS", "状态")
+MoveAny:AddTrans("zhCN", "LID_DONE", "完成")
+MoveAny:AddTrans("zhCN", "LID_WAITINGFOROWNER", "等待所有者")
+MoveAny:AddTrans("zhCN", "LID_WAITFORPLAYERPROFILE", "等待其他玩家点击\"获取配置\"。")
+MoveAny:AddTrans("zhCN", "LID_WAITFORPLAYERPROFILE2", "等待其他玩家点击\"分享\"。")
+MoveAny:AddTrans("zhCN", "LID_ALPHAINCOMBAT", "透明度 (战斗中)")
+MoveAny:AddTrans("zhCN", "LID_ALPHANOTINCOMBAT", "透明度 (非战斗)")
+MoveAny:AddTrans("zhCN", "LID_ALPHAINVEHICLE", "透明度 (载具中)")
+MoveAny:AddTrans("zhCN", "LID_ALPHAINRESTEDAREA", "透明度 (休息区)")
+MoveAny:AddTrans("zhCN", "LID_ALPHAISMOUNTED", "透明度 (骑乘中)")
+MoveAny:AddTrans("zhCN", "LID_ALPHAISSTEALTHED", "透明度 (潜行中)")
+MoveAny:AddTrans("zhCN", "LID_MABUFFLIMIT", "增益数量限制")
+MoveAny:AddTrans("zhCN", "LID_MABUFFSPACINGX", "增益水平间距")
+MoveAny:AddTrans("zhCN", "LID_MABUFFSPACINGY", "增益垂直间距")
+MoveAny:AddTrans("zhCN", "LID_ISENABLEDINEDITMODE", "(可在游戏菜单编辑模式中禁用)")
+MoveAny:AddTrans("zhCN", "LID_CANBREAKBECAUSEOFEDITMODE", "(可能因编辑模式导致错误)")
+MoveAny:AddTrans("zhCN", "LID_HELPTEXT", "\"%s\"已在编辑模式中启用。请在编辑模式或MoveAny中禁用它。")
+MoveAny:AddTrans("zhCN", "LID_BUILTIN", "内置")
+MoveAny:AddTrans("zhCN", "LID_EDITMODE", "覆盖编辑模式")
+MoveAny:AddTrans("zhCN", "LID_NORMAL", "普通")
+MoveAny:AddTrans("zhCN", "LID_CLASSSPECIFIC", "职业专用")
+MoveAny:AddTrans("zhCN", "LID_ADVANCED", "高级")
+MoveAny:AddTrans("zhCN", "LID_ImproveAny", "ImproveAny")
+MoveAny:AddTrans("zhCN", "LID_ARCHEOLOGYDIGSITEPROGRESSBAR", "考古挖掘进度条")
+MoveAny:AddTrans("zhCN", "LID_UIERRORSFRAME", "界面错误信息 (任务进度, 事件消息)")
+MoveAny:AddTrans("zhCN", "LID_COMBOPOINTPLAYERFRAME", "连击点")
+MoveAny:AddTrans("zhCN", "LID_PARTYFRAME", "小队框架")
+MoveAny:AddTrans("zhCN", "LID_PARTYMEMBERFRAME", "小队成员框架 %s")
+MoveAny:AddTrans("zhCN", "LID_COMPACTRAIDFRAMECONTAINER", "团队框架容器")
+MoveAny:AddTrans("zhCN", "LID_BOSSTARGETFRAMECONTAINER", "首领目标容器 (最多5个首领)")
+MoveAny:AddTrans("zhCN", "LID_FLIPPED", "翻转")
+MoveAny:AddTrans("zhCN", "LID_GHOSTFRAME", "灵魂框架 (传送至墓地)")
+MoveAny:AddTrans("zhCN", "LID_TICKETSTATUSFRAME", "GM求助框")
+MoveAny:AddTrans("zhCN", "LID_LOSSOFCONTROLFRAME", "失去控制框架")
+MoveAny:AddTrans("zhCN", "LID_MainStatusTrackingBarContainer", "状态条1 (经验条, 声望条)")
+MoveAny:AddTrans("zhCN", "LID_SecondaryStatusTrackingBarContainer", "状态条2 (声望条)")
+MoveAny:AddTrans("zhCN", "LID_TargetFrameNumericalThreat", "仇恨百分比")
+MoveAny:AddTrans("zhCN", "LID_EventToastManagerFrame", "事件通知框架 (升级, 区域文字)")
+MoveAny:AddTrans("zhCN", "LID_BUFFTIMER1", "增益计时器")
+MoveAny:AddTrans("zhCN", "LID_!KalielsTracker", "!Kaliels任务追踪")
+MoveAny:AddTrans("zhCN", "LID_!KalielsTrackerButtons", "!Kaliels任务追踪按钮")
+MoveAny:AddTrans("zhCN", "LID_ENDCAPLEFT", "动作条装饰左 (狮鹫)")
+MoveAny:AddTrans("zhCN", "LID_ENDCAPRIGHT", "动作条装饰右 (狮鹫)")
+MoveAny:AddTrans("zhCN", "LID_ENDCAPS", "动作条装饰 (狮鹫)")
+MoveAny:AddTrans("zhCN", "LID_BLIZZARDACTIONBUTTONSART", "动作条1暴雪风格")
+MoveAny:AddTrans("zhCN", "LID_OBJECTIVETRACKERBONUSBANNERFRAME", "目标追踪横幅 (世界任务标题)")
+MoveAny:AddTrans("zhCN", "LID_MOVESMALLBAGS", "移动/缩放小背包")
+MoveAny:AddTrans("zhCN", "LID_MOVELOOTFRAME", "移动拾取框")
+MoveAny:AddTrans("zhCN", "LID_SCALELOOTFRAME", "缩放拾取框")
+MoveAny:AddTrans("zhCN", "LID_NEEDSARELOAD", "需要重载界面")
+MoveAny:AddTrans("zhCN", "LID_RAIDBOSSEMOTEFRAME", "团队首领表情框")
+MoveAny:AddTrans("zhCN", "LID_STARTHELP", "点击小地图按钮打开设置")
+MoveAny:AddTrans("zhCN", "LID_STARTHELP2", "或在聊天框输入 /move 或 /moveany")
+MoveAny:AddTrans("zhCN", "LID_STARTHELP3", "在MoveAny菜单中禁用提示可隐藏此消息")
+MoveAny:AddTrans("zhCN", "LID_SHOWTIPS", "显示鼠标提示")
+MoveAny:AddTrans("zhCN", "LID_OVERRIDEACTIONBAR", "载具覆盖动作条")
+MoveAny:AddTrans("zhCN", "LID_BOSSBANNER", "首领横幅 (掉落物品, 首领标题)")
+MoveAny:AddTrans("zhCN", "LID_COMPACTARENAFRAME", "精简竞技场框架")
+MoveAny:AddTrans("zhCN", "LID_ROLEPOLLPOPUP", "职责选择框")
+MoveAny:AddTrans("zhCN", "LID_READYCHECKLISTENERFRAME", "就绪检查框")
+MoveAny:AddTrans("zhCN", "LID_DISABLEMOVEMENT", "在MoveAny编辑模式时禁用移动键")
+MoveAny:AddTrans("zhCN", "LID_CLICKTHROUGH", "点击穿透")
+MoveAny:AddTrans("zhCN", "LID_MABUFFMODE", "增益对齐方式")
+MoveAny:AddTrans("zhCN", "LID_MADEBUFFLIMIT", "减益数量限制")
+MoveAny:AddTrans("zhCN", "LID_MADEBUFFSPACINGX", "减益水平间距")
+MoveAny:AddTrans("zhCN", "LID_MADEBUFFSPACINGY", "减益垂直间距")
+MoveAny:AddTrans("zhCN", "LID_MADEBUFFMODE", "减益对齐方式")
+MoveAny:AddTrans("zhCN", "LID_SEARCH", "搜索")
+MoveAny:AddTrans("zhCN", "LID_COMBOFRAME", "连击点框架")
+MoveAny:AddTrans("zhCN", "LID_WIDTH", "宽度")
+MoveAny:AddTrans("zhCN", "LID_HEIGHT", "高度")
+MoveAny:AddTrans("zhCN", "LID_ALPHAISFULLHEALTH", "透明度 (满血时)")
+MoveAny:AddTrans("zhCN", "LID_ALPHAISINPETBATTLE", "透明度 (宠物对战中)")
+MoveAny:AddTrans("zhCN", "LID_KEYBINDWINDOW", "窗口快捷键")
+MoveAny:AddTrans("zhCN", "LID_SNAPWINDOWSIZE", "吸附尺寸 (窗口)")
+MoveAny:AddTrans("zhCN", "LID_BOSS1", "首领1")
+MoveAny:AddTrans("zhCN", "LID_BOSS2", "首领2")
+MoveAny:AddTrans("zhCN", "LID_BOSS3", "首领3")
+MoveAny:AddTrans("zhCN", "LID_BOSS4", "首领4")
+MoveAny:AddTrans("zhCN", "LID_BOSS5", "首领5")
+MoveAny:AddTrans("zhCN", "LID_BOSS6", "首领6")
+MoveAny:AddTrans("zhCN", "LID_MAPAGES", "动作条分页")
+MoveAny:AddTrans("zhCN", "LID_HIDEHIDDENFRAMES", "隐藏不可见元素")
+MoveAny:AddTrans("zhCN", "LID_TIMERTRACKER1", "计时器追踪 (仅在可用时显示)")
+MoveAny:AddTrans("zhCN", "LID_PALADINPOWERBAR", "圣骑士能量条 (神圣能量)")
+MoveAny:AddTrans("zhCN", "LID_SHARDBARFRAME", "术士能量框架 (灵魂碎片)")
+MoveAny:AddTrans("zhCN", "LID_OFFSET", "偏移量")
+MoveAny:AddTrans("zhCN", "LID_EclipseBarFrame", "日月蚀能量条 (德鲁伊)")
+MoveAny:AddTrans("zhCN", "LID_REQUIRESFOR", "需要: %s")
+MoveAny:AddTrans("zhCN", "LID_REQUIREDFOR", "被需要: %s")
+MoveAny:AddTrans("zhCN", "LID_RESETELEMENT", "重置元素")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAMEDEBUFFMOVER", "目标减益效果")
+MoveAny:AddTrans("zhCN", "LID_FOCUSFRAMEDEBUFFMOVER", "焦点减益效果")
+MoveAny:AddTrans("zhCN", "LID_TARGETFRAMETOTBUFFMOVER", "目标的目标增益效果")
+MoveAny:AddTrans("zhCN", "LID_MINIMAPFLAG", "小地图标记")
+MoveAny:AddTrans("zhCN", "LID_MiniMapInstanceDifficulty", "小地图副本难度标记")
+MoveAny:AddTrans("zhCN", "LID_MiniMapChallengeMode", "小地图挑战模式标记")
+MoveAny:AddTrans("zhCN", "LID_GuildInstanceDifficulty", "小地图公会副本难度标记")
+MoveAny:AddTrans("zhCN", "LID_POWERBARCOUNTERBAR", "能量条计数条 (首领战, 暗月马戏团等)")
+MoveAny:AddTrans("zhCN", "LID_BUFFTIMER1", "增益计时器1 (首领战, 暗月马戏团等)")
+MoveAny:AddTrans("zhCN", "LID_FRAMES", "窗口")
+MoveAny:AddTrans("zhCN", "LID_SCALEFRAMES", "缩放窗口 (调整大小)")
+MoveAny:AddTrans("zhCN", "LID_RESETFRAMES", "重置窗口")
+MoveAny:AddTrans("zhCN", "LID_ExpansionLandingPageMinimapButton", "资料片登陆页面小地图按钮")
+MoveAny:AddTrans("zhCN", "LID_MOVEANYINFO", "选择要修改的内容")
+MoveAny:AddTrans("zhCN", "LID_PLEASESWITCHPROFILE1", "请在编辑模式中选择自定义布局")
+MoveAny:AddTrans("zhCN", "LID_PLEASESWITCHPROFILE2", "MoveAny无法在预设配置文件中工作")
+MoveAny:AddTrans("zhCN", "LID_PLEASESWITCHPROFILE3", "ESC -> 编辑模式 -> 布局: [自定义布局] (非预设布局)")
+MoveAny:AddTrans("zhCN", "LID_LFGMinimapFrame", "地下城查找器小地图按钮")
+MoveAny:AddTrans("zhCN", "LID_QUESTTIMERFRAME", "任务计时器框架")
+MoveAny:AddTrans("zhCN", "LID_BATTLEFIELDMAPFRAME", "战场地图")
+MoveAny:AddTrans("zhCN", "LID_ExtraActionBarFrame", "额外动作条 (可点击按钮)")
+MoveAny:AddTrans("zhCN", "LID_ExtraActionButton1", "额外动作按钮")
+MoveAny:AddTrans("zhCN", "LID_FRAMESCALEDISABLED", "\"缩放窗口\"已禁用，请启用")
+MoveAny:AddTrans("zhCN", "LID_BAGEXTRAS", "背包扩展")
+MoveAny:AddTrans("zhCN", "LID_HIDESMALLBAGS", "隐藏小背包")
+MoveAny:AddTrans("zhCN", "LID_HIDEKEYBAG", "隐藏钥匙链")
+MoveAny:AddTrans("zhCN", "LID_CHANGEONCATSTEALTH", "猎豹形态潜行时切换动作条 (更改后需重载)")
+MoveAny:AddTrans("zhCN", "LID_RIGHTCLICKFOROPTIONS", "右键点击打开选项")
+MoveAny:AddTrans("zhCN", "LID_EssentialCooldownViewer", "核心冷却监视器")
+MoveAny:AddTrans("zhCN", "LID_BuffIconCooldownViewer", "增益图标冷却监视器")
+MoveAny:AddTrans("zhCN", "LID_BuffBarCooldownViewer", "增益条冷却监视器")
+MoveAny:AddTrans("zhCN", "LID_CLAMPWINDOWTOSCREEN", "限制窗口在屏幕内 (无法拖出屏幕)")
+MoveAny:AddTrans("zhCN", "LID_ARENAENEMYFRAMESCONTAINER", "竞技场敌方框架容器 (战场首领)")
+MoveAny:AddTrans("zhCN", "LID_FOCUSFRAMETOTBUFFMOVER", "焦点的目标增益效果")
+MoveAny:AddTrans("zhCN", "LID_FOCUSFRAMETOTDEBUFFMOVER", "焦点的目标减益效果")
+MoveAny:AddTrans("zhCN", "LID_PRESSESCTOLEAVE", "按ESC退出选择模式")
+MoveAny:AddTrans("zhCN", "LID_BINDINGFORMAT", "动作条 %s 按钮 %s")
+if MoveAny:GetWoWBuild() ~= "RETAIL" then
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBARS", "动作条 1 + 5 + 6")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR1", "动作条1 (主栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR2", "动作条2 (动作条1的第二页)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR3", "动作条3 (右侧栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR4", "动作条4 (左侧栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR5", "动作条5 (右上栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR6", "动作条6 (左上栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR7", "动作条7 (自定义)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR8", "动作条8 (自定义)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR9", "动作条9 (自定义)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR10", "动作条10 (自定义)")
+else
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR1", "动作条1 (主栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR2", "动作条2 (主栏上方)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR3", "动作条3 (第二栏上方)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR4", "动作条4 (右侧栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR5", "动作条5 (左侧栏)")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR6", "动作条6")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR7", "动作条7")
+    MoveAny:AddTrans("zhCN", "LID_ACTIONBAR8", "动作条8")
 end

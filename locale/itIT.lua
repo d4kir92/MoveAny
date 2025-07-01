@@ -1,191 +1,184 @@
 -- itIT Italien
 local _, MoveAny = ...
-function MoveAny:LangitIT()
-	local tab = {
-		["LID_GENERAL"] = "Generale",
-		["LID_SHOWMINIMAPBUTTON"] = "Mostra pulsante Minimap",
-		["LID_GRIDSIZE"] = "Gridsize",
-		["LID_MOVEFRAMES"] = "Sposta fotogrammi/finestre",
-		["LID_FRAMESKEYDRAG"] = "Sposta fotogramma con %s + trascinamento con il tasto sinistro del mouse",
-		["LID_FRAMESKEYSCALE"] = "Scala il fotogramma con %s + trascinamento con il tasto destro del mouse",
-		["LID_FRAMESKEYRESET"] = "Azzeramento del riquadro con %s + clic della rotella del mouse",
-		["LID_PLAYERFRAME"] = "Riquadro giocatore",
-		["LID_PETFRAME"] = "Cornice animale domestico",
-		["LID_TARGETFRAME"] = "Cornice obiettivo",
-		["LID_TARGETOFTARGETFRAME"] = "Cornice di destinazione",
-		["LID_TARGETFRAMESPELLBAR"] = "Castbar del bersaglio",
-		["LID_FOCUSFRAME"] = "Cornice di messa a fuoco",
-		["LID_FOCUSFRAMESPELLBAR"] = "Barra di cast da Focus",
-		["LID_TARGETOFFOCUSFRAME"] = "Riquadro di destinazione del fuoco",
-		["LID_RUNEFRAME"] = "Cornice delle rune del Cavaliere della Morte",
-		["LID_TOTEMFRAME"] = "Totem Timers",
-		["LID_WARLOCKPOWERFRAME"] = "Quadro del potere dello stregone",
-		["LID_MONKHARMONYBARFRAME"] = "Cornice dell'armonia del monaco",
-		["LID_MAGEARCANECHARGESFRAME"] = "Cornice delle cariche arcane del mago",
-		["LID_ESSENCEPLAYERFRAME"] = "Cornice del giocatore d'essenza (evocatore)",
-		["LID_MAFPSFrame"] = "FPS",
-		["LID_MINIMAP"] = "Mini mappa",
-		["LID_BUFFS"] = "Buffs",
-		["LID_DEBUFFS"] = "Debuff",
-		["LID_VEHICLESEATINDICATOR"] = "Indicatore del sedile del veicolo",
-		["LID_ARENAENEMYFRAMES"] = "Cornici nemiche dell'Arena",
-		["LID_ARENAPREPFRAMES"] = "Cornici di preparazione dell'Arena",
-		["LID_QUESTTRACKER"] = "Questtracker",
-		["LID_MICROMENU"] = "Micro Menu",
-		["LID_BAGS"] = "Bags",
-		["LID_GAMETOOLTIP"] = "Tooltip",
-		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip sul cursore",
-		["LID_QUEUESTATUSBUTTON"] = "Stato LFG",
-		["LID_PETBAR"] = "Barra degli animali domestici",
-		["LID_STANCEBAR"] = "Stance Bar",
-		["LID_TOTEMBAR"] = "Barra Totem Sciamano",
-		["LID_LEAVEVEHICLE"] = "Pulsante di uscita dal veicolo",
-		["LID_GROUPLOOTCONTAINER"] = "Cornice del rotolo di bottino",
-		["LID_STATUSTRACKINGBARMANAGER"] = "Gestore della barra di monitoraggio dello stato (XP, Reputazione)",
-		["LID_ALERTFRAME"] = "Riquadro degli avvisi (bottino bonus, successi, ...)",
-		["LID_CHAT"] = "Chatframe %d",
-		["LID_CHATBUTTONFRAME"] = "Pulsanti di chat",
-		["LID_CHATQUICKJOIN"] = "Partecipazione rapida alla chat",
-		["LID_CHATEDITBOX"] = "Chat Inputbox %s",
-		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
-		["LID_BNToastFrame"] = "Notifiche amici Battlenet",
-		["LID_ZONETEXTFRAME"] = "Testo zona",
-		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Stato su BG/Dungeon)",
-		["LID_IASKILLS"] = "Barre delle abilità",
-		["LID_UIWIDGETBELOWMINIMAP"] = "Widget sotto la minimappa (stato di cattura)",
-		["LID_DURABILITY"] = "Bambola della durata",
-		["LID_MONEYBAR"] = "Barra del denaro",
-		["LID_TOKENBAR"] = "Barra dei gettoni",
-		["LID_IAILVLBAR"] = "Barra livello articolo",
-		["LID_CASTINGBAR"] = "Barra dei lanci",
-		["LID_TALKINGHEAD"] = "Dialogo testa parlante",
-		["LID_POSSESSBAR"] = "Barra del possesso (controllo PNG/veicolo)",
-		["LID_ZONEABILITYFRAME"] = "Capacità di zona",
-		["LID_EXTRAABILITYCONTAINER"] = "Capacità extra",
-		["LID_MAINMENUEXPBAR"] = "Barra Exp",
-		["LID_REPUTATIONWATCHBAR"] = "Barra della reputazione",
-		["LID_UIWIDGETPOWERBAR"] = "Barra del potere",
-		["LID_ROWS"] = "Righe",
-		["LID_SPACING"] = "Spaziatura",
-		["LID_PROFILE"] = "Profilo",
-		["LID_PROFILES"] = "Profili",
-		["LID_ADDPROFILE"] = "Aggiungi profilo",
-		["LID_CURRENT"] = "Current",
-		["LID_SHARE"] = "Condividi",
-		["LID_SHAREPROFILE"] = "Profilo condiviso",
-		["LID_GETPROFILE"] = "Ottieni profilo",
-		["LID_INHERITFROM"] = "Eredita da",
-		["LID_ADD"] = "Aggiungi",
-		["LID_REMOVE"] = "Rimuovi",
-		["LID_RENAME"] = "Rinomina",
-		["LID_PLAYER"] = "Player",
-		["LID_DOWNLOAD"] = "Scarica",
-		["LID_UPLOAD"] = "Carica",
-		["LID_STATUS"] = "Stato",
-		["LID_DONE"] = "Fatto",
-		["LID_WAITINGFOROWNER"] = "In attesa del proprietario",
-		["LID_WAITFORPLAYERPROFILE"] = "Attendere che l'altro giocatore prema \"Ottieni profili\"",
-		["LID_WAITFORPLAYERPROFILE2"] = "Attendere che l'altro giocatore prema \"Condividi\"",
-		["LID_ALPHAINCOMBAT"] = "Alfa (in combattimento)",
-		["LID_ALPHANOTINCOMBAT"] = "Alfa (non in combattimento)",
-		["LID_ALPHAINVEHICLE"] = "Alfa (in veicolo)",
-		["LID_MABUFFLIMIT"] = "Limite Buff",
-		["LID_MABUFFSPACINGX"] = "Spaziatura orizzontale dei buffer",
-		["LID_MABUFFSPACINGY"] = "Spaziatura buffer verticale",
-		["LID_ISENABLEDINEDITMODE"] = "(Disabilita in EditMode)",
-		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(Può causare errori dovuti alla modalità di modifica)",
-		["LID_HELPTEXT"] = "\"%s\" è già abilitato in EditMode. Si prega di disattivare la modalità di modifica o MoveAny.",
-		["LID_BUILTIN"] = "Integrato",
-		["LID_EDITMODE"] = "Modalità di modifica sovrascritta",
-		["LID_NORMAL"] = "Normal",
-		["LID_CLASSSPECIFIC"] = "Classe specifica",
-		["LID_ADVANCED"] = "Avanzato",
-		["LID_ImproveAny"] = "ImproveAny",
-		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Barra di avanzamento del sito archeologico",
-		["LID_UIERRORSFRAME"] = "Messaggi di errore dell'interfaccia utente, avanzamento della ricerca",
-		["LID_COMBOPOINTPLAYERFRAME"] = "Punti combo",
-		["LID_PARTYFRAME"] = "Cornice del partito",
-		["LID_PARTYMEMBERFRAME"] = "Cornice membro del partito %s",
-		["LID_BOSSTARGETFRAMECONTAINER"] = "Cornice del boss",
-		["LID_FLIPPED"] = "Capovolto",
-		["LID_GHOSTFRAME"] = "Cornice fantasma (teletrasporto al cimitero)",
-		["LID_TICKETSTATUSFRAME"] = "Cornice biglietto",
-		["LID_LOSSOFCONTROLFRAME"] = "Quadro di perdita di controllo",
-		["LID_TargetFrameNumericalThreat"] = "Percentuale di minaccia",
-		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Levelup, Zonetext)",
-		["LID_BUFFTIMER1"] = "Buff Timer",
-		["LID_ENDCAPLEFT"] = "End Cap Left (Gryphon)",
-		["LID_ENDCAPRIGHT"] = "End Cap Right (Gryphon)",
-		["LID_ENDCAPS"] = "End Caps (Gryphons)",
-		["LID_BLIZZARDACTIONBUTTONSART"] = "Actionbar 1 Blizzard-Art",
-		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objective Tracker Frame (World Quest Title)",
-		["LID_MOVESMALLBAGS"] = "Move/Scale Small Bags",
-		["LID_NEEDSARELOAD"] = "Needs a Reload",
-		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emote Frame",
-		["LID_STARTHELP"] = "Click the MoveAny Minimap Button to open the settings.",
-		["LID_STARTHELP2"] = "Or tap /move or /moveany in chat to open the settings.",
-		["LID_STARTHELP3"] = "To hide these messages deactivate tips in the MoveAny menu.",
-		["LID_SHOWTIPS"] = "Show Tips",
-		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
-		["LID_BOSSBANNER"] = "Boss Banner (Dropped Loot, Boss Title)",
-		["LID_COMPACTARENAFRAME"] = "Compact Arena Frame",
-		["LID_ROLEPOLLPOPUP"] = "Role Poll Popup",
-		["LID_READYCHECKLISTENERFRAME"] = "Ready Check Popup",
-		["LID_DISABLEMOVEMENT"] = "Disable Movement keybinds, when in MoveAny-EditMode",
-		["LID_CLICKTHROUGH"] = "Clickthrough",
-		["LID_MABUFFMODE"] = "Buff-Alignment",
-		["LID_MADEBUFFLIMIT"] = "Debuff limit",
-		["LID_MADEBUFFSPACINGX"] = "Debuff Spacing Horizontal",
-		["LID_MADEBUFFSPACINGY"] = "Debuff Spacing Vertical",
-		["LID_MADEBUFFMODE"] = "Debuff-Alignment",
-		["LID_SEARCH"] = "Search",
-		["LID_COMBOFRAME"] = "Combo Bar",
-		["LID_WIDTH"] = "Width",
-		["LID_HEIGHT"] = "Height",
-		["LID_ALPHAISFULLHEALTH"] = "Alpha (Full Health)",
-		["LID_ALPHAISINPETBATTLE"] = "Alpha (Is In Pet Battle)",
-		["LID_KEYBINDWINDOW"] = "Keybind for Windows",
-		["LID_SNAPWINDOWSIZE"] = "Snapsize (Windows)",
-		["LID_BOSS1"] = "Boss 1",
-		["LID_BOSS2"] = "Boss 2",
-		["LID_BOSS3"] = "Boss 3",
-		["LID_BOSS4"] = "Boss 4",
-		["LID_BOSS5"] = "Boss 5",
-		["LID_BOSS6"] = "Boss 6",
-		["LID_MAPAGES"] = "Actionbar Pages",
-		["LID_HIDEHIDDENFRAMES"] = "Hide hidden Elements",
-		["LID_TIMERTRACKER1"] = "Timer Tracker (only visible when available)",
-		["LID_PALADINPOWERBAR"] = "Paladin Power Bar (Holy Power)",
-		["LID_SHARDBARFRAME"] = "Warlock Power Frame (Shards)",
-		["LID_OFFSET"] = "Offset",
-		["LID_EclipseBarFrame"] = "Eclipse Bar Frame (Druid)",
-		["LID_REQUIRESFOR"] = "Requires: %s",
-		["LID_REQUIREDFOR"] = "Required for: %s",
-		["LID_RESETELEMENT"] = "Reset Element",
-	}
-
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Barra d'azioni 1 + 5 + 6"
-		tab["LID_ACTIONBAR1"] = "Barra d'azioni 1 (barra principale)"
-		tab["LID_ACTIONBAR2"] = "Barra d'azioni 2 (2. Pagina della barra d'azioni 1)"
-		tab["LID_ACTIONBAR3"] = "Barra d'azione 3 (barra destra)"
-		tab["LID_ACTIONBAR4"] = "Barra d'azione 4 (barra sinistra)"
-		tab["LID_ACTIONBAR5"] = "Barra d'azione 5 (barra superiore destra)"
-		tab["LID_ACTIONBAR6"] = "Barra d'azione 6 (barra in alto a sinistra)"
-		tab["LID_ACTIONBAR7"] = "Barra d'azione 7 (personalizzata)"
-		tab["LID_ACTIONBAR8"] = "Barra d'azione 8 (personalizzata)"
-		tab["LID_ACTIONBAR9"] = "Barra d'azione 9 (personalizzata)"
-		tab["LID_ACTIONBAR10"] = "Barra d'azioni 10 (personalizzata)"
-	else
-		tab["LID_ACTIONBAR1"] = "Barra d'azioni 1 (barra principale)"
-		tab["LID_ACTIONBAR2"] = "Barra d'azioni 2 (sopra la barra principale)"
-		tab["LID_ACTIONBAR3"] = "Barra d'azione 3 (sopra la seconda barra)"
-		tab["LID_ACTIONBAR4"] = "Barra d'azione 4 (barra destra)"
-		tab["LID_ACTIONBAR5"] = "Barra d'azione 5 (barra sinistra)"
-		tab["LID_ACTIONBAR6"] = "Barra d'azione 6"
-		tab["LID_ACTIONBAR7"] = "Barra d'azione 7"
-		tab["LID_ACTIONBAR8"] = "Barra d'azione 8"
-	end
-
-	MoveAny:UpdateLanguageTab(tab)
+MoveAny:AddTrans("itIT", "LID_GENERAL", "Generale")
+MoveAny:AddTrans("itIT", "LID_SHOWMINIMAPBUTTON", "Mostra pulsante Minimap")
+MoveAny:AddTrans("itIT", "LID_GRIDSIZE", "Gridsize")
+MoveAny:AddTrans("itIT", "LID_MOVEFRAMES", "Sposta fotogrammi/finestre")
+MoveAny:AddTrans("itIT", "LID_FRAMESKEYDRAG", "Sposta fotogramma con %s + trascinamento con il tasto sinistro del mouse")
+MoveAny:AddTrans("itIT", "LID_FRAMESKEYSCALE", "Scala il fotogramma con %s + trascinamento con il tasto destro del mouse")
+MoveAny:AddTrans("itIT", "LID_FRAMESKEYRESET", "Azzeramento del riquadro con %s + clic della rotella del mouse")
+MoveAny:AddTrans("itIT", "LID_PLAYERFRAME", "Riquadro giocatore")
+MoveAny:AddTrans("itIT", "LID_PETFRAME", "Cornice animale domestico")
+MoveAny:AddTrans("itIT", "LID_TARGETFRAME", "Cornice obiettivo")
+MoveAny:AddTrans("itIT", "LID_TARGETOFTARGETFRAME", "Cornice di destinazione")
+MoveAny:AddTrans("itIT", "LID_TARGETFRAMESPELLBAR", "Castbar del bersaglio")
+MoveAny:AddTrans("itIT", "LID_FOCUSFRAME", "Cornice di messa a fuoco")
+MoveAny:AddTrans("itIT", "LID_FOCUSFRAMESPELLBAR", "Barra di cast da Focus")
+MoveAny:AddTrans("itIT", "LID_TARGETOFFOCUSFRAME", "Riquadro di destinazione del fuoco")
+MoveAny:AddTrans("itIT", "LID_RUNEFRAME", "Cornice delle rune del Cavaliere della Morte")
+MoveAny:AddTrans("itIT", "LID_TOTEMFRAME", "Totem Timers")
+MoveAny:AddTrans("itIT", "LID_WARLOCKPOWERFRAME", "Quadro del potere dello stregone")
+MoveAny:AddTrans("itIT", "LID_MONKHARMONYBARFRAME", "Cornice dell'armonia del monaco")
+MoveAny:AddTrans("itIT", "LID_MAGEARCANECHARGESFRAME", "Cornice delle cariche arcane del mago")
+MoveAny:AddTrans("itIT", "LID_ESSENCEPLAYERFRAME", "Cornice del giocatore d'essenza (evocatore)")
+MoveAny:AddTrans("itIT", "LID_MAFPSFrame", "FPS")
+MoveAny:AddTrans("itIT", "LID_MINIMAP", "Mini mappa")
+MoveAny:AddTrans("itIT", "LID_BUFFS", "Buffs")
+MoveAny:AddTrans("itIT", "LID_DEBUFFS", "Debuff")
+MoveAny:AddTrans("itIT", "LID_VEHICLESEATINDICATOR", "Indicatore del sedile del veicolo")
+MoveAny:AddTrans("itIT", "LID_ARENAENEMYFRAMES", "Cornici nemiche dell'Arena")
+MoveAny:AddTrans("itIT", "LID_ARENAPREPFRAMES", "Cornici di preparazione dell'Arena")
+MoveAny:AddTrans("itIT", "LID_QUESTTRACKER", "Questtracker")
+MoveAny:AddTrans("itIT", "LID_MICROMENU", "Micro Menu")
+MoveAny:AddTrans("itIT", "LID_BAGS", "Bags")
+MoveAny:AddTrans("itIT", "LID_GAMETOOLTIP", "Tooltip")
+MoveAny:AddTrans("itIT", "LID_GAMETOOLTIP_ONCURSOR", "Tooltip sul cursore")
+MoveAny:AddTrans("itIT", "LID_QUEUESTATUSBUTTON", "Stato LFG")
+MoveAny:AddTrans("itIT", "LID_PETBAR", "Barra degli animali domestici")
+MoveAny:AddTrans("itIT", "LID_STANCEBAR", "Stance Bar")
+MoveAny:AddTrans("itIT", "LID_TOTEMBAR", "Barra Totem Sciamano")
+MoveAny:AddTrans("itIT", "LID_LEAVEVEHICLE", "Pulsante di uscita dal veicolo")
+MoveAny:AddTrans("itIT", "LID_GROUPLOOTCONTAINER", "Cornice del rotolo di bottino")
+MoveAny:AddTrans("itIT", "LID_STATUSTRACKINGBARMANAGER", "Gestore della barra di monitoraggio dello stato (XP, Reputazione)")
+MoveAny:AddTrans("itIT", "LID_ALERTFRAME", "Riquadro degli avvisi (bottino bonus, successi, ...)")
+MoveAny:AddTrans("itIT", "LID_CHAT", "Chatframe %d")
+MoveAny:AddTrans("itIT", "LID_CHATBUTTONFRAME", "Pulsanti di chat")
+MoveAny:AddTrans("itIT", "LID_CHATQUICKJOIN", "Partecipazione rapida alla chat")
+MoveAny:AddTrans("itIT", "LID_CHATEDITBOX", "Chat Inputbox %s")
+MoveAny:AddTrans("itIT", "LID_COMPACTRAIDFRAMEMANAGER", "Raid Manager")
+MoveAny:AddTrans("itIT", "LID_BNToastFrame", "Notifiche amici Battlenet")
+MoveAny:AddTrans("itIT", "LID_ZONETEXTFRAME", "Testo zona")
+MoveAny:AddTrans("itIT", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Stato su BG/Dungeon)")
+MoveAny:AddTrans("itIT", "LID_IASKILLS", "Barre delle abilità")
+MoveAny:AddTrans("itIT", "LID_UIWIDGETBELOWMINIMAP", "Widget sotto la minimappa (stato di cattura)")
+MoveAny:AddTrans("itIT", "LID_DURABILITY", "Bambola della durata")
+MoveAny:AddTrans("itIT", "LID_MONEYBAR", "Barra del denaro")
+MoveAny:AddTrans("itIT", "LID_TOKENBAR", "Barra dei gettoni")
+MoveAny:AddTrans("itIT", "LID_IAILVLBAR", "Barra livello articolo")
+MoveAny:AddTrans("itIT", "LID_CASTINGBAR", "Barra dei lanci")
+MoveAny:AddTrans("itIT", "LID_TALKINGHEAD", "Dialogo testa parlante")
+MoveAny:AddTrans("itIT", "LID_POSSESSBAR", "Barra del possesso (controllo PNG/veicolo)")
+MoveAny:AddTrans("itIT", "LID_ZONEABILITYFRAME", "Capacità di zona")
+MoveAny:AddTrans("itIT", "LID_EXTRAABILITYCONTAINER", "Capacità extra")
+MoveAny:AddTrans("itIT", "LID_MAINMENUEXPBAR", "Barra Exp")
+MoveAny:AddTrans("itIT", "LID_REPUTATIONWATCHBAR", "Barra della reputazione")
+MoveAny:AddTrans("itIT", "LID_UIWIDGETPOWERBAR", "Barra del potere")
+MoveAny:AddTrans("itIT", "LID_ROWS", "Righe")
+MoveAny:AddTrans("itIT", "LID_SPACING", "Spaziatura")
+MoveAny:AddTrans("itIT", "LID_PROFILE", "Profilo")
+MoveAny:AddTrans("itIT", "LID_PROFILES", "Profili")
+MoveAny:AddTrans("itIT", "LID_ADDPROFILE", "Aggiungi profilo")
+MoveAny:AddTrans("itIT", "LID_CURRENT", "Current")
+MoveAny:AddTrans("itIT", "LID_SHARE", "Condividi")
+MoveAny:AddTrans("itIT", "LID_SHAREPROFILE", "Profilo condiviso")
+MoveAny:AddTrans("itIT", "LID_GETPROFILE", "Ottieni profilo")
+MoveAny:AddTrans("itIT", "LID_INHERITFROM", "Eredita da")
+MoveAny:AddTrans("itIT", "LID_ADD", "Aggiungi")
+MoveAny:AddTrans("itIT", "LID_REMOVE", "Rimuovi")
+MoveAny:AddTrans("itIT", "LID_RENAME", "Rinomina")
+MoveAny:AddTrans("itIT", "LID_PLAYER", "Player")
+MoveAny:AddTrans("itIT", "LID_DOWNLOAD", "Scarica")
+MoveAny:AddTrans("itIT", "LID_UPLOAD", "Carica")
+MoveAny:AddTrans("itIT", "LID_STATUS", "Stato")
+MoveAny:AddTrans("itIT", "LID_DONE", "Fatto")
+MoveAny:AddTrans("itIT", "LID_WAITINGFOROWNER", "In attesa del proprietario")
+MoveAny:AddTrans("itIT", "LID_WAITFORPLAYERPROFILE", "Attendere che l'altro giocatore prema \"Ottieni profili\"")
+MoveAny:AddTrans("itIT", "LID_WAITFORPLAYERPROFILE2", "Attendere che l'altro giocatore prema \"Condividi\"")
+MoveAny:AddTrans("itIT", "LID_ALPHAINCOMBAT", "Alfa (in combattimento)")
+MoveAny:AddTrans("itIT", "LID_ALPHANOTINCOMBAT", "Alfa (non in combattimento)")
+MoveAny:AddTrans("itIT", "LID_ALPHAINVEHICLE", "Alfa (in veicolo)")
+MoveAny:AddTrans("itIT", "LID_MABUFFLIMIT", "Limite Buff")
+MoveAny:AddTrans("itIT", "LID_MABUFFSPACINGX", "Spaziatura orizzontale dei buffer")
+MoveAny:AddTrans("itIT", "LID_MABUFFSPACINGY", "Spaziatura buffer verticale")
+MoveAny:AddTrans("itIT", "LID_ISENABLEDINEDITMODE", "(Disabilita in EditMode)")
+MoveAny:AddTrans("itIT", "LID_CANBREAKBECAUSEOFEDITMODE", "(Può causare errori dovuti alla modalità di modifica)")
+MoveAny:AddTrans("itIT", "LID_HELPTEXT", "\"%s\" è già abilitato in EditMode. Si prega di disattivare la modalità di modifica o MoveAny.")
+MoveAny:AddTrans("itIT", "LID_BUILTIN", "Integrato")
+MoveAny:AddTrans("itIT", "LID_EDITMODE", "Modalità di modifica sovrascritta")
+MoveAny:AddTrans("itIT", "LID_NORMAL", "Normal")
+MoveAny:AddTrans("itIT", "LID_CLASSSPECIFIC", "Classe specifica")
+MoveAny:AddTrans("itIT", "LID_ADVANCED", "Avanzato")
+MoveAny:AddTrans("itIT", "LID_ImproveAny", "ImproveAny")
+MoveAny:AddTrans("itIT", "LID_ARCHEOLOGYDIGSITEPROGRESSBAR", "Barra di avanzamento del sito archeologico")
+MoveAny:AddTrans("itIT", "LID_UIERRORSFRAME", "Messaggi di errore dell'interfaccia utente, avanzamento della ricerca")
+MoveAny:AddTrans("itIT", "LID_COMBOPOINTPLAYERFRAME", "Punti combo")
+MoveAny:AddTrans("itIT", "LID_PARTYFRAME", "Cornice del partito")
+MoveAny:AddTrans("itIT", "LID_PARTYMEMBERFRAME", "Cornice membro del partito %s")
+MoveAny:AddTrans("itIT", "LID_BOSSTARGETFRAMECONTAINER", "Cornice del boss")
+MoveAny:AddTrans("itIT", "LID_FLIPPED", "Capovolto")
+MoveAny:AddTrans("itIT", "LID_GHOSTFRAME", "Cornice fantasma (teletrasporto al cimitero)")
+MoveAny:AddTrans("itIT", "LID_TICKETSTATUSFRAME", "Cornice biglietto")
+MoveAny:AddTrans("itIT", "LID_LOSSOFCONTROLFRAME", "Quadro di perdita di controllo")
+MoveAny:AddTrans("itIT", "LID_TargetFrameNumericalThreat", "Percentuale di minaccia")
+MoveAny:AddTrans("itIT", "LID_EventToastManagerFrame", "EventToastManagerFrame (Levelup, Zonetext)")
+MoveAny:AddTrans("itIT", "LID_BUFFTIMER1", "Buff Timer")
+MoveAny:AddTrans("itIT", "LID_ENDCAPLEFT", "End Cap Left (Gryphon)")
+MoveAny:AddTrans("itIT", "LID_ENDCAPRIGHT", "End Cap Right (Gryphon)")
+MoveAny:AddTrans("itIT", "LID_ENDCAPS", "End Caps (Gryphons)")
+MoveAny:AddTrans("itIT", "LID_BLIZZARDACTIONBUTTONSART", "Actionbar 1 Blizzard-Art")
+MoveAny:AddTrans("itIT", "LID_OBJECTIVETRACKERBONUSBANNERFRAME", "Objective Tracker Frame (World Quest Title)")
+MoveAny:AddTrans("itIT", "LID_MOVESMALLBAGS", "Move/Scale Small Bags")
+MoveAny:AddTrans("itIT", "LID_NEEDSARELOAD", "Needs a Reload")
+MoveAny:AddTrans("itIT", "LID_RAIDBOSSEMOTEFRAME", "Raid Boss Emote Frame")
+MoveAny:AddTrans("itIT", "LID_STARTHELP", "Click the MoveAny Minimap Button to open the settings.")
+MoveAny:AddTrans("itIT", "LID_STARTHELP2", "Or tap /move or /moveany in chat to open the settings.")
+MoveAny:AddTrans("itIT", "LID_STARTHELP3", "To hide these messages deactivate tips in the MoveAny menu.")
+MoveAny:AddTrans("itIT", "LID_SHOWTIPS", "Show Tips")
+MoveAny:AddTrans("itIT", "LID_OVERRIDEACTIONBAR", "Override Action Bar (Vehicle Bar)")
+MoveAny:AddTrans("itIT", "LID_BOSSBANNER", "Boss Banner (Dropped Loot, Boss Title)")
+MoveAny:AddTrans("itIT", "LID_COMPACTARENAFRAME", "Compact Arena Frame")
+MoveAny:AddTrans("itIT", "LID_ROLEPOLLPOPUP", "Role Poll Popup")
+MoveAny:AddTrans("itIT", "LID_READYCHECKLISTENERFRAME", "Ready Check Popup")
+MoveAny:AddTrans("itIT", "LID_DISABLEMOVEMENT", "Disable Movement keybinds, when in MoveAny-EditMode")
+MoveAny:AddTrans("itIT", "LID_CLICKTHROUGH", "Clickthrough")
+MoveAny:AddTrans("itIT", "LID_MABUFFMODE", "Buff-Alignment")
+MoveAny:AddTrans("itIT", "LID_MADEBUFFLIMIT", "Debuff limit")
+MoveAny:AddTrans("itIT", "LID_MADEBUFFSPACINGX", "Debuff Spacing Horizontal")
+MoveAny:AddTrans("itIT", "LID_MADEBUFFSPACINGY", "Debuff Spacing Vertical")
+MoveAny:AddTrans("itIT", "LID_MADEBUFFMODE", "Debuff-Alignment")
+MoveAny:AddTrans("itIT", "LID_SEARCH", "Search")
+MoveAny:AddTrans("itIT", "LID_COMBOFRAME", "Combo Bar")
+MoveAny:AddTrans("itIT", "LID_WIDTH", "Width")
+MoveAny:AddTrans("itIT", "LID_HEIGHT", "Height")
+MoveAny:AddTrans("itIT", "LID_ALPHAISFULLHEALTH", "Alpha (Full Health)")
+MoveAny:AddTrans("itIT", "LID_ALPHAISINPETBATTLE", "Alpha (Is In Pet Battle)")
+MoveAny:AddTrans("itIT", "LID_KEYBINDWINDOW", "Keybind for Windows")
+MoveAny:AddTrans("itIT", "LID_SNAPWINDOWSIZE", "Snapsize (Windows)")
+MoveAny:AddTrans("itIT", "LID_BOSS1", "Boss 1")
+MoveAny:AddTrans("itIT", "LID_BOSS2", "Boss 2")
+MoveAny:AddTrans("itIT", "LID_BOSS3", "Boss 3")
+MoveAny:AddTrans("itIT", "LID_BOSS4", "Boss 4")
+MoveAny:AddTrans("itIT", "LID_BOSS5", "Boss 5")
+MoveAny:AddTrans("itIT", "LID_BOSS6", "Boss 6")
+MoveAny:AddTrans("itIT", "LID_MAPAGES", "Actionbar Pages")
+MoveAny:AddTrans("itIT", "LID_HIDEHIDDENFRAMES", "Hide hidden Elements")
+MoveAny:AddTrans("itIT", "LID_TIMERTRACKER1", "Timer Tracker (only visible when available)")
+MoveAny:AddTrans("itIT", "LID_PALADINPOWERBAR", "Paladin Power Bar (Holy Power)")
+MoveAny:AddTrans("itIT", "LID_SHARDBARFRAME", "Warlock Power Frame (Shards)")
+MoveAny:AddTrans("itIT", "LID_OFFSET", "Offset")
+MoveAny:AddTrans("itIT", "LID_EclipseBarFrame", "Eclipse Bar Frame (Druid)")
+MoveAny:AddTrans("itIT", "LID_REQUIRESFOR", "Requires: %s")
+MoveAny:AddTrans("itIT", "LID_REQUIREDFOR", "Required for: %s")
+MoveAny:AddTrans("itIT", "LID_RESETELEMENT", "Reset Element")
+if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	MoveAny:AddTrans("itIT", "LID_ACTIONBARS", "Barra d'azioni 1 + 5 + 6")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR1", "Barra d'azioni 1 (barra principale)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR2", "Barra d'azioni 2 (2. Pagina della barra d'azioni 1)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR3", "Barra d'azione 3 (barra destra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR4", "Barra d'azione 4 (barra sinistra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR5", "Barra d'azione 5 (barra superiore destra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR6", "Barra d'azione 6 (barra in alto a sinistra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR7", "Barra d'azione 7 (personalizzata)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR8", "Barra d'azione 8 (personalizzata)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR9", "Barra d'azione 9 (personalizzata)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR10", "Barra d'azioni 10 (personalizzata)")
+else
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR1", "Barra d'azioni 1 (barra principale)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR2", "Barra d'azioni 2 (sopra la barra principale)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR3", "Barra d'azione 3 (sopra la seconda barra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR4", "Barra d'azione 4 (barra destra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR5", "Barra d'azione 5 (barra sinistra)")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR6", "Barra d'azione 6")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR7", "Barra d'azione 7")
+	MoveAny:AddTrans("itIT", "LID_ACTIONBAR8", "Barra d'azione 8")
 end

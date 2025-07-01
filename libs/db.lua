@@ -285,7 +285,7 @@ function MoveAny:IsEnabled(element, value, settings)
 	MoveAny:CheckDB("IsEnabled")
 	local enabled, forced = MoveAny:IsInEditModeEnabled(element)
 	if value and enabled and not forced and not settings then
-		MoveAny:MSG(format(MoveAny:GT("LID_HELPTEXT"), MoveAny:GT(element)))
+		MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), MoveAny:Trans(element)))
 
 		return false
 	end

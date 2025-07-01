@@ -31,7 +31,6 @@ locale\koKR.lua
 locale\ptBR.lua
 locale\ruRU.lua
 locale\zhCN.lua
-libs\lang.lua
 
 ele\actionbars.lua
 ele\arenaenemyframes.lua

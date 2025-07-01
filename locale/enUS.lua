@@ -1,281 +1,268 @@
 -- enUS English
 local _, MoveAny = ...
-function MoveAny:UpdateLanguageTab(tab)
-	for i, v in pairs(tab) do
-		MoveAny:GetLangTab()[i] = v
-	end
-end
-
-function MoveAny:LangenUS()
-	local tab = {
-		["LID_GENERAL"] = "General",
-		["LID_SHOWMINIMAPBUTTON"] = "Show Minimap Button",
-		["LID_GRIDSIZE"] = "Gridsize (Grid)",
-		["LID_SNAPSIZE"] = "Snapsize (Grid)",
-		["LID_MOVEFRAMES"] = "Move Windows",
-		["LID_SAVEFRAMEPOSITION"] = "Save Frame Position",
-		["LID_SAVEFRAMESCALE"] = "Save Frame Scale",
-		["LID_SHIFT"] = "SHIFT",
-		["LID_CTRL"] = "CTRL",
-		["LID_ALT"] = "ALT",
-		["LID_FRAMESKEYDRAG"] = "Move Frame with %s + Leftclick-drag",
-		["LID_FRAMESKEYSCALE"] = "Scale Frame with %s + Rightclick-drag",
-		["LID_FRAMESKEYRESET"] = "Reset Frame with %s + Mousewheelclick",
-		["LID_PLAYERFRAME"] = "Player Frame",
-		["LID_PLAYERLEVELTEXT"] = "Player Frame-Level",
-		["LID_PLAYERFRAMEBACKGROUND"] = "Player Frame Background",
-		["LID_PETFRAME"] = "Pet Frame",
-		["LID_MAPETFRAME"] = "Pet Frame",
-		["LID_PETFRAMEHAPPINESS"] = "Pet Frame Happiness",
-		["LID_TARGETFRAME"] = "Target Frame",
-		["LID_TARGETFRAMENAMEBACKGROUND"] = "Target Frame Namen-Background",
-		["LID_TARGETFRAMEBUFFMOVER"] = "Target Frame Buffs",
-		["LID_TARGETFRAMETOTDEBUFFMOVER"] = "Target of Target Frame Debuffs",
-		["LID_TARGETOFTARGETFRAME"] = "Target of Target Frame",
-		["LID_TARGETFRAMESPELLBAR"] = "Castbar from Target",
-		["LID_FOCUSFRAME"] = "Focus Frame",
-		["LID_FOCUSFRAMEBUFFMOVER"] = "Focus Frame Buffs",
-		["LID_FOCUSFRAMESPELLBAR"] = "Castbar from Focus",
-		["LID_TARGETOFFOCUSFRAME"] = "Target of Focus Frame",
-		["LID_RUNEFRAME"] = "Deathknight - Runes Frame",
-		["LID_TOTEMFRAME"] = "Totem Timers (Also used by other classes)",
-		["LID_WARLOCKPOWERFRAME"] = "Warlock Power Frame (Shards)",
-		["LID_MONKHARMONYBARFRAME"] = "Monk Harmony frame  (Chi)",
-		["LID_MONKSTAGGERBAR"] = "Monk Stagger bar  (Chi)",
-		["LID_MAGEARCANECHARGESFRAME"] = "Mage Arcane Charges frame",
-		["LID_ESSENCEPLAYERFRAME"] = "Essence Player Frame (Evoker)",
-		["LID_PALADINPOWERBARFRAME"] = "Paladin Power Bar (Holy Power)",
-		["LID_MAFPSFrame"] = "FPS (New FPS-Counter)",
-		["LID_IAPingFrame"] = "Ping",
-		["LID_IACoordsFrame"] = "Coords Frame",
-		["LID_MINIMAP"] = "Mini Map",
-		["LID_MINIMAPZONETEXT"] = "Mini Map Zone Text",
-		["LID_BUFFS"] = "Buffs",
-		["LID_DEBUFFS"] = "Debuffs",
-		["LID_VEHICLESEATINDICATOR"] = "Vehicle Seat Indicator",
-		["LID_ARENAENEMYFRAMES"] = "Arena Enemy Frames",
-		["LID_ARENAPREPFRAMES"] = "Arena Prep Frames",
-		["LID_QUESTTRACKER"] = "Questtracker",
-		["LID_MICROMENU"] = "Micro Menu (Characterbutton, Spellbookbutton, ...)",
-		["LID_BAGS"] = "Bags",
-		["LID_GAMETOOLTIP"] = "Tooltip",
-		["LID_GAMETOOLTIP_ONCURSOR"] = "Tooltip on Cursor",
-		["LID_QUEUESTATUSBUTTON"] = "LFG Status",
-		["LID_QUEUESTATUSFRAME"] = "LFG Status Tooltip",
-		["LID_PETBAR"] = "Pet Bar",
-		["LID_STANCEBAR"] = "Stance Bar",
-		["LID_TOTEMBAR"] = "Shaman - Totem Bar",
-		["LID_LEAVEVEHICLE"] = "Leave Vehicle Button",
-		["LID_GROUPLOOTFRAME1"] = "Loot Roll Frame 1 (Loot)",
-		["LID_GROUPLOOTCONTAINER"] = "Loot Roll Frame (Loot)",
-		["LID_BONUSROLLFRAME"] = "Bonus Roll Frame (Loot)",
-		["LID_STATUSTRACKINGBARMANAGER"] = "Status Tracking Bar Manager (XP, Reputation)",
-		["LID_ALERTFRAME"] = "Alert Frame (Bonus Loot, Achiements, ...) (Loot)",
-		["LID_CHAT"] = "Chatframe %d",
-		["LID_CHATBUTTONFRAME1"] = "Chat Buttons for Tab 1",
-		["LID_CHATBUTTONFRAME2"] = "Chat Buttons for Tab 2",
-		["LID_CHATBUTTONFRAME3"] = "Chat Buttons for Tab 3",
-		["LID_CHATBUTTONFRAME4"] = "Chat Buttons for Tab 4",
-		["LID_CHATBUTTONFRAME5"] = "Chat Buttons for Tab 5",
-		["LID_CHATBUTTONFRAME6"] = "Chat Buttons for Tab 6",
-		["LID_CHATBUTTONFRAME7"] = "Chat Buttons for Tab 7",
-		["LID_CHATBUTTONFRAME8"] = "Chat Buttons for Tab 8",
-		["LID_CHATBUTTONFRAME9"] = "Chat Buttons for Tab 9",
-		["LID_CHATBUTTONFRAME10"] = "Chat Buttons for Tab 10",
-		["LID_CHATQUICKJOIN"] = "Chat Quick Join",
-		["LID_CHATEDITBOX"] = "Chat Inputbox %s",
-		["LID_CHATTAB"] = "Chat Tab %s",
-		["LID_COMPACTRAIDFRAMEMANAGER"] = "Raid Manager",
-		["LID_BNToastFrame"] = "Battlenet Friends Notifications",
-		["LID_SPELLACTIVATIONOVERLAYFRAME"] = "Spell Activation Overlay (Class Proc)",
-		["LID_ZONETEXTFRAME"] = "Zone Text",
-		["LID_UIWIDGETTOPCENTER"] = "Widget Top Center (Status/Stats on Battlegrounds/Dungeons/Raids)",
-		["LID_MIRRORTIMER1"] = "Breathbar",
-		["LID_IASKILLS"] = "Skillbars",
-		["LID_UIWIDGETBELOWMINIMAP"] = "Widget Below Minimap (Capture Status)",
-		["LID_DURABILITY"] = "Durability Doll",
-		["LID_MONEYBAR"] = "Money Bar",
-		["LID_TOKENBAR"] = "Token Bar",
-		["LID_IAILVLBAR"] = "ItemLevel Bar",
-		["LID_CASTINGBAR"] = "Casting Bar",
-		["LID_CASTINGBARTIMER"] = "Casting Bar Timer",
-		["LID_TALKINGHEAD"] = "Talking Head Dialog",
-		["LID_POSSESSBAR"] = "Possess Bar (Controlling NPC/Vehicle)",
-		["LID_ZONEABILITYFRAME"] = "Zone Ability",
-		["LID_EXTRAABILITYCONTAINER"] = "Extra Ability (Spells for Quest, Boss)",
-		["LID_MAINMENUEXPBAR"] = "Exp Bar",
-		["LID_REPUTATIONWATCHBAR"] = "Reputation Bar",
-		["LID_UIWIDGETPOWERBAR"] = "Power Bar (Shows mostly Percentage) (Boss Bar, Vigor Bar, Darkmoon faire, ...)",
-		["LID_POWERBAR"] = "Power Bar (Shows mostly Percentage) (Boss Encounters, Darkmoon faire, ...)",
-		["LID_COUNT"] = "Count",
-		["LID_ROWS"] = "Rows",
-		["LID_SPACING"] = "Spacing",
-		["LID_PROFILE"] = "Profile",
-		["LID_PROFILES"] = "Profiles",
-		["LID_ADDPROFILE"] = "Add Profile",
-		["LID_CURRENT"] = "Current",
-		["LID_SHARE"] = "Share",
-		["LID_SHAREPROFILE"] = "Share Profile",
-		["LID_GETPROFILE"] = "Get Profile",
-		["LID_INHERITFROM"] = "Inherit from",
-		["LID_ADD"] = "Add",
-		["LID_REMOVE"] = "Remove",
-		["LID_RENAME"] = "Rename",
-		["LID_PLAYER"] = "Player",
-		["LID_DOWNLOAD"] = "Download",
-		["LID_UPLOAD"] = "Upload",
-		["LID_STATUS"] = "Status",
-		["LID_DONE"] = "Done",
-		["LID_WAITINGFOROWNER"] = "Waiting for Owner",
-		["LID_WAITFORPLAYERPROFILE"] = "Wait for other player to press \"Get Profiles\".",
-		["LID_WAITFORPLAYERPROFILE2"] = "Wait for other player to press \"Share\".",
-		["LID_ALPHAINCOMBAT"] = "Alpha (in Combat)",
-		["LID_ALPHANOTINCOMBAT"] = "Alpha (not in Combat)",
-		["LID_ALPHAINVEHICLE"] = "Alpha (in Vehicle)",
-		["LID_ALPHAINRESTEDAREA"] = "Alpha (in Rested)",
-		["LID_ALPHAISMOUNTED"] = "Alpha (in Mounted)",
-		["LID_ALPHAISSTEALTHED"] = "Alpha (Stealthed)",
-		["LID_MABUFFLIMIT"] = "Buff limit",
-		["LID_MABUFFSPACINGX"] = "Buff Spacing Horizontal",
-		["LID_MABUFFSPACINGY"] = "Buff Spacing Vertical",
-		["LID_ISENABLEDINEDITMODE"] = "(Disable it GameMenu's Edit Mode)",
-		["LID_CANBREAKBECAUSEOFEDITMODE"] = "(May cause error due to edit mode)",
-		["LID_HELPTEXT"] = "\"%s\" is already enabled in EditMode. Please deactivate in EditMode or MoveAny.",
-		["LID_BUILTIN"] = "Built-In",
-		["LID_EDITMODE"] = "Overwrite Edit Mode",
-		["LID_NORMAL"] = "Normal",
-		["LID_CLASSSPECIFIC"] = "Class Specific",
-		["LID_ADVANCED"] = "Advanced",
-		["LID_ImproveAny"] = "ImproveAny",
-		["LID_ARCHEOLOGYDIGSITEPROGRESSBAR"] = "Archeology digsite progress bar",
-		["LID_UIERRORSFRAME"] = "Ui Error Messages (Quest Progress, Event Messages)",
-		["LID_COMBOPOINTPLAYERFRAME"] = "Combo Points",
-		["LID_PARTYFRAME"] = "Party Frame",
-		["LID_PARTYMEMBERFRAME"] = "Party Member Frame %s",
-		["LID_COMPACTRAIDFRAMECONTAINER"] = "RaidFrame",
-		["LID_BOSSTARGETFRAMECONTAINER"] = "Boss Container (Bosscontainer) Up to 5 Bosses",
-		["LID_FLIPPED"] = "Flipped",
-		["LID_GHOSTFRAME"] = "Ghost Frame (Teleport to Graveyard)",
-		["LID_TICKETSTATUSFRAME"] = "Ticket Frame",
-		["LID_LOSSOFCONTROLFRAME"] = "Loss of Control Frame",
-		["LID_MainStatusTrackingBarContainer"] = "StatusBar1 (Exp Bar, Reputation Bar)",
-		["LID_SecondaryStatusTrackingBarContainer"] = "StatusBar2 (Reputation Bar)",
-		["LID_TargetFrameNumericalThreat"] = "Threat Percentage",
-		["LID_EventToastManagerFrame"] = "EventToastManagerFrame (Levelup, Zonetext)",
-		["LID_BUFFTIMER1"] = "Buff Timer",
-		["LID_!KalielsTracker"] = "!KalielsTracker",
-		["LID_!KalielsTrackerButtons"] = "!KalielsTrackerButtons",
-		["LID_ENDCAPLEFT"] = "End Cap Left (Gryphon)",
-		["LID_ENDCAPRIGHT"] = "End Cap Right (Gryphon)",
-		["LID_ENDCAPS"] = "End Caps (Gryphons)",
-		["LID_BLIZZARDACTIONBUTTONSART"] = "Actionbar 1 Blizzard-Art",
-		["LID_OBJECTIVETRACKERBONUSBANNERFRAME"] = "Objective Tracker Frame (World Quest Title)",
-		["LID_MOVESMALLBAGS"] = "Move/Scale Small Bags",
-		["LID_MOVELOOTFRAME"] = "Move Lootframe",
-		["LID_SCALELOOTFRAME"] = "Scale Lootframe",
-		["LID_NEEDSARELOAD"] = "Needs a Reload",
-		["LID_RAIDBOSSEMOTEFRAME"] = "Raid Boss Emote Frame",
-		["LID_STARTHELP"] = "Click the MoveAny Minimap Button to open the settings.",
-		["LID_STARTHELP2"] = "Or type /move or /moveany in chat to open the settings.",
-		["LID_STARTHELP3"] = "To hide these messages deactivate tips in the MoveAny menu.",
-		["LID_SHOWTIPS"] = "Show Tips",
-		["LID_OVERRIDEACTIONBAR"] = "Override Action Bar (Vehicle Bar)",
-		["LID_BOSSBANNER"] = "Boss Banner (Dropped Loot, Boss Title)",
-		["LID_COMPACTARENAFRAME"] = "Compact Arena Frame",
-		["LID_ROLEPOLLPOPUP"] = "Role Poll Popup",
-		["LID_READYCHECKLISTENERFRAME"] = "Ready Check Popup",
-		["LID_DISABLEMOVEMENT"] = "Disable Movement keybinds, when in MoveAny-EditMode",
-		["LID_CLICKTHROUGH"] = "Clickthrough",
-		["LID_MABUFFMODE"] = "Buff-Alignment",
-		["LID_MADEBUFFLIMIT"] = "Debuff limit",
-		["LID_MADEBUFFSPACINGX"] = "Debuff Spacing Horizontal",
-		["LID_MADEBUFFSPACINGY"] = "Debuff Spacing Vertical",
-		["LID_MADEBUFFMODE"] = "Debuff-Alignment",
-		["LID_SEARCH"] = "Search",
-		["LID_COMBOFRAME"] = "Combo Bar",
-		["LID_WIDTH"] = "Width",
-		["LID_HEIGHT"] = "Height",
-		["LID_ALPHAISFULLHEALTH"] = "Alpha (Full Health)",
-		["LID_ALPHAISINPETBATTLE"] = "Alpha (Is In Pet Battle)",
-		["LID_KEYBINDWINDOW"] = "Keybind for Windows",
-		["LID_SNAPWINDOWSIZE"] = "Snapsize (Windows)",
-		["LID_BOSS1"] = "Boss 1",
-		["LID_BOSS2"] = "Boss 2",
-		["LID_BOSS3"] = "Boss 3",
-		["LID_BOSS4"] = "Boss 4",
-		["LID_BOSS5"] = "Boss 5",
-		["LID_BOSS6"] = "Boss 6",
-		["LID_MAPAGES"] = "Actionbar Pages",
-		["LID_HIDEHIDDENFRAMES"] = "Hide hidden Elements",
-		["LID_TIMERTRACKER1"] = "Timer Tracker (only visible when available)",
-		["LID_PALADINPOWERBAR"] = "Paladin Power Bar (Holy Power)",
-		["LID_SHARDBARFRAME"] = "Warlock Power Frame (Shards)",
-		["LID_OFFSET"] = "Offset",
-		["LID_EclipseBarFrame"] = "Eclipse Bar Frame (Druid)",
-		["LID_REQUIRESFOR"] = "Requires: %s",
-		["LID_REQUIREDFOR"] = "Required for: %s",
-		["LID_RESETELEMENT"] = "Reset Element",
-		["LID_TARGETFRAMEDEBUFFMOVER"] = "Target Frame Debuffs",
-		["LID_FOCUSFRAMEDEBUFFMOVER"] = "Focus Frame Debuffs",
-		["LID_TARGETFRAMETOTBUFFMOVER"] = "Target of Target Frame Buffs",
-		["LID_MINIMAPFLAG"] = "Minimap Flag",
-		["LID_MiniMapInstanceDifficulty"] = "Minimap Flag Instance Difficulty",
-		["LID_MiniMapChallengeMode"] = "Minimap Flag Challenge Mode",
-		["LID_GuildInstanceDifficulty"] = "Minimap Flag Guild-Instance Difficulty",
-		["LID_POWERBARCOUNTERBAR"] = "Powerbar Counterbar (Boss Encounters, Darkmoon faire, ...)",
-		["LID_BUFFTIMER1"] = "BuffTimer 1 (Boss Encounters, Darkmoon faire, ...)",
-		["LID_FRAMES"] = "Windows",
-		["LID_SCALEFRAMES"] = "Scale Windows (Resize Windows)",
-		["LID_RESETFRAMES"] = "Reset Windows",
-		["LID_ExpansionLandingPageMinimapButton"] = "ExpansionLandingPageMinimapButton",
-		["LID_MOVEANYINFO"] = "Select the things you want to modify",
-		["LID_PLEASESWITCHPROFILE1"] = "Please switch LAYOUT in Editmode (from Blizzard) to a CUSTOM LAYOUT.",
-		["LID_PLEASESWITCHPROFILE2"] = "MoveAny doesn't work with a Preset Profile, it's mostly readonly.",
-		["LID_PLEASESWITCHPROFILE3"] = "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (no Preset Layout)",
-		["LID_LFGMinimapFrame"] = "LFG Minimap Button",
-		["LID_QUESTTIMERFRAME"] = "Quest Timer Frame",
-		["LID_BATTLEFIELDMAPFRAME"] = "Battlefield Map",
-		["LID_ExtraActionBarFrame"] = "Extra Actionbar (Clickable Button) (ExtraActionButton1, ExtraActionBarFrame)",
-		["LID_ExtraActionButton1"] = "Extra Actionbar (Clickable Button) (ExtraActionButton1, ExtraActionBarFrame)",
-		["LID_FRAMESCALEDISABLED"] = "\"Scale Windows (Resize Windows)\" is disabled, please enable it.",
-		["LID_BAGEXTRAS"] = "Extras",
-		["LID_HIDESMALLBAGS"] = "Small Bags",
-		["LID_HIDEKEYBAG"] = "KeyRing Bag",
-		["LID_CHANGEONCATSTEALTH"] = "Change bar on cat stealth (Reloads on Change)",
-		["LID_RIGHTCLICKFOROPTIONS"] = "Rightclick for Options",
-		["LID_EssentialCooldownViewer"] = "Essential Cooldown Viewer (Cooldown-Manager)",
-		["LID_BuffIconCooldownViewer"] = "Buff Icon Cooldown Viewer (Cooldown-Manager)",
-		["LID_BuffBarCooldownViewer"] = "Buff Bar Cooldown Viewer (Cooldown-Manager)",
-		["LID_CLAMPWINDOWTOSCREEN"] = "Clamp Windows to Screen (Can't drag off Screen)",
-		["LID_ARENAENEMYFRAMESCONTAINER"] = "Arena Enemy Frames Container (Battleground Bosses)",
-		["LID_FOCUSFRAMETOTBUFFMOVER"] = "Target of Focus Frame Buffs",
-		["LID_FOCUSFRAMETOTDEBUFFMOVER"] = "Target of Focus Frame Debuffs",
-		["LID_PRESSESCTOLEAVE"] = "Press ESC to leave the Picker",
-	}
-
-	MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")
-	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		tab["LID_ACTIONBARS"] = "Actionbars 1 + 5 + 6"
-		tab["LID_ACTIONBAR1"] = "Actionbars 1 (Main Bar)"
-		tab["LID_ACTIONBAR2"] = "Actionbars 2 (2. Page of Actionbar 1)"
-		tab["LID_ACTIONBAR3"] = "Actionbars 3 (Right Bar)"
-		tab["LID_ACTIONBAR4"] = "Actionbars 4 (Left Bar)"
-		tab["LID_ACTIONBAR5"] = "Actionbars 5 (Top Right Bar)"
-		tab["LID_ACTIONBAR6"] = "Actionbars 6 (Top Left Bar)"
-		tab["LID_ACTIONBAR7"] = "Actionbars 7 (Custom)"
-		tab["LID_ACTIONBAR8"] = "Actionbars 8 (Custom)"
-		tab["LID_ACTIONBAR9"] = "Actionbars 9 (Custom)"
-		tab["LID_ACTIONBAR10"] = "Actionbars 10 (Custom)"
-	else
-		tab["LID_ACTIONBAR1"] = "Actionbars 1 (Main Bar)"
-		tab["LID_ACTIONBAR2"] = "Actionbars 2 (Above Main Bar)"
-		tab["LID_ACTIONBAR3"] = "Actionbars 3 (Above Second Bar)"
-		tab["LID_ACTIONBAR4"] = "Actionbars 4 (Right Bar)"
-		tab["LID_ACTIONBAR5"] = "Actionbars 5 (Left Bar)"
-		tab["LID_ACTIONBAR6"] = "Actionbars 6"
-		tab["LID_ACTIONBAR7"] = "Actionbars 7"
-		tab["LID_ACTIONBAR8"] = "Actionbars 8"
-	end
-
-	MoveAny:UpdateLanguageTab(tab)
+MoveAny:AddTrans("enUS", "LID_GENERAL", "General")
+MoveAny:AddTrans("enUS", "LID_SHOWMINIMAPBUTTON", "Show Minimap Button")
+MoveAny:AddTrans("enUS", "LID_GRIDSIZE", "Gridsize (Grid)")
+MoveAny:AddTrans("enUS", "LID_SNAPSIZE", "Snapsize (Grid)")
+MoveAny:AddTrans("enUS", "LID_MOVEFRAMES", "Move Windows")
+MoveAny:AddTrans("enUS", "LID_SAVEFRAMEPOSITION", "Save Frame Position")
+MoveAny:AddTrans("enUS", "LID_SAVEFRAMESCALE", "Save Frame Scale")
+MoveAny:AddTrans("enUS", "LID_SHIFT", "SHIFT")
+MoveAny:AddTrans("enUS", "LID_CTRL", "CTRL")
+MoveAny:AddTrans("enUS", "LID_ALT", "ALT")
+MoveAny:AddTrans("enUS", "LID_FRAMESKEYDRAG", "Move Frame with %s + Leftclick-drag")
+MoveAny:AddTrans("enUS", "LID_FRAMESKEYSCALE", "Scale Frame with %s + Rightclick-drag")
+MoveAny:AddTrans("enUS", "LID_FRAMESKEYRESET", "Reset Frame with %s + Mousewheelclick")
+MoveAny:AddTrans("enUS", "LID_PLAYERFRAME", "Player Frame")
+MoveAny:AddTrans("enUS", "LID_PLAYERLEVELTEXT", "Player Frame-Level")
+MoveAny:AddTrans("enUS", "LID_PLAYERFRAMEBACKGROUND", "Player Frame Background")
+MoveAny:AddTrans("enUS", "LID_PETFRAME", "Pet Frame")
+MoveAny:AddTrans("enUS", "LID_MAPETFRAME", "Pet Frame")
+MoveAny:AddTrans("enUS", "LID_PETFRAMEHAPPINESS", "Pet Frame Happiness")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAME", "Target Frame")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAMENAMEBACKGROUND", "Target Frame Namen-Background")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAMEBUFFMOVER", "Target Frame Buffs")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAMETOTDEBUFFMOVER", "Target of Target Frame Debuffs")
+MoveAny:AddTrans("enUS", "LID_TARGETOFTARGETFRAME", "Target of Target Frame")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAMESPELLBAR", "Castbar from Target")
+MoveAny:AddTrans("enUS", "LID_FOCUSFRAME", "Focus Frame")
+MoveAny:AddTrans("enUS", "LID_FOCUSFRAMEBUFFMOVER", "Focus Frame Buffs")
+MoveAny:AddTrans("enUS", "LID_FOCUSFRAMESPELLBAR", "Castbar from Focus")
+MoveAny:AddTrans("enUS", "LID_TARGETOFFOCUSFRAME", "Target of Focus Frame")
+MoveAny:AddTrans("enUS", "LID_RUNEFRAME", "Deathknight - Runes Frame")
+MoveAny:AddTrans("enUS", "LID_TOTEMFRAME", "Totem Timers (Also used by other classes)")
+MoveAny:AddTrans("enUS", "LID_WARLOCKPOWERFRAME", "Warlock Power Frame (Shards)")
+MoveAny:AddTrans("enUS", "LID_MONKHARMONYBARFRAME", "Monk Harmony frame  (Chi)")
+MoveAny:AddTrans("enUS", "LID_MONKSTAGGERBAR", "Monk Stagger bar  (Chi)")
+MoveAny:AddTrans("enUS", "LID_MAGEARCANECHARGESFRAME", "Mage Arcane Charges frame")
+MoveAny:AddTrans("enUS", "LID_ESSENCEPLAYERFRAME", "Essence Player Frame (Evoker)")
+MoveAny:AddTrans("enUS", "LID_PALADINPOWERBARFRAME", "Paladin Power Bar (Holy Power)")
+MoveAny:AddTrans("enUS", "LID_MAFPSFrame", "FPS (New FPS-Counter)")
+MoveAny:AddTrans("enUS", "LID_IAPingFrame", "Ping")
+MoveAny:AddTrans("enUS", "LID_IACoordsFrame", "Coords Frame")
+MoveAny:AddTrans("enUS", "LID_MINIMAP", "Mini Map")
+MoveAny:AddTrans("enUS", "LID_MINIMAPZONETEXT", "Mini Map Zone Text")
+MoveAny:AddTrans("enUS", "LID_BUFFS", "Buffs")
+MoveAny:AddTrans("enUS", "LID_DEBUFFS", "Debuffs")
+MoveAny:AddTrans("enUS", "LID_VEHICLESEATINDICATOR", "Vehicle Seat Indicator")
+MoveAny:AddTrans("enUS", "LID_ARENAENEMYFRAMES", "Arena Enemy Frames")
+MoveAny:AddTrans("enUS", "LID_ARENAPREPFRAMES", "Arena Prep Frames")
+MoveAny:AddTrans("enUS", "LID_QUESTTRACKER", "Questtracker")
+MoveAny:AddTrans("enUS", "LID_MICROMENU", "Micro Menu (Characterbutton, Spellbookbutton, ...)")
+MoveAny:AddTrans("enUS", "LID_BAGS", "Bags")
+MoveAny:AddTrans("enUS", "LID_GAMETOOLTIP", "Tooltip")
+MoveAny:AddTrans("enUS", "LID_GAMETOOLTIP_ONCURSOR", "Tooltip on Cursor")
+MoveAny:AddTrans("enUS", "LID_QUEUESTATUSBUTTON", "LFG Status")
+MoveAny:AddTrans("enUS", "LID_QUEUESTATUSFRAME", "LFG Status Tooltip")
+MoveAny:AddTrans("enUS", "LID_PETBAR", "Pet Bar")
+MoveAny:AddTrans("enUS", "LID_STANCEBAR", "Stance Bar")
+MoveAny:AddTrans("enUS", "LID_TOTEMBAR", "Shaman - Totem Bar")
+MoveAny:AddTrans("enUS", "LID_LEAVEVEHICLE", "Leave Vehicle Button")
+MoveAny:AddTrans("enUS", "LID_GROUPLOOTFRAME1", "Loot Roll Frame 1 (Loot)")
+MoveAny:AddTrans("enUS", "LID_GROUPLOOTCONTAINER", "Loot Roll Frame (Loot)")
+MoveAny:AddTrans("enUS", "LID_BONUSROLLFRAME", "Bonus Roll Frame (Loot)")
+MoveAny:AddTrans("enUS", "LID_STATUSTRACKINGBARMANAGER", "Status Tracking Bar Manager (XP, Reputation)")
+MoveAny:AddTrans("enUS", "LID_ALERTFRAME", "Alert Frame (Bonus Loot, Achiements, ...) (Loot)")
+MoveAny:AddTrans("enUS", "LID_CHAT", "Chatframe %d")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME1", "Chat Buttons for Tab 1")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME2", "Chat Buttons for Tab 2")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME3", "Chat Buttons for Tab 3")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME4", "Chat Buttons for Tab 4")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME5", "Chat Buttons for Tab 5")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME6", "Chat Buttons for Tab 6")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME7", "Chat Buttons for Tab 7")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME8", "Chat Buttons for Tab 8")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME9", "Chat Buttons for Tab 9")
+MoveAny:AddTrans("enUS", "LID_CHATBUTTONFRAME10", "Chat Buttons for Tab 10")
+MoveAny:AddTrans("enUS", "LID_CHATQUICKJOIN", "Chat Quick Join")
+MoveAny:AddTrans("enUS", "LID_CHATEDITBOX", "Chat Inputbox %s")
+MoveAny:AddTrans("enUS", "LID_CHATTAB", "Chat Tab %s")
+MoveAny:AddTrans("enUS", "LID_COMPACTRAIDFRAMEMANAGER", "Raid Manager")
+MoveAny:AddTrans("enUS", "LID_BNToastFrame", "Battlenet Friends Notifications")
+MoveAny:AddTrans("enUS", "LID_SPELLACTIVATIONOVERLAYFRAME", "Spell Activation Overlay (Class Proc)")
+MoveAny:AddTrans("enUS", "LID_ZONETEXTFRAME", "Zone Text")
+MoveAny:AddTrans("enUS", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Status/Stats on Battlegrounds/Dungeons/Raids)")
+MoveAny:AddTrans("enUS", "LID_MIRRORTIMER1", "Breathbar")
+MoveAny:AddTrans("enUS", "LID_IASKILLS", "Skillbars")
+MoveAny:AddTrans("enUS", "LID_UIWIDGETBELOWMINIMAP", "Widget Below Minimap (Capture Status)")
+MoveAny:AddTrans("enUS", "LID_DURABILITY", "Durability Doll")
+MoveAny:AddTrans("enUS", "LID_MONEYBAR", "Money Bar")
+MoveAny:AddTrans("enUS", "LID_TOKENBAR", "Token Bar")
+MoveAny:AddTrans("enUS", "LID_IAILVLBAR", "ItemLevel Bar")
+MoveAny:AddTrans("enUS", "LID_CASTINGBAR", "Casting Bar")
+MoveAny:AddTrans("enUS", "LID_CASTINGBARTIMER", "Casting Bar Timer")
+MoveAny:AddTrans("enUS", "LID_TALKINGHEAD", "Talking Head Dialog")
+MoveAny:AddTrans("enUS", "LID_POSSESSBAR", "Possess Bar (Controlling NPC/Vehicle)")
+MoveAny:AddTrans("enUS", "LID_ZONEABILITYFRAME", "Zone Ability")
+MoveAny:AddTrans("enUS", "LID_EXTRAABILITYCONTAINER", "Extra Ability (Spells for Quest, Boss)")
+MoveAny:AddTrans("enUS", "LID_MAINMENUEXPBAR", "Exp Bar")
+MoveAny:AddTrans("enUS", "LID_REPUTATIONWATCHBAR", "Reputation Bar")
+MoveAny:AddTrans("enUS", "LID_UIWIDGETPOWERBAR", "Power Bar (Shows mostly Percentage) (Boss Bar, Vigor Bar, Darkmoon faire, ...)")
+MoveAny:AddTrans("enUS", "LID_POWERBAR", "Power Bar (Shows mostly Percentage) (Boss Encounters, Darkmoon faire, ...)")
+MoveAny:AddTrans("enUS", "LID_COUNT", "Count")
+MoveAny:AddTrans("enUS", "LID_ROWS", "Rows")
+MoveAny:AddTrans("enUS", "LID_SPACING", "Spacing")
+MoveAny:AddTrans("enUS", "LID_PROFILE", "Profile")
+MoveAny:AddTrans("enUS", "LID_PROFILES", "Profiles")
+MoveAny:AddTrans("enUS", "LID_ADDPROFILE", "Add Profile")
+MoveAny:AddTrans("enUS", "LID_CURRENT", "Current")
+MoveAny:AddTrans("enUS", "LID_SHARE", "Share")
+MoveAny:AddTrans("enUS", "LID_SHAREPROFILE", "Share Profile")
+MoveAny:AddTrans("enUS", "LID_GETPROFILE", "Get Profile")
+MoveAny:AddTrans("enUS", "LID_INHERITFROM", "Inherit from")
+MoveAny:AddTrans("enUS", "LID_ADD", "Add")
+MoveAny:AddTrans("enUS", "LID_REMOVE", "Remove")
+MoveAny:AddTrans("enUS", "LID_RENAME", "Rename")
+MoveAny:AddTrans("enUS", "LID_PLAYER", "Player")
+MoveAny:AddTrans("enUS", "LID_DOWNLOAD", "Download")
+MoveAny:AddTrans("enUS", "LID_UPLOAD", "Upload")
+MoveAny:AddTrans("enUS", "LID_STATUS", "Status")
+MoveAny:AddTrans("enUS", "LID_DONE", "Done")
+MoveAny:AddTrans("enUS", "LID_WAITINGFOROWNER", "Waiting for Owner")
+MoveAny:AddTrans("enUS", "LID_WAITFORPLAYERPROFILE", "Wait for other player to press \"Get Profiles\".")
+MoveAny:AddTrans("enUS", "LID_WAITFORPLAYERPROFILE2", "Wait for other player to press \"Share\".")
+MoveAny:AddTrans("enUS", "LID_ALPHAINCOMBAT", "Alpha (in Combat)")
+MoveAny:AddTrans("enUS", "LID_ALPHANOTINCOMBAT", "Alpha (not in Combat)")
+MoveAny:AddTrans("enUS", "LID_ALPHAINVEHICLE", "Alpha (in Vehicle)")
+MoveAny:AddTrans("enUS", "LID_ALPHAINRESTEDAREA", "Alpha (in Rested)")
+MoveAny:AddTrans("enUS", "LID_ALPHAISMOUNTED", "Alpha (in Mounted)")
+MoveAny:AddTrans("enUS", "LID_ALPHAISSTEALTHED", "Alpha (Stealthed)")
+MoveAny:AddTrans("enUS", "LID_MABUFFLIMIT", "Buff limit")
+MoveAny:AddTrans("enUS", "LID_MABUFFSPACINGX", "Buff Spacing Horizontal")
+MoveAny:AddTrans("enUS", "LID_MABUFFSPACINGY", "Buff Spacing Vertical")
+MoveAny:AddTrans("enUS", "LID_ISENABLEDINEDITMODE", "(Disable it GameMenu's Edit Mode)")
+MoveAny:AddTrans("enUS", "LID_CANBREAKBECAUSEOFEDITMODE", "(May cause error due to edit mode)")
+MoveAny:AddTrans("enUS", "LID_HELPTEXT", "\"%s\" is already enabled in EditMode. Please deactivate in EditMode or MoveAny.")
+MoveAny:AddTrans("enUS", "LID_BUILTIN", "Built-In")
+MoveAny:AddTrans("enUS", "LID_EDITMODE", "Overwrite Edit Mode")
+MoveAny:AddTrans("enUS", "LID_NORMAL", "Normal")
+MoveAny:AddTrans("enUS", "LID_CLASSSPECIFIC", "Class Specific")
+MoveAny:AddTrans("enUS", "LID_ADVANCED", "Advanced")
+MoveAny:AddTrans("enUS", "LID_ImproveAny", "ImproveAny")
+MoveAny:AddTrans("enUS", "LID_ARCHEOLOGYDIGSITEPROGRESSBAR", "Archeology digsite progress bar")
+MoveAny:AddTrans("enUS", "LID_UIERRORSFRAME", "Ui Error Messages (Quest Progress, Event Messages)")
+MoveAny:AddTrans("enUS", "LID_COMBOPOINTPLAYERFRAME", "Combo Points")
+MoveAny:AddTrans("enUS", "LID_PARTYFRAME", "Party Frame")
+MoveAny:AddTrans("enUS", "LID_PARTYMEMBERFRAME", "Party Member Frame %s")
+MoveAny:AddTrans("enUS", "LID_COMPACTRAIDFRAMECONTAINER", "RaidFrame")
+MoveAny:AddTrans("enUS", "LID_BOSSTARGETFRAMECONTAINER", "Boss Container (Bosscontainer) Up to 5 Bosses")
+MoveAny:AddTrans("enUS", "LID_FLIPPED", "Flipped")
+MoveAny:AddTrans("enUS", "LID_GHOSTFRAME", "Ghost Frame (Teleport to Graveyard)")
+MoveAny:AddTrans("enUS", "LID_TICKETSTATUSFRAME", "Ticket Frame")
+MoveAny:AddTrans("enUS", "LID_LOSSOFCONTROLFRAME", "Loss of Control Frame")
+MoveAny:AddTrans("enUS", "LID_MainStatusTrackingBarContainer", "StatusBar1 (Exp Bar, Reputation Bar)")
+MoveAny:AddTrans("enUS", "LID_SecondaryStatusTrackingBarContainer", "StatusBar2 (Reputation Bar)")
+MoveAny:AddTrans("enUS", "LID_TargetFrameNumericalThreat", "Threat Percentage")
+MoveAny:AddTrans("enUS", "LID_EventToastManagerFrame", "EventToastManagerFrame (Levelup, Zonetext)")
+MoveAny:AddTrans("enUS", "LID_BUFFTIMER1", "Buff Timer")
+MoveAny:AddTrans("enUS", "LID_!KalielsTracker", "!KalielsTracker")
+MoveAny:AddTrans("enUS", "LID_!KalielsTrackerButtons", "!KalielsTrackerButtons")
+MoveAny:AddTrans("enUS", "LID_ENDCAPLEFT", "End Cap Left (Gryphon)")
+MoveAny:AddTrans("enUS", "LID_ENDCAPRIGHT", "End Cap Right (Gryphon)")
+MoveAny:AddTrans("enUS", "LID_ENDCAPS", "End Caps (Gryphons)")
+MoveAny:AddTrans("enUS", "LID_BLIZZARDACTIONBUTTONSART", "Actionbar 1 Blizzard-Art")
+MoveAny:AddTrans("enUS", "LID_OBJECTIVETRACKERBONUSBANNERFRAME", "Objective Tracker Frame (World Quest Title)")
+MoveAny:AddTrans("enUS", "LID_MOVESMALLBAGS", "Move/Scale Small Bags")
+MoveAny:AddTrans("enUS", "LID_MOVELOOTFRAME", "Move Lootframe")
+MoveAny:AddTrans("enUS", "LID_SCALELOOTFRAME", "Scale Lootframe")
+MoveAny:AddTrans("enUS", "LID_NEEDSARELOAD", "Needs a Reload")
+MoveAny:AddTrans("enUS", "LID_RAIDBOSSEMOTEFRAME", "Raid Boss Emote Frame")
+MoveAny:AddTrans("enUS", "LID_STARTHELP", "Click the MoveAny Minimap Button to open the settings.")
+MoveAny:AddTrans("enUS", "LID_STARTHELP2", "Or type /move or /moveany in chat to open the settings.")
+MoveAny:AddTrans("enUS", "LID_STARTHELP3", "To hide these messages deactivate tips in the MoveAny menu.")
+MoveAny:AddTrans("enUS", "LID_SHOWTIPS", "Show Tips")
+MoveAny:AddTrans("enUS", "LID_OVERRIDEACTIONBAR", "Override Action Bar (Vehicle Bar)")
+MoveAny:AddTrans("enUS", "LID_BOSSBANNER", "Boss Banner (Dropped Loot, Boss Title)")
+MoveAny:AddTrans("enUS", "LID_COMPACTARENAFRAME", "Compact Arena Frame")
+MoveAny:AddTrans("enUS", "LID_ROLEPOLLPOPUP", "Role Poll Popup")
+MoveAny:AddTrans("enUS", "LID_READYCHECKLISTENERFRAME", "Ready Check Popup")
+MoveAny:AddTrans("enUS", "LID_DISABLEMOVEMENT", "Disable Movement keybinds, when in MoveAny-EditMode")
+MoveAny:AddTrans("enUS", "LID_CLICKTHROUGH", "Clickthrough")
+MoveAny:AddTrans("enUS", "LID_MABUFFMODE", "Buff-Alignment")
+MoveAny:AddTrans("enUS", "LID_MADEBUFFLIMIT", "Debuff limit")
+MoveAny:AddTrans("enUS", "LID_MADEBUFFSPACINGX", "Debuff Spacing Horizontal")
+MoveAny:AddTrans("enUS", "LID_MADEBUFFSPACINGY", "Debuff Spacing Vertical")
+MoveAny:AddTrans("enUS", "LID_MADEBUFFMODE", "Debuff-Alignment")
+MoveAny:AddTrans("enUS", "LID_SEARCH", "Search")
+MoveAny:AddTrans("enUS", "LID_COMBOFRAME", "Combo Bar")
+MoveAny:AddTrans("enUS", "LID_WIDTH", "Width")
+MoveAny:AddTrans("enUS", "LID_HEIGHT", "Height")
+MoveAny:AddTrans("enUS", "LID_ALPHAISFULLHEALTH", "Alpha (Full Health)")
+MoveAny:AddTrans("enUS", "LID_ALPHAISINPETBATTLE", "Alpha (Is In Pet Battle)")
+MoveAny:AddTrans("enUS", "LID_KEYBINDWINDOW", "Keybind for Windows")
+MoveAny:AddTrans("enUS", "LID_SNAPWINDOWSIZE", "Snapsize (Windows)")
+MoveAny:AddTrans("enUS", "LID_BOSS1", "Boss 1")
+MoveAny:AddTrans("enUS", "LID_BOSS2", "Boss 2")
+MoveAny:AddTrans("enUS", "LID_BOSS3", "Boss 3")
+MoveAny:AddTrans("enUS", "LID_BOSS4", "Boss 4")
+MoveAny:AddTrans("enUS", "LID_BOSS5", "Boss 5")
+MoveAny:AddTrans("enUS", "LID_BOSS6", "Boss 6")
+MoveAny:AddTrans("enUS", "LID_MAPAGES", "Actionbar Pages")
+MoveAny:AddTrans("enUS", "LID_HIDEHIDDENFRAMES", "Hide hidden Elements")
+MoveAny:AddTrans("enUS", "LID_TIMERTRACKER1", "Timer Tracker (only visible when available)")
+MoveAny:AddTrans("enUS", "LID_PALADINPOWERBAR", "Paladin Power Bar (Holy Power)")
+MoveAny:AddTrans("enUS", "LID_SHARDBARFRAME", "Warlock Power Frame (Shards)")
+MoveAny:AddTrans("enUS", "LID_OFFSET", "Offset")
+MoveAny:AddTrans("enUS", "LID_EclipseBarFrame", "Eclipse Bar Frame (Druid)")
+MoveAny:AddTrans("enUS", "LID_REQUIRESFOR", "Requires: %s")
+MoveAny:AddTrans("enUS", "LID_REQUIREDFOR", "Required for: %s")
+MoveAny:AddTrans("enUS", "LID_RESETELEMENT", "Reset Element")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAMEDEBUFFMOVER", "Target Frame Debuffs")
+MoveAny:AddTrans("enUS", "LID_FOCUSFRAMEDEBUFFMOVER", "Focus Frame Debuffs")
+MoveAny:AddTrans("enUS", "LID_TARGETFRAMETOTBUFFMOVER", "Target of Target Frame Buffs")
+MoveAny:AddTrans("enUS", "LID_MINIMAPFLAG", "Minimap Flag")
+MoveAny:AddTrans("enUS", "LID_MiniMapInstanceDifficulty", "Minimap Flag Instance Difficulty")
+MoveAny:AddTrans("enUS", "LID_MiniMapChallengeMode", "Minimap Flag Challenge Mode")
+MoveAny:AddTrans("enUS", "LID_GuildInstanceDifficulty", "Minimap Flag Guild-Instance Difficulty")
+MoveAny:AddTrans("enUS", "LID_POWERBARCOUNTERBAR", "Powerbar Counterbar (Boss Encounters, Darkmoon faire, ...)")
+MoveAny:AddTrans("enUS", "LID_BUFFTIMER1", "BuffTimer 1 (Boss Encounters, Darkmoon faire, ...)")
+MoveAny:AddTrans("enUS", "LID_FRAMES", "Windows")
+MoveAny:AddTrans("enUS", "LID_SCALEFRAMES", "Scale Windows (Resize Windows)")
+MoveAny:AddTrans("enUS", "LID_RESETFRAMES", "Reset Windows")
+MoveAny:AddTrans("enUS", "LID_ExpansionLandingPageMinimapButton", "ExpansionLandingPageMinimapButton")
+MoveAny:AddTrans("enUS", "LID_MOVEANYINFO", "Select the things you want to modify")
+MoveAny:AddTrans("enUS", "LID_PLEASESWITCHPROFILE1", "Please switch LAYOUT in Editmode (from Blizzard) to a CUSTOM LAYOUT.")
+MoveAny:AddTrans("enUS", "LID_PLEASESWITCHPROFILE2", "MoveAny doesn't work with a Preset Profile, it's mostly readonly.")
+MoveAny:AddTrans("enUS", "LID_PLEASESWITCHPROFILE3", "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (no Preset Layout)")
+MoveAny:AddTrans("enUS", "LID_LFGMinimapFrame", "LFG Minimap Button")
+MoveAny:AddTrans("enUS", "LID_QUESTTIMERFRAME", "Quest Timer Frame")
+MoveAny:AddTrans("enUS", "LID_BATTLEFIELDMAPFRAME", "Battlefield Map")
+MoveAny:AddTrans("enUS", "LID_ExtraActionBarFrame", "Extra Actionbar (Clickable Button) (ExtraActionButton1, ExtraActionBarFrame)")
+MoveAny:AddTrans("enUS", "LID_ExtraActionButton1", "Extra Actionbar (Clickable Button) (ExtraActionButton1, ExtraActionBarFrame)")
+MoveAny:AddTrans("enUS", "LID_FRAMESCALEDISABLED", "\"Scale Windows (Resize Windows)\" is disabled, please enable it.")
+MoveAny:AddTrans("enUS", "LID_BAGEXTRAS", "Extras")
+MoveAny:AddTrans("enUS", "LID_HIDESMALLBAGS", "Small Bags")
+MoveAny:AddTrans("enUS", "LID_HIDEKEYBAG", "KeyRing Bag")
+MoveAny:AddTrans("enUS", "LID_CHANGEONCATSTEALTH", "Change bar on cat stealth (Reloads on Change)")
+MoveAny:AddTrans("enUS", "LID_RIGHTCLICKFOROPTIONS", "Rightclick for Options")
+MoveAny:AddTrans("enUS", "LID_EssentialCooldownViewer", "Essential Cooldown Viewer (Cooldown-Manager)")
+MoveAny:AddTrans("enUS", "LID_BuffIconCooldownViewer", "Buff Icon Cooldown Viewer (Cooldown-Manager)")
+MoveAny:AddTrans("enUS", "LID_BuffBarCooldownViewer", "Buff Bar Cooldown Viewer (Cooldown-Manager)")
+MoveAny:AddTrans("enUS", "LID_CLAMPWINDOWTOSCREEN", "Clamp Windows to Screen (Can't drag off Screen)")
+MoveAny:AddTrans("enUS", "LID_ARENAENEMYFRAMESCONTAINER", "Arena Enemy Frames Container (Battleground Bosses)")
+MoveAny:AddTrans("enUS", "LID_FOCUSFRAMETOTBUFFMOVER", "Target of Focus Frame Buffs")
+MoveAny:AddTrans("enUS", "LID_FOCUSFRAMETOTDEBUFFMOVER", "Target of Focus Frame Debuffs")
+MoveAny:AddTrans("enUS", "LID_PRESSESCTOLEAVE", "Press ESC to leave the Picker")
+MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")
+if MoveAny:GetWoWBuild() ~= "RETAIL" then
+	MoveAny:AddTrans("enUS", "LID_ACTIONBARS", "Actionbars 1 + 5 + 6")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR2", "Actionbars 2 (2. Page of Actionbar 1)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR3", "Actionbars 3 (Right Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR4", "Actionbars 4 (Left Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR5", "Actionbars 5 (Top Right Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR6", "Actionbars 6 (Top Left Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR7", "Actionbars 7 (Custom)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR8", "Actionbars 8 (Custom)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR9", "Actionbars 9 (Custom)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR10", "Actionbars 10 (Custom)")
+else
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR2", "Actionbars 2 (Above Main Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR3", "Actionbars 3 (Above Second Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR4", "Actionbars 4 (Right Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR5", "Actionbars 5 (Left Bar)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR6", "Actionbars 6")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR7", "Actionbars 7")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR8", "Actionbars 8")
 end
