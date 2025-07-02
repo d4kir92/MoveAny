@@ -2291,6 +2291,7 @@ if D4:GetWoWBuild() == "RETAIL" then
             end
         end
     end
+elseif D4:GetWoWBuild() == "MISTS" then
 elseif D4:GetWoWBuild() == "CATA" then
     if region == regions["US"] then
         if GetLocale() == "enUS" then
