@@ -14,6 +14,7 @@ local posy = -4
 local cas = {}
 local cbs = {}
 local sls = {}
+local buffsDelay = 0.1
 local EMMapForced = {}
 local keybinds = {}
 function MoveAny:CheckBuffType(id, child, tab, isDebuff)
@@ -396,7 +397,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 
 		cb:SetScript(
 			"OnClick",
-			function(sel)
+			function(sel, btn)
 				MoveAny:SetEnabled(key, sel:GetChecked())
 				if sel.f then
 					cb:UpdateText(sel:GetChecked())
@@ -411,13 +412,24 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 		cb.btn = CreateFrame("BUTTON", "cb.btn", cb)
 		cb.btn:SetSize(MALock.SC:GetWidth() - 24, 24)
 		cb.btn:SetPoint("LEFT", cb, "RIGHT", 0, 0)
+		cb.btn:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 		cb.btn:SetScript(
 			"OnClick",
-			function(sel)
+			function(sel, btn)
 				local ele = MoveAny:GetSelectEleName("LID_" .. key)
 				if ele then
-					MoveAny:SelectEle(_G[ele .. "_MA_DRAG"])
-					cb:UpdateText(cb:GetChecked())
+					local f = _G[ele]
+					local df = _G[ele .. "_MA_DRAG"]
+					if df then
+						if btn == "LeftButton" then
+							MoveAny:SelectEle(df)
+							cb:UpdateText(cb:GetChecked())
+						elseif btn == "RightButton" then
+							if f then
+								MoveAny:ToggleElementOptions(ele, f, df)
+							end
+						end
+					end
 				end
 			end
 		)
@@ -673,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.101")
+	MoveAny:SetVersion(135994, "1.8.102")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2871,7 +2883,7 @@ function MoveAny:LoadAddon()
 							"OnShow",
 							function()
 								C_Timer.After(
-									0,
+									buffsDelay,
 									function()
 										MoveAny:UpdateTargetBuffs()
 									end
@@ -3014,7 +3026,7 @@ function MoveAny:LoadAddon()
 							"OnShow",
 							function()
 								C_Timer.After(
-									0,
+									buffsDelay,
 									function()
 										MoveAny:UpdateTargetDebuffs()
 									end
@@ -3157,7 +3169,7 @@ function MoveAny:LoadAddon()
 							"OnShow",
 							function()
 								C_Timer.After(
-									0,
+									buffsDelay,
 									function()
 										MoveAny:UpdateTargetToTDebuffs()
 									end
@@ -3300,7 +3312,7 @@ function MoveAny:LoadAddon()
 							"OnShow",
 							function()
 								C_Timer.After(
-									0,
+									buffsDelay,
 									function()
 										MoveAny:UpdateTargetToTBuffs()
 									end
@@ -3478,7 +3490,7 @@ function MoveAny:LoadAddon()
 								"OnShow",
 								function()
 									C_Timer.After(
-										0,
+										buffsDelay,
 										function()
 											MoveAny:UpdateFocusBuffs()
 										end
@@ -3621,7 +3633,7 @@ function MoveAny:LoadAddon()
 								"OnShow",
 								function()
 									C_Timer.After(
-										0,
+										buffsDelay,
 										function()
 											MoveAny:UpdateFocusDebuffs()
 										end
@@ -3764,7 +3776,7 @@ function MoveAny:LoadAddon()
 								"OnShow",
 								function()
 									C_Timer.After(
-										0,
+										buffsDelay,
 										function()
 											MoveAny:UpdateFocusToTDebuffs()
 										end
@@ -3907,7 +3919,7 @@ function MoveAny:LoadAddon()
 								"OnShow",
 								function()
 									C_Timer.After(
-										0,
+										buffsDelay,
 										function()
 											MoveAny:UpdateFocusToTBuffs()
 										end

@@ -1334,6 +1334,32 @@ if MoveAny:GetWoWBuild() == "RETAIL" then
 	)
 end
 
+function MoveAny:ToggleElementOptions(name, fram, dragframe)
+	if dragframe.opt == nil then
+		dragframe.opt = CreateFrame("Frame", name .. ".opt", MoveAny:GetMainPanel(), "BasicFrameTemplateWithInset")
+		dragframe.opt.TitleText:SetText(name)
+		dragframe.opt:SetFrameStrata("HIGH")
+		dragframe.opt:SetFrameLevel(framelevel)
+		framelevel = framelevel + 1
+		if dragframe.opt.CloseButton then
+			dragframe.opt.CloseButton:SetFrameLevel(framelevel)
+		end
+
+		framelevel = framelevel + 100
+		dragframe.opt:SetSize(500, 500)
+		dragframe.opt:SetPoint("CENTER")
+		MoveAny:SetClampedToScreen(dragframe.opt, true, "RegisterWidget 2")
+		dragframe.opt:SetMovable(true)
+		dragframe.opt:EnableMouse(true)
+		dragframe.opt:RegisterForDrag("LeftButton")
+		dragframe.opt:SetScript("OnDragStart", dragframe.opt.StartMoving)
+		dragframe.opt:SetScript("OnDragStop", dragframe.opt.StopMovingOrSizing)
+		MoveAny:MenuOptions(dragframe.opt, fram)
+	elseif dragframe.opt then
+		dragframe.opt:Show()
+	end
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1495,29 +1521,7 @@ function MoveAny:RegisterWidget(tab)
 					dragframe:StartMoving()
 					dragframe.ma_ismoving = true
 				elseif btn == "RightButton" then
-					if dragframe.opt == nil then
-						dragframe.opt = CreateFrame("Frame", name .. ".opt", MoveAny:GetMainPanel(), "BasicFrameTemplateWithInset")
-						dragframe.opt.TitleText:SetText(name)
-						dragframe.opt:SetFrameStrata("HIGH")
-						dragframe.opt:SetFrameLevel(framelevel)
-						framelevel = framelevel + 1
-						if dragframe.opt.CloseButton then
-							dragframe.opt.CloseButton:SetFrameLevel(framelevel)
-						end
-
-						framelevel = framelevel + 100
-						dragframe.opt:SetSize(500, 500)
-						dragframe.opt:SetPoint("CENTER")
-						MoveAny:SetClampedToScreen(dragframe.opt, true, "RegisterWidget 2")
-						dragframe.opt:SetMovable(true)
-						dragframe.opt:EnableMouse(true)
-						dragframe.opt:RegisterForDrag("LeftButton")
-						dragframe.opt:SetScript("OnDragStart", dragframe.opt.StartMoving)
-						dragframe.opt:SetScript("OnDragStop", dragframe.opt.StopMovingOrSizing)
-						MoveAny:MenuOptions(dragframe.opt, fram)
-					elseif dragframe.opt then
-						dragframe.opt:Show()
-					end
+					MoveAny:ToggleElementOptions(name, fram, dragframe)
 				end
 			end
 		)
