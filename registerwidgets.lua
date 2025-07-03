@@ -1380,10 +1380,6 @@ function MoveAny:RegisterWidget(tab)
 		end
 	)
 
-	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS[name] then
-		UIPARENT_MANAGED_FRAME_POSITIONS[name] = nil
-	end
-
 	local frame = MoveAny:GetFrameByName(name)
 	if frame then
 		MoveAny:AddFrameName(frame, name)
@@ -1615,7 +1611,6 @@ function MoveAny:RegisterWidget(tab)
 		)
 	end
 
-	frame.ignoreFramePositionManager = true
 	if frame.SetMovable then
 		frame:SetMovable(true)
 		if frame.SetUserPlaced and frame:IsMovable() then
