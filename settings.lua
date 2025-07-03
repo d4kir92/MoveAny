@@ -63,6 +63,42 @@ function MoveAny:CheckBuffs(frame, tab, isDebuff)
 	return tab
 end
 
+function MoveAny:UpdateChildBuffs(bb, name)
+	if bb ~= nil then
+		if bb.setup == nil then
+			bb.setup = true
+			hooksecurefunc(
+				bb,
+				"SetAlpha",
+				function()
+					if bb.setalpha then return end
+					bb.setalpha = true
+					if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
+						bb:SetAlpha(0)
+						if not InCombatLockdown() then
+							bb:EnableMouse(false)
+						end
+					end
+
+					bb.setalpha = false
+				end
+			)
+		end
+
+		if MoveAny:GetEleOption(name, "Hide", false, "Hide4") then
+			bb:SetAlpha(0)
+			if not InCombatLockdown() then
+				bb:EnableMouse(false)
+			end
+		else
+			local p1, p2, p3, p4, p5 = bb:GetPoint()
+			if p1 and p3 then
+				bb:SetPoint(p1, p2, p3, p4, p5)
+			end
+		end
+	end
+end
+
 local targetBuffs = {}
 function MoveAny:UpdateTargetFrameBuffs()
 	targetBuffs = {}
@@ -637,7 +673,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.100")
+	MoveAny:SetVersion(135994, "1.8.101")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2748,12 +2784,7 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			function MoveAny:UpdateTargetBuffs()
 				for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
-					if bb ~= nil then
-						local p1, p2, p3, p4, p5 = bb:GetPoint()
-						if p1 and p3 then
-							bb:SetPoint(p1, p2, p3, p4, p5)
-						end
-					end
+					MoveAny:UpdateChildBuffs(bb, "TargetFrameBuffMover")
 				end
 			end
 
@@ -2839,7 +2870,13 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								MoveAny:UpdateTargetBuffs()
+								C_Timer.After(
+									0,
+									function()
+										MoveAny:UpdateTargetBuffs()
+									end
+								)
+
 								frame:UpdateScaleAndAlpha()
 							end
 						)
@@ -2890,13 +2927,7 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			function MoveAny:UpdateTargetDebuffs()
 				for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
-					if bb then
-						local p1, p2, p3, p4, p5 = bb:GetPoint()
-						if p1 and p3 then
-							bb:ClearAllPoints()
-							bb:SetPoint(p1, p2, p3, p4, p5)
-						end
-					end
+					MoveAny:UpdateChildBuffs(bb, "TargetFrameDebuffMover")
 				end
 			end
 
@@ -2982,7 +3013,13 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								MoveAny:UpdateTargetDebuffs()
+								C_Timer.After(
+									0,
+									function()
+										MoveAny:UpdateTargetDebuffs()
+									end
+								)
+
 								frame:UpdateScaleAndAlpha()
 							end
 						)
@@ -3033,12 +3070,7 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			function MoveAny:UpdateTargetToTDebuffs()
 				for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
-					if bb then
-						local p1, p2, p3, p4, p5 = bb:GetPoint()
-						if p1 and p3 then
-							bb:SetPoint(p1, p2, p3, p4, p5)
-						end
-					end
+					MoveAny:UpdateChildBuffs(bb, "TargetFrameToTDebuffMover")
 				end
 			end
 
@@ -3124,7 +3156,13 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								MoveAny:UpdateTargetToTDebuffs()
+								C_Timer.After(
+									0,
+									function()
+										MoveAny:UpdateTargetToTDebuffs()
+									end
+								)
+
 								frame:UpdateScaleAndAlpha()
 							end
 						)
@@ -3175,12 +3213,7 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			function MoveAny:UpdateTargetToTBuffs()
 				for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
-					if bb then
-						local p1, p2, p3, p4, p5 = bb:GetPoint()
-						if p1 and p3 then
-							bb:SetPoint(p1, p2, p3, p4, p5)
-						end
-					end
+					MoveAny:UpdateChildBuffs(bb, "TargetFrameToTBuffMover")
 				end
 			end
 
@@ -3266,7 +3299,13 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								MoveAny:UpdateTargetToTBuffs()
+								C_Timer.After(
+									0,
+									function()
+										MoveAny:UpdateTargetToTBuffs()
+									end
+								)
+
 								frame:UpdateScaleAndAlpha()
 							end
 						)
@@ -3352,12 +3391,7 @@ function MoveAny:LoadAddon()
 			if MoveAny:IsEnabled("FOCUSFRAME", false) then
 				function MoveAny:UpdateFocusBuffs()
 					for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
-						if bb ~= nil then
-							local p1, p2, p3, p4, p5 = bb:GetPoint()
-							if p1 and p3 then
-								bb:SetPoint(p1, p2, p3, p4, p5)
-							end
-						end
+						MoveAny:UpdateChildBuffs(bb, "FocusFrameBuffMover")
 					end
 				end
 
@@ -3443,7 +3477,13 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									MoveAny:UpdateFocusBuffs()
+									C_Timer.After(
+										0,
+										function()
+											MoveAny:UpdateFocusBuffs()
+										end
+									)
+
 									frame:UpdateScaleAndAlpha()
 								end
 							)
@@ -3494,13 +3534,7 @@ function MoveAny:LoadAddon()
 			if MoveAny:IsEnabled("FOCUSFRAME", false) then
 				function MoveAny:UpdateFocusDebuffs()
 					for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
-						if bb then
-							local p1, p2, p3, p4, p5 = bb:GetPoint()
-							if p1 and p3 then
-								bb:ClearAllPoints()
-								bb:SetPoint(p1, p2, p3, p4, p5)
-							end
-						end
+						MoveAny:UpdateChildBuffs(bb, "FocusFrameDebuffMover")
 					end
 				end
 
@@ -3586,7 +3620,13 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									MoveAny:UpdateFocusDebuffs()
+									C_Timer.After(
+										0,
+										function()
+											MoveAny:UpdateFocusDebuffs()
+										end
+									)
+
 									frame:UpdateScaleAndAlpha()
 								end
 							)
@@ -3637,12 +3677,7 @@ function MoveAny:LoadAddon()
 			if MoveAny:IsEnabled("FOCUSFRAME", false) then
 				function MoveAny:UpdateFocusToTDebuffs()
 					for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
-						if bb then
-							local p1, p2, p3, p4, p5 = bb:GetPoint()
-							if p1 and p3 then
-								bb:SetPoint(p1, p2, p3, p4, p5)
-							end
-						end
+						MoveAny:UpdateChildBuffs(bb, "FocusFrameToTDebuffMover")
 					end
 				end
 
@@ -3728,7 +3763,13 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									MoveAny:UpdateFocusToTDebuffs()
+									C_Timer.After(
+										0,
+										function()
+											MoveAny:UpdateFocusToTDebuffs()
+										end
+									)
+
 									frame:UpdateScaleAndAlpha()
 								end
 							)
@@ -3779,12 +3820,7 @@ function MoveAny:LoadAddon()
 			if MoveAny:IsEnabled("FOCUSFRAME", false) then
 				function MoveAny:UpdateFocusToTBuffs()
 					for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
-						if bb then
-							local p1, p2, p3, p4, p5 = bb:GetPoint()
-							if p1 and p3 then
-								bb:SetPoint(p1, p2, p3, p4, p5)
-							end
-						end
+						MoveAny:UpdateChildBuffs(bb, "FocusFrameToTBuffMover")
 					end
 				end
 
@@ -3870,7 +3906,13 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									MoveAny:UpdateFocusToTBuffs()
+									C_Timer.After(
+										0,
+										function()
+											MoveAny:UpdateFocusToTBuffs()
+										end
+									)
+
 									frame:UpdateScaleAndAlpha()
 								end
 							)
