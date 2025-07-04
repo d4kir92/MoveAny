@@ -1847,12 +1847,29 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				sel.elesetpoint = true
-				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-				if dbp1 and dbp3 then
-					MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
-				end
+				if sel == MAMenuBar and ((PetBattleFrame and PetBattleFrame:IsShown()) or (OverrideActionBar and OverrideActionBar:IsShown())) then
+					if PetBattleFrame and PetBattleFrame:IsShown() then
+						MoveAny:SetPoint(sel, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
+					elseif OverrideActionBar and OverrideActionBar:IsShown() then
+						MoveAny:SetPoint(sel, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
+					end
 
-				sel.elesetpoint = false
+					sel:SetFrameLevel(1003)
+					sel:SetFrameStrata("DIALOG")
+					sel.elesetpoint = false
+				else
+					if sel == MAMenuBar then
+						sel:SetFrameLevel(1)
+						sel:SetFrameStrata("MEDIUM")
+					end
+
+					local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+					if dbp1 and dbp3 then
+						MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
+					end
+
+					sel.elesetpoint = false
+				end
 			end
 		end
 	)

@@ -11,6 +11,36 @@ function MoveAny:GetMicroButtonYOffset()
 	return -4
 end
 
+local oldHides = {}
+function MoveAny:PetBattleChat(frame)
+	if frame == nil then return end
+	oldHides[frame] = oldHides[frame] or frame.Hide
+	if MoveAny:IsInPetBattle() then
+		frame.Hide = frame.Show
+	else
+		frame.Hide = oldHides[frame]
+	end
+end
+
+function MoveAny:UpdateMicroBar()
+	if MAMenuBar.ma_set_po then return end
+	MAMenuBar.ma_set_po = true
+	if MoveAny:GetWoWBuild() ~= "RETAIL" then
+		MoveAny:PetBattleChat(ChatFrame1)
+	end
+
+	if MoveAny:IsInPetBattle() or PetBattleFrame and PetBattleFrame:IsShown() then
+		ChatFrame1:SetShown(true)
+	end
+
+	MoveAny:SetPoint(MAMenuBar, MAMenuBar:GetPoint())
+	if MoveAny.UpdateActionBar then
+		MoveAny:UpdateActionBar(MAMenuBar)
+	end
+
+	MAMenuBar.ma_set_po = false
+end
+
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled("MICROMENU", false) then
 		local MBTNS = MICRO_BUTTONS
@@ -104,8 +134,8 @@ function MoveAny:InitMicroMenu()
 							if p2 ~= MicroMenu then
 								if MAMenuBar.ma_set_po then return end
 								MAMenuBar.ma_set_po = true
-								if MoveAny.UpdateActionBar then
-									MoveAny:UpdateActionBar(MAMenuBar)
+								if MoveAny.UpdateMicroBar then
+									MoveAny:UpdateMicroBar()
 								end
 
 								MAMenuBar.ma_set_po = false
@@ -190,28 +220,14 @@ function MoveAny:InitMicroMenu()
 			MoveAny:RegisterEvent(f, "UPDATE_OVERRIDE_ACTIONBAR")
 			MoveAny:RegisterEvent(f, "UPDATE_BONUS_ACTIONBAR")
 			MoveAny:RegisterEvent(f, "UPDATE_VEHICLE_ACTIONBAR")
+			MoveAny:RegisterEvent(f, "PET_BATTLE_CLOSE")
+			MoveAny:RegisterEvent(f, "PET_BATTLE_OPENING_START")
+			MoveAny:RegisterEvent(f, "PET_BATTLE_OPENING_DONE")
 			f:SetScript(
 				"OnEvent",
 				function(sel, event, unit)
-					if event == "UNIT_EXITED_VEHICLE" and unit == "player" then
-						if MAMenuBar.ma_set_po then return end
-						MAMenuBar.ma_set_po = true
-						if MoveAny.UpdateActionBar then
-							MoveAny:UpdateActionBar(MAMenuBar)
-						end
-
-						MAMenuBar.ma_set_po = false
-					else
-						local parent = MoveAny:GetParent(CharacterMicroButton)
-						local _, p2 = parent:GetPoint()
-						if p2 == OverrideActionBar then return end
-						if MAMenuBar.ma_set_po then return end
-						MAMenuBar.ma_set_po = true
-						if MoveAny.UpdateActionBar then
-							MoveAny:UpdateActionBar(MAMenuBar)
-						end
-
-						MAMenuBar.ma_set_po = false
+					if MoveAny.UpdateMicroBar then
+						MoveAny:UpdateMicroBar()
 					end
 				end
 			)
@@ -219,11 +235,17 @@ function MoveAny:InitMicroMenu()
 
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(MAMenuBar, "MAMenuBar")
-			MoveAny:UpdateActionBar(MAMenuBar)
+			if MoveAny.UpdateMicroBar then
+				MoveAny:UpdateMicroBar()
+			end
+
 			C_Timer.After(
 				1,
 				function()
-					MoveAny:UpdateActionBar(MAMenuBar)
+					if MoveAny.UpdateMicroBar then
+						MoveAny:UpdateMicroBar()
+					end
+
 					if MoveAny:GetWoWBuild() ~= "RETAIL" then
 						function MoveAny:UpdateMicroMenu()
 							local overrideChanged = false
@@ -257,7 +279,10 @@ function MoveAny:InitMicroMenu()
 									end
 								end
 
-								MoveAny:UpdateActionBar(MAMenuBar)
+								if MoveAny.UpdateMicroBar then
+									MoveAny:UpdateMicroBar()
+								end
+
 								MAMenuBar.redots = nil
 							end
 
