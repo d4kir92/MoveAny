@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.103")
+	MoveAny:SetVersion(135994, "1.8.104")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -947,7 +947,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "SHARDBARFRAME", false)
 		end
 
-		if MoveAny:IsValidFrame(MonkHarmonyBarFrame) and class == "MONK" then
+		if (MoveAny:IsValidFrame(MonkHarmonyBar) or MoveAny:IsValidFrame(MonkHarmonyBarFrame)) and class == "MONK" then
 			AddCheckBox(4, "MONKHARMONYBARFRAME", false)
 		end
 
@@ -2585,7 +2585,16 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MonkHarmonyBarFrame and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
+	if (MonkHarmonyBar or MonkHarmonyBarFrame) and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
+		if MonkHarmonyBarFrame == nil and MonkHarmonyBar then
+			MonkHarmonyBarFrame = CreateFrame("Frame", "MonkHarmonyBarFrame", UIParent)
+			MonkHarmonyBarFrame:SetSize(118, 28)
+			MonkHarmonyBarFrame:SetPoint(MonkHarmonyBar:GetPoint())
+			MonkHarmonyBar:ClearAllPoints()
+			MonkHarmonyBar:SetPoint("CENTER", MonkHarmonyBarFrame, "CENTER", 0, 0)
+			MonkHarmonyBar:SetParent(MonkHarmonyBarFrame)
+		end
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "MonkHarmonyBarFrame",
