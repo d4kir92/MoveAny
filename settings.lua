@@ -996,7 +996,7 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "MINIMAPFLAG", false)
-		AddCheckBox(4, "LFGMinimapFrame", false)
+		AddCheckBox(4, "MINIMAPLFGFRAME", false)
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then
 			AddCheckBox(4, "TOTEMFRAME", false)
@@ -2469,13 +2469,13 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("LFGMinimapFrame", false) then
+	if MoveAny:IsEnabled("MINIMAPLFGFRAME", false) then
 		MoveAny:RegisterWidget(
 			{
-				["name"] = "LFGMinimapFrame",
-				["lstr"] = "LID_LFGMINIMAPFRAME",
+				["name"] = "MiniMapLFGFrame",
+				["lstr"] = "LID_MINIMAPLFGFRAME",
 				["setup"] = function()
-					LFGMinimapFrame:SetParent(MoveAny:GetMainPanel())
+					MiniMapLFGFrame:SetParent(MoveAny:GetMainPanel())
 				end
 			}
 		)
