@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.104")
+	MoveAny:SetVersion(135994, "1.8.105")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -996,7 +996,14 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "MINIMAPFLAG", false)
-		AddCheckBox(4, "LFGMinimapFrame", false)
+		if MiniMapLFGFrame then
+			AddCheckBox(4, "MINIMAPLFGFRAME", false)
+		end
+
+		if LFGMinimapFrame then
+			AddCheckBox(4, "LFGMINIMAPFRAME", false)
+		end
+
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then
 			AddCheckBox(4, "TOTEMFRAME", false)
@@ -2469,14 +2476,48 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("LFGMinimapFrame", false) then
+	if MiniMapLFGFrame and MoveAny:IsEnabled("MiniMapLFGFrame", false) then
+		MiniMapLFGFrame:ClearAllPoints()
+		MiniMapLFGFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		hooksecurefunc(
+			MiniMapLFGFrame,
+			"SetParent",
+			function(sel)
+				if sel.ma_set_parent then return end
+				sel.ma_set_parent = true
+				sel:SetParent(UIParent)
+				sel.ma_set_parent = false
+			end
+		)
+
+		MiniMapLFGFrame:SetParent(UIParent)
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "MiniMapLFGFrame",
+				["lstr"] = "LID_MINIMAPLFGFRAME",
+			}
+		)
+	end
+
+	if LFGMinimapFrame and MoveAny:IsEnabled("LFGMINIMAPFRAME", false) then
+		LFGMinimapFrame:ClearAllPoints()
+		LFGMinimapFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		hooksecurefunc(
+			LFGMinimapFrame,
+			"SetParent",
+			function(sel)
+				if sel.ma_set_parent then return end
+				sel.ma_set_parent = true
+				sel:SetParent(UIParent)
+				sel.ma_set_parent = false
+			end
+		)
+
+		LFGMinimapFrame:SetParent(UIParent)
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "LFGMinimapFrame",
 				["lstr"] = "LID_LFGMINIMAPFRAME",
-				["setup"] = function()
-					LFGMinimapFrame:SetParent(MoveAny:GetMainPanel())
-				end
 			}
 		)
 	end

@@ -652,21 +652,21 @@ end
 
 function D4:GetTalentInfo()
     local specid, icon
-    if GetPrimaryTalentTree then
-        specid = GetPrimaryTalentTree()
-        if GetTalentTabInfo then
-            _, _, _, icon = GetTalentTabInfo(specid)
-        end
-
-        return specid, icon
-    elseif GetSpecialization then
+    if GetSpecialization and GetSpecialization() then
         specid = GetSpecialization()
         if GetSpecializationInfo then
             _, _, _, icon = GetSpecializationInfo(specid)
         end
 
         return specid, icon
-    else
+    elseif GetPrimaryTalentTree and GetPrimaryTalentTree() then
+        specid = GetPrimaryTalentTree()
+        if specid and GetTalentTabInfo then
+            _, _, _, icon = GetTalentTabInfo(specid)
+        end
+
+        return specid, icon
+    elseif GetTalentTabInfo then
         local ps = 0
         for i = 1, 4 do
             local _, _, _, iconTexture, pointsSpent = GetTalentTabInfo(i)
