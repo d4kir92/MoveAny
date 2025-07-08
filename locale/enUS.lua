@@ -224,7 +224,7 @@ MoveAny:AddTrans("enUS", "LID_MOVEANYINFO", "Select the things you want to modif
 MoveAny:AddTrans("enUS", "LID_PLEASESWITCHPROFILE1", "Please switch LAYOUT in Editmode (from Blizzard) to a CUSTOM LAYOUT.")
 MoveAny:AddTrans("enUS", "LID_PLEASESWITCHPROFILE2", "MoveAny doesn't work with a Preset Profile, it's mostly readonly.")
 MoveAny:AddTrans("enUS", "LID_PLEASESWITCHPROFILE3", "ESC -> Editmode -> Layout: [CUSTOM-LAYOUT] (no Preset Layout)")
-MoveAny:AddTrans("enUS", "LID_LFGMinimapFrame", "LFG Minimap Button")
+MoveAny:AddTrans("enUS", "LID_LFGMINIMAPFRAME", "LFG Minimap Button")
 MoveAny:AddTrans("enUS", "LID_MINIMAPLFGFRAME", "LFG Minimap Button")
 MoveAny:AddTrans("enUS", "LID_QUESTTIMERFRAME", "Quest Timer Frame")
 MoveAny:AddTrans("enUS", "LID_BATTLEFIELDMAPFRAME", "Battlefield Map")
