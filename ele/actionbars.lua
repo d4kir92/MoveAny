@@ -56,6 +56,12 @@ function MoveAny:UpdateVisi()
 	C_Timer.After(0.3, MoveAny.UpdateVisi)
 end
 
+function MoveAny:CheckIfMicroMenuInVehicle(frame)
+	if frame == MAMenuBar and ((PetBattleFrame and PetBattleFrame:IsShown()) or (OverrideActionBar and OverrideActionBar:IsShown())) then return true end
+
+	return false
+end
+
 MoveAny:UpdateVisi()
 function MoveAny:UpdateActionBar(frame)
 	if frame.ma_setpoint_ab then return end
@@ -76,6 +82,24 @@ function MoveAny:UpdateActionBar(frame)
 			local offset = opts["OFFSET"] or 0
 			local rows = opts["ROWS"] or 1
 			rows = tonumber(rows)
+			if frame == MAMenuBar then
+				frame:SetScale(1)
+				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
+					rows = 2
+					if PetBattleFrame and PetBattleFrame:IsShown() then
+						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
+					elseif OverrideActionBar and OverrideActionBar:IsShown() then
+						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
+					end
+
+					frame:SetFrameLevel(1003)
+					frame:SetFrameStrata("DIALOG")
+				elseif frame == MAMenuBar then
+					frame:SetFrameLevel(1)
+					frame:SetFrameStrata("MEDIUM")
+				end
+			end
+
 			local parent = MicroMenu or MAMenuBar
 			if frame == MAMenuBar then
 				if MoveAny:GetWoWBuild() == "RETAIL" then
@@ -96,6 +120,40 @@ function MoveAny:UpdateActionBar(frame)
 							MainMenuMicroButton:SetParent(parent)
 						end
 					elseif rows == 10 or rows == 5 or rows == 2 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(MAHIDDEN)
+						end
+					else
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					end
+				elseif MoveAny:GetWoWBuild() == "MISTS" then
+					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(parent)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 11 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MAHIDDEN)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 10 or rows == 5 then
 						if HelpMicroButton then
 							HelpMicroButton:SetParent(MAHIDDEN)
 						end
@@ -172,6 +230,8 @@ function MoveAny:UpdateActionBar(frame)
 							MainMenuMicroButton:SetParent(MAHIDDEN)
 						end
 					end
+				elseif MoveAny:GetWoWBuild() ~= "CLASSIC" then
+					MoveAny:INFO("Missing WoW Build for MAMenuBar (MicroMenu)")
 				end
 			end
 
@@ -199,10 +259,6 @@ function MoveAny:UpdateActionBar(frame)
 			end
 
 			local cols = maxB / rows
-			--[[if cols % 1 ~= 0 then
-		rows = maxB
-		cols = maxB / rows
-	end]]
 			if cols % 1 ~= 0 then
 				cols = math.ceil(cols)
 			end
@@ -230,11 +286,10 @@ function MoveAny:UpdateActionBar(frame)
 				local id = 1
 				for i, abtn in pairs(frame.btns) do
 					if not InCombatLockdown() then
-						abtn:ClearAllPoints()
 						if flipped then
-							abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+							MoveAny:SetPoint(abtn, "BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 						else
-							abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+							MoveAny:SetPoint(abtn, "TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 						end
 
 						if abtn.setup == nil then
@@ -487,20 +542,24 @@ function MoveAny:CustomBars()
 					btn:HookScript(
 						"OnMouseDown",
 						function(sel)
-							if GetCVar("ActionButtonUseKeyDown") == "1" then
-								if MoveAny:GetMouseFocus() == sel and IsMouseButtonDown("LeftButton") then
-									btn:RegisterForClicks("AnyUp")
+							if not InCombatLockdown() then
+								if GetCVar("ActionButtonUseKeyDown") == "1" then
+									if MoveAny:GetMouseFocus() == sel and IsMouseButtonDown("LeftButton") then
+										btn:RegisterForClicks("AnyUp")
+									else
+										btn:RegisterForClicks("AnyDown")
+									end
 								else
-									btn:RegisterForClicks("AnyDown")
+									btn:RegisterForClicks("AnyUp")
 								end
-							else
-								btn:RegisterForClicks("AnyUp")
 							end
 						end
 					)
 				else
 					btn.bindingID = x
-					btn:RegisterForClicks("AnyUp")
+					if not InCombatLockdown() then
+						btn:RegisterForClicks("AnyUp")
+					end
 				end
 
 				local alwaysShow = GetCVarBool("alwaysShowActionBars")

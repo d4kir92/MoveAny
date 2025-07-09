@@ -130,16 +130,14 @@ function MoveAny:InitMicroMenu()
 					hooksecurefunc(
 						mb,
 						"SetPoint",
-						function(sel, p1, p2, p3, p4, p5)
-							if p2 ~= MicroMenu then
-								if MAMenuBar.ma_set_po then return end
-								MAMenuBar.ma_set_po = true
-								if MoveAny.UpdateMicroBar then
-									MoveAny:UpdateMicroBar()
-								end
-
-								MAMenuBar.ma_set_po = false
+						function(sel, ...)
+							if MAMenuBar.ma_mb_set_po then return end
+							MAMenuBar.ma_mb_set_po = true
+							if MoveAny.UpdateMicroBar then
+								MoveAny:UpdateMicroBar()
 							end
+
+							MAMenuBar.ma_mb_set_po = false
 						end
 					)
 
@@ -295,4 +293,23 @@ function MoveAny:InitMicroMenu()
 			)
 		end
 	end
+end
+
+function Test()
+	if MAMenuBar then
+		print("BAR")
+		MAMenuBar:SetPoint("CENTER", UIParent, "CENTER", -100, 0)
+	end
+
+	C_Timer.After(
+		1,
+		function()
+			if SpellbookMicroButton then
+				print("BUTTON")
+				SpellbookMicroButton:SetPoint("CENTER", UIParent, "CENTER", 100, 100)
+			end
+
+			C_Timer.After(1, Test)
+		end
+	)
 end
