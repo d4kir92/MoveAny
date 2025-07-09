@@ -669,7 +669,6 @@ function D4:GetTalentIcons()
                 for i = 1, 4 do
                     local name, _, _, icon = GetTalentTabInfo(i)
                     if name and icon then
-                        print(name, icon)
                         searchIcons = false
                         icons[name] = icon
                     end
