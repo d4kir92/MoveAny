@@ -294,22 +294,3 @@ function MoveAny:InitMicroMenu()
 		end
 	end
 end
-
-function Test()
-	if MAMenuBar then
-		print("BAR")
-		MAMenuBar:SetPoint("CENTER", UIParent, "CENTER", -100, 0)
-	end
-
-	C_Timer.After(
-		1,
-		function()
-			if SpellbookMicroButton then
-				print("BUTTON")
-				SpellbookMicroButton:SetPoint("CENTER", UIParent, "CENTER", 100, 100)
-			end
-
-			C_Timer.After(1, Test)
-		end
-	)
-end
