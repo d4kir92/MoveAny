@@ -47,7 +47,21 @@ function D4:UpdatePosition(button, position, parent)
         y = max(-h, min(y * drh, h))
     end
 
+    if InCombatLockdown() and button:IsProtected() then
+        C_Timer.After(
+            0.1,
+            function()
+                D4:UpdatePosition(button, position, parent)
+            end
+        )
+
+        return false
+    end
+
+    button:ClearAllPoints()
     button:SetPoint("CENTER", parent, "CENTER", x, y)
+
+    return true
 end
 
 function D4:GetMMBtn(name)
