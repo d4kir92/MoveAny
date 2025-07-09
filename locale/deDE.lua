@@ -52,6 +52,7 @@ MoveAny:AddTrans("deDE", "LID_MICROMENU", "Mikro Menü (Charakterknopf, Zauberbu
 MoveAny:AddTrans("deDE", "LID_BAGS", "Taschen")
 MoveAny:AddTrans("deDE", "LID_GAMETOOLTIP", "Tooltip")
 MoveAny:AddTrans("deDE", "LID_GAMETOOLTIP_ONCURSOR", "Tooltip am Zeiger")
+MoveAny:AddTrans("deDE", "LID_GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", "Tooltip am Zeiger (Nicht im Kampf an Maus packen)")
 MoveAny:AddTrans("deDE", "LID_QUEUESTATUSBUTTON", "SNG Status (LFG)")
 MoveAny:AddTrans("deDE", "LID_QUEUESTATUSFRAME", "SNG Status (LFG) Tooltip")
 MoveAny:AddTrans("deDE", "LID_PETBAR", "Begleiterleiste")

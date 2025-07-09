@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.106")
+	MoveAny:SetVersion(135994, "1.8.107")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1063,6 +1063,7 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox(4, "GAMETOOLTIP_ONCURSOR", false)
+		AddCheckBox(4, "GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false)
 		if BossBanner then
 			AddCheckBox(4, "BOSSBANNER", false)
 		end
@@ -5679,6 +5680,19 @@ function MoveAny:LoadAddon()
 					sel:SetUserPlaced(false)
 					local owner = GameTooltip:GetOwner()
 					if owner and owner == UIParent or owner == UIParent then
+						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
+							sel:SetMovable(true)
+							sel:SetUserPlaced(false)
+							if MoveAny:GameTooltipOnDefaultPosition() then
+								local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
+								MoveAny:SetPoint(sel, p1, MAGameTooltip, p3, 0, 0)
+							end
+
+							sel.gtsetpoint = false
+
+							return
+						end
+
 						local scale = GameTooltip:GetEffectiveScale()
 						local mX, mY = GetCursorPosition()
 						mX = mX / scale
@@ -5703,6 +5717,19 @@ function MoveAny:LoadAddon()
 				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
 					local owner = GameTooltip:GetOwner()
 					if owner and owner == UIParent or owner == UIParent then
+						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
+							GameTooltip:SetMovable(true)
+							GameTooltip:SetUserPlaced(false)
+							if MoveAny:GameTooltipOnDefaultPosition() then
+								local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
+								MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
+							end
+
+							C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
+
+							return
+						end
+
 						local scale = GameTooltip:GetEffectiveScale()
 						local mX, mY = GetCursorPosition()
 						mX = mX / scale

@@ -52,6 +52,7 @@ MoveAny:AddTrans("enUS", "LID_MICROMENU", "Micro Menu (Characterbutton, Spellboo
 MoveAny:AddTrans("enUS", "LID_BAGS", "Bags")
 MoveAny:AddTrans("enUS", "LID_GAMETOOLTIP", "Tooltip")
 MoveAny:AddTrans("enUS", "LID_GAMETOOLTIP_ONCURSOR", "Tooltip on Cursor")
+MoveAny:AddTrans("enUS", "LID_GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", "Tooltip on Cursor (Not move to cursor in combat)")
 MoveAny:AddTrans("enUS", "LID_QUEUESTATUSBUTTON", "LFG Status")
 MoveAny:AddTrans("enUS", "LID_QUEUESTATUSFRAME", "LFG Status Tooltip")
 MoveAny:AddTrans("enUS", "LID_PETBAR", "Pet Bar")
