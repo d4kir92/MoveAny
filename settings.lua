@@ -238,7 +238,7 @@ function MoveAny:IsBlizEditModeEnabled()
 	return false
 end
 
-local onceDebug = true
+local onceDebug = false
 function MoveAny:IsInEditModeEnabled(val)
 	local editModeEnum = nil
 	if not MoveAny:IsBlizEditModeEnabled() then return false, false end
