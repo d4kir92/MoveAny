@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.110")
+	MoveAny:SetVersion(135994, "1.8.111")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5220,10 +5220,20 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
+		hooksecurefunc(
+			QueueStatusButton,
+			"SetParent",
+			function(sel, parent)
+				sel:SetParent(MoveAny:GetMainPanel())
+			end
+		)
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "QueueStatusButton",
-				["lstr"] = "LID_QUEUESTATUSBUTTON"
+				["lstr"] = "LID_QUEUESTATUSBUTTON",
+				["userplaced"] = true,
+				["secure"] = true
 			}
 		)
 	end

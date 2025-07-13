@@ -32,13 +32,13 @@ end
 
 function D4:GetText(frame)
     if frame == nil then return nil end
-    local ok, parent = pcall(
+    local ok, text = pcall(
         function()
             if type(frame) == "table" and type(frame.GetText) == "function" then return frame:GetText() end
         end
     )
 
-    if ok then return parent end
+    if ok then return text end
 
     return nil
 end
@@ -87,9 +87,17 @@ function D4:TrySetParent(frame, parent)
     return false
 end
 
-function D4:RunSec(callback, ...)
+function D4:TryRun(callback, ...)
     if callback == nil then return end
     local ok, ret = pcall(function(...) return callback(...) end, ...)
+    if ok then return ret end
+
+    return nil
+end
+
+function D4:TrySec(callback, ...)
+    if callback == nil then return end
+    local ok, ret = securecall(function(...) return callback(...) end, ...)
     if ok then return ret end
 
     return nil

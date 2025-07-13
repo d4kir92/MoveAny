@@ -242,7 +242,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 		local count = 0
 		for i, nam in pairs(MAFS) do
-			local ret = MoveAny:RunSec(
+			local ret = MoveAny:TryRun(
 				function(name)
 					local frame = MoveAny:GetFrameByName(name)
 					if frame ~= nil and frame:IsShown() and (not InCombatLockdown() or not frame:IsProtected()) then

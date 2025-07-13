@@ -22,9 +22,14 @@ function MoveAny:PetBattleChat(frame)
 	end
 end
 
-function MoveAny:UpdateMicroBar()
-	if MAMenuBar.ma_set_po then return end
-	MAMenuBar.ma_set_po = true
+local microCount = 0
+local mibarMoved = false
+function MoveAny:DoUpdateMicroBar()
+	if MoveAny:DEBUG() then
+		microCount = microCount + 1
+		MoveAny:DEB("UpdateMicroBar", microCount)
+	end
+
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
 		MoveAny:PetBattleChat(ChatFrame1)
 	end
@@ -37,10 +42,26 @@ function MoveAny:UpdateMicroBar()
 	if MoveAny.UpdateActionBar then
 		MoveAny:UpdateActionBar(MAMenuBar)
 	end
-
-	MAMenuBar.ma_set_po = false
 end
 
+function MoveAny:UpdateMicroBar(from)
+	if mibarMoved then return end
+	mibarMoved = true
+	if from and from == "mb" then
+		C_Timer.After(
+			0.1,
+			function()
+				MoveAny:DoUpdateMicroBar()
+				mibarMoved = false
+			end
+		)
+	else
+		MoveAny:DoUpdateMicroBar()
+		mibarMoved = false
+	end
+end
+
+local mbMoved = false
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled("MICROMENU", false) then
 		local MBTNS = MICRO_BUTTONS
@@ -131,13 +152,13 @@ function MoveAny:InitMicroMenu()
 						mb,
 						"SetPoint",
 						function(sel, ...)
-							if MAMenuBar.ma_mb_set_po then return end
-							MAMenuBar.ma_mb_set_po = true
+							if mbMoved then return end
+							mbMoved = true
 							if MoveAny.UpdateMicroBar then
-								MoveAny:UpdateMicroBar()
+								MoveAny:UpdateMicroBar("mb")
 							end
 
-							MAMenuBar.ma_mb_set_po = false
+							mbMoved = false
 						end
 					)
 

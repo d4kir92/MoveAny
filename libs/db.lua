@@ -1,5 +1,5 @@
 local AddonName, MoveAny = ...
-local MADEBUG = false
+local MADEBUG = true
 function MoveAny:DEBUG()
 	return MADEBUG
 end
