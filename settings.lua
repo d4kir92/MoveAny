@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.112")
+	MoveAny:SetVersion(135994, "1.8.113")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5494,6 +5494,24 @@ function MoveAny:LoadAddon()
 				}
 			)
 		else
+			if MultiBarRight then
+				MultiBarRight.OldSetScale = MultiBarRight.OldSetScale or MultiBarRight.SetScale
+				MultiBarRight.SetScale = function(sel, scale)
+					if scale > 0 then
+						MultiBarRight:OldSetScale(scale)
+					end
+				end
+			end
+
+			if MultiBarLeft then
+				MultiBarLeft.OldSetScale = MultiBarLeft.OldSetScale or MultiBarLeft.SetScale
+				MultiBarLeft.SetScale = function(sel, scale)
+					if scale > 0 then
+						MultiBarLeft:OldSetScale(scale)
+					end
+				end
+			end
+
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "MinimapCluster",
