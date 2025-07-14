@@ -254,9 +254,9 @@ if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR4", "Aktionsleiste 4 (Linke Leiste)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR5", "Aktionsleiste 5 (Leiste oben rechts)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR6", "Aktionsleiste 6 (Leiste oben links)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Benutzerdefinierte)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Benutzerdefinierte)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR9", "Aktionsleiste 9 (Benutzerdefinierte)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Benutzerdefinierte) (Schattenform, Stealth, Katze, Kampfhaltung)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Benutzerdefinierte) (Verteidigungshaltung)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR9", "Aktionsleiste 9 (Benutzerdefinierte) (Bär, Berserkerhaltung)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR10", "Aktionsleiste 10 (Benutzerdefinierte)")
 else
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")
@@ -265,6 +265,8 @@ else
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR4", "Aktionsleiste 4 (Rechte Leiste)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR5", "Aktionsleiste 5 (Linke Leiste)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR6", "Aktionsleiste 6 (Extra)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Extra)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Extra)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Extra) (Schattenform, Stealth, Katze, Kampfhaltung)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Extra) (Verteidigungshaltung)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR9", "Aktionsleiste 9 (Benutzerdefinierte) (Bär, Berserkerhaltung)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR10", "Aktionsleiste 10 (Benutzerdefinierte)")
 end

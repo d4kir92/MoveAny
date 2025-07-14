@@ -254,9 +254,9 @@ if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR4", "Actionbars 4 (Left Bar)")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR5", "Actionbars 5 (Top Right Bar)")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR6", "Actionbars 6 (Top Left Bar)")
-	MoveAny:AddTrans("enUS", "LID_ACTIONBAR7", "Actionbars 7 (Custom)")
-	MoveAny:AddTrans("enUS", "LID_ACTIONBAR8", "Actionbars 8 (Custom)")
-	MoveAny:AddTrans("enUS", "LID_ACTIONBAR9", "Actionbars 9 (Custom)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR7", "Actionbars 7 (Custom) (Shadowform, Stealth, Cat, Battle Stance)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR8", "Actionbars 8 (Custom) (Defensive Stance)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR9", "Actionbars 9 (Custom) (Bear, Berserker Stance)")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR10", "Actionbars 10 (Custom)")
 else
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")
@@ -265,6 +265,8 @@ else
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR4", "Actionbars 4 (Right Bar)")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR5", "Actionbars 5 (Left Bar)")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR6", "Actionbars 6")
-	MoveAny:AddTrans("enUS", "LID_ACTIONBAR7", "Actionbars 7")
-	MoveAny:AddTrans("enUS", "LID_ACTIONBAR8", "Actionbars 8")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR7", "Actionbars 7 (Custom) (Shadowform, Stealth, Cat, Battle Stance)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR8", "Actionbars 8 (Custom) (Defensive Stance)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR9", "Actionbars 9 (Custom) (Bear, Berserker Stance)")
+	MoveAny:AddTrans("enUS", "LID_ACTIONBAR10", "Actionbars 10 (Custom)")
 end
