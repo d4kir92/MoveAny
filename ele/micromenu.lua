@@ -24,8 +24,11 @@ end
 
 local microCount = 0
 local mibarMoved = false
-function MoveAny:DoUpdateMicroBar()
+local retry = false
+local updateBar = false
+function MoveAny:DoUpdateMicroBar(from)
 	if MoveAny:DEBUG() then
+		MoveAny:DEB(">>> EXE <<<", from)
 		microCount = microCount + 1
 		MoveAny:DEB("UpdateMicroBar", microCount)
 	end
@@ -40,30 +43,88 @@ function MoveAny:DoUpdateMicroBar()
 
 	MoveAny:SetPoint(MAMenuBar, MAMenuBar:GetPoint())
 	if MoveAny.UpdateActionBar then
+		updateBar = true
 		MoveAny:UpdateActionBar(MAMenuBar)
+		updateBar = false
 	end
 end
 
 function MoveAny:UpdateMicroBar(from)
-	if mibarMoved then return end
+	if updateBar then return end
+	if mibarMoved then
+		retry = true
+
+		return
+	end
+
 	mibarMoved = true
 	if from and from == "mb" then
 		C_Timer.After(
-			0.1,
+			0.14,
 			function()
-				MoveAny:DoUpdateMicroBar()
 				mibarMoved = false
+				if retry then
+					MoveAny:UpdateMicroBar("RETRYMB")
+				end
 			end
 		)
-	else
-		MoveAny:DoUpdateMicroBar()
+	elseif from and from == "RETRYMB" then
+		retry = false
+		MoveAny:DoUpdateMicroBar("RETRYMB")
 		mibarMoved = false
+	elseif from and from == "RETRYNOR" then
+		retry = false
+		MoveAny:DoUpdateMicroBar("RETRYNOR")
+		mibarMoved = false
+	else
+		MoveAny:DoUpdateMicroBar("NORMAL")
+		C_Timer.After(
+			0.06,
+			function()
+				mibarMoved = false
+				if retry then
+					MoveAny:UpdateMicroBar("RETRYNOR")
+				end
+			end
+		)
 	end
 end
 
+local mmcMoved = false
+local mmcScaled = false
 local mbMoved = false
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled("MICROMENU", false) then
+		if MicroMenuContainer then
+			hooksecurefunc(
+				MicroMenuContainer,
+				"SetPoint",
+				function(sel, ...)
+					if mmcMoved then return end
+					mmcMoved = true
+					if MoveAny.UpdateMicroBar then
+						MoveAny:UpdateMicroBar("MMC SetPoint")
+					end
+
+					mmcMoved = false
+				end
+			)
+
+			hooksecurefunc(
+				MicroMenuContainer,
+				"SetScale",
+				function(sel, ...)
+					if mmcScaled then return end
+					mmcScaled = true
+					if MoveAny.UpdateMicroBar then
+						MoveAny:UpdateMicroBar("MMC SetScale")
+					end
+
+					mmcScaled = false
+				end
+			)
+		end
+
 		local MBTNS = MICRO_BUTTONS
 		if MICRO_BUTTONS == nil then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
@@ -148,19 +209,21 @@ function MoveAny:InitMicroMenu()
 						mb:SetSize(sw2, sh2)
 					end
 
-					hooksecurefunc(
-						mb,
-						"SetPoint",
-						function(sel, ...)
-							if mbMoved then return end
-							mbMoved = true
-							if MoveAny.UpdateMicroBar then
-								MoveAny:UpdateMicroBar("mb")
-							end
+					if i == 1 then
+						hooksecurefunc(
+							mb,
+							"SetPoint",
+							function(sel, ...)
+								if mbMoved then return end
+								mbMoved = true
+								if MoveAny.UpdateMicroBar then
+									MoveAny:UpdateMicroBar("mb")
+								end
 
-							mbMoved = false
-						end
-					)
+								mbMoved = false
+							end
+						)
+					end
 
 					mb:ClearAllPoints()
 					mb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
@@ -246,7 +309,7 @@ function MoveAny:InitMicroMenu()
 				"OnEvent",
 				function(sel, event, unit)
 					if MoveAny.UpdateMicroBar then
-						MoveAny:UpdateMicroBar()
+						MoveAny:UpdateMicroBar("EVENT")
 					end
 				end
 			)
@@ -255,14 +318,14 @@ function MoveAny:InitMicroMenu()
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(MAMenuBar, "MAMenuBar")
 			if MoveAny.UpdateMicroBar then
-				MoveAny:UpdateMicroBar()
+				MoveAny:UpdateMicroBar("INIT")
 			end
 
 			C_Timer.After(
 				1,
 				function()
 					if MoveAny.UpdateMicroBar then
-						MoveAny:UpdateMicroBar()
+						MoveAny:UpdateMicroBar("INIT DELAYED")
 					end
 
 					if MoveAny:GetWoWBuild() ~= "RETAIL" then
@@ -299,7 +362,7 @@ function MoveAny:InitMicroMenu()
 								end
 
 								if MoveAny.UpdateMicroBar then
-									MoveAny:UpdateMicroBar()
+									MoveAny:UpdateMicroBar("CLASSIC FIX")
 								end
 
 								MAMenuBar.redots = nil
