@@ -49,15 +49,23 @@ if C_Timer == nil then
 end
 
 local countAfter = {}
+local debug = false
+function D4:SetDebug(bo)
+    debug = bo
+end
+
 function D4:After(time, callback, from)
     if from == nil then
-        print("MISSING FROM", time)
+        D4:INFO("[AFTER] MISSING FROM", time)
 
         return
     end
 
-    countAfter[from] = countAfter[from] or 0
-    countAfter[from] = countAfter[from] + 1
+    if debug then
+        countAfter[from] = countAfter[from] or 0
+        countAfter[from] = countAfter[from] + 1
+    end
+
     C_Timer.After(
         time,
         function()
@@ -66,24 +74,9 @@ function D4:After(time, callback, from)
     )
 end
 
-C_Timer.After(
-    1,
-    function()
-        D4:DrawDebug(
-            "test",
-            function()
-                local text = ""
-                for i, v in pairs(countAfter) do
-                    if v > 100 then
-                        text = text .. i .. ": " .. v .. "\n"
-                    end
-                end
-
-                return text
-            end, 14, 1000, 2000, "CENTER", UIParent, "CENTER", 0, 0
-        )
-    end
-)
+function D4:GetCountAfter()
+    return countAfter
+end
 
 function D4:GetClassColor(class)
     local colorTab = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
@@ -897,7 +890,7 @@ function D4:DrawDebug(name, callback, fontSize, sw, sh, p1, p2, p3, p4, p5)
             0.1,
             function()
                 Think()
-            end, "DrawDebug"
+            end, "DrawDebug Think"
         )
     end
 

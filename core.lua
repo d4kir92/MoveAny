@@ -306,7 +306,7 @@ function MoveAny:UpdateMALock()
 		MoveAny:ShowMALock()
 	end
 
-	MoveAny:After(0.1, MoveAny.UpdateMALock, "UpdateMALock")
+	MoveAny:After(0.4, MoveAny.UpdateMALock, "UpdateMALock")
 end
 
 function MoveAny:InitSlash()
@@ -319,4 +319,26 @@ function MoveAny:InitSlash()
 		MoveAny:AddSlash("rl", ReloadUi)
 		MoveAny:AddSlash("rel", ReloadUi)
 	end
+end
+
+if false then
+	C_Timer.After(
+		1,
+		function()
+			MoveAny:SetDebug(true)
+			MoveAny:DrawDebug(
+				"Test DrawDebug",
+				function()
+					local text = ""
+					for i, v in pairs(MoveAny:GetCountAfter()) do
+						if v > 200 then
+							text = text .. i .. ": " .. v .. "\n"
+						end
+					end
+
+					return text
+				end, 14, 1440, 1440, "CENTER", UIParent, "CENTER", 400, 0
+			)
+		end
+	)
 end

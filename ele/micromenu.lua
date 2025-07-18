@@ -397,7 +397,7 @@ function MoveAny:InitMicroMenu()
 
 						MoveAny:UpdateMicroMenu()
 					end
-				end
+				end, "InitMicroMenu"
 			)
 		end
 	end

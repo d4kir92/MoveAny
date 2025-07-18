@@ -33,20 +33,13 @@ end
 local tab = {}
 function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	if window == nil then
-		print("WINDOW IS NIL")
+		MoveAny:INFO("[SetPoint] WINDOW IS NIL")
 
 		return
 	end
 
 	tab[window] = tab[window] or false
-	if InCombatLockdown() and window:IsProtected() then
-		if window == GameTooltip then
-			print("IN COMBAT SECURED")
-		end
-
-		return false
-	end
-
+	if InCombatLockdown() and window:IsProtected() then return false end
 	if p1 then
 		local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
 		ClearAllPoints(window)
@@ -484,12 +477,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							frame,
 							"SetScale",
 							function(sel, scale)
-								if InCombatLockdown() and sel:IsProtected() then
-									print("OH IN COMBAT")
-
-									return false
-								end
-
+								if InCombatLockdown() and sel:IsProtected() then return false end
 								if masetscale_frame[sel] then return end
 								masetscale_frame[sel] = true
 								if name == "LootFrame" and MoveAny:IsEnabled("SCALELOOTFRAME", false) == false then return end

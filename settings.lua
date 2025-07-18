@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.119")
+	MoveAny:SetVersion(135994, "1.8.120")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1322,7 +1322,7 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		MoveAny:After(0.1, FinderThink, "FinderThink")
+		MoveAny:After(0.3, FinderThink, "FinderThink")
 	end
 
 	FinderThink()
@@ -1338,7 +1338,7 @@ function MoveAny:InitMALock()
 				end
 
 				MoveAny:After(
-					0.1,
+					0.4,
 					function()
 						MAGridFrameThink()
 					end, "MAGridFrameThink"
@@ -4121,7 +4121,7 @@ function MoveAny:LoadAddon()
 						MainMenuBarVehicleLeaveButton:SetAlpha(0)
 					end
 
-					MoveAny:After(0.3, MoveAny.UpdateVehicleLeaveButton, "UpdateVehicleLeaveButton")
+					MoveAny:After(0.4, MoveAny.UpdateVehicleLeaveButton, "UpdateVehicleLeaveButton")
 				end
 
 				MoveAny:UpdateVehicleLeaveButton()
@@ -5659,7 +5659,7 @@ function MoveAny:LoadAddon()
 			end
 
 			MoveAny:After(
-				0.1,
+				0.3,
 				function()
 					GameTooltipAlphaThink()
 				end, "GameTooltipAlphaThink"
@@ -5694,13 +5694,14 @@ function MoveAny:LoadAddon()
 		)
 
 		GameTooltip:SetAlpha(1)
+		local gtsetpoint = false
 		if not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
 			hooksecurefunc(
 				GameTooltip,
 				"SetPoint",
 				function(sel, ...)
-					if sel.gtsetpoint then return end
-					sel.gtsetpoint = true
+					if gtsetpoint then return end
+					gtsetpoint = true
 					sel:SetMovable(true)
 					sel:SetUserPlaced(false)
 					if MoveAny:GameTooltipOnDefaultPosition() then
@@ -5712,72 +5713,71 @@ function MoveAny:LoadAddon()
 				end
 			)
 		else
-			--[[hooksecurefunc(
+			local TOOLTIP_REFRESH_RATE_ACTIVE_NOTINCOMBAT = 0.02
+			local TOOLTIP_REFRESH_RATE_ACTIVE_INCOMBAT = 0.06
+			local TOOLTIP_REFRESH_RATE_IDLE = 0.1
+			local CURSOR_OFFSET = 22
+			hooksecurefunc(
 				GameTooltip,
 				"SetPoint",
 				function(sel, ...)
-					if sel.gtsetpoint then return end
-					sel.gtsetpoint = true
+					if gtsetpoint then return end
+					gtsetpoint = true
 					sel:SetMovable(true)
 					sel:SetUserPlaced(false)
-					local owner = GameTooltip:GetOwner()
-					if owner and owner == UIParent or owner == UIParent then
-						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
-							GameTooltip:SetMovable(true)
-							GameTooltip:SetUserPlaced(false)
-							local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-							MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
-							sel.gtsetpoint = false
+					if EditModeManagerFrame and EditModeManagerFrame:IsShown() then return end
+					if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
+						local owner = GameTooltip:GetOwner()
+						if owner == UIParent then
+							if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
+								local point1, _, point3 = MAGameTooltip:GetPoint()
+								MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
+								gtsetpoint = false
 
-							return
+								return
+							end
+
+							local uiScale = GameTooltip:GetEffectiveScale()
+							local cursorX, cursorY = GetCursorPosition()
+							cursorX = cursorX / uiScale
+							cursorY = cursorY / uiScale
+							MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
 						end
-
-						local scale = GameTooltip:GetEffectiveScale()
-						local mX, mY = GetCursorPosition()
-						mX = mX / scale
-						mY = mY / scale
-						GameTooltip.gtsetpoint = true
-						MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
-						GameTooltip.gtsetpoint = false
-						GameTooltip.default = 1
 					end
 
-					sel.gtsetpoint = false
+					gtsetpoint = false
 				end
-			)]]
+			)
+
 			function MoveAny:ThinkGameTooltip()
-				if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
-					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip 1")
+				if EditModeManagerFrame and EditModeManagerFrame:IsShown() then
+					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip EditModeSHOWN")
 
 					return
 				end
 
 				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
 					local owner = GameTooltip:GetOwner()
-					if owner and owner == UIParent or owner == UIParent then
+					if owner == UIParent then
 						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
-							GameTooltip:SetMovable(true)
-							GameTooltip:SetUserPlaced(false)
-							local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-							MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
-							MoveAny:After(0.01, MoveAny.ThinkGameTooltip)
+							local point1, _, point3 = MAGameTooltip:GetPoint()
+							MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
+							MoveAny:After(TOOLTIP_REFRESH_RATE_ACTIVE_INCOMBAT, MoveAny.ThinkGameTooltip, "ThinkGameTooltip INCOMBAT")
 
 							return
 						end
 
-						local scale = GameTooltip:GetEffectiveScale()
-						local mX, mY = GetCursorPosition()
-						mX = mX / scale
-						mY = mY / scale
-						GameTooltip.gtsetpoint = true
-						MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
-						GameTooltip.gtsetpoint = false
-						GameTooltip.default = 1
+						local uiScale = GameTooltip:GetEffectiveScale()
+						local cursorX, cursorY = GetCursorPosition()
+						cursorX = cursorX / uiScale
+						cursorY = cursorY / uiScale
+						MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
+						MoveAny:After(TOOLTIP_REFRESH_RATE_ACTIVE_NOTINCOMBAT, MoveAny.ThinkGameTooltip, "ThinkGameTooltip NOTINCOMBAT")
+					else
+						MoveAny:After(TOOLTIP_REFRESH_RATE_IDLE, MoveAny.ThinkGameTooltip, "ThinkGameTooltip OTHER PARENT")
 					end
-
-					MoveAny:After(0.01, MoveAny.ThinkGameTooltip, "ThinkGameTooltip 2")
 				else
-					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip 3")
+					MoveAny:After(TOOLTIP_REFRESH_RATE_IDLE, MoveAny.ThinkGameTooltip, "ThinkGameTooltip NOT SHOWN")
 				end
 			end
 

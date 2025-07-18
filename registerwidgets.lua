@@ -2073,7 +2073,7 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	MoveAny:After(0.12, MoveAny.CheckAlphas, "CheckAlphas")
+	MoveAny:After(0.14, MoveAny.CheckAlphas, "CheckAlphas")
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
