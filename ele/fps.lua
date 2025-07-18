@@ -10,7 +10,7 @@ function MoveAny:InitMAFPSFrame()
 		MoveAny:SetFontSize(MAFPSFrame.fps, 14, "THINOUTLINE")
 		function MoveAny:FPSThink()
 			MAFPSFrame.fps:SetText(format("|cff3FC7EBFPS|r: %4d", GetFramerate()))
-			C_Timer.After(config_update, MoveAny.FPSThink)
+			MoveAny:After(config_update, MoveAny.FPSThink, "FPSThink")
 		end
 
 		MoveAny:FPSThink()

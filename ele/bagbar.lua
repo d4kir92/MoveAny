@@ -198,7 +198,7 @@ function MoveAny:InitBags()
 		end
 	end
 
-	C_Timer.After(
+	MoveAny:After(
 		1,
 		function()
 			for i, v in pairs(BAGS) do
@@ -237,6 +237,6 @@ function MoveAny:InitBags()
 					end
 				end
 			end
-		end
+		end, "InitBags"
 	)
 end

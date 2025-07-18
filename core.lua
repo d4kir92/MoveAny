@@ -24,11 +24,11 @@ local sethiddenSetup = {}
 function MoveAny:HideFrame(frame, soft)
 	if not soft then
 		if InCombatLockdown() then
-			C_Timer.After(
+			MoveAny:After(
 				0.1,
 				function()
 					MoveAny:HideFrame(frame, soft)
-				end
+				end, "HideFrame"
 			)
 
 			return
@@ -92,11 +92,11 @@ function MoveAny:HideFrame(frame, soft)
 	frame:SetAlpha(0)
 	frame:EnableMouse(false)
 	if InCombatLockdown() then
-		C_Timer.After(
+		MoveAny:After(
 			0.1,
 			function()
 				MoveAny:HideFrame(frame, soft)
-			end
+			end, "HideFrame 2"
 		)
 	end
 end
@@ -107,11 +107,11 @@ function MoveAny:ShowFrame(frame)
 	if not InCombatLockdown() then
 		frame:EnableMouse(true)
 	else
-		C_Timer.After(
+		MoveAny:After(
 			0.1,
 			function()
 				MoveAny:ShowFrame(frame)
-			end
+			end, "ShowFrame"
 		)
 	end
 end
@@ -161,11 +161,11 @@ hooksecurefunc(
 if MoveAny:GetCVar("useUiScale") == "1" then
 	MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
 else
-	C_Timer.After(
+	MoveAny:After(
 		0,
 		function()
 			MAUIP:SetScale(UIParent:GetScale())
-		end
+		end, "useUiScale"
 	)
 end
 
@@ -306,7 +306,7 @@ function MoveAny:UpdateMALock()
 		MoveAny:ShowMALock()
 	end
 
-	C_Timer.After(0.1, MoveAny.UpdateMALock)
+	MoveAny:After(0.1, MoveAny.UpdateMALock, "UpdateMALock")
 end
 
 function MoveAny:InitSlash()

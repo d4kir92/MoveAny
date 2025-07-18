@@ -48,6 +48,43 @@ if C_Timer == nil then
     D4.oldWow = true
 end
 
+local countAfter = {}
+function D4:After(time, callback, from)
+    if from == nil then
+        print("MISSING FROM", time)
+
+        return
+    end
+
+    countAfter[from] = countAfter[from] or 0
+    countAfter[from] = countAfter[from] + 1
+    C_Timer.After(
+        time,
+        function()
+            callback()
+        end
+    )
+end
+
+C_Timer.After(
+    1,
+    function()
+        D4:DrawDebug(
+            "test",
+            function()
+                local text = ""
+                for i, v in pairs(countAfter) do
+                    if v > 100 then
+                        text = text .. i .. ": " .. v .. "\n"
+                    end
+                end
+
+                return text
+            end, 14, 1000, 2000, "CENTER", UIParent, "CENTER", 0, 0
+        )
+    end
+)
+
 function D4:GetClassColor(class)
     local colorTab = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
     if CUSTOM_CLASS_COLORS == nil and D4:GetWoWBuild() == "CLASSIC" and class == "SHAMAN" then return 0, 0.44, 0.87, "FF0070DE" end
@@ -265,7 +302,7 @@ local function FixIconChat(sel, event, message, author, ...)
     return false, message, author, ...
 end
 
-C_Timer.After(
+D4:After(
     2,
     function()
         local chatChannels = {}
@@ -280,11 +317,11 @@ C_Timer.After(
         end
 
         ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", FixIconChat)
-    end
+    end, "D4 1"
 )
 
 if D4:GetWoWBuild() == "CLASSIC" then
-    C_Timer.After(
+    D4:After(
         2,
         function()
             -- FIX HEALTH
@@ -424,7 +461,7 @@ if D4:GetWoWBuild() == "CLASSIC" then
                     hooksecurefunc("TextStatusBar_UpdateTextStringWithValues", TextStatusBar_UpdateTextStringWithValues)
                 end
             end
-        end
+        end, "FixHealth"
     )
 end
 
@@ -856,11 +893,11 @@ function D4:DrawDebug(name, callback, fontSize, sw, sh, p1, p2, p3, p4, p5)
     local function Think()
         local text = callback()
         fDebug.text:SetText(text)
-        C_Timer.After(
+        D4:After(
             0.1,
             function()
                 Think()
-            end
+            end, "DrawDebug"
         )
     end
 

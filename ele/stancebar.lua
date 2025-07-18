@@ -86,7 +86,7 @@ function MoveAny:UpdateStanceBar()
 		end
 	end
 
-	C_Timer.After(1, MoveAny.UpdateStanceBar)
+	MoveAny:After(1, MoveAny.UpdateStanceBar, "UpdateStanceBar")
 end
 
 function MoveAny:InitStanceBar()

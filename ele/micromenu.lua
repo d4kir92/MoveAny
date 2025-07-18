@@ -59,43 +59,43 @@ function MoveAny:UpdateMicroBar(from)
 
 	mibarMoved = true
 	if from and from == "mb" then
-		C_Timer.After(
+		MoveAny:After(
 			0.14,
 			function()
 				mibarMoved = false
 				if retry then
 					MoveAny:UpdateMicroBar("RETRYMB")
 				end
-			end
+			end, "UpdateMicroBar mb"
 		)
 	elseif from and from == "RETRYMB" then
 		retry = false
-		C_Timer.After(
+		MoveAny:After(
 			0.2,
 			function()
 				MoveAny:DoUpdateMicroBar("RETRYMB")
 				mibarMoved = false
-			end
+			end, "UpdateMicroBar RETRYMB"
 		)
 	elseif from and from == "RETRYNOR" then
 		retry = false
-		C_Timer.After(
+		MoveAny:After(
 			0.2,
 			function()
 				MoveAny:DoUpdateMicroBar("RETRYNOR")
 				mibarMoved = false
-			end
+			end, "UpdateMicroBar RETRYNOR"
 		)
 	else
 		MoveAny:DoUpdateMicroBar("NORMAL")
-		C_Timer.After(
+		MoveAny:After(
 			0.06,
 			function()
 				mibarMoved = false
 				if retry then
 					MoveAny:UpdateMicroBar("RETRYNOR")
 				end
-			end
+			end, "UpdateMicroBar ELSE"
 		)
 	end
 end
@@ -345,7 +345,7 @@ function MoveAny:InitMicroMenu()
 				MoveAny:UpdateMicroBar("INIT")
 			end
 
-			C_Timer.After(
+			MoveAny:After(
 				1,
 				function()
 					if MoveAny.UpdateMicroBar then
@@ -392,7 +392,7 @@ function MoveAny:InitMicroMenu()
 								MAMenuBar.redots = nil
 							end
 
-							C_Timer.After(0.1, MoveAny.UpdateMicroMenu)
+							MoveAny:After(0.1, MoveAny.UpdateMicroMenu, "UpdateMicroMenu")
 						end
 
 						MoveAny:UpdateMicroMenu()
@@ -402,35 +402,3 @@ function MoveAny:InitMicroMenu()
 		end
 	end
 end
-
-MoveAny:DrawDebug(
-	name,
-	function()
-		local text = ""
-		if MAMenuBar then
-			text = text .. " MAMenuBar S: " .. MAMenuBar:GetScale()
-		end
-
-		if MicroMenu then
-			text = text .. " MicroMenu S: " .. MicroMenu:GetScale()
-		end
-
-		return text
-	end, 12, 800, 50, "CENTER", UIParent, "CENTER", 0, 100
-)
-
-MoveAny:DrawDebug(
-	name,
-	function()
-		local text = ""
-		if MAMenuBar then
-			text = text .. " MAMenuBar P: " .. MoveAny:GetName(MAMenuBar:GetParent())
-		end
-
-		if MicroMenu then
-			text = text .. " MicroMenu P: " .. MoveAny:GetName(MicroMenu:GetParent())
-		end
-
-		return text
-	end, 12, 800, 50, "CENTER", UIParent, "CENTER", 0, 120
-)

@@ -53,7 +53,7 @@ function MoveAny:UpdateVisi()
 		end
 	end
 
-	C_Timer.After(0.3, MoveAny.UpdateVisi)
+	MoveAny:After(0.3, MoveAny.UpdateVisi, "UpdateVisi")
 end
 
 function MoveAny:CheckIfMicroMenuInVehicle(frame)

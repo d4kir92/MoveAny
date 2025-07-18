@@ -52,7 +52,7 @@ function D4:UpdatePosition(button, position, parent)
             0.1,
             function()
                 D4:UpdatePosition(button, position, parent)
-            end
+            end, "UpdatePosition"
         )
 
         return false

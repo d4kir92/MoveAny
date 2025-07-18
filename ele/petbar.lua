@@ -48,7 +48,7 @@ function MoveAny:UpdatePetBar()
 		end
 	end
 
-	C_Timer.After(0.4, MoveAny.UpdatePetBar)
+	MoveAny:After(0.4, MoveAny.UpdatePetBar, "UpdatePetBar")
 end
 
 function MoveAny:InitPetBar()

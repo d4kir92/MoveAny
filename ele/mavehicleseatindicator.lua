@@ -60,6 +60,6 @@ function MoveAny:InitMAVehicleSeatIndicator()
 		VehicleSeatIndicator:ClearAllPoints()
 		VehicleSeatIndicator:SetPoint("CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
 	elseif tries < 10 then
-		C_Timer.After(1, MoveAny.InitMAVehicleSeatIndicator)
+		MoveAny:After(1, MoveAny.InitMAVehicleSeatIndicator, "InitMAVehicleSeatIndicator")
 	end
 end

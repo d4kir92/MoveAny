@@ -1306,7 +1306,7 @@ function MoveAny:IsPresetProfileActive()
 end
 
 if MoveAny:GetWoWBuild() == "RETAIL" then
-	C_Timer.After(
+	MoveAny:After(
 		1,
 		function()
 			local lastCheck = false
@@ -1323,14 +1323,14 @@ if MoveAny:GetWoWBuild() == "RETAIL" then
 				end
 
 				if isPreset then
-					C_Timer.After(0.5, MoveAny.ThinkHelpFrame)
+					MoveAny:After(0.5, MoveAny.ThinkHelpFrame, "ThinkHelpFrame 1")
 				else
-					C_Timer.After(1.1, MoveAny.ThinkHelpFrame)
+					MoveAny:After(1.1, MoveAny.ThinkHelpFrame, "ThinkHelpFrame 2")
 				end
 			end
 
 			MoveAny:ThinkHelpFrame()
-		end
+		end, "ThinkHelpFrame 3"
 	)
 end
 
@@ -1393,7 +1393,7 @@ function MoveAny:RegisterWidget(tab)
 		return
 	end
 
-	C_Timer.After(
+	MoveAny:After(
 		1,
 		function()
 			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
@@ -1403,7 +1403,7 @@ function MoveAny:RegisterWidget(tab)
 
 				return
 			end
-		end
+		end, "RegisterWidget 1"
 	)
 
 	local frame = MoveAny:GetFrameByName(name)
@@ -1565,11 +1565,11 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	if frame == nil then
-		C_Timer.After(
+		MoveAny:After(
 			tab.delay or 0.2,
 			function()
 				MoveAny:RegisterWidget(tab)
-			end
+			end, "RegisterWidget 2"
 		)
 
 		return false
@@ -2073,7 +2073,7 @@ function MoveAny:CheckAlphas()
 		MoveAny:UpdateAlphas()
 	end
 
-	C_Timer.After(0.12, MoveAny.CheckAlphas)
+	MoveAny:After(0.12, MoveAny.CheckAlphas, "CheckAlphas")
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)

@@ -619,6 +619,6 @@ function MoveAny:InitBuffBar()
 			end
 		)
 
-		C_Timer.After(1, MoveAny.UpdateBuffs)
+		MoveAny:After(1, MoveAny.UpdateBuffs, "UpdateBuffs")
 	end
 end

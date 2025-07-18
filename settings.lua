@@ -448,7 +448,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 					cb:UpdateText(cb:GetChecked())
 				end
 
-				C_Timer.After(1, cb.Think)
+				MoveAny:After(1, cb.Think, "cb.Think")
 			end
 
 			cb:UpdateText(cb:GetChecked())
@@ -654,14 +654,14 @@ function MoveAny:InitMALock()
 	)
 
 	MALock:SetResizable(true)
-	C_Timer.After(
+	MoveAny:After(
 		0,
 		function()
 			MALock:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
 			if MALock:GetHeight() > GetScreenHeight() then
 				MALock:SetHeight(GetScreenHeight())
 			end
-		end
+		end, "InitMALock"
 	)
 
 	local rb = CreateFrame("Button", nil, MALock)
@@ -1175,14 +1175,14 @@ function MoveAny:InitMALock()
 	)
 
 	MALock.Profiles:SetResizable(true)
-	C_Timer.After(
+	MoveAny:After(
 		0,
 		function()
 			MALock.Profiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
 			if MALock.Profiles:GetHeight() > GetScreenHeight() then
 				MALock.Profiles:SetHeight(GetScreenHeight())
 			end
-		end
+		end, "InitMALock 2"
 	)
 
 	MALock.SF = CreateFrame("ScrollFrame", "MALock_SF", MALock, "UIPanelScrollFrameTemplate")
@@ -1269,18 +1269,18 @@ function MoveAny:InitMALock()
 				)
 			end
 
-			C_Timer.After(
+			MoveAny:After(
 				0.3,
 				function()
 					MoveAny:HoverLogic()
-				end
+				end, "HoverLogic FINDER FOUND"
 			)
 		else
-			C_Timer.After(
+			MoveAny:After(
 				0.5,
 				function()
 					MoveAny:HoverLogic()
-				end
+				end, "HoverLogic FINDER NOT FOUND"
 			)
 		end
 	end
@@ -1322,11 +1322,11 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		C_Timer.After(0.1, FinderThink)
+		MoveAny:After(0.1, FinderThink, "FinderThink")
 	end
 
 	FinderThink()
-	C_Timer.After(
+	MoveAny:After(
 		0.1,
 		function()
 			MAGridFrame = CreateFrame("Frame", "MAGridFrame", MoveAny:GetMainPanel())
@@ -1337,11 +1337,11 @@ function MoveAny:InitMALock()
 					MAGridFrame:EnableMouse(false)
 				end
 
-				C_Timer.After(
+				MoveAny:After(
 					0.1,
 					function()
 						MAGridFrameThink()
-					end
+					end, "MAGridFrameThink"
 				)
 			end
 
@@ -1376,7 +1376,7 @@ function MoveAny:InitMALock()
 			end
 
 			MoveAny:HideMALock(true)
-		end
+		end, "InitMALock 3"
 	)
 end
 
@@ -1474,7 +1474,7 @@ function MoveAny:AddUploadProfileLine(source, profile)
 		for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["POINTS"]) do
 			for j, w in pairs(v) do
 				count = count + 1
-				C_Timer.After(
+				MoveAny:After(
 					count * delay,
 					function()
 						cur = cur + 1
@@ -1498,19 +1498,19 @@ function MoveAny:AddUploadProfileLine(source, profile)
 								C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "POINTS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
 							end
 						end
-					end
+					end, "AddUploadProfileLine"
 				)
 			end
 		end
 
-		C_Timer.After(
+		MoveAny:After(
 			count * delay,
 			function()
 				count = 0
 				for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["SIZES"]) do
 					for j, w in pairs(v) do
 						count = count + 1
-						C_Timer.After(
+						MoveAny:After(
 							count * delay,
 							function()
 								cur = cur + 1
@@ -1534,19 +1534,19 @@ function MoveAny:AddUploadProfileLine(source, profile)
 										C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "SIZES" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
 									end
 								end
-							end
+							end, "t1"
 						)
 					end
 				end
 
-				C_Timer.After(
+				MoveAny:After(
 					count * delay,
 					function()
 						count = 0
 						for i, v in pairs(MATAB["PROFILES"][profile]["ELES"]["OPTIONS"]) do
 							for j, w in pairs(v) do
 								count = count + 1
-								C_Timer.After(
+								MoveAny:After(
 									count * delay,
 									function()
 										cur = cur + 1
@@ -1570,13 +1570,13 @@ function MoveAny:AddUploadProfileLine(source, profile)
 												C_ChatInfo.SendAddonMessage(PREFIX, "DL;" .. profile .. ";" .. "OPTIONS" .. ";" .. i .. ";" .. j .. ";" .. typ .. ";" .. val, "WHISPER", source)
 											end
 										end
-									end
+									end, "t4"
 								)
 							end
 						end
-					end
+					end, "t2"
 				)
-			end
+			end, "t3"
 		)
 	end
 
@@ -1626,7 +1626,7 @@ function MoveAny:AddUploadProfileLine(source, profile)
 				MAUploadProfile.btn:SetEnabled(false)
 			end
 
-			C_Timer.After(0.1, MAUploadProfile.UpdateStatus)
+			MoveAny:After(0.1, MAUploadProfile.UpdateStatus, "UpdateStatus")
 		end
 
 		MAUploadProfile:UpdateStatus()
@@ -1682,14 +1682,14 @@ function MoveAny:ShowProfiles()
 		)
 
 		MAProfiles:SetResizable(true)
-		C_Timer.After(
+		MoveAny:After(
 			0,
 			function()
 				MAProfiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
 				if MAProfiles:GetHeight() > GetScreenHeight() then
 					MAProfiles:SetHeight(GetScreenHeight())
 				end
-			end
+			end, "ShowProfiles"
 		)
 
 		MAProfiles.DISCORD = CreateFrame("EditBox", "MAProfiles" .. ".DISCORD", MAProfiles, "InputBoxTemplate")
@@ -1962,7 +1962,7 @@ function MoveAny:ShowProfiles()
 											MADownloadProfile.btn:SetEnabled(false)
 										end
 
-										C_Timer.After(0.1, MADownloadProfile.UpdateStatus)
+										MoveAny:After(0.1, MADownloadProfile.UpdateStatus, "UpdateStatus 2")
 									end
 
 									MADownloadProfile:UpdateStatus()
@@ -1994,7 +1994,7 @@ function MoveAny:ShowProfiles()
 							id = id + 1
 						end
 
-						C_Timer.After(1, GetProfiles)
+						MoveAny:After(1, GetProfiles, "GetProfiles")
 					end
 				end
 
@@ -2117,7 +2117,7 @@ function MoveAny:ShowProfiles()
 								id = id + 1
 							end
 
-							C_Timer.After(1, GetProfiles)
+							MoveAny:After(1, GetProfiles, "GetProfiles2")
 						end
 					end
 
@@ -2126,7 +2126,7 @@ function MoveAny:ShowProfiles()
 					local function ShareProfile()
 						if MAShareProfile:IsVisible() then
 							C_ChatInfo.SendAddonMessage(PREFIX, "SP;" .. name, "PARTY")
-							C_Timer.After(4, ShareProfile)
+							MoveAny:After(4, ShareProfile, "ShareProfile")
 						end
 					end
 
@@ -2766,7 +2766,7 @@ function MoveAny:LoadAddon()
 			end
 		)
 
-		C_Timer.After(
+		MoveAny:After(
 			4,
 			function()
 				if not wasrun then
@@ -2780,7 +2780,7 @@ function MoveAny:LoadAddon()
 						}
 					)
 				end
-			end
+			end, "LoadAddon1"
 		)
 	end
 
@@ -2936,11 +2936,11 @@ function MoveAny:LoadAddon()
 								end
 							end
 
-							C_Timer.After(
+							MoveAny:After(
 								0.1,
 								function()
 									frame:Update()
-								end
+								end, "frame:Update LoadAddon"
 							)
 						end
 
@@ -2948,11 +2948,11 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								C_Timer.After(
+								MoveAny:After(
 									buffsDelay,
 									function()
 										MoveAny:UpdateTargetBuffs()
-									end
+									end, "TargetFrame OnShow"
 								)
 
 								frame:UpdateScaleAndAlpha()
@@ -3079,11 +3079,11 @@ function MoveAny:LoadAddon()
 								end
 							end
 
-							C_Timer.After(
+							MoveAny:After(
 								0.1,
 								function()
 									frame:Update()
-								end
+								end, "TargetFrame Update"
 							)
 						end
 
@@ -3091,11 +3091,11 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								C_Timer.After(
+								MoveAny:After(
 									buffsDelay,
 									function()
 										MoveAny:UpdateTargetDebuffs()
-									end
+									end, "TargetFrame OnShow 2"
 								)
 
 								frame:UpdateScaleAndAlpha()
@@ -3222,11 +3222,11 @@ function MoveAny:LoadAddon()
 								end
 							end
 
-							C_Timer.After(
+							MoveAny:After(
 								0.1,
 								function()
 									frame:Update()
-								end
+								end, "TargetFrame Update 2"
 							)
 						end
 
@@ -3234,11 +3234,11 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								C_Timer.After(
+								MoveAny:After(
 									buffsDelay,
 									function()
 										MoveAny:UpdateTargetToTDebuffs()
-									end
+									end, "t123"
 								)
 
 								frame:UpdateScaleAndAlpha()
@@ -3365,11 +3365,11 @@ function MoveAny:LoadAddon()
 								end
 							end
 
-							C_Timer.After(
+							MoveAny:After(
 								0.1,
 								function()
 									frame:Update()
-								end
+								end, "t234"
 							)
 						end
 
@@ -3377,11 +3377,11 @@ function MoveAny:LoadAddon()
 						TargetFrame:HookScript(
 							"OnShow",
 							function()
-								C_Timer.After(
+								MoveAny:After(
 									buffsDelay,
 									function()
 										MoveAny:UpdateTargetToTBuffs()
-									end
+									end, "t345"
 								)
 
 								frame:UpdateScaleAndAlpha()
@@ -3543,11 +3543,11 @@ function MoveAny:LoadAddon()
 									end
 								end
 
-								C_Timer.After(
+								MoveAny:After(
 									0.1,
 									function()
 										frame:Update()
-									end
+									end, "t456"
 								)
 							end
 
@@ -3555,11 +3555,11 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									C_Timer.After(
+									MoveAny:After(
 										buffsDelay,
 										function()
 											MoveAny:UpdateFocusBuffs()
-										end
+										end, "t567"
 									)
 
 									frame:UpdateScaleAndAlpha()
@@ -3686,11 +3686,11 @@ function MoveAny:LoadAddon()
 									end
 								end
 
-								C_Timer.After(
+								MoveAny:After(
 									0.1,
 									function()
 										frame:Update()
-									end
+									end, "t678"
 								)
 							end
 
@@ -3698,11 +3698,11 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									C_Timer.After(
+									MoveAny:After(
 										buffsDelay,
 										function()
 											MoveAny:UpdateFocusDebuffs()
-										end
+										end, "t789"
 									)
 
 									frame:UpdateScaleAndAlpha()
@@ -3829,11 +3829,11 @@ function MoveAny:LoadAddon()
 									end
 								end
 
-								C_Timer.After(
+								MoveAny:After(
 									0.1,
 									function()
 										frame:Update()
-									end
+									end, "t890"
 								)
 							end
 
@@ -3841,11 +3841,11 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									C_Timer.After(
+									MoveAny:After(
 										buffsDelay,
 										function()
 											MoveAny:UpdateFocusToTDebuffs()
-										end
+										end, "t987"
 									)
 
 									frame:UpdateScaleAndAlpha()
@@ -3972,11 +3972,11 @@ function MoveAny:LoadAddon()
 									end
 								end
 
-								C_Timer.After(
+								MoveAny:After(
 									0.1,
 									function()
 										frame:Update()
-									end
+									end, "t876"
 								)
 							end
 
@@ -3984,11 +3984,11 @@ function MoveAny:LoadAddon()
 							FocusFrame:HookScript(
 								"OnShow",
 								function()
-									C_Timer.After(
+									MoveAny:After(
 										buffsDelay,
 										function()
 											MoveAny:UpdateFocusToTBuffs()
-										end
+										end, "t765"
 									)
 
 									frame:UpdateScaleAndAlpha()
@@ -4121,7 +4121,7 @@ function MoveAny:LoadAddon()
 						MainMenuBarVehicleLeaveButton:SetAlpha(0)
 					end
 
-					C_Timer.After(0.3, MoveAny.UpdateVehicleLeaveButton)
+					MoveAny:After(0.3, MoveAny.UpdateVehicleLeaveButton, "UpdateVehicleLeaveButton")
 				end
 
 				MoveAny:UpdateVehicleLeaveButton()
@@ -4268,7 +4268,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				local maxWidth = VERTICAL_MULTI_BAR_WIDTH * 2 + VERTICAL_MULTI_BAR_HORIZONTAL_SPACING
@@ -4299,7 +4299,7 @@ function MoveAny:LoadAddon()
 					MoveAny:INFO("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
 					MoveAny:INFO("Actionbar4 will still be shown.")
 				end
-			end
+			end, "Loadaddon 123"
 		)
 	end
 
@@ -4548,7 +4548,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("QUESTTRACKER", false) then
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				local name = GetUnitName("player") .. " - " .. GetRealmName()
@@ -4572,11 +4572,11 @@ function MoveAny:LoadAddon()
 
 							Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
 						else
-							C_Timer.After(
+							MoveAny:After(
 								0.1,
 								function()
 									appendQuestie()
-								end
+								end, "appendQuestie"
 							)
 						end
 					end
@@ -4667,7 +4667,7 @@ function MoveAny:LoadAddon()
 						}
 					)
 				end
-			end
+			end, "QUESTTRACKER"
 		)
 	end
 
@@ -4912,7 +4912,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
-		C_Timer.After(
+		MoveAny:After(
 			2,
 			function()
 				local ktb = _G["!KalielsTrackerButtons"]
@@ -4942,7 +4942,7 @@ function MoveAny:LoadAddon()
 				else
 					MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons, button ís not created")
 				end
-			end
+			end, "KalielsTracker"
 		)
 	end
 
@@ -5076,7 +5076,7 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("BAGS", false) then
-			C_Timer.After(
+			MoveAny:After(
 				0,
 				function()
 					MoveAny:RegisterWidget(
@@ -5085,7 +5085,7 @@ function MoveAny:LoadAddon()
 							["lstr"] = "LID_BAGS"
 						}
 					)
-				end
+				end, "BAGS"
 			)
 		end
 	end
@@ -5436,7 +5436,7 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				C_Timer.After(1, MoveAny.HandleBossFrames)
+				MoveAny:After(1, MoveAny.HandleBossFrames, HandleBossFrames)
 			end
 
 			MoveAny:HandleBossFrames()
@@ -5481,14 +5481,14 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MINIMAP", false) then
-		C_Timer.After(
+		MoveAny:After(
 			3,
 			function()
 				local ltpEnhancedMinimap = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
 				if ltpEnhancedMinimap then
 					MoveAny:INFO("LeatrixPlus \"EnhancedMinimap\" is enabled, which will block moving the minimap.")
 				end
-			end
+			end, "MINIMAP 123"
 		)
 
 		if MoveAny:GetWoWBuild() == "RETAIL" then
@@ -5658,11 +5658,11 @@ function MoveAny:LoadAddon()
 				end
 			end
 
-			C_Timer.After(
+			MoveAny:After(
 				0.1,
 				function()
 					GameTooltipAlphaThink()
-				end
+				end, "GameTooltipAlphaThink"
 			)
 		end
 
@@ -5747,12 +5747,12 @@ function MoveAny:LoadAddon()
 			)]]
 			function MoveAny:ThinkGameTooltip()
 				if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
-					C_Timer.After(0.1, MoveAny.ThinkGameTooltip)
+					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip 1")
 
 					return
 				end
 
-				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
 					local owner = GameTooltip:GetOwner()
 					if owner and owner == UIParent or owner == UIParent then
 						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
@@ -5760,7 +5760,7 @@ function MoveAny:LoadAddon()
 							GameTooltip:SetUserPlaced(false)
 							local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
 							MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
-							C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
+							MoveAny:After(0.01, MoveAny.ThinkGameTooltip)
 
 							return
 						end
@@ -5775,9 +5775,9 @@ function MoveAny:LoadAddon()
 						GameTooltip.default = 1
 					end
 
-					C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
+					MoveAny:After(0.01, MoveAny.ThinkGameTooltip, "ThinkGameTooltip 2")
 				else
-					C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
+					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip 3")
 				end
 			end
 
@@ -5942,7 +5942,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				MoveAny:RegisterWidget(
@@ -5951,12 +5951,12 @@ function MoveAny:LoadAddon()
 						["lstr"] = "LID_MainStatusTrackingBarContainer",
 					}
 				)
-			end
+			end, "MainStatusTrackingBarContainer"
 		)
 	end
 
 	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				MoveAny:RegisterWidget(
@@ -5965,13 +5965,13 @@ function MoveAny:LoadAddon()
 						["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
 					}
 				)
-			end
+			end, "SecondaryStatusTrackingBarContainer"
 		)
 	end
 
 	if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
 		-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				local ssw, ssh = StatusTrackingBarManager:GetSize()
@@ -5989,7 +5989,7 @@ function MoveAny:LoadAddon()
 						["posy"] = 4,
 					}
 				)
-			end
+			end, "MainStatusTrackingBarContainer"
 		)
 	end
 
@@ -6219,14 +6219,14 @@ function MoveAny:LoadAddon()
 							end
 
 							sel.cbfsetpoint = true
-							C_Timer.After(
+							MoveAny:After(
 								0.0,
 								function()
 									local ssw, _ = _G["ChatFrame" .. i .. "ButtonFrame"]:GetSize()
 									sel:SetSize(ssw, ssw * 6)
 									MoveAny:SetPoint(sel, "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
 									sel.cbfsetpoint = false
-								end
+								end, "cbfsetpoint"
 							)
 						end
 					)
@@ -6257,7 +6257,7 @@ function MoveAny:LoadAddon()
 						end
 					end
 
-					C_Timer.After(0.1, MoveAny.UpdateActiveTab)
+					MoveAny:After(0.1, MoveAny.UpdateActiveTab, "UpdateActiveTab")
 				end
 
 				MoveAny:UpdateActiveTab()
@@ -6408,11 +6408,11 @@ function MoveAny:LoadAddon()
 			MoveAny:ShowProfiles()
 		end
 
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				MoveAny:CheckAlphas()
-			end
+			end, "CheckAlphas"
 		)
 
 		MoveAny:UpdateMALock()

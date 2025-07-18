@@ -693,11 +693,11 @@ function MoveAny:FixEditMode()
 
 	if foundProblem then
 		MoveAny:MSG("FOUND A PROBLEM, please relog your character.")
-		C_Timer.After(0, MoveAny.TrySaveEditMode)
+		MoveAny:After(0, MoveAny.TrySaveEditMode, "TrySaveEditMode")
 	end
 end
 
-C_Timer.After(0, MoveAny.FixEditMode)
+MoveAny:After(0, MoveAny.FixEditMode, "FixEditMode")
 --[[ FIX ]]
 function MoveAny:AddProfileData(name, tab)
 	--if MATAB["PROFILES"][name] == nil then

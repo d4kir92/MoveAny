@@ -283,13 +283,13 @@ function MoveAny:InitDebuffBar()
 			end
 		)
 
-		C_Timer.After(
+		MoveAny:After(
 			1,
 			function()
 				if not started then
 					MoveAny:UpdateDebuffs("Init")
 				end
-			end
+			end, "UpdateDebuffs"
 		)
 	end
 end

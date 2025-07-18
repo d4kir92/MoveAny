@@ -110,7 +110,7 @@ function MoveAny:UpdateCurrentWindow()
 			end
 
 			updatingFrame = false
-			C_Timer.After(0.02, MoveAny.UpdateCurrentWindow)
+			MoveAny:After(0.02, MoveAny.UpdateCurrentWindow, "UpdateCurrentWindow")
 		end
 	end
 end
@@ -118,11 +118,11 @@ end
 function MoveAny:FrameDragInfo(frame, c)
 	if c > 0 then
 		if IsMouseButtonDown("RightButton") or IsMouseButtonDown("LeftButton") or IsMouseButtonDown("MiddleButton") then
-			C_Timer.After(
+			MoveAny:After(
 				0.01,
 				function()
 					MoveAny:FrameDragInfo(frame, c - 1)
-				end
+				end, "FrameDragInfo"
 			)
 		end
 	else
@@ -305,7 +305,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 										end
 									end
 
-									C_Timer.After(0.01, fm.UpdatePreview)
+									MoveAny:After(0.01, fm.UpdatePreview, "UpdatePreview")
 								end
 							end
 						end
@@ -513,7 +513,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							if MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 								if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
 									frame:SetScale(MoveAny:GetFrameScale(name))
-									C_Timer.After(
+									MoveAny:After(
 										4,
 										function()
 											if frame:GetHeight() * MoveAny:GetFrameScale(name) > GetScreenHeight() then
@@ -523,7 +523,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 												frame:SetScale(MoveAny:GetFrameScale(name))
 											end
-										end
+										end, "SCALEFRAMES"
 									)
 								elseif MoveAny:GetFrameScale(name) and MoveAny:GetFrameScale(name) > 0 then
 									frame:SetScale(MoveAny:GetFrameScale(name))
@@ -584,14 +584,14 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	end
 
 	if ts ~= nil then
-		C_Timer.After(
+		MoveAny:After(
 			ts,
 			function()
 				run = false
 				if runId ~= id then
 					MoveAny:UpdateMoveFrames("RETRY: " .. from, force, ts)
 				end
-			end
+			end, "UpdateMoveFrames"
 		)
 	else
 		run = false
