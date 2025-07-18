@@ -116,11 +116,11 @@ f:SetScript(
             local isInitialLogin = ...
             if isInitialLogin and C_ChatInfo and D4.VersionTab[string.lower(AddonName)] then
                 f:UnregisterEvent(event)
-                C_Timer.After(
+                D4:After(
                     2,
                     function()
                         local id = D4.VersionTab[string.lower(AddonName)].id or 0
-                        C_Timer.After(
+                        D4:After(
                             id * 0.1,
                             function()
                                 local ver = D4:GetVersion()
@@ -131,9 +131,9 @@ f:SetScript(
                                 if ver then
                                     C_ChatInfo.SendAddonMessage(pre, string.format("A;%s;V;%s", AddonName, ver))
                                 end
-                            end
+                            end, "D4 PLAYER_ENTERING_WORLD 2"
                         )
-                    end
+                    end, "D4 PLAYER_ENTERING_WORLD 1"
                 )
             end
         end

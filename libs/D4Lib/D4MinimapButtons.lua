@@ -48,7 +48,7 @@ function D4:UpdatePosition(button, position, parent)
     end
 
     if InCombatLockdown() and button:IsProtected() then
-        C_Timer.After(
+        D4:After(
             0.1,
             function()
                 D4:UpdatePosition(button, position, parent)
@@ -78,11 +78,11 @@ if GetD4MinimapHover == nil then
         end
 
         MinimapHover = MouseIsOver(Minimap) or btnFocus
-        C_Timer.After(
+        D4:After(
             0.04,
             function()
                 MinimapHoverThink()
-            end
+            end, "MinimapHoverThink"
         )
     end
 
@@ -305,11 +305,11 @@ function D4:CreateMinimapButton(params)
             end
         end
 
-        C_Timer.After(
-            0.05,
+        D4:After(
+            0.2,
             function()
                 BtnThink()
-            end
+            end, "D4 BtnThink"
         )
     end
 
@@ -393,9 +393,9 @@ function D4:UpdateLTP()
     end
 end
 
-C_Timer.After(
+D4:After(
     4,
     function()
         D4:UpdateLTP()
-    end
+    end, "UpdateLTP"
 )

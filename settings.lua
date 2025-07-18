@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.120")
+	MoveAny:SetVersion(135994, "1.8.121")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5436,7 +5436,7 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				MoveAny:After(1, MoveAny.HandleBossFrames, HandleBossFrames)
+				MoveAny:After(1, MoveAny.HandleBossFrames, "HandleBossFrames")
 			end
 
 			MoveAny:HandleBossFrames()
@@ -5709,7 +5709,7 @@ function MoveAny:LoadAddon()
 						MoveAny:SetPoint(sel, p1, MAGameTooltip, p3, 0, 0)
 					end
 
-					sel.gtsetpoint = false
+					gtsetpoint = false
 				end
 			)
 		else
