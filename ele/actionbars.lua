@@ -83,8 +83,8 @@ function MoveAny:UpdateActionBar(frame)
 			local rows = opts["ROWS"] or 1
 			rows = tonumber(rows)
 			if frame == MAMenuBar then
-				frame:SetScale(1)
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
+					frame:SetScale(1)
 					rows = 2
 					if PetBattleFrame and PetBattleFrame:IsShown() then
 						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
@@ -95,6 +95,7 @@ function MoveAny:UpdateActionBar(frame)
 					frame:SetFrameLevel(1003)
 					frame:SetFrameStrata("DIALOG")
 				elseif frame == MAMenuBar then
+					frame:SetScale(frame:GetScale() or 1)
 					frame:SetFrameLevel(1)
 					frame:SetFrameStrata("MEDIUM")
 				end

@@ -1286,61 +1286,66 @@ function MoveAny:InitMALock()
 	end
 
 	MoveAny:HoverLogic()
-	finder:SetScript(
-		"OnUpdate",
-		function()
-			if MoveAny:GetFinder() then
-				finding = true
-				if hoverFrames then
-					for i = 1, 10 do
-						if hovers[i] then
-							hovers[i]:Hide()
-						end
-					end
-
-					for i, hoverFrame in pairs(hoverFrames) do
-						if hovers[i] and hoverFrame then
-							hovers[i]:Show()
-							hovers[i]:SetSize(hoverFrame:GetSize())
-							hovers[i]:ClearAllPoints()
-							hovers[i]:SetPoint(hoverFrame:GetPoint())
-							hovers[i]:SetScale(hoverFrame:GetScale())
-							hovers[i].t:SetText(MoveAny:GetName(hoverFrame))
-						end
-					end
-				else
-					for i = 1, 10 do
-						if hovers[i] then
-							hovers[i]:Hide()
-						end
+	local function FinderThink()
+		if MoveAny:GetFinder() then
+			finding = true
+			if hoverFrames then
+				for i = 1, 10 do
+					if hovers[i] then
+						hovers[i]:Hide()
 					end
 				end
-			elseif finding then
-				finding = false
+
+				for i, hoverFrame in pairs(hoverFrames) do
+					if hovers[i] and hoverFrame then
+						hovers[i]:Show()
+						hovers[i]:SetSize(hoverFrame:GetSize())
+						hovers[i]:ClearAllPoints()
+						hovers[i]:SetPoint(hoverFrame:GetPoint())
+						hovers[i]:SetScale(hoverFrame:GetScale())
+						hovers[i].t:SetText(MoveAny:GetName(hoverFrame))
+					end
+				end
+			else
 				for i = 1, 10 do
 					if hovers[i] then
 						hovers[i]:Hide()
 					end
 				end
 			end
+		elseif finding then
+			finding = false
+			for i = 1, 10 do
+				if hovers[i] then
+					hovers[i]:Hide()
+				end
+			end
 		end
-	)
 
+		C_Timer.After(0.1, FinderThink)
+	end
+
+	FinderThink()
 	C_Timer.After(
 		0.1,
 		function()
 			MAGridFrame = CreateFrame("Frame", "MAGridFrame", MoveAny:GetMainPanel())
-			MAGridFrame:SetScript(
-				"OnUpdate",
-				function(sel)
-					if MACurrentEle then
-						MAGridFrame:EnableMouse(true)
-					else
-						MAGridFrame:EnableMouse(false)
-					end
+			local function MAGridFrameThink()
+				if MACurrentEle then
+					MAGridFrame:EnableMouse(true)
+				else
+					MAGridFrame:EnableMouse(false)
 				end
-			)
 
+				C_Timer.After(
+					0.1,
+					function()
+						MAGridFrameThink()
+					end
+				)
+			end
+
+			MAGridFrameThink()
 			MAGridFrame:HookScript(
 				"OnMouseDown",
 				function(sel, btn)
@@ -5644,19 +5649,24 @@ function MoveAny:LoadAddon()
 			tinsert(texts, "GameTooltipTextRight" .. i)
 		end
 
-		GameTooltip:HookScript(
-			"OnUpdate",
-			function(sel)
-				local alpha = MAGameTooltip:GetAlpha()
-				for i, textName in pairs(texts) do
-					local text = _G[textName]
-					if text then
-						text:SetAlpha(alpha)
-					end
+		local function GameTooltipAlphaThink()
+			local alpha = MAGameTooltip:GetAlpha()
+			for i, textName in pairs(texts) do
+				local text = _G[textName]
+				if text then
+					text:SetAlpha(alpha)
 				end
 			end
-		)
 
+			C_Timer.After(
+				0.1,
+				function()
+					GameTooltipAlphaThink()
+				end
+			)
+		end
+
+		GameTooltipAlphaThink()
 		hooksecurefunc(
 			GameTooltip,
 			"SetAlpha",
@@ -5702,7 +5712,7 @@ function MoveAny:LoadAddon()
 				end
 			)
 		else
-			hooksecurefunc(
+			--[[hooksecurefunc(
 				GameTooltip,
 				"SetPoint",
 				function(sel, ...)
@@ -5713,13 +5723,10 @@ function MoveAny:LoadAddon()
 					local owner = GameTooltip:GetOwner()
 					if owner and owner == UIParent or owner == UIParent then
 						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
-							sel:SetMovable(true)
-							sel:SetUserPlaced(false)
-							if MoveAny:GameTooltipOnDefaultPosition() then
-								local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-								MoveAny:SetPoint(sel, p1, MAGameTooltip, p3, 0, 0)
-							end
-
+							GameTooltip:SetMovable(true)
+							GameTooltip:SetUserPlaced(false)
+							local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
+							MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
 							sel.gtsetpoint = false
 
 							return
@@ -5737,8 +5744,7 @@ function MoveAny:LoadAddon()
 
 					sel.gtsetpoint = false
 				end
-			)
-
+			)]]
 			function MoveAny:ThinkGameTooltip()
 				if EditModeManagerFrame ~= nil and EditModeManagerFrame.IsShown and EditModeManagerFrame:IsShown() then
 					C_Timer.After(0.1, MoveAny.ThinkGameTooltip)
@@ -5752,11 +5758,8 @@ function MoveAny:LoadAddon()
 						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
 							GameTooltip:SetMovable(true)
 							GameTooltip:SetUserPlaced(false)
-							if MoveAny:GameTooltipOnDefaultPosition() then
-								local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-								MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
-							end
-
+							local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
+							MoveAny:SetPoint(GameTooltip, p1, MAGameTooltip, p3, 0, 0)
 							C_Timer.After(0.01, MoveAny.ThinkGameTooltip)
 
 							return
@@ -5767,8 +5770,7 @@ function MoveAny:LoadAddon()
 						mX = mX / scale
 						mY = mY / scale
 						GameTooltip.gtsetpoint = true
-						GameTooltip:ClearAllPoints()
-						GameTooltip:SetPoint("BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
+						MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", mX + 22, mY + 22)
 						GameTooltip.gtsetpoint = false
 						GameTooltip.default = 1
 					end

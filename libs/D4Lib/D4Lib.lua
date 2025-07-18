@@ -834,3 +834,37 @@ f:SetScript(
         end
     end
 )
+
+function D4:DrawDebug(name, callback, fontSize, sw, sh, p1, p2, p3, p4, p5)
+    sw = sw or 100
+    sh = sh or 50
+    p1 = p1 or "CENTER"
+    p2 = p2 or UIParent
+    p3 = p3 or "CENTER"
+    p4 = p4 or 0
+    p5 = p5 or 0
+    local fDebug = CreateFrame("Frame", name)
+    fDebug:SetSize(sw, sh)
+    fDebug:SetPoint(p1, p2, p3, p4, p5)
+    fDebug.text = fDebug:CreateFontString(nil, nil, "GameFontNormal")
+    fDebug.text:SetPoint("CENTER", fDebug, "CENTER", 0, 0)
+    fDebug.text:SetSize(sw, sh)
+    if fontSize then
+        D4:SetFontSize(fDebug.text, fontSize)
+    end
+
+    local function Think()
+        local text = callback()
+        fDebug.text:SetText(text)
+        C_Timer.After(
+            0.1,
+            function()
+                Think()
+            end
+        )
+    end
+
+    Think()
+
+    return fDebug
+end
