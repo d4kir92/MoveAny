@@ -1294,7 +1294,7 @@ function MoveAny:UpdateHiddenFrames()
 end
 
 function MoveAny:IsPresetProfileActive()
-	if EditModeManagerFrame then
+	if C_Widget.IsWidget(EditModeManagerFrame) then
 		if not EditModeManagerFrame:IsInitialized() or EditModeManagerFrame.layoutApplyInProgress then return true end
 		local layoutInfo = EditModeManagerFrame:GetActiveLayoutInfo()
 		local isPresetLayout = layoutInfo.layoutType == Enum.EditModeLayoutType.Preset

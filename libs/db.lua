@@ -645,12 +645,12 @@ mf:SetScript("OnEvent", MoveAny.AddonLoaded)
 --[[ FIX ]]
 function MoveAny:TrySaveEditMode()
 	local layoutCount = 0
-	if EditModeManagerFrame and EditModeManagerFrame.numLayouts and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account] and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character] then
+	if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame.numLayouts and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account] and EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character] then
 		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Account]
 		layoutCount = layoutCount + EditModeManagerFrame.numLayouts[Enum.EditModeLayoutType.Character]
 	end
 
-	if layoutCount > 0 and EditModeManagerFrame and EditModeManagerFrame.SaveChangesButton and EditModeManagerFrame.CloseButton then
+	if layoutCount > 0 and C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame.SaveChangesButton and EditModeManagerFrame.CloseButton then
 		EditModeManagerFrame.SaveChangesButton:SetEnabled(true)
 		EditModeManagerFrame.SaveChangesButton:Click()
 		EditModeManagerFrame.CloseButton:Click()

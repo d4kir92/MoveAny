@@ -14,7 +14,7 @@ for i, v in pairs(MAFRAMES) do
 	MAFS[v] = v
 end
 
-if ScriptErrorsFrame and ScriptErrorsFrame.DragArea then
+if C_Widget.IsWidget(ScriptErrorsFrame) and ScriptErrorsFrame.DragArea then
 	local setParent = false
 	hooksecurefunc(
 		ScriptErrorsFrame.DragArea,
@@ -232,7 +232,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 		for i, name in pairs(EnableMouseFrames) do
 			local frame = _G[name]
-			if frame and HookedEnableMouseFrames[name] == nil then
+			if C_Widget.IsWidget(frame) and HookedEnableMouseFrames[name] == nil then
 				HookedEnableMouseFrames[name] = true
 				hooksecurefunc(
 					frame,
@@ -524,13 +524,13 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 						end
 
-						if frame.GetPoint and frame:GetPoint() then
+						if C_Widget.IsWidget(frame) and frame.GetPoint and frame:GetPoint() then
 							local p1, p2, p3, p4, p5 = frame:GetPoint()
 							if name ~= "LootFrame" or MoveAny:IsEnabled("MOVELOOTFRAME", false) then
 								MoveAny:SetPoint(frame, p1, p2, p3, p4, p5)
 							end
 						end
-					elseif frame ~= nil and waitingFrames[name] == nil and frame.Show then
+					elseif C_Widget.IsWidget(frame) and waitingFrames[name] == nil and frame.Show then
 						waitingFrames[name] = true
 						hooksecurefunc(
 							frame,

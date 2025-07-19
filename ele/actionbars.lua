@@ -86,9 +86,9 @@ function MoveAny:UpdateActionBar(frame)
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 					frame:SetScale(1)
 					rows = 2
-					if PetBattleFrame and PetBattleFrame:IsShown() then
+					if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
 						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
-					elseif OverrideActionBar and OverrideActionBar:IsShown() then
+					elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
 						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
 					end
 

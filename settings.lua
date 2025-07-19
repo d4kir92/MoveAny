@@ -233,7 +233,7 @@ MoveAny:AddToEMMap("PartyFrame", "ShowPartyFrames")
 MoveAny:AddToEMMap("CompactRaidFrameContainer", "ShowRaidFrames")
 MoveAny:AddToEMMap("CompactArenaFrame", "ShowArenaFrames")
 function MoveAny:IsBlizEditModeEnabled()
-	if MoveAny:GetWoWBuild() == "RETAIL" or (EditModeManagerFrame and EditModeManagerFrame.numLayouts) then return true end
+	if MoveAny:GetWoWBuild() == "RETAIL" or (C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame.numLayouts) then return true end
 
 	return false
 end
@@ -259,11 +259,11 @@ function MoveAny:IsInEditModeEnabled(val)
 		EditModeManagerFrame:InitializeAccountSettings()
 	end
 
-	if GameMenuButtonEditMode and not GameMenuButtonEditMode:IsEnabled() then
+	if C_Widget.IsWidget(GameMenuButtonEditMode) and not GameMenuButtonEditMode:IsEnabled() then
 		GameMenuButtonEditMode:SetEnabled(true)
 	end
 
-	if editModeEnum and EditModeManagerFrame and tContains(Enum.EditModeAccountSetting, editModeEnum) and EditModeManagerFrame:GetAccountSettingValueBool(editModeEnum) then return true, false end
+	if editModeEnum and C_Widget.IsWidget(EditModeManagerFrame) and tContains(Enum.EditModeAccountSetting, editModeEnum) and EditModeManagerFrame:GetAccountSettingValueBool(editModeEnum) then return true, false end
 	-- DEBUG EDITMODE
 	if false and onceDebug then
 		onceDebug = false
@@ -685,7 +685,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.121")
+	MoveAny:SetVersion(135994, "1.8.122")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5725,7 +5725,7 @@ function MoveAny:LoadAddon()
 					gtsetpoint = true
 					sel:SetMovable(true)
 					sel:SetUserPlaced(false)
-					if EditModeManagerFrame and EditModeManagerFrame:IsShown() then return end
+					if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then return end
 					if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
 						local owner = GameTooltip:GetOwner()
 						if owner == UIParent then
@@ -5750,7 +5750,7 @@ function MoveAny:LoadAddon()
 			)
 
 			function MoveAny:ThinkGameTooltip()
-				if EditModeManagerFrame and EditModeManagerFrame:IsShown() then
+				if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then
 					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip EditModeSHOWN")
 
 					return
