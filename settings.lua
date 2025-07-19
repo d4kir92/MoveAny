@@ -238,6 +238,12 @@ function MoveAny:IsBlizEditModeEnabled()
 	return false
 end
 
+function MoveAny:IsValidFrame(frame)
+	if frame and C_Widget.IsWidget(frame) then return true end
+
+	return false
+end
+
 local onceDebug = false
 function MoveAny:IsInEditModeEnabled(val)
 	local editModeEnum = nil
@@ -685,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.122")
+	MoveAny:SetVersion(135994, "1.8.123")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2287,12 +2293,6 @@ local function OnEvent(sel, event, ...)
 			C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 		end
 	end
-end
-
-function MoveAny:IsValidFrame(frame)
-	if frame and C_Widget.IsWidget(frame) then return true end
-
-	return false
 end
 
 local f = CreateFrame("Frame")
@@ -5224,7 +5224,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
+	if MoveAny:IsValidFrame(QueueStatusButton) and MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
 		local setParent = false
 		hooksecurefunc(
 			QueueStatusButton,
