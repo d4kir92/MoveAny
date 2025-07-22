@@ -6,6 +6,10 @@ local missingRealms = {}
 local realms = {}
 local missingRealmLangs = {}
 local region = GetCurrentRegion()
+local withoutSpaces = {}
+local realmLangs = {}
+local missingRegionOnce = true
+local missingWoWBuildOnce = true
 local regions = {
     ["US"] = 1,
     ["KR"] = 2,
@@ -30,8 +34,6 @@ local function IsKoreanLetters(str)
 end
 
 local function InitRealms()
-    local missingRegionOnce = true
-    local missingWoWBuildOnce = true
     if D4:GetWoWBuild() == "RETAIL" then
         if region == regions["US"] then
             if GetLocale() == "enUS" then
@@ -7128,7 +7130,6 @@ local function InitRealms()
         end
     end
 
-    local withoutSpaces = {}
     for name, val in pairs(realms) do
         if string.find(name, "-", 1, true) ~= nil then
             withoutSpaces[name:gsub("-", "")] = val
@@ -7187,7 +7188,6 @@ function D4:GetRealmLang(realmName)
 end
 
 local function InitRealmLangs()
-    local realmLangs = {}
     --[[ deDE ]]
     realmLangs["Deutsch"] = "deDE"
     realmLangs["German"] = "deDE"
