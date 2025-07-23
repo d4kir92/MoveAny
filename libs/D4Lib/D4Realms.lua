@@ -7151,6 +7151,7 @@ function D4:GetRealmLang(realmName)
         InitRealms()
     end
 
+    if GetLocale() == "" then return "" end
     if not (GetLocale() == "enUS" or GetLocale() == "deDE" or GetLocale() == "koKR" or GetLocale() == "zhTW") then return "" end
     if realmName == nil then
         if missingRealmNameOnce then
@@ -7300,4 +7301,9 @@ function D4:GetRealmFlag(realmName)
     end
 
     return realmLangs[realmLang]
+end
+
+function D4:LoadRealms()
+    InitRealms()
+    InitRealmLangs()
 end

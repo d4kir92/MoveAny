@@ -219,7 +219,7 @@ function MoveAny:InitMicroMenu()
 						mb:SetSize(sw2, sh2)
 					end
 
-					if i == 1 then
+					if i == 1 or mb == MainMenuMicroButton then
 						hooksecurefunc(
 							mb,
 							"SetPoint",
