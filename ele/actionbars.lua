@@ -81,15 +81,25 @@ function MoveAny:UpdateActionBar(frame)
 
 			local offset = opts["OFFSET"] or 0
 			local rows = opts["ROWS"] or 1
+			local spacing = opts["SPACING"]
 			rows = tonumber(rows)
 			if frame == MAMenuBar then
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 					frame:SetScale(1)
 					rows = 2
-					if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
-						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
-					elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
-						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						spacing = 15
+						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
+							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
+						elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
+							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 3, -3)
+						end
+					else
+						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
+							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
+						elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
+							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
+						end
 					end
 
 					frame:SetFrameLevel(1003)
@@ -264,7 +274,6 @@ function MoveAny:UpdateActionBar(frame)
 				cols = math.ceil(cols)
 			end
 
-			local spacing = opts["SPACING"]
 			spacing = tonumber(spacing)
 			if frame.btns and frame.btns[1] then
 				local fSizeW, fSizeH = frame.btns[1]:GetSize()
