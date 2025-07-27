@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.127")
+	MoveAny:SetVersion(135994, "1.8.128")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5032,8 +5032,8 @@ function MoveAny:LoadAddon()
 			{
 				["name"] = "UIWidgetPowerBarContainerFrame",
 				["lstr"] = "LID_UIWIDGETPOWERBAR",
-				["sw"] = 36 * 6,
-				["sh"] = 36 * 1
+				["sw"] = 36,
+				["sh"] = 36
 			}
 		)
 	end
@@ -5044,8 +5044,8 @@ function MoveAny:LoadAddon()
 				["name"] = "PlayerPowerBarAlt",
 				["lstr"] = "LID_POWERBAR",
 				["userplaced"] = true,
-				["sw"] = 36 * 6,
-				["sh"] = 36 * 2,
+				["sw"] = 36,
+				["sh"] = 36,
 				["setup"] = function()
 					if UIPARENT_MANAGED_FRAME_POSITIONS then
 						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAlt"] = nil
