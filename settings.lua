@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.126")
+	MoveAny:SetVersion(135994, "1.8.127")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4257,8 +4257,26 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
+		if MoveAny:IsEnabled("ACTIONBARS", false) and MoveAny:IsAddOnLoaded("Bartender4") then
+			MoveAny:INFO("Bartender4 is enabled and you enabled ACTIONBARS, only 1 addon should move the ACTIONBARS!")
+		end
+
+		if MoveAny:IsEnabled("ACTIONBARS", false) and MoveAny:IsAddOnLoaded("Dominos") then
+			MoveAny:INFO("Dominos is enabled and you enabled ACTIONBARS, only 1 addon should move the ACTIONBARS!")
+		end
+
 		for i = 1, 10 do
-			if i ~= 2 and ((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
+			if i ~= 2 and MoveAny:IsEnabled("ACTIONBAR" .. i, false) and MoveAny:IsAddOnLoaded("Bartender4") then
+				MoveAny:INFO("Bartender4 is enabled and you enabled ACTIONBAR" .. i .. ", only 1 addon should move the Actionbar" .. i .. "!")
+			end
+
+			if i ~= 2 and MoveAny:IsEnabled("ACTIONBAR" .. i, false) and MoveAny:IsAddOnLoaded("Dominos") then
+				MoveAny:INFO("Dominos is enabled and you enabled ACTIONBAR" .. i .. ", only 1 addon should move the Actionbar" .. i .. "!")
+			end
+		end
+
+		for i = 1, 10 do
+			if i ~= 2 and (((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false)) then
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "MAActionBar" .. i,
@@ -5065,29 +5083,43 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if not MoveAny:IsAddOnLoaded("Dominos") then
-		if MoveAny:IsEnabled("MICROMENU", false) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MAMenuBar",
-					["lstr"] = "LID_MICROMENU"
-				}
-			)
+	if MoveAny:IsEnabled("MICROMENU", false) then
+		if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsAddOnLoaded("Bartender4") then
+			MoveAny:INFO("Bartender4 is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
 		end
 
-		if MoveAny:IsEnabled("BAGS", false) then
-			MoveAny:After(
-				0,
-				function()
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "BagsBar",
-							["lstr"] = "LID_BAGS"
-						}
-					)
-				end, "BAGS"
-			)
+		if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsAddOnLoaded("Dominos") then
+			MoveAny:INFO("Dominos is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
 		end
+
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "MAMenuBar",
+				["lstr"] = "LID_MICROMENU"
+			}
+		)
+	end
+
+	if MoveAny:IsEnabled("BAGS", false) then
+		if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsAddOnLoaded("Bartender4") then
+			MoveAny:INFO("Bartender4 is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
+		end
+
+		if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsAddOnLoaded("Dominos") then
+			MoveAny:INFO("Dominos is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
+		end
+
+		MoveAny:After(
+			0,
+			function()
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "BagsBar",
+						["lstr"] = "LID_BAGS"
+					}
+				)
+			end, "BAGS"
+		)
 	end
 
 	if MoveAny:IsEnabled("BUFFS", false) then
