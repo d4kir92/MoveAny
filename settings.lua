@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.128")
+	MoveAny:SetVersion(135994, "1.8.129")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2326,6 +2326,52 @@ function MoveAny:PlayerLogin()
 			["dbkey"] = "SHOWMINIMAPBUTTON"
 		}
 	)
+end
+
+function MoveAny:IsEnabledBartender4(element)
+	if not MoveAny:IsAddOnLoaded("Bartender4") then return false end
+	local name, realm = UnitName("player")
+	if realm == nil then
+		realm = GetRealmName()
+	end
+
+	if Bartender4DB == nil then
+		MoveAny:INFO("[IsEnabledBartender4] failed to find DB")
+
+		return false
+	end
+
+	if Bartender4DB["namespaces"] == nil then
+		MoveAny:INFO("[IsEnabledBartender4] failed failed to find namespace")
+
+		return false
+	end
+
+	if Bartender4DB["namespaces"][element] == nil then
+		MoveAny:INFO("[IsEnabledBartender4] failed to find Element")
+
+		return false
+	end
+
+	if Bartender4DB["namespaces"][element]["profiles"] == nil then
+		MoveAny:INFO("[IsEnabledBartender4] failed to find profiles")
+
+		return false
+	end
+
+	if Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm] == nil then
+		MoveAny:INFO("[IsEnabledBartender4] failed to find char profile")
+
+		return false
+	end
+
+	if Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm].enabled ~= nil then
+		return Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm].enabled
+	else
+		MoveAny:INFO("[IsEnabledBartender4] failed #8")
+
+		return false
+	end
 end
 
 function MoveAny:LoadAddon()
@@ -4257,24 +4303,6 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
-		if MoveAny:IsEnabled("ACTIONBARS", false) and MoveAny:IsAddOnLoaded("Bartender4") then
-			MoveAny:INFO("Bartender4 is enabled and you enabled ACTIONBARS, only 1 addon should move the ACTIONBARS!")
-		end
-
-		if MoveAny:IsEnabled("ACTIONBARS", false) and MoveAny:IsAddOnLoaded("Dominos") then
-			MoveAny:INFO("Dominos is enabled and you enabled ACTIONBARS, only 1 addon should move the ACTIONBARS!")
-		end
-
-		for i = 1, 10 do
-			if i ~= 2 and MoveAny:IsEnabled("ACTIONBAR" .. i, false) and MoveAny:IsAddOnLoaded("Bartender4") then
-				MoveAny:INFO("Bartender4 is enabled and you enabled ACTIONBAR" .. i .. ", only 1 addon should move the Actionbar" .. i .. "!")
-			end
-
-			if i ~= 2 and MoveAny:IsEnabled("ACTIONBAR" .. i, false) and MoveAny:IsAddOnLoaded("Dominos") then
-				MoveAny:INFO("Dominos is enabled and you enabled ACTIONBAR" .. i .. ", only 1 addon should move the Actionbar" .. i .. "!")
-			end
-		end
-
 		for i = 1, 10 do
 			if i ~= 2 and (((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false)) then
 				MoveAny:RegisterWidget(
@@ -5084,7 +5112,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("MICROMENU", false) then
-		if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsAddOnLoaded("Bartender4") then
+		if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsEnabledBartender4("MicroMenu") then
 			MoveAny:INFO("Bartender4 is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
 		end
 
@@ -5101,7 +5129,7 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("BAGS", false) then
-		if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsAddOnLoaded("Bartender4") then
+		if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsEnabledBartender4("BagBar") then
 			MoveAny:INFO("Bartender4 is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
 		end
 
