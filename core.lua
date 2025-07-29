@@ -176,9 +176,14 @@ hooksecurefunc(
 )
 
 if MoveAny:GetCVar("useUiScale") == "1" then
-	MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
+	MoveAny:MAUI_SetScale(MoveAny:GetCVar("uiScale"))
 else
-	MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
+	C_Timer.After(
+		0,
+		function()
+			MoveAny:MAUI_SetScale(UIParent:GetScale())
+		end
+	)
 end
 
 MoveAny:SetMAUIPAlpha(UIParent:GetAlpha())
