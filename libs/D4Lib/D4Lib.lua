@@ -186,8 +186,39 @@ local ICON_TAG_LIST_EN = {
     ["skull"] = 8,
 }
 
-function D4:SafeExec(sel, func)
-    if InCombatLockdown() and sel:IsProtected() then return end
+local callbacks = {}
+local fSecure = CreateFrame("Frame")
+D4:RegisterEvent(fSecure, "PLAYER_REGEN_ENABLED")
+fSecure:SetScript(
+    "OnEvent",
+    function()
+        for i, func in pairs(callbacks) do
+            func()
+        end
+
+        callbacks = {}
+    end
+)
+
+function D4:SafeExec(sel, func, from)
+    if sel == nil then
+        D4:MSG("[D4][SafeExec] MISSING FRAME", from)
+
+        return
+    end
+
+    if from == nil then
+        D4:MSG("[D4][SafeExec] MISSING FROM", D4:GetName(sel))
+
+        return
+    end
+
+    if InCombatLockdown() and sel:IsProtected() then
+        callbacks[from] = func
+
+        return
+    end
+
     func()
 end
 
@@ -851,7 +882,7 @@ function D4:GetFrameByName(name)
 end
 
 local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_LOGIN")
+D4:RegisterEvent(f, "PLAYER_LOGIN")
 f:SetScript(
     "OnEvent",
     function(self, event, ...)

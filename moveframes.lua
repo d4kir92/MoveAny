@@ -39,15 +39,19 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	end
 
 	tab[window] = tab[window] or false
-	if InCombatLockdown() and window:IsProtected() then return false end
-	if p1 then
-		local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
-		ClearAllPoints(window)
-		local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
-		tab[window] = true
-		SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
-		tab[window] = false
-	end
+	MoveAny:SafeExec(
+		window,
+		function()
+			if p1 then
+				local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
+				ClearAllPoints(window)
+				local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
+				tab[window] = true
+				SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
+				tab[window] = false
+			end
+		end, "MoveAny:SetPoint"
+	)
 
 	return true
 end
@@ -271,11 +275,15 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								frame,
 								"SetScale",
 								function(sel, scale)
-									if InCombatLockdown() and sel:IsProtected() then return false end
 									if MoveAny:IsEnabled("SCALEFRAMES", true) == false then return false end
-									if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then
-										fm:SetScale(scale)
-									end
+									MoveAny:SafeExec(
+										fm,
+										function()
+											if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then
+												fm:SetScale(scale)
+											end
+										end, "frame SetScale MoveFrames"
+									)
 								end
 							)
 
@@ -477,23 +485,27 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							frame,
 							"SetScale",
 							function(sel, scale)
-								if InCombatLockdown() and sel:IsProtected() then return false end
 								if masetscale_frame[sel] then return end
 								masetscale_frame[sel] = true
-								if name == "LootFrame" and MoveAny:IsEnabled("SCALELOOTFRAME", false) == false then return end
-								if MoveAny:GetFrameScale(name) or (scale and type(scale) == "number") then
-									local sca = MoveAny:GetFrameScale(name) or scale
-									if sel.isMaximized and sca and sca > 1 then
-										sca = 1
-									end
+								MoveAny:SafeExec(
+									sel,
+									function()
+										if name == "LootFrame" and MoveAny:IsEnabled("SCALELOOTFRAME", false) == false then return end
+										if MoveAny:GetFrameScale(name) or (scale and type(scale) == "number") then
+											local sca = MoveAny:GetFrameScale(name) or scale
+											if sel.isMaximized and sca and sca > 1 then
+												sca = 1
+											end
 
-									--scale > 0.001 fix for TSM - TradeSkillMaster, they "hide" it with low scale
-									if MoveAny:IsEnabled("SCALEFRAMES", true) and sca and type(sca) == "number" and sca > 0 and (currentWindowName == nil) and scale > 0.001 then
-										sel:SetScale(sca)
-									end
-								end
+											--scale > 0.001 fix for TSM - TradeSkillMaster, they "hide" it with low scale
+											if MoveAny:IsEnabled("SCALEFRAMES", true) and sca and type(sca) == "number" and sca > 0 and (currentWindowName == nil) and scale > 0.001 then
+												sel:SetScale(sca)
+											end
+										end
 
-								masetscale_frame[sel] = false
+										masetscale_frame[sel] = false
+									end, "UpdateMoveFrames SetScale"
+								)
 							end
 						)
 

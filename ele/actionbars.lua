@@ -370,7 +370,7 @@ function MoveAny:UpdateActionBar(frame)
 					end
 				end
 			end
-		end
+		end, "UpdateActionBar"
 	)
 end
 

@@ -1937,7 +1937,7 @@ function MoveAny:RegisterWidget(tab)
 			if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then
 				frame:SetScale(MoveAny:GetEleScale(name))
 			end
-		end
+		end, "RegisterWidget SetScale"
 	)
 
 	local dragframe = _G[name .. "_MA_DRAG"]

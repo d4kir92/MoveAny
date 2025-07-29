@@ -147,13 +147,30 @@ uiscalecvar:SetScript(
 	end
 )
 
+local setScale = false
+local scaleVale = 1
+function MoveAny:MAUI_SetScale(scale)
+	scaleVale = scale
+	if setScale then return end
+	setScale = true
+	local worked = MoveAny:TrySetScale(MAUIP, scaleVale)
+	if not worked then
+		MoveAny:After(
+			0.1,
+			function()
+				setScale = false
+				MoveAny:MAUI_SetScale(scaleVale)
+			end, "MAUI_SetScale"
+		)
+	end
+end
+
 hooksecurefunc(
 	UIParent,
 	"SetScale",
 	function(sel, scale)
-		if InCombatLockdown() and sel:IsProtected() then return false end
 		if MoveAny:GetCVar("useUiScale") == "0" and type(scale) == "number" then
-			MAUIP:SetScale(scale)
+			MoveAny:MAUI_SetScale(scale)
 		end
 	end
 )
@@ -161,12 +178,7 @@ hooksecurefunc(
 if MoveAny:GetCVar("useUiScale") == "1" then
 	MAUIP:SetScale(MoveAny:GetCVar("uiScale"))
 else
-	MoveAny:After(
-		0,
-		function()
-			MAUIP:SetScale(UIParent:GetScale())
-		end, "useUiScale"
-	)
+	MoveAny:MAUI_SetScale(UIParent:GetScale())
 end
 
 MoveAny:SetMAUIPAlpha(UIParent:GetAlpha())

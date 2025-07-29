@@ -74,10 +74,38 @@ function D4:TrySetParent(frame, parent)
         return false
     end
 
+    if frame:IsProtected() and InCombatLockdown() then return false end
     local ok = pcall(
         function()
             if type(frame) == "table" and type(frame.SetParent) == "function" then
                 frame:SetParent(parent)
+            end
+        end
+    )
+
+    if ok then return true end
+
+    return false
+end
+
+function D4:TrySetScale(frame, scale)
+    if frame == nil then
+        D4:INFO("[D4] Missing Frame for TrySetScale", frame)
+
+        return false
+    end
+
+    if scale == nil then
+        D4:INFO("[D4] Missing Scale for TrySetScale", scale)
+
+        return false
+    end
+
+    if frame:IsProtected() and InCombatLockdown() then return false end
+    local ok = pcall(
+        function()
+            if type(frame) == "table" and type(frame.SetScale) == "function" then
+                frame:SetScale(scale)
             end
         end
     )
