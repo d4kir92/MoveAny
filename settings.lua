@@ -21,7 +21,7 @@ function MoveAny:CheckBuffType(id, child, tab, isDebuff)
 	if child == nil then return 0 end
 	if child:IsShown() == false then return 0 end
 	local csw, csh = child:GetSize()
-	if csw < 20 or csw > 22 or csh < 20 or csh > 22 then return 0 end
+	if csw < 16 or csw > 22 or csh < 16 or csh > 22 then return 0 end
 	local debuff = false
 	local childName = MoveAny:GetName(child)
 	if childName then
@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.131")
+	MoveAny:SetVersion(135994, "1.8.132")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
