@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.138")
+	MoveAny:SetVersion(135994, "1.8.139")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2368,8 +2368,6 @@ function MoveAny:IsEnabledBartender4(element)
 	if Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm].enabled ~= nil then
 		return Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm].enabled
 	else
-		MoveAny:INFO("[IsEnabledBartender4] failed #8")
-
 		return false
 	end
 end
