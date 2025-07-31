@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.135")
+	MoveAny:SetVersion(135994, "1.8.136")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4182,33 +4182,65 @@ function MoveAny:LoadAddon()
 		)
 	end
 
-	if ExtraAbilityContainer and MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
-		ExtraAbilityContainer:SetSize(180, 100)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ExtraAbilityContainer",
-				["lstr"] = "LID_EXTRAABILITYCONTAINER",
-				["userplaced"] = true
-			}
-		)
-	elseif ExtraActionBarFrame and MoveAny:IsEnabled("ExtraActionBarFrame", true) then
-		ExtraActionBarFrame:SetParent(UIParent)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ExtraActionBarFrame",
-				["lstr"] = "LID_ExtraActionBarFrame",
-				["userplaced"] = true
-			}
-		)
-	elseif ExtraActionButton1 and MoveAny:IsEnabled("ExtraActionButton1", true) then
-		ExtraActionButton1:SetParent(UIParent)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ExtraActionButton1",
-				["lstr"] = "LID_ExtraActionButton1",
-				["userplaced"] = true
-			}
-		)
+	if ExtraAbilityContainer then
+		if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
+			ExtraAbilityContainer:SetSize(180, 100)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ExtraAbilityContainer",
+					["lstr"] = "LID_EXTRAABILITYCONTAINER",
+					["userplaced"] = true
+				}
+			)
+		end
+	elseif ExtraActionBarFrame then
+		if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
+			local setParent = false
+			hooksecurefunc(
+				ExtraActionBarFrame,
+				"SetParent",
+				function(sel, parent)
+					if setParent then return end
+					setParent = true
+					sel:SetParent(UIParent)
+					setParent = false
+				end
+			)
+
+			ExtraActionBarFrame:SetParent(UIParent)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ExtraActionBarFrame",
+					["lstr"] = "LID_ExtraActionBarFrame",
+					["userplaced"] = true
+				}
+			)
+
+			MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
+		end
+	elseif ExtraActionButton1 then
+		if MoveAny:IsEnabled("ExtraActionButton1", true) then
+			local setParent = false
+			hooksecurefunc(
+				ExtraActionButton1,
+				"SetParent",
+				function(sel, parent)
+					if setParent then return end
+					setParent = true
+					sel:SetParent(UIParent)
+					setParent = false
+				end
+			)
+
+			ExtraActionButton1:SetParent(UIParent)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ExtraActionButton1",
+					["lstr"] = "LID_ExtraActionButton1",
+					["userplaced"] = true
+				}
+			)
+		end
 	end
 
 	if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
