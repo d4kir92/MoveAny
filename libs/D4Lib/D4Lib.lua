@@ -305,8 +305,13 @@ function D4:LoadAddOn(name)
     return nil
 end
 
-function D4:IsAddOnLoaded(name)
-    if C_AddOns and C_AddOns.IsAddOnLoaded then return C_AddOns.IsAddOnLoaded(name) end
+function D4:IsAddOnLoaded(name, from)
+    if C_AddOns and C_AddOns.IsAddOnLoaded then
+        local loaded, _ = C_AddOns.IsAddOnLoaded(name)
+
+        return loaded
+    end
+
     if IsAddOnLoaded then return IsAddOnLoaded(name) end
     D4:MSG("[D4][IsAddOnLoaded] FAILED")
 
