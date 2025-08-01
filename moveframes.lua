@@ -44,9 +44,9 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 		function()
 			if p1 then
 				local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
-				ClearAllPoints(window)
 				local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
 				tab[window] = true
+				ClearAllPoints(window)
 				SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
 				tab[window] = false
 			end
