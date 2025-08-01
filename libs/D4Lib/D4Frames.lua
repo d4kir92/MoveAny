@@ -4,17 +4,40 @@ local Y = 0
 local PARENT = nil
 local TAB = nil
 local TABIsNil = false
-function D4:GetName(frame)
-    if frame == nil then return nil end
+function D4:GetName(frame, bStr)
+    if frame == nil then
+        if bStr then
+            return ""
+        else
+            return nil
+        end
+    end
+
     local ok, name = pcall(
         function()
             if type(frame) == "table" and type(frame.GetName) == "function" then return frame:GetName() end
         end
     )
 
-    if ok then return name end
+    if ok then
+        if name ~= nil then
+            return name
+        else
+            if frame == nil then
+                if bStr then
+                    return ""
+                else
+                    return nil
+                end
+            end
+        end
+    end
 
-    return nil
+    if bStr then
+        return ""
+    else
+        return nil
+    end
 end
 
 function D4:GetParent(frame)
