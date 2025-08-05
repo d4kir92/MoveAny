@@ -257,7 +257,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					local frame = MoveAny:GetFrameByName(name)
 					if frame ~= nil and frame:IsShown() and (not InCombatLockdown() or not frame:IsProtected()) then
 						MAFS[name] = nil
-						if name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") then
+						if name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame then
 							TradeSkillFrame:SetAlpha(0)
 							local enableMouse = false
 							hooksecurefunc(
