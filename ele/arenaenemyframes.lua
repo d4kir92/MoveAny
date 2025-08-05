@@ -1,6 +1,5 @@
 local _, MoveAny = ...
 function MoveAny:InitArenaEnemyFrames()
-	print(MoveAny:IsEnabled("ARENAENEMYFRAMES", false), Arena_LoadUI)
 	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and Arena_LoadUI then
 		if _G["ArenaEnemyFrame" .. 1] == nil and Arena_LoadUI then
 			Arena_LoadUI()
