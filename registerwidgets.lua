@@ -1938,11 +1938,15 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
 		MoveAny:HideFrame(frame, soft)
-		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
+		dragframe.t:SetVertexColor(MoveAny:GetColor("hidden"))
 		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
-			dragf:Hide()
+			dragframe:Hide()
 		else
-			dragf:Show()
+			if MoveAny:IsEnabled("MALOCK", false) then
+				dragframe:Show()
+			else
+				dragframe:Hide()
+			end
 		end
 	else
 		if MoveAny:IsEnabled("MALOCK", false) then
