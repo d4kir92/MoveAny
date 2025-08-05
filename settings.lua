@@ -623,10 +623,12 @@ end
 function MoveAny:GetAllParents(hoverFrame)
 	local parents = {}
 	local currentFrame = hoverFrame
-	table.insert(parents, currentFrame)
-	while currentFrame and currentFrame:GetParent() and currentFrame:GetParent() ~= UIParent and currentFrame:GetParent() ~= MoveAny:GetMainPanel() do
-		currentFrame = currentFrame:GetParent()
+	if currentFrame and MoveAny:GetName(currentFrame) ~= "Moveany_hover" then
 		table.insert(parents, currentFrame)
+		while currentFrame and currentFrame:GetParent() and currentFrame:GetParent() ~= UIParent and currentFrame:GetParent() ~= MoveAny:GetMainPanel() and MoveAny:GetName(currentFrame:GetParent()) ~= "Moveany_hover" do
+			currentFrame = currentFrame:GetParent()
+			table.insert(parents, currentFrame)
+		end
 	end
 
 	return parents
@@ -691,7 +693,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.146")
+	MoveAny:SetVersion(135994, "1.8.147")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1138,7 +1140,11 @@ function MoveAny:InitMALock()
 
 	MALock.Pipette = CreateFrame("Button", "MALock_Pipette", MALock, "UIPanelButtonTemplate")
 	MALock.Pipette:SetSize(24, 24)
-	MALock.Pipette:SetText("P")
+	MALock.Pipette:SetText("")
+	MALock.Pipette.texture = MALock.Pipette:CreateTexture()
+	MALock.Pipette.texture:SetTexture("Interface\\Addons\\MoveAny\\media\\pipette")
+	MALock.Pipette.texture:SetSize(12, 12)
+	MALock.Pipette.texture:SetPoint("CENTER", MALock.Pipette, "CENTER", 0, 0)
 	MALock.Pipette:SetScript(
 		"OnClick",
 		function()
@@ -1236,20 +1242,20 @@ function MoveAny:InitMALock()
 	MALock.DISCORD:SetSize(160, 24)
 	MALock.DISCORD:SetPoint("BOTTOMRIGHT", MALock, "BOTTOMRIGHT", -4 - 20, 4)
 	MALock.DISCORD:SetAutoFocus(false)
-	local finder = CreateFrame("FRAME", "MoveAny_finder", UIParent)
+	local finder = CreateFrame("Frame", "MoveAny_finder", UIParent)
 	local hovers = {}
 	for i = 1, 6 do
-		local hover = CreateFrame("FRAME", "Moveany_hover", UIParent)
+		local hover = CreateFrame("Frame", "Moveany_hover" .. i, UIParent)
 		hover:EnableMouse(false)
 		hover:SetFrameLevel(2000)
-		hover.f = hover:CreateTexture("MoveAny_hover_f", "OVERLAY")
+		hover.f = hover:CreateTexture("Moveany_hover" .. i .. "_f", "OVERLAY")
 		hover.f:SetAllPoints(hover)
-		hover.f:SetColorTexture(1, 1, 1, 0.5)
-		hover.t = hover:CreateFontString("MoveAny_hover_t", nil, "GameFontNormal")
+		hover.f:SetColorTexture(1, 1, 1, 0.3)
+		hover.t = hover:CreateFontString("Moveany_hover" .. i .. "_t", nil, "GameFontNormal")
 		hover.t:SetPoint("CENTER", hover, "CENTER", 0, 0)
 		MoveAny:SetFontSize(hover.t, 16, "THINOUTLINE")
 		if i == 1 then
-			hover.t2 = hover:CreateFontString("MoveAny_hover_t", nil, "GameFontNormal")
+			hover.t2 = hover:CreateFontString("Moveany_hover" .. i .. "_t2", nil, "GameFontNormal")
 			hover.t2:SetPoint("CENTER", hover, "CENTER", 0, -20)
 			MoveAny:SetFontSize(hover.t2, 14, "THINOUTLINE")
 			hover.t2:SetText(MoveAny:Trans("LID_PRESSESCTOLEAVE"))
@@ -1264,11 +1270,21 @@ function MoveAny:InitMALock()
 		if MoveAny:GetFinder() then
 			hoverFrames = MoveAny:GetAllParents(MoveAny:GetMouseFocus())
 			if finder:GetScript("OnKeyDown") == nil then
+				if not InCombatLockdown() then
+					finder:SetPropagateKeyboardInput(true)
+				end
+
 				finder:SetScript(
 					"OnKeyDown",
 					function(sel, key, ...)
 						if key == "ESCAPE" then
 							MoveAny:SetFinder(false)
+							MoveAny:Unlock()
+							MoveAny:ShowMALock()
+							if hovers[1].t:GetText() then
+								MALock.Search:SetText(hovers[1].t:GetText())
+							end
+
 							finder:SetScript("OnKeyDown", nil)
 						end
 					end

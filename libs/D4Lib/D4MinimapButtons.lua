@@ -199,7 +199,7 @@ function D4:CreateMinimapButton(params)
         end
     )
 
-    btn:RegisterForClicks("anyUp")
+    btn:RegisterForClicks("AnyUp")
     btn:RegisterForDrag("LeftButton")
     btn:SetMovable(true)
     btn:SetScript(
