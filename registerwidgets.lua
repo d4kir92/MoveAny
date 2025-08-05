@@ -1631,15 +1631,7 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetIgnoreParentAlpha(true)
 	end
 
-	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
-		MoveAny:HideFrame(frame, soft)
-		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
-		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
-			dragf:Hide()
-		else
-			dragf:Show()
-		end
-	else
+	if not MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
 		if frame == MACurrentEle then
 			dragf.t:SetVertexColor(MoveAny:GetColor("se"))
 		elseif MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough2") then
@@ -1944,10 +1936,20 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:SetSize(sw, sh)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
-	if MoveAny:IsEnabled("MALOCK", false) then
-		dragframe:Show()
+	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
+		MoveAny:HideFrame(frame, soft)
+		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
+		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
+			dragf:Hide()
+		else
+			dragf:Show()
+		end
 	else
-		dragframe:Hide()
+		if MoveAny:IsEnabled("MALOCK", false) then
+			dragframe:Show()
+		else
+			dragframe:Hide()
+		end
 	end
 
 	if setup then
