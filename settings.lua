@@ -74,7 +74,7 @@ function MoveAny:UpdateChildBuffs(bb, name)
 				function()
 					if bb.setalpha then return end
 					bb.setalpha = true
-					if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
+					if MoveAny:GetEleOption(name, "Hide", false, "Hide4") then
 						bb:SetAlpha(0)
 						if not InCombatLockdown() then
 							bb:EnableMouse(false)
@@ -86,7 +86,7 @@ function MoveAny:UpdateChildBuffs(bb, name)
 			)
 		end
 
-		if MoveAny:GetEleOption(name, "Hide", false, "Hide4") then
+		if MoveAny:GetEleOption(name, "Hide", false, "Hide5") then
 			bb:SetAlpha(0)
 			if not InCombatLockdown() then
 				bb:EnableMouse(false)
@@ -691,7 +691,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.142")
+	MoveAny:SetVersion(135994, "1.8.143")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",

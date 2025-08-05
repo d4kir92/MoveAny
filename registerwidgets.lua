@@ -1936,7 +1936,7 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:SetSize(sw, sh)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
-	if MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
+	if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
 		MoveAny:HideFrame(frame, soft)
 		dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then

@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 function MoveAny:InitArenaEnemyFrames()
+	print(MoveAny:IsEnabled("ARENAENEMYFRAMES", false), Arena_LoadUI)
 	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and Arena_LoadUI then
 		if _G["ArenaEnemyFrame" .. 1] == nil and Arena_LoadUI then
 			Arena_LoadUI()
@@ -40,6 +41,40 @@ function MoveAny:InitArenaEnemyFrames()
 					ArenaEnemyFrames:SetAlpha(alpha)
 				end
 			)
+
+			if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide6") then
+				for i = 1, 5 do
+					local bb = _G["ArenaEnemyFrame" .. i]
+					if bb then
+						if bb.setup == nil then
+							bb.setup = true
+							hooksecurefunc(
+								bb,
+								"SetAlpha",
+								function()
+									if bb.setalpha then return end
+									bb.setalpha = true
+									if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide7") then
+										bb:SetAlpha(0)
+										if not InCombatLockdown() then
+											bb:EnableMouse(false)
+										end
+									end
+
+									bb.setalpha = false
+								end
+							)
+						end
+
+						if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide8") then
+							bb:SetAlpha(0)
+							if not InCombatLockdown() then
+								bb:EnableMouse(false)
+							end
+						end
+					end
+				end
+			end
 
 			if MoveAny:DEBUG() then
 				hooksecurefunc(
@@ -114,6 +149,40 @@ function MoveAny:InitArenaPrepFrames()
 					ArenaPrepFrames:SetAlpha(alpha)
 				end
 			)
+
+			if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide9") then
+				for i = 1, 5 do
+					local bb = _G["ArenaPrepFrame" .. i]
+					if bb then
+						if bb.setup == nil then
+							bb.setup = true
+							hooksecurefunc(
+								bb,
+								"SetAlpha",
+								function()
+									if bb.setalpha then return end
+									bb.setalpha = true
+									if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide10") then
+										bb:SetAlpha(0)
+										if not InCombatLockdown() then
+											bb:EnableMouse(false)
+										end
+									end
+
+									bb.setalpha = false
+								end
+							)
+						end
+
+						if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide11") then
+							bb:SetAlpha(0)
+							if not InCombatLockdown() then
+								bb:EnableMouse(false)
+							end
+						end
+					end
+				end
+			end
 
 			if MoveAny:DEBUG() then
 				hooksecurefunc(
