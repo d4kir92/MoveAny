@@ -131,9 +131,9 @@ function MoveAny:SetMAUIPAlpha(alpha)
 end
 
 local uiscalecvar = CreateFrame("Frame")
-uiscalecvar:RegisterEvent("CVAR_UPDATE")
-uiscalecvar:SetScript(
-	"OnEvent",
+MoveAny:RegisterEvent(uiscalecvar, "CVAR_UPDATE")
+MoveAny:OnEvent(
+	uiscalecvar,
 	function(self, event, target, value)
 		if event == "CVAR_UPDATE" and (target == "uiScale" or target == "useUiScale") then
 			if MoveAny:GetCVar("useUiScale") == "1" then

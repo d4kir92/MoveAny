@@ -683,9 +683,9 @@ function MoveAny:CustomBars()
 end
 
 local asabf = CreateFrame("Frame")
-asabf:RegisterEvent("CVAR_UPDATE")
-asabf:SetScript(
-	"OnEvent",
+MoveAny:RegisterEvent(asabf, "CVAR_UPDATE")
+MoveAny:OnEvent(
+	asabf,
 	function(self, event, target, value)
 		if event == "CVAR_UPDATE" and target == "alwaysShowActionBars" then
 			UpdateActionBarBackground(tonumber(value))
@@ -694,12 +694,12 @@ asabf:SetScript(
 )
 
 local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
-f:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
-f:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
-f:SetScript(
-	"OnEvent",
+MoveAny:RegisterEvent(f, "PLAYER_ENTERING_WORLD")
+MoveAny:RegisterEvent(f, "UPDATE_BONUS_ACTIONBAR")
+MoveAny:RegisterEvent(f, "ACTIONBAR_PAGE_CHANGED")
+MoveAny:RegisterEvent(f, "UPDATE_SHAPESHIFT_FORM")
+MoveAny:OnEvent(
+	f,
 	function(sel, event)
 		if MoveAny:GetWoWBuild() ~= "RETAIL" then
 			local frame = _G["MAActionBar" .. 1]

@@ -191,8 +191,8 @@ function MoveAny:InitBuffBar()
 
 			local f = CreateFrame("FRAME")
 			MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
-			f:SetScript(
-				"OnEvent",
+			MoveAny:OnEvent(
+				f,
 				function(sel, event, ...)
 					if event == "UNIT_AURA" and MoveAny.UpdateDebuffs then
 						MoveAny:UpdateDebuffs("event 2")
@@ -606,9 +606,9 @@ function MoveAny:InitBuffBar()
 		)
 
 		local f = CreateFrame("FRAME")
-		f:RegisterEvent("UNIT_AURA")
-		f:SetScript(
-			"OnEvent",
+		MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
+		MoveAny:OnEvent(
+			f,
 			function(sel, event, ...)
 				if event == "UNIT_AURA" then
 					local unit = ...

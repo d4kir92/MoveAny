@@ -1662,9 +1662,9 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				local bbf = CreateFrame("FRAME")
-				bbf:RegisterEvent("UNIT_AURA")
-				bbf:SetScript(
-					"OnEvent",
+				MoveAny:RegisterEvent(bbf, "UNIT_AURA", "player")
+				MoveAny:OnEvent(
+					bbf,
 					function()
 						frame:UpdateBuffMouse()
 					end
@@ -1686,9 +1686,9 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				local bbf = CreateFrame("FRAME")
-				bbf:RegisterEvent("UNIT_AURA")
-				bbf:SetScript(
-					"OnEvent",
+				MoveAny:RegisterEvent(bbf, "UNIT_AURA", "player")
+				MoveAny:OnEvent(
+					bbf,
 					function()
 						frame:UpdateDebuffMouse()
 					end
@@ -1711,9 +1711,9 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				local bbf = CreateFrame("FRAME")
-				bbf:RegisterEvent("UNIT_AURA")
-				bbf:SetScript(
-					"OnEvent",
+				MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+				MoveAny:OnEvent(
+					bbf,
 					function()
 						frame:UpdateBuffMouse()
 					end
@@ -1736,9 +1736,9 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				local bbf = CreateFrame("FRAME")
-				bbf:RegisterEvent("UNIT_AURA")
-				bbf:SetScript(
-					"OnEvent",
+				MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+				MoveAny:OnEvent(
+					bbf,
 					function()
 						frame:UpdateBuffMouse()
 					end

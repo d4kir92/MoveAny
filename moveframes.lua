@@ -649,9 +649,9 @@ function MoveAny:MoveFrames()
 
 	MoveAny:UpdateMoveFrames("Start", true)
 	local f = CreateFrame("Frame")
-	f:RegisterEvent("ADDON_LOADED")
-	f:SetScript(
-		"OnEvent",
+	MoveAny:RegisterEvent(f, "ADDON_LOADED")
+	MoveAny:OnEvent(
+		f,
 		function(sel, event, ...)
 			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
 		end

@@ -329,8 +329,8 @@ function MoveAny:InitMicroMenu()
 			MoveAny:RegisterEvent(f, "PET_BATTLE_CLOSE")
 			MoveAny:RegisterEvent(f, "PET_BATTLE_OPENING_START")
 			MoveAny:RegisterEvent(f, "PET_BATTLE_OPENING_DONE")
-			f:SetScript(
-				"OnEvent",
+			MoveAny:OnEvent(
+				f,
 				function(sel, event, unit)
 					if MoveAny.UpdateMicroBar then
 						MoveAny:UpdateMicroBar("EVENT")

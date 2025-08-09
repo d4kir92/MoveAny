@@ -1,4 +1,4 @@
-local _, D4 = ...
+local addonName, D4 = ...
 --[[ Basics ]]
 local buildNr = select(4, GetBuildInfo())
 local buildName = "CLASSIC"
@@ -110,6 +110,21 @@ function D4:RegisterEvent(frame, event, unit)
             frame:RegisterEvent(event)
         end
     end
+end
+
+function D4:UnregisterEvent(frame, event)
+    if C_EventUtils.IsEventValid(event) then
+        frame:UnregisterEvent(event)
+    end
+end
+
+function D4:OnEvent(frame, callback, from)
+    frame:HookScript(
+        "OnEvent",
+        function(...)
+            callback(...)
+        end
+    )
 end
 
 function D4:ForeachChildren(frame, callback, from)

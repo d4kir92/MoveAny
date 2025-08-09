@@ -271,8 +271,8 @@ function MoveAny:InitDebuffBar()
 
 		local f = CreateFrame("FRAME")
 		MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
-		f:SetScript(
-			"OnEvent",
+		MoveAny:OnEvent(
+			f,
 			function(sel, event, ...)
 				if event == "UNIT_AURA" then
 					local unit = ...

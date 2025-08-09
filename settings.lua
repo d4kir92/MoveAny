@@ -693,7 +693,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.148")
+	MoveAny:SetVersion(135994, "1.8.149")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2245,76 +2245,78 @@ function MoveAny:ShowProfiles()
 	end
 end
 
-local function OnEvent(sel, event, ...)
-	if event == "CHAT_MSG_ADDON" then
-		local prefix, data, _, source, _ = ...
-		if prefix == PREFIX then
-			tab = {strsplit(";", data)}
-			local name, realm = UnitName("player")
-			if realm == nil then
-				realm = GetRealmName()
-			end
+local f = CreateFrame("Frame")
+MoveAny:RegisterEvent(f, "CHAT_MSG_ADDON")
+MoveAny:RegisterEvent(f, "PLAYER_ENTERING_WORLD")
+MoveAny:OnEvent(
+	f,
+	function(sel, event, ...)
+		if event == "CHAT_MSG_ADDON" then
+			local prefix, data, _, source, _ = ...
+			if prefix == PREFIX then
+				tab = {strsplit(";", data)}
+				local name, realm = UnitName("player")
+				if realm == nil then
+					realm = GetRealmName()
+				end
 
-			local cmd = tab[1]
-			-- SendProfile
-			if cmd == "SP" then
-				if source ~= name .. "-" .. realm and not MASendProfiles[source] then
-					local ptab = {}
-					ptab.name = source
-					ptab.profile = tab[2]
-					MASendProfiles[source] = ptab
-				end
-			elseif cmd == "WP" then
-				-- WantProfile
-				if source ~= name .. "-" .. realm and not MAWantProfiles[source] then
-					local ptab = {}
-					ptab.name = source
-					ptab.profile = tab[2]
-					MAWantProfiles[source] = ptab
-				end
-			elseif cmd == "UP" then
-				local target = tab[2]
-				local percent = tab[3]
-				if source and target and source == WebOwner and target == WebProfile then
-					WebStatus = tonumber(percent)
-				end
-			elseif cmd == "DL" then
-				local target = tab[2]
-				local mainIndex = tab[3]
-				local subIndex = tab[4]
-				local index = tab[5]
-				local typ = tab[6]
-				local val = tab[7]
-				if source and target and source == WebOwner and target == WebProfile then
-					WebProfileData = WebProfileData or {}
-					WebProfileData[mainIndex] = WebProfileData[mainIndex] or {}
-					WebProfileData[mainIndex][subIndex] = WebProfileData[mainIndex][subIndex] or {}
-					if typ == "boolean" then
-						if val == "1" then
-							val = true
-						else
-							val = false
-						end
-					elseif typ == "number" then
-						val = tonumber(val)
+				local cmd = tab[1]
+				-- SendProfile
+				if cmd == "SP" then
+					if source ~= name .. "-" .. realm and not MASendProfiles[source] then
+						local ptab = {}
+						ptab.name = source
+						ptab.profile = tab[2]
+						MASendProfiles[source] = ptab
 					end
+				elseif cmd == "WP" then
+					-- WantProfile
+					if source ~= name .. "-" .. realm and not MAWantProfiles[source] then
+						local ptab = {}
+						ptab.name = source
+						ptab.profile = tab[2]
+						MAWantProfiles[source] = ptab
+					end
+				elseif cmd == "UP" then
+					local target = tab[2]
+					local percent = tab[3]
+					if source and target and source == WebOwner and target == WebProfile then
+						WebStatus = tonumber(percent)
+					end
+				elseif cmd == "DL" then
+					local target = tab[2]
+					local mainIndex = tab[3]
+					local subIndex = tab[4]
+					local index = tab[5]
+					local typ = tab[6]
+					local val = tab[7]
+					if source and target and source == WebOwner and target == WebProfile then
+						WebProfileData = WebProfileData or {}
+						WebProfileData[mainIndex] = WebProfileData[mainIndex] or {}
+						WebProfileData[mainIndex][subIndex] = WebProfileData[mainIndex][subIndex] or {}
+						if typ == "boolean" then
+							if val == "1" then
+								val = true
+							else
+								val = false
+							end
+						elseif typ == "number" then
+							val = tonumber(val)
+						end
 
-					WebProfileData[mainIndex][subIndex][index] = val
+						WebProfileData[mainIndex][subIndex][index] = val
+					end
 				end
 			end
-		end
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		local isInitialLogin, isReloadingUi = ...
-		if isInitialLogin or isReloadingUi then
-			C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
+		elseif event == "PLAYER_ENTERING_WORLD" then
+			local isInitialLogin, isReloadingUi = ...
+			if isInitialLogin or isReloadingUi then
+				C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
+			end
 		end
 	end
-end
+)
 
-local f = CreateFrame("Frame")
-f:RegisterEvent("CHAT_MSG_ADDON")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:SetScript("OnEvent", OnEvent)
 local hookedRep = false
 local hookedRepStatus = false
 function MoveAny:PlayerLogin()
@@ -3020,9 +3022,9 @@ function MoveAny:LoadAddon()
 						)
 
 						local bbf = CreateFrame("FRAME")
-						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
-						bbf:SetScript(
-							"OnEvent",
+						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+						MoveAny:OnEvent(
+							bbf,
 							function()
 								MoveAny:UpdateTargetBuffs()
 								frame:UpdateScaleAndAlpha()
@@ -3163,9 +3165,9 @@ function MoveAny:LoadAddon()
 						)
 
 						local bbf = CreateFrame("FRAME")
-						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
-						bbf:SetScript(
-							"OnEvent",
+						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+						MoveAny:OnEvent(
+							bbf,
 							function()
 								MoveAny:UpdateTargetDebuffs()
 								frame:UpdateScaleAndAlpha()
@@ -3306,9 +3308,9 @@ function MoveAny:LoadAddon()
 						)
 
 						local bbf = CreateFrame("FRAME")
-						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
-						bbf:SetScript(
-							"OnEvent",
+						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+						MoveAny:OnEvent(
+							bbf,
 							function()
 								MoveAny:UpdateTargetToTDebuffs()
 								frame:UpdateScaleAndAlpha()
@@ -3449,9 +3451,9 @@ function MoveAny:LoadAddon()
 						)
 
 						local bbf = CreateFrame("FRAME")
-						bbf:RegisterUnitEvent("UNIT_AURA", "TARGET")
-						bbf:SetScript(
-							"OnEvent",
+						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+						MoveAny:OnEvent(
+							bbf,
 							function()
 								MoveAny:UpdateTargetToTBuffs()
 								frame:UpdateScaleAndAlpha()
@@ -3627,9 +3629,9 @@ function MoveAny:LoadAddon()
 							)
 
 							local bbf = CreateFrame("FRAME")
-							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
-							bbf:SetScript(
-								"OnEvent",
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+							MoveAny:OnEvent(
+								bbf,
 								function()
 									MoveAny:UpdateFocusBuffs()
 									frame:UpdateScaleAndAlpha()
@@ -3770,9 +3772,9 @@ function MoveAny:LoadAddon()
 							)
 
 							local bbf = CreateFrame("FRAME")
-							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
-							bbf:SetScript(
-								"OnEvent",
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+							MoveAny:OnEvent(
+								bbf,
 								function()
 									MoveAny:UpdateFocusDebuffs()
 									frame:UpdateScaleAndAlpha()
@@ -3913,9 +3915,9 @@ function MoveAny:LoadAddon()
 							)
 
 							local bbf = CreateFrame("FRAME")
-							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
-							bbf:SetScript(
-								"OnEvent",
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+							MoveAny:OnEvent(
+								bbf,
 								function()
 									MoveAny:UpdateFocusToTDebuffs()
 									frame:UpdateScaleAndAlpha()
@@ -4056,9 +4058,9 @@ function MoveAny:LoadAddon()
 							)
 
 							local bbf = CreateFrame("FRAME")
-							bbf:RegisterUnitEvent("UNIT_AURA", "FOCUS")
-							bbf:SetScript(
-								"OnEvent",
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+							MoveAny:OnEvent(
+								bbf,
 								function()
 									MoveAny:UpdateFocusToTBuffs()
 									frame:UpdateScaleAndAlpha()
@@ -4843,8 +4845,8 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			TargetFrameSpellBar:HookScript(
-				"OnEvent",
+			MoveAny:OnEvent(
+				TargetFrameSpellBar,
 				function(sel, event)
 					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
 						MoveAny:UpdateAlpha(sel)
@@ -4869,8 +4871,8 @@ function MoveAny:LoadAddon()
 
 	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
 		if MoveAny:IsEnabled("FOCUSFRAME", false) then
-			FocusFrameSpellBar:HookScript(
-				"OnEvent",
+			MoveAny:OnEvent(
+				FocusFrameSpellBar,
 				function(sel, event)
 					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
 						MoveAny:UpdateAlpha(sel)

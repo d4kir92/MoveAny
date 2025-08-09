@@ -621,8 +621,8 @@ function MoveAny:InitDB()
 end
 
 local mf = CreateFrame("FRAME")
-mf:RegisterEvent("PLAYER_LOGIN")
-mf:RegisterEvent("ADDON_LOADED")
+MoveAny:RegisterEvent(mf, "PLAYER_LOGIN")
+MoveAny:RegisterEvent(mf, "ADDON_LOADED")
 local loaded = false
 function MoveAny:Loaded()
 	return loaded
@@ -633,15 +633,15 @@ function MoveAny:AddonLoaded(event, ...)
 		if select(1, ...) == AddonName then
 			loaded = true
 			MoveAny:LoadAddon()
-			mf:UnregisterEvent(event)
+			MoveAny:UnregisterEvent(mf, event)
 		end
 	elseif event == "PLAYER_LOGIN" then
 		MoveAny:PlayerLogin()
-		mf:UnregisterEvent(event)
+		MoveAny:UnregisterEvent(mf, event)
 	end
 end
 
-mf:SetScript("OnEvent", MoveAny.AddonLoaded)
+MoveAny:OnEvent(mf, MoveAny.AddonLoaded)
 --[[ FIX ]]
 function MoveAny:TrySaveEditMode()
 	local layoutCount = 0
