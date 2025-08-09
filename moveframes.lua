@@ -255,13 +255,13 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			local ret = MoveAny:TryRun(
 				function(name)
 					local frame = MoveAny:GetFrameByName(name)
-					if frame ~= nil and frame:IsShown() and (not InCombatLockdown() or not frame:IsProtected()) then
+					if frame ~= nil and frame:IsVisible() and (not InCombatLockdown() or not frame:IsProtected()) then
 						MAFS[name] = nil
-						if name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame then
-							TradeSkillFrame:SetAlpha(0)
+						if (name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame) or (name == "BankFrame" and MoveAny:IsAddOnLoaded("Sorted", "BankFrame")) then
+							frame:SetAlpha(0)
 							local enableMouse = false
 							hooksecurefunc(
-								TradeSkillFrame,
+								frame,
 								"EnableMouse",
 								function(sel, enable)
 									if enableMouse then return end
@@ -271,7 +271,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								end
 							)
 
-							TradeSkillFrame:EnableMouse(false)
+							frame:EnableMouse(false)
 
 							return
 						end
