@@ -305,12 +305,21 @@ function D4:CreateMinimapButton(params)
             end
         end
 
-        D4:After(
-            0.2,
-            function()
-                BtnThink()
-            end, "D4 BtnThink"
-        )
+        if InCombatLockdown() then
+            D4:After(
+                0.38,
+                function()
+                    BtnThink()
+                end, "D4 MinimapButton BtnThink inCombat"
+            )
+        else
+            D4:After(
+                0.19,
+                function()
+                    BtnThink()
+                end, "D4 MinimapButton BtnThink !inCombat"
+            )
+        end
     end
 
     BtnThink()

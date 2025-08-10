@@ -690,7 +690,7 @@ MoveAny:OnEvent(
 		if event == "CVAR_UPDATE" and target == "alwaysShowActionBars" then
 			UpdateActionBarBackground(tonumber(value))
 		end
-	end
+	end, "asabf"
 )
 
 local f = CreateFrame("Frame")
@@ -814,5 +814,5 @@ MoveAny:OnEvent(
 				RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
 			end
 		end
-	end
+	end, "Actionbars 1"
 )

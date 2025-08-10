@@ -1667,7 +1667,7 @@ function MoveAny:RegisterWidget(tab)
 					bbf,
 					function()
 						frame:UpdateBuffMouse()
-					end
+					end, "bbf 12"
 				)
 
 				frame:UpdateBuffMouse()
@@ -1691,7 +1691,7 @@ function MoveAny:RegisterWidget(tab)
 					bbf,
 					function()
 						frame:UpdateDebuffMouse()
-					end
+					end, "bbf 11"
 				)
 
 				frame:UpdateDebuffMouse()
@@ -1716,7 +1716,7 @@ function MoveAny:RegisterWidget(tab)
 					bbf,
 					function()
 						frame:UpdateBuffMouse()
-					end
+					end, "bbf 10"
 				)
 
 				frame:UpdateBuffMouse()
@@ -1741,7 +1741,7 @@ function MoveAny:RegisterWidget(tab)
 					bbf,
 					function()
 						frame:UpdateBuffMouse()
-					end
+					end, "bbf 9"
 				)
 
 				frame:UpdateBuffMouse()

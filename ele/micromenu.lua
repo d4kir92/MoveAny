@@ -335,7 +335,7 @@ function MoveAny:InitMicroMenu()
 					if MoveAny.UpdateMicroBar then
 						MoveAny:UpdateMicroBar("EVENT")
 					end
-				end
+				end, "UpdateMicroBar"
 			)
 		end
 

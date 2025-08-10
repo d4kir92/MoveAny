@@ -280,7 +280,7 @@ function MoveAny:InitDebuffBar()
 						MoveAny:UpdateDebuffs("event")
 					end
 				end
-			end
+			end, "UpdateDebuffs"
 		)
 
 		MoveAny:After(

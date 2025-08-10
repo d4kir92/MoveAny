@@ -641,7 +641,7 @@ function MoveAny:AddonLoaded(event, ...)
 	end
 end
 
-MoveAny:OnEvent(mf, MoveAny.AddonLoaded)
+MoveAny:OnEvent(mf, MoveAny.AddonLoaded, "AddonLoaded")
 --[[ FIX ]]
 function MoveAny:TrySaveEditMode()
 	local layoutCount = 0

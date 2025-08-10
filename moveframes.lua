@@ -654,7 +654,7 @@ function MoveAny:MoveFrames()
 		f,
 		function(sel, event, ...)
 			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
-		end
+		end, "ADDON_LOADED 123"
 	)
 
 	if BattlefieldFrame then

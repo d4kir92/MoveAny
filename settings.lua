@@ -693,7 +693,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.149")
+	MoveAny:SetVersion(135994, "1.8.150")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1335,6 +1335,12 @@ function MoveAny:InitMALock()
 					end
 				end
 			end
+
+			if InCombatLockdown() then
+				MoveAny:After(0.4, FinderThink, "FinderThink Visible Combat")
+			else
+				MoveAny:After(0.3, FinderThink, "FinderThink Visible")
+			end
 		elseif finding then
 			finding = false
 			for i = 1, 10 do
@@ -1342,9 +1348,19 @@ function MoveAny:InitMALock()
 					hovers[i]:Hide()
 				end
 			end
-		end
 
-		MoveAny:After(0.3, FinderThink, "FinderThink")
+			if InCombatLockdown() then
+				MoveAny:After(0.6, FinderThink, "FinderThink Hidden Combat")
+			else
+				MoveAny:After(0.4, FinderThink, "FinderThink Hidden")
+			end
+		else
+			if InCombatLockdown() then
+				MoveAny:After(0.4, FinderThink, "FinderThink ELSE Combat")
+			else
+				MoveAny:After(0.3, FinderThink, "FinderThink ELSE")
+			end
+		end
 	end
 
 	FinderThink()
@@ -2314,7 +2330,7 @@ MoveAny:OnEvent(
 				C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 			end
 		end
-	end
+	end, "settings"
 )
 
 local hookedRep = false
@@ -3028,7 +3044,7 @@ function MoveAny:LoadAddon()
 							function()
 								MoveAny:UpdateTargetBuffs()
 								frame:UpdateScaleAndAlpha()
-							end
+							end, "bbf 7"
 						)
 
 						hooksecurefunc(
@@ -3171,7 +3187,7 @@ function MoveAny:LoadAddon()
 							function()
 								MoveAny:UpdateTargetDebuffs()
 								frame:UpdateScaleAndAlpha()
-							end
+							end, "bbf 7"
 						)
 
 						hooksecurefunc(
@@ -3314,7 +3330,7 @@ function MoveAny:LoadAddon()
 							function()
 								MoveAny:UpdateTargetToTDebuffs()
 								frame:UpdateScaleAndAlpha()
-							end
+							end, "bbf 6"
 						)
 
 						hooksecurefunc(
@@ -3457,7 +3473,7 @@ function MoveAny:LoadAddon()
 							function()
 								MoveAny:UpdateTargetToTBuffs()
 								frame:UpdateScaleAndAlpha()
-							end
+							end, "bbf 5"
 						)
 
 						hooksecurefunc(
@@ -3635,7 +3651,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateFocusBuffs()
 									frame:UpdateScaleAndAlpha()
-								end
+								end, "bbf 4"
 							)
 
 							hooksecurefunc(
@@ -3778,7 +3794,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateFocusDebuffs()
 									frame:UpdateScaleAndAlpha()
-								end
+								end, "bbf 3"
 							)
 
 							hooksecurefunc(
@@ -3921,7 +3937,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateFocusToTDebuffs()
 									frame:UpdateScaleAndAlpha()
-								end
+								end, "bbf 2"
 							)
 
 							hooksecurefunc(
@@ -4064,7 +4080,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateFocusToTBuffs()
 									frame:UpdateScaleAndAlpha()
-								end
+								end, "bbf"
 							)
 
 							hooksecurefunc(
@@ -4851,7 +4867,7 @@ function MoveAny:LoadAddon()
 					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
 						MoveAny:UpdateAlpha(sel)
 					end
-				end
+				end, "TargetFrameSpellBar"
 			)
 
 			MoveAny:RegisterWidget(
@@ -4877,7 +4893,7 @@ function MoveAny:LoadAddon()
 					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
 						MoveAny:UpdateAlpha(sel)
 					end
-				end
+				end, "FocusFrameSpellBar"
 			)
 
 			MoveAny:RegisterWidget(
@@ -5815,8 +5831,8 @@ function MoveAny:LoadAddon()
 			)
 		else
 			local TOOLTIP_REFRESH_RATE_ACTIVE_NOTINCOMBAT = 0.02
-			local TOOLTIP_REFRESH_RATE_ACTIVE_INCOMBAT = 0.06
-			local TOOLTIP_REFRESH_RATE_IDLE = 0.1
+			local TOOLTIP_REFRESH_RATE_ACTIVE_INCOMBAT = 0.08
+			local TOOLTIP_REFRESH_RATE_IDLE = 0.26
 			local CURSOR_OFFSET = 22
 			hooksecurefunc(
 				GameTooltip,
@@ -5857,7 +5873,7 @@ function MoveAny:LoadAddon()
 					return
 				end
 
-				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
+				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() and GameTooltip:IsVisible() then
 					local owner = GameTooltip:GetOwner()
 					if owner == UIParent then
 						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then

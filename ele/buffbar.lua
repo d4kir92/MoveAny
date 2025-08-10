@@ -197,7 +197,7 @@ function MoveAny:InitBuffBar()
 					if event == "UNIT_AURA" and MoveAny.UpdateDebuffs then
 						MoveAny:UpdateDebuffs("event 2")
 					end
-				end
+				end, "UNIT_AURA 2"
 			)
 
 			if not InCombatLockdown() then
@@ -616,7 +616,7 @@ function MoveAny:InitBuffBar()
 						MoveAny:UpdateBuffs()
 					end
 				end
-			end
+			end, "UNIT_AURA 1"
 		)
 
 		MoveAny:After(1, MoveAny.UpdateBuffs, "UpdateBuffs")

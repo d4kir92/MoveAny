@@ -131,7 +131,7 @@ function MoveAny:SetMAUIPAlpha(alpha)
 end
 
 local uiscalecvar = CreateFrame("Frame")
-MoveAny:RegisterEvent(uiscalecvar, "CVAR_UPDATE")
+--MoveAny:RegisterEvent(uiscalecvar, "CVAR_UPDATE")
 MoveAny:OnEvent(
 	uiscalecvar,
 	function(self, event, target, value)
@@ -144,7 +144,7 @@ MoveAny:OnEvent(
 
 			MoveAny:UpdateGrid()
 		end
-	end
+	end, "uiscalecvar"
 )
 
 local setScale = false
@@ -343,19 +343,37 @@ if false then
 		1,
 		function()
 			MoveAny:SetDebug(true)
-			MoveAny:DrawDebug(
-				"Test DrawDebug",
-				function()
-					local text = ""
-					for i, v in pairs(MoveAny:GetCountAfter()) do
-						if v > 200 then
-							text = text .. i .. ": " .. v .. "\n"
+			if true then
+				MoveAny:DrawDebug(
+					"MoveAny Test DrawDebug 1",
+					function()
+						local text = ""
+						for i, v in pairs(MoveAny:GetCountAfter()) do
+							if v > 200 then
+								text = text .. v .. "x: " .. i .. "\n"
+							end
 						end
-					end
 
-					return text
-				end, 14, 1440, 1440, "CENTER", UIParent, "CENTER", 400, 0
-			)
+						return text
+					end, 14, 1440, 1440, "CENTER", UIParent, "CENTER", 400, 0
+				)
+			end
+
+			if true then
+				MoveAny:DrawDebug(
+					"MoveAny Test DrawDebug 2",
+					function()
+						local text = ""
+						for i, v in pairs(MoveAny:GetCountAfterEvents()) do
+							if v > 1 then
+								text = text .. v .. "x: " .. i .. "\n"
+							end
+						end
+
+						return text
+					end, 14, 1440, 1440, "CENTER", UIParent, "CENTER", 900, 0
+				)
+			end
 		end
 	)
 end
