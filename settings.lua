@@ -299,7 +299,7 @@ local function AddCategory(key, layer, hud, noTranslate)
 		ca:SetSize(24, 24)
 		ca.f = ca:CreateFontString(nil, nil, "GameFontNormal")
 		ca.f:SetPoint("LEFT", ca, "LEFT", 0, 0)
-		if not noTranslate then
+		if noTranslate == nil or noTranslate == false then
 			if hud then
 				ca.f:SetText(MoveAny:Trans("LID_" .. key) .. " (" .. MoveAny:Trans("LID_MOVEANYINFO") .. ")")
 			else
@@ -697,7 +697,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.152")
+	MoveAny:SetVersion(135994, "1.8.153")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1126,8 +1126,8 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "TARGETFRAMENAMEBACKGROUND", false)
 		end
 
-		if MoveAny:IsAddOnLoaded("MoveAny", 1, true) then
-			AddCategory("MoveAny", nil, nil, true)
+		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
+			AddCategory("ImproveAny", nil, nil, true)
 			if MoveAny:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(4, "IASKILLS", true)
 			end
