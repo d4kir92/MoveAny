@@ -246,6 +246,12 @@ MoveAny:AddTrans("ruRU", "LID_FOCUSFRAMETOTBUFFMOVER", "Баффы цели фо
 MoveAny:AddTrans("ruRU", "LID_FOCUSFRAMETOTDEBUFFMOVER", "Дебаффы цели фокуса")
 MoveAny:AddTrans("ruRU", "LID_PRESSESCTOLEAVE", "Нажмите ESC, чтобы выйти из режима выбора")
 MoveAny:AddTrans("ruRU", "LID_BINDINGFORMAT", "Панель действий %s Кнопка %s")
+MoveAny:AddTrans("ruRU", "LID_GREATVAULT", "Великое Хранилище")
+MoveAny:AddTrans("ruRU", "LID_RESHIIWRAP", "Повязки реши")
+MoveAny:AddTrans("ruRU", "LID_TOGGLEGREATVAULT", "Вкл./выкл. Великое Хранилище")
+MoveAny:AddTrans("ruRU", "LID_TOGGLERESHIIWRAP", "Вкл./выкл. Мастер повязок реши")
+MoveAny:AddTrans("ruRU", "LID_SHOWVAULTMMBTN", "Показывать иконку Великого Хранилища на миникарте")
+MoveAny:AddTrans("ruRU", "LID_MMBTNRESHIIWRAP", "Показывать иконку Повязки реши на миникарте")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
