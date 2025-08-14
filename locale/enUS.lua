@@ -246,12 +246,6 @@ MoveAny:AddTrans("enUS", "LID_FOCUSFRAMETOTBUFFMOVER", "Target of Focus Frame Bu
 MoveAny:AddTrans("enUS", "LID_FOCUSFRAMETOTDEBUFFMOVER", "Target of Focus Frame Debuffs")
 MoveAny:AddTrans("enUS", "LID_PRESSESCTOLEAVE", "Press ESC to leave the Picker")
 MoveAny:AddTrans("enUS", "LID_BINDINGFORMAT", "ActionBar %s Button %s")
-MoveAny:AddTrans("enUS", "LID_GREATVAULT", "Great Vault")
-MoveAny:AddTrans("enUS", "LID_RESHIIWRAP", "Reshii Wrap")
-MoveAny:AddTrans("enUS", "LID_TOGGLEGREATVAULT", "Toggle Great Vault")
-MoveAny:AddTrans("enUS", "LID_TOGGLERESHIIWRAP", "Toggle Reshii Wrap Upgrader")
-MoveAny:AddTrans("enUS", "LID_SHOWVAULTMMBTN", "Show the Great Vault at the minimap")
-MoveAny:AddTrans("enUS", "LID_MMBTNRESHIIWRAP", "Show the Reshii Wrap at the minimap")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("enUS", "LID_ACTIONBARS", "Actionbars 1 + 5 + 6")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")

@@ -246,12 +246,6 @@ MoveAny:AddTrans("deDE", "LID_FOCUSFRAMETOTBUFFMOVER", "Ziel des Fokusfenster Bu
 MoveAny:AddTrans("deDE", "LID_FOCUSFRAMETOTDEBUFFMOVER", "Ziel des Fokusfenster Debuffs")
 MoveAny:AddTrans("deDE", "LID_PRESSESCTOLEAVE", "Drück ESC um diese Ansicht zu verlassen")
 MoveAny:AddTrans("deDE", "LID_BINDINGFORMAT", "Aktionsleiste %s Knopf %s")
-MoveAny:AddTrans("enUS", "LID_GREATVAULT", "Große Schatzkammer")
-MoveAny:AddTrans("enUS", "LID_RESHIIWRAP", "Reshiiwickel")
-MoveAny:AddTrans("deDE", "LID_TOGGLEGREATVAULT", "Große Schatzkammer anzeigen")
-MoveAny:AddTrans("deDE", "LID_TOGGLERESHIIWRAP", "Reshiiwickel Upgrader anzeigen")
-MoveAny:AddTrans("deDE", "LID_SHOWVAULTMMBTN", "Große Schatzkammer an der Minimap anzeigen")
-MoveAny:AddTrans("deDE", "LID_MMBTNRESHIIWRAP", "Reshiiwickel an der Minimap anzeigen")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("deDE", "LID_ACTIONBARS", "Aktionsleisten 1 + 5 + 6")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")

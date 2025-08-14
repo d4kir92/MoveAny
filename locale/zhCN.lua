@@ -1,4 +1,4 @@
--- zhTW Simplified Chinese
+-- zhCN Simplified Chinese
 local _, MoveAny = ...
 MoveAny:AddTrans("zhCN", "LID_GENERAL", "通用设置")
 MoveAny:AddTrans("zhCN", "LID_SHOWMINIMAPBUTTON", "显示小地图按钮")

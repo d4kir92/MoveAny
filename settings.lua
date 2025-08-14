@@ -697,7 +697,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.153")
+	MoveAny:SetVersion(135994, "1.8.154")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -738,11 +738,6 @@ function MoveAny:InitMALock()
 				end
 			end, nil, nil, false
 		)
-
-		if MoveAny:GetWoWBuild() == "RETAIL" then
-			AddCheckBox(4, "SHOWVAULTMMBTN", true)
-			AddCheckBox(4, "MMBTNRESHIIWRAP", true)
-		end
 
 		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
 		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
@@ -2342,90 +2337,6 @@ MoveAny:OnEvent(
 	end, "settings"
 )
 
-local function GetVaultData()
-	local vaultData = C_WeeklyRewards.GetActivities()
-	if not vaultData then return {}, {}, {} end
-	local res = {}
-	res["raid"] = {}
-	res["mplus"] = {}
-	res["world"] = {}
-	for x, data in pairs(vaultData) do
-		if data.type == 1 then
-			table.insert(res["mplus"], data)
-		elseif data.type == 3 then
-			table.insert(res["raid"], data)
-		elseif data.type == 6 then
-			table.insert(res["world"], data)
-		else
-			MoveAny:MSG("[GetVaultData] Missing Type:", data.type)
-		end
-	end
-
-	return res
-end
-
-local function GetVaultStatus(vaultData, name)
-	local res = ""
-	for i, data in pairs(vaultData[name]) do
-		local color = "|cFFFFFFFF"
-		if data.progress == 0 then
-			color = "|cFFFF0000"
-		elseif data.progress >= data.threshold then
-			color = "|cFF00FF00"
-		else
-			color = "|cFFFFFF00"
-		end
-
-		local status = color .. data.progress .. "|cFFFFFFFF/" .. color .. data.threshold
-		if data.progress > data.threshold then
-			status = color .. data.threshold .. "|cFFFFFFFF/" .. color .. data.threshold
-		end
-
-		if res ~= "" then
-			res = res .. "     "
-		end
-
-		res = res .. status
-	end
-
-	res = res .. "  "
-
-	return res
-end
-
-local function GetVaultStatusIlvl(vaultData, name)
-	local res = ""
-	for i, data in pairs(vaultData[name]) do
-		local ilvl = nil
-		local itemLink = C_WeeklyRewards.GetExampleRewardItemHyperlinks(data.id)
-		if itemLink then
-			ilvl = GetDetailedItemLevelInfo(itemLink)
-		end
-
-		local color = "|cFFFFFFFF"
-		if data.progress == 0 then
-			color = "|cFFFF0000"
-		elseif data.progress >= data.threshold then
-			color = "|cFF00FF00"
-		else
-			color = "|cFFFFFF00"
-		end
-
-		if res ~= "" then
-			res = res .. " "
-		end
-
-		if ilvl then
-			res = res .. " |cFFFFFFFF(" .. color .. ilvl .. "|cFFFFFFFF" .. ")"
-		else
-			res = res .. "         "
-		end
-	end
-
-	return res
-end
-
-local reshii = false
 local hookedRep = false
 local hookedRepStatus = false
 function MoveAny:PlayerLogin()
@@ -2453,120 +2364,6 @@ function MoveAny:PlayerLogin()
 			["dbkey"] = "SHOWMINIMAPBUTTON"
 		}
 	)
-
-	if MoveAny:GetWoWBuild() == "RETAIL" then
-		if MoveAny:IsEnabled("MMBTNRESHIIWRAP", true) then
-			local btnReshii = MoveAny:CreateMinimapButton(
-				{
-					["name"] = "Reshii Wraps",
-					["atlas"] = "poi-workorders",
-					["dbtab"] = MATAB,
-					["vTT"] = {{MoveAny:Trans("LID_RESHIIWRAP"), "|T136033:16:16:0:0|t MoveAny"}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_TOGGLERESHIIWRAP")}},
-					["funcL"] = function()
-						if GenericTraitUI_LoadUI and reshii == false then
-							reshii = true
-							GenericTraitUI_LoadUI()
-						end
-
-						if GenericTraitFrame then
-							GenericTraitFrame:SetSystemID(29)
-							GenericTraitFrame:SetTreeID(1115)
-							ToggleFrame(GenericTraitFrame)
-						end
-					end,
-					["dbkey"] = "MMBTNRESHIIWRAP",
-					["parent"] = CharacterBackSlot,
-					["point"] = {"Right", CharacterBackSlot, "Left", 4, 0}
-				}
-			)
-
-			btnReshii:HookScript(
-				"OnUpdate",
-				function()
-					local itemID = GetInventoryItemID("player", 15)
-					if itemID and itemID == 235499 then
-						btnReshii:SetAlpha(1)
-						btnReshii:EnableMouse(true)
-					else
-						btnReshii:SetAlpha(0)
-						btnReshii:EnableMouse(false)
-					end
-				end
-			)
-		end
-
-		if MoveAny:IsEnabled("SHOWVAULTMMBTN", true) then
-			local mmbtn = nil
-			MATAB["MMBtnGreatVault"] = MATAB["MMBtnGreatVault"] or {}
-			MoveAny:CreateMinimapButton(
-				{
-					["name"] = "MoveAnyGreatVault",
-					["atlas"] = "GreatVault-32x32",
-					["var"] = mmbtn,
-					["dbtab"] = MATAB["MMBtnGreatVault"],
-					["vTT"] = {{MoveAny:Trans("LID_GREATVAULT"), "|T136033:16:16:0:0|t MoveAny"}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_TOGGLEGREATVAULT")}},
-					["vTTUpdate"] = function(sel, tt)
-						if C_WeeklyRewards.HasAvailableRewards() or C_WeeklyRewards.HasGeneratedRewards() then
-							tt:AddDoubleLine(" ", " ")
-							tt:AddDoubleLine("GREAT VAULT HAS REWARD", "")
-						end
-
-						tt:AddDoubleLine(" ", " ")
-						local vaultData = GetVaultData()
-						local raid = GetVaultStatus(vaultData, "raid")
-						tt:AddDoubleLine(RAID, raid)
-						local raidIlvl = GetVaultStatusIlvl(vaultData, "raid")
-						if strtrim(raidIlvl) ~= "" then
-							tt:AddDoubleLine(" ", raidIlvl)
-						end
-
-						tt:AddDoubleLine(" ", " ")
-						local mplus = GetVaultStatus(vaultData, "mplus")
-						tt:AddDoubleLine(PLAYER_DIFFICULTY_MYTHIC_PLUS, mplus)
-						local mplusIlvl = GetVaultStatusIlvl(vaultData, "mplus")
-						if strtrim(mplusIlvl) ~= "" then
-							tt:AddDoubleLine(" ", mplusIlvl)
-						end
-
-						tt:AddDoubleLine(" ", " ")
-						local world = GetVaultStatus(vaultData, "world")
-						tt:AddDoubleLine(WORLD, world)
-						local worldIlvl = GetVaultStatusIlvl(vaultData, "world")
-						if strtrim(worldIlvl) ~= "" then
-							tt:AddDoubleLine(" ", worldIlvl)
-						end
-
-						for i = 1, 99 do
-							local tr = _G[MoveAny:GetName(tt) .. "TextRight" .. i]
-							if tr then
-								tr:SetFontObject("ConsoleFontNormal")
-								local f1, _, f3 = tr:GetFont()
-								tr:SetFont(f1, 14, f3)
-							end
-						end
-
-						return false
-					end,
-					["funcL"] = function()
-						if not InCombatLockdown() then
-							if WeeklyRewardsFrame == nil then
-								WeeklyRewards_ShowUI()
-							elseif WeeklyRewardsFrame:IsShown() then
-								WeeklyRewardsFrame:Hide()
-							else
-								WeeklyRewards_ShowUI()
-							end
-						end
-					end,
-					["addoncomp"] = false,
-					["sw"] = 64,
-					["sh"] = 64,
-					["border"] = false,
-					["dbkey"] = ""
-				}
-			)
-		end
-	end
 end
 
 function MoveAny:IsEnabledBartender4(element)
