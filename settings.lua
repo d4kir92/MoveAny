@@ -697,7 +697,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.151")
+	MoveAny:SetVersion(135994, "1.8.152")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2456,7 +2456,7 @@ function MoveAny:PlayerLogin()
 
 	if MoveAny:GetWoWBuild() == "RETAIL" then
 		if MoveAny:IsEnabled("MMBTNRESHIIWRAP", true) then
-			MoveAny:CreateMinimapButton(
+			local btnReshii = MoveAny:CreateMinimapButton(
 				{
 					["name"] = "Reshii Wraps",
 					["atlas"] = "poi-workorders",
@@ -2474,8 +2474,24 @@ function MoveAny:PlayerLogin()
 							ToggleFrame(GenericTraitFrame)
 						end
 					end,
-					["dbkey"] = "MMBTNRESHIIWRAP"
+					["dbkey"] = "MMBTNRESHIIWRAP",
+					["parent"] = CharacterBackSlot,
+					["point"] = {"Right", CharacterBackSlot, "Left", 4, 0}
 				}
+			)
+
+			btnReshii:HookScript(
+				"OnUpdate",
+				function()
+					local itemID = GetInventoryItemID("player", 15)
+					if itemID and itemID == 235499 then
+						btnReshii:SetAlpha(1)
+						btnReshii:EnableMouse(true)
+					else
+						btnReshii:SetAlpha(0)
+						btnReshii:EnableMouse(false)
+					end
+				end
 			)
 		end
 
