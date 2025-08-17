@@ -351,6 +351,10 @@ function D4:IsAddOnLoaded(name, from)
     return nil
 end
 
+function D4:IsAddonLoaded(name, from)
+    return D4:IsAddOnLoaded(name, from)
+end
+
 local function FixIconChat(sel, event, message, author, ...)
     if ICON_LIST then
         for tag in string.gmatch(message, "%b{}") do

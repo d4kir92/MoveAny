@@ -149,7 +149,7 @@ function MoveAny:FrameDragInfo(frame, c)
 	end
 end
 
-local EnableMouseFrames = {"PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton"}
+local EnableMouseFrames = {"PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ReadyCheckFrame", "RolePollPopup"}
 local HookedEnableMouseFrames = {}
 local run = false
 local id = 0
@@ -243,6 +243,14 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					"Show",
 					function(sel)
 						sel:EnableMouse(true)
+					end
+				)
+
+				hooksecurefunc(
+					frame,
+					"Hide",
+					function(sel)
+						sel:EnableMouse(false)
 					end
 				)
 

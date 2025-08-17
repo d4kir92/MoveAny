@@ -1,5 +1,5 @@
 ## Interface: 40402
-## Version: 1.8.154
+## Version: 1.8.155
 ## Title: M|cff3FC7EBove|rA|cff3FC7EBny|r |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t
 ## Notes: Move Any Ui or Frame
 ## Notes-ruRU: MoveAny - аддон, с помощью которого можно разблокировать и перемещать элементы интерфейса
@@ -27,6 +27,7 @@ locale\koKR.lua
 locale\ptBR.lua
 locale\ruRU.lua
 locale\zhCN.lua
+locale\zhTW.lua
 
 ele\actionbars.lua
 ele\arenaenemyframes.lua
