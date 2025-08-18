@@ -207,6 +207,9 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			once = false
 			if WorldMapFrame then
 				MoveAny:SetClampedToScreen(WorldMapFrame, true, "UpdateMoveFrames 3")
+				if WorldMapTitleButton then
+					WorldMapTitleButton:EnableMouse(false)
+				end
 			end
 
 			if GameMenuFrame then
