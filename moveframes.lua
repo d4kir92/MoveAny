@@ -351,6 +351,22 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetClampedToScreen(fm, true, "UpdateMoveFrames 1")
 							end
 
+							if WorldMapFrame and WorldMapFrameMove then
+								local offsetl = 15
+								local offsetr = 7
+								local offsett = 18
+								local offsetb = 23
+								if MoveAny:IsAddOnLoaded("ElvUI") then
+									offsetl = 8
+									offsetr = 66
+									offsett = 20
+									offsetb = 23
+								end
+
+								WorldMapFrame:SetClampRectInsets(offsetl, -offsetr, -offsett, offsetb)
+								WorldMapFrameMove:SetClampRectInsets(offsetl, -offsetr, -offsett, offsetb)
+							end
+
 							fm:RegisterForDrag("LeftClick")
 							if HookedEnableMouseFrames[name] == nil then
 								fm:EnableMouse(false)
