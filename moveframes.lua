@@ -207,9 +207,64 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			once = false
 			if WorldMapFrame then
 				MoveAny:SetClampedToScreen(WorldMapFrame, true, "UpdateMoveFrames 3")
-				if WorldMapTitleButton then
-					WorldMapTitleButton:EnableMouse(false)
-				end
+				local hookedWorldMap = false
+				local hookedWorldMapTitle = false
+				local hookedWorldMapMiniBorder = false
+				local enableMouseWorldMap = false
+				local enableMouseWorldMapTitle = false
+				local enableMouseWorldMapMiniBorder = false
+				WorldMapFrame:HookScript(
+					"OnShow",
+					function()
+						if not hookedWorldMap then
+							hookedWorldMap = true
+							hooksecurefunc(
+								WorldMapFrame,
+								"EnableMouse",
+								function(sel)
+									if enableMouseWorldMap then return end
+									enableMouseWorldMap = true
+									sel:EnableMouse(true)
+									enableMouseWorldMap = false
+								end
+							)
+
+							WorldMapFrame:EnableMouse(true)
+						end
+
+						if WorldMapTitleButton and not hookedWorldMapTitle then
+							hookedWorldMapTitle = true
+							hooksecurefunc(
+								WorldMapTitleButton,
+								"EnableMouse",
+								function(sel)
+									if enableMouseWorldMapTitle then return end
+									enableMouseWorldMapTitle = true
+									sel:EnableMouse(false)
+									enableMouseWorldMapTitle = false
+								end
+							)
+
+							WorldMapTitleButton:EnableMouse(false)
+						end
+
+						if WorldMapFrame.MiniBorderFrame and not hookedWorldMapMiniBorder then
+							hookedWorldMapMiniBorder = true
+							hooksecurefunc(
+								WorldMapFrame.MiniBorderFrame,
+								"EnableMouse",
+								function(sel)
+									if enableMouseWorldMapMiniBorder then return end
+									enableMouseWorldMapMiniBorder = true
+									sel:EnableMouse(false)
+									enableMouseWorldMapMiniBorder = false
+								end
+							)
+
+							WorldMapFrame.MiniBorderFrame:EnableMouse(false)
+						end
+					end
+				)
 			end
 
 			if GameMenuFrame then
