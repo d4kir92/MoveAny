@@ -697,7 +697,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.156")
+	MoveAny:SetVersion(135994, "1.8.157")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2373,36 +2373,11 @@ function MoveAny:IsEnabledBartender4(element)
 		realm = GetRealmName()
 	end
 
-	if Bartender4DB == nil then
-		MoveAny:INFO("[IsEnabledBartender4] failed to find DB")
-
-		return false
-	end
-
-	if Bartender4DB["namespaces"] == nil then
-		MoveAny:INFO("[IsEnabledBartender4] failed failed to find namespace")
-
-		return false
-	end
-
-	if Bartender4DB["namespaces"][element] == nil then
-		MoveAny:INFO("[IsEnabledBartender4] failed to find Element")
-
-		return false
-	end
-
-	if Bartender4DB["namespaces"][element]["profiles"] == nil then
-		MoveAny:INFO("[IsEnabledBartender4] failed to find profiles")
-
-		return false
-	end
-
-	if Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm] == nil then
-		MoveAny:INFO("[IsEnabledBartender4] failed to find char profile")
-
-		return false
-	end
-
+	if Bartender4DB == nil then return false end
+	if Bartender4DB["namespaces"] == nil then return false end
+	if Bartender4DB["namespaces"][element] == nil then return false end
+	if Bartender4DB["namespaces"][element]["profiles"] == nil then return false end
+	if Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm] == nil then return false end
 	if Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm].enabled ~= nil then
 		return Bartender4DB["namespaces"][element]["profiles"][name .. " - " .. realm].enabled
 	else
