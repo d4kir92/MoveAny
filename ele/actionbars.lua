@@ -69,6 +69,10 @@ function MoveAny:UpdateActionBar(frame)
 		frame,
 		function()
 			local name = MoveAny:GetName(frame) or BarNames[frame]
+			if name == "StanceBar" then
+				name = "StanceBarAnchor"
+			end
+
 			local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
 			opts["ROWS"] = opts["ROWS"] or nil
 			opts["OFFSET"] = opts["OFFSET"] or nil
@@ -356,17 +360,19 @@ function MoveAny:UpdateActionBar(frame)
 
 				if not InCombatLockdown() then
 					frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
-					local mover = _G[name .. "_MA_DRAG"]
-					local sw, sh = frame:GetSize()
-					local osw, osh = MoveAny:GetEleSize(name)
-					sw = MoveAny:MathR(sw)
-					sh = MoveAny:MathR(sh)
-					if osw ~= sw or osh ~= sh then
-						MoveAny:SetEleSize(name, sw, sh)
-					end
+					if frame ~= StanceBar then
+						local mover = _G[name .. "_MA_DRAG"]
+						local sw, sh = frame:GetSize()
+						local osw, osh = MoveAny:GetEleSize(name)
+						sw = MoveAny:MathR(sw)
+						sh = MoveAny:MathR(sh)
+						if osw ~= sw or osh ~= sh then
+							MoveAny:SetEleSize(name, sw, sh)
+						end
 
-					if mover then
-						mover:SetSize(frame:GetSize())
+						if mover then
+							mover:SetSize(frame:GetSize())
+						end
 					end
 				end
 			end
@@ -546,7 +552,7 @@ function MoveAny:CustomBars()
 				local btn = _G[btnname]
 				local id = (i - 1) * 12 + x
 				if btn == nil then
-					btn = CreateFrame("CheckButton", btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
+					btn = MoveAny:CreateCheckButton(btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
 					--btn.commandName = "CLICK " .. btnname
 					btn:SetAttribute("action", id)
 					btn:HookScript(

@@ -65,7 +65,7 @@ local function CreateTabs(frame, args)
 			template = "PanelTabButtonTemplate"
 		end
 
-		frame.tabs[i] = CreateFrame("Button", MoveAny:GetName(frame) .. "Tab" .. i, frame, template)
+		frame.tabs[i] = MoveAny:CreateButton(MoveAny:GetName(frame) .. "Tab" .. i, frame, false, template)
 		local tab = frame.tabs[i]
 		tab:SetID(i)
 		tab:SetText(args[i])
@@ -96,7 +96,7 @@ end
 
 local btnsize = 24
 local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
-	local btn = CreateFrame("Button", "MOVE" .. x .. y, parent)
+	local btn = MoveAny:CreateButton("MOVE" .. x .. y, parent, true)
 	btn:SetNormalTexture(texNor)
 	btn:SetPushedTexture(texPus)
 	btn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
@@ -118,7 +118,7 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 	return btn
 end
 
-function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
+function MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
 	local slider = CreateFrame("Slider", nil, parent, "UISliderTemplate")
 	slider:SetSize(parent:GetWidth() - 20 - x, 16)
 	slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
@@ -178,16 +178,21 @@ function MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax,
 end
 
 function MoveAny:MenuOptions(opt, frame)
+	local optionFrame = frame
+	if frame == StanceBarAnchor then
+		frame = StanceBar
+	end
+
 	if frame == nil then
 		MoveAny:MSG("FRAME NOT FOUND")
 
 		return
 	end
 
-	local name = MoveAny:GetFrameName(frame)
+	local name = MoveAny:GetFrameName(optionFrame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
 	local tabs = {GENERAL}
-	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBar" then
+	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then
 		table.insert(tabs, ACTIONBARS_LABEL)
 	end
 
@@ -247,7 +252,7 @@ function MoveAny:MenuOptions(opt, frame)
 			content.scale:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -4)
 			local scale = MoveAny:GetEleScale(name) or 1
 			content.scale:SetText(format("Scale: %0.1f", scale))
-			local sup = CreateFrame("Button", "sup", content)
+			local sup = MoveAny:CreateButton("sup", content, true)
 			sup:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
 			sup:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
 			sup:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
@@ -256,13 +261,13 @@ function MoveAny:MenuOptions(opt, frame)
 			sup:SetScript(
 				"OnClick",
 				function()
-					local val = tonumber(string.format("%.1f", frame:GetScale() + 0.1))
+					local val = tonumber(string.format("%.1f", optionFrame:GetScale() + 0.1))
 					MoveAny:SetEleScale(name, val)
 					content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
 				end
 			)
 
-			local sup2 = CreateFrame("Button", "sup2", content)
+			local sup2 = MoveAny:CreateButton("sup2", content, true)
 			sup2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
 			sup2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
 			sup2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
@@ -271,13 +276,13 @@ function MoveAny:MenuOptions(opt, frame)
 			sup2:SetScript(
 				"OnClick",
 				function()
-					local val = tonumber(string.format("%.2f", frame:GetScale() + 0.01))
+					local val = tonumber(string.format("%.2f", optionFrame:GetScale() + 0.01))
 					MoveAny:SetEleScale(name, val)
 					content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
 				end
 			)
 
-			local sdn = CreateFrame("Button", "sdn", content)
+			local sdn = MoveAny:CreateButton("sdn", content, true)
 			sdn:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 			sdn:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
 			sdn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
@@ -287,14 +292,14 @@ function MoveAny:MenuOptions(opt, frame)
 				"OnClick",
 				function()
 					if frame:GetScale() > 0.2 then
-						local val = tonumber(string.format("%.1f", frame:GetScale() - 0.1))
+						local val = tonumber(string.format("%.1f", optionFrame:GetScale() - 0.1))
 						MoveAny:SetEleScale(name, val)
 						content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
 					end
 				end
 			)
 
-			local sdn2 = CreateFrame("Button", "sdn2", content)
+			local sdn2 = MoveAny:CreateButton("sdn2", content, true)
 			sdn2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 			sdn2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
 			sdn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
@@ -304,14 +309,14 @@ function MoveAny:MenuOptions(opt, frame)
 				"OnClick",
 				function()
 					if frame:GetScale() > 0.2 then
-						local val = tonumber(string.format("%.2f", frame:GetScale() - 0.01))
+						local val = tonumber(string.format("%.2f", optionFrame:GetScale() - 0.01))
 						MoveAny:SetEleScale(name, val)
 						content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
 					end
 				end
 			)
 
-			local resetDB = CreateFrame("Button", "resetdb", content, "UIPanelButtonTemplate")
+			local resetDB = MoveAny:CreateButton("resetdb", content)
 			resetDB:SetText(MoveAny:Trans("LID_RESETELEMENT"))
 			resetDB:SetSize(btnsize * 6, btnsize)
 			resetDB:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -8)
@@ -324,7 +329,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
-			local hide = CreateFrame("CheckButton", "hide", content, "ChatConfigCheckButtonTemplate")
+			local hide = MoveAny:CreateCheckButton("hide", content)
 			hide:SetSize(btnsize, btnsize)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -110)
 			hide:SetChecked(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
@@ -336,7 +341,7 @@ function MoveAny:MenuOptions(opt, frame)
 					MoveAny:SetEleOption(name, "Hide", checked)
 					local dragf = _G[name .. "_MA_DRAG"]
 					if checked then
-						MoveAny:HideFrame(frame)
+						MoveAny:HideFrame(optionFrame)
 						dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
 						if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 							dragf:Hide()
@@ -344,8 +349,8 @@ function MoveAny:MenuOptions(opt, frame)
 							dragf:Show()
 						end
 					else
-						MoveAny:ShowFrame(frame)
-						if MACurrentEle == frame then
+						MoveAny:ShowFrame(optionFrame)
+						if MACurrentEle == optionFrame then
 							dragf.t:SetVertexColor(MoveAny:GetColor("se"))
 						else
 							dragf.t:SetVertexColor(MoveAny:GetColor("el"))
@@ -358,7 +363,7 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(getglobal("HIDE"))
-			local clickthrough = CreateFrame("CheckButton", "clickthrough", content, "ChatConfigCheckButtonTemplate")
+			local clickthrough = MoveAny:CreateCheckButton("clickthrough", content)
 			clickthrough:SetSize(btnsize, btnsize)
 			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
 			clickthrough:SetChecked(MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"))
@@ -370,13 +375,13 @@ function MoveAny:MenuOptions(opt, frame)
 					MoveAny:SetEleOption(name, "ClickThrough", checked)
 					local dragf = _G[name .. "_MA_DRAG"]
 					if checked then
-						if frame then
+						if optionFrame then
 							dragf:Show()
 							dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
-							frame:EnableMouse(false)
-							if frame.AuraContainer then
+							optionFrame:EnableMouse(false)
+							if optionFrame.AuraContainer then
 								MoveAny:ForeachChildren(
-									frame.AuraContainer,
+									optionFrame.AuraContainer,
 									function(child)
 										if C_Widget.IsWidget(child) then
 											child:EnableMouse(false)
@@ -385,7 +390,7 @@ function MoveAny:MenuOptions(opt, frame)
 								)
 							else
 								MoveAny:ForeachChildren(
-									frame,
+									optionFrame,
 									function(child)
 										if C_Widget.IsWidget(child) then
 											child:EnableMouse(false)
@@ -397,12 +402,12 @@ function MoveAny:MenuOptions(opt, frame)
 							dragf:Hide()
 						end
 					else
-						if frame then
+						if optionFrame then
 							dragf.t:SetVertexColor(MoveAny:GetColor("el"))
-							frame:EnableMouse(true)
-							if frame.AuraContainer then
+							optionFrame:EnableMouse(true)
+							if optionFrame.AuraContainer then
 								MoveAny:ForeachChildren(
-									frame.AuraContainer,
+									optionFrame.AuraContainer,
 									function(child)
 										if C_Widget.IsWidget(child) then
 											child:EnableMouse(true)
@@ -411,7 +416,7 @@ function MoveAny:MenuOptions(opt, frame)
 								)
 							else
 								MoveAny:ForeachChildren(
-									frame,
+									optionFrame,
 									function(child)
 										if C_Widget.IsWidget(child) then
 											child:EnableMouse(true)
@@ -430,7 +435,7 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
-			local fullhp = CreateFrame("CheckButton", "FULLHPENABLED", content, "ChatConfigCheckButtonTemplate")
+			local fullhp = MoveAny:CreateCheckButton("FULLHPENABLED", content)
 			fullhp:SetSize(btnsize, btnsize)
 			fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -220)
 			fullhp:SetChecked(MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp1"))
@@ -444,24 +449,24 @@ function MoveAny:MenuOptions(opt, frame)
 
 			local space = -30
 			local Y = -190
-			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSlider(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSlider(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 			Y = Y + space
 			if C_PetBattles then
-				MoveAny:CreateSlider(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 				Y = Y + space
 			end
 
-			MoveAny:CreateSlider(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 		elseif string.find(content.name, ACTIONBARS_LABEL) then
 			local slides = {}
 			local items = {}
@@ -496,7 +501,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local rows = opts["ROWS"] or 1
 			local offset = opts["OFFSET"] or 0
 			local PY = -20
-			if frame ~= MAMenuBar and frame ~= StanceBar then
+			if frame ~= MAMenuBar and optionFrame ~= StanceBarAnchor then
 				slides.sliderCount = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				local sliderCount = slides.sliderCount
 				sliderCount:SetSize(content:GetWidth() - 110, 16)
@@ -552,7 +557,7 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			if #items >= 1 then
+			if #items >= 1 and optionFrame ~= StanceBarAnchor then
 				slides.sliderRows = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				local sliderRows = slides.sliderRows
 				sliderRows:SetSize(content:GetWidth() - 110, 16)
@@ -608,74 +613,77 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
-			local sliderOffset = slides.offset
-			sliderOffset:SetSize(content:GetWidth() - 110, 16)
-			sliderOffset:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
-			if sliderOffset.Low == nil then
-				sliderOffset.Low = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
-				sliderOffset.Low:SetPoint("BOTTOMLEFT", sliderOffset, "BOTTOMLEFT", 0, -12)
-				MoveAny:SetFontSize(sliderOffset.Low, 10, "THINOUTLINE")
-				sliderOffset.Low:SetTextColor(1, 1, 1)
-			end
+			if optionFrame ~= StanceBarAnchor then
+				slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
+				local sliderOffset = slides.offset
+				sliderOffset:SetSize(content:GetWidth() - 110, 16)
+				sliderOffset:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
+				if sliderOffset.Low == nil then
+					sliderOffset.Low = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
+					sliderOffset.Low:SetPoint("BOTTOMLEFT", sliderOffset, "BOTTOMLEFT", 0, -12)
+					MoveAny:SetFontSize(sliderOffset.Low, 10, "THINOUTLINE")
+					sliderOffset.Low:SetTextColor(1, 1, 1)
+				end
 
-			if sliderOffset.High == nil then
-				sliderOffset.High = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
-				sliderOffset.High:SetPoint("BOTTOMRIGHT", sliderOffset, "BOTTOMRIGHT", 0, -12)
-				MoveAny:SetFontSize(sliderOffset.High, 10, "THINOUTLINE")
-				sliderOffset.High:SetTextColor(1, 1, 1)
-			end
+				if sliderOffset.High == nil then
+					sliderOffset.High = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
+					sliderOffset.High:SetPoint("BOTTOMRIGHT", sliderOffset, "BOTTOMRIGHT", 0, -12)
+					MoveAny:SetFontSize(sliderOffset.High, 10, "THINOUTLINE")
+					sliderOffset.High:SetTextColor(1, 1, 1)
+				end
 
-			if sliderOffset.Text == nil then
-				sliderOffset.Text = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
-				sliderOffset.Text:SetPoint("TOP", sliderOffset, "TOP", 0, 16)
-				MoveAny:SetFontSize(sliderOffset.Text, 12, "THINOUTLINE")
-				sliderOffset.Text:SetTextColor(1, 1, 1)
-			end
+				if sliderOffset.Text == nil then
+					sliderOffset.Text = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
+					sliderOffset.Text:SetPoint("TOP", sliderOffset, "TOP", 0, 16)
+					MoveAny:SetFontSize(sliderOffset.Text, 12, "THINOUTLINE")
+					sliderOffset.Text:SetTextColor(1, 1, 1)
+				end
 
-			sliderOffset.Low:SetText(-4)
-			sliderOffset.High:SetText(8)
-			sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
-			sliderOffset:SetMinMaxValues(-4, 8)
-			sliderOffset:SetObeyStepOnDrag(true)
-			sliderOffset:SetValueStep(1)
-			sliderOffset:SetValue(offset)
-			sliderOffset:SetScript(
-				"OnValueChanged",
-				function(sel, value)
-					val = tonumber(string.format("%" .. 0 .. "f", value))
-					if value and value ~= opts["OFFSET"] then
-						opts["OFFSET"] = value
-						sel.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. value)
+				sliderOffset.Low:SetText(-4)
+				sliderOffset.High:SetText(8)
+				sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
+				sliderOffset:SetMinMaxValues(-4, 8)
+				sliderOffset:SetObeyStepOnDrag(true)
+				sliderOffset:SetValueStep(1)
+				sliderOffset:SetValue(offset)
+				sliderOffset:SetScript(
+					"OnValueChanged",
+					function(sel, value)
+						val = tonumber(string.format("%" .. 0 .. "f", value))
+						if value and value ~= opts["OFFSET"] then
+							opts["OFFSET"] = value
+							sel.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. value)
+							if MoveAny.UpdateActionBar then
+								MoveAny:UpdateActionBar(frame)
+							end
+						end
+					end
+				)
+
+				PY = PY - 30
+				local flipped = MoveAny:CreateCheckButton("flipped", content)
+				flipped:SetSize(btnsize, btnsize)
+				flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
+				flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"))
+				flipped:SetText(MoveAny:Trans("LID_FLIPPED"))
+				flipped:SetScript(
+					"OnClick",
+					function()
+						local checked = flipped:GetChecked()
+						MoveAny:SetEleOption(name, "FLIPPED", checked)
 						if MoveAny.UpdateActionBar then
 							MoveAny:UpdateActionBar(frame)
 						end
 					end
-				end
-			)
+				)
 
-			PY = PY - 30
-			local flipped = CreateFrame("CheckButton", "flipped", content, "ChatConfigCheckButtonTemplate")
-			flipped:SetSize(btnsize, btnsize)
-			flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
-			flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"))
-			flipped:SetText(MoveAny:Trans("LID_FLIPPED"))
-			flipped:SetScript(
-				"OnClick",
-				function()
-					local checked = flipped:GetChecked()
-					MoveAny:SetEleOption(name, "FLIPPED", checked)
-					if MoveAny.UpdateActionBar then
-						MoveAny:UpdateActionBar(frame)
-					end
-				end
-			)
+				flipped.text = flipped:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+				MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
+				flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
+				flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
+				PY = PY - 40
+			end
 
-			flipped.text = flipped:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-			MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
-			flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
-			flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
-			PY = PY - 40
 			opts["SPACING"] = opts["SPACING"] or 2
 			local slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			slider:SetSize(content:GetWidth() - 110, 16)
@@ -722,9 +730,9 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 
+			PY = PY - 30
 			if frame == MAActionBar1 then
-				PY = PY - 30
-				local catstealth = CreateFrame("CheckButton", "catstealth", content, "ChatConfigCheckButtonTemplate")
+				local catstealth = MoveAny:CreateCheckButton("catstealth", content)
 				catstealth:SetSize(btnsize, btnsize)
 				catstealth:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
 				catstealth:SetChecked(MoveAny:IsEnabled("CHANGEONCATSTEALTH", true))
@@ -741,13 +749,37 @@ function MoveAny:MenuOptions(opt, frame)
 				MoveAny:SetFontSize(catstealth.text, 12, "THINOUTLINE")
 				catstealth.text:SetPoint("LEFT", catstealth, "RIGHT", 0, 0)
 				catstealth.text:SetText(MoveAny:Trans("LID_CHANGEONCATSTEALTH"))
+				PY = PY - 30
+			end
+
+			if optionFrame == StanceBarAnchor then
+				PY = PY - 30
+				opts["ORIENTATION"] = opts["ORIENTATION"] or "CENTERED"
+				MoveAny:SetAppendTab(opts)
+				local dropdown = MoveAny:CreateDropdown(
+					"ORIENTATION",
+					"CENTERED",
+					{
+						["LEFTALIGNED"] = "LEFTALIGNED",
+						["CENTERED"] = "CENTERED",
+						["RIGHTALIGNED"] = "RIGHTALIGNED"
+					},
+					content,
+					function(valu)
+						StanceBar:ClearAllPoints()
+						StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
+					end
+				)
+
+				dropdown:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
+				PY = PY - 30
 			end
 		elseif string.find(content.name, MoveAny:Trans("LID_BUFFS")) then
-			--MoveAny:CreateSlider(parent, x, y, name, key, value, steps, vmin, vmax, func)
+			--MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
 			if name == "MABuffBar" then
 				if MoveAny:GetWoWBuild() ~= "RETAIL" then
-					MoveAny:CreateSlider(
+					MoveAny:CreateSliderOld(
 						content,
 						10,
 						y,
@@ -791,7 +823,7 @@ function MoveAny:MenuOptions(opt, frame)
 					y = y - 40
 				end
 			else
-				MoveAny:CreateSlider(
+				MoveAny:CreateSliderOld(
 					content,
 					10,
 					y,
@@ -831,7 +863,7 @@ function MoveAny:MenuOptions(opt, frame)
 				y = y - 40
 			end
 
-			MoveAny:CreateSlider(
+			MoveAny:CreateSliderOld(
 				content,
 				10,
 				y,
@@ -865,7 +897,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			y = y - 40
-			MoveAny:CreateSlider(
+			MoveAny:CreateSliderOld(
 				content,
 				10,
 				y,
@@ -899,7 +931,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			y = y - 40
-			MoveAny:CreateSlider(
+			MoveAny:CreateSliderOld(
 				content,
 				10,
 				y,
@@ -937,7 +969,7 @@ function MoveAny:MenuOptions(opt, frame)
 			local y = -20
 			if name == "MADebuffBar" then
 				if MoveAny:GetWoWBuild() ~= "RETAIL" then
-					MoveAny:CreateSlider(
+					MoveAny:CreateSliderOld(
 						content,
 						10,
 						y,
@@ -963,7 +995,7 @@ function MoveAny:MenuOptions(opt, frame)
 					y = y - 40
 				end
 			else
-				MoveAny:CreateSlider(
+				MoveAny:CreateSliderOld(
 					content,
 					10,
 					y,
@@ -999,7 +1031,7 @@ function MoveAny:MenuOptions(opt, frame)
 				y = y - 40
 			end
 
-			MoveAny:CreateSlider(
+			MoveAny:CreateSliderOld(
 				content,
 				10,
 				y,
@@ -1033,7 +1065,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			y = y - 40
-			MoveAny:CreateSlider(
+			MoveAny:CreateSliderOld(
 				content,
 				10,
 				y,
@@ -1067,7 +1099,7 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			y = y - 40
-			MoveAny:CreateSlider(
+			MoveAny:CreateSliderOld(
 				content,
 				10,
 				y,
@@ -1193,7 +1225,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			)
 		elseif string.find(content.name, MoveAny:Trans("LID_BAGEXTRAS")) then
-			local hide = CreateFrame("CheckButton", "HideSmallBags", content, "ChatConfigCheckButtonTemplate")
+			local hide = MoveAny:CreateCheckButton("HideSmallBags", content)
 			hide:SetSize(btnsize, btnsize)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
 			hide:SetChecked(MoveAny:GetEleOption(name, "HideSmallBags", false, "Hide1"))
@@ -1211,7 +1243,7 @@ function MoveAny:MenuOptions(opt, frame)
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(HIDE .. " (" .. MoveAny:Trans("LID_HIDESMALLBAGS") .. ")")
 			if KeyRingButton then
-				local hide2 = CreateFrame("CheckButton", "HideKeyBag", content, "ChatConfigCheckButtonTemplate")
+				local hide2 = MoveAny:CreateCheckButton("HideKeyBag", content)
 				hide2:SetSize(btnsize, btnsize)
 				hide2:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -20)
 				hide2:SetChecked(MoveAny:GetEleOption(name, "HideKeyBag", false, "Hide1"))
@@ -1336,7 +1368,7 @@ end
 
 function MoveAny:ToggleElementOptions(name, fram, dragframe)
 	if dragframe.opt == nil then
-		dragframe.opt = CreateFrame("Frame", name .. ".opt", MoveAny:GetMainPanel(), "BasicFrameTemplateWithInset")
+		dragframe.opt = MoveAny:CreateFrame(name .. ".opt", MoveAny:GetMainPanel())
 		dragframe.opt.TitleText:SetText(name)
 		dragframe.opt:SetFrameStrata("HIGH")
 		dragframe.opt:SetFrameLevel(framelevel)

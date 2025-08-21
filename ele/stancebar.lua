@@ -43,7 +43,7 @@ function MoveAny:UpdateStanceBar()
 
 		StanceBar:SetSize(cou * btnsize, btnsize)
 		if MoveAny.UpdateActionBar then
-			MoveAny:AddBarName(StanceBar, "StanceBar")
+			StanceBar.btns = StanceBar.btns or {}
 			MoveAny:UpdateActionBar(StanceBar)
 		end
 
@@ -90,16 +90,47 @@ function MoveAny:UpdateStanceBar()
 end
 
 function MoveAny:InitStanceBar()
+	if not StanceBarAnchor then
+		StanceBarAnchor = CreateFrame("Frame", "StanceBarAnchor", MoveAny:GetMainPanel())
+		StanceBarAnchor:SetSize(btnsize, btnsize)
+		StanceBarAnchor:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 120)
+	end
+
 	if not StanceBar then
 		StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
 		StanceBar:SetSize(btnsize, btnsize)
-		StanceBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 120)
 		StanceBar.cou = -1
-		StanceBar.btns = {}
+		StanceBar.btns = StanceBar.btns or {}
 	end
 
-	if MoveAny:IsEnabled("STANCEBAR", false) and StanceBar then
-		StanceBar.btns = {}
+	if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
+		StanceBar.btns = StanceBar.btns or {}
+		local setStanceBarPoint = false
+		hooksecurefunc(
+			StanceBar,
+			"SetPoint",
+			function(sel, ...)
+				if setStanceBarPoint then return end
+				setStanceBarPoint = true
+				MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] or "CENTERED"
+				local orientation = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"]
+				StanceBar:ClearAllPoints()
+				if orientation == "LEFTALIGNED" then
+					StanceBar:SetPoint("LEFT", StanceBarAnchor, "LEFT", 0, 0)
+				elseif orientation == "CENTERED" then
+					StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
+				elseif orientation == "RIGHTALIGNED" then
+					StanceBar:SetPoint("RIGHT", StanceBarAnchor, "RIGHT", 0, 0)
+				else
+					MoveAny:INFO("WRONG ORIENTATION", orientation)
+				end
+
+				setStanceBarPoint = false
+			end
+		)
+
+		StanceBar:ClearAllPoints()
+		StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
 		local cou = MoveAny:GetStanceBarCount()
 		if StanceBar.actionButtons then
 			for i, v in pairs(StanceBar.actionButtons) do
@@ -107,8 +138,12 @@ function MoveAny:InitStanceBar()
 					tinsert(StanceBar.btns, v)
 				end
 			end
-		else
-			MoveAny:UpdateStanceBar()
+		end
+
+		if MoveAny.UpdateActionBar then
+			MoveAny:AddBarName(StanceBar, "StanceBar")
+			StanceBar.btns = StanceBar.btns or {}
+			MoveAny:UpdateActionBar(StanceBar)
 		end
 	end
 end

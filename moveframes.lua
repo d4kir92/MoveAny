@@ -351,7 +351,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetClampedToScreen(fm, true, "UpdateMoveFrames 1")
 							end
 
-							if WorldMapFrame and WorldMapFrameMove then
+							if MoveAny:GetWoWBuild() ~= "RETAIL" and WorldMapFrame and WorldMapFrameMove then
 								local offsetl = 15
 								local offsetr = 7
 								local offsett = 18

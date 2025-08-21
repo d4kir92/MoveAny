@@ -353,7 +353,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 	end
 
 	if cbs[key] == nil then
-		cbs[key] = CreateFrame("CheckButton", key .. "_CB", MALock.SC, "UICheckButtonTemplate")
+		cbs[key] = MoveAny:CreateCheckButton(key .. "_CB", MALock.SC)
 		local cb = cbs[key]
 		cb:SetSize(24, 24)
 		cb:SetChecked(oldVal)
@@ -419,7 +419,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 			end
 		)
 
-		cb.btn = CreateFrame("BUTTON", "cb.btn", cb)
+		cb.btn = MoveAny:CreateButton("cb.btn", cb, true)
 		cb.btn:SetSize(MALock.SC:GetWidth() - 24, 24)
 		cb.btn:SetPoint("LEFT", cb, "RIGHT", 0, 0)
 		cb.btn:RegisterForClicks("LeftButtonDown", "RightButtonDown")
@@ -676,7 +676,7 @@ function MoveAny:InitMALock()
 		end, "InitMALock"
 	)
 
-	local rb = CreateFrame("Button", nil, MALock)
+	local rb = MoveAny:CreateButton(nil, MALock, true)
 	rb:EnableMouse("true")
 	rb:SetPoint("BOTTOMRIGHT")
 	rb:SetSize(32, 32)
@@ -697,7 +697,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.160")
+	MoveAny:SetVersion(135994, "1.8.161")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -785,7 +785,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "DEBUFFS", false, nil, nil, "ShowDebuffFrame")
 		AddCheckBox(posx, "GAMETOOLTIP", false, nil, nil, "ShowHudTooltip")
 		AddCheckBox(posx, "PETBAR", false, nil, nil, "ShowPetActionBar")
-		AddCheckBox(posx, "STANCEBAR", false, nil, nil, "ShowStanceBar")
+		AddCheckBox(posx, "STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
 		if PossessActionBar or PossessBarFrame then
 			AddCheckBox(posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar")
 		end
@@ -1142,7 +1142,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "DISABLEMOVEMENT", false)
 	end
 
-	MALock.Pipette = CreateFrame("Button", "MALock_Pipette", MALock, "UIPanelButtonTemplate")
+	MALock.Pipette = MoveAny:CreateButton("MALock_Pipette", MALock)
 	MALock.Pipette:SetSize(24, 24)
 	MALock.Pipette:SetText("")
 	MALock.Pipette.texture = MALock.Pipette:CreateTexture()
@@ -1176,7 +1176,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MALock.Profiles = CreateFrame("Button", "MALock_Profiles", MALock, "UIPanelButtonTemplate")
+	MALock.Profiles = MoveAny:CreateButton("MALock_Profiles", MALock)
 	MALock.Profiles:SetPoint("TOPRIGHT", MALock, "TOPRIGHT", -br, -26)
 	MALock.Profiles:SetSize(100, 24)
 	MALock.Profiles:SetText(MoveAny:Trans("LID_PROFILES"))
@@ -1211,7 +1211,7 @@ function MoveAny:InitMALock()
 	MALock.SF.bg = MALock.SF:CreateTexture("MALock.SF.bg", "ARTWORK")
 	MALock.SF.bg:SetAllPoints(MALock.SF)
 	MALock.SF.bg:SetColorTexture(0.03, 0.03, 0.03, 0.5)
-	MALock.save = CreateFrame("BUTTON", "MALock" .. ".save", MALock, "UIPanelButtonTemplate")
+	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock)
 	MALock.save:SetSize(120, 24)
 	MALock.save:SetPoint("BOTTOMLEFT", MALock, "BOTTOMLEFT", 4, 4)
 	MALock.save:SetText(SAVE)
@@ -1230,7 +1230,7 @@ function MoveAny:InitMALock()
 	)
 
 	MALock.save:Disable()
-	MALock.reload = CreateFrame("BUTTON", "MALock" .. ".reload", MALock, "UIPanelButtonTemplate")
+	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock)
 	MALock.reload:SetSize(120, 24)
 	MALock.reload:SetPoint("BOTTOMLEFT", MALock, "BOTTOMLEFT", 4 + 120 + 4, 4)
 	MALock.reload:SetText(RELOADUI)
@@ -1645,7 +1645,7 @@ function MoveAny:AddUploadProfileLine(source, profile)
 
 		MAUploadProfile.name = MAUploadProfile:CreateFontString(nil, nil, "GameFontNormal")
 		MAUploadProfile.name:SetPoint("TOPLEFT", MAUploadProfile, "TOPLEFT", 12, -26)
-		MAUploadProfile.btn = CreateFrame("Button", "MAUploadProfile.X", MAUploadProfile, "UIPanelButtonTemplate")
+		MAUploadProfile.btn = MoveAny:CreateButton("MAUploadProfile.X", MAUploadProfile)
 		MAUploadProfile.btn:SetPoint("TOPLEFT", MAUploadProfile, "TOPLEFT", 12, -78)
 		MAUploadProfile.btn:SetSize(100, 24)
 		MAUploadProfile.btn:SetText("X")
@@ -1739,7 +1739,7 @@ function MoveAny:ShowProfiles()
 		MAProfiles.DISCORD:SetSize(160, 24)
 		MAProfiles.DISCORD:SetPoint("BOTTOMRIGHT", MAProfiles, "BOTTOMRIGHT", -4 - 20, 4)
 		MAProfiles.DISCORD:SetAutoFocus(false)
-		local rb2 = CreateFrame("Button", nil, MAProfiles)
+		local rb2 = MoveAny:CreateButton(nil, MAProfiles, true)
 		rb2:EnableMouse("true")
 		rb2:SetPoint("BOTTOMRIGHT")
 		rb2:SetSize(32, 32)
@@ -1770,7 +1770,7 @@ function MoveAny:ShowProfiles()
 		MAProfiles.SF.bg = MAProfiles.SF:CreateTexture()
 		MAProfiles.SF.bg:SetAllPoints(MAProfiles.SF)
 		MAProfiles.SF.bg:SetColorTexture(0.03, 0.03, 0.03, 0.5)
-		MAProfiles.AddProfile = CreateFrame("Button", "MAProfiles_AddProfile", MAProfiles, "UIPanelButtonTemplate")
+		MAProfiles.AddProfile = MoveAny:CreateButton("MAProfiles_AddProfile", MAProfiles)
 		MAProfiles.AddProfile:SetPoint("TOPLEFT", MAProfiles, "TOPLEFT", br, -26)
 		MAProfiles.AddProfile:SetSize(160, 24)
 		MAProfiles.AddProfile:SetText(MoveAny:Trans("LID_ADDPROFILE"))
@@ -1860,7 +1860,7 @@ function MoveAny:ShowProfiles()
 						end
 					)
 
-					MAAddProfile.AddProfile = CreateFrame("Button", "MAAddProfile_Profiles", MAAddProfile, "UIPanelButtonTemplate")
+					MAAddProfile.AddProfile = MoveAny:CreateButton("MAAddProfile_Profiles", MAAddProfile)
 					MAAddProfile.AddProfile:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br)
 					MAAddProfile.AddProfile:SetSize(160, 24)
 					MAAddProfile.AddProfile:SetText(MoveAny:Trans("LID_ADD"))
@@ -1877,7 +1877,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.GetProfile = CreateFrame("Button", "MAProfiles_GetProfile", MAProfiles, "UIPanelButtonTemplate")
+		MAProfiles.GetProfile = MoveAny:CreateButton("MAProfiles_GetProfile", MAProfiles)
 		MAProfiles.GetProfile:SetPoint("TOPLEFT", MAProfiles, "TOPLEFT", br + 160 + br, -26)
 		MAProfiles.GetProfile:SetSize(160, 24)
 		MAProfiles.GetProfile:SetText(MoveAny:Trans("LID_GETPROFILE"))
@@ -1936,7 +1936,7 @@ function MoveAny:ShowProfiles()
 						MAGetProfile.lines[id].name:SetPoint("LEFT", MAGetProfile.lines[id], "LEFT", 0, 0)
 						MAGetProfile.lines[id].profile = MAGetProfile.lines[id]:CreateFontString(nil, nil, "GameFontNormal")
 						MAGetProfile.lines[id].profile:SetPoint("LEFT", MAGetProfile.lines[id], "LEFT", 250, 0)
-						MAGetProfile.lines[id].btn = CreateFrame("Button", source .. "btn", MAGetProfile.lines[id], "UIPanelButtonTemplate")
+						MAGetProfile.lines[id].btn = MoveAny:CreateButton(source .. "btn", MAGetProfile.lines[id])
 						MAGetProfile.lines[id].btn:SetPoint("LEFT", MAGetProfile.lines[id], "LEFT", 450, 0)
 						MAGetProfile.lines[id].btn:SetSize(100, 24)
 						MAGetProfile.lines[id].btn:SetText(MoveAny:Trans("LID_DOWNLOAD"))
@@ -1974,7 +1974,7 @@ function MoveAny:ShowProfiles()
 										end
 									)
 
-									MADownloadProfile.btn = CreateFrame("Button", source .. "btn", MADownloadProfile, "UIPanelButtonTemplate")
+									MADownloadProfile.btn = MoveAny:CreateButton(source .. "btn", MADownloadProfile)
 									MADownloadProfile.btn:SetPoint("TOPLEFT", MADownloadProfile, "TOPLEFT", 12, -78)
 									MADownloadProfile.btn:SetSize(100, 24)
 									MADownloadProfile.btn:SetText(MoveAny:Trans("LID_ADD"))
@@ -2044,7 +2044,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.back = CreateFrame("BUTTON", "MAProfiles_Back", MAProfiles, "UIPanelButtonTemplate")
+		MAProfiles.back = MoveAny:CreateButton("MAProfiles_Back", MAProfiles)
 		MAProfiles.back:SetSize(120, 24)
 		MAProfiles.back:SetPoint("BOTTOMLEFT", MAProfiles, "BOTTOMLEFT", 4, 4)
 		MAProfiles.back:SetText(BACK)
@@ -2060,7 +2060,7 @@ function MoveAny:ShowProfiles()
 
 		local index = 0
 		for name, tab in pairs(MoveAny:GetProfiles()) do
-			btn = CreateFrame("Button", name, MAProfiles.SC, "UIPanelButtonTemplate")
+			btn = MoveAny:CreateButton(name, MAProfiles.SC)
 			btn:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 40 - br)
 			btn:SetSize(160, 24)
 			if name == MoveAny:GetCP() then
@@ -2077,7 +2077,7 @@ function MoveAny:ShowProfiles()
 				end
 			)
 
-			btnShare = CreateFrame("Button", name, MAProfiles.SC, "UIPanelButtonTemplate")
+			btnShare = MoveAny:CreateButton(name, MAProfiles.SC)
 			btnShare:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br, -index * 40 - br)
 			btnShare:SetSize(80, 24)
 			btnShare:SetText(MoveAny:Trans("LID_SHARE"))
@@ -2134,7 +2134,7 @@ function MoveAny:ShowProfiles()
 							MAShareProfile.lines[id]:SetPoint("TOPLEFT", MAShareProfile.SC, "TOPLEFT", 0, id * 25)
 							MAShareProfile.lines[id].name = MAShareProfile.lines[id]:CreateFontString(nil, nil, "GameFontNormal")
 							MAShareProfile.lines[id].name:SetPoint("LEFT", MAShareProfile.lines[id], "LEFT", 0, id * 25)
-							MAShareProfile.lines[id].btn = CreateFrame("Button", profile, MAShareProfile.lines[id], "UIPanelButtonTemplate")
+							MAShareProfile.lines[id].btn = MoveAny:CreateButton(profile, MAShareProfile.lines[id])
 							MAShareProfile.lines[id].btn:SetPoint("LEFT", MAShareProfile.lines[id], "LEFT", 450, 0)
 							MAShareProfile.lines[id].btn:SetSize(100, 24)
 							MAShareProfile.lines[id].btn:SetText(MoveAny:Trans("LID_UPLOAD"))
@@ -2177,7 +2177,7 @@ function MoveAny:ShowProfiles()
 			)
 
 			if name ~= "DEFAULT" then
-				btnRen = CreateFrame("Button", name, MAProfiles.SC, "UIPanelButtonTemplate")
+				btnRen = MoveAny:CreateButton(name, MAProfiles.SC)
 				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 40 - br)
 				btnRen:SetSize(100, 24)
 				btnRen:SetText(MoveAny:Trans("LID_RENAME"))
@@ -2215,7 +2215,7 @@ function MoveAny:ShowProfiles()
 								end
 							)
 
-							MARenameProfile.RenameProfile = CreateFrame("Button", "MARenameProfile_Profiles", MARenameProfile, "UIPanelButtonTemplate")
+							MARenameProfile.RenameProfile = MoveAny:CreateButton("MARenameProfile_Profiles", MARenameProfile)
 							MARenameProfile.RenameProfile:SetPoint("TOPLEFT", MARenameProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br)
 							MARenameProfile.RenameProfile:SetSize(160, 24)
 							MARenameProfile.RenameProfile:SetText(MoveAny:Trans("LID_RENAME"))
@@ -2240,7 +2240,7 @@ function MoveAny:ShowProfiles()
 				)
 			end
 
-			btnRem = CreateFrame("Button", name, MAProfiles.SC, "UIPanelButtonTemplate")
+			btnRem = MoveAny:CreateButton(name, MAProfiles.SC)
 			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br)
 			btnRem:SetSize(100, 24)
 			btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
@@ -4123,7 +4123,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("STANCEBAR", false) and StanceBar then
+	if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
 		for i = 1, 12 do
 			if _G["StanceButton" .. i] and _G["StanceButton" .. i .. "NormalTexture2"] then
 				_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
@@ -4133,8 +4133,8 @@ function MoveAny:LoadAddon()
 
 		MoveAny:RegisterWidget(
 			{
-				["name"] = "StanceBar",
-				["lstr"] = "LID_STANCEBAR",
+				["name"] = "StanceBarAnchor",
+				["lstr"] = "LID_STANCEBARANCHOR",
 				["secure"] = true
 			}
 		)
