@@ -138,6 +138,8 @@ function MoveAny:InitStanceBar()
 					tinsert(StanceBar.btns, v)
 				end
 			end
+		else
+			MoveAny:UpdateStanceBar()
 		end
 
 		if MoveAny.UpdateActionBar then

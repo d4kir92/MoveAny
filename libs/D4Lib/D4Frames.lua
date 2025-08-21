@@ -909,7 +909,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
             end
         )
     else
-        DropDown = CreateFrame("Frame", "WPDemoDropDown", PARENT, "UIDropDownMenuTemplate")
+        DropDown = CreateFrame("Frame", "WPDemoDropDown", parent, "UIDropDownMenuTemplate")
         DropDown:SetPoint("TOPLEFT", -10, Y)
         UIDropDownMenu_SetWidth(DropDown, 200)
         function WPDropDownDemo_Menu(frame, level, menuList)

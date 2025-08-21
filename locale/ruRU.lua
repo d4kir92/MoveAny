@@ -56,7 +56,7 @@ MoveAny:AddTrans("ruRU", "LID_GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", "Подсказ
 MoveAny:AddTrans("ruRU", "LID_QUEUESTATUSBUTTON", "Статус LFG")
 MoveAny:AddTrans("ruRU", "LID_QUEUESTATUSFRAME", "Подсказка о статусе LFG")
 MoveAny:AddTrans("ruRU", "LID_PETBAR", "Полоса питомца")
-MoveAny:AddTrans("ruRU", "LID_STANCEBARANCHOR", "Stance Bar Anchor")
+MoveAny:AddTrans("ruRU", "LID_STANCEBARANCHOR", "Stance Bar Anchor (StanceButtons)")
 MoveAny:AddTrans("ruRU", "LID_TOTEMBAR", "Шаман - тотемы")
 MoveAny:AddTrans("ruRU", "LID_LEAVEVEHICLE", "Кнопка 'Покинуть технику'")
 MoveAny:AddTrans("ruRU", "LID_GROUPLOOTFRAME1", "Добыча 1 (добыча)")

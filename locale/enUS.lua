@@ -56,7 +56,7 @@ MoveAny:AddTrans("enUS", "LID_GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", "Tooltip on Cur
 MoveAny:AddTrans("enUS", "LID_QUEUESTATUSBUTTON", "LFG Status")
 MoveAny:AddTrans("enUS", "LID_QUEUESTATUSFRAME", "LFG Status Tooltip")
 MoveAny:AddTrans("enUS", "LID_PETBAR", "Pet Bar")
-MoveAny:AddTrans("enUS", "LID_STANCEBARANCHOR", "Stance Bar Anchor")
+MoveAny:AddTrans("enUS", "LID_STANCEBARANCHOR", "Stance Bar Anchor (StanceButtons)")
 MoveAny:AddTrans("enUS", "LID_TOTEMBAR", "Shaman - Totem Bar")
 MoveAny:AddTrans("enUS", "LID_LEAVEVEHICLE", "Leave Vehicle Button")
 MoveAny:AddTrans("enUS", "LID_GROUPLOOTFRAME1", "Loot Roll Frame 1 (Loot)")
