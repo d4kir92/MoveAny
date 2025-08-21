@@ -129,6 +129,22 @@ function MoveAny:InitStanceBar()
 			end
 		)
 
+		hooksecurefunc(
+			StanceBarAnchor,
+			"SetScale",
+			function(sel, scale)
+				StanceBar:SetScale(scale)
+			end
+		)
+
+		hooksecurefunc(
+			StanceBarAnchor,
+			"SetAlpha",
+			function(sel, alpha)
+				StanceBar:SetAlpha(alpha)
+			end
+		)
+
 		StanceBar:ClearAllPoints()
 		StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
 		local cou = MoveAny:GetStanceBarCount()
