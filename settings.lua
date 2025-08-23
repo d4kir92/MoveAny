@@ -500,7 +500,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 end
 
 local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
-	if sls[key] == nil then
+	if sls[key] == nil and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 		posy = posy - 10
 		local name = "sls[" .. key .. "]"
 		sls[key] = CreateFrame("Slider", name, MALock.SC, "UISliderTemplate")
@@ -561,14 +561,16 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 		posy = posy - 10
 	end
 
-	sls[key]:ClearAllPoints()
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. key)), strlower(searchStr)) then
-		sls[key]:Show()
-		posy = posy - 10
-		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
-		posy = posy - 30
-	else
-		sls[key]:Hide()
+	if sls[key] then
+		sls[key]:ClearAllPoints()
+		if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. key)), strlower(searchStr)) then
+			sls[key]:Show()
+			posy = posy - 10
+			sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
+			posy = posy - 30
+		else
+			sls[key]:Hide()
+		end
 	end
 end
 
@@ -713,14 +715,18 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.164")
+	MoveAny:SetVersion(135994, "1.8.165")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
 			MoveAny:ToggleMALock()
 			if needReload then
-				C_UI.Reload()
+				if C_UI then
+					C_UI.Reload()
+				else
+					ReloadUI()
+				end
 			end
 		end
 	)
@@ -1249,11 +1255,15 @@ function MoveAny:InitMALock()
 	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock)
 	MALock.reload:SetSize(120, 24)
 	MALock.reload:SetPoint("BOTTOMLEFT", MALock, "BOTTOMLEFT", 4 + 120 + 4, 4)
-	MALock.reload:SetText(RELOADUI)
+	MALock.reload:SetText(RELOADUI or "RELOADUI")
 	MALock.reload:SetScript(
 		"OnClick",
 		function()
-			C_UI.Reload()
+			if C_UI then
+				C_UI.Reload()
+			else
+				ReloadUI()
+			end
 		end
 	)
 
@@ -1833,48 +1843,50 @@ function MoveAny:ShowProfiles()
 						tinsert(profileNames, name)
 					end
 
-					local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
-					sliderProfiles:SetSize(MAAddProfile:GetWidth() - 20, 16)
-					sliderProfiles:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br)
-					if sliderProfiles.Low == nil then
-						sliderProfiles.Low = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
-						sliderProfiles.Low:SetPoint("BOTTOMLEFT", sliderProfiles, "BOTTOMLEFT", 0, -12)
-						MoveAny:SetFontSize(sliderProfiles.Low, 10, "THINOUTLINE")
-						sliderProfiles.Low:SetTextColor(1, 1, 1)
-					end
-
-					if sliderProfiles.High == nil then
-						sliderProfiles.High = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
-						sliderProfiles.High:SetPoint("BOTTOMRIGHT", sliderProfiles, "BOTTOMRIGHT", 0, -12)
-						MoveAny:SetFontSize(sliderProfiles.High, 10, "THINOUTLINE")
-						sliderProfiles.High:SetTextColor(1, 1, 1)
-					end
-
-					if sliderProfiles.Text == nil then
-						sliderProfiles.Text = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
-						sliderProfiles.Text:SetPoint("TOP", sliderProfiles, "TOP", 0, 16)
-						MoveAny:SetFontSize(sliderProfiles.Text, 12, "THINOUTLINE")
-						sliderProfiles.Text:SetTextColor(1, 1, 1)
-					end
-
-					sliderProfiles.Low:SetText("")
-					sliderProfiles.High:SetText("")
-					sliderProfiles.Text:SetText(MoveAny:Trans("LID_INHERITFROM") .. ": " .. MAAddProfile.inheritFrom)
-					sliderProfiles:SetMinMaxValues(1, #profileNames)
-					sliderProfiles:SetObeyStepOnDrag(true)
-					sliderProfiles:SetValueStep(1)
-					sliderProfiles:SetValue(1)
-					sliderProfiles:SetScript(
-						"OnValueChanged",
-						function(sel, val)
-							val = tonumber(string.format("%" .. 0 .. "f", val))
-							local value = profileNames[val]
-							if value and value ~= MAAddProfile.inheritFrom then
-								MAAddProfile.inheritFrom = value
-								sel.Text:SetText(MoveAny:Trans("LID_INHERITFROM") .. ": " .. value)
-							end
+					if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+						local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
+						sliderProfiles:SetSize(MAAddProfile:GetWidth() - 20, 16)
+						sliderProfiles:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br)
+						if sliderProfiles.Low == nil then
+							sliderProfiles.Low = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
+							sliderProfiles.Low:SetPoint("BOTTOMLEFT", sliderProfiles, "BOTTOMLEFT", 0, -12)
+							MoveAny:SetFontSize(sliderProfiles.Low, 10, "THINOUTLINE")
+							sliderProfiles.Low:SetTextColor(1, 1, 1)
 						end
-					)
+
+						if sliderProfiles.High == nil then
+							sliderProfiles.High = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
+							sliderProfiles.High:SetPoint("BOTTOMRIGHT", sliderProfiles, "BOTTOMRIGHT", 0, -12)
+							MoveAny:SetFontSize(sliderProfiles.High, 10, "THINOUTLINE")
+							sliderProfiles.High:SetTextColor(1, 1, 1)
+						end
+
+						if sliderProfiles.Text == nil then
+							sliderProfiles.Text = sliderProfiles:CreateFontString(nil, nil, "GameFontNormal")
+							sliderProfiles.Text:SetPoint("TOP", sliderProfiles, "TOP", 0, 16)
+							MoveAny:SetFontSize(sliderProfiles.Text, 12, "THINOUTLINE")
+							sliderProfiles.Text:SetTextColor(1, 1, 1)
+						end
+
+						sliderProfiles.Low:SetText("")
+						sliderProfiles.High:SetText("")
+						sliderProfiles.Text:SetText(MoveAny:Trans("LID_INHERITFROM") .. ": " .. MAAddProfile.inheritFrom)
+						sliderProfiles:SetMinMaxValues(1, #profileNames)
+						sliderProfiles:SetObeyStepOnDrag(true)
+						sliderProfiles:SetValueStep(1)
+						sliderProfiles:SetValue(1)
+						sliderProfiles:SetScript(
+							"OnValueChanged",
+							function(sel, val)
+								val = tonumber(string.format("%" .. 0 .. "f", val))
+								local value = profileNames[val]
+								if value and value ~= MAAddProfile.inheritFrom then
+									MAAddProfile.inheritFrom = value
+									sel.Text:SetText(MoveAny:Trans("LID_INHERITFROM") .. ": " .. value)
+								end
+							end
+						)
+					end
 
 					MAAddProfile.AddProfile = MoveAny:CreateButton("MAAddProfile_Profiles", MAAddProfile)
 					MAAddProfile.AddProfile:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br)
@@ -1884,7 +1896,11 @@ function MoveAny:ShowProfiles()
 						"OnClick",
 						function()
 							MoveAny:AddProfile(MAAddProfile.name, MAAddProfile.inheritFrom)
-							C_UI.Reload()
+							if C_UI then
+								C_UI.Reload()
+							else
+								ReloadUI()
+							end
 						end
 					)
 				else
@@ -2001,7 +2017,11 @@ function MoveAny:ShowProfiles()
 											MoveAny:CheckDB("PROFILES")
 											if MATAB["PROFILES"][profileName] == nil then
 												MoveAny:ImportProfile(profileName, WebProfileData)
-												C_UI.Reload()
+												if C_UI then
+													C_UI.Reload()
+												else
+													ReloadUI()
+												end
 											else
 												MoveAny:ERR("[AddProfile] can't add, Name already exists.")
 											end
@@ -2089,7 +2109,11 @@ function MoveAny:ShowProfiles()
 				"OnClick",
 				function()
 					MoveAny:SetCP(name)
-					C_UI.Reload()
+					if C_UI then
+						C_UI.Reload()
+					else
+						ReloadUI()
+					end
 				end
 			)
 
@@ -2264,7 +2288,11 @@ function MoveAny:ShowProfiles()
 				"OnClick",
 				function()
 					MoveAny:RemoveProfile(name)
-					C_UI.Reload()
+					if C_UI then
+						C_UI.Reload()
+					else
+						ReloadUI()
+					end
 				end
 			)
 
@@ -6499,7 +6527,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" then
+		if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and WorldMapFrame.ScrollContainer then
 			WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
 				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
 				local scale = WorldMapFrame:GetScale()

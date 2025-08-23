@@ -6,7 +6,7 @@ local missingRealmNameOnce = true
 local missingRealms = {}
 local realms = {}
 local missingRealmLangs = {}
-local region = GetCurrentRegion()
+local region = GetCurrentRegion and GetCurrentRegion() or 1
 local withoutSpaces = {}
 local realmLangs = {}
 local missingRegionOnce = true
@@ -5874,7 +5874,7 @@ local function InitRealms()
                 realms["密斯莱尔"] = "美国西部"
                 realms["尤亚姆巴"] = "大洋洲"
                 realms["帕格"] = "美国东部"
-                realms["怀特迈恩"] = "美国西部"
+                realms["怀特迈恩"] = "���国西部"
                 realms["怒炉"] = "美国西部"
                 realms["曼科里克"] = "美国东部"
                 realms["格罗布鲁斯"] = "美国西部"

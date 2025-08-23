@@ -332,77 +332,81 @@ function D4:CreateSlider(tab)
     tab.steps = tab.steps or 1
     tab.decimals = tab.decimals or 0
     tab.key = tab.key or tab.name or ""
-    local slider = CreateFrame("Slider", tab.key, tab.parent, "UISliderTemplate")
-    slider:SetSize(tab.sw, 16)
-    slider:SetPoint(unpack(tab.pTab))
-    if slider.Low == nil then
-        slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
-        slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-        slider.Low:SetTextColor(1, 1, 1)
-    end
-
-    if slider.High == nil then
-        slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
-        slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-        slider.High:SetTextColor(1, 1, 1)
-    end
-
-    if slider.Text == nil then
-        slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
-        slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-        slider.Text:SetTextColor(1, 1, 1)
-    end
-
-    slider.Low:SetText(tab.vmin)
-    slider.High:SetText(tab.vmax)
-    if tab.name and tab.key and tab.key == "" then
-        D4:INFO("[D4][CreateSlider] " .. tab.name .. " has no key")
-    end
-
-    local struct = D4:Trans("LID_" .. tab.key)
-    if struct and tab.value then
-        slider.Text:SetText(string.format(struct, tab.value))
-    end
-
-    D4:SetFontSize(slider.Low, 10, "THINOUTLINE")
-    D4:SetFontSize(slider.High, 10, "THINOUTLINE")
-    D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
-    slider:SetMinMaxValues(tab.vmin, tab.vmax)
-    slider:SetObeyStepOnDrag(true)
-    slider:SetValueStep(tab.steps)
-    if tab.value then
-        slider:SetValue(tab.value)
-    end
-
-    slider:SetScript(
-        "OnValueChanged",
-        function(sel, val)
-            val = string.format("%." .. tab.decimals .. "f", val)
-            val = tonumber(val)
-            if TAB then
-                TAB[tab.key] = val
-            end
-
-            if tab.funcV2 then
-                tab:funcV2(val)
-            elseif tab.funcV then
-                tab:funcV(val)
-            end
-
-            if tab.func then
-                tab:func(val)
-            end
-
-            local struct2 = D4:Trans("LID_" .. tab.key)
-            if struct2 then
-                slider.Text:SetText(string.format(struct2, val))
-            else
-                D4:MSG("[D4][CreateSlider][OnValueChanged] Missing format string:", tab.key)
-            end
+    if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+        local slider = CreateFrame("Slider", tab.key, tab.parent, "UISliderTemplate")
+        slider:SetSize(tab.sw, 16)
+        slider:SetPoint(unpack(tab.pTab))
+        if slider.Low == nil then
+            slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
+            slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
+            slider.Low:SetTextColor(1, 1, 1)
         end
-    )
 
-    return slider
+        if slider.High == nil then
+            slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
+            slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
+            slider.High:SetTextColor(1, 1, 1)
+        end
+
+        if slider.Text == nil then
+            slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
+            slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
+            slider.Text:SetTextColor(1, 1, 1)
+        end
+
+        slider.Low:SetText(tab.vmin)
+        slider.High:SetText(tab.vmax)
+        if tab.name and tab.key and tab.key == "" then
+            D4:INFO("[D4][CreateSlider] " .. tab.name .. " has no key")
+        end
+
+        local struct = D4:Trans("LID_" .. tab.key)
+        if struct and tab.value then
+            slider.Text:SetText(string.format(struct, tab.value))
+        end
+
+        D4:SetFontSize(slider.Low, 10, "THINOUTLINE")
+        D4:SetFontSize(slider.High, 10, "THINOUTLINE")
+        D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
+        slider:SetMinMaxValues(tab.vmin, tab.vmax)
+        slider:SetObeyStepOnDrag(true)
+        slider:SetValueStep(tab.steps)
+        if tab.value then
+            slider:SetValue(tab.value)
+        end
+
+        slider:SetScript(
+            "OnValueChanged",
+            function(sel, val)
+                val = string.format("%." .. tab.decimals .. "f", val)
+                val = tonumber(val)
+                if TAB then
+                    TAB[tab.key] = val
+                end
+
+                if tab.funcV2 then
+                    tab:funcV2(val)
+                elseif tab.funcV then
+                    tab:funcV(val)
+                end
+
+                if tab.func then
+                    tab:func(val)
+                end
+
+                local struct2 = D4:Trans("LID_" .. tab.key)
+                if struct2 then
+                    slider.Text:SetText(string.format(struct2, val))
+                else
+                    D4:MSG("[D4][CreateSlider][OnValueChanged] Missing format string:", tab.key)
+                end
+            end
+        )
+
+        return slider
+    end
+
+    return nil
 end
 
 function D4:GetColor(name, from)

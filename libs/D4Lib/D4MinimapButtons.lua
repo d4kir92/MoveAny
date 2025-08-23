@@ -287,10 +287,19 @@ function D4:CreateMinimapButton(params)
     local animOut = btn.fadeOut:CreateAnimation("Alpha")
     animOut:SetOrder(1)
     animOut:SetDuration(0.2)
-    animOut:SetFromAlpha(1)
-    animOut:SetToAlpha(0)
+    if animOut.SetFromAlpha then
+        animOut:SetFromAlpha(1)
+    end
+
+    if animOut.SetToAlpha then
+        animOut:SetToAlpha(0)
+    end
+
     animOut:SetStartDelay(1)
-    btn.fadeOut:SetToFinalAlpha(true)
+    if animOut.fadeOut and animOut.fadeOut.SetToFinalAlpha then
+        btn.fadeOut:SetToFinalAlpha(true)
+    end
+
     btn.ia_visible = false
     local function BtnThink()
         if btn.ia_visible_old ~= GetD4MinimapHover() then

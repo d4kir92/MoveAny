@@ -38,7 +38,7 @@ end
 
 D4.oldWow = D4.oldWow or false
 if C_Timer == nil then
-    D4:MSG("[D4] ADD C_Timer")
+    D4:MSG("[D4] ADD MISSING: C_Timer")
     C_Timer = {}
     local f = CreateFrame("Frame")
     f.tab = {}
@@ -60,6 +60,15 @@ if C_Timer == nil then
     end
 
     D4.oldWow = true
+end
+
+if C_Widget == nil then
+    C_Widget = {}
+    function C_Widget:IsWidget(frame)
+        if frame and frame.GetName then return true end
+
+        return false
+    end
 end
 
 local countAfter = {}
@@ -106,7 +115,7 @@ function D4:GetClassColor(class)
 end
 
 if GetClassColor == nil then
-    D4:MSG("[D4] ADD GetClassColor")
+    D4:MSG("[D4] ADD MISSING: GetClassColor")
     GetClassColor = function(class)
         local color = D4:GetClassColor(class)
         if color then return color.r, color.g, color.b, color.colorStr end
@@ -122,6 +131,12 @@ function D4:IsOldWow()
 end
 
 function D4:RegisterEvent(frame, event, unit)
+    if C_EventUtils == nil then
+        frame:RegisterEvent(event)
+
+        return
+    end
+
     if C_EventUtils.IsEventValid(event) then
         if unit then
             frame:RegisterUnitEvent(event, unit)
@@ -132,6 +147,12 @@ function D4:RegisterEvent(frame, event, unit)
 end
 
 function D4:UnregisterEvent(frame, event)
+    if C_EventUtils == nil then
+        frame:UnregisterEvent(event)
+
+        return
+    end
+
     if C_EventUtils.IsEventValid(event) then
         frame:UnregisterEvent(event)
     end
