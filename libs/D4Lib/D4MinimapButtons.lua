@@ -1,4 +1,7 @@
 local _, D4 = ...
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local GetCursorPosition = getglobal("GetCursorPosition")
 local deg, atan2 = math.deg, math.atan2
 local rad, cos, sin, sqrt, max, min = math.rad, math.cos, math.sin, math.sqrt, math.max, math.min
 local mmShapes = {
@@ -65,7 +68,7 @@ function D4:UpdatePosition(button, position, parent)
 end
 
 function D4:GetMMBtn(name)
-    return _G[name]
+    return getglobal(name)
 end
 
 if GetD4MinimapHover == nil then

@@ -4,6 +4,12 @@ local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
 local MABUFFSPACINGY = 10
 local MADEBUFFSPACING = 140
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local GetWeaponEnchantInfo = getglobal("GetWeaponEnchantInfo")
+local ConsolidatedBuffs = getglobal("ConsolidatedBuffs")
+local LibStub = getglobal("LibStub")
 function MoveAny:GetBuffPosition(name, p1, p3)
 	MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] = MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] or 0
 	if MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 0 then
@@ -34,7 +40,8 @@ end
 local once = true
 function MoveAny:InitBuffBar()
 	local dbtab = {}
-	if MoveAny:IsEnabled("BUFFS", false) and (MoveAny:GetWoWBuild() ~= "RETAIL" or BuffFrame == nil) then
+	local BuffFrame = getglobal("BuffFrame")
+	if MoveAny:IsEnabled("BUFFS", false) and (MoveAny:GetWoWBuild() ~= "RETAIL") and BuffFrame ~= nil then
 		local MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
 		local sw1, sh1 = BuffFrame:GetSize()
 		MABuffBar:SetSize(sw1, sh1)
@@ -96,7 +103,7 @@ function MoveAny:InitBuffBar()
 
 				local olddb = nil
 				for i = 1, 32 do
-					local db = _G["DebuffButton" .. i]
+					local db = getglobal("DebuffButton" .. i)
 					if db then
 						if dbtab[i] == nil then
 							dbtab[i] = {}
@@ -265,6 +272,7 @@ function MoveAny:InitBuffBar()
 		end
 
 		MoveAny:UpdateBuffDirections()
+		local TempEnchant1 = getglobal("TempEnchant1")
 		if TempEnchant1 then
 			hooksecurefunc(
 				TempEnchant1,
@@ -301,6 +309,7 @@ function MoveAny:InitBuffBar()
 			)
 		end
 
+		local TempEnchant2 = getglobal("TempEnchant2")
 		if TempEnchant2 then
 			hooksecurefunc(
 				TempEnchant2,
@@ -342,6 +351,7 @@ function MoveAny:InitBuffBar()
 			)
 		end
 
+		local TempEnchant3 = getglobal("TempEnchant3")
 		if TempEnchant3 then
 			hooksecurefunc(
 				TempEnchant3,
@@ -446,7 +456,7 @@ function MoveAny:InitBuffBar()
 				)
 			else
 				for bid = 1, 32 do
-					local bbtn = _G["BuffButton" .. bid]
+					local bbtn = getglobal("BuffButton" .. bid)
 					if bbtn then
 						if bbtn.masetup == nil then
 							bbtn.masetup = true
@@ -481,7 +491,7 @@ function MoveAny:InitBuffBar()
 									local numBuffs = 1
 									local prevBuff = nil
 									for i = 1, 32 do
-										local btn = _G["BuffButton" .. i]
+										local btn = getglobal("BuffButton" .. i)
 										if i == bid then break end
 										if btn and MoveAny:GetParent(btn) == BuffFrame then
 											numBuffs = numBuffs + 1
@@ -561,21 +571,21 @@ function MoveAny:InitBuffBar()
 					end
 
 					for i = 1, 32 do
-						local btn = _G["BuffButton" .. i]
+						local btn = getglobal("BuffButton" .. i)
 						if btn and not btn.MasqueButtonData then
 							btn.MasqueButtonData = {
 								Button = btn,
-								Icon = _G["BuffButton" .. "IconTexture"],
+								Icon = getglobal("BuffButton" .. "IconTexture"),
 							}
 
 							MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")
 						end
 
-						local btn2 = _G["DebuffButton" .. i]
+						local btn2 = getglobal("DebuffButton" .. i)
 						if btn2 and not btn2.MasqueButtonData then
 							btn2.MasqueButtonData = {
 								Button = btn2,
-								Icon = _G["DebuffButton" .. "IconTexture"],
+								Icon = getglobal("DebuffButton" .. "IconTexture"),
 							}
 
 							MAMasqueBuffs:AddButton(btn2, btn2.MasqueButtonData, "Item")
@@ -583,11 +593,11 @@ function MoveAny:InitBuffBar()
 					end
 
 					for i = 1, 3 do
-						local btn = _G["TempEnchant" .. i]
+						local btn = getglobal("TempEnchant" .. i)
 						if btn and not btn.MasqueButtonData then
 							btn.MasqueButtonData = {
 								Button = btn,
-								Icon = _G["TempEnchant" .. i .. "IconTexture"],
+								Icon = getglobal("TempEnchant" .. i .. "IconTexture"),
 							}
 
 							MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")

@@ -1,4 +1,12 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local strsplit = getglobal("strsplit")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local GetScreenWidth = getglobal("GetScreenWidth")
+local GetScreenHeight = getglobal("GetScreenHeight")
+local tinsert = getglobal("tinsert")
+local strfind = getglobal("strfind")
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -2060,7 +2068,7 @@ function MoveAny:ShowProfiles()
 
 		local index = 0
 		for name, tab in pairs(MoveAny:GetProfiles()) do
-			btn = MoveAny:CreateButton(name, MAProfiles.SC)
+			local btn = MoveAny:CreateButton(name, MAProfiles.SC)
 			btn:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 40 - br)
 			btn:SetSize(160, 24)
 			if name == MoveAny:GetCP() then
@@ -2077,7 +2085,7 @@ function MoveAny:ShowProfiles()
 				end
 			)
 
-			btnShare = MoveAny:CreateButton(name, MAProfiles.SC)
+			local btnShare = MoveAny:CreateButton(name, MAProfiles.SC)
 			btnShare:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br, -index * 40 - br)
 			btnShare:SetSize(80, 24)
 			btnShare:SetText(MoveAny:Trans("LID_SHARE"))
@@ -2177,7 +2185,7 @@ function MoveAny:ShowProfiles()
 			)
 
 			if name ~= "DEFAULT" then
-				btnRen = MoveAny:CreateButton(name, MAProfiles.SC)
+				local btnRen = MoveAny:CreateButton(name, MAProfiles.SC)
 				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 40 - br)
 				btnRen:SetSize(100, 24)
 				btnRen:SetText(MoveAny:Trans("LID_RENAME"))
@@ -2240,7 +2248,7 @@ function MoveAny:ShowProfiles()
 				)
 			end
 
-			btnRem = MoveAny:CreateButton(name, MAProfiles.SC)
+			local btnRem = MoveAny:CreateButton(name, MAProfiles.SC)
 			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br)
 			btnRem:SetSize(100, 24)
 			btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
@@ -2274,7 +2282,7 @@ MoveAny:OnEvent(
 		if event == "CHAT_MSG_ADDON" then
 			local prefix, data, _, source, _ = ...
 			if prefix == PREFIX then
-				tab = {strsplit(";", data)}
+				local tab = {strsplit(";", data)}
 				local name, realm = UnitName("player")
 				if realm == nil then
 					realm = GetRealmName()
@@ -2427,7 +2435,7 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
 		if MainMenuBarPerformanceBarFrame then
-			MainMenuBarPerformanceBarFrame:SetParent(MAHIDDEN)
+			MainMenuBarPerformanceBarFrame:SetParent(MoveAny:GetHidden())
 		end
 
 		if UIPARENT_MANAGED_FRAME_POSITIONS then
@@ -2439,15 +2447,15 @@ function MoveAny:LoadAddon()
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
 			end
 
-			MainMenuBarArtFrame:SetParent(MAHIDDEN)
+			MainMenuBarArtFrame:SetParent(MoveAny:GetHidden())
 		end
 
 		if MainMenuBar then
-			MainMenuBar:SetParent(MAHIDDEN)
+			MainMenuBar:SetParent(MoveAny:GetHidden())
 		end
 
 		if MainMenuBarOverlayFrame then
-			MainMenuBarOverlayFrame:SetParent(MAHIDDEN)
+			MainMenuBarOverlayFrame:SetParent(MoveAny:GetHidden())
 		end
 
 		if MainMenuBarExpText then
@@ -4131,6 +4139,16 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		hooksecurefunc(
+			StanceBarAnchor,
+			"SetParent",
+			function(sel, parent)
+				if parent == MoveAny:GetHidden() then
+					StanceBar:SetParent(MoveAny:GetHidden())
+				end
+			end
+		)
+
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "StanceBarAnchor",
@@ -4363,6 +4381,7 @@ function MoveAny:LoadAddon()
 
 				local availableSpace = topLimit - bottomLimit
 				local contentHeight = VERTICAL_MULTI_BAR_HEIGHT
+				print("showLeft", showLeft)
 				if showLeft then
 					contentHeight = contentHeight + VERTICAL_MULTI_BAR_HEIGHT + VERTICAL_MULTI_BAR_VERTICAL_SPACING
 					if contentHeight * VERTICAL_MULTI_BAR_MIN_SCALE > availableSpace or not GetCVarBool("multiBarRightVerticalLayout") then
@@ -4407,8 +4426,8 @@ function MoveAny:LoadAddon()
 				end
 			end
 
-			MainMenuBar.EndCaps:SetParent(MAHIDDEN)
-			MainMenuBar.BorderArt:SetParent(MAHIDDEN)
+			MainMenuBar.EndCaps:SetParent(MoveAny:GetHidden())
+			MainMenuBar.BorderArt:SetParent(MoveAny:GetHidden())
 		elseif MainMenuBarLeftEndCap then
 			MA_LeftEndCap:SetSize(MainMenuBarLeftEndCap:GetSize())
 			MA_LeftEndCap.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
@@ -4416,8 +4435,8 @@ function MoveAny:LoadAddon()
 			MA_RightEndCap:SetSize(MainMenuBarRightEndCap:GetSize())
 			MA_RightEndCap.tex:SetTexture(MainMenuBarRightEndCap:GetTexture())
 			MA_RightEndCap.tex:SetTexCoord(MainMenuBarRightEndCap:GetTexCoord())
-			MainMenuBarLeftEndCap:SetParent(MAHIDDEN)
-			MainMenuBarRightEndCap:SetParent(MAHIDDEN)
+			MainMenuBarLeftEndCap:SetParent(MoveAny:GetHidden())
+			MainMenuBarRightEndCap:SetParent(MoveAny:GetHidden())
 		end
 
 		MA_LeftEndCap:SetFrameLevel(10)
@@ -4947,7 +4966,7 @@ function MoveAny:LoadAddon()
 			MACompactRaidFrameManager,
 			"SetParent",
 			function(sel, parent)
-				if parent == MAHIDDEN then
+				if parent == MoveAny:GetHidden() then
 					CompactRaidFrameManager:SetAlpha(0)
 					MoveAny:ForeachChildren(
 						CompactRaidFrameManager,
@@ -5638,7 +5657,7 @@ function MoveAny:LoadAddon()
 			function(sel)
 				if sel.ma_set_parent_elpmb then return end
 				sel.ma_set_parent_elpmb = true
-				if MoveAny:GetParent(sel) ~= MAHIDDEN then
+				if MoveAny:GetParent(sel) ~= MoveAny:GetHidden() then
 					sel:SetParent(UIParent)
 				end
 

@@ -1,4 +1,6 @@
 local AddonName, D4 = ...
+local CreateFrame = getglobal("CreateFrame")
+local tinsert = getglobal("tinsert")
 local pre = AddonName .. "D4PREFIX"
 D4.VersionTab = D4.VersionTab or {}
 if C_ChatInfo then

@@ -1,4 +1,10 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local getn = getglobal("getn")
+local tinsert = getglobal("tinsert")
+local format = getglobal("format")
 local MAEF = {}
 local MACurrentEle = nil
 function MoveAny:GetCurrentEle()
@@ -639,8 +645,8 @@ function MoveAny:MenuOptions(opt, frame)
 					sliderOffset.Text:SetTextColor(1, 1, 1)
 				end
 
-				sliderOffset.Low:SetText(-4)
-				sliderOffset.High:SetText(8)
+				sliderOffset.Low:SetText("-4")
+				sliderOffset.High:SetText("8")
 				sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
 				sliderOffset:SetMinMaxValues(-4, 8)
 				sliderOffset:SetObeyStepOnDrag(true)
@@ -649,7 +655,7 @@ function MoveAny:MenuOptions(opt, frame)
 				sliderOffset:SetScript(
 					"OnValueChanged",
 					function(sel, value)
-						val = tonumber(string.format("%" .. 0 .. "f", value))
+						value = tonumber(string.format("%" .. 0 .. "f", value))
 						if value and value ~= opts["OFFSET"] then
 							opts["OFFSET"] = value
 							sel.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. value)
@@ -719,10 +725,10 @@ function MoveAny:MenuOptions(opt, frame)
 			slider:SetScript(
 				"OnValueChanged",
 				function(sel, valu)
-					val = tonumber(string.format("%" .. 0 .. "f", valu))
-					if val and val ~= opts["SPACING"] then
-						opts["SPACING"] = val
-						slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. val)
+					valu = tonumber(string.format("%" .. 0 .. "f", valu))
+					if valu and valu ~= opts["SPACING"] then
+						opts["SPACING"] = valu
+						slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. valu)
 						if MoveAny.UpdateActionBar then
 							MoveAny:UpdateActionBar(frame)
 						end
@@ -1214,10 +1220,10 @@ function MoveAny:MenuOptions(opt, frame)
 			sliderH:SetScript(
 				"OnValueChanged",
 				function(sel, valu)
-					val = tonumber(string.format("%" .. 0 .. "f", valu))
-					if val and val ~= opts["HEIGHT"] then
-						opts["HEIGHT"] = val
-						sel.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. val)
+					valu = tonumber(string.format("%" .. 0 .. "f", valu))
+					if valu and valu ~= opts["HEIGHT"] then
+						opts["HEIGHT"] = valu
+						sel.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. valu)
 						if frame and frame.UpdateSize then
 							frame:UpdateSize()
 						end

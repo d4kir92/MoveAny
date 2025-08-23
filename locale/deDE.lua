@@ -56,7 +56,7 @@ MoveAny:AddTrans("deDE", "LID_GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", "Tooltip am Zei
 MoveAny:AddTrans("deDE", "LID_QUEUESTATUSBUTTON", "SNG Status (LFG)")
 MoveAny:AddTrans("deDE", "LID_QUEUESTATUSFRAME", "SNG Status (LFG) Tooltip")
 MoveAny:AddTrans("deDE", "LID_PETBAR", "Begleiterleiste")
-MoveAny:AddTrans("deDE", "LID_STANCEBARANCHOR", "Haltungsleiste-Anker")
+MoveAny:AddTrans("deDE", "LID_STANCEBARANCHOR", "Haltungsleiste-Anker (StanceButtons)")
 MoveAny:AddTrans("deDE", "LID_TOTEMBAR", "Schamane - Totemleiste")
 MoveAny:AddTrans("deDE", "LID_LEAVEVEHICLE", "Fahrzeug verlassen Taste")
 MoveAny:AddTrans("deDE", "LID_GROUPLOOTFRAME1", "Beute-Würfeln Fenster 1 (Beute/Loot)")

@@ -1,25 +1,29 @@
 local _, MoveAny = ...
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local hooksecurefunc = getglobal("hooksecurefunc")
 function MoveAny:InitArenaEnemyFrames()
-	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and Arena_LoadUI then
-		if _G["ArenaEnemyFrame" .. 1] == nil and Arena_LoadUI then
-			Arena_LoadUI()
+	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and getglobal("Arena_LoadUI") then
+		if _G["ArenaEnemyFrame" .. 1] == nil and getglobal("Arena_LoadUI") then
+			getglobal("Arena_LoadUI")()
 		end
 
-		if ArenaEnemyFrames then
+		if getglobal("ArenaEnemyFrames") then
+			local arenaFrames = getglobal("ArenaEnemyFrames")
 			if _G["ArenaEnemyFrame" .. 1] then
 				local sw, sh = _G["ArenaEnemyFrame" .. 1]:GetSize()
-				ArenaEnemyFrames:SetSize(sw, sh * 5 + 4 * 21)
+				getglobal("ArenaEnemyFrames"):SetSize(sw, sh * 5 + 4 * 21)
 			end
 
 			local MAArenaEnemyFrames = CreateFrame("FRAME", "MAArenaEnemyFrames", MoveAny:GetMainPanel())
-			MAArenaEnemyFrames:SetSize(ArenaEnemyFrames:GetSize())
+			MAArenaEnemyFrames:SetSize(arenaFrames:GetSize())
 			MAArenaEnemyFrames:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", 100, 100)
-			ArenaEnemyFrames:ClearAllPoints()
-			ArenaEnemyFrames:SetPoint("CENTER", MAArenaEnemyFrames, "CENTER", 0, 0)
-			function ArenaEnemyFrames:ClearAllPoints()
+			arenaFrames:ClearAllPoints()
+			arenaFrames:SetPoint("CENTER", MAArenaEnemyFrames, "CENTER", 0, 0)
+			function arenaFrames:ClearAllPoints()
 			end
 
-			function ArenaEnemyFrames:SetPoint(...)
+			function arenaFrames:SetPoint(...)
 			end
 
 			hooksecurefunc(
@@ -28,7 +32,7 @@ function MoveAny:InitArenaEnemyFrames()
 				function(sel, scale)
 					if InCombatLockdown() and sel:IsProtected() then return false end
 					if scale and type(scale) == "number" then
-						ArenaEnemyFrames:SetScale(scale)
+						arenaFrames:SetScale(scale)
 					end
 				end
 			)
@@ -37,7 +41,7 @@ function MoveAny:InitArenaEnemyFrames()
 				MAArenaEnemyFrames,
 				"SetAlpha",
 				function(sel, alpha)
-					ArenaEnemyFrames:SetAlpha(alpha)
+					arenaFrames:SetAlpha(alpha)
 				end
 			)
 
@@ -77,7 +81,7 @@ function MoveAny:InitArenaEnemyFrames()
 
 			if MoveAny:DEBUG() then
 				hooksecurefunc(
-					ArenaEnemyFrames,
+					arenaFrames,
 					"Hide",
 					function(sel)
 						if sel.mahide then return end
@@ -87,7 +91,7 @@ function MoveAny:InitArenaEnemyFrames()
 					end
 				)
 
-				ArenaEnemyFrames:Show()
+				arenaFrames:Show()
 				for i = 1, 5 do
 					hooksecurefunc(
 						_G["ArenaEnemyFrame" .. i],
@@ -108,26 +112,27 @@ function MoveAny:InitArenaEnemyFrames()
 end
 
 function MoveAny:InitArenaPrepFrames()
-	if MoveAny:IsEnabled("ARENAPREPFRAMES", false) and Arena_LoadUI then
-		if _G["ArenaPrepFrame" .. 1] == nil and Arena_LoadUI then
-			Arena_LoadUI()
+	if MoveAny:IsEnabled("ARENAPREPFRAMES", false) and getglobal("Arena_LoadUI") then
+		if _G["ArenaPrepFrame" .. 1] == nil and getglobal("Arena_LoadUI") then
+			getglobal("Arena_LoadUI")()
 		end
 
-		if ArenaPrepFrames then
+		if getglobal("ArenaPrepFrames") then
+			local prepFrames = getglobal("ArenaPrepFrames")
 			if _G["ArenaPrepFrame" .. 1] then
 				local sw, sh = _G["ArenaPrepFrame" .. 1]:GetSize()
-				ArenaPrepFrames:SetSize(sw, sh * 5 + 4 * 21)
+				prepFrames:SetSize(sw, sh * 5 + 4 * 21)
 			end
 
 			local MAArenaPrepFrames = CreateFrame("FRAME", "MAArenaPrepFrames", MoveAny:GetMainPanel())
-			MAArenaPrepFrames:SetSize(ArenaPrepFrames:GetSize())
+			MAArenaPrepFrames:SetSize(prepFrames:GetSize())
 			MAArenaPrepFrames:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", 100, 100)
-			ArenaPrepFrames:ClearAllPoints()
-			ArenaPrepFrames:SetPoint("CENTER", MAArenaPrepFrames, "CENTER", 0, 0)
-			function ArenaPrepFrames:ClearAllPoints()
+			prepFrames:ClearAllPoints()
+			prepFrames:SetPoint("CENTER", MAArenaPrepFrames, "CENTER", 0, 0)
+			function prepFrames:ClearAllPoints()
 			end
 
-			function ArenaPrepFrames:SetPoint(...)
+			function prepFrames:SetPoint(...)
 			end
 
 			hooksecurefunc(
@@ -136,7 +141,7 @@ function MoveAny:InitArenaPrepFrames()
 				function(sel, scale)
 					if InCombatLockdown() and sel:IsProtected() then return false end
 					if scale and type(scale) == "number" then
-						ArenaPrepFrames:SetScale(scale)
+						prepFrames:SetScale(scale)
 					end
 				end
 			)
@@ -145,7 +150,7 @@ function MoveAny:InitArenaPrepFrames()
 				MAArenaPrepFrames,
 				"SetAlpha",
 				function(sel, alpha)
-					ArenaPrepFrames:SetAlpha(alpha)
+					prepFrames:SetAlpha(alpha)
 				end
 			)
 
@@ -185,7 +190,7 @@ function MoveAny:InitArenaPrepFrames()
 
 			if MoveAny:DEBUG() then
 				hooksecurefunc(
-					ArenaPrepFrames,
+					prepFrames,
 					"Hide",
 					function(sel)
 						if sel.mahide then return end
@@ -195,7 +200,7 @@ function MoveAny:InitArenaPrepFrames()
 					end
 				)
 
-				ArenaPrepFrames:Show()
+				prepFrames:Show()
 				for i = 1, 5 do
 					hooksecurefunc(
 						_G["ArenaPrepFrame" .. i],

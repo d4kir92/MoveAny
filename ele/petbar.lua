@@ -1,4 +1,8 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local LibStub = getglobal("LibStub")
+local tinsert = getglobal("tinsert")
 local btnsize = 36
 local once = true
 local bar = nil
@@ -19,7 +23,7 @@ function MoveAny:UpdatePetBar()
 					if btn then
 						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
-							_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
+							_G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden())
 						end
 
 						local parent = "MAPetBar"

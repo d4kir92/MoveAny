@@ -1,5 +1,10 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local tinsert = getglobal("tinsert")
+local LibStub = getglobal("LibStub")
 local btnsize = 30
+local once = true
 function MoveAny:GetStanceBarCount()
 	local cou = 0
 	if GetNumShapeshiftForms() > 0 then
@@ -62,7 +67,7 @@ function MoveAny:UpdateStanceBar()
 					if btn then
 						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
-							_G[btnName .. "FloatingBG"]:SetParent(MAHIDDEN)
+							_G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden())
 						end
 
 						local parent = MoveAny:GetName(MoveAny:GetParent(btn))

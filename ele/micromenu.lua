@@ -1,4 +1,10 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local tinsert = getglobal("tinsert")
+local tremove = getglobal("tremove")
+local GetTime = getglobal("GetTime")
 function MoveAny:GetMicroButtonSize()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 32 end
 
@@ -180,7 +186,7 @@ function MoveAny:InitMicroMenu()
 			MAMenuBar,
 			"SetParent",
 			function(sel, parent)
-				if parent == MAHIDDEN then
+				if parent == MoveAny:GetHidden() then
 					for i, mbname in pairs(MBTNS) do
 						local mb = _G[mbname]
 						if mb then

@@ -1,4 +1,8 @@
 local _, D4 = ...
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local securecall = getglobal("securecall")
+local strsplit = getglobal("strsplit")
 local X = 0
 local Y = 0
 local PARENT = nil

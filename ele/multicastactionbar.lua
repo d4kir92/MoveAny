@@ -1,9 +1,7 @@
 local _, MoveAny = ...
-
 function MoveAny:InitMultiCastActionBar()
 	for i = 1, 4 do
-		local btn = _G["MultiCastActionButton" .. i]
-
+		local btn = getglobal("MultiCastActionButton" .. i)
 		if btn then
 			function btn:GetMAEle()
 				return MultiCastActionBarFrame
@@ -12,17 +10,19 @@ function MoveAny:InitMultiCastActionBar()
 	end
 
 	if MultiCastFlyoutFrameOpenButton then
-		MultiCastFlyoutFrameOpenButton:HookScript("OnClick", function()
-			for i = 1, 10 do
-				local btn = _G["MultiCastFlyoutButton" .. i]
-
-				if btn then
-					function btn:GetMAEle()
-						return MultiCastActionBarFrame
+		MultiCastFlyoutFrameOpenButton:HookScript(
+			"OnClick",
+			function()
+				for i = 1, 10 do
+					local btn = getglobal("MultiCastFlyoutButton" .. i)
+					if btn then
+						function btn:GetMAEle()
+							return MultiCastActionBarFrame
+						end
 					end
 				end
 			end
-		end)
+		)
 	end
 
 	if MultiCastFlyoutFrameCloseButton then

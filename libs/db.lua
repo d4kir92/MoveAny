@@ -1,4 +1,5 @@
 local AddonName, MoveAny = ...
+local CreateFrame = getglobal("CreateFrame")
 local MADEBUG = false
 function MoveAny:DEBUG()
 	return MADEBUG
@@ -373,7 +374,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
-	local frame = _G[key]
+	local frame = getglobal(key)
 	if frame and p1 and p3 then
 		local cap = frame.FClearAllPoints or frame.ClearAllPoints
 		cap(frame)
@@ -481,7 +482,7 @@ function MoveAny:SetEleScale(key, scale)
 	if scale > 0 then
 		MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = scale
-		local frame = _G[key]
+		local frame = getglobal(key)
 		if frame then
 			frame:SetScale(scale)
 		end
@@ -504,7 +505,7 @@ function MoveAny:GetFramePoint(key)
 		local px = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PX"]
 		local py = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PY"]
 
-		return an, _, re, px, py
+		return an, nil, re, px, py
 	end
 
 	return nil, nil, nil, nil, nil
@@ -681,8 +682,8 @@ function MoveAny:FixEditMode()
 	for i, v in pairs(_G) do
 		if v ~= nil and i ~= "L" and i ~= "G" and C_Widget.IsWidget(v) and v.GetPoint ~= nil and v.systemInfo ~= nil and type(v.systemInfo) == "table" and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil and not is_full_caps(i) then
 			if string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
-				_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
-				EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
+				getglobal(i["systemInfo"]["anchorInfo"]["relativeTo"])"UIParent"
+				EditModeSystemMixin.UpdateSystem(getglobal(i), getglobal(i)["systemInfo"])
 				foundProblem = true
 				wro = wro + 1
 			else

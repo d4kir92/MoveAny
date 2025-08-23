@@ -1,4 +1,8 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local tinsert = getglobal("tinsert")
 local MAFRAMES = {"DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "PVPFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "PVPParentFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 local MAFRAMESIGNORECLAMP = {}
 MAFRAMESIGNORECLAMP["TEST"] = true
@@ -22,12 +26,12 @@ if C_Widget.IsWidget(ScriptErrorsFrame) and ScriptErrorsFrame.DragArea then
 		function(sel)
 			if setParent then return end
 			setParent = true
-			MoveAny:TrySetParent(sel, MAHIDDEN)
+			MoveAny:TrySetParent(sel, MoveAny:GetHidden())
 			setParent = false
 		end
 	)
 
-	MoveAny:TrySetParent(ScriptErrorsFrame.DragArea, MAHIDDEN)
+	MoveAny:TrySetParent(ScriptErrorsFrame.DragArea, MoveAny:GetHidden())
 end
 
 local tab = {}
@@ -100,7 +104,7 @@ function MoveAny:UpdateCurrentWindow()
 					end
 				end
 
-				GameTooltip:SetOwner(currentWindow)
+				GameTooltip:SetOwner(currentWindow, "ANCHOR_CURSOR")
 				GameTooltip:SetText(MoveAny:MathR(currentWindow:GetScale() * 100) .. "%")
 				prevMouseX = curMouseX
 				prevMouseY = curMouseY
@@ -367,7 +371,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								WorldMapFrameMove:SetClampRectInsets(offsetl, -offsetr, -offsett, offsetb)
 							end
 
-							fm:RegisterForDrag("LeftClick")
+							fm:RegisterForDrag("LeftButton")
 							if HookedEnableMouseFrames[name] == nil then
 								fm:EnableMouse(false)
 							end

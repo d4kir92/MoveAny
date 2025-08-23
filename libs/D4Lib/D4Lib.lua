@@ -1,4 +1,18 @@
 local _, D4 = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local GetBuildInfo = getglobal("GetBuildInfo")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
+local GetTime = getglobal("GetTime")
+local tinsert = getglobal("tinsert")
+local tremove = getglobal("tremove")
+local CUSTOM_CLASS_COLORS = getglobal("CUSTOM_CLASS_COLORS")
+local RAID_CLASS_COLORS = getglobal("RAID_CLASS_COLORS")
+local GetSpellInfo = getglobal("GetSpellInfo")
+local IsSpellInRange = getglobal("IsSpellInRange")
+local GetItemInfo = getglobal("GetItemInfo")
+local GetSpellCharges = getglobal("GetSpellCharges")
+local GetSpellCastCount = getglobal("GetSpellCastCount")
 --[[ Basics ]]
 local buildNr = select(4, GetBuildInfo())
 local buildName = "CLASSIC"
@@ -395,41 +409,41 @@ if D4:GetWoWBuild() == "CLASSIC" then
             if D4.fixedHealth == false then
                 D4.fixedHealth = true
                 local foundText = false
-                local HealthBarTexts = {TargetFrameHealthBar.RightText, TargetFrameHealthBar.LeftText, TargetFrameHealthBar.TextString, TargetFrameTextureFrameDeadText}
+                local HealthBarTexts = {_G["TargetFrameHealthBar"].RightText, _G["TargetFrameHealthBar"].LeftText, _G["TargetFrameHealthBar"].TextString, _G["TargetFrameTextureFrameDeadText"]}
                 for _, healthBar in pairs(HealthBarTexts) do
-                    if TargetFrameHealthBar.TextString ~= nil then
+                    if _G["TargetFrameHealthBar"].TextString ~= nil then
                         foundText = true
                     end
                 end
 
                 if foundText == false then
-                    TargetFrameTextureFrame:CreateFontString("TargetFrameHealthBarText", "BORDER", "TextStatusBarText")
-                    TargetFrameTextureFrame:CreateFontString("TargetFrameHealthBarTextLeft", "BORDER", "TextStatusBarText")
-                    TargetFrameTextureFrame:CreateFontString("TargetFrameHealthBarTextRight", "BORDER", "TextStatusBarText")
-                    TargetFrameTextureFrame:CreateFontString("TargetFrameManaBarText", "BORDER", "TextStatusBarText")
-                    TargetFrameTextureFrame:CreateFontString("TargetFrameManaBarTextLeft", "BORDER", "TextStatusBarText")
-                    TargetFrameTextureFrame:CreateFontString("TargetFrameManaBarTextRight", "BORDER", "TextStatusBarText")
-                    TargetFrameHealthBarText:ClearAllPoints()
-                    TargetFrameHealthBarTextLeft:ClearAllPoints()
-                    TargetFrameHealthBarTextRight:ClearAllPoints()
-                    TargetFrameManaBarText:ClearAllPoints()
-                    TargetFrameManaBarTextLeft:ClearAllPoints()
-                    TargetFrameManaBarTextRight:ClearAllPoints()
-                    TargetFrameHealthBarText:SetPoint("CENTER", TargetFrameHealthBar, "CENTER", 0, 0)
-                    TargetFrameHealthBarTextLeft:SetPoint("LEFT", TargetFrameHealthBar, "LEFT", 0, 0)
-                    TargetFrameHealthBarTextRight:SetPoint("RIGHT", TargetFrameHealthBar, "RIGHT", 0, 0)
-                    TargetFrameManaBarText:SetPoint("CENTER", TargetFrameManaBar, "CENTER", 0, 0)
-                    TargetFrameManaBarTextLeft:SetPoint("LEFT", TargetFrameManaBar, "LEFT", 2, 0)
-                    TargetFrameManaBarTextRight:SetPoint("RIGHT", TargetFrameManaBar, "RIGHT", -2, 0)
-                    TargetFrameHealthBar.LeftText = TargetFrameHealthBarTextLeft
-                    TargetFrameHealthBar.RightText = TargetFrameHealthBarTextRight
-                    TargetFrameManaBar.LeftText = TargetFrameManaBarTextLeft
-                    TargetFrameManaBar.RightText = TargetFrameManaBarTextRight
-                    UnitFrameHealthBar_Initialize("target", TargetFrameHealthBar, TargetFrameHealthBarText, true)
-                    UnitFrameManaBar_Initialize("target", TargetFrameManaBar, TargetFrameManaBarText, true)
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarText", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarTextLeft", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarTextRight", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarText", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarTextLeft", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarTextRight", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameHealthBarText"]:ClearAllPoints()
+                    _G["TargetFrameHealthBarTextLeft"]:ClearAllPoints()
+                    _G["TargetFrameHealthBarTextRight"]:ClearAllPoints()
+                    _G["TargetFrameManaBarText"]:ClearAllPoints()
+                    _G["TargetFrameManaBarTextLeft"]:ClearAllPoints()
+                    _G["TargetFrameManaBarTextRight"]:ClearAllPoints()
+                    _G["TargetFrameHealthBarText"]:SetPoint("CENTER", _G["TargetFrameHealthBar"], "CENTER", 0, 0)
+                    _G["TargetFrameHealthBarTextLeft"]:SetPoint("LEFT", _G["TargetFrameHealthBar"], "LEFT", 0, 0)
+                    _G["TargetFrameHealthBarTextRight"]:SetPoint("RIGHT", _G["TargetFrameHealthBar"], "RIGHT", 0, 0)
+                    _G["TargetFrameManaBarText"]:SetPoint("CENTER", _G["TargetFrameManaBar"], "CENTER", 0, 0)
+                    _G["TargetFrameManaBarTextLeft"]:SetPoint("LEFT", _G["TargetFrameManaBar"], "LEFT", 2, 0)
+                    _G["TargetFrameManaBarTextRight"]:SetPoint("RIGHT", _G["TargetFrameManaBar"], "RIGHT", -2, 0)
+                    _G["TargetFrameHealthBar"].LeftText = _G["TargetFrameHealthBarTextLeft"]
+                    _G["TargetFrameHealthBar"].RightText = _G["TargetFrameHealthBarTextRight"]
+                    _G["TargetFrameManaBar"].LeftText = _G["TargetFrameManaBarTextLeft"]
+                    _G["TargetFrameManaBar"].RightText = _G["TargetFrameManaBarTextRight"]
+                    UnitFrameHealthBar_Initialize("target", _G["TargetFrameHealthBar"], _G["TargetFrameHealthBarText"], true)
+                    UnitFrameManaBar_Initialize("target", _G["TargetFrameManaBar"], _G["TargetFrameManaBarText"], true)
                     if FocusFrame then
-                        UnitFrameHealthBar_Initialize("focus", FocusFrameHealthBar, FocusFrameHealthBarText, true)
-                        UnitFrameManaBar_Initialize("focus", FocusFrameManaBar, FocusFrameManaBarText, true)
+                        UnitFrameHealthBar_Initialize("focus", _G["FocusFrameHealthBar"], _G["FocusFrameHealthBarText"], true)
+                        UnitFrameManaBar_Initialize("focus", _G["FocusFrameManaBar"], _G["FocusFrameManaBarText"], true)
                     end
 
                     local function TextStatusBar_UpdateTextStringWithValues(statusFrame, textString, value, valueMin, valueMax)

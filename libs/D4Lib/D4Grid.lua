@@ -1,4 +1,8 @@
 local _, D4 = ...
+local CreateFrame = getglobal("CreateFrame")
+local GetScreenWidth = getglobal("GetScreenWidth")
+local GetScreenHeight = getglobal("GetScreenHeight")
+local grid = nil
 function D4:Grid(n, snap)
     n = n or 0
     snap = snap or 10
@@ -16,72 +20,75 @@ function D4:GetGridSize()
 end
 
 function D4:UpdateGrid()
-    local id = 0
-    grid.lines = grid.lines or {}
-    for i, v in pairs(grid.lines) do
-        v:Hide()
-    end
-
-    for x = 0, GetScreenWidth() / 2, D4:GetGridSize() do
-        grid.lines[id] = grid.lines[id] or grid:CreateTexture()
-        grid.lines[id]:SetPoint("CENTER", 0.5 + x, 0)
-        grid.lines[id]:SetSize(1.09, GetScreenHeight())
-        if x % 50 == 0 then
-            grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
-        else
-            grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+    if grid then
+        local id = 0
+        grid.lines = grid.lines or {}
+        for i, v in pairs(grid.lines) do
+            v:Hide()
         end
 
-        grid.lines[id]:Show()
-        id = id + 1
-    end
+        for x = 0, GetScreenWidth() / 2, D4:GetGridSize() do
+            grid.lines[id] = grid.lines[id] or grid:CreateTexture()
+            grid.lines[id]:SetPoint("CENTER", 0.5 + x, 0)
+            grid.lines[id]:SetSize(1.09, GetScreenHeight())
+            if x % 50 == 0 then
+                grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
+            else
+                grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            end
 
-    for x = 0, -GetScreenWidth() / 2, -D4:GetGridSize() do
-        grid.lines[id] = grid.lines[id] or grid:CreateTexture()
-        grid.lines[id]:SetPoint("CENTER", 0.5 + x, 0)
-        grid.lines[id]:SetSize(1.09, GetScreenHeight())
-        if x % 50 == 0 then
-            grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
-        else
-            grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            grid.lines[id]:Show()
+            id = id + 1
         end
 
-        grid.lines[id]:Show()
-        id = id + 1
-    end
+        for x = 0, -GetScreenWidth() / 2, -D4:GetGridSize() do
+            grid.lines[id] = grid.lines[id] or grid:CreateTexture()
+            grid.lines[id]:SetPoint("CENTER", 0.5 + x, 0)
+            grid.lines[id]:SetSize(1.09, GetScreenHeight())
+            if x % 50 == 0 then
+                grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
+            else
+                grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            end
 
-    for y = 0, GetScreenHeight() / 2, D4:GetGridSize() do
-        grid.lines[id] = grid.lines[id] or grid:CreateTexture()
-        grid.lines[id]:SetPoint("CENTER", 0, 0.5 + y)
-        grid.lines[id]:SetSize(GetScreenWidth(), 1.09, GetScreenHeight())
-        if y % 50 == 0 then
-            grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
-        else
-            grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            grid.lines[id]:Show()
+            id = id + 1
         end
 
-        grid.lines[id]:Show()
-        id = id + 1
-    end
+        for y = 0, GetScreenHeight() / 2, D4:GetGridSize() do
+            grid.lines[id] = grid.lines[id] or grid:CreateTexture()
+            grid.lines[id]:SetPoint("CENTER", 0, 0.5 + y)
+            grid.lines[id]:SetSize(GetScreenWidth(), 1.09, GetScreenHeight())
+            if y % 50 == 0 then
+                grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
+            else
+                grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            end
 
-    for y = 0, -GetScreenHeight() / 2, -D4:GetGridSize() do
-        grid.lines[id] = grid.lines[id] or grid:CreateTexture()
-        grid.lines[id]:SetPoint("CENTER", 0, 0.5 + y)
-        grid.lines[id]:SetSize(GetScreenWidth(), 1.09)
-        if y % 50 == 0 then
-            grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
-        else
-            grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            grid.lines[id]:Show()
+            id = id + 1
         end
 
-        grid.lines[id]:Show()
-        id = id + 1
+        for y = 0, -GetScreenHeight() / 2, -D4:GetGridSize() do
+            grid.lines[id] = grid.lines[id] or grid:CreateTexture()
+            grid.lines[id]:SetPoint("CENTER", 0, 0.5 + y)
+            grid.lines[id]:SetSize(GetScreenWidth(), 1.09)
+            if y % 50 == 0 then
+                grid.lines[id]:SetColorTexture(1, 1, 0.5, 0.25)
+            else
+                grid.lines[id]:SetColorTexture(0.5, 0.5, 0.5, 0.25)
+            end
+
+            grid.lines[id]:Show()
+            id = id + 1
+        end
     end
 end
 
 function D4:CreateGrid()
     if grid == nil then
         grid = CreateFrame("Frame", "grid", UIParent)
+        grid.lines = grid.lines or {}
         grid:EnableMouse(false)
         grid:SetSize(GetScreenWidth(), GetScreenHeight())
         grid:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
@@ -101,6 +108,8 @@ function D4:CreateGrid()
     end
 
     D4:UpdateGrid()
+
+    return grid
 end
 
 function D4:AddHelper(frame, hide)
@@ -130,11 +139,15 @@ end
 function D4:HideGrid(frame)
     D4:AddHelper(frame, true)
     D4:CreateGrid()
-    grid:Hide()
+    if grid then
+        grid:Hide()
+    end
 end
 
 function D4:ShowGrid(frame)
     D4:AddHelper(frame, false)
     D4:CreateGrid()
-    grid:Show()
+    if grid then
+        grid:Show()
+    end
 end

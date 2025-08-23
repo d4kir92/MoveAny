@@ -1,13 +1,16 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
 function MoveAny:InitMinimap()
+	local MinimapToggleButton = getglobal("MinimapToggleButton")
+	local MinimapBorderTop = getglobal("MinimapBorderTop")
 	if not MoveAny:IsEnabled("MINIMAP", false) then return end
-	if ElvUI then return end
+	if getglobal("ElvUI") then return end
 	if MinimapToggleButton then
-		MinimapToggleButton:SetParent(MAHIDDEN)
+		MinimapToggleButton:SetParent(MoveAny:GetHidden())
 	end
 
 	if MinimapBorderTop then
-		MinimapBorderTop:SetParent(MAHIDDEN)
+		MinimapBorderTop:SetParent(MoveAny:GetHidden())
 	end
 
 	hooksecurefunc(
@@ -44,7 +47,7 @@ function MoveAny:InitMinimap()
 	local miniMapTab = {"MiniMapMailFrame", "GarrisonLandingPageMinimapButton", "QueueStatusMinimapButton", "MiniMapInstanceDifficulty", "MiniMapChallengeMode", "GuildInstanceDifficulty", "MiniMapLFGFrame", "MiniMapBattlefieldFrame", "MiniMapTracking"}
 	if debugMinimap then
 		for i, name in pairs(miniMapTab) do
-			local btn = _G[name]
+			local btn = getglobal(name)
 			if btn then
 				hooksecurefunc(
 					btn,

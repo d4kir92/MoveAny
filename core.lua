@@ -1,4 +1,7 @@
 local _, MoveAny = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
+local CreateFrame = getglobal("CreateFrame")
+local InCombatLockdown = getglobal("InCombatLockdown")
 local colors = {}
 colors["bg"] = {0.03, 0.03, 0.03}
 colors["se"] = {1.0, 1.0, 0.0}
@@ -16,9 +19,13 @@ end
 
 --[[ HIDEPANEL ]]
 local MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
-MAHIDDEN:Hide()
-MAHIDDEN.unit = "player"
-MAHIDDEN.auraRows = 0
+function MoveAny:GetHidden()
+	return MAHIDDEN
+end
+
+MoveAny:GetHidden():Hide()
+MoveAny:GetHidden().unit = "player"
+MoveAny:GetHidden().auraRows = 0
 local sethidden = {}
 local sethiddenSetup = {}
 function MoveAny:HideFrame(frame, soft)
@@ -45,13 +52,13 @@ function MoveAny:HideFrame(frame, soft)
 					if sethidden[sel] == nil then return end
 					if setparent then return end
 					setparent = true
-					MoveAny:TrySetParent(sel, MAHIDDEN)
+					MoveAny:TrySetParent(sel, MoveAny:GetHidden())
 					setparent = false
 				end
 			)
 		end
 
-		MoveAny:TrySetParent(frame, MAHIDDEN)
+		MoveAny:TrySetParent(frame, MoveAny:GetHidden())
 
 		return
 	end
@@ -333,8 +340,8 @@ function MoveAny:InitSlash()
 		MoveAny:AddSlash("rl", C_UI.Reload)
 		MoveAny:AddSlash("rel", C_UI.Reload)
 	else
-		MoveAny:AddSlash("rl", ReloadUi)
-		MoveAny:AddSlash("rel", ReloadUi)
+		MoveAny:AddSlash("rl", getglobal("ReloadUi"))
+		MoveAny:AddSlash("rel", getglobal("ReloadUi"))
 	end
 end
 

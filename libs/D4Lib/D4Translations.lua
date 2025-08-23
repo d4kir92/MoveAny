@@ -40,7 +40,7 @@ function D4:Trans(key, lang, ...)
             ver = D4:GetVersion()
         end
 
-        D4:MSG("[GET] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", t1, t2, t3, ")")
+        D4:MSG("[GET] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", ..., ")")
     end
 
     D4.trans[lang] = D4.trans[lang] or {}
@@ -51,7 +51,7 @@ function D4:Trans(key, lang, ...)
             ver = D4:GetVersion()
         end
 
-        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", ver, "(", lang, t1, t2, t3, ")")
+        D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", ver, "(", lang, ..., ")")
     end
 
     local result = nil
@@ -67,7 +67,7 @@ function D4:Trans(key, lang, ...)
                 ver = D4:GetVersion()
             end
 
-            D4:MSG("TRANSLATION MISSING [" .. key .. "]", ver, "(", lang, t1, t2, t3, ")")
+            D4:MSG("TRANSLATION MISSING [" .. key .. "]", ver, "(", lang, ..., ")")
         end
 
         return key
@@ -101,7 +101,7 @@ function D4:AddTrans(lang, key, value)
             ver = D4:GetVersion()
         end
 
-        D4:MSG("[ADD] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", t1, t2, t3, ")")
+        D4:MSG("[ADD] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", value, ")")
     end
 
     if key == nil then

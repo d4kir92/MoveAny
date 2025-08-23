@@ -1,4 +1,5 @@
 local _, D4 = ...
+local hooksecurefunc = getglobal("hooksecurefunc")
 local cmds = {}
 function D4:AddSlash(name, func)
     if name == nil then

@@ -1,4 +1,5 @@
 local _, D4 = ...
+local GetLocale = getglobal("GetLocale")
 local initRealms = false
 local initRealmLangs = false
 local missingRealmNameOnce = true
