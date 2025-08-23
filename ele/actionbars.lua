@@ -12,7 +12,7 @@ local InCombatLockdown = getglobal("InCombatLockdown")
 local IsMouseButtonDown = getglobal("IsMouseButtonDown")
 local GetOverrideBarIndex = getglobal("GetOverrideBarIndex")
 local GetTempShapeshiftBarIndex = getglobal("GetTempShapeshiftBarIndex")
-local GetVehicleBarIndex = getglobal("GetOGetVehicleBarIndexverrideBarIndex")
+local GetVehicleBarIndex = getglobal("GetVehicleBarIndex")
 local UnitClass = getglobal("UnitClass")
 function MoveAny:GetAllActionBars()
 	return abs

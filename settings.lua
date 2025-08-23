@@ -7,6 +7,14 @@ local GetScreenWidth = getglobal("GetScreenWidth")
 local GetScreenHeight = getglobal("GetScreenHeight")
 local tinsert = getglobal("tinsert")
 local strfind = getglobal("strfind")
+local strupper = getglobal("strupper")
+local strlower = getglobal("strlower")
+local format = getglobal("format")
+local C_Widget = getglobal("C_Widget")
+local C_UI = getglobal("C_UI")
+local C_ChatInfo = getglobal("C_ChatInfo")
+local SHOW_MULTI_ACTIONBAR_3 = getglobal("SHOW_MULTI_ACTIONBAR_3")
+local Enum = getglobal("Enum")
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -4381,15 +4389,6 @@ function MoveAny:LoadAddon()
 
 				local availableSpace = topLimit - bottomLimit
 				local contentHeight = VERTICAL_MULTI_BAR_HEIGHT
-				print("showLeft", showLeft)
-				if showLeft then
-					contentHeight = contentHeight + VERTICAL_MULTI_BAR_HEIGHT + VERTICAL_MULTI_BAR_VERTICAL_SPACING
-					if contentHeight * VERTICAL_MULTI_BAR_MIN_SCALE > availableSpace or not GetCVarBool("multiBarRightVerticalLayout") then
-						contentHeight = VERTICAL_MULTI_BAR_HEIGHT
-						contentWidth = VERTICAL_MULTI_BAR_WIDTH * 2 + VERTICAL_MULTI_BAR_HORIZONTAL_SPACING
-					end
-				end
-
 				local scale = 1
 				if contentHeight > availableSpace then
 					scale = availableSpace / contentHeight
