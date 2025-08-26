@@ -56,6 +56,7 @@ function MoveAny:UpdatePetBar()
 end
 
 function MoveAny:InitPetBar()
+	local PetActionBarFrame = getglobal("PetActionBarFrame")
 	if not PetActionBar and MoveAny:IsEnabled("PETBAR", false) then
 		bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
 		bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
@@ -100,6 +101,7 @@ function MoveAny:InitPetBar()
 		end
 
 		bar:SetSize(10 * btnsize, btnsize)
+		local ShowPetActionBar = getglobal("ShowPetActionBar")
 		if ShowPetActionBar then
 			hooksecurefunc(
 				"ShowPetActionBar",

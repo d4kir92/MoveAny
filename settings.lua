@@ -18,7 +18,7 @@ local Enum = getglobal("Enum")
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
-local WebStatus = 0
+local WebStatus = 0.0
 local WebProfile = ""
 local WebOwner = ""
 local WebProfileData = {}
@@ -715,7 +715,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.166")
+	MoveAny:SetVersion(135994, "1.8.167")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -808,7 +808,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "GAMETOOLTIP", false, nil, nil, "ShowHudTooltip")
 		AddCheckBox(posx, "PETBAR", false, nil, nil, "ShowPetActionBar")
 		AddCheckBox(posx, "STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
-		if PossessActionBar or PossessBarFrame then
+		if PossessActionBar or getglobal("PossessBarFrame") then
 			AddCheckBox(posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar")
 		end
 
@@ -926,6 +926,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "QUEUESTATUSFRAME", false)
 		end
 
+		local MainMenuExpBar = getglobal("MainMenuExpBar")
 		if MoveAny:IsValidFrame(MainMenuExpBar) then
 			AddCheckBox(4, "MAINMENUEXPBAR", false)
 			AddCheckBox(4, "REPUTATIONWATCHBAR", false)
@@ -1547,7 +1548,7 @@ function MoveAny:AddUploadProfileLine(source, profile)
 					function()
 						cur = cur + 1
 						local per = string.format("%0.1f", cur / max * 100)
-						WebStatus = tonumber(per)
+						WebStatus = tonumber(per) or 0.0
 						C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
 						if w ~= nil then
 							local typ = type(w)
@@ -1583,7 +1584,7 @@ function MoveAny:AddUploadProfileLine(source, profile)
 							function()
 								cur = cur + 1
 								local per = string.format("%0.1f", cur / max * 100)
-								WebStatus = tonumber(per)
+								WebStatus = tonumber(per) or 0.0
 								C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
 								if w ~= nil then
 									local typ = type(w)
@@ -1619,7 +1620,7 @@ function MoveAny:AddUploadProfileLine(source, profile)
 									function()
 										cur = cur + 1
 										local per = string.format("%0.1f", cur / max * 100)
-										WebStatus = tonumber(per)
+										WebStatus = tonumber(per) or 0.0
 										C_ChatInfo.SendAddonMessage(PREFIX, "UP;" .. profile .. ";" .. per, "WHISPER", source)
 										if w ~= nil then
 											local typ = type(w)
@@ -1683,10 +1684,10 @@ function MoveAny:AddUploadProfileLine(source, profile)
 		)
 
 		function MAUploadProfile:UpdateStatus()
-			if WebStatus == 0 or WebStatus == 0.0 then
+			if WebStatus <= 0.0 then
 				MAUploadProfile.name:SetText(MoveAny:Trans("LID_WAITINGFOROWNER"))
 				MAUploadProfile.btn:SetEnabled(false)
-			elseif WebStatus == 100 or WebStatus == 100.0 then
+			elseif WebStatus >= 100.0 then
 				MAUploadProfile.name:SetText(MoveAny:Trans("LID_DONE"))
 				MAUploadProfile.btn:SetEnabled(true)
 			else
@@ -2345,7 +2346,7 @@ MoveAny:OnEvent(
 					local target = tab[2]
 					local percent = tab[3]
 					if source and target and source == WebOwner and target == WebProfile then
-						WebStatus = tonumber(percent)
+						WebStatus = tonumber(percent) or 0.0
 					end
 				elseif cmd == "DL" then
 					local target = tab[2]
@@ -2417,6 +2418,7 @@ function MoveAny:IsEnabledBartender4(element)
 		realm = GetRealmName()
 	end
 
+	local Bartender4DB = getglobal("Bartender4DB")
 	if Bartender4DB == nil then return false end
 	if Bartender4DB["namespaces"] == nil then return false end
 	if Bartender4DB["namespaces"][element] == nil then return false end
@@ -2469,7 +2471,10 @@ function MoveAny:LoadAddon()
 		PetBattleFrame.BottomFrame:SetFrameStrata("DIALOG")
 	end
 
+	local MainMenuExpBar = getglobal("MainMenuExpBar")
+	local UIPARENT_MANAGED_FRAME_POSITIONS = getglobal("UIPARENT_MANAGED_FRAME_POSITIONS")
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:IsEnabled("ACTIONBARS", false) then
+		local MainMenuBarPerformanceBarFrame = getglobal("MainMenuBarPerformanceBarFrame")
 		if MainMenuBarPerformanceBarFrame then
 			MainMenuBarPerformanceBarFrame:SetParent(MoveAny:GetHidden())
 		end
@@ -2478,6 +2483,7 @@ function MoveAny:LoadAddon()
 			UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
 		end
 
+		local MainMenuBarArtFrame = getglobal("MainMenuBarArtFrame")
 		if MainMenuBarArtFrame then
 			if UIPARENT_MANAGED_FRAME_POSITIONS then
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
@@ -2490,10 +2496,12 @@ function MoveAny:LoadAddon()
 			MainMenuBar:SetParent(MoveAny:GetHidden())
 		end
 
+		local MainMenuBarOverlayFrame = getglobal("MainMenuBarOverlayFrame")
 		if MainMenuBarOverlayFrame then
 			MainMenuBarOverlayFrame:SetParent(MoveAny:GetHidden())
 		end
 
+		local MainMenuBarExpText = getglobal("MainMenuBarExpText")
 		if MainMenuBarExpText then
 			MainMenuBarExpText:SetParent(MainMenuExpBar)
 			MainMenuBarExpText:SetDrawLayer("OVERLAY")
@@ -4726,6 +4734,8 @@ function MoveAny:LoadAddon()
 						ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
 						ObjectiveTrackerFrame:SetSize(240, 600)
 						ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
+						local QuestWatchFrame = getglobal("QuestWatchFrame")
+						local WatchFrame = getglobal("WatchFrame")
 						if QuestWatchFrame then
 							hooksecurefunc(
 								QuestWatchFrame,
@@ -5625,6 +5635,7 @@ function MoveAny:LoadAddon()
 		MoveAny:After(
 			3,
 			function()
+				local LeaPlusDB = getglobal("LeaPlusDB")
 				local ltpEnhancedMinimap = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
 				if ltpEnhancedMinimap then
 					MoveAny:INFO("LeatrixPlus \"EnhancedMinimap\" is enabled, which will block moving the minimap.")
@@ -6217,8 +6228,8 @@ function MoveAny:LoadAddon()
 				{
 					["name"] = "ReputationWatchBar",
 					["lstr"] = "LID_REPUTATIONWATCHBAR",
-					["sw"] = opts["WIDTH"] or nil,
-					["sh"] = opts["HEIGHT"] or nil
+					["sw"] = opts and opts["WIDTH"] or nil,
+					["sh"] = opts and opts["HEIGHT"] or nil
 				}
 			)
 		end
@@ -6272,8 +6283,8 @@ function MoveAny:LoadAddon()
 				{
 					["name"] = "MainMenuExpBar",
 					["lstr"] = "LID_MAINMENUEXPBAR",
-					["sw"] = opts["WIDTH"] or nil,
-					["sh"] = opts["HEIGHT"] or nil
+					["sw"] = opts and opts["WIDTH"] or nil,
+					["sh"] = opts and opts["HEIGHT"] or nil
 				}
 			)
 		end

@@ -3,6 +3,7 @@ local CreateFrame = getglobal("CreateFrame")
 local InCombatLockdown = getglobal("InCombatLockdown")
 local securecall = getglobal("securecall")
 local strsplit = getglobal("strsplit")
+local OpacitySliderFrame = getglobal("OpacitySliderFrame")
 local X = 0
 local Y = 0
 local PARENT = nil
@@ -174,10 +175,15 @@ end
 
 --[[ INPUTS ]]
 function D4:AddCategory(tab)
+    if tab.parent == nil then
+        D4:MSG("[D4] Missing Parent for AddCategory")
+
+        return
+    end
+
     tab.sw = tab.sw or 25
     tab.sh = tab.sh or 25
-    tab.parent = tab.parent or UIParent
-    tab.pTab = tab.pTab or "CENTER"
+    tab.pTab = tab.pTab or {"CENTER"}
     tab.parent.f = tab.parent:CreateFontString(nil, nil, "GameFontNormal")
     tab.parent.f:SetPoint(unpack(tab.pTab))
     if tab.key and tab.name and tab.name == "" then
@@ -188,14 +194,19 @@ function D4:AddCategory(tab)
 end
 
 function D4:CreateCheckbox(tab, text)
+    if tab.parent == nil then
+        D4:MSG("[D4] Missing Parent for CreateCheckbox")
+
+        return
+    end
+
     if text == nil then
         text = true
     end
 
     tab.sw = tab.sw or 25
     tab.sh = tab.sh or 25
-    tab.parent = tab.parent or UIParent
-    tab.pTab = tab.pTab or "CENTER"
+    tab.pTab = tab.pTab or {"CENTER"}
     tab.value = tab.value or nil
     local cb = D4:CreateCheckButton(tab.name, tab.parent)
     cb:SetSize(tab.sw, tab.sh)
@@ -233,27 +244,36 @@ function D4:CreateCheckboxForCVAR(tab)
         return
     end
 
+    if tab.parent == nil then
+        D4:MSG("[D4] Missing Parent for CreateCheckbox")
+
+        return
+    end
+
     tab.sw = tab.sw or 25
     tab.sh = tab.sh or 25
-    tab.parent = tab.parent or UIParent
-    tab.pTab = tab.pTab or "CENTER"
+    tab.pTab = tab.pTab or {"CENTER"}
     tab.value = tab.value or nil
     local cb = D4:CreateCheckbox(tab)
-    local cb2 = D4:CreateCheckButton(tab.name, tab.parent)
-    cb2:SetSize(tab.sw, tab.sh)
-    local p1, p2, p3 = unpack(tab.pTab)
-    cb2:SetPoint(p1, p2 + 25, p3)
-    cb2:SetChecked(tab.value2)
-    cb2:SetScript(
-        "OnClick",
-        function(sel)
-            tab:funcV2(sel:GetChecked())
-        end
-    )
+    if cb then
+        local cb2 = D4:CreateCheckButton(tab.name, tab.parent)
+        cb2:SetSize(tab.sw, tab.sh)
+        local p1, p2, p3 = unpack(tab.pTab)
+        cb2:SetPoint(p1, p2 + 25, p3)
+        cb2:SetChecked(tab.value2)
+        cb2:SetScript(
+            "OnClick",
+            function(sel)
+                tab:funcV2(sel:GetChecked())
+            end
+        )
 
-    cb.f:SetPoint("LEFT", cb, "RIGHT", 25, 0)
+        cb.f:SetPoint("LEFT", cb, "RIGHT", 25, 0)
 
-    return cb
+        return cb
+    end
+
+    return nil
 end
 
 function D4:CreateSliderForCVAR(tab)
@@ -279,10 +299,15 @@ function D4:CreateSliderForCVAR(tab)
 end
 
 function D4:CreateEditBox(tab)
+    if tab.parent == nil then
+        D4:MSG("[D4] Missing Parent for CreateEditBox")
+
+        return
+    end
+
     tab.sw = tab.sw or 200
     tab.sh = tab.sh or 25
-    tab.parent = tab.parent or UIParent
-    tab.pTab = tab.pTab or "CENTER"
+    tab.pTab = tab.pTab or {"CENTER"}
     tab.value = tab.value or nil
     tab.prefix = tab.prefix or ""
     tab.suffix = tab.suffix or ""
@@ -312,6 +337,12 @@ function D4:CreateEditBox(tab)
 end
 
 function D4:CreateSlider(tab)
+    if tab.parent == nil then
+        D4:MSG("[D4] Missing Parent for CreateSlider")
+
+        return
+    end
+
     if tab.key == nil then
         D4:MSG("[D4][CreateSlider] Missing format string:", tab.key, tab.value)
 
@@ -324,8 +355,7 @@ function D4:CreateSlider(tab)
 
     tab.sw = tab.sw or 200
     tab.sh = tab.sh or 25
-    tab.parent = tab.parent or UIParent
-    tab.pTab = tab.pTab or "CENTER"
+    tab.pTab = tab.pTab or {"CENTER"}
     tab.value = tab.value or 1
     tab.vmin = tab.vmin or 1
     tab.vmax = tab.vmax or 1
@@ -659,10 +689,10 @@ end
 
 --[[ FRAMES ]]
 function D4:CreateWindow(tab)
+    tab.parent = tab.parent or UIParent
     tab.sw = tab.sw or 100
     tab.sh = tab.sh or 100
-    tab.parent = tab.parent or UIParent
-    tab.pTab = tab.pTab or "CENTER"
+    tab.pTab = tab.pTab or {"CENTER"}
     tab.title = tab.title or ""
     tab.templates = tab.templates
     local fra = D4:CreateFrame(tab.name, tab.parent, tab.templates)
@@ -868,6 +898,12 @@ function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix, 
 end
 
 function D4:CreateDropdown(key, value, choices, parent, func)
+    if TAB == nil then
+        D4:MSG("[D4] Missing TAB in CreateDropdown")
+
+        return
+    end
+
     if TAB[key] == nil then
         TAB[key] = value
     end

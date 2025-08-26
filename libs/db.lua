@@ -387,7 +387,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 		local systemFrame = frame
 		local systemInfo = frame.systemInfo
 		if frame.GetRealEle then
-			systemFrame = MABuffBar:GetRealEle()
+			systemFrame = getglobal("MABuffBar"):GetRealEle()
 			systemInfo = systemFrame.systemInfo
 		end
 
@@ -598,6 +598,7 @@ function MoveAny:InitDB()
 		end
 	end
 
+	local MAITAB = getglobal("MAITAB")
 	if MAITAB then
 		MoveAny:HR()
 		MoveAny:MSG("...MoveAndImprove detected, importing Profiles...")
@@ -686,8 +687,8 @@ function MoveAny:FixEditMode()
 	for i, v in pairs(_G) do
 		if v ~= nil and i ~= "L" and i ~= "G" and C_Widget.IsWidget(v) and v.GetPoint ~= nil and v.systemInfo ~= nil and type(v.systemInfo) == "table" and v.systemInfo.anchorInfo ~= nil and type(v.systemInfo.anchorInfo) == "table" and v.systemInfo.anchorInfo.relativeTo ~= nil and not is_full_caps(i) then
 			if string.startswith(v.systemInfo.anchorInfo.relativeTo, "MA") then
-				getglobal(i["systemInfo"]["anchorInfo"]["relativeTo"])"UIParent"
-				EditModeSystemMixin.UpdateSystem(getglobal(i), getglobal(i)["systemInfo"])
+				_G[i]["systemInfo"]["anchorInfo"]["relativeTo"] = "UIParent"
+				EditModeSystemMixin.UpdateSystem(_G[i], _G[i]["systemInfo"])
 				foundProblem = true
 				wro = wro + 1
 			else

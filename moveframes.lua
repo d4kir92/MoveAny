@@ -82,7 +82,7 @@ function MoveAny:UpdateCurrentWindow()
 					if curMouseY > prevMouseY then
 						local newScale = math.min(currentWindow:GetScale() + 0.006, 2.5)
 						if newScale > 0 then
-							newScale = tonumber(string.format("%.3f", newScale))
+							newScale = tonumber(string.format("%.3f", newScale)) or 1
 							currentWindow:SetScale(newScale)
 							if currentWindow.isMaximized and newScale > 1 then
 								newScale = 1
@@ -93,7 +93,7 @@ function MoveAny:UpdateCurrentWindow()
 					elseif curMouseY < prevMouseY then
 						local newScale = math.max(currentWindow:GetScale() - 0.006, 0.5)
 						if newScale > 0 then
-							newScale = tonumber(string.format("%.3f", newScale))
+							newScale = tonumber(string.format("%.3f", newScale)) or 1
 							currentWindow:SetScale(newScale)
 							if currentWindow.isMaximized and newScale > 1 then
 								newScale = 1
@@ -147,7 +147,7 @@ function MoveAny:FrameDragInfo(frame, c)
 		end
 
 		if text then
-			GameTooltip:SetOwner(frame)
+			GameTooltip:SetOwner(frame, "ANCHOR_TOPRIGHT")
 			GameTooltip:SetText(text)
 		end
 	end
@@ -236,6 +236,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							WorldMapFrame:EnableMouse(true)
 						end
 
+						local WorldMapTitleButton = getglobal("WorldMapTitleButton")
 						if WorldMapTitleButton and not hookedWorldMapTitle then
 							hookedWorldMapTitle = true
 							hooksecurefunc(
@@ -327,6 +328,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					local frame = MoveAny:GetFrameByName(name)
 					if frame ~= nil and frame:IsVisible() and (not InCombatLockdown() or not frame:IsProtected()) then
 						MAFS[name] = nil
+						local DragonflightUIProfessionFrame = getglobal("DragonflightUIProfessionFrame")
 						if (name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame) or (name == "BankFrame" and MoveAny:IsAddOnLoaded("Sorted", "BankFrame")) then
 							frame:SetAlpha(0)
 							local enableMouse = false
@@ -355,6 +357,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetClampedToScreen(fm, true, "UpdateMoveFrames 1")
 							end
 
+							local WorldMapFrameMove = getglobal("WorldMapFrameMove")
 							if MoveAny:GetWoWBuild() ~= "RETAIL" and WorldMapFrame and WorldMapFrameMove then
 								local offsetl = 15
 								local offsetr = 7
@@ -530,6 +533,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 						end
 
+						local CharacterNameText = getglobal("CharacterNameText")
 						if CharacterNameText and frame == CharacterFrame and PaperDollItemsFrame then
 							CharacterNameText:HookScript(
 								"OnMouseDown",
@@ -743,6 +747,7 @@ function MoveAny:MoveFrames()
 		end, "ADDON_LOADED 123"
 	)
 
+	local BattlefieldFrame = getglobal("BattlefieldFrame")
 	if BattlefieldFrame then
 		BattlefieldFrame:EnableMouse(false)
 	end

@@ -499,6 +499,7 @@ function MoveAny:MenuOptions(opt, frame)
 			end
 
 			UpdateRowItems()
+			local MAActionBar1 = getglobal("MAActionBar1")
 			local vmin = 1
 			if frame == MAActionBar1 or frame == MainMenuBar then
 				vmin = 6
@@ -1265,6 +1266,7 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(HIDE .. " (" .. MoveAny:Trans("LID_HIDESMALLBAGS") .. ")")
+			local KeyRingButton = getglobal("KeyRingButton")
 			if KeyRingButton then
 				local hide2 = MoveAny:CreateCheckButton("HideKeyBag", content)
 				hide2:SetSize(btnsize, btnsize)
@@ -1686,6 +1688,8 @@ function MoveAny:RegisterWidget(tab)
 		frame:SetIgnoreParentAlpha(true)
 	end
 
+	local MABuffBar = getglobal("MABuffBar")
+	local MADebuffBar = getglobal("MADebuffBar")
 	if not MoveAny:GetEleOption(name, "Hide", false, "Hide2") then
 		if frame == MACurrentEle then
 			dragf.t:SetVertexColor(MoveAny:GetColor("se"))
@@ -1750,7 +1754,7 @@ function MoveAny:RegisterWidget(tab)
 				)
 
 				frame:UpdateDebuffMouse()
-			elseif frame == TargetFrameBuffMover then
+			elseif frame == getglobal("TargetFrameBuffMover") then
 				function frame:UpdateBuffMouse()
 					for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
 						if bb then
@@ -1775,7 +1779,7 @@ function MoveAny:RegisterWidget(tab)
 				)
 
 				frame:UpdateBuffMouse()
-			elseif frame == FocusFrameBuffMover then
+			elseif frame == getglobal("FocusFrameBuffMover") then
 				function frame:UpdateBuffMouse()
 					for i = 1, 32 do
 						local bb = _G["FocusFrameBuff" .. i]

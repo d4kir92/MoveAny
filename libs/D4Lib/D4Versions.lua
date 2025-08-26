@@ -92,7 +92,7 @@ function D4:CheckVersion(name, ver)
     end
 
     local ov1, ov2, ov3 = string.split(".", ver)
-    local cv1, cv2, cv3 = string.split(".", D4:GetVersion(name))
+    local cv1, cv2, cv3 = string.split(".", D4:GetVersion(name) or "0.0.0")
     local higher = D4:IsHigherVersion(ov1, ov2, ov3, cv1, cv2, cv3)
     if higher and name and D4.VersionTab and D4.VersionTab[string.lower(name)] then
         D4.VersionTab[string.lower(name)].foundHigher = true

@@ -34,7 +34,7 @@ function D4:InitSlash()
                     local cmd = string.upper(lastMessage)
                     if cmds[cmd] ~= nil then
                         cmds[cmd]()
-                        lastMessage = nil
+                        lastMessage = ""
                     end
                 end
             end

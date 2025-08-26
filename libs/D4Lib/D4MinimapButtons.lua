@@ -35,6 +35,7 @@ function D4:UpdatePosition(button, position, parent)
         q = q + 2
     end
 
+    local GetMinimapShape = getglobal("GetMinimapShape")
     local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
     local qt = mmShapes[minimapShape]
     local w = (Minimap:GetWidth() / 2) + button:GetWidth() / 2 - button:GetWidth() / 5
@@ -396,6 +397,7 @@ function D4:HideMMBtn(name)
 end
 
 function D4:UpdateLTP()
+    local LeaPlusDB = getglobal("LeaPlusDB")
     local MinimapModder = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
     if MinimapModder then
         local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"

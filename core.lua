@@ -340,8 +340,8 @@ function MoveAny:InitSlash()
 		MoveAny:AddSlash("rl", C_UI.Reload)
 		MoveAny:AddSlash("rel", C_UI.Reload)
 	else
-		MoveAny:AddSlash("rl", getglobal("ReloadUi"))
-		MoveAny:AddSlash("rel", getglobal("ReloadUi"))
+		MoveAny:AddSlash("rl", getglobal("ReloadUI"))
+		MoveAny:AddSlash("rel", getglobal("ReloadUI"))
 	end
 end
 
