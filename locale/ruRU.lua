@@ -248,7 +248,7 @@ MoveAny:AddTrans("ruRU", "LID_PRESSESCTOLEAVE", "Нажмите ESC, чтобы 
 MoveAny:AddTrans("ruRU", "LID_BINDINGFORMAT", "Панель действий %s Кнопка %s")
 MoveAny:AddTrans("ruRU", "LID_ORIENTATION", "Ориентация")
 MoveAny:AddTrans("ruRU", "LID_CENTERED", "По центру")
-MoveAny:AddTrans("ruRU", "LID_LEFTALIGNED", "Выравнивание по правому краю")
+MoveAny:AddTrans("ruRU", "LID_LEFTALIGNED", "Выравнивание по левому краю")
 MoveAny:AddTrans("ruRU", "LID_RIGHTALIGNED", "Выравнивание по правому краю")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
