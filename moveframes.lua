@@ -13,6 +13,7 @@ tinsert(MAFRAMES, "ReadyCheckFrame")
 tinsert(MAFRAMES, "RolePollPopup")
 tinsert(MAFRAMES, "StaticPopup1")
 tinsert(MAFRAMES, "StaticPopup2")
+tinsert(MAFRAMES, "InstanceAbandonPopup")
 local MAFS = {}
 for i, v in pairs(MAFRAMES) do
 	MAFS[v] = v
