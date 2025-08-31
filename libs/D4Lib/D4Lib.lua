@@ -8,11 +8,7 @@ local tinsert = getglobal("tinsert")
 local tremove = getglobal("tremove")
 local CUSTOM_CLASS_COLORS = getglobal("CUSTOM_CLASS_COLORS")
 local RAID_CLASS_COLORS = getglobal("RAID_CLASS_COLORS")
-local GetSpellInfo = getglobal("GetSpellInfo")
-local IsSpellInRange = getglobal("IsSpellInRange")
-local GetItemInfo = getglobal("GetItemInfo")
-local GetSpellCharges = getglobal("GetSpellCharges")
-local GetSpellCastCount = getglobal("GetSpellCastCount")
+local GetAtlasInfo = getglobal("GetAtlasInfo")
 --[[ Basics ]]
 local buildNr = select(4, GetBuildInfo())
 local buildName = "CLASSIC"
@@ -64,7 +60,7 @@ end
 
 if getglobal("C_Widget") == nil then
     setglobal("C_Widget", {})
-    function C_Widget:IsWidget(frame)
+    function C_Widget.IsWidget(frame)
         if frame and frame.GetName then return true end
 
         return false
@@ -301,6 +297,7 @@ end
 function D4:GetItemInfo(itemID)
     if itemID == nil then return nil end
     if C_Item and C_Item.GetItemInfo then return C_Item.GetItemInfo(itemID) end
+    local GetItemInfo = getglobal("GetItemInfo")
     if GetItemInfo then return GetItemInfo(itemID) end
     D4:MSG("[D4][GetItemInfo] FAILED")
 
@@ -316,6 +313,7 @@ function D4:GetSpellInfo(spellID)
         return tab
     end
 
+    local GetSpellInfo = getglobal("GetSpellInfo")
     if GetSpellInfo then return GetSpellInfo(spellID) end
     D4:MSG("[D4][GetSpellInfo] FAILED")
 
@@ -325,6 +323,7 @@ end
 function D4:IsSpellInRange(spellID, spellType, unit)
     if spellID == nil then return nil end
     if C_Spell and C_Spell.IsSpellInRange then return C_Spell.IsSpellInRange(spellID, unit) end
+    local IsSpellInRange = getglobal("IsSpellInRange")
     if IsSpellInRange then return IsSpellInRange(spellID, spellType, unit) end
     D4:MSG("[D4][IsSpellInRange] FAILED")
 
@@ -334,6 +333,7 @@ end
 function D4:GetSpellCharges(spellID)
     if spellID == nil then return nil end
     if C_Spell and C_Spell.GetSpellCharges then return C_Spell.GetSpellCharges(spellID) end
+    local GetSpellCharges = getglobal("GetSpellCharges")
     if GetSpellCharges then return GetSpellCharges(spellID) end
     D4:MSG("[D4][GetSpellCharges] FAILED")
 
@@ -342,6 +342,7 @@ end
 
 function D4:GetSpellCastCount(...)
     if C_Spell and C_Spell.GetSpellCastCount then return C_Spell.GetSpellCastCount(...) end
+    local GetSpellCastCount = getglobal("GetSpellCastCount")
     if GetSpellCastCount then return GetSpellCastCount(...) end
     D4:MSG("[D4][GetSpellCastCount] FAILED")
 
@@ -355,6 +356,49 @@ function D4:GetMouseFocus()
     D4:MSG("[D4][GetMouseFocus] FAILED")
 
     return nil
+end
+
+function D4:GetItemGem(hyperLink, index)
+    if C_Item and C_Item.GetItemGem then return C_Item.GetItemGem(hyperLink, index) end
+    local GetItemGem = getglobal("GetItemGem")
+    if GetItemGem then return GetItemGem(hyperLink, index) end
+
+    return nil, nil
+end
+
+function D4:GetDetailedItemLevelInfo(itemInfo)
+    if C_Item and C_Item.GetDetailedItemLevelInfo then return C_Item.GetDetailedItemLevelInfo(itemInfo) end
+    local GetDetailedItemLevelInfo = getglobal("GetDetailedItemLevelInfo")
+    if GetDetailedItemLevelInfo then return GetDetailedItemLevelInfo(itemInfo) end
+
+    return nil, nil, nil
+end
+
+function D4:GetContainerItemLink(bagID, slotID)
+    if slotID < 0 then return nil end
+    if C_Container and C_Container.GetContainerItemLink then return C_Container.GetContainerItemLink(bagID, slotID) end
+    local GetContainerItemLink = getglobal("GetContainerItemLink")
+    if GetContainerItemLink then return GetContainerItemLink(bagID, slotID) end
+
+    return nil
+end
+
+local function D4GetContainerNumSlots(bagID)
+    if C_Container and C_Container.GetContainerNumSlots then return C_Container.GetContainerNumSlots(bagID) end
+    local GetContainerNumSlots = getglobal("GetContainerNumSlots")
+    if GetContainerNumSlots then return GetContainerNumSlots(bagID) end
+
+    return nil
+end
+
+function D4:GetContainerNumSlots(bagID)
+    local cur = D4GetContainerNumSlots(bagID)
+    local max = cur
+    if bagID == 0 and IsAccountSecured and not IsAccountSecured() then
+        max = cur + 4
+    end
+
+    return max, cur
 end
 
 function D4:UnitAura(...)
@@ -391,6 +435,17 @@ end
 
 function D4:IsAddonLoaded(name, from)
     return D4:IsAddOnLoaded(name, from)
+end
+
+function D4:AtlasExists(atlas)
+    if atlas == nil then return false end
+    if C_Texture and C_Texture.GetAtlasInfo(atlas) then
+        return true
+    elseif GetAtlasInfo and GetAtlasInfo(atlas) then
+        return true
+    end
+
+    return false
 end
 
 local function FixIconChat(sel, event, message, author, ...)

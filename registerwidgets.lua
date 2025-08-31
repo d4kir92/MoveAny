@@ -480,6 +480,11 @@ function MoveAny:MenuOptions(opt, frame)
 				Y = Y + space
 			end
 
+			if DragonridingUtil then
+				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSKYRIDING", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+				Y = Y + space
+			end
+
 			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
 		elseif string.find(content.name, ACTIONBARS_LABEL) then
 			local slides = {}
@@ -2022,6 +2027,7 @@ end
 
 local isresting = nil
 local ismounted = nil
+local isskyriding = nil
 local invehicle = nil
 local incombat = nil
 local inpetbattle = nil
@@ -2071,12 +2077,19 @@ function MoveAny:CurrentChatTab()
 	return 0
 end
 
+function MoveAny:IsDragonriding()
+	return UnitPowerBarID("player") == 631
+end
+
 function MoveAny:CheckAlphas()
 	if incombat ~= InCombatLockdown() then
 		incombat = InCombatLockdown()
 		MoveAny:UpdateAlphas()
 	elseif UnitInVehicle and invehicle ~= UnitInVehicle("player") then
 		invehicle = UnitInVehicle("player")
+		MoveAny:UpdateAlphas()
+	elseif MoveAny.IsDragonriding and isskyriding ~= MoveAny:IsDragonriding() then
+		isskyriding = MoveAny:IsDragonriding()
 		MoveAny:UpdateAlphas()
 	elseif IsMounted and ismounted ~= IsMounted() then
 		ismounted = IsMounted()
@@ -2156,6 +2169,7 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 			local alphaIsStealthed = MoveAny:GetEleOption(name, "ALPHAISSTEALTHED", 1, "Alpha6")
 			local alphaIsInPetBattle = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE", 1, "Alpha7")
 			local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha8")
+			local alphaSkyriding = MoveAny:GetEleOption(name, "ALPHAISSKYRIDING", 1, "Alpha9")
 			if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame) then
 				if ele.ma_show ~= nil and ele.ma_show == false then
 					MoveAny:SetEleAlpha(ele, 0)
@@ -2169,6 +2183,8 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 					MoveAny:SetEleAlpha(ele, alphaIsFullHealth)
 				elseif UnitInVehicle and invehicle then
 					MoveAny:SetEleAlpha(ele, alphaInVehicle)
+				elseif isskyriding then
+					MoveAny:SetEleAlpha(ele, alphaSkyriding)
 				elseif IsMounted and ismounted then
 					MoveAny:SetEleAlpha(ele, alphaIsMounted)
 				elseif IsResting and isresting then

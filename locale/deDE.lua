@@ -250,6 +250,7 @@ MoveAny:AddTrans("deDE", "LID_ORIENTATION", "Orientierung")
 MoveAny:AddTrans("deDE", "LID_CENTERED", "Zentriert")
 MoveAny:AddTrans("deDE", "LID_LEFTALIGNED", "Linksbündig")
 MoveAny:AddTrans("deDE", "LID_RIGHTALIGNED", "Rechtsbündig")
+MoveAny:AddTrans("deDE", "LID_ALPHAISSKYRIDING", "Sichtbarkeit (Skyriding)")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("deDE", "LID_ACTIONBARS", "Aktionsleisten 1 + 5 + 6")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")
