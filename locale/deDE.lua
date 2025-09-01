@@ -260,9 +260,9 @@ if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR5", "Aktionsleiste 5 (Leiste oben rechts)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR6", "Aktionsleiste 6 (Leiste oben links)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR7", "Aktionsleiste 7 (Benutzerdefinierte) (Schattenform, Stealth, Katze, Kampfhaltung)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Benutzerdefinierte) (Verteidigungshaltung)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR8", "Aktionsleiste 8 (Benutzerdefinierte) (Verteidigungshaltung, Katzen-Stealth)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR9", "Aktionsleiste 9 (Benutzerdefinierte) (Bär, Berserkerhaltung)")
-	MoveAny:AddTrans("deDE", "LID_ACTIONBAR10", "Aktionsleiste 10 (Benutzerdefinierte)")
+	MoveAny:AddTrans("deDE", "LID_ACTIONBAR10", "Aktionsleiste 10 (Benutzerdefinierte) (Mondkin)")
 else
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR2", "Aktionsleiste 2 (Zweite Leiste)")

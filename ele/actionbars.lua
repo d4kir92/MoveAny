@@ -744,11 +744,13 @@ MoveAny:OnEvent(
 				]])
 				if MoveAny:GetWoWBuild() ~= "RETAIL" then
 					--[[
-					Stances:
-					cat-stealth: 10?
-					cat: 7
-					bear: 9
-					moonkin: 1
+					https://wowwiki-archive.fandom.com/wiki/API_GetBonusBarOffset
+					Offsets:
+					Caster: 0 -> 6
+					Cat: 1 -> 7
+					Tree of Life: 2 -> 8 (Cat-Stealth)
+					Bear: 3 -> 9
+					Moonkin: 4 -> 10
 					]]
 					local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;"
 					for i = 6, 2, -1 do
@@ -757,7 +759,7 @@ MoveAny:OnEvent(
 
 					local _, class = UnitClass("player")
 					if class == "DRUID" and MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
-						bars = bars .. "[bonusbar:1,stealth]10;"
+						bars = bars .. "[bonusbar:1,stealth]8;"
 					end
 
 					bars = bars .. "[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
