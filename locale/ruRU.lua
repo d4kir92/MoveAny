@@ -259,9 +259,9 @@ if MoveAny:GetWoWBuild() ~= "RETAIL" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR5", "Панель действий 5 (правая верхняя панель)")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR6", "Панель действий 6 (левая верхняя панель)")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR7", "Панель действий 7 (пользовательская) (Облик Тьмы, незаметность, кошка, боевая стойка)")
-    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR8", "Панель действий 8 (пользовательская) (Защитная стойка)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR8", "Панель действий 8 (пользовательская) (Защитная стойка, кошка-невидимка)")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR9", "Панель действий 9 (пользовательская) (Медведь, стойка берсерка)")
-    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR10", "Панель действий 10 (пользовательская)")
+    MoveAny:AddTrans("ruRU", "LID_ACTIONBAR10", "Панель действий 10 (пользовательская) (Лунный совух)")
 else
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR2", "Панель действий 2 (Выше главной панели)")
