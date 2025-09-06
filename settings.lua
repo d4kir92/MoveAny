@@ -219,6 +219,8 @@ end
 MoveAny:AddToEMMap("MAPetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetActionBar", "ShowPetActionBar")
+MoveAny:AddToEMMap("EncounterBar", "ShowEncounterBar")
+MoveAny:AddToEMMap("UIWidgetPowerBarContainerFrame", "ShowEncounterBar")
 MoveAny:AddToEMMap("StanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("MAStanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("StanceBarAnchor", "ShowStanceBar")
@@ -717,7 +719,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.171")
+	MoveAny:SetVersion(135994, "1.8.172")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -944,7 +946,7 @@ function MoveAny:InitMALock()
 		end
 
 		if MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
-			AddCheckBox(4, "UIWIDGETPOWERBAR", false)
+			AddCheckBox(4, "UIWIDGETPOWERBAR", false, nil, nil, "ShowEncounterBar")
 		end
 
 		--AddCheckBox( 4, "BUFFTIMER1", true )
