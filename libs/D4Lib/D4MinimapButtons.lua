@@ -74,25 +74,32 @@ end
 
 if GetD4MinimapHover == nil then
     local MinimapHover = false
-    local function MinimapHoverThink()
-        local mouseFocus = D4:GetMouseFocus()
-        local btnFocus = false
-        if mouseFocus and D4:GetParent(mouseFocus) ~= nil then
-            btnFocus = D4:GetParent(mouseFocus) == Minimap
+    if Minimap.IsMouseOver == nil then
+        local function MinimapHoverThink()
+            local mouseFocus = D4:GetMouseFocus()
+            local btnFocus = false
+            if mouseFocus and D4:GetParent(mouseFocus) ~= nil then
+                btnFocus = D4:GetParent(mouseFocus) == Minimap
+            end
+
+            MinimapHover = MouseIsOver(Minimap) or btnFocus
+            D4:After(
+                0.15,
+                function()
+                    MinimapHoverThink()
+                end, "MinimapHoverThink"
+            )
         end
 
-        MinimapHover = MouseIsOver(Minimap) or btnFocus
-        D4:After(
-            0.04,
-            function()
-                MinimapHoverThink()
-            end, "MinimapHoverThink"
-        )
+        MinimapHoverThink()
     end
 
-    MinimapHoverThink()
     function GetD4MinimapHover()
-        return MinimapHover
+        if Minimap.IsMouseOver == nil then
+            return MinimapHover
+        else
+            return Minimap:IsMouseOver()
+        end
     end
 end
 

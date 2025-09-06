@@ -81,6 +81,12 @@ function D4:After(time, callback, from)
         return
     end
 
+    if callback == nil then
+        D4:INFO("[AFTER] CALLBACK IS NIL", time, from)
+
+        return
+    end
+
     if debug then
         countAfter[from] = countAfter[from] or 0
         countAfter[from] = countAfter[from] + 1
@@ -235,21 +241,6 @@ function D4:ForeachRegions(frame, callback, from)
 end
 
 --[[ QOL ]]
-local ICON_TAG_LIST_EN = {
-    ["star"] = 1,
-    ["yellow"] = 1,
-    ["cirlce"] = 2,
-    ["orange"] = 2,
-    ["diamond"] = 3,
-    ["triangle"] = 4,
-    ["moon"] = 5,
-    ["square"] = 6,
-    ["blue"] = 6,
-    ["cross"] = 7,
-    ["red"] = 7,
-    ["skull"] = 8,
-}
-
 local callbacks = {}
 local fSecure = CreateFrame("Frame")
 D4:RegisterEvent(fSecure, "PLAYER_REGEN_ENABLED")
@@ -447,6 +438,21 @@ function D4:AtlasExists(atlas)
 
     return false
 end
+
+local ICON_TAG_LIST_EN = {
+    ["star"] = 1,
+    ["yellow"] = 1,
+    ["cirlce"] = 2,
+    ["orange"] = 2,
+    ["diamond"] = 3,
+    ["triangle"] = 4,
+    ["moon"] = 5,
+    ["square"] = 6,
+    ["blue"] = 6,
+    ["cross"] = 7,
+    ["red"] = 7,
+    ["skull"] = 8,
+}
 
 local function FixIconChat(sel, event, message, author, ...)
     if ICON_LIST then
@@ -1013,10 +1019,15 @@ function D4:GetFrameByName(name)
     end
 
     local baseName, index = name:match("([^%[]+)%[(%d+)%]")
-    if baseName and index then
+    if baseName and index and index ~= nil then
+        if type(index) == "string" then
+            index = tonumber(index)
+        end
+
+        if type(index) ~= "number" then return nil end
         local f = _G[baseName]
 
-        return f and select(tonumber(index), f:GetRegions()) or nil
+        return f and select(index, f:GetRegions()) or nil
     end
 
     return nil

@@ -220,6 +220,8 @@ MoveAny:AddToEMMap("MAPetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetActionBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("StanceBar", "ShowStanceBar")
+MoveAny:AddToEMMap("MAStanceBar", "ShowStanceBar")
+MoveAny:AddToEMMap("StanceBarAnchor", "ShowStanceBar")
 MoveAny:AddToEMMap("MAGameTooltip", "ShowHudTooltip")
 MoveAny:AddToEMMap("TalkingHeadFrame", "ShowTalkingHeadFrame")
 MoveAny:AddToEMMap("TalkingHead", "ShowTalkingHeadFrame")
@@ -715,7 +717,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.170")
+	MoveAny:SetVersion(135994, "1.8.171")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4177,9 +4179,18 @@ function MoveAny:LoadAddon()
 
 	if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
 		for i = 1, 12 do
-			if _G["StanceButton" .. i] and _G["StanceButton" .. i .. "NormalTexture2"] then
-				_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
-				_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", _G["StanceButton" .. i], "CENTER", 0, 0)
+			local btn = _G["StanceButton" .. i]
+			if btn then
+				function btn:GetMAEle()
+					print("TEST")
+
+					return getglobal("StanceBarAnchor")
+				end
+
+				if _G["StanceButton" .. i .. "NormalTexture2"] then
+					_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
+					_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", btn, "CENTER", 0, 0)
+				end
 			end
 		end
 
@@ -4202,6 +4213,7 @@ function MoveAny:LoadAddon()
 		)
 	end
 
+	local PossessBarFrame = getglobal("PossessBarFrame")
 	if PossessActionBar then
 		if MoveAny:IsEnabled("POSSESSBAR", false) then
 			MoveAny:RegisterWidget(
