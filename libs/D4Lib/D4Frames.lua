@@ -460,7 +460,7 @@ end
 
 function D4:GetColor(name, from)
     if TAB == nil then
-        D4:MSG("[GetColor] Missing TAB", from)
+        D4:MSG("[D4] [GetColor] Missing TAB", from)
 
         return 0, 0, 0, 0
     end

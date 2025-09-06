@@ -99,7 +99,7 @@ MoveAny:AddTrans("deDE", "LID_EXTRAABILITYCONTAINER", "Extra-Fähigkeit (Zauber 
 MoveAny:AddTrans("deDE", "LID_MAINMENUEXPBAR", "Erfahrungsleiste")
 MoveAny:AddTrans("deDE", "LID_REPUTATIONWATCHBAR", "Rufleiste")
 MoveAny:AddTrans("deDE", "LID_UIWIDGETPOWERBAR", "Begegnungsleiste (Zeigt meist Prozente an) (Bossleiste, Elanleiste, Dunkelmond-Jahrmarkt, ...)")
-MoveAny:AddTrans("deDE", "LID_POWERBAR", "Begegnungsleiste (Zeigt meist Prozente an) (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)")
+MoveAny:AddTrans("deDE", "LID_POWERBAR", "Machtleiste (Zeigt meist Prozente an) (Boss Begegnungen, Dunkelmond-Jahrmarkt, ...)")
 MoveAny:AddTrans("deDE", "LID_COUNT", "Anzahl")
 MoveAny:AddTrans("deDE", "LID_ROWS", "Reihen")
 MoveAny:AddTrans("deDE", "LID_SPACING", "Abstand (Lücke)")
