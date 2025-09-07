@@ -220,7 +220,6 @@ MoveAny:AddToEMMap("MAPetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("PetActionBar", "ShowPetActionBar")
 MoveAny:AddToEMMap("EncounterBar", "ShowEncounterBar")
-MoveAny:AddToEMMap("UIWidgetPowerBarContainerFrame", "ShowEncounterBar")
 MoveAny:AddToEMMap("StanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("MAStanceBar", "ShowStanceBar")
 MoveAny:AddToEMMap("StanceBarAnchor", "ShowStanceBar")
@@ -719,7 +718,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.174")
+	MoveAny:SetVersion(135994, "1.8.175")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -941,12 +940,14 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "ZONEABILITYFRAME", false)
 		end
 
-		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then
-			AddCheckBox(4, "POWERBAR", false)
+		if MoveAny:IsValidFrame(EncounterBar) then
+			AddCheckBox(4, "ENCOUNTERBAR", false, nil, nil, "ShowEncounterBar")
+		elseif MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
+			AddCheckBox(4, "UIWIDGETPOWERBAR", false)
 		end
 
-		if MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
-			AddCheckBox(4, "UIWIDGETPOWERBAR", false, nil, nil, "ShowEncounterBar")
+		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then
+			AddCheckBox(4, "POWERBAR", false)
 		end
 
 		--AddCheckBox( 4, "BUFFTIMER1", true )
@@ -5158,7 +5159,16 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
+	if EncounterBar and MoveAny:IsEnabled("ENCOUNTERBAR", false) then
+		MoveAny:RegisterWidget(
+			{
+				["name"] = "EncounterBar",
+				["lstr"] = "LID_ENCOUNTERBAR",
+				["sw"] = 36,
+				["sh"] = 36
+			}
+		)
+	elseif UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
 		MoveAny:RegisterWidget(
 			{
 				["name"] = "UIWidgetPowerBarContainerFrame",
