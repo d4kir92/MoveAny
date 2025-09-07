@@ -46,34 +46,43 @@ visiTab[2] = 4
 visiTab[3] = 2
 visiTab[4] = 3
 function MoveAny:UpdateVisi()
-	local barVisibles = {GetActionBarToggles()}
-	if not InCombatLockdown() then
-		for i = 1, 5 do
-			if visiTab[i] and abs[visiTab[i]] then
-				local bar = abs[visiTab[i]]
-				if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
-					if not bar:IsShown() then
-						bar:Show()
-					end
-				else
-					if bar:IsShown() then
-						bar:Hide()
+	if GetActionBarToggles then
+		local barVisibles = {GetActionBarToggles()}
+		if not InCombatLockdown() then
+			for i = 1, 5 do
+				if visiTab[i] and abs[visiTab[i]] then
+					local bar = abs[visiTab[i]]
+					if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
+						if not bar:IsShown() then
+							print("SHOW1")
+							bar:Show()
+						end
+					else
+						if bar:IsShown() then
+							print("HIDE1")
+							bar:Hide()
+						end
 					end
 				end
 			end
 		end
-	end
 
-	MoveAny:After(0.3, MoveAny.UpdateVisi, "UpdateVisi")
+		MoveAny:After(
+			0.5,
+			function()
+				MoveAny:UpdateVisi()
+			end, "UpdateVisi"
+		)
+	end
 end
 
+MoveAny:UpdateVisi()
 function MoveAny:CheckIfMicroMenuInVehicle(frame)
 	if frame == MAMenuBar and ((PetBattleFrame and PetBattleFrame:IsShown()) or (OverrideActionBar and OverrideActionBar:IsShown())) then return true end
 
 	return false
 end
 
-MoveAny:UpdateVisi()
 function MoveAny:UpdateActionBar(frame)
 	if frame.ma_setpoint_ab then return end
 	MoveAny:SafeExec(

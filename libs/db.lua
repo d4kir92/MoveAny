@@ -638,11 +638,17 @@ function MoveAny:AddonLoaded(event, ...)
 	if event == "ADDON_LOADED" then
 		if select(1, ...) == AddonName then
 			loaded = true
-			MoveAny:LoadAddon()
+			if MoveAny.LoadAddon then
+				MoveAny:LoadAddon()
+			end
+
 			MoveAny:UnregisterEvent(mf, event)
 		end
 	elseif event == "PLAYER_LOGIN" then
-		MoveAny:PlayerLogin()
+		if MoveAny.PlayerLogin then
+			MoveAny:PlayerLogin()
+		end
+
 		MoveAny:UnregisterEvent(mf, event)
 	end
 end

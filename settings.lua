@@ -33,6 +33,32 @@ local sls = {}
 local buffsDelay = 0.1
 local EMMapForced = {}
 local keybinds = {}
+local sptab = {}
+function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
+	if window == nil then
+		MoveAny:INFO("[SetPoint] WINDOW IS NIL")
+
+		return
+	end
+
+	sptab[window] = sptab[window] or false
+	MoveAny:SafeExec(
+		window,
+		function()
+			if p1 then
+				local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
+				local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
+				sptab[window] = true
+				ClearAllPoints(window)
+				SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
+				sptab[window] = false
+			end
+		end, "MoveAny:SetPoint"
+	)
+
+	return true
+end
+
 function MoveAny:CheckBuffType(id, child, tab, isDebuff)
 	if child == nil then return 0 end
 	if child:IsShown() == false then return 0 end
@@ -718,7 +744,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.175")
+	MoveAny:SetVersion(135994, "1.8.176")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1180,9 +1206,17 @@ function MoveAny:InitMALock()
 	MALock.Pipette:SetScript(
 		"OnClick",
 		function()
-			MoveAny:Lock()
-			MoveAny:HideMALock()
+			if MoveAny.Lock then
+				MoveAny:Lock()
+			end
+
+			if MoveAny.HideMALock then
+				MoveAny:HideMALock()
+			end
+
 			MoveAny:SetFinder(true)
+			MoveAny:HoverLogic()
+			MoveAny:FinderThink()
 		end
 	)
 
@@ -1211,8 +1245,14 @@ function MoveAny:InitMALock()
 	MALock.Profiles:SetScript(
 		"OnClick",
 		function()
-			MoveAny:Lock()
-			MoveAny:HideMALock()
+			if MoveAny.Lock then
+				MoveAny:Lock()
+			end
+
+			if MoveAny.HideMALock then
+				MoveAny:HideMALock()
+			end
+
 			MoveAny:SetEnabled("MAPROFILES", true)
 			MoveAny:ShowProfiles()
 		end
@@ -1333,18 +1373,10 @@ function MoveAny:InitMALock()
 					MoveAny:HoverLogic()
 				end, "HoverLogic FINDER FOUND"
 			)
-		else
-			MoveAny:After(
-				0.5,
-				function()
-					MoveAny:HoverLogic()
-				end, "HoverLogic FINDER NOT FOUND"
-			)
 		end
 	end
 
-	MoveAny:HoverLogic()
-	local function FinderThink()
+	function MoveAny:FinderThink()
 		if MoveAny:GetFinder() then
 			finding = true
 			if hoverFrames then
@@ -1373,9 +1405,9 @@ function MoveAny:InitMALock()
 			end
 
 			if InCombatLockdown() then
-				MoveAny:After(0.4, FinderThink, "FinderThink Visible Combat")
+				MoveAny:After(0.4, MoveAny.FinderThink, "FinderThink Visible Combat")
 			else
-				MoveAny:After(0.3, FinderThink, "FinderThink Visible")
+				MoveAny:After(0.3, MoveAny.FinderThink, "FinderThink Visible")
 			end
 		elseif finding then
 			finding = false
@@ -1386,40 +1418,25 @@ function MoveAny:InitMALock()
 			end
 
 			if InCombatLockdown() then
-				MoveAny:After(0.6, FinderThink, "FinderThink Hidden Combat")
+				MoveAny:After(0.6, MoveAny.FinderThink, "FinderThink Hidden Combat")
 			else
-				MoveAny:After(0.4, FinderThink, "FinderThink Hidden")
-			end
-		else
-			if InCombatLockdown() then
-				MoveAny:After(0.4, FinderThink, "FinderThink ELSE Combat")
-			else
-				MoveAny:After(0.3, FinderThink, "FinderThink ELSE")
+				MoveAny:After(0.4, MoveAny.FinderThink, "FinderThink Hidden")
 			end
 		end
 	end
 
-	FinderThink()
 	MoveAny:After(
 		0.1,
 		function()
 			MAGridFrame = CreateFrame("Frame", "MAGridFrame", MoveAny:GetMainPanel())
-			local function MAGridFrameThink()
-				if MACurrentEle then
+			function MoveAny:GridFrameThink()
+				if getglobal("MACurrentEle") then
 					MAGridFrame:EnableMouse(true)
 				else
 					MAGridFrame:EnableMouse(false)
 				end
-
-				MoveAny:After(
-					0.4,
-					function()
-						MAGridFrameThink()
-					end, "MAGridFrameThink"
-				)
 			end
 
-			MAGridFrameThink()
 			MAGridFrame:HookScript(
 				"OnMouseDown",
 				function(sel, btn)
@@ -1449,7 +1466,9 @@ function MoveAny:InitMALock()
 				MALock:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 			end
 
-			MoveAny:HideMALock(true)
+			if MoveAny.HideMALock then
+				MoveAny:HideMALock(true)
+			end
 		end, "InitMALock 3"
 	)
 end
@@ -2391,29 +2410,31 @@ local hookedRep = false
 local hookedRepStatus = false
 function MoveAny:PlayerLogin()
 	MoveAny:InitActionBarLayouts()
-	if MoveAny:AnyActionbarEnabled() then
+	if MoveAny.AnyActionbarEnabled and MoveAny:AnyActionbarEnabled() then
 		MoveAny:CustomBars()
 		for i, bar in pairs(MoveAny:GetAllActionBars()) do
 			MoveAny:UpdateActionBar(bar)
 		end
 	end
 
-	MoveAny:CreateMinimapButton(
-		{
-			["name"] = "MoveAny",
-			["icon"] = 135994,
-			["dbtab"] = MATAB,
-			["vTT"] = {{"|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r", "v|cff3FC7EB" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
-			["funcL"] = function()
-				MoveAny:ToggleMALock()
-			end,
-			["funcR"] = function()
-				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
-				MoveAny:HideMMBtn("MoveAny")
-			end,
-			["dbkey"] = "SHOWMINIMAPBUTTON"
-		}
-	)
+	if MoveAny.GetVersion and MoveAny:GetVersion() and MoveAny.Trans then
+		MoveAny:CreateMinimapButton(
+			{
+				["name"] = "MoveAny",
+				["icon"] = 135994,
+				["dbtab"] = MATAB,
+				["vTT"] = {{"|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r", "v|cff3FC7EB" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
+				["funcL"] = function()
+					MoveAny:ToggleMALock()
+				end,
+				["funcR"] = function()
+					MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
+					MoveAny:HideMMBtn("MoveAny")
+				end,
+				["dbkey"] = "SHOWMINIMAPBUTTON"
+			}
+		)
+	end
 end
 
 function MoveAny:IsEnabledBartender4(element)
@@ -2535,355 +2556,338 @@ function MoveAny:LoadAddon()
 		ContainerFrameContainer:EnableMouse(false) -- Contains all bags
 	end
 
-	if MoveAny:IsEnabled("EssentialCooldownViewer", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "EssentialCooldownViewer",
-				["lstr"] = "LID_EssentialCooldownViewer"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BuffIconCooldownViewer", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BuffIconCooldownViewer",
-				["lstr"] = "LID_BuffIconCooldownViewer"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BuffBarCooldownViewer", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BuffBarCooldownViewer",
-				["lstr"] = "LID_BuffBarCooldownViewer"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BATTLEFIELDMAPFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BattlefieldMapFrame",
-				["lstr"] = "LID_BATTLEFIELDMAPFRAME"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "CompactArenaFrame",
-				["lstr"] = "LID_COMPACTARENAFRAME"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("ROLEPOLLPOPUP", false) then
-		RolePollPopup:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "RolePollPopup",
-				["lstr"] = "LID_ROLEPOLLPOPUP"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("READYCHECKLISTENERFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ReadyCheckListenerFrame",
-				["lstr"] = "LID_READYCHECKLISTENERFRAME"
-			}
-		)
-	end
-
-	if MiniMapLFGFrame and MoveAny:IsEnabled("MINIMAPLFGFRAME", false) then
-		MiniMapLFGFrame:ClearAllPoints()
-		MiniMapLFGFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-		hooksecurefunc(
-			MiniMapLFGFrame,
-			"SetParent",
-			function(sel)
-				if sel.ma_set_parent then return end
-				sel.ma_set_parent = true
-				sel:SetParent(UIParent)
-				sel.ma_set_parent = false
-			end
-		)
-
-		MiniMapLFGFrame:SetParent(UIParent)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MiniMapLFGFrame",
-				["lstr"] = "LID_MINIMAPLFGFRAME",
-			}
-		)
-	end
-
-	if LFGMinimapFrame and MoveAny:IsEnabled("LFGMINIMAPFRAME", false) then
-		LFGMinimapFrame:ClearAllPoints()
-		LFGMinimapFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-		hooksecurefunc(
-			LFGMinimapFrame,
-			"SetParent",
-			function(sel)
-				if sel.ma_set_parent then return end
-				sel.ma_set_parent = true
-				sel:SetParent(UIParent)
-				sel.ma_set_parent = false
-			end
-		)
-
-		LFGMinimapFrame:SetParent(UIParent)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "LFGMinimapFrame",
-				["lstr"] = "LID_LFGMINIMAPFRAME",
-			}
-		)
-	end
-
-	if PlayerCastingBarFrame then
-		if MoveAny:IsEnabled("CASTINGBAR", false) then
+	if MoveAny.RegisterWidget then
+		if MoveAny:IsEnabled("EssentialCooldownViewer", false) then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "PlayerCastingBarFrame",
-					["lstr"] = "LID_CASTINGBAR",
+					["name"] = "EssentialCooldownViewer",
+					["lstr"] = "LID_EssentialCooldownViewer"
 				}
 			)
 		end
 
-		if MoveAny:IsEnabled("CASTINGBARTIMER", false) then
-			PlayerCastingBarFrameT = CreateFrame("FRAME", MoveAny:GetMainPanel())
-			PlayerCastingBarFrameT:SetSize(20, 20)
-			PlayerCastingBarFrameT:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-			if PlayerCastingBarFrame.timer ~= nil then
-				PlayerCastingBarFrame.timer:SetParent(PlayerCastingBarFrameT)
-				PlayerCastingBarFrame.timer:ClearAllPoints()
-				PlayerCastingBarFrame.timer:SetPoint("CENTER", PlayerCastingBarFrameT, "CENTER", 0, 0)
-			end
-
+		if MoveAny:IsEnabled("BuffIconCooldownViewer", false) then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "PlayerCastingBarFrameT",
-					["lstr"] = "LID_CASTINGBARTIMER",
+					["name"] = "BuffIconCooldownViewer",
+					["lstr"] = "LID_BuffIconCooldownViewer"
 				}
 			)
 		end
-	else
-		if MoveAny:IsEnabled("CASTINGBAR", false) then
-			if CastingBarFrame_ApplyAlpha then
-				hooksecurefunc(
-					"CastingBarFrame_ApplyAlpha",
-					function(sel, alpha)
-						if sel.ma_setalpha then return end
-						sel.ma_setalpha = true
-						if alpha == 1 then
-							MoveAny:UpdateAlpha(CastingBarFrame, mouseEle)
-						end
 
-						sel.ma_setalpha = false
-					end
+		if MoveAny:IsEnabled("BuffBarCooldownViewer", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BuffBarCooldownViewer",
+					["lstr"] = "LID_BuffBarCooldownViewer"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("BATTLEFIELDMAPFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BattlefieldMapFrame",
+					["lstr"] = "LID_BATTLEFIELDMAPFRAME"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("COMPACTARENAFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "CompactArenaFrame",
+					["lstr"] = "LID_COMPACTARENAFRAME"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("ROLEPOLLPOPUP", false) then
+			RolePollPopup:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "RolePollPopup",
+					["lstr"] = "LID_ROLEPOLLPOPUP"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("READYCHECKLISTENERFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ReadyCheckListenerFrame",
+					["lstr"] = "LID_READYCHECKLISTENERFRAME"
+				}
+			)
+		end
+
+		if MiniMapLFGFrame and MoveAny:IsEnabled("MINIMAPLFGFRAME", false) then
+			MiniMapLFGFrame:ClearAllPoints()
+			MiniMapLFGFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			hooksecurefunc(
+				MiniMapLFGFrame,
+				"SetParent",
+				function(sel)
+					if sel.ma_set_parent then return end
+					sel.ma_set_parent = true
+					sel:SetParent(UIParent)
+					sel.ma_set_parent = false
+				end
+			)
+
+			MiniMapLFGFrame:SetParent(UIParent)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MiniMapLFGFrame",
+					["lstr"] = "LID_MINIMAPLFGFRAME",
+				}
+			)
+		end
+
+		if LFGMinimapFrame and MoveAny:IsEnabled("LFGMINIMAPFRAME", false) then
+			LFGMinimapFrame:ClearAllPoints()
+			LFGMinimapFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			hooksecurefunc(
+				LFGMinimapFrame,
+				"SetParent",
+				function(sel)
+					if sel.ma_set_parent then return end
+					sel.ma_set_parent = true
+					sel:SetParent(UIParent)
+					sel.ma_set_parent = false
+				end
+			)
+
+			LFGMinimapFrame:SetParent(UIParent)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "LFGMinimapFrame",
+					["lstr"] = "LID_LFGMINIMAPFRAME",
+				}
+			)
+		end
+
+		if PlayerCastingBarFrame then
+			if MoveAny:IsEnabled("CASTINGBAR", false) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PlayerCastingBarFrame",
+						["lstr"] = "LID_CASTINGBAR",
+					}
 				)
 			end
 
+			if MoveAny:IsEnabled("CASTINGBARTIMER", false) then
+				PlayerCastingBarFrameT = CreateFrame("FRAME", MoveAny:GetMainPanel())
+				PlayerCastingBarFrameT:SetSize(20, 20)
+				PlayerCastingBarFrameT:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+				if PlayerCastingBarFrame.timer ~= nil then
+					PlayerCastingBarFrame.timer:SetParent(PlayerCastingBarFrameT)
+					PlayerCastingBarFrame.timer:ClearAllPoints()
+					PlayerCastingBarFrame.timer:SetPoint("CENTER", PlayerCastingBarFrameT, "CENTER", 0, 0)
+				end
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PlayerCastingBarFrameT",
+						["lstr"] = "LID_CASTINGBARTIMER",
+					}
+				)
+			end
+		else
+			if MoveAny:IsEnabled("CASTINGBAR", false) then
+				if CastingBarFrame_ApplyAlpha then
+					hooksecurefunc(
+						"CastingBarFrame_ApplyAlpha",
+						function(sel, alpha)
+							if sel.ma_setalpha then return end
+							sel.ma_setalpha = true
+							if alpha == 1 then
+								MoveAny:UpdateAlpha(CastingBarFrame, mouseEle)
+							end
+
+							sel.ma_setalpha = false
+						end
+					)
+				end
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "CastingBarFrame",
+						["lstr"] = "LID_CASTINGBAR"
+					}
+				)
+			end
+		end
+
+		if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
+			TotemFrame:SetParent(MoveAny:GetMainPanel())
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "CastingBarFrame",
-					["lstr"] = "LID_CASTINGBAR"
+					["name"] = "TotemFrame",
+					["lstr"] = "LID_TOTEMFRAME",
+					["sw"] = 32 * 4,
+					["sh"] = 32,
+					["userplaced"] = true,
+					["secure"] = true,
 				}
 			)
 		end
-	end
 
-	if TotemFrame and MoveAny:IsEnabled("TOTEMFRAME", false) then
-		TotemFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TotemFrame",
-				["lstr"] = "LID_TOTEMFRAME",
-				["sw"] = 32 * 4,
-				["sh"] = 32,
-				["userplaced"] = true,
-				["secure"] = true,
-			}
-		)
-	end
-
-	if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
-		RuneFrame:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "RuneFrame",
-				["lstr"] = "LID_RUNEFRAME",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "WarlockPowerFrame",
-				["lstr"] = "LID_WARLOCKPOWERFRAME",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if ShardBarFrame and MoveAny:IsEnabled("SHARDBARFRAME", false) and class == "WARLOCK" then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ShardBarFrame",
-				["lstr"] = "LID_SHARDBARFRAME",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if (MonkHarmonyBar or MonkHarmonyBarFrame) and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
-		if MonkHarmonyBarFrame == nil and MonkHarmonyBar then
-			MonkHarmonyBarFrame = CreateFrame("Frame", "MonkHarmonyBarFrame", UIParent)
-			MonkHarmonyBarFrame:SetSize(118, 28)
-			MonkHarmonyBarFrame:SetPoint(MonkHarmonyBar:GetPoint())
-			MonkHarmonyBar:ClearAllPoints()
-			MonkHarmonyBar:SetPoint("CENTER", MonkHarmonyBarFrame, "CENTER", 0, 0)
-			MonkHarmonyBar:SetParent(MonkHarmonyBarFrame)
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MonkHarmonyBarFrame",
-				["lstr"] = "LID_MONKHARMONYBARFRAME",
-				["userplaced"] = true,
-				["secure"] = true,
-				["sw"] = 118,
-				["sh"] = 28,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MonkStaggerBar",
-				["lstr"] = "LID_MONKSTAGGERBAR",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MageArcaneChargesFrame",
-				["lstr"] = "LID_MAGEARCANECHARGESFRAME",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
-		if class == "ROGUE" then
+		if RuneFrame and MoveAny:IsEnabled("RUNEFRAME", false) and class == "DEATHKNIGHT" then
+			RuneFrame:SetParent(MoveAny:GetMainPanel())
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "RogueComboPointBarFrame",
-					["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
+					["name"] = "RuneFrame",
+					["lstr"] = "LID_RUNEFRAME",
 					["userplaced"] = true,
 					["secure"] = true,
-					["sw"] = 120,
-					["sh"] = 30,
 					["soft"] = true,
 				}
 			)
-		elseif class == "DRUID" then
+		end
+
+		if WarlockPowerFrame and MoveAny:IsEnabled("WARLOCKPOWERFRAME", false) and class == "WARLOCK" then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "DruidComboPointBarFrame",
-					["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
+					["name"] = "WarlockPowerFrame",
+					["lstr"] = "LID_WARLOCKPOWERFRAME",
 					["userplaced"] = true,
 					["secure"] = true,
-					["sw"] = 116,
+					["soft"] = true,
+				}
+			)
+		end
+
+		if ShardBarFrame and MoveAny:IsEnabled("SHARDBARFRAME", false) and class == "WARLOCK" then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ShardBarFrame",
+					["lstr"] = "LID_SHARDBARFRAME",
+					["userplaced"] = true,
+					["secure"] = true,
+					["soft"] = true,
+				}
+			)
+		end
+
+		if (MonkHarmonyBar or MonkHarmonyBarFrame) and MoveAny:IsEnabled("MONKHARMONYBARFRAME", false) and class == "MONK" then
+			if MonkHarmonyBarFrame == nil and MonkHarmonyBar then
+				MonkHarmonyBarFrame = CreateFrame("Frame", "MonkHarmonyBarFrame", UIParent)
+				MonkHarmonyBarFrame:SetSize(118, 28)
+				MonkHarmonyBarFrame:SetPoint(MonkHarmonyBar:GetPoint())
+				MonkHarmonyBar:ClearAllPoints()
+				MonkHarmonyBar:SetPoint("CENTER", MonkHarmonyBarFrame, "CENTER", 0, 0)
+				MonkHarmonyBar:SetParent(MonkHarmonyBarFrame)
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MonkHarmonyBarFrame",
+					["lstr"] = "LID_MONKHARMONYBARFRAME",
+					["userplaced"] = true,
+					["secure"] = true,
+					["sw"] = 118,
 					["sh"] = 28,
 					["soft"] = true,
 				}
 			)
 		end
-	elseif ComboFrame and MoveAny:IsEnabled("COMBOFRAME", false) then
-		local cpsw, cpsh = 12, 12
-		for i = 1, 5 do
-			local cp = _G["ComboPoint" .. i]
-			if cp then
-				cpsw, cpsh = cp:GetSize()
-				cp:ClearAllPoints()
-				if i == 1 then
-					cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
-				else
-					cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
-				end
-			end
+
+		if MonkStaggerBar and MoveAny:IsEnabled("MONKSTAGGERBAR", false) and class == "MONK" then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MonkStaggerBar",
+					["lstr"] = "LID_MONKSTAGGERBAR",
+					["userplaced"] = true,
+					["secure"] = true,
+					["soft"] = true,
+				}
+			)
 		end
 
-		ComboFrame:SetSize(cpsw * 5, cpsh)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ComboFrame",
-				["lstr"] = "LID_COMBOFRAME",
-				["userplaced"] = true,
-				["soft"] = true,
-			}
-		)
-	end
+		if MageArcaneChargesFrame and MoveAny:IsEnabled("MAGEARCANECHARGESFRAME", false) and class == "MAGE" then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MageArcaneChargesFrame",
+					["lstr"] = "LID_MAGEARCANECHARGESFRAME",
+					["userplaced"] = true,
+					["secure"] = true,
+					["soft"] = true,
+				}
+			)
+		end
 
-	if EclipseBarFrame and MoveAny:IsEnabled("EclipseBarFrame", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "EclipseBarFrame",
-				["lstr"] = "LID_EclipseBarFrame",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
-		local wasrun = false
-		hooksecurefunc(
-			EssencePlayerFrame,
-			"Setup",
-			function()
+		if (RogueComboPointBarFrame or DruidComboPointBarFrame) and MoveAny:IsEnabled("COMBOPOINTPLAYERFRAME", false) then
+			if class == "ROGUE" then
 				MoveAny:RegisterWidget(
 					{
-						["name"] = "EssencePlayerFrame",
-						["lstr"] = "LID_ESSENCEPLAYERFRAME",
+						["name"] = "RogueComboPointBarFrame",
+						["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
 						["userplaced"] = true,
 						["secure"] = true,
+						["sw"] = 120,
+						["sh"] = 30,
 						["soft"] = true,
 					}
 				)
-
-				wasrun = true
+			elseif class == "DRUID" then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "DruidComboPointBarFrame",
+						["lstr"] = "LID_COMBOPOINTPLAYERFRAME",
+						["userplaced"] = true,
+						["secure"] = true,
+						["sw"] = 116,
+						["sh"] = 28,
+						["soft"] = true,
+					}
+				)
 			end
-		)
+		elseif ComboFrame and MoveAny:IsEnabled("COMBOFRAME", false) then
+			local cpsw, cpsh = 12, 12
+			for i = 1, 5 do
+				local cp = _G["ComboPoint" .. i]
+				if cp then
+					cpsw, cpsh = cp:GetSize()
+					cp:ClearAllPoints()
+					if i == 1 then
+						cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
+					else
+						cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
+					end
+				end
+			end
 
-		MoveAny:After(
-			4,
-			function()
-				if not wasrun then
+			ComboFrame:SetSize(cpsw * 5, cpsh)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ComboFrame",
+					["lstr"] = "LID_COMBOFRAME",
+					["userplaced"] = true,
+					["soft"] = true,
+				}
+			)
+		end
+
+		if EclipseBarFrame and MoveAny:IsEnabled("EclipseBarFrame", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "EclipseBarFrame",
+					["lstr"] = "LID_EclipseBarFrame",
+					["userplaced"] = true,
+					["secure"] = true,
+					["soft"] = true,
+				}
+			)
+		end
+
+		if EssencePlayerFrame and MoveAny:IsEnabled("ESSENCEPLAYERFRAME", false) and class == "EVOKER" then
+			local wasrun = false
+			hooksecurefunc(
+				EssencePlayerFrame,
+				"Setup",
+				function()
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "EssencePlayerFrame",
@@ -2893,715 +2897,555 @@ function MoveAny:LoadAddon()
 							["soft"] = true,
 						}
 					)
+
+					wasrun = true
 				end
-			end, "LoadAddon1"
-		)
-	end
+			)
 
-	if MoveAny:IsValidFrame(PaladinPowerBarFrame) and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PaladinPowerBarFrame",
-				["lstr"] = "LID_PALADINPOWERBARFRAME",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
+			MoveAny:After(
+				4,
+				function()
+					if not wasrun then
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "EssencePlayerFrame",
+								["lstr"] = "LID_ESSENCEPLAYERFRAME",
+								["userplaced"] = true,
+								["secure"] = true,
+								["soft"] = true,
+							}
+						)
+					end
+				end, "LoadAddon1"
+			)
+		end
 
-	if MoveAny:IsValidFrame(PaladinPowerBar) and MoveAny:IsEnabled("PALADINPOWERBAR", false) and class == "PALADIN" then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PaladinPowerBar",
-				["lstr"] = "LID_PALADINPOWERBAR",
-				["userplaced"] = true,
-				["secure"] = true,
-				["soft"] = true,
-			}
-		)
-	end
-
-	if PlayerFrameBackground and MoveAny:IsEnabled("PLAYERFRAMEBACKGROUND", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PlayerFrameBackground",
-				["lstr"] = "LID_PLAYERFRAMEBACKGROUND",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if PlayerLevelText and MoveAny:IsEnabled("PLAYERLEVELTEXT", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PlayerLevelText",
-				["lstr"] = "LID_PLAYERLEVELTEXT",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("PLAYERFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PlayerFrame",
-				["lstr"] = "LID_PLAYERFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameNameBackground",
-				["lstr"] = "LID_TARGETFRAMENAMEBACKGROUND",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameNumericalThreat",
-				["lstr"] = "LID_TargetFrameNumericalThreat",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("TARGETFRAMEBUFFMOVER", false) then
-		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			function MoveAny:UpdateTargetBuffs()
-				for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
-					MoveAny:UpdateChildBuffs(bb, "TargetFrameBuffMover")
-				end
-			end
-
-			local TargetFrameBuffMover = CreateFrame("Frame", "TargetFrameBuffMover", UIParent)
-			TargetFrameBuffMover:SetSize(21, 21)
-			TargetFrameBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		if MoveAny:IsValidFrame(PaladinPowerBarFrame) and MoveAny:IsEnabled("PALADINPOWERBARFRAME", false) and class == "PALADIN" then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "TargetFrameBuffMover",
-					["lstr"] = "LID_TARGETFRAMEBUFFMOVER",
+					["name"] = "PaladinPowerBarFrame",
+					["lstr"] = "LID_PALADINPOWERBARFRAME",
 					["userplaced"] = true,
-					["setup"] = function()
-						local frame = TargetFrameBuffMover
-						function frame:UpdateScaleAndAlpha()
-							local scale = frame:GetScale()
-							local alpha = frame:GetAlpha()
-							for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
-								if bb then
-									bb:SetScale(scale)
-									bb:SetAlpha(alpha)
-								end
-							end
-						end
+					["secure"] = true,
+					["soft"] = true,
+				}
+			)
+		end
 
-						local added = {}
-						function frame:Update()
-							if TargetFrame and TargetFrame:GetLeft() then
-								local frameCenterX, frameCenterY = frame:GetCenter()
-								local frameEffectiveScale = frame:GetScale()
-								local frameAbsoluteX = frameCenterX / frameEffectiveScale
-								local frameAbsoluteY = frameCenterY / frameEffectiveScale
-								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-								local targetEffectiveScale = TargetFrame:GetScale()
-								local targetAbsoluteX = targetCenterX / targetEffectiveScale
-								local targetAbsoluteY = targetCenterY / targetEffectiveScale
-								frame.PX = frameAbsoluteX - targetAbsoluteX
-								frame.PY = frameAbsoluteY - targetAbsoluteY
+		if MoveAny:IsValidFrame(PaladinPowerBar) and MoveAny:IsEnabled("PALADINPOWERBAR", false) and class == "PALADIN" then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PaladinPowerBar",
+					["lstr"] = "LID_PALADINPOWERBAR",
+					["userplaced"] = true,
+					["secure"] = true,
+					["soft"] = true,
+				}
+			)
+		end
+
+		if PlayerFrameBackground and MoveAny:IsEnabled("PLAYERFRAMEBACKGROUND", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PlayerFrameBackground",
+					["lstr"] = "LID_PLAYERFRAMEBACKGROUND",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if PlayerLevelText and MoveAny:IsEnabled("PLAYERLEVELTEXT", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PlayerLevelText",
+					["lstr"] = "LID_PLAYERLEVELTEXT",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("PLAYERFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PlayerFrame",
+					["lstr"] = "LID_PLAYERFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("TARGETFRAMENAMEBACKGROUND", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameNameBackground",
+					["lstr"] = "LID_TARGETFRAMENAMEBACKGROUND",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("TargetFrameNumericalThreat", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrameNumericalThreat",
+					["lstr"] = "LID_TargetFrameNumericalThreat",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("TARGETFRAMEBUFFMOVER", false) then
+			if MoveAny:IsEnabled("TARGETFRAME", false) then
+				function MoveAny:UpdateTargetBuffs()
+					for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
+						MoveAny:UpdateChildBuffs(bb, "TargetFrameBuffMover")
+					end
+				end
+
+				local TargetFrameBuffMover = CreateFrame("Frame", "TargetFrameBuffMover", UIParent)
+				TargetFrameBuffMover:SetSize(21, 21)
+				TargetFrameBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "TargetFrameBuffMover",
+						["lstr"] = "LID_TARGETFRAMEBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = TargetFrameBuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
 								for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
 									if bb then
-										if added[bb] == nil then
-											local setPoint = false
-											hooksecurefunc(
-												bb,
-												"SetPoint",
-												function(sel, ...)
-													if setPoint then return end
-													setPoint = true
-													local MABUFFMODE = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFMODE", 0)
-													local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFLIMIT", 10)
-													local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGX", 4)
-													local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGY", 10)
-													local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
-													sel:ClearAllPoints()
-													if MABUFFMODE == 1 then
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
-													else
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
-													end
-
-													setPoint = false
-												end
-											)
-										end
-
-										if added[bb] ~= i then
-											added[bb] = i
-											bb:ClearAllPoints()
-											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
-										end
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
 									end
 								end
 							end
 
-							MoveAny:After(
-								0.1,
-								function()
-									frame:Update()
-								end, "frame:Update LoadAddon"
-							)
-						end
+							local added = {}
+							function frame:Update()
+								if TargetFrame and TargetFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+									local targetEffectiveScale = TargetFrame:GetScale()
+									local targetAbsoluteX = targetCenterX / targetEffectiveScale
+									local targetAbsoluteY = targetCenterY / targetEffectiveScale
+									frame.PX = frameAbsoluteX - targetAbsoluteX
+									frame.PY = frameAbsoluteY - targetAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MABUFFMODE = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFMODE", 0)
+														local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFLIMIT", 10)
+														local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGX", 4)
+														local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+														sel:ClearAllPoints()
+														if MABUFFMODE == 1 then
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+														end
 
-						frame:Update()
-						TargetFrame:HookScript(
-							"OnShow",
-							function()
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
 								MoveAny:After(
-									buffsDelay,
+									0.1,
 									function()
-										MoveAny:UpdateTargetBuffs()
-									end, "TargetFrame OnShow"
+										frame:Update()
+									end, "frame:Update LoadAddon"
 								)
-
-								frame:UpdateScaleAndAlpha()
 							end
-						)
 
-						local bbf = CreateFrame("FRAME")
-						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
-						MoveAny:OnEvent(
-							bbf,
-							function()
-								MoveAny:UpdateTargetBuffs()
-								frame:UpdateScaleAndAlpha()
-							end, "bbf 7"
-						)
+							frame:Update()
+							TargetFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:After(
+										buffsDelay,
+										function()
+											MoveAny:UpdateTargetBuffs()
+										end, "TargetFrame OnShow"
+									)
 
-						hooksecurefunc(
-							frame,
-							"SetPoint",
-							function()
-								frame:UpdateScaleAndAlpha()
-							end
-						)
+									frame:UpdateScaleAndAlpha()
+								end
+							)
 
-						hooksecurefunc(
-							frame,
-							"SetScale",
-							function(sel)
-								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_bb_set_scale then return end
-								sel.ma_bb_set_scale = true
-								frame:UpdateScaleAndAlpha()
-								sel.ma_bb_set_scale = false
-							end
-						)
+							local bbf = CreateFrame("FRAME")
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+							MoveAny:OnEvent(
+								bbf,
+								function()
+									MoveAny:UpdateTargetBuffs()
+									frame:UpdateScaleAndAlpha()
+								end, "bbf 7"
+							)
 
-						frame:UpdateScaleAndAlpha()
-					end,
-				}
-			)
-		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TargetFrameBuffMover enabled in MoveAny.")
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-			end
-		end
-	end
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
 
-	if MoveAny:IsEnabled("TARGETFRAMEDEBUFFMOVER", false) then
-		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			function MoveAny:UpdateTargetDebuffs()
-				for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
-					MoveAny:UpdateChildBuffs(bb, "TargetFrameDebuffMover")
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
+							frame:UpdateScaleAndAlpha()
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TargetFrameBuffMover enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 				end
 			end
+		end
 
-			local TargetFrameDebuffMover = CreateFrame("Frame", "TargetFrameDebuffMover", UIParent)
-			TargetFrameDebuffMover:SetSize(21, 21)
-			TargetFrameDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "TargetFrameDebuffMover",
-					["lstr"] = "LID_TARGETFRAMEDEBUFFMOVER",
-					["userplaced"] = true,
-					["setup"] = function()
-						local frame = TargetFrameDebuffMover
-						function frame:UpdateScaleAndAlpha()
-							local scale = frame:GetScale()
-							local alpha = frame:GetAlpha()
-							for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
-								if bb then
-									bb:SetScale(scale)
-									bb:SetAlpha(alpha)
-								end
-							end
-						end
+		if MoveAny:IsEnabled("TARGETFRAMEDEBUFFMOVER", false) then
+			if MoveAny:IsEnabled("TARGETFRAME", false) then
+				function MoveAny:UpdateTargetDebuffs()
+					for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
+						MoveAny:UpdateChildBuffs(bb, "TargetFrameDebuffMover")
+					end
+				end
 
-						local added = {}
-						function frame:Update()
-							if TargetFrame and TargetFrame:GetLeft() then
-								local frameCenterX, frameCenterY = frame:GetCenter()
-								local frameEffectiveScale = frame:GetScale()
-								local frameAbsoluteX = frameCenterX / frameEffectiveScale
-								local frameAbsoluteY = frameCenterY / frameEffectiveScale
-								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-								local targetEffectiveScale = TargetFrame:GetScale()
-								local targetAbsoluteX = targetCenterX / targetEffectiveScale
-								local targetAbsoluteY = targetCenterY / targetEffectiveScale
-								frame.PX = frameAbsoluteX - targetAbsoluteX
-								frame.PY = frameAbsoluteY - targetAbsoluteY
+				local TargetFrameDebuffMover = CreateFrame("Frame", "TargetFrameDebuffMover", UIParent)
+				TargetFrameDebuffMover:SetSize(21, 21)
+				TargetFrameDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "TargetFrameDebuffMover",
+						["lstr"] = "LID_TARGETFRAMEDEBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = TargetFrameDebuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
 								for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
 									if bb then
-										if added[bb] == nil then
-											local setPoint = false
-											hooksecurefunc(
-												bb,
-												"SetPoint",
-												function(sel, ...)
-													if setPoint then return end
-													setPoint = true
-													local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFMODE", 0)
-													local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFLIMIT", 10)
-													local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGX", 4)
-													local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGY", 10)
-													local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
-													sel:ClearAllPoints()
-													if MADEBUFFMODE == 1 then
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
-													else
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
-													end
-
-													setPoint = false
-												end
-											)
-										end
-
-										if added[bb] ~= i then
-											added[bb] = i
-											bb:ClearAllPoints()
-											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
-										end
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
 									end
 								end
 							end
 
-							MoveAny:After(
-								0.1,
-								function()
-									frame:Update()
-								end, "TargetFrame Update"
-							)
-						end
+							local added = {}
+							function frame:Update()
+								if TargetFrame and TargetFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+									local targetEffectiveScale = TargetFrame:GetScale()
+									local targetAbsoluteX = targetCenterX / targetEffectiveScale
+									local targetAbsoluteY = targetCenterY / targetEffectiveScale
+									frame.PX = frameAbsoluteX - targetAbsoluteX
+									frame.PY = frameAbsoluteY - targetAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFMODE", 0)
+														local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFLIMIT", 10)
+														local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGX", 4)
+														local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+														sel:ClearAllPoints()
+														if MADEBUFFMODE == 1 then
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+														end
 
-						frame:Update()
-						TargetFrame:HookScript(
-							"OnShow",
-							function()
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
 								MoveAny:After(
-									buffsDelay,
+									0.1,
 									function()
-										MoveAny:UpdateTargetDebuffs()
-									end, "TargetFrame OnShow 2"
+										frame:Update()
+									end, "TargetFrame Update"
 								)
-
-								frame:UpdateScaleAndAlpha()
 							end
-						)
 
-						local bbf = CreateFrame("FRAME")
-						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
-						MoveAny:OnEvent(
-							bbf,
-							function()
-								MoveAny:UpdateTargetDebuffs()
-								frame:UpdateScaleAndAlpha()
-							end, "bbf 7"
-						)
+							frame:Update()
+							TargetFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:After(
+										buffsDelay,
+										function()
+											MoveAny:UpdateTargetDebuffs()
+										end, "TargetFrame OnShow 2"
+									)
 
-						hooksecurefunc(
-							frame,
-							"SetPoint",
-							function()
-								frame:UpdateScaleAndAlpha()
-							end
-						)
+									frame:UpdateScaleAndAlpha()
+								end
+							)
 
-						hooksecurefunc(
-							frame,
-							"SetScale",
-							function(sel)
-								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_bb_set_scale then return end
-								sel.ma_bb_set_scale = true
-								frame:UpdateScaleAndAlpha()
-								sel.ma_bb_set_scale = false
-							end
-						)
+							local bbf = CreateFrame("FRAME")
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+							MoveAny:OnEvent(
+								bbf,
+								function()
+									MoveAny:UpdateTargetDebuffs()
+									frame:UpdateScaleAndAlpha()
+								end, "bbf 7"
+							)
 
-						frame:UpdateScaleAndAlpha()
-					end,
-				}
-			)
-		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFFMOVER enabled in MoveAny.")
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-			end
-		end
-	end
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
 
-	if MoveAny:IsEnabled("TARGETFRAMETOTDEBUFFMOVER", false) then
-		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			function MoveAny:UpdateTargetToTDebuffs()
-				for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
-					MoveAny:UpdateChildBuffs(bb, "TargetFrameToTDebuffMover")
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
+							frame:UpdateScaleAndAlpha()
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFFMOVER enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 				end
 			end
+		end
 
-			local TargetFrameToTDebuffMover = CreateFrame("Frame", "TargetFrameToTDebuffMover", UIParent)
-			TargetFrameToTDebuffMover:SetSize(21, 21)
-			TargetFrameToTDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "TargetFrameToTDebuffMover",
-					["lstr"] = "LID_TARGETFRAMETOTDEBUFFMOVER",
-					["userplaced"] = true,
-					["setup"] = function()
-						local frame = TargetFrameToTDebuffMover
-						function frame:UpdateScaleAndAlpha()
-							local scale = frame:GetScale()
-							local alpha = frame:GetAlpha()
-							for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
-								if bb then
-									bb:SetScale(scale)
-									bb:SetAlpha(alpha)
-								end
-							end
-						end
+		if MoveAny:IsEnabled("TARGETFRAMETOTDEBUFFMOVER", false) then
+			if MoveAny:IsEnabled("TARGETFRAME", false) then
+				function MoveAny:UpdateTargetToTDebuffs()
+					for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
+						MoveAny:UpdateChildBuffs(bb, "TargetFrameToTDebuffMover")
+					end
+				end
 
-						local added = {}
-						function frame:Update()
-							if TargetFrame and TargetFrame:GetLeft() then
-								local frameCenterX, frameCenterY = frame:GetCenter()
-								local frameEffectiveScale = frame:GetScale()
-								local frameAbsoluteX = frameCenterX / frameEffectiveScale
-								local frameAbsoluteY = frameCenterY / frameEffectiveScale
-								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-								local targetEffectiveScale = TargetFrame:GetScale()
-								local targetAbsoluteX = targetCenterX / targetEffectiveScale
-								local targetAbsoluteY = targetCenterY / targetEffectiveScale
-								frame.PX = frameAbsoluteX - targetAbsoluteX
-								frame.PY = frameAbsoluteY - targetAbsoluteY
+				local TargetFrameToTDebuffMover = CreateFrame("Frame", "TargetFrameToTDebuffMover", UIParent)
+				TargetFrameToTDebuffMover:SetSize(21, 21)
+				TargetFrameToTDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "TargetFrameToTDebuffMover",
+						["lstr"] = "LID_TARGETFRAMETOTDEBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = TargetFrameToTDebuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
 								for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
 									if bb then
-										if added[bb] == nil then
-											local setPoint = false
-											hooksecurefunc(
-												bb,
-												"SetPoint",
-												function(sel, ...)
-													if setPoint then return end
-													setPoint = true
-													local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFMODE", 0)
-													local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
-													local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
-													local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
-													local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
-													sel:ClearAllPoints()
-													if MADEBUFFMODE == 1 then
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
-													else
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
-													end
-
-													setPoint = false
-												end
-											)
-										end
-
-										if added[bb] ~= i then
-											added[bb] = i
-											bb:ClearAllPoints()
-											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
-										end
+										bb:SetScale(scale)
+										bb:SetAlpha(alpha)
 									end
 								end
 							end
 
-							MoveAny:After(
-								0.1,
-								function()
-									frame:Update()
-								end, "TargetFrame Update 2"
-							)
-						end
+							local added = {}
+							function frame:Update()
+								if TargetFrame and TargetFrame:GetLeft() then
+									local frameCenterX, frameCenterY = frame:GetCenter()
+									local frameEffectiveScale = frame:GetScale()
+									local frameAbsoluteX = frameCenterX / frameEffectiveScale
+									local frameAbsoluteY = frameCenterY / frameEffectiveScale
+									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+									local targetEffectiveScale = TargetFrame:GetScale()
+									local targetAbsoluteX = targetCenterX / targetEffectiveScale
+									local targetAbsoluteY = targetCenterY / targetEffectiveScale
+									frame.PX = frameAbsoluteX - targetAbsoluteX
+									frame.PY = frameAbsoluteY - targetAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFMODE", 0)
+														local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
+														local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
+														local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+														sel:ClearAllPoints()
+														if MADEBUFFMODE == 1 then
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+														end
 
-						frame:Update()
-						TargetFrame:HookScript(
-							"OnShow",
-							function()
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
 								MoveAny:After(
-									buffsDelay,
+									0.1,
 									function()
-										MoveAny:UpdateTargetToTDebuffs()
-									end, "t123"
+										frame:Update()
+									end, "TargetFrame Update 2"
 								)
-
-								frame:UpdateScaleAndAlpha()
 							end
-						)
 
-						local bbf = CreateFrame("FRAME")
-						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
-						MoveAny:OnEvent(
-							bbf,
-							function()
-								MoveAny:UpdateTargetToTDebuffs()
-								frame:UpdateScaleAndAlpha()
-							end, "bbf 6"
-						)
+							frame:Update()
+							TargetFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:After(
+										buffsDelay,
+										function()
+											MoveAny:UpdateTargetToTDebuffs()
+										end, "t123"
+									)
 
-						hooksecurefunc(
-							frame,
-							"SetPoint",
-							function()
-								frame:UpdateScaleAndAlpha()
-							end
-						)
+									frame:UpdateScaleAndAlpha()
+								end
+							)
 
-						hooksecurefunc(
-							frame,
-							"SetScale",
-							function(sel)
-								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_bb_set_scale then return end
-								sel.ma_bb_set_scale = true
-								frame:UpdateScaleAndAlpha()
-								sel.ma_bb_set_scale = false
-							end
-						)
+							local bbf = CreateFrame("FRAME")
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+							MoveAny:OnEvent(
+								bbf,
+								function()
+									MoveAny:UpdateTargetToTDebuffs()
+									frame:UpdateScaleAndAlpha()
+								end, "bbf 6"
+							)
 
-						frame:UpdateScaleAndAlpha()
-					end,
-				}
-			)
-		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFFMOVER enabled in MoveAny.")
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-			end
-		end
-	end
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
 
-	if MoveAny:IsEnabled("TARGETFRAMETOTBUFFMOVER", false) then
-		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			function MoveAny:UpdateTargetToTBuffs()
-				for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
-					MoveAny:UpdateChildBuffs(bb, "TargetFrameToTBuffMover")
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
+							frame:UpdateScaleAndAlpha()
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEDEBUFFMOVER enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 				end
 			end
+		end
 
-			local TargetFrameToTBuffMover = CreateFrame("Frame", "TargetFrameToTBuffMover", UIParent)
-			TargetFrameToTBuffMover:SetSize(21, 21)
-			TargetFrameToTBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "TargetFrameToTBuffMover",
-					["lstr"] = "LID_TARGETFRAMETOTBUFFMOVER",
-					["userplaced"] = true,
-					["setup"] = function()
-						local frame = TargetFrameToTBuffMover
-						function frame:UpdateScaleAndAlpha()
-							local scale = frame:GetScale()
-							local alpha = frame:GetAlpha()
-							for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
-								if bb then
-									bb:SetScale(scale)
-									bb:SetAlpha(alpha)
-								end
-							end
-						end
+		if MoveAny:IsEnabled("TARGETFRAMETOTBUFFMOVER", false) then
+			if MoveAny:IsEnabled("TARGETFRAME", false) then
+				function MoveAny:UpdateTargetToTBuffs()
+					for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
+						MoveAny:UpdateChildBuffs(bb, "TargetFrameToTBuffMover")
+					end
+				end
 
-						local added = {}
-						function frame:Update()
-							if TargetFrame and TargetFrame:GetLeft() then
-								local frameCenterX, frameCenterY = frame:GetCenter()
-								local frameEffectiveScale = frame:GetScale()
-								local frameAbsoluteX = frameCenterX / frameEffectiveScale
-								local frameAbsoluteY = frameCenterY / frameEffectiveScale
-								local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-								local targetEffectiveScale = TargetFrame:GetScale()
-								local targetAbsoluteX = targetCenterX / targetEffectiveScale
-								local targetAbsoluteY = targetCenterY / targetEffectiveScale
-								frame.PX = frameAbsoluteX - targetAbsoluteX
-								frame.PY = frameAbsoluteY - targetAbsoluteY
+				local TargetFrameToTBuffMover = CreateFrame("Frame", "TargetFrameToTBuffMover", UIParent)
+				TargetFrameToTBuffMover:SetSize(21, 21)
+				TargetFrameToTBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "TargetFrameToTBuffMover",
+						["lstr"] = "LID_TARGETFRAMETOTBUFFMOVER",
+						["userplaced"] = true,
+						["setup"] = function()
+							local frame = TargetFrameToTBuffMover
+							function frame:UpdateScaleAndAlpha()
+								local scale = frame:GetScale()
+								local alpha = frame:GetAlpha()
 								for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
 									if bb then
-										if added[bb] == nil then
-											local setPoint = false
-											hooksecurefunc(
-												bb,
-												"SetPoint",
-												function(sel, ...)
-													if setPoint then return end
-													setPoint = true
-													local MABUFFMODE = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFMODE", 0)
-													local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFLIMIT", 10)
-													local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGX", 4)
-													local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGY", 10)
-													local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
-													sel:ClearAllPoints()
-													if MABUFFMODE == 1 then
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
-													else
-														sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
-													end
-
-													setPoint = false
-												end
-											)
-										end
-
-										if added[bb] ~= i then
-											added[bb] = i
-											bb:ClearAllPoints()
-											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
-										end
-									end
-								end
-							end
-
-							MoveAny:After(
-								0.1,
-								function()
-									frame:Update()
-								end, "t234"
-							)
-						end
-
-						frame:Update()
-						TargetFrame:HookScript(
-							"OnShow",
-							function()
-								MoveAny:After(
-									buffsDelay,
-									function()
-										MoveAny:UpdateTargetToTBuffs()
-									end, "t345"
-								)
-
-								frame:UpdateScaleAndAlpha()
-							end
-						)
-
-						local bbf = CreateFrame("FRAME")
-						MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
-						MoveAny:OnEvent(
-							bbf,
-							function()
-								MoveAny:UpdateTargetToTBuffs()
-								frame:UpdateScaleAndAlpha()
-							end, "bbf 5"
-						)
-
-						hooksecurefunc(
-							frame,
-							"SetPoint",
-							function()
-								frame:UpdateScaleAndAlpha()
-							end
-						)
-
-						hooksecurefunc(
-							frame,
-							"SetScale",
-							function(sel)
-								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_bb_set_scale then return end
-								sel.ma_bb_set_scale = true
-								frame:UpdateScaleAndAlpha()
-								sel.ma_bb_set_scale = false
-							end
-						)
-
-						frame:UpdateScaleAndAlpha()
-					end,
-				}
-			)
-		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEBUFFMOVER enabled in MoveAny.")
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-			end
-		end
-	end
-
-	if MoveAny:IsEnabled("TARGETFRAME", false) then
-		if ComboFrame then
-			hooksecurefunc(
-				TargetFrame,
-				"SetScale",
-				function(sel, scale)
-					if InCombatLockdown() and sel:IsProtected() then return false end
-					if scale and type(scale) == "number" then
-						ComboFrame:SetScale(scale)
-					end
-				end
-			)
-
-			ComboFrame:SetScale(TargetFrame:GetScale())
-			hooksecurefunc(
-				TargetFrame,
-				"SetAlpha",
-				function(sel, alpha)
-					ComboFrame:SetAlpha(alpha)
-				end
-			)
-
-			ComboFrame:SetAlpha(TargetFrame:GetAlpha())
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrame",
-				["lstr"] = "LID_TARGETFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if FocusFrame then
-		if MoveAny:IsEnabled("FOCUSFRAMEBUFFMOVER", false) then
-			if MoveAny:IsEnabled("FOCUSFRAME", false) then
-				function MoveAny:UpdateFocusBuffs()
-					for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
-						MoveAny:UpdateChildBuffs(bb, "FocusFrameBuffMover")
-					end
-				end
-
-				local FocusFrameBuffMover = CreateFrame("Frame", "FocusFrameBuffMover", UIParent)
-				FocusFrameBuffMover:SetSize(21, 21)
-				FocusFrameBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "FocusFrameBuffMover",
-						["lstr"] = "LID_FOCUSFRAMEBUFFMOVER",
-						["userplaced"] = true,
-						["setup"] = function()
-							local frame = FocusFrameBuffMover
-							function frame:UpdateScaleAndAlpha()
-								local scale = frame:GetScale()
-								local alpha = frame:GetAlpha()
-								for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
-									if bb then
 										bb:SetScale(scale)
 										bb:SetAlpha(alpha)
 									end
@@ -3610,2597 +3454,2707 @@ function MoveAny:LoadAddon()
 
 							local added = {}
 							function frame:Update()
-								if FocusFrame and FocusFrame:GetLeft() then
+								if TargetFrame and TargetFrame:GetLeft() then
 									local frameCenterX, frameCenterY = frame:GetCenter()
 									local frameEffectiveScale = frame:GetScale()
 									local frameAbsoluteX = frameCenterX / frameEffectiveScale
 									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
-									local focusEffectiveScale = FocusFrame:GetScale()
-									local focusAbsoluteX = focusCenterX / focusEffectiveScale
-									local focusAbsoluteY = focusCenterY / focusEffectiveScale
-									frame.PX = frameAbsoluteX - focusAbsoluteX
-									frame.PY = frameAbsoluteY - focusAbsoluteY
+									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+									local targetEffectiveScale = TargetFrame:GetScale()
+									local targetAbsoluteX = targetCenterX / targetEffectiveScale
+									local targetAbsoluteY = targetCenterY / targetEffectiveScale
+									frame.PX = frameAbsoluteX - targetAbsoluteX
+									frame.PY = frameAbsoluteY - targetAbsoluteY
+									for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
+										if bb then
+											if added[bb] == nil then
+												local setPoint = false
+												hooksecurefunc(
+													bb,
+													"SetPoint",
+													function(sel, ...)
+														if setPoint then return end
+														setPoint = true
+														local MABUFFMODE = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFMODE", 0)
+														local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFLIMIT", 10)
+														local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGX", 4)
+														local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGY", 10)
+														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+														sel:ClearAllPoints()
+														if MABUFFMODE == 1 then
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+														else
+															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+														end
+
+														setPoint = false
+													end
+												)
+											end
+
+											if added[bb] ~= i then
+												added[bb] = i
+												bb:ClearAllPoints()
+												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
+											end
+										end
+									end
+								end
+
+								MoveAny:After(
+									0.1,
+									function()
+										frame:Update()
+									end, "t234"
+								)
+							end
+
+							frame:Update()
+							TargetFrame:HookScript(
+								"OnShow",
+								function()
+									MoveAny:After(
+										buffsDelay,
+										function()
+											MoveAny:UpdateTargetToTBuffs()
+										end, "t345"
+									)
+
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							local bbf = CreateFrame("FRAME")
+							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "target")
+							MoveAny:OnEvent(
+								bbf,
+								function()
+									MoveAny:UpdateTargetToTBuffs()
+									frame:UpdateScaleAndAlpha()
+								end, "bbf 5"
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetPoint",
+								function()
+									frame:UpdateScaleAndAlpha()
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetScale",
+								function(sel)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if sel.ma_bb_set_scale then return end
+									sel.ma_bb_set_scale = true
+									frame:UpdateScaleAndAlpha()
+									sel.ma_bb_set_scale = false
+								end
+							)
+
+							frame:UpdateScaleAndAlpha()
+						end,
+					}
+				)
+			else
+				MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMEBUFFMOVER enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				end
+			end
+		end
+
+		if MoveAny:IsEnabled("TARGETFRAME", false) then
+			if ComboFrame then
+				hooksecurefunc(
+					TargetFrame,
+					"SetScale",
+					function(sel, scale)
+						if InCombatLockdown() and sel:IsProtected() then return false end
+						if scale and type(scale) == "number" then
+							ComboFrame:SetScale(scale)
+						end
+					end
+				)
+
+				ComboFrame:SetScale(TargetFrame:GetScale())
+				hooksecurefunc(
+					TargetFrame,
+					"SetAlpha",
+					function(sel, alpha)
+						ComboFrame:SetAlpha(alpha)
+					end
+				)
+
+				ComboFrame:SetAlpha(TargetFrame:GetAlpha())
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TargetFrame",
+					["lstr"] = "LID_TARGETFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if FocusFrame then
+			if MoveAny:IsEnabled("FOCUSFRAMEBUFFMOVER", false) then
+				if MoveAny:IsEnabled("FOCUSFRAME", false) then
+					function MoveAny:UpdateFocusBuffs()
+						for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
+							MoveAny:UpdateChildBuffs(bb, "FocusFrameBuffMover")
+						end
+					end
+
+					local FocusFrameBuffMover = CreateFrame("Frame", "FocusFrameBuffMover", UIParent)
+					FocusFrameBuffMover:SetSize(21, 21)
+					FocusFrameBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "FocusFrameBuffMover",
+							["lstr"] = "LID_FOCUSFRAMEBUFFMOVER",
+							["userplaced"] = true,
+							["setup"] = function()
+								local frame = FocusFrameBuffMover
+								function frame:UpdateScaleAndAlpha()
+									local scale = frame:GetScale()
+									local alpha = frame:GetAlpha()
 									for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
 										if bb then
-											if added[bb] == nil then
-												local setPoint = false
-												hooksecurefunc(
-													bb,
-													"SetPoint",
-													function(sel, ...)
-														if setPoint then return end
-														setPoint = true
-														local MABUFFMODE = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFMODE", 0)
-														local MABUFFLIMIT = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFLIMIT", 10)
-														local MABUFFSPACINGX = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFSPACINGX", 4)
-														local MABUFFSPACINGY = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFSPACINGY", 10)
-														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
-														sel:ClearAllPoints()
-														if MABUFFMODE == 1 then
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
-														else
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
-														end
-
-														setPoint = false
-													end
-												)
-											end
-
-											if added[bb] ~= i then
-												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
-											end
+											bb:SetScale(scale)
+											bb:SetAlpha(alpha)
 										end
 									end
 								end
 
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "t456"
-								)
-							end
+								local added = {}
+								function frame:Update()
+									if FocusFrame and FocusFrame:GetLeft() then
+										local frameCenterX, frameCenterY = frame:GetCenter()
+										local frameEffectiveScale = frame:GetScale()
+										local frameAbsoluteX = frameCenterX / frameEffectiveScale
+										local frameAbsoluteY = frameCenterY / frameEffectiveScale
+										local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+										local focusEffectiveScale = FocusFrame:GetScale()
+										local focusAbsoluteX = focusCenterX / focusEffectiveScale
+										local focusAbsoluteY = focusCenterY / focusEffectiveScale
+										frame.PX = frameAbsoluteX - focusAbsoluteX
+										frame.PY = frameAbsoluteY - focusAbsoluteY
+										for i, bb in pairs(MoveAny:UpdateFocusFrameBuffs()) do
+											if bb then
+												if added[bb] == nil then
+													local setPoint = false
+													hooksecurefunc(
+														bb,
+														"SetPoint",
+														function(sel, ...)
+															if setPoint then return end
+															setPoint = true
+															local MABUFFMODE = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFMODE", 0)
+															local MABUFFLIMIT = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFLIMIT", 10)
+															local MABUFFSPACINGX = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFSPACINGX", 4)
+															local MABUFFSPACINGY = MoveAny:GetEleOption("FocusFrameBuffMover", "MABUFFSPACINGY", 10)
+															local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+															sel:ClearAllPoints()
+															if MABUFFMODE == 1 then
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+															else
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+															end
 
-							frame:Update()
-							FocusFrame:HookScript(
-								"OnShow",
-								function()
+															setPoint = false
+														end
+													)
+												end
+
+												if added[bb] ~= i then
+													added[bb] = i
+													bb:ClearAllPoints()
+													bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+												end
+											end
+										end
+									end
+
 									MoveAny:After(
-										buffsDelay,
+										0.1,
 										function()
-											MoveAny:UpdateFocusBuffs()
-										end, "t567"
+											frame:Update()
+										end, "t456"
 									)
-
-									frame:UpdateScaleAndAlpha()
 								end
-							)
 
-							local bbf = CreateFrame("FRAME")
-							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
-							MoveAny:OnEvent(
-								bbf,
-								function()
-									MoveAny:UpdateFocusBuffs()
-									frame:UpdateScaleAndAlpha()
-								end, "bbf 4"
-							)
+								frame:Update()
+								FocusFrame:HookScript(
+									"OnShow",
+									function()
+										MoveAny:After(
+											buffsDelay,
+											function()
+												MoveAny:UpdateFocusBuffs()
+											end, "t567"
+										)
 
-							hooksecurefunc(
-								frame,
-								"SetPoint",
-								function()
-									frame:UpdateScaleAndAlpha()
-								end
-							)
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-							hooksecurefunc(
-								frame,
-								"SetScale",
-								function(sel)
-									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
-									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
-								end
-							)
+								local bbf = CreateFrame("FRAME")
+								MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+								MoveAny:OnEvent(
+									bbf,
+									function()
+										MoveAny:UpdateFocusBuffs()
+										frame:UpdateScaleAndAlpha()
+									end, "bbf 4"
+								)
 
-							frame:UpdateScaleAndAlpha()
-						end,
-					}
-				)
-			else
-				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FocusFrameBuffMover enabled in MoveAny.")
-				if MoveAny:GetWoWBuild() == "RETAIL" then
-					MoveAny:MSG("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-				end
-			end
-		end
+								hooksecurefunc(
+									frame,
+									"SetPoint",
+									function()
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-		if MoveAny:IsEnabled("FOCUSFRAMEDEBUFFMOVER", false) then
-			if MoveAny:IsEnabled("FOCUSFRAME", false) then
-				function MoveAny:UpdateFocusDebuffs()
-					for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
-						MoveAny:UpdateChildBuffs(bb, "FocusFrameDebuffMover")
+								hooksecurefunc(
+									frame,
+									"SetScale",
+									function(sel)
+										if InCombatLockdown() and sel:IsProtected() then return false end
+										if sel.ma_bb_set_scale then return end
+										sel.ma_bb_set_scale = true
+										frame:UpdateScaleAndAlpha()
+										sel.ma_bb_set_scale = false
+									end
+								)
+
+								frame:UpdateScaleAndAlpha()
+							end,
+						}
+					)
+				else
+					MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FocusFrameBuffMover enabled in MoveAny.")
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						MoveAny:MSG("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
+			end
 
-				local FocusFrameDebuffMover = CreateFrame("Frame", "FocusFrameDebuffMover", UIParent)
-				FocusFrameDebuffMover:SetSize(21, 21)
-				FocusFrameDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "FocusFrameDebuffMover",
-						["lstr"] = "LID_FOCUSFRAMEDEBUFFMOVER",
-						["userplaced"] = true,
-						["setup"] = function()
-							local frame = FocusFrameDebuffMover
-							function frame:UpdateScaleAndAlpha()
-								local scale = frame:GetScale()
-								local alpha = frame:GetAlpha()
-								for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
-									if bb then
-										bb:SetScale(scale)
-										bb:SetAlpha(alpha)
-									end
-								end
-							end
+			if MoveAny:IsEnabled("FOCUSFRAMEDEBUFFMOVER", false) then
+				if MoveAny:IsEnabled("FOCUSFRAME", false) then
+					function MoveAny:UpdateFocusDebuffs()
+						for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
+							MoveAny:UpdateChildBuffs(bb, "FocusFrameDebuffMover")
+						end
+					end
 
-							local added = {}
-							function frame:Update()
-								if FocusFrame and FocusFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
-									local focusEffectiveScale = FocusFrame:GetScale()
-									local focusAbsoluteX = focusCenterX / focusEffectiveScale
-									local focusAbsoluteY = focusCenterY / focusEffectiveScale
-									frame.PX = frameAbsoluteX - focusAbsoluteX
-									frame.PY = frameAbsoluteY - focusAbsoluteY
+					local FocusFrameDebuffMover = CreateFrame("Frame", "FocusFrameDebuffMover", UIParent)
+					FocusFrameDebuffMover:SetSize(21, 21)
+					FocusFrameDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "FocusFrameDebuffMover",
+							["lstr"] = "LID_FOCUSFRAMEDEBUFFMOVER",
+							["userplaced"] = true,
+							["setup"] = function()
+								local frame = FocusFrameDebuffMover
+								function frame:UpdateScaleAndAlpha()
+									local scale = frame:GetScale()
+									local alpha = frame:GetAlpha()
 									for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
 										if bb then
-											if added[bb] == nil then
-												local setPoint = false
-												hooksecurefunc(
-													bb,
-													"SetPoint",
-													function(sel, ...)
-														if setPoint then return end
-														setPoint = true
-														local MADEBUFFMODE = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFMODE", 0)
-														local MADEBUFFLIMIT = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFLIMIT", 10)
-														local MADEBUFFSPACINGX = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFSPACINGX", 4)
-														local MADEBUFFSPACINGY = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFSPACINGY", 10)
-														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
-														sel:ClearAllPoints()
-														if MADEBUFFMODE == 1 then
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
-														else
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
-														end
-
-														setPoint = false
-													end
-												)
-											end
-
-											if added[bb] ~= i then
-												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
-											end
+											bb:SetScale(scale)
+											bb:SetAlpha(alpha)
 										end
 									end
 								end
 
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "t678"
-								)
-							end
+								local added = {}
+								function frame:Update()
+									if FocusFrame and FocusFrame:GetLeft() then
+										local frameCenterX, frameCenterY = frame:GetCenter()
+										local frameEffectiveScale = frame:GetScale()
+										local frameAbsoluteX = frameCenterX / frameEffectiveScale
+										local frameAbsoluteY = frameCenterY / frameEffectiveScale
+										local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+										local focusEffectiveScale = FocusFrame:GetScale()
+										local focusAbsoluteX = focusCenterX / focusEffectiveScale
+										local focusAbsoluteY = focusCenterY / focusEffectiveScale
+										frame.PX = frameAbsoluteX - focusAbsoluteX
+										frame.PY = frameAbsoluteY - focusAbsoluteY
+										for i, bb in pairs(MoveAny:UpdateFocusFrameDebuffs()) do
+											if bb then
+												if added[bb] == nil then
+													local setPoint = false
+													hooksecurefunc(
+														bb,
+														"SetPoint",
+														function(sel, ...)
+															if setPoint then return end
+															setPoint = true
+															local MADEBUFFMODE = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFMODE", 0)
+															local MADEBUFFLIMIT = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFLIMIT", 10)
+															local MADEBUFFSPACINGX = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFSPACINGX", 4)
+															local MADEBUFFSPACINGY = MoveAny:GetEleOption("FocusFrameDebuffMover", "MADEBUFFSPACINGY", 10)
+															local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+															sel:ClearAllPoints()
+															if MADEBUFFMODE == 1 then
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+															else
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+															end
 
-							frame:Update()
-							FocusFrame:HookScript(
-								"OnShow",
-								function()
+															setPoint = false
+														end
+													)
+												end
+
+												if added[bb] ~= i then
+													added[bb] = i
+													bb:ClearAllPoints()
+													bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+												end
+											end
+										end
+									end
+
 									MoveAny:After(
-										buffsDelay,
+										0.1,
 										function()
-											MoveAny:UpdateFocusDebuffs()
-										end, "t789"
+											frame:Update()
+										end, "t678"
 									)
-
-									frame:UpdateScaleAndAlpha()
 								end
-							)
 
-							local bbf = CreateFrame("FRAME")
-							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
-							MoveAny:OnEvent(
-								bbf,
-								function()
-									MoveAny:UpdateFocusDebuffs()
-									frame:UpdateScaleAndAlpha()
-								end, "bbf 3"
-							)
+								frame:Update()
+								FocusFrame:HookScript(
+									"OnShow",
+									function()
+										MoveAny:After(
+											buffsDelay,
+											function()
+												MoveAny:UpdateFocusDebuffs()
+											end, "t789"
+										)
 
-							hooksecurefunc(
-								frame,
-								"SetPoint",
-								function()
-									frame:UpdateScaleAndAlpha()
-								end
-							)
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-							hooksecurefunc(
-								frame,
-								"SetScale",
-								function(sel)
-									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
-									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
-								end
-							)
+								local bbf = CreateFrame("FRAME")
+								MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+								MoveAny:OnEvent(
+									bbf,
+									function()
+										MoveAny:UpdateFocusDebuffs()
+										frame:UpdateScaleAndAlpha()
+									end, "bbf 3"
+								)
 
-							frame:UpdateScaleAndAlpha()
-						end,
-					}
-				)
-			else
-				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEDEBUFFMOVER enabled in MoveAny.")
-				if MoveAny:GetWoWBuild() == "RETAIL" then
-					MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-				end
-			end
-		end
+								hooksecurefunc(
+									frame,
+									"SetPoint",
+									function()
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-		if MoveAny:IsEnabled("FOCUSFRAMETOTDEBUFFMOVER", false) then
-			if MoveAny:IsEnabled("FOCUSFRAME", false) then
-				function MoveAny:UpdateFocusToTDebuffs()
-					for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
-						MoveAny:UpdateChildBuffs(bb, "FocusFrameToTDebuffMover")
+								hooksecurefunc(
+									frame,
+									"SetScale",
+									function(sel)
+										if InCombatLockdown() and sel:IsProtected() then return false end
+										if sel.ma_bb_set_scale then return end
+										sel.ma_bb_set_scale = true
+										frame:UpdateScaleAndAlpha()
+										sel.ma_bb_set_scale = false
+									end
+								)
+
+								frame:UpdateScaleAndAlpha()
+							end,
+						}
+					)
+				else
+					MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEDEBUFFMOVER enabled in MoveAny.")
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
+			end
 
-				local FocusFrameToTDebuffMover = CreateFrame("Frame", "FocusFrameToTDebuffMover", UIParent)
-				FocusFrameToTDebuffMover:SetSize(21, 21)
-				FocusFrameToTDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "FocusFrameToTDebuffMover",
-						["lstr"] = "LID_FOCUSFRAMETOTDEBUFFMOVER",
-						["userplaced"] = true,
-						["setup"] = function()
-							local frame = FocusFrameToTDebuffMover
-							function frame:UpdateScaleAndAlpha()
-								local scale = frame:GetScale()
-								local alpha = frame:GetAlpha()
-								for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
-									if bb then
-										bb:SetScale(scale)
-										bb:SetAlpha(alpha)
-									end
-								end
-							end
+			if MoveAny:IsEnabled("FOCUSFRAMETOTDEBUFFMOVER", false) then
+				if MoveAny:IsEnabled("FOCUSFRAME", false) then
+					function MoveAny:UpdateFocusToTDebuffs()
+						for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
+							MoveAny:UpdateChildBuffs(bb, "FocusFrameToTDebuffMover")
+						end
+					end
 
-							local added = {}
-							function frame:Update()
-								if FocusFrame and FocusFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
-									local focusEffectiveScale = FocusFrame:GetScale()
-									local focusAbsoluteX = focusCenterX / focusEffectiveScale
-									local focusAbsoluteY = focusCenterY / focusEffectiveScale
-									frame.PX = frameAbsoluteX - focusAbsoluteX
-									frame.PY = frameAbsoluteY - focusAbsoluteY
+					local FocusFrameToTDebuffMover = CreateFrame("Frame", "FocusFrameToTDebuffMover", UIParent)
+					FocusFrameToTDebuffMover:SetSize(21, 21)
+					FocusFrameToTDebuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "FocusFrameToTDebuffMover",
+							["lstr"] = "LID_FOCUSFRAMETOTDEBUFFMOVER",
+							["userplaced"] = true,
+							["setup"] = function()
+								local frame = FocusFrameToTDebuffMover
+								function frame:UpdateScaleAndAlpha()
+									local scale = frame:GetScale()
+									local alpha = frame:GetAlpha()
 									for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
 										if bb then
-											if added[bb] == nil then
-												local setPoint = false
-												hooksecurefunc(
-													bb,
-													"SetPoint",
-													function(sel, ...)
-														if setPoint then return end
-														setPoint = true
-														local MADEBUFFMODE = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFMODE", 0)
-														local MADEBUFFLIMIT = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
-														local MADEBUFFSPACINGX = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
-														local MADEBUFFSPACINGY = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
-														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
-														sel:ClearAllPoints()
-														if MADEBUFFMODE == 1 then
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
-														else
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
-														end
-
-														setPoint = false
-													end
-												)
-											end
-
-											if added[bb] ~= i then
-												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
-											end
+											bb:SetScale(scale)
+											bb:SetAlpha(alpha)
 										end
 									end
 								end
 
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "t890"
-								)
-							end
+								local added = {}
+								function frame:Update()
+									if FocusFrame and FocusFrame:GetLeft() then
+										local frameCenterX, frameCenterY = frame:GetCenter()
+										local frameEffectiveScale = frame:GetScale()
+										local frameAbsoluteX = frameCenterX / frameEffectiveScale
+										local frameAbsoluteY = frameCenterY / frameEffectiveScale
+										local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+										local focusEffectiveScale = FocusFrame:GetScale()
+										local focusAbsoluteX = focusCenterX / focusEffectiveScale
+										local focusAbsoluteY = focusCenterY / focusEffectiveScale
+										frame.PX = frameAbsoluteX - focusAbsoluteX
+										frame.PY = frameAbsoluteY - focusAbsoluteY
+										for i, bb in pairs(MoveAny:UpdateFocusFrameToTDebuffs()) do
+											if bb then
+												if added[bb] == nil then
+													local setPoint = false
+													hooksecurefunc(
+														bb,
+														"SetPoint",
+														function(sel, ...)
+															if setPoint then return end
+															setPoint = true
+															local MADEBUFFMODE = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFMODE", 0)
+															local MADEBUFFLIMIT = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
+															local MADEBUFFSPACINGX = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
+															local MADEBUFFSPACINGY = MoveAny:GetEleOption("FocusFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
+															local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+															sel:ClearAllPoints()
+															if MADEBUFFMODE == 1 then
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+															else
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+															end
 
-							frame:Update()
-							FocusFrame:HookScript(
-								"OnShow",
-								function()
+															setPoint = false
+														end
+													)
+												end
+
+												if added[bb] ~= i then
+													added[bb] = i
+													bb:ClearAllPoints()
+													bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+												end
+											end
+										end
+									end
+
 									MoveAny:After(
-										buffsDelay,
+										0.1,
 										function()
-											MoveAny:UpdateFocusToTDebuffs()
-										end, "t987"
+											frame:Update()
+										end, "t890"
 									)
-
-									frame:UpdateScaleAndAlpha()
 								end
-							)
 
-							local bbf = CreateFrame("FRAME")
-							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
-							MoveAny:OnEvent(
-								bbf,
-								function()
-									MoveAny:UpdateFocusToTDebuffs()
-									frame:UpdateScaleAndAlpha()
-								end, "bbf 2"
-							)
+								frame:Update()
+								FocusFrame:HookScript(
+									"OnShow",
+									function()
+										MoveAny:After(
+											buffsDelay,
+											function()
+												MoveAny:UpdateFocusToTDebuffs()
+											end, "t987"
+										)
 
-							hooksecurefunc(
-								frame,
-								"SetPoint",
-								function()
-									frame:UpdateScaleAndAlpha()
-								end
-							)
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-							hooksecurefunc(
-								frame,
-								"SetScale",
-								function(sel)
-									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
-									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
-								end
-							)
+								local bbf = CreateFrame("FRAME")
+								MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+								MoveAny:OnEvent(
+									bbf,
+									function()
+										MoveAny:UpdateFocusToTDebuffs()
+										frame:UpdateScaleAndAlpha()
+									end, "bbf 2"
+								)
 
-							frame:UpdateScaleAndAlpha()
-						end,
-					}
-				)
-			else
-				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEDEBUFFMOVER enabled in MoveAny.")
-				if MoveAny:GetWoWBuild() == "RETAIL" then
-					MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-				end
-			end
-		end
+								hooksecurefunc(
+									frame,
+									"SetPoint",
+									function()
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-		if MoveAny:IsEnabled("FOCUSFRAMETOTBUFFMOVER", false) then
-			if MoveAny:IsEnabled("FOCUSFRAME", false) then
-				function MoveAny:UpdateFocusToTBuffs()
-					for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
-						MoveAny:UpdateChildBuffs(bb, "FocusFrameToTBuffMover")
+								hooksecurefunc(
+									frame,
+									"SetScale",
+									function(sel)
+										if InCombatLockdown() and sel:IsProtected() then return false end
+										if sel.ma_bb_set_scale then return end
+										sel.ma_bb_set_scale = true
+										frame:UpdateScaleAndAlpha()
+										sel.ma_bb_set_scale = false
+									end
+								)
+
+								frame:UpdateScaleAndAlpha()
+							end,
+						}
+					)
+				else
+					MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEDEBUFFMOVER enabled in MoveAny.")
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
+			end
 
-				local FocusFrameToTBuffMover = CreateFrame("Frame", "FocusFrameToTBuffMover", UIParent)
-				FocusFrameToTBuffMover:SetSize(21, 21)
-				FocusFrameToTBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "FocusFrameToTBuffMover",
-						["lstr"] = "LID_FOCUSFRAMETOTBUFFMOVER",
-						["userplaced"] = true,
-						["setup"] = function()
-							local frame = FocusFrameToTBuffMover
-							function frame:UpdateScaleAndAlpha()
-								local scale = frame:GetScale()
-								local alpha = frame:GetAlpha()
-								for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
-									if bb then
-										bb:SetScale(scale)
-										bb:SetAlpha(alpha)
-									end
-								end
-							end
+			if MoveAny:IsEnabled("FOCUSFRAMETOTBUFFMOVER", false) then
+				if MoveAny:IsEnabled("FOCUSFRAME", false) then
+					function MoveAny:UpdateFocusToTBuffs()
+						for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
+							MoveAny:UpdateChildBuffs(bb, "FocusFrameToTBuffMover")
+						end
+					end
 
-							local added = {}
-							function frame:Update()
-								if FocusFrame and FocusFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local focusCenterX, focusCenterY = FocusFrame:GetCenter()
-									local focusEffectiveScale = FocusFrame:GetScale()
-									local focusAbsoluteX = focusCenterX / focusEffectiveScale
-									local focusAbsoluteY = focusCenterY / focusEffectiveScale
-									frame.PX = frameAbsoluteX - focusAbsoluteX
-									frame.PY = frameAbsoluteY - focusAbsoluteY
+					local FocusFrameToTBuffMover = CreateFrame("Frame", "FocusFrameToTBuffMover", UIParent)
+					FocusFrameToTBuffMover:SetSize(21, 21)
+					FocusFrameToTBuffMover:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "FocusFrameToTBuffMover",
+							["lstr"] = "LID_FOCUSFRAMETOTBUFFMOVER",
+							["userplaced"] = true,
+							["setup"] = function()
+								local frame = FocusFrameToTBuffMover
+								function frame:UpdateScaleAndAlpha()
+									local scale = frame:GetScale()
+									local alpha = frame:GetAlpha()
 									for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
 										if bb then
-											if added[bb] == nil then
-												local setPoint = false
-												hooksecurefunc(
-													bb,
-													"SetPoint",
-													function(sel, ...)
-														if setPoint then return end
-														setPoint = true
-														local MABUFFMODE = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFMODE", 0)
-														local MABUFFLIMIT = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFLIMIT", 10)
-														local MABUFFSPACINGX = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFSPACINGX", 4)
-														local MABUFFSPACINGY = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFSPACINGY", 10)
-														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
-														sel:ClearAllPoints()
-														if MABUFFMODE == 1 then
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
-														else
-															sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
-														end
-
-														setPoint = false
-													end
-												)
-											end
-
-											if added[bb] ~= i then
-												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
-											end
+											bb:SetScale(scale)
+											bb:SetAlpha(alpha)
 										end
 									end
 								end
 
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "t876"
-								)
-							end
+								local added = {}
+								function frame:Update()
+									if FocusFrame and FocusFrame:GetLeft() then
+										local frameCenterX, frameCenterY = frame:GetCenter()
+										local frameEffectiveScale = frame:GetScale()
+										local frameAbsoluteX = frameCenterX / frameEffectiveScale
+										local frameAbsoluteY = frameCenterY / frameEffectiveScale
+										local focusCenterX, focusCenterY = FocusFrame:GetCenter()
+										local focusEffectiveScale = FocusFrame:GetScale()
+										local focusAbsoluteX = focusCenterX / focusEffectiveScale
+										local focusAbsoluteY = focusCenterY / focusEffectiveScale
+										frame.PX = frameAbsoluteX - focusAbsoluteX
+										frame.PY = frameAbsoluteY - focusAbsoluteY
+										for i, bb in pairs(MoveAny:UpdateFocusFrameToTBuffs()) do
+											if bb then
+												if added[bb] == nil then
+													local setPoint = false
+													hooksecurefunc(
+														bb,
+														"SetPoint",
+														function(sel, ...)
+															if setPoint then return end
+															setPoint = true
+															local MABUFFMODE = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFMODE", 0)
+															local MABUFFLIMIT = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFLIMIT", 10)
+															local MABUFFSPACINGX = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFSPACINGX", 4)
+															local MABUFFSPACINGY = MoveAny:GetEleOption("FocusFrameToTBuffMover", "MABUFFSPACINGY", 10)
+															local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
+															sel:ClearAllPoints()
+															if MABUFFMODE == 1 then
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+															else
+																sel:SetPoint("CENTER", FocusFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+															end
 
-							frame:Update()
-							FocusFrame:HookScript(
-								"OnShow",
-								function()
+															setPoint = false
+														end
+													)
+												end
+
+												if added[bb] ~= i then
+													added[bb] = i
+													bb:ClearAllPoints()
+													bb:SetPoint("LEFT", FocusFrame, "RIGHT", 0, 0)
+												end
+											end
+										end
+									end
+
 									MoveAny:After(
-										buffsDelay,
+										0.1,
 										function()
-											MoveAny:UpdateFocusToTBuffs()
-										end, "t765"
+											frame:Update()
+										end, "t876"
 									)
-
-									frame:UpdateScaleAndAlpha()
 								end
-							)
 
-							local bbf = CreateFrame("FRAME")
-							MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
-							MoveAny:OnEvent(
-								bbf,
-								function()
-									MoveAny:UpdateFocusToTBuffs()
-									frame:UpdateScaleAndAlpha()
-								end, "bbf"
-							)
+								frame:Update()
+								FocusFrame:HookScript(
+									"OnShow",
+									function()
+										MoveAny:After(
+											buffsDelay,
+											function()
+												MoveAny:UpdateFocusToTBuffs()
+											end, "t765"
+										)
 
-							hooksecurefunc(
-								frame,
-								"SetPoint",
-								function()
-									frame:UpdateScaleAndAlpha()
-								end
-							)
+										frame:UpdateScaleAndAlpha()
+									end
+								)
 
-							hooksecurefunc(
-								frame,
-								"SetScale",
-								function(sel)
-									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
-									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
-								end
-							)
+								local bbf = CreateFrame("FRAME")
+								MoveAny:RegisterEvent(bbf, "UNIT_AURA", "focus")
+								MoveAny:OnEvent(
+									bbf,
+									function()
+										MoveAny:UpdateFocusToTBuffs()
+										frame:UpdateScaleAndAlpha()
+									end, "bbf"
+								)
 
-							frame:UpdateScaleAndAlpha()
-						end,
+								hooksecurefunc(
+									frame,
+									"SetPoint",
+									function()
+										frame:UpdateScaleAndAlpha()
+									end
+								)
+
+								hooksecurefunc(
+									frame,
+									"SetScale",
+									function(sel)
+										if InCombatLockdown() and sel:IsProtected() then return false end
+										if sel.ma_bb_set_scale then return end
+										sel.ma_bb_set_scale = true
+										frame:UpdateScaleAndAlpha()
+										sel.ma_bb_set_scale = false
+									end
+								)
+
+								frame:UpdateScaleAndAlpha()
+							end,
+						}
+					)
+				else
+					MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEBUFFMOVER enabled in MoveAny.")
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+					end
+				end
+			end
+		end
+
+		if (FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false)) or (FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false)) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "FocusFrame",
+					["lstr"] = "LID_FOCUSFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("PETBAR", false) then
+			if PetActionBar then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PetActionBar",
+						["lstr"] = "LID_PETBAR"
 					}
 				)
 			else
-				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMEBUFFMOVER enabled in MoveAny.")
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MAPetBar",
+						["lstr"] = "LID_PETBAR"
+					}
+				)
+			end
+		end
+
+		if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
+			for i = 1, 12 do
+				local btn = _G["StanceButton" .. i]
+				if btn then
+					function btn:GetMAEle()
+						return getglobal("StanceBarAnchor")
+					end
+
+					if _G["StanceButton" .. i .. "NormalTexture2"] then
+						_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
+						_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", btn, "CENTER", 0, 0)
+					end
+				end
+			end
+
+			hooksecurefunc(
+				StanceBarAnchor,
+				"SetParent",
+				function(sel, parent)
+					if parent == MoveAny:GetHidden() then
+						StanceBar:SetParent(MoveAny:GetHidden())
+					end
+				end
+			)
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "StanceBarAnchor",
+					["lstr"] = "LID_STANCEBARANCHOR",
+					["secure"] = true
+				}
+			)
+		end
+
+		local PossessBarFrame = getglobal("PossessBarFrame")
+		if PossessActionBar then
+			if MoveAny:IsEnabled("POSSESSBAR", false) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PossessActionBar",
+						["lstr"] = "LID_POSSESSBAR"
+					}
+				)
+			end
+		elseif PossessBarFrame then
+			if MoveAny:IsEnabled("POSSESSBAR", false) then
+				if PossessBarFrame then
+					PossessBarFrame:SetParent(MoveAny:GetMainPanel())
+				end
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PossessBarFrame",
+						["lstr"] = "LID_POSSESSBAR"
+					}
+				)
+			end
+		end
+
+		if MoveAny:IsEnabled("LEAVEVEHICLE", false) then
+			if MainMenuBar then
+				if MainMenuBarVehicleLeaveButton then
+					MainMenuBarVehicleLeaveButton:SetParent(MoveAny:GetMainPanel())
+				end
+
+				if UnitInVehicle and UnitOnTaxi then
+					function MoveAny:UpdateVehicleLeaveButton()
+						if UnitInVehicle("player") or UnitOnTaxi("player") then
+							MainMenuBarVehicleLeaveButton:SetAlpha(1)
+						else
+							MainMenuBarVehicleLeaveButton:SetAlpha(0)
+						end
+
+						MoveAny:After(0.4, MoveAny.UpdateVehicleLeaveButton, "UpdateVehicleLeaveButton")
+					end
+
+					MoveAny:UpdateVehicleLeaveButton()
+				end
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MainMenuBarVehicleLeaveButton",
+					["lstr"] = "LID_LEAVEVEHICLE"
+				}
+			)
+		end
+
+		if not MoveAny:IsEnabledBartender4("ExtraActionBar") then
+			if ExtraAbilityContainer then
+				if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
+					ExtraAbilityContainer:SetSize(180, 100)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "ExtraAbilityContainer",
+							["lstr"] = "LID_EXTRAABILITYCONTAINER",
+							["userplaced"] = true
+						}
+					)
+				end
+			elseif ExtraActionBarFrame then
+				if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
+					ExtraActionBarFrame:SetParent(UIParent)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "ExtraActionBarFrame",
+							["lstr"] = "LID_ExtraActionBarFrame",
+							["userplaced"] = true
+						}
+					)
+
+					MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
+				end
+			elseif ExtraActionButton1 then
+				if MoveAny:IsEnabled("ExtraActionButton1", true) then
+					local setParent = false
+					hooksecurefunc(
+						ExtraActionButton1,
+						"SetParent",
+						function(sel, parent)
+							if setParent then return end
+							setParent = true
+							sel:SetParent(UIParent)
+							setParent = false
+						end
+					)
+
+					ExtraActionButton1:SetParent(UIParent)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "ExtraActionButton1",
+							["lstr"] = "LID_ExtraActionButton1",
+							["userplaced"] = true
+						}
+					)
+				end
+			end
+		else
+			MoveAny:WARN("Bartender4 is enabled and you enabled ExtraActionBar, only 1 addon should move the ExtraActionBar!")
+		end
+
+		if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TalkingHeadFrame",
+					["lstr"] = "LID_TALKINGHEAD",
+					["secure"] = true
+				}
+			)
+		end
+
+		if OverrideActionBar and MoveAny:IsEnabled("OVERRIDEACTIONBAR", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "OverrideActionBar",
+					["lstr"] = "LID_OVERRIDEACTIONBAR"
+				}
+			)
+		end
+
+		if MoveAny:GetWoWBuild() == "RETAIL" then
+			local ABNames = {}
+			ABNames[1] = "MainMenuBar"
+			ABNames[2] = "MultiBarBottomLeft"
+			ABNames[3] = "MultiBarBottomRight"
+			ABNames[4] = "MultiBarRight"
+			ABNames[5] = "MultiBarLeft"
+			ABNames[6] = "MultiBar" .. 5
+			ABNames[7] = "MultiBar" .. 6
+			ABNames[8] = "MultiBar" .. 7
+			for i = 1, 8 do
+				if ABNames[i] and MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
+					local name = ABNames[i]
+					local lstr = "LID_ACTIONBAR" .. i
+					MoveAny:RegisterWidget(
+						{
+							["name"] = name,
+							["lstr"] = lstr,
+							["secure"] = true,
+							["userplaced"] = true,
+						}
+					)
+
+					local ab = _G[name]
+					if ab then
+						for x = 1, 12 do
+							ab.btns = ab.btns or {}
+							local abtn = _G[name .. "Button" .. x]
+							if i == 1 then
+								abtn = _G["ActionButton" .. x]
+							end
+
+							if abtn then
+								function abtn:GetMAEle()
+									return ab
+								end
+
+								table.insert(ab.btns, abtn)
+							else
+								MoveAny:ERR("ACTION BUTTON NOT FOUND " .. name)
+							end
+						end
+					end
+
+					local bar = _G[name]
+					if bar then
+						hooksecurefunc(
+							bar,
+							"SetPoint",
+							function(sel, ...)
+								MoveAny:UpdateActionBar(bar)
+							end
+						)
+
+						hooksecurefunc(
+							bar,
+							"SetSize",
+							function(sel, ...)
+								if InCombatLockdown() and sel:IsProtected() then return false end
+								if sel.ma_uab_setsize then return end
+								sel.ma_uab_setsize = true
+								MoveAny:UpdateActionBar(bar)
+								sel.ma_uab_setsize = false
+							end
+						)
+
+						MoveAny:UpdateActionBar(bar)
+					end
+				end
+			end
+		end
+
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
+			for i = 1, 10 do
+				if i ~= 2 and (((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false)) then
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "MAActionBar" .. i,
+							["lstr"] = "LID_ACTIONBAR" .. i
+						}
+					)
+				end
+			end
+
+			MoveAny:After(
+				1,
+				function()
+					local maxWidth = VERTICAL_MULTI_BAR_WIDTH * 2 + VERTICAL_MULTI_BAR_HORIZONTAL_SPACING
+					local topLimit = MinimapCluster:GetBottom() + 20
+					local bottomLimit = UIParent:GetBottom() + 8
+					if MultiBarBottomRight and maxWidth and MultiBarBottomRight:IsShown() and MultiBarBottomRight:GetRight() and UIParent:GetRight() and MultiBarBottomRight:GetRight() >= UIParent:GetRight() - maxWidth - 16 then
+						bottomLimit = MultiBarBottomRight:GetTop() + 8
+					else
+						bottomLimit = MainMenuBarArtFrame:GetTop() + 24
+					end
+
+					local availableSpace = topLimit - bottomLimit
+					local contentHeight = VERTICAL_MULTI_BAR_HEIGHT
+					local scale = 1
+					if contentHeight > availableSpace then
+						scale = availableSpace / contentHeight
+					end
+
+					if scale < 0 and SHOW_MULTI_ACTIONBAR_3 == "1" and MoveAny:IsEnabled("ACTIONBAR" .. 4, false) then
+						MoveAny:INFO("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
+						MoveAny:INFO("Actionbar4 will still be shown.")
+					end
+				end, "Loadaddon 123"
+			)
+		end
+
+		if MoveAny:IsEnabled("ENDCAPS", false) then
+			local MA_LeftEndCap = CreateFrame("FRAME", "MA_LeftEndCap", MoveAny:GetMainPanel())
+			MA_LeftEndCap.tex = MA_LeftEndCap:CreateTexture("MA_LeftEndCap.tex", "OVERLAY")
+			MA_LeftEndCap.tex:SetAllPoints(MA_LeftEndCap)
+			local MA_RightEndCap = CreateFrame("FRAME", "MA_RightEndCap", MoveAny:GetMainPanel())
+			MA_RightEndCap.tex = MA_RightEndCap:CreateTexture("MA_RightEndCap.tex", "OVERLAY")
+			MA_RightEndCap.tex:SetAllPoints(MA_RightEndCap)
+			local factionGroup = UnitFactionGroup("player")
+			if MainMenuBar.EndCaps then
+				MA_LeftEndCap:SetSize(MainMenuBar.EndCaps.LeftEndCap:GetSize())
+				MA_LeftEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.LeftEndCap:GetTexCoord())
+				MA_RightEndCap:SetSize(MainMenuBar.EndCaps.RightEndCap:GetSize())
+				MA_RightEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.RightEndCap:GetTexCoord())
+				if factionGroup and factionGroup ~= "Neutral" then
+					if factionGroup == "Alliance" then
+						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
+						MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-right")
+					elseif factionGroup == "Horde" then
+						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-left")
+						MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-right")
+					end
+				end
+
+				MainMenuBar.EndCaps:SetParent(MoveAny:GetHidden())
+				MainMenuBar.BorderArt:SetParent(MoveAny:GetHidden())
+			elseif MainMenuBarLeftEndCap then
+				MA_LeftEndCap:SetSize(MainMenuBarLeftEndCap:GetSize())
+				MA_LeftEndCap.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
+				MA_LeftEndCap.tex:SetTexCoord(MainMenuBarLeftEndCap:GetTexCoord())
+				MA_RightEndCap:SetSize(MainMenuBarRightEndCap:GetSize())
+				MA_RightEndCap.tex:SetTexture(MainMenuBarRightEndCap:GetTexture())
+				MA_RightEndCap.tex:SetTexCoord(MainMenuBarRightEndCap:GetTexCoord())
+				MainMenuBarLeftEndCap:SetParent(MoveAny:GetHidden())
+				MainMenuBarRightEndCap:SetParent(MoveAny:GetHidden())
+			end
+
+			MA_LeftEndCap:SetFrameLevel(10)
+			MA_RightEndCap:SetFrameLevel(10)
+			MA_LeftEndCap.tex:SetDrawLayer("OVERLAY", 2)
+			MA_RightEndCap.tex:SetDrawLayer("OVERLAY", 2)
+			MA_LeftEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MA_RightEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MA_LeftEndCap",
+					["lstr"] = "LID_ENDCAPLEFT",
+				}
+			)
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MA_RightEndCap",
+					["lstr"] = "LID_ENDCAPRIGHT",
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("BLIZZARDACTIONBUTTONSART", false) and MainMenuBarTexture0 then
+			local MA_BlizzArt = CreateFrame("FRAME", "MA_BlizzArt", MoveAny:GetMainPanel())
+			for i = 0, 1 do
+				local blizzpart = MA_BlizzArt:CreateTexture("MA_BlizzArt.part" .. i, "OVERLAY")
+				local art = _G["MainMenuBarTexture" .. i]
+				local ssw, ssh = 256, 43
+				blizzpart:SetPoint("LEFT", MA_BlizzArt, "LEFT", i * ssw, 0)
+				blizzpart:SetSize(ssw, ssh)
+				blizzpart:SetTexture(art:GetTexture())
+				blizzpart:SetTexCoord(art:GetTexCoord())
+				blizzpart:SetDrawLayer("ARTWORK", 0)
+				MA_BlizzArt:SetSize(ssw * 2, ssh)
+				MA_BlizzArt["part" .. i] = blizzpart
+			end
+
+			MA_BlizzArt:SetFrameLevel(0)
+			MA_BlizzArt:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MA_BlizzArt",
+					["lstr"] = "LID_BLIZZARDACTIONBUTTONSART",
+				}
+			)
+		end
+
+		for i = 1, 10 do
+			if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
+				local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
+				cbf:EnableMouse(true)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ChatFrame" .. i .. "ButtonFrame",
+						["lstr"] = "LID_CHATBUTTONFRAME" .. i,
+					}
+				)
+
+				if i == 1 then
+					if ChatFrameMenuButton then
+						ChatFrameMenuButton:SetFrameLevel(10)
+						ChatFrameMenuButton:SetParent(cbf)
+						function ChatFrameMenuButton:GetMAEle()
+							return cbf
+						end
+					end
+
+					if ChatFrameChannelButton then
+						ChatFrameChannelButton:SetFrameLevel(10)
+						ChatFrameChannelButton:SetParent(cbf)
+						function ChatFrameChannelButton:GetMAEle()
+							return cbf
+						end
+					end
+				end
+			end
+		end
+
+		for i = 1, 12 do
+			if MoveAny:IsEnabled("CHATEDITBOX", false) then
+				local ceb = _G["ChatFrame" .. i .. "EditBox"]
+				if ceb then
+					hooksecurefunc(
+						ceb,
+						"SetClampRectInsets",
+						function(sel)
+							if sel.setclamprectinsets_ma then return end
+							sel.setclamprectinsets_ma = true
+							sel:SetClampRectInsets(2, 2, 2, 2)
+							sel.setclamprectinsets_ma = false
+						end
+					)
+
+					ceb:SetClampRectInsets(2, 2, 2, 2)
+				end
+			end
+		end
+
+		for i = 1, 12 do
+			if MoveAny:IsEnabled("CHATEDITBOX", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ChatFrame" .. i .. "EditBox",
+						["lstr"] = "LID_CHATEDITBOX",
+						["lstri"] = i,
+					}
+				)
+			end
+
+			if MoveAny:IsEnabled("CHATTAB", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ChatFrame" .. i .. "Tab",
+						["lstr"] = "LID_CHATTAB",
+						["lstri"] = i,
+					}
+				)
+			end
+		end
+
+		if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
+			QuickJoinToastButton:SetFrameLevel(10)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "QuickJoinToastButton",
+					["lstr"] = "LID_CHATQUICKJOIN"
+				}
+			)
+		end
+
+		for x = 1, 10 do
+			local cf = _G["ChatFrame" .. x]
+			if cf then
+				local cleft = -34
+				local cright = 2
+				local ctop = 22
+				local cbottom = -34
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					cright = 16
+				end
+
+				if MoveAny:IsEnabled("CHATBUTTONFRAME" .. x, false) then
+					cleft = -2
+				end
+
+				if MoveAny:IsEnabled("CHATEDITBOX", false) then
+					cbottom = -4
+				end
+
+				if MoveAny:IsEnabled("CHAT" .. x, false) then
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "ChatFrame" .. x,
+							["lstr"] = "LID_CHAT",
+							["lstri"] = x,
+							["cleft"] = cleft,
+							["cright"] = cright,
+							["ctop"] = ctop,
+							["cbottom"] = cbottom,
+						}
+					)
+				elseif cf.SetClampRectInsets and MoveAny:IsEnabled("CHAT" .. 1, false) then
+					hooksecurefunc(
+						cf,
+						"SetClampRectInsets",
+						function(sel, ...)
+							if sel.scri then return end
+							sel.scri = true
+							sel:SetClampRectInsets(cleft, cright, ctop, cbottom)
+							sel.scri = false
+						end
+					)
+
+					cf:SetClampRectInsets(cleft, cright, ctop, cbottom)
+				end
+			end
+		end
+
+		if ActionBarUpButton and ActionBarDownButton and MoveAny:IsEnabled("MAPAGES", false) then
+			local MAPages = CreateFrame("FRAME", "MAPages", MoveAny:GetMainPanel())
+			local asw, ash = 18, 18
+			MAPages:SetSize(asw, 2 * ash)
+			MAPages:SetPoint("CENTER", 0, 0)
+			ActionBarUpButton:SetParent(MAPages)
+			ActionBarUpButton:ClearAllPoints()
+			ActionBarUpButton:SetPoint("TOP", MAPages, "TOP", 0, 7)
+			ActionBarDownButton:SetParent(MAPages)
+			ActionBarDownButton:ClearAllPoints()
+			ActionBarDownButton:SetPoint("BOTTOM", MAPages, "BOTTOM", 0, -8)
+			MainMenuBarPageNumber:SetParent(MAPages)
+			MainMenuBarPageNumber:ClearAllPoints()
+			MainMenuBarPageNumber:SetPoint("LEFT", MAPages, "RIGHT", 4, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAPages",
+					["lstr"] = "LID_MAPAGES",
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("QUESTTIMERFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "QuestTimerFrame",
+					["lstr"] = "LID_QUESTTIMERFRAME",
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("QUESTTRACKER", false) then
+			MoveAny:After(
+				1,
+				function()
+					local name = GetUnitName("player") .. " - " .. GetRealmName()
+					if MoveAny:IsAddOnLoaded("Questie") and QuestieConfig and QuestieConfig.profileKeys and QuestieConfig.profiles and QuestieConfig.profiles[QuestieConfig.profileKeys[name]] and QuestieConfig.profiles[QuestieConfig.profileKeys[name]].trackerEnabled then
+						local questieHelper = CreateFrame("Frame", "questieHelper", UIParent)
+						questieHelper:SetSize(300, 300)
+						questieHelper:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+						local function appendQuestie()
+							if Questie_BaseFrame then
+								hooksecurefunc(
+									Questie_BaseFrame,
+									"SetPoint",
+									function(sel, ...)
+										if sel.ma_helper_setpoint then return end
+										sel.ma_helper_setpoint = true
+										Questie_BaseFrame:ClearAllPoints()
+										Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
+										sel.ma_helper_setpoint = false
+									end
+								)
+
+								Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
+							else
+								MoveAny:After(
+									0.1,
+									function()
+										appendQuestie()
+									end, "appendQuestie"
+								)
+							end
+						end
+
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "questieHelper",
+								["lstr"] = "LID_QUESTTRACKER",
+								["userplaced"] = true,
+								["secure"] = true,
+								["sh"] = 300,
+								["sw"] = 300,
+								["setup"] = function()
+									appendQuestie()
+								end
+							}
+						)
+					else
+						if ObjectiveTrackerFrame == nil then
+							ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
+							ObjectiveTrackerFrame:SetSize(240, 600)
+							ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
+							local QuestWatchFrame = getglobal("QuestWatchFrame")
+							local WatchFrame = getglobal("WatchFrame")
+							if QuestWatchFrame then
+								hooksecurefunc(
+									QuestWatchFrame,
+									"SetPoint",
+									function(sel, ...)
+										if sel.qwfsetpoint then return end
+										sel.qwfsetpoint = true
+										sel:SetMovable(true)
+										if sel.SetUserPlaced and sel:IsMovable() then
+											sel:SetUserPlaced(false)
+										end
+
+										sel:SetParent(ObjectiveTrackerFrame)
+										MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+										sel.qwfsetpoint = false
+									end
+								)
+
+								QuestWatchFrame:SetMovable(true)
+								if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
+									QuestWatchFrame:SetUserPlaced(false)
+								end
+
+								QuestWatchFrame:SetParent(ObjectiveTrackerFrame)
+								QuestWatchFrame:ClearAllPoints()
+								QuestWatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+								QuestWatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
+							end
+
+							if WatchFrame then
+								hooksecurefunc(
+									WatchFrame,
+									"SetPoint",
+									function(sel, ...)
+										if sel.wfsetpoint then return end
+										sel.wfsetpoint = true
+										sel:SetMovable(true)
+										if sel.SetUserPlaced and sel:IsMovable() then
+											sel:SetUserPlaced(false)
+										end
+
+										sel:SetParent(ObjectiveTrackerFrame)
+										MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+										sel.wfsetpoint = false
+									end
+								)
+
+								WatchFrame:SetMovable(true)
+								if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
+									WatchFrame:SetUserPlaced(false)
+								end
+
+								WatchFrame:SetParent(ObjectiveTrackerFrame)
+								WatchFrame:ClearAllPoints()
+								WatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+								WatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
+							end
+						end
+
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "ObjectiveTrackerFrame",
+								["lstr"] = "LID_QUESTTRACKER",
+								["userplaced"] = true,
+								["secure"] = true,
+							}
+						)
+					end
+				end, "QUESTTRACKER"
+			)
+		end
+
+		if MoveAny:IsEnabled("PARTYFRAME", false) then
+			if PartyFrame then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "PartyFrame",
+						["lstr"] = "LID_PARTYFRAME",
+						["sw"] = 120,
+						["sh"] = 244
+					}
+				)
+			else
+				for x = 1, 4 do
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "PartyMemberFrame" .. x,
+							["lstr"] = "LID_PARTYMEMBERFRAME",
+							["lstri"] = x
+						}
+					)
+				end
+			end
+		end
+
+		if MoveAny:IsEnabled("COMPACTRAIDFRAMECONTAINER", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "CompactRaidFrameContainer",
+					["lstr"] = "LID_COMPACTRAIDFRAMECONTAINER",
+					["sw"] = 360,
+					["sh"] = 288
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("MAPETFRAME", false) then
+			MAPetFrame = CreateFrame("FRAME", "MAPetFrame", MoveAny:GetMainPanel())
+			if PetFrame:GetSize() then
+				MAPetFrame:SetSize(PetFrame:GetSize())
+			end
+
+			local p1, p2, p3, p4, p5 = PetFrame:GetPoint()
+			if p1 and p3 then
+				MAPetFrame:SetPoint(p1, p2, p3, p4, p5)
+			else
+				MAPetFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			end
+
+			hooksecurefunc(
+				MAPetFrame,
+				"SetAlpha",
+				function(sel, alpha)
+					PetFrame:SetAlpha(alpha)
+				end
+			)
+
+			local secureFlagPetFrame = false
+			hooksecurefunc(
+				PetFrame,
+				"SetPoint",
+				function(sel, ...)
+					if secureFlagPetFrame then return end
+					secureFlagPetFrame = true
+					MoveAny:SetPoint(sel, "CENTER", MAPetFrame, "CENTER", 0, 0)
+					secureFlagPetFrame = false
+				end
+			)
+
+			MoveAny:SetPoint(PetFrame, "CENTER", MAPetFrame, "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAPetFrame",
+					["lstr"] = "LID_PETFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if PetFrameHappiness and MoveAny:IsEnabled("PETFRAMEHAPPINESS", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PetFrameHappiness",
+					["lstr"] = "LID_PETFRAMEHAPPINESS"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
+			if MoveAny:IsEnabled("TARGETFRAME", false) then
+				MoveAny:OnEvent(
+					TargetFrameSpellBar,
+					function(sel, event)
+						if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
+							MoveAny:UpdateAlpha(sel)
+						end
+					end, "TargetFrameSpellBar"
+				)
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "TargetFrameSpellBar",
+						["lstr"] = "LID_TARGETFRAMESPELLBAR",
+						["userplaced"] = true
+					}
+				)
+			else
+				MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMESPELLBAR enabled in MoveAny.")
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
+				end
+			end
+		end
+
+		if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
+			if MoveAny:IsEnabled("FOCUSFRAME", false) then
+				MoveAny:OnEvent(
+					FocusFrameSpellBar,
+					function(sel, event)
+						if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
+							MoveAny:UpdateAlpha(sel)
+						end
+					end, "FocusFrameSpellBar"
+				)
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "FocusFrameSpellBar",
+						["lstr"] = "LID_FOCUSFRAMESPELLBAR",
+						["userplaced"] = true
+					}
+				)
+			else
+				MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMESPELLBAR enabled in MoveAny.")
 				if MoveAny:GetWoWBuild() == "RETAIL" then
 					MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 				end
 			end
 		end
-	end
 
-	if (FocusFrame and MoveAny:IsEnabled("FOCUSFRAME", false)) or (FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false)) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "FocusFrame",
-				["lstr"] = "LID_FOCUSFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("PETBAR", false) then
-		if PetActionBar then
+		if MoveAny:IsEnabled("TARGETOFTARGETFRAME", false) then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "PetActionBar",
-					["lstr"] = "LID_PETBAR"
-				}
-			)
-		else
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MAPetBar",
-					["lstr"] = "LID_PETBAR"
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
-		for i = 1, 12 do
-			local btn = _G["StanceButton" .. i]
-			if btn then
-				function btn:GetMAEle()
-					return getglobal("StanceBarAnchor")
-				end
-
-				if _G["StanceButton" .. i .. "NormalTexture2"] then
-					_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
-					_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", btn, "CENTER", 0, 0)
-				end
-			end
-		end
-
-		hooksecurefunc(
-			StanceBarAnchor,
-			"SetParent",
-			function(sel, parent)
-				if parent == MoveAny:GetHidden() then
-					StanceBar:SetParent(MoveAny:GetHidden())
-				end
-			end
-		)
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "StanceBarAnchor",
-				["lstr"] = "LID_STANCEBARANCHOR",
-				["secure"] = true
-			}
-		)
-	end
-
-	local PossessBarFrame = getglobal("PossessBarFrame")
-	if PossessActionBar then
-		if MoveAny:IsEnabled("POSSESSBAR", false) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "PossessActionBar",
-					["lstr"] = "LID_POSSESSBAR"
-				}
-			)
-		end
-	elseif PossessBarFrame then
-		if MoveAny:IsEnabled("POSSESSBAR", false) then
-			if PossessBarFrame then
-				PossessBarFrame:SetParent(MoveAny:GetMainPanel())
-			end
-
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "PossessBarFrame",
-					["lstr"] = "LID_POSSESSBAR"
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("LEAVEVEHICLE", false) then
-		if MainMenuBar then
-			if MainMenuBarVehicleLeaveButton then
-				MainMenuBarVehicleLeaveButton:SetParent(MoveAny:GetMainPanel())
-			end
-
-			if UnitInVehicle and UnitOnTaxi then
-				function MoveAny:UpdateVehicleLeaveButton()
-					if UnitInVehicle("player") or UnitOnTaxi("player") then
-						MainMenuBarVehicleLeaveButton:SetAlpha(1)
-					else
-						MainMenuBarVehicleLeaveButton:SetAlpha(0)
-					end
-
-					MoveAny:After(0.4, MoveAny.UpdateVehicleLeaveButton, "UpdateVehicleLeaveButton")
-				end
-
-				MoveAny:UpdateVehicleLeaveButton()
-			end
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MainMenuBarVehicleLeaveButton",
-				["lstr"] = "LID_LEAVEVEHICLE"
-			}
-		)
-	end
-
-	if not MoveAny:IsEnabledBartender4("ExtraActionBar") then
-		if ExtraAbilityContainer then
-			if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
-				ExtraAbilityContainer:SetSize(180, 100)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "ExtraAbilityContainer",
-						["lstr"] = "LID_EXTRAABILITYCONTAINER",
-						["userplaced"] = true
-					}
-				)
-			end
-		elseif ExtraActionBarFrame then
-			if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
-				ExtraActionBarFrame:SetParent(UIParent)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "ExtraActionBarFrame",
-						["lstr"] = "LID_ExtraActionBarFrame",
-						["userplaced"] = true
-					}
-				)
-
-				MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
-			end
-		elseif ExtraActionButton1 then
-			if MoveAny:IsEnabled("ExtraActionButton1", true) then
-				local setParent = false
-				hooksecurefunc(
-					ExtraActionButton1,
-					"SetParent",
-					function(sel, parent)
-						if setParent then return end
-						setParent = true
-						sel:SetParent(UIParent)
-						setParent = false
-					end
-				)
-
-				ExtraActionButton1:SetParent(UIParent)
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "ExtraActionButton1",
-						["lstr"] = "LID_ExtraActionButton1",
-						["userplaced"] = true
-					}
-				)
-			end
-		end
-	else
-		MoveAny:WARN("Bartender4 is enabled and you enabled ExtraActionBar, only 1 addon should move the ExtraActionBar!")
-	end
-
-	if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TalkingHeadFrame",
-				["lstr"] = "LID_TALKINGHEAD",
-				["secure"] = true
-			}
-		)
-	end
-
-	if OverrideActionBar and MoveAny:IsEnabled("OVERRIDEACTIONBAR", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "OverrideActionBar",
-				["lstr"] = "LID_OVERRIDEACTIONBAR"
-			}
-		)
-	end
-
-	if MoveAny:GetWoWBuild() == "RETAIL" then
-		local ABNames = {}
-		ABNames[1] = "MainMenuBar"
-		ABNames[2] = "MultiBarBottomLeft"
-		ABNames[3] = "MultiBarBottomRight"
-		ABNames[4] = "MultiBarRight"
-		ABNames[5] = "MultiBarLeft"
-		ABNames[6] = "MultiBar" .. 5
-		ABNames[7] = "MultiBar" .. 6
-		ABNames[8] = "MultiBar" .. 7
-		for i = 1, 8 do
-			if ABNames[i] and MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
-				local name = ABNames[i]
-				local lstr = "LID_ACTIONBAR" .. i
-				MoveAny:RegisterWidget(
-					{
-						["name"] = name,
-						["lstr"] = lstr,
-						["secure"] = true,
-						["userplaced"] = true,
-					}
-				)
-
-				local ab = _G[name]
-				if ab then
-					for x = 1, 12 do
-						ab.btns = ab.btns or {}
-						local abtn = _G[name .. "Button" .. x]
-						if i == 1 then
-							abtn = _G["ActionButton" .. x]
-						end
-
-						if abtn then
-							function abtn:GetMAEle()
-								return ab
-							end
-
-							table.insert(ab.btns, abtn)
-						else
-							MoveAny:ERR("ACTION BUTTON NOT FOUND " .. name)
-						end
-					end
-				end
-
-				local bar = _G[name]
-				if bar then
-					hooksecurefunc(
-						bar,
-						"SetPoint",
-						function(sel, ...)
-							MoveAny:UpdateActionBar(bar)
-						end
-					)
-
-					hooksecurefunc(
-						bar,
-						"SetSize",
-						function(sel, ...)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if sel.ma_uab_setsize then return end
-							sel.ma_uab_setsize = true
-							MoveAny:UpdateActionBar(bar)
-							sel.ma_uab_setsize = false
-						end
-					)
-
-					MoveAny:UpdateActionBar(bar)
-				end
-			end
-		end
-	end
-
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:AnyActionbarEnabled() then
-		for i = 1, 10 do
-			if i ~= 2 and (((i == 1 or i == 5 or i == 6) and MoveAny:IsEnabled("ACTIONBARS", false)) or MoveAny:IsEnabled("ACTIONBAR" .. i, false)) then
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "MAActionBar" .. i,
-						["lstr"] = "LID_ACTIONBAR" .. i
-					}
-				)
-			end
-		end
-
-		MoveAny:After(
-			1,
-			function()
-				local maxWidth = VERTICAL_MULTI_BAR_WIDTH * 2 + VERTICAL_MULTI_BAR_HORIZONTAL_SPACING
-				local topLimit = MinimapCluster:GetBottom() + 20
-				local bottomLimit = UIParent:GetBottom() + 8
-				if MultiBarBottomRight and maxWidth and MultiBarBottomRight:IsShown() and MultiBarBottomRight:GetRight() and UIParent:GetRight() and MultiBarBottomRight:GetRight() >= UIParent:GetRight() - maxWidth - 16 then
-					bottomLimit = MultiBarBottomRight:GetTop() + 8
-				else
-					bottomLimit = MainMenuBarArtFrame:GetTop() + 24
-				end
-
-				local availableSpace = topLimit - bottomLimit
-				local contentHeight = VERTICAL_MULTI_BAR_HEIGHT
-				local scale = 1
-				if contentHeight > availableSpace then
-					scale = availableSpace / contentHeight
-				end
-
-				if scale < 0 and SHOW_MULTI_ACTIONBAR_3 == "1" and MoveAny:IsEnabled("ACTIONBAR" .. 4, false) then
-					MoveAny:INFO("Please disable Actionbar4 in ESC -> Options -> Actionbar4, to get rid of the error.")
-					MoveAny:INFO("Actionbar4 will still be shown.")
-				end
-			end, "Loadaddon 123"
-		)
-	end
-
-	if MoveAny:IsEnabled("ENDCAPS", false) then
-		local MA_LeftEndCap = CreateFrame("FRAME", "MA_LeftEndCap", MoveAny:GetMainPanel())
-		MA_LeftEndCap.tex = MA_LeftEndCap:CreateTexture("MA_LeftEndCap.tex", "OVERLAY")
-		MA_LeftEndCap.tex:SetAllPoints(MA_LeftEndCap)
-		local MA_RightEndCap = CreateFrame("FRAME", "MA_RightEndCap", MoveAny:GetMainPanel())
-		MA_RightEndCap.tex = MA_RightEndCap:CreateTexture("MA_RightEndCap.tex", "OVERLAY")
-		MA_RightEndCap.tex:SetAllPoints(MA_RightEndCap)
-		local factionGroup = UnitFactionGroup("player")
-		if MainMenuBar.EndCaps then
-			MA_LeftEndCap:SetSize(MainMenuBar.EndCaps.LeftEndCap:GetSize())
-			MA_LeftEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.LeftEndCap:GetTexCoord())
-			MA_RightEndCap:SetSize(MainMenuBar.EndCaps.RightEndCap:GetSize())
-			MA_RightEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.RightEndCap:GetTexCoord())
-			if factionGroup and factionGroup ~= "Neutral" then
-				if factionGroup == "Alliance" then
-					MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
-					MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-right")
-				elseif factionGroup == "Horde" then
-					MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-left")
-					MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-right")
-				end
-			end
-
-			MainMenuBar.EndCaps:SetParent(MoveAny:GetHidden())
-			MainMenuBar.BorderArt:SetParent(MoveAny:GetHidden())
-		elseif MainMenuBarLeftEndCap then
-			MA_LeftEndCap:SetSize(MainMenuBarLeftEndCap:GetSize())
-			MA_LeftEndCap.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
-			MA_LeftEndCap.tex:SetTexCoord(MainMenuBarLeftEndCap:GetTexCoord())
-			MA_RightEndCap:SetSize(MainMenuBarRightEndCap:GetSize())
-			MA_RightEndCap.tex:SetTexture(MainMenuBarRightEndCap:GetTexture())
-			MA_RightEndCap.tex:SetTexCoord(MainMenuBarRightEndCap:GetTexCoord())
-			MainMenuBarLeftEndCap:SetParent(MoveAny:GetHidden())
-			MainMenuBarRightEndCap:SetParent(MoveAny:GetHidden())
-		end
-
-		MA_LeftEndCap:SetFrameLevel(10)
-		MA_RightEndCap:SetFrameLevel(10)
-		MA_LeftEndCap.tex:SetDrawLayer("OVERLAY", 2)
-		MA_RightEndCap.tex:SetDrawLayer("OVERLAY", 2)
-		MA_LeftEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-		MA_RightEndCap:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MA_LeftEndCap",
-				["lstr"] = "LID_ENDCAPLEFT",
-			}
-		)
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MA_RightEndCap",
-				["lstr"] = "LID_ENDCAPRIGHT",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BLIZZARDACTIONBUTTONSART", false) and MainMenuBarTexture0 then
-		local MA_BlizzArt = CreateFrame("FRAME", "MA_BlizzArt", MoveAny:GetMainPanel())
-		for i = 0, 1 do
-			local blizzpart = MA_BlizzArt:CreateTexture("MA_BlizzArt.part" .. i, "OVERLAY")
-			local art = _G["MainMenuBarTexture" .. i]
-			local ssw, ssh = 256, 43
-			blizzpart:SetPoint("LEFT", MA_BlizzArt, "LEFT", i * ssw, 0)
-			blizzpart:SetSize(ssw, ssh)
-			blizzpart:SetTexture(art:GetTexture())
-			blizzpart:SetTexCoord(art:GetTexCoord())
-			blizzpart:SetDrawLayer("ARTWORK", 0)
-			MA_BlizzArt:SetSize(ssw * 2, ssh)
-			MA_BlizzArt["part" .. i] = blizzpart
-		end
-
-		MA_BlizzArt:SetFrameLevel(0)
-		MA_BlizzArt:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MA_BlizzArt",
-				["lstr"] = "LID_BLIZZARDACTIONBUTTONSART",
-			}
-		)
-	end
-
-	for i = 1, 10 do
-		if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
-			local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
-			cbf:EnableMouse(true)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ChatFrame" .. i .. "ButtonFrame",
-					["lstr"] = "LID_CHATBUTTONFRAME" .. i,
-				}
-			)
-
-			if i == 1 then
-				if ChatFrameMenuButton then
-					ChatFrameMenuButton:SetFrameLevel(10)
-					ChatFrameMenuButton:SetParent(cbf)
-					function ChatFrameMenuButton:GetMAEle()
-						return cbf
-					end
-				end
-
-				if ChatFrameChannelButton then
-					ChatFrameChannelButton:SetFrameLevel(10)
-					ChatFrameChannelButton:SetParent(cbf)
-					function ChatFrameChannelButton:GetMAEle()
-						return cbf
-					end
-				end
-			end
-		end
-	end
-
-	for i = 1, 12 do
-		if MoveAny:IsEnabled("CHATEDITBOX", false) then
-			local ceb = _G["ChatFrame" .. i .. "EditBox"]
-			if ceb then
-				hooksecurefunc(
-					ceb,
-					"SetClampRectInsets",
-					function(sel)
-						if sel.setclamprectinsets_ma then return end
-						sel.setclamprectinsets_ma = true
-						sel:SetClampRectInsets(2, 2, 2, 2)
-						sel.setclamprectinsets_ma = false
-					end
-				)
-
-				ceb:SetClampRectInsets(2, 2, 2, 2)
-			end
-		end
-	end
-
-	for i = 1, 12 do
-		if MoveAny:IsEnabled("CHATEDITBOX", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ChatFrame" .. i .. "EditBox",
-					["lstr"] = "LID_CHATEDITBOX",
-					["lstri"] = i,
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("CHATTAB", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ChatFrame" .. i .. "Tab",
-					["lstr"] = "LID_CHATTAB",
-					["lstri"] = i,
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
-		QuickJoinToastButton:SetFrameLevel(10)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "QuickJoinToastButton",
-				["lstr"] = "LID_CHATQUICKJOIN"
-			}
-		)
-	end
-
-	for x = 1, 10 do
-		local cf = _G["ChatFrame" .. x]
-		if cf then
-			local cleft = -34
-			local cright = 2
-			local ctop = 22
-			local cbottom = -34
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				cright = 16
-			end
-
-			if MoveAny:IsEnabled("CHATBUTTONFRAME" .. x, false) then
-				cleft = -2
-			end
-
-			if MoveAny:IsEnabled("CHATEDITBOX", false) then
-				cbottom = -4
-			end
-
-			if MoveAny:IsEnabled("CHAT" .. x, false) then
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "ChatFrame" .. x,
-						["lstr"] = "LID_CHAT",
-						["lstri"] = x,
-						["cleft"] = cleft,
-						["cright"] = cright,
-						["ctop"] = ctop,
-						["cbottom"] = cbottom,
-					}
-				)
-			elseif cf.SetClampRectInsets and MoveAny:IsEnabled("CHAT" .. 1, false) then
-				hooksecurefunc(
-					cf,
-					"SetClampRectInsets",
-					function(sel, ...)
-						if sel.scri then return end
-						sel.scri = true
-						sel:SetClampRectInsets(cleft, cright, ctop, cbottom)
-						sel.scri = false
-					end
-				)
-
-				cf:SetClampRectInsets(cleft, cright, ctop, cbottom)
-			end
-		end
-	end
-
-	if ActionBarUpButton and ActionBarDownButton and MoveAny:IsEnabled("MAPAGES", false) then
-		local MAPages = CreateFrame("FRAME", "MAPages", MoveAny:GetMainPanel())
-		local asw, ash = 18, 18
-		MAPages:SetSize(asw, 2 * ash)
-		MAPages:SetPoint("CENTER", 0, 0)
-		ActionBarUpButton:SetParent(MAPages)
-		ActionBarUpButton:ClearAllPoints()
-		ActionBarUpButton:SetPoint("TOP", MAPages, "TOP", 0, 7)
-		ActionBarDownButton:SetParent(MAPages)
-		ActionBarDownButton:ClearAllPoints()
-		ActionBarDownButton:SetPoint("BOTTOM", MAPages, "BOTTOM", 0, -8)
-		MainMenuBarPageNumber:SetParent(MAPages)
-		MainMenuBarPageNumber:ClearAllPoints()
-		MainMenuBarPageNumber:SetPoint("LEFT", MAPages, "RIGHT", 4, 0)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MAPages",
-				["lstr"] = "LID_MAPAGES",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("QUESTTIMERFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "QuestTimerFrame",
-				["lstr"] = "LID_QUESTTIMERFRAME",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("QUESTTRACKER", false) then
-		MoveAny:After(
-			1,
-			function()
-				local name = GetUnitName("player") .. " - " .. GetRealmName()
-				if MoveAny:IsAddOnLoaded("Questie") and QuestieConfig and QuestieConfig.profileKeys and QuestieConfig.profiles and QuestieConfig.profiles[QuestieConfig.profileKeys[name]] and QuestieConfig.profiles[QuestieConfig.profileKeys[name]].trackerEnabled then
-					local questieHelper = CreateFrame("Frame", "questieHelper", UIParent)
-					questieHelper:SetSize(300, 300)
-					questieHelper:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-					local function appendQuestie()
-						if Questie_BaseFrame then
-							hooksecurefunc(
-								Questie_BaseFrame,
-								"SetPoint",
-								function(sel, ...)
-									if sel.ma_helper_setpoint then return end
-									sel.ma_helper_setpoint = true
-									Questie_BaseFrame:ClearAllPoints()
-									Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
-									sel.ma_helper_setpoint = false
-								end
-							)
-
-							Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
-						else
-							MoveAny:After(
-								0.1,
-								function()
-									appendQuestie()
-								end, "appendQuestie"
-							)
-						end
-					end
-
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "questieHelper",
-							["lstr"] = "LID_QUESTTRACKER",
-							["userplaced"] = true,
-							["secure"] = true,
-							["sh"] = 300,
-							["sw"] = 300,
-							["setup"] = function()
-								appendQuestie()
-							end
-						}
-					)
-				else
-					if ObjectiveTrackerFrame == nil then
-						ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
-						ObjectiveTrackerFrame:SetSize(240, 600)
-						ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
-						local QuestWatchFrame = getglobal("QuestWatchFrame")
-						local WatchFrame = getglobal("WatchFrame")
-						if QuestWatchFrame then
-							hooksecurefunc(
-								QuestWatchFrame,
-								"SetPoint",
-								function(sel, ...)
-									if sel.qwfsetpoint then return end
-									sel.qwfsetpoint = true
-									sel:SetMovable(true)
-									if sel.SetUserPlaced and sel:IsMovable() then
-										sel:SetUserPlaced(false)
-									end
-
-									sel:SetParent(ObjectiveTrackerFrame)
-									MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-									sel.qwfsetpoint = false
-								end
-							)
-
-							QuestWatchFrame:SetMovable(true)
-							if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
-								QuestWatchFrame:SetUserPlaced(false)
-							end
-
-							QuestWatchFrame:SetParent(ObjectiveTrackerFrame)
-							QuestWatchFrame:ClearAllPoints()
-							QuestWatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-							QuestWatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
-						end
-
-						if WatchFrame then
-							hooksecurefunc(
-								WatchFrame,
-								"SetPoint",
-								function(sel, ...)
-									if sel.wfsetpoint then return end
-									sel.wfsetpoint = true
-									sel:SetMovable(true)
-									if sel.SetUserPlaced and sel:IsMovable() then
-										sel:SetUserPlaced(false)
-									end
-
-									sel:SetParent(ObjectiveTrackerFrame)
-									MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-									sel.wfsetpoint = false
-								end
-							)
-
-							WatchFrame:SetMovable(true)
-							if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
-								WatchFrame:SetUserPlaced(false)
-							end
-
-							WatchFrame:SetParent(ObjectiveTrackerFrame)
-							WatchFrame:ClearAllPoints()
-							WatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-							WatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
-						end
-					end
-
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "ObjectiveTrackerFrame",
-							["lstr"] = "LID_QUESTTRACKER",
-							["userplaced"] = true,
-							["secure"] = true,
-						}
-					)
-				end
-			end, "QUESTTRACKER"
-		)
-	end
-
-	if MoveAny:IsEnabled("PARTYFRAME", false) then
-		if PartyFrame then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "PartyFrame",
-					["lstr"] = "LID_PARTYFRAME",
-					["sw"] = 120,
-					["sh"] = 244
-				}
-			)
-		else
-			for x = 1, 4 do
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "PartyMemberFrame" .. x,
-						["lstr"] = "LID_PARTYMEMBERFRAME",
-						["lstri"] = x
-					}
-				)
-			end
-		end
-	end
-
-	if MoveAny:IsEnabled("COMPACTRAIDFRAMECONTAINER", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "CompactRaidFrameContainer",
-				["lstr"] = "LID_COMPACTRAIDFRAMECONTAINER",
-				["sw"] = 360,
-				["sh"] = 288
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("MAPETFRAME", false) then
-		MAPetFrame = CreateFrame("FRAME", "MAPetFrame", MoveAny:GetMainPanel())
-		if PetFrame:GetSize() then
-			MAPetFrame:SetSize(PetFrame:GetSize())
-		end
-
-		local p1, p2, p3, p4, p5 = PetFrame:GetPoint()
-		if p1 and p3 then
-			MAPetFrame:SetPoint(p1, p2, p3, p4, p5)
-		else
-			MAPetFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-		end
-
-		hooksecurefunc(
-			MAPetFrame,
-			"SetAlpha",
-			function(sel, alpha)
-				PetFrame:SetAlpha(alpha)
-			end
-		)
-
-		local secureFlagPetFrame = false
-		hooksecurefunc(
-			PetFrame,
-			"SetPoint",
-			function(sel, ...)
-				if secureFlagPetFrame then return end
-				secureFlagPetFrame = true
-				MoveAny:SetPoint(sel, "CENTER", MAPetFrame, "CENTER", 0, 0)
-				secureFlagPetFrame = false
-			end
-		)
-
-		MoveAny:SetPoint(PetFrame, "CENTER", MAPetFrame, "CENTER", 0, 0)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MAPetFrame",
-				["lstr"] = "LID_PETFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if PetFrameHappiness and MoveAny:IsEnabled("PETFRAMEHAPPINESS", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PetFrameHappiness",
-				["lstr"] = "LID_PETFRAMEHAPPINESS"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("TARGETFRAMESPELLBAR", false) then
-		if MoveAny:IsEnabled("TARGETFRAME", false) then
-			MoveAny:OnEvent(
-				TargetFrameSpellBar,
-				function(sel, event)
-					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
-						MoveAny:UpdateAlpha(sel)
-					end
-				end, "TargetFrameSpellBar"
-			)
-
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "TargetFrameSpellBar",
-					["lstr"] = "LID_TARGETFRAMESPELLBAR",
+					["name"] = "TargetFrameToT",
+					["lstr"] = "LID_TARGETOFTARGETFRAME",
 					["userplaced"] = true
 				}
 			)
-		else
-			MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAMESPELLBAR enabled in MoveAny.")
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-			end
 		end
-	end
 
-	if FocusFrame and FocusFrameSpellBar and MoveAny:IsEnabled("FOCUSFRAMESPELLBAR", false) then
-		if MoveAny:IsEnabled("FOCUSFRAME", false) then
-			MoveAny:OnEvent(
-				FocusFrameSpellBar,
-				function(sel, event)
-					if event ~= "UNIT_SPELLCAST_INTERRUPTED" and event ~= "UNIT_SPELLCAST_STOP" then
-						MoveAny:UpdateAlpha(sel)
-					end
-				end, "FocusFrameSpellBar"
-			)
-
+		if FocusFrame and MoveAny:IsEnabled("TARGETOFFOCUSFRAME", false) then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "FocusFrameSpellBar",
-					["lstr"] = "LID_FOCUSFRAMESPELLBAR",
+					["name"] = "FocusFrameToT",
+					["lstr"] = "LID_TARGETOFFOCUSFRAME",
 					["userplaced"] = true
 				}
 			)
-		else
-			MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAMESPELLBAR enabled in MoveAny.")
-			if MoveAny:GetWoWBuild() == "RETAIL" then
-				MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
-			end
-		end
-	end
-
-	if MoveAny:IsEnabled("TARGETOFTARGETFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TargetFrameToT",
-				["lstr"] = "LID_TARGETOFTARGETFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if FocusFrame and MoveAny:IsEnabled("TARGETOFFOCUSFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "FocusFrameToT",
-				["lstr"] = "LID_TARGETOFFOCUSFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if CompactRaidFrameManager and MoveAny:IsEnabled("COMPACTRAIDFRAMEMANAGER", false) then
-		local MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", MoveAny:GetMainPanel())
-		if CompactRaidFrameManager then
-			local _, rsh = CompactRaidFrameManager:GetSize()
-			MACompactRaidFrameManager:SetSize(20, rsh)
 		end
 
-		local _, h = MACompactRaidFrameManager:GetSize()
-		if h < 10 then
-			MACompactRaidFrameManager:SetSize(20, 135)
-		end
-
-		MACompactRaidFrameManager:SetPoint("TOPLEFT", MoveAny:GetMainPanel(), "TOPLEFT", 0, -250)
-		hooksecurefunc(
-			CompactRaidFrameManager,
-			"SetPoint",
-			function(sel, ...)
-				if sel.crfmsetpoint then return end
-				sel.crfmsetpoint = true
-				sel:SetMovable(true)
-				if sel.SetUserPlaced and sel:IsMovable() then
-					sel:SetUserPlaced(false)
-				end
-
-				if not InCombatLockdown() then
-					MoveAny:SetPoint(sel, "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
-				end
-
-				sel.crfmsetpoint = false
+		if CompactRaidFrameManager and MoveAny:IsEnabled("COMPACTRAIDFRAMEMANAGER", false) then
+			local MACompactRaidFrameManager = CreateFrame("Frame", "MACompactRaidFrameManager", MoveAny:GetMainPanel())
+			if CompactRaidFrameManager then
+				local _, rsh = CompactRaidFrameManager:GetSize()
+				MACompactRaidFrameManager:SetSize(20, rsh)
 			end
-		)
 
-		CompactRaidFrameManager:SetPoint("RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
-		hooksecurefunc(
-			MACompactRaidFrameManager,
-			"SetParent",
-			function(sel, parent)
-				if parent == MoveAny:GetHidden() then
-					CompactRaidFrameManager:SetAlpha(0)
-					MoveAny:ForeachChildren(
-						CompactRaidFrameManager,
-						function(child)
-							if child ~= CompactRaidFrameManagerBg and child ~= CompactRaidFrameManagerBorderRight and child ~= CompactRaidFrameManagerToggleButton then
-								child:SetIgnoreParentAlpha(true)
-							end
-						end, "MACompactRaidFrameManager"
-					)
-				end
+			local _, h = MACompactRaidFrameManager:GetSize()
+			if h < 10 then
+				MACompactRaidFrameManager:SetSize(20, 135)
 			end
-		)
 
-		hooksecurefunc(
-			CompactRaidFrameManager,
-			"SetParent",
-			function(sel, parent)
-				sel:SetFrameStrata("LOW")
-			end
-		)
-
-		if CompactRaidFrameManagerToggleButton then
-			CompactRaidFrameManagerToggleButton:HookScript(
-				"OnClick",
+			MACompactRaidFrameManager:SetPoint("TOPLEFT", MoveAny:GetMainPanel(), "TOPLEFT", 0, -250)
+			hooksecurefunc(
+				CompactRaidFrameManager,
+				"SetPoint",
 				function(sel, ...)
+					if sel.crfmsetpoint then return end
+					sel.crfmsetpoint = true
+					sel:SetMovable(true)
+					if sel.SetUserPlaced and sel:IsMovable() then
+						sel:SetUserPlaced(false)
+					end
+
 					if not InCombatLockdown() then
-						if CompactRaidFrameManager.collapsed then
-							MACompactRaidFrameManager:SetSize(20, 135)
-						else
-							MACompactRaidFrameManager:SetSize(200, 135)
-						end
+						MoveAny:SetPoint(sel, "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
+					end
+
+					sel.crfmsetpoint = false
+				end
+			)
+
+			CompactRaidFrameManager:SetPoint("RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
+			hooksecurefunc(
+				MACompactRaidFrameManager,
+				"SetParent",
+				function(sel, parent)
+					if parent == MoveAny:GetHidden() then
+						CompactRaidFrameManager:SetAlpha(0)
+						MoveAny:ForeachChildren(
+							CompactRaidFrameManager,
+							function(child)
+								if child ~= CompactRaidFrameManagerBg and child ~= CompactRaidFrameManagerBorderRight and child ~= CompactRaidFrameManagerToggleButton then
+									child:SetIgnoreParentAlpha(true)
+								end
+							end, "MACompactRaidFrameManager"
+						)
 					end
 				end
 			)
+
+			hooksecurefunc(
+				CompactRaidFrameManager,
+				"SetParent",
+				function(sel, parent)
+					sel:SetFrameStrata("LOW")
+				end
+			)
+
+			if CompactRaidFrameManagerToggleButton then
+				CompactRaidFrameManagerToggleButton:HookScript(
+					"OnClick",
+					function(sel, ...)
+						if not InCombatLockdown() then
+							if CompactRaidFrameManager.collapsed then
+								MACompactRaidFrameManager:SetSize(20, 135)
+							else
+								MACompactRaidFrameManager:SetSize(200, 135)
+							end
+						end
+					end
+				)
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MACompactRaidFrameManager",
+					["lstr"] = "LID_COMPACTRAIDFRAMEMANAGER"
+				}
+			)
 		end
 
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MACompactRaidFrameManager",
-				["lstr"] = "LID_COMPACTRAIDFRAMEMANAGER"
-			}
-		)
-	end
+		if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
+			MoveAny:After(
+				2,
+				function()
+					local ktb = _G["!KalielsTrackerButtons"]
+					if ktb then
+						local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
+						local size = 28
+						local kbr = 6
+						MAKTB:SetSize(size, size * 3 + kbr * 2)
+						hooksecurefunc(
+							ktb,
+							"SetPoint",
+							function(sel, ...)
+								if sel.ma_ktb_setpoint then return end
+								sel.ma_ktb_setpoint = true
+								MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
+								sel.ma_ktb_setpoint = false
+							end
+						)
 
-	if MoveAny:IsAddOnLoaded("!KalielsTracker") and MoveAny:IsEnabled("!KalielsTrackerButtons", false) then
-		MoveAny:After(
-			2,
-			function()
-				local ktb = _G["!KalielsTrackerButtons"]
-				if ktb then
-					local MAKTB = CreateFrame("FRAME", "MAKTB", MoveAny:GetMainPanel())
-					local size = 28
-					local kbr = 6
-					MAKTB:SetSize(size, size * 3 + kbr * 2)
-					hooksecurefunc(
-						ktb,
-						"SetPoint",
-						function(sel, ...)
-							if sel.ma_ktb_setpoint then return end
-							sel.ma_ktb_setpoint = true
-							MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
-							sel.ma_ktb_setpoint = false
+						ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "MAKTB",
+								["lstr"] = "LID_!KalielsTrackerButtons",
+							}
+						)
+					else
+						MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons, button ís not created")
+					end
+				end, "KalielsTracker"
+			)
+		end
+
+		-- TOP
+		if MoveAny:IsEnabled("ZONETEXTFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ZoneTextFrame",
+					["lstr"] = "LID_ZONETEXTFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("OBJECTIVETRACKERBONUSBANNERFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ObjectiveTrackerBonusBannerFrame",
+					["lstr"] = "LID_OBJECTIVETRACKERBONUSBANNERFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("RAIDBOSSEMOTEFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "RaidBossEmoteFrame",
+					["lstr"] = "LID_RAIDBOSSEMOTEFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("TIMERTRACKER1", false) then
+			if TimerTrackerTimer1 == nil and TimerTracker and TimerTracker_StartTimerOfType then
+				TimerTracker_StartTimerOfType(TimerTracker, 2, 0, 0)
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TimerTrackerTimer1",
+					["lstr"] = "LID_TIMERTRACKER1",
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("MIRRORTIMER1", false) then
+			if MirrorTimerContainer then
+				MirrorTimerContainer:SetSize(206, 32)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MirrorTimerContainer",
+						["lstr"] = "LID_MIRRORTIMER1",
+					}
+				)
+			else
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MirrorTimer1",
+						["lstr"] = "LID_MIRRORTIMER1",
+					}
+				)
+			end
+		end
+
+		if EncounterBar and MoveAny:IsEnabled("ENCOUNTERBAR", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "EncounterBar",
+					["lstr"] = "LID_ENCOUNTERBAR",
+					["sw"] = 36,
+					["sh"] = 36
+				}
+			)
+		elseif UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "UIWidgetPowerBarContainerFrame",
+					["lstr"] = "LID_UIWIDGETPOWERBAR",
+					["sw"] = 36,
+					["sh"] = 36
+				}
+			)
+		end
+
+		if PlayerPowerBarAlt and MoveAny:IsEnabled("POWERBAR", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PlayerPowerBarAlt",
+					["lstr"] = "LID_POWERBAR",
+					["userplaced"] = true,
+					["sw"] = 36,
+					["sh"] = 36,
+					["setup"] = function()
+						if UIPARENT_MANAGED_FRAME_POSITIONS then
+							UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAlt"] = nil
+							for k, v in next, UIPARENT_MANAGED_FRAME_POSITIONS do
+								v.playerPowerBarAlt = nil
+							end
 						end
-					)
 
-					ktb:SetPoint("TOP", MAKTB, "TOP", 0, kbr)
+						PlayerPowerBarAlt.ignoreFramePositionManager = true
+					end
+				}
+			)
+
+			if BuffTimer1 == nil then
+				BuffTimer1 = CreateFrame("Frame", "BuffTimer" .. 1, UIParent, "UnitPowerBarAltTemplate")
+				BuffTimer1.unit = "player"
+				BuffTimer1:SetScript("OnEvent", nil)
+				BuffTimer1:SetScript("OnUpdate", PlayerBuffTimer_OnUpdate)
+				BuffTimer1:SetSize(256, 64)
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BuffTimer1",
+					["lstr"] = "LID_BUFFTIMER1",
+					["userplaced"] = true,
+					["setup"] = function()
+						if UIPARENT_MANAGED_FRAME_POSITIONS then
+							UIPARENT_MANAGED_FRAME_POSITIONS["BuffTimer1"] = nil
+						end
+
+						BuffTimer1.ignoreFramePositionManager = true
+					end
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("MICROMENU", false) then
+			if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsEnabledBartender4("MicroMenu") then
+				MoveAny:WARN("Bartender4 is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
+			end
+
+			if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsAddOnLoaded("Dominos") then
+				MoveAny:WARN("Dominos is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAMenuBar",
+					["lstr"] = "LID_MICROMENU"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("BAGS", false) then
+			if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsEnabledBartender4("BagBar") then
+				MoveAny:WARN("Bartender4 is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
+			end
+
+			if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsAddOnLoaded("Dominos") then
+				MoveAny:WARN("Dominos is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
+			end
+
+			MoveAny:After(
+				0,
+				function()
 					MoveAny:RegisterWidget(
 						{
-							["name"] = "MAKTB",
-							["lstr"] = "LID_!KalielsTrackerButtons",
+							["name"] = "BagsBar",
+							["lstr"] = "LID_BAGS"
 						}
 					)
-				else
-					MoveAny:ERR("FAILED TO ADD !KalielsTrackerButtons, button ís not created")
-				end
-			end, "KalielsTracker"
-		)
-	end
-
-	-- TOP
-	if MoveAny:IsEnabled("ZONETEXTFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ZoneTextFrame",
-				["lstr"] = "LID_ZONETEXTFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("OBJECTIVETRACKERBONUSBANNERFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ObjectiveTrackerBonusBannerFrame",
-				["lstr"] = "LID_OBJECTIVETRACKERBONUSBANNERFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("RAIDBOSSEMOTEFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "RaidBossEmoteFrame",
-				["lstr"] = "LID_RAIDBOSSEMOTEFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("TIMERTRACKER1", false) then
-		if TimerTrackerTimer1 == nil and TimerTracker and TimerTracker_StartTimerOfType then
-			TimerTracker_StartTimerOfType(TimerTracker, 2, 0, 0)
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TimerTrackerTimer1",
-				["lstr"] = "LID_TIMERTRACKER1",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("MIRRORTIMER1", false) then
-		if MirrorTimerContainer then
-			MirrorTimerContainer:SetSize(206, 32)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MirrorTimerContainer",
-					["lstr"] = "LID_MIRRORTIMER1",
-				}
-			)
-		else
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MirrorTimer1",
-					["lstr"] = "LID_MIRRORTIMER1",
-				}
+				end, "BAGS"
 			)
 		end
-	end
 
-	if EncounterBar and MoveAny:IsEnabled("ENCOUNTERBAR", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "EncounterBar",
-				["lstr"] = "LID_ENCOUNTERBAR",
-				["sw"] = 36,
-				["sh"] = 36
-			}
-		)
-	elseif UIWidgetPowerBarContainerFrame and MoveAny:IsEnabled("UIWIDGETPOWERBAR", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "UIWidgetPowerBarContainerFrame",
-				["lstr"] = "LID_UIWIDGETPOWERBAR",
-				["sw"] = 36,
-				["sh"] = 36
-			}
-		)
-	end
-
-	if PlayerPowerBarAlt and MoveAny:IsEnabled("POWERBAR", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "PlayerPowerBarAlt",
-				["lstr"] = "LID_POWERBAR",
-				["userplaced"] = true,
-				["sw"] = 36,
-				["sh"] = 36,
-				["setup"] = function()
-					if UIPARENT_MANAGED_FRAME_POSITIONS then
-						UIPARENT_MANAGED_FRAME_POSITIONS["PlayerPowerBarAlt"] = nil
-						for k, v in next, UIPARENT_MANAGED_FRAME_POSITIONS do
-							v.playerPowerBarAlt = nil
-						end
-					end
-
-					PlayerPowerBarAlt.ignoreFramePositionManager = true
-				end
-			}
-		)
-
-		if BuffTimer1 == nil then
-			BuffTimer1 = CreateFrame("Frame", "BuffTimer" .. 1, UIParent, "UnitPowerBarAltTemplate")
-			BuffTimer1.unit = "player"
-			BuffTimer1:SetScript("OnEvent", nil)
-			BuffTimer1:SetScript("OnUpdate", PlayerBuffTimer_OnUpdate)
-			BuffTimer1:SetSize(256, 64)
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BuffTimer1",
-				["lstr"] = "LID_BUFFTIMER1",
-				["userplaced"] = true,
-				["setup"] = function()
-					if UIPARENT_MANAGED_FRAME_POSITIONS then
-						UIPARENT_MANAGED_FRAME_POSITIONS["BuffTimer1"] = nil
-					end
-
-					BuffTimer1.ignoreFramePositionManager = true
-				end
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("MICROMENU", false) then
-		if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsEnabledBartender4("MicroMenu") then
-			MoveAny:WARN("Bartender4 is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
-		end
-
-		if MoveAny:IsEnabled("MICROMENU", false) and MoveAny:IsAddOnLoaded("Dominos") then
-			MoveAny:WARN("Dominos is enabled and you enabled MICROMENU, only 1 addon should move the MICROMENU!")
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MAMenuBar",
-				["lstr"] = "LID_MICROMENU"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BAGS", false) then
-		if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsEnabledBartender4("BagBar") then
-			MoveAny:WARN("Bartender4 is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
-		end
-
-		if MoveAny:IsEnabled("BAGS", false) and MoveAny:IsAddOnLoaded("Dominos") then
-			MoveAny:WARN("Dominos is enabled and you enabled BAGS, only 1 addon should move the BAGS!")
-		end
-
-		MoveAny:After(
-			0,
-			function()
+		if MoveAny:IsEnabled("BUFFS", false) then
+			if MoveAny:GetWoWBuild() == "RETAIL" and BuffFrame then
 				MoveAny:RegisterWidget(
 					{
-						["name"] = "BagsBar",
-						["lstr"] = "LID_BAGS"
+						["name"] = "BuffFrame",
+						["lstr"] = "LID_BUFFS"
 					}
 				)
-			end, "BAGS"
-		)
-	end
-
-	if MoveAny:IsEnabled("BUFFS", false) then
-		if MoveAny:GetWoWBuild() == "RETAIL" and BuffFrame then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "BuffFrame",
-					["lstr"] = "LID_BUFFS"
-				}
-			)
-		else
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MABuffBar",
-					["lstr"] = "LID_BUFFS"
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("DEBUFFS", false) then
-		if MoveAny:GetWoWBuild() == "RETAIL" and DebuffFrame then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "DebuffFrame",
-					["lstr"] = "LID_DEBUFFS"
-				}
-			)
-		else
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MADebuffBar",
-					["lstr"] = "LID_DEBUFFS"
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("GAMETOOLTIP", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MAGameTooltip",
-				["lstr"] = "LID_GAMETOOLTIP"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("MAFPSFrame", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MAFPSFrame",
-				["lstr"] = "LID_MAFPSFrame"
-			}
-		)
-	end
-
-	if MoveAny:IsAddOnLoaded("MoveAny") then
-		if MoveAny:IsEnabled("MONEYBAR", true) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "IAMoneyBar",
-					["lstr"] = "LID_MONEYBAR"
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("TOKENBAR", true) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "IATokenBar",
-					["lstr"] = "LID_TOKENBAR"
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("IAILVLBAR", true) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "IAILVLBar",
-					["lstr"] = "LID_IAILVLBAR"
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("IAPingFrame", true) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "IAPingFrame",
-					["lstr"] = "LID_IAPingFrame"
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("IACoordsFrame", true) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "IACoordsFrame",
-					["lstr"] = "LID_IACoordsFrame"
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "IASkills",
-					["lstr"] = "LID_IASKILLS"
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) and UIWidgetTopCenterContainerFrame then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "UIWidgetTopCenterContainerFrame",
-				["lstr"] = "LID_UIWIDGETTOPCENTER",
-				["sw"] = 36 * 5,
-				["sh"] = 36 * 2,
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) and UIWidgetBelowMinimapContainerFrame then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "UIWidgetBelowMinimapContainerFrame",
-				["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
-				["sw"] = 36 * 5,
-				["sh"] = 36 * 2,
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsValidFrame(QueueStatusButton) and MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
-		local setParent = false
-		hooksecurefunc(
-			QueueStatusButton,
-			"SetParent",
-			function(sel, parent)
-				if setParent then return end
-				setParent = true
-				sel:SetParent(UIParent)
-				setParent = false
+			else
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MABuffBar",
+						["lstr"] = "LID_BUFFS"
+					}
+				)
 			end
-		)
-
-		QueueStatusButton:SetParent(UIParent)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "QueueStatusButton",
-				["lstr"] = "LID_QUEUESTATUSBUTTON",
-				["userplaced"] = true,
-				["secure"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("QUEUESTATUSFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "QueueStatusFrame",
-				["lstr"] = "LID_QUEUESTATUSFRAME"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BNToastFrame", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BNToastFrame",
-				["lstr"] = "LID_BNToastFrame"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("VEHICLESEATINDICATOR", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MAVehicleSeatIndicator",
-				["lstr"] = "LID_VEHICLESEATINDICATOR"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("DURABILITY", false) then
-		if DurabilityFrame:GetPoint() == nil then
-			DurabilityFrame:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -0, 0)
 		end
 
-		if DurabilityFrame.SetAlerts ~= nil then
-			DurabilityFrame:SetAlerts()
-		elseif DurabilityFrame_SetAlerts ~= nil then
-			DurabilityFrame_SetAlerts()
+		if MoveAny:IsEnabled("DEBUFFS", false) then
+			if MoveAny:GetWoWBuild() == "RETAIL" and DebuffFrame then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "DebuffFrame",
+						["lstr"] = "LID_DEBUFFS"
+					}
+				)
+			else
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MADebuffBar",
+						["lstr"] = "LID_DEBUFFS"
+					}
+				)
+			end
 		end
 
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "DurabilityFrame",
-				["lstr"] = "LID_DURABILITY",
-				["userplaced"] = true
-			}
-		)
-	end
+		if MoveAny:IsEnabled("GAMETOOLTIP", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAGameTooltip",
+					["lstr"] = "LID_GAMETOOLTIP"
+				}
+			)
+		end
 
-	if ArenaEnemyFramesContainer then
-		if MoveAny:IsEnabled("ARENAENEMYFRAMESCONTAINER", false) then
-			if ArenaEnemyFramesContainer:GetPoint() == nil then
-				MoveAny:TrySetParent(ArenaEnemyFramesContainer, UIParent)
-				MoveAny:SetPoint(ArenaEnemyFramesContainer, "CENTER", UIParent, "CENTER", 0, 0)
+		if MoveAny:IsEnabled("MAFPSFrame", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAFPSFrame",
+					["lstr"] = "LID_MAFPSFrame"
+				}
+			)
+		end
+
+		if MoveAny:IsAddOnLoaded("MoveAny") then
+			if MoveAny:IsEnabled("MONEYBAR", true) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "IAMoneyBar",
+						["lstr"] = "LID_MONEYBAR"
+					}
+				)
 			end
 
+			if MoveAny:IsEnabled("TOKENBAR", true) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "IATokenBar",
+						["lstr"] = "LID_TOKENBAR"
+					}
+				)
+			end
+
+			if MoveAny:IsEnabled("IAILVLBAR", true) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "IAILVLBar",
+						["lstr"] = "LID_IAILVLBAR"
+					}
+				)
+			end
+
+			if MoveAny:IsEnabled("IAPingFrame", true) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "IAPingFrame",
+						["lstr"] = "LID_IAPingFrame"
+					}
+				)
+			end
+
+			if MoveAny:IsEnabled("IACoordsFrame", true) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "IACoordsFrame",
+						["lstr"] = "LID_IACoordsFrame"
+					}
+				)
+			end
+
+			if MoveAny:IsEnabled("IASKILLS", true) and MoveAny:GetWoWBuild() ~= "RETAIL" then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "IASkills",
+						["lstr"] = "LID_IASKILLS"
+					}
+				)
+			end
+		end
+
+		if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) and UIWidgetTopCenterContainerFrame then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "ArenaEnemyFramesContainer",
-					["lstr"] = "LID_ARENAENEMYFRAMESCONTAINER",
+					["name"] = "UIWidgetTopCenterContainerFrame",
+					["lstr"] = "LID_UIWIDGETTOPCENTER",
+					["sw"] = 36 * 5,
+					["sh"] = 36 * 2,
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("UIWIDGETBELOWMINIMAP", false) and UIWidgetBelowMinimapContainerFrame then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "UIWidgetBelowMinimapContainerFrame",
+					["lstr"] = "LID_UIWIDGETBELOWMINIMAP",
+					["sw"] = 36 * 5,
+					["sh"] = 36 * 2,
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsValidFrame(QueueStatusButton) and MoveAny:IsEnabled("QUEUESTATUSBUTTON", false) then
+			local setParent = false
+			hooksecurefunc(
+				QueueStatusButton,
+				"SetParent",
+				function(sel, parent)
+					if setParent then return end
+					setParent = true
+					sel:SetParent(UIParent)
+					setParent = false
+				end
+			)
+
+			QueueStatusButton:SetParent(UIParent)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "QueueStatusButton",
+					["lstr"] = "LID_QUEUESTATUSBUTTON",
 					["userplaced"] = true,
-					["secure"] = true,
-					["sw"] = 245,
-					["sh"] = 305,
+					["secure"] = true
 				}
 			)
 		end
-	else
-		if Arena_LoadUI then
-			if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) then
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "MAArenaEnemyFrames",
-						["lstr"] = "LID_ARENAENEMYFRAMES",
-						["userplaced"] = true,
-						["secure"] = true
-					}
-				)
-			end
 
-			if MoveAny:IsEnabled("ARENAPREPFRAMES", false) then
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "MAArenaPrepFrames",
-						["lstr"] = "LID_ARENAPREPFRAMES",
-						["userplaced"] = true,
-						["secure"] = true
-					}
-				)
-			end
-		end
-	end
-
-	if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) then
-		if BossTargetFrameContainer then
+		if MoveAny:IsEnabled("QUEUESTATUSFRAME", false) then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "BossTargetFrameContainer",
-					["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
-					["userplaced"] = true,
-					["secure"] = true,
-					["sw"] = 282,
-					["sh"] = 305,
+					["name"] = "QueueStatusFrame",
+					["lstr"] = "LID_QUEUESTATUSFRAME"
 				}
 			)
+		end
+
+		if MoveAny:IsEnabled("BNToastFrame", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BNToastFrame",
+					["lstr"] = "LID_BNToastFrame"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("VEHICLESEATINDICATOR", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MAVehicleSeatIndicator",
+					["lstr"] = "LID_VEHICLESEATINDICATOR"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("DURABILITY", false) then
+			if DurabilityFrame:GetPoint() == nil then
+				DurabilityFrame:SetPoint("TOPRIGHT", MinimapCluster, "BOTTOMRIGHT", -0, 0)
+			end
+
+			if DurabilityFrame.SetAlerts ~= nil then
+				DurabilityFrame:SetAlerts()
+			elseif DurabilityFrame_SetAlerts ~= nil then
+				DurabilityFrame_SetAlerts()
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "DurabilityFrame",
+					["lstr"] = "LID_DURABILITY",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if ArenaEnemyFramesContainer then
+			if MoveAny:IsEnabled("ARENAENEMYFRAMESCONTAINER", false) then
+				if ArenaEnemyFramesContainer:GetPoint() == nil then
+					MoveAny:TrySetParent(ArenaEnemyFramesContainer, UIParent)
+					MoveAny:SetPoint(ArenaEnemyFramesContainer, "CENTER", UIParent, "CENTER", 0, 0)
+				end
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ArenaEnemyFramesContainer",
+						["lstr"] = "LID_ARENAENEMYFRAMESCONTAINER",
+						["userplaced"] = true,
+						["secure"] = true,
+						["sw"] = 245,
+						["sh"] = 305,
+					}
+				)
+			end
 		else
-			for i = 1, 6 do
-				local frame = _G["Boss" .. i .. "TargetFrame"]
-				if frame then
-					frame:SetScale(1)
-					if MoveAny:GetWoWBuild() ~= "RETAIL" then
-						hooksecurefunc(
-							frame,
-							"Show",
-							function(sel)
-								sel.ma_show = true
-								sel:SetAlpha(1)
-							end
-						)
-
-						hooksecurefunc(
-							frame,
-							"Hide",
-							function(sel)
-								sel.ma_show = false
-								sel:SetAlpha(0)
-							end
-						)
-
-						hooksecurefunc(
-							frame,
-							"SetAlpha",
-							function(sel, alpha)
-								if sel.ma_set_alpha then return end
-								sel.ma_set_alpha = true
-								if UnitExists(frame.unit) or sel.ma_show or alpha > 0 then
-									local a = alpha or 1
-									sel:SetAlpha(a)
-								else
-									sel:SetAlpha(1)
-								end
-
-								sel.ma_set_alpha = false
-							end
-						)
-
-						-- So Blizzard dont do shit with them
-						function frame:IsShown()
-							return false
-						end
-					end
-
+			if Arena_LoadUI then
+				if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) then
 					MoveAny:RegisterWidget(
 						{
-							["name"] = "Boss" .. i .. "TargetFrame",
-							["lstr"] = "LID_BOSS" .. i,
+							["name"] = "MAArenaEnemyFrames",
+							["lstr"] = "LID_ARENAENEMYFRAMES",
+							["userplaced"] = true,
+							["secure"] = true
+						}
+					)
+				end
+
+				if MoveAny:IsEnabled("ARENAPREPFRAMES", false) then
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "MAArenaPrepFrames",
+							["lstr"] = "LID_ARENAPREPFRAMES",
 							["userplaced"] = true,
 							["secure"] = true
 						}
 					)
 				end
 			end
+		end
 
-			function MoveAny:BossCount()
-				local count = 0
-				for i = 1, 5 do
-					local frame = _G["Boss" .. i .. "TargetFrame"]
-					if frame and UnitExists("boss" .. i) then
-						count = count + 1
-					end
-				end
-
-				return count
-			end
-
-			function MoveAny:HandleBossFrames()
+		if MoveAny:IsEnabled("BOSSTARGETFRAMECONTAINER", false) then
+			if BossTargetFrameContainer then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "BossTargetFrameContainer",
+						["lstr"] = "LID_BOSSTARGETFRAMECONTAINER",
+						["userplaced"] = true,
+						["secure"] = true,
+						["sw"] = 282,
+						["sh"] = 305,
+					}
+				)
+			else
 				for i = 1, 6 do
 					local frame = _G["Boss" .. i .. "TargetFrame"]
-					local unit = "boss" .. i
 					if frame then
-						if UnitExists(unit) then
-							frame.ma_show = true
-							frame:SetAlpha(1)
-						else
-							frame.ma_show = false
-							frame:SetAlpha(0)
+						frame:SetScale(1)
+						if MoveAny:GetWoWBuild() ~= "RETAIL" then
+							hooksecurefunc(
+								frame,
+								"Show",
+								function(sel)
+									sel.ma_show = true
+									sel:SetAlpha(1)
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"Hide",
+								function(sel)
+									sel.ma_show = false
+									sel:SetAlpha(0)
+								end
+							)
+
+							hooksecurefunc(
+								frame,
+								"SetAlpha",
+								function(sel, alpha)
+									if sel.ma_set_alpha then return end
+									sel.ma_set_alpha = true
+									if UnitExists(frame.unit) or sel.ma_show or alpha > 0 then
+										local a = alpha or 1
+										sel:SetAlpha(a)
+									else
+										sel:SetAlpha(1)
+									end
+
+									sel.ma_set_alpha = false
+								end
+							)
+
+							-- So Blizzard dont do shit with them
+							function frame:IsShown()
+								return false
+							end
+						end
+
+						MoveAny:RegisterWidget(
+							{
+								["name"] = "Boss" .. i .. "TargetFrame",
+								["lstr"] = "LID_BOSS" .. i,
+								["userplaced"] = true,
+								["secure"] = true
+							}
+						)
+					end
+				end
+
+				function MoveAny:BossCount()
+					local count = 0
+					for i = 1, 5 do
+						local frame = _G["Boss" .. i .. "TargetFrame"]
+						if frame and UnitExists("boss" .. i) then
+							count = count + 1
+						end
+					end
+
+					return count
+				end
+
+				function MoveAny:HandleBossFrames()
+					for i = 1, 6 do
+						local frame = _G["Boss" .. i .. "TargetFrame"]
+						local unit = "boss" .. i
+						if frame then
+							if UnitExists(unit) then
+								frame.ma_show = true
+								frame:SetAlpha(1)
+							else
+								frame.ma_show = false
+								frame:SetAlpha(0)
+							end
+						end
+					end
+
+					MoveAny:After(1, MoveAny.HandleBossFrames, "HandleBossFrames")
+				end
+
+				MoveAny:HandleBossFrames()
+			end
+		end
+
+		if TicketStatusFrame and MoveAny:IsEnabled("TICKETSTATUSFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "TicketStatusFrame",
+					["lstr"] = "LID_TICKETSTATUSFRAME",
+					["userplaced"] = true,
+					["secure"] = true
+				}
+			)
+		end
+
+		if MinimapZoneTextButton and MoveAny:IsEnabled("MINIMAPZONETEXT", false) then
+			MinimapZoneTextButton:SetParent(MoveAny:GetMainPanel())
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "MinimapZoneTextButton",
+					["lstr"] = "LID_MINIMAPZONETEXT"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("MINIMAPFLAG", false) then
+			local flags = {"MiniMapInstanceDifficulty", "MiniMapChallengeMode", "GuildInstanceDifficulty"}
+			for i, name in pairs(flags) do
+				local flag = _G[name]
+				if flag then
+					flag:SetParent(MoveAny:GetMainPanel())
+					MoveAny:RegisterWidget(
+						{
+							["name"] = name,
+							["lstr"] = "LID_" .. name,
+						}
+					)
+				end
+			end
+		end
+
+		if MoveAny:IsEnabled("MINIMAP", false) then
+			MoveAny:After(
+				3,
+				function()
+					local LeaPlusDB = getglobal("LeaPlusDB")
+					local ltpEnhancedMinimap = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
+					if ltpEnhancedMinimap then
+						MoveAny:INFO("LeatrixPlus \"EnhancedMinimap\" is enabled, which will block moving the minimap.")
+					end
+				end, "MINIMAP 123"
+			)
+
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MinimapCluster",
+						["lstr"] = "LID_MINIMAP",
+						["ctop"] = -44,
+						["cright"] = -10,
+						["cbottom"] = 10,
+						["cleft"] = 31
+					}
+				)
+			else
+				if MultiBarRight then
+					MultiBarRight.OldSetScale = MultiBarRight.OldSetScale or MultiBarRight.SetScale
+					MultiBarRight.SetScale = function(sel, scale)
+						if scale > 0 then
+							MultiBarRight:OldSetScale(scale)
 						end
 					end
 				end
 
-				MoveAny:After(1, MoveAny.HandleBossFrames, "HandleBossFrames")
-			end
+				if MultiBarLeft then
+					MultiBarLeft.OldSetScale = MultiBarLeft.OldSetScale or MultiBarLeft.SetScale
+					MultiBarLeft.SetScale = function(sel, scale)
+						if scale > 0 then
+							MultiBarLeft:OldSetScale(scale)
+						end
+					end
+				end
 
-			MoveAny:HandleBossFrames()
-		end
-	end
-
-	if TicketStatusFrame and MoveAny:IsEnabled("TICKETSTATUSFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "TicketStatusFrame",
-				["lstr"] = "LID_TICKETSTATUSFRAME",
-				["userplaced"] = true,
-				["secure"] = true
-			}
-		)
-	end
-
-	if MinimapZoneTextButton and MoveAny:IsEnabled("MINIMAPZONETEXT", false) then
-		MinimapZoneTextButton:SetParent(MoveAny:GetMainPanel())
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "MinimapZoneTextButton",
-				["lstr"] = "LID_MINIMAPZONETEXT"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("MINIMAPFLAG", false) then
-		local flags = {"MiniMapInstanceDifficulty", "MiniMapChallengeMode", "GuildInstanceDifficulty"}
-		for i, name in pairs(flags) do
-			local flag = _G[name]
-			if flag then
-				flag:SetParent(MoveAny:GetMainPanel())
 				MoveAny:RegisterWidget(
 					{
-						["name"] = name,
-						["lstr"] = "LID_" .. name,
+						["name"] = "MinimapCluster",
+						["lstr"] = "LID_MINIMAP",
+						["ctop"] = -25,
+						["cright"] = -20,
+						["cbottom"] = 30,
+						["cleft"] = 35
 					}
 				)
 			end
 		end
-	end
 
-	if MoveAny:IsEnabled("MINIMAP", false) then
-		MoveAny:After(
-			3,
-			function()
-				local LeaPlusDB = getglobal("LeaPlusDB")
-				local ltpEnhancedMinimap = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
-				if ltpEnhancedMinimap then
-					MoveAny:INFO("LeatrixPlus \"EnhancedMinimap\" is enabled, which will block moving the minimap.")
+		if ExpansionLandingPageMinimapButton and MoveAny:IsEnabled("ExpansionLandingPageMinimapButton", false) then
+			ExpansionLandingPageMinimapButton:SetParent(UIParent)
+			hooksecurefunc(
+				ExpansionLandingPageMinimapButton,
+				"SetParent",
+				function(sel)
+					if sel.ma_set_parent_elpmb then return end
+					sel.ma_set_parent_elpmb = true
+					if MoveAny:GetParent(sel) ~= MoveAny:GetHidden() then
+						sel:SetParent(UIParent)
+					end
+
+					sel.ma_set_parent_elpmb = false
 				end
-			end, "MINIMAP 123"
-		)
+			)
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ExpansionLandingPageMinimapButton",
+					["lstr"] = "LID_ExpansionLandingPageMinimapButton",
+				}
+			)
+		end
+
+		local gtp4 = nil
+		local gtp5 = nil
+		function MoveAny:NearNumber(num1, num2, near)
+			if num1 + near >= num2 and num1 - near <= num2 then return true end
+
+			return false
+		end
+
+		function MoveAny:GameTooltipOnDefaultPosition()
+			local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
+			if p1 and p2 and p3 and p4 and p5 then
+				if p2 == _G["MAGameTooltip"] then
+					return true
+				elseif p2 == UIParent or p2 == UIParent then
+					if gtp4 == nil and gtp5 == nil then
+						_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
+						gtp4 = floor(gtp4)
+						gtp5 = floor(gtp5)
+					end
+
+					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+						p4 = floor(p4)
+						p5 = floor(p5)
+						if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then return true end
+					end
+				elseif p2 == GameTooltipDefaultContainer then
+					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+						p4 = floor(p4)
+						p5 = floor(p5)
+						if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then return true end
+					end
+				end
+			end
+
+			return false
+		end
+
+		if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+			GameTooltip:SetMovable(true)
+			GameTooltip:SetUserPlaced(false)
+			hooksecurefunc(
+				GameTooltip,
+				"FadeOut",
+				function(sel)
+					sel:SetAlpha(0)
+					sel:Hide()
+				end
+			)
+
+			local MAGameTooltip = CreateFrame("Frame", "MAGameTooltip", MoveAny:GetMainPanel())
+			MAGameTooltip:SetSize(100, 100)
+			MAGameTooltip:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", -100, 100)
+			hooksecurefunc(
+				GameTooltip,
+				"SetScale",
+				function(sel, ...)
+					if InCombatLockdown() and sel:IsProtected() then return false end
+					if sel.gtsetscale then return end
+					sel.gtsetscale = true
+					sel:SetScale(MAGameTooltip:GetScale())
+					sel.gtsetscale = false
+				end
+			)
+
+			hooksecurefunc(
+				MAGameTooltip,
+				"SetScale",
+				function(sel, ...)
+					if InCombatLockdown() and sel:IsProtected() then return false end
+					if sel.gtsetscale2 then return end
+					sel.gtsetscale2 = true
+					GameTooltip:SetScale(sel:GetScale())
+					sel.gtsetscale2 = false
+				end
+			)
+
+			GameTooltip:SetScale(MAGameTooltip:GetScale())
+			function MAGameTooltip:GetMAEle()
+				return GameTooltip
+			end
+
+			function GameTooltip:GetMAEle()
+				return MAGameTooltip
+			end
+
+			local texts = {"GameTooltipStatusBar"}
+			for i = 1, 12 do
+				tinsert(texts, "GameTooltipTextLeft" .. i)
+				tinsert(texts, "GameTooltipTextRight" .. i)
+			end
+
+			hooksecurefunc(
+				GameTooltip,
+				"SetAlpha",
+				function(sel, alpha)
+					if sel.gtsetalpha then return end
+					sel.gtsetalpha = true
+					sel:SetAlpha(MAGameTooltip:GetAlpha())
+					if sel.NineSlice then
+						sel.NineSlice:SetAlpha(MAGameTooltip:GetAlpha())
+					end
+
+					sel.gtsetalpha = false
+				end
+			)
+
+			hooksecurefunc(
+				MAGameTooltip,
+				"SetAlpha",
+				function(sel, alpha)
+					if sel.gtsetalpha then return end
+					sel.gtsetalpha = true
+					GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
+					for i, textName in pairs(texts) do
+						local text = _G[textName]
+						if text then
+							text:SetAlpha(MAGameTooltip:GetAlpha())
+						end
+					end
+
+					sel.gtsetalpha = false
+				end
+			)
+
+			GameTooltip:SetAlpha(1)
+			local gtsetpoint = false
+			if not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
+				hooksecurefunc(
+					GameTooltip,
+					"SetPoint",
+					function(sel, ...)
+						if gtsetpoint then return end
+						gtsetpoint = true
+						sel:SetMovable(true)
+						sel:SetUserPlaced(false)
+						if MoveAny:GameTooltipOnDefaultPosition() then
+							local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
+							MoveAny:SetPoint(sel, p1, MAGameTooltip, p3, 0, 0)
+						end
+
+						gtsetpoint = false
+					end
+				)
+			else
+				local CURSOR_OFFSET = 22
+				hooksecurefunc(
+					GameTooltip,
+					"SetPoint",
+					function(sel, ...)
+						if gtsetpoint then return end
+						gtsetpoint = true
+						sel:SetMovable(true)
+						sel:SetUserPlaced(false)
+						if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then return end
+						if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
+							local owner = GameTooltip:GetOwner()
+							if owner == UIParent then
+								if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
+									local point1, _, point3 = MAGameTooltip:GetPoint()
+									MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
+									gtsetpoint = false
+
+									return
+								end
+
+								local uiScale = GameTooltip:GetEffectiveScale()
+								local cursorX, cursorY = GetCursorPosition()
+								cursorX = cursorX / uiScale
+								cursorY = cursorY / uiScale
+								MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
+							end
+						end
+
+						gtsetpoint = false
+					end
+				)
+			end
+		end
+
+		-- BOTTOM
+		if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
+			ZoneAbilityFrame:SetParent(MoveAny:GetMainPanel())
+			ZoneAbilityFrame:ClearAllPoints()
+			ZoneAbilityFrame:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 200)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "ZoneAbilityFrame",
+					["lstr"] = "LID_ZONEABILITYFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("EventToastManagerFrame", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "EventToastManagerFrame",
+					["lstr"] = "LID_EventToastManagerFrame",
+					["sw"] = 36 * 2,
+					["sh"] = 36 * 2
+				}
+			)
+		end
 
 		if MoveAny:GetWoWBuild() == "RETAIL" then
+			MoveAny:LoadAddOn("Blizzard_ArchaeologyUI")
+		end
+
+		if MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) and ARCHEOLOGYDIGSITEPROGRESSBAR then
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "MinimapCluster",
-					["lstr"] = "LID_MINIMAP",
-					["ctop"] = -44,
-					["cright"] = -10,
-					["cbottom"] = 10,
-					["cleft"] = 31
-				}
-			)
-		else
-			if MultiBarRight then
-				MultiBarRight.OldSetScale = MultiBarRight.OldSetScale or MultiBarRight.SetScale
-				MultiBarRight.SetScale = function(sel, scale)
-					if scale > 0 then
-						MultiBarRight:OldSetScale(scale)
-					end
-				end
-			end
-
-			if MultiBarLeft then
-				MultiBarLeft.OldSetScale = MultiBarLeft.OldSetScale or MultiBarLeft.SetScale
-				MultiBarLeft.SetScale = function(sel, scale)
-					if scale > 0 then
-						MultiBarLeft:OldSetScale(scale)
-					end
-				end
-			end
-
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MinimapCluster",
-					["lstr"] = "LID_MINIMAP",
-					["ctop"] = -25,
-					["cright"] = -20,
-					["cbottom"] = 30,
-					["cleft"] = 35
+					["name"] = "ArcheologyDigsiteProgressBar",
+					["lstr"] = "LID_ARCHEOLOGYDIGSITEPROGRESSBAR",
 				}
 			)
 		end
-	end
 
-	if ExpansionLandingPageMinimapButton and MoveAny:IsEnabled("ExpansionLandingPageMinimapButton", false) then
-		ExpansionLandingPageMinimapButton:SetParent(UIParent)
-		hooksecurefunc(
-			ExpansionLandingPageMinimapButton,
-			"SetParent",
-			function(sel)
-				if sel.ma_set_parent_elpmb then return end
-				sel.ma_set_parent_elpmb = true
-				if MoveAny:GetParent(sel) ~= MoveAny:GetHidden() then
-					sel:SetParent(UIParent)
-				end
-
-				sel.ma_set_parent_elpmb = false
-			end
-		)
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ExpansionLandingPageMinimapButton",
-				["lstr"] = "LID_ExpansionLandingPageMinimapButton",
-			}
-		)
-	end
-
-	local gtp4 = nil
-	local gtp5 = nil
-	function MoveAny:NearNumber(num1, num2, near)
-		if num1 + near >= num2 and num1 - near <= num2 then return true end
-
-		return false
-	end
-
-	function MoveAny:GameTooltipOnDefaultPosition()
-		local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
-		if p1 and p2 and p3 and p4 and p5 then
-			if p2 == _G["MAGameTooltip"] then
-				return true
-			elseif p2 == UIParent or p2 == UIParent then
-				if gtp4 == nil and gtp5 == nil then
-					_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
-					gtp4 = floor(gtp4)
-					gtp5 = floor(gtp5)
-				end
-
-				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
-					p4 = floor(p4)
-					p5 = floor(p5)
-					if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then return true end
-				end
-			elseif p2 == GameTooltipDefaultContainer then
-				if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
-					p4 = floor(p4)
-					p5 = floor(p5)
-					if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then return true end
-				end
-			end
-		end
-
-		return false
-	end
-
-	GameTooltip:SetMovable(true)
-	GameTooltip:SetUserPlaced(false)
-	if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
-		hooksecurefunc(
-			GameTooltip,
-			"FadeOut",
-			function(sel)
-				sel:SetAlpha(0)
-				sel:Hide()
-			end
-		)
-
-		local MAGameTooltip = CreateFrame("Frame", "MAGameTooltip", MoveAny:GetMainPanel())
-		MAGameTooltip:SetSize(100, 100)
-		MAGameTooltip:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", -100, 100)
-		hooksecurefunc(
-			GameTooltip,
-			"SetScale",
-			function(sel, ...)
-				if InCombatLockdown() and sel:IsProtected() then return false end
-				if sel.gtsetscale then return end
-				sel.gtsetscale = true
-				sel:SetScale(MAGameTooltip:GetScale())
-				sel.gtsetscale = false
-			end
-		)
-
-		hooksecurefunc(
-			MAGameTooltip,
-			"SetScale",
-			function(sel, ...)
-				if InCombatLockdown() and sel:IsProtected() then return false end
-				if sel.gtsetscale2 then return end
-				sel.gtsetscale2 = true
-				GameTooltip:SetScale(sel:GetScale())
-				sel.gtsetscale2 = false
-			end
-		)
-
-		GameTooltip:SetScale(MAGameTooltip:GetScale())
-		function MAGameTooltip:GetMAEle()
-			return GameTooltip
-		end
-
-		function GameTooltip:GetMAEle()
-			return MAGameTooltip
-		end
-
-		local texts = {"GameTooltipStatusBar"}
-		for i = 1, 12 do
-			tinsert(texts, "GameTooltipTextLeft" .. i)
-			tinsert(texts, "GameTooltipTextRight" .. i)
-		end
-
-		local function GameTooltipAlphaThink()
-			local alpha = MAGameTooltip:GetAlpha()
-			for i, textName in pairs(texts) do
-				local text = _G[textName]
-				if text then
-					text:SetAlpha(alpha)
-				end
-			end
-
-			MoveAny:After(
-				0.3,
-				function()
-					GameTooltipAlphaThink()
-				end, "GameTooltipAlphaThink"
+		if MoveAny:IsEnabled("UIERRORSFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "UIErrorsFrame",
+					["lstr"] = "LID_UIERRORSFRAME",
+				}
 			)
 		end
 
-		GameTooltipAlphaThink()
-		hooksecurefunc(
-			GameTooltip,
-			"SetAlpha",
-			function(sel, alpha)
-				if sel.gtsetalpha then return end
-				sel.gtsetalpha = true
-				sel:SetAlpha(MAGameTooltip:GetAlpha())
-				if sel.NineSlice then
-					sel.NineSlice:SetAlpha(MAGameTooltip:GetAlpha())
-				end
-
-				sel.gtsetalpha = false
-			end
-		)
-
-		hooksecurefunc(
-			MAGameTooltip,
-			"SetAlpha",
-			function(sel, alpha)
-				if sel.gtsetalpha then return end
-				sel.gtsetalpha = true
-				GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
-				sel.gtsetalpha = false
-			end
-		)
-
-		GameTooltip:SetAlpha(1)
-		local gtsetpoint = false
-		if not MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then
-			hooksecurefunc(
-				GameTooltip,
-				"SetPoint",
-				function(sel, ...)
-					if gtsetpoint then return end
-					gtsetpoint = true
-					sel:SetMovable(true)
-					sel:SetUserPlaced(false)
-					if MoveAny:GameTooltipOnDefaultPosition() then
-						local p1, _, p3, _, _ = MAGameTooltip:GetPoint()
-						MoveAny:SetPoint(sel, p1, MAGameTooltip, p3, 0, 0)
-					end
-
-					gtsetpoint = false
-				end
+		if MoveAny:IsEnabled("BOSSBANNER", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BossBanner",
+					["lstr"] = "LID_BOSSBANNER",
+				}
 			)
-		else
-			local TOOLTIP_REFRESH_RATE_ACTIVE_NOTINCOMBAT = 0.02
-			local TOOLTIP_REFRESH_RATE_ACTIVE_INCOMBAT = 0.08
-			local TOOLTIP_REFRESH_RATE_IDLE = 0.26
-			local CURSOR_OFFSET = 22
-			hooksecurefunc(
-				GameTooltip,
-				"SetPoint",
-				function(sel, ...)
-					if gtsetpoint then return end
-					gtsetpoint = true
-					sel:SetMovable(true)
-					sel:SetUserPlaced(false)
-					if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then return end
-					if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
-						local owner = GameTooltip:GetOwner()
-						if owner == UIParent then
-							if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
-								local point1, _, point3 = MAGameTooltip:GetPoint()
-								MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
-								gtsetpoint = false
+		end
 
-								return
-							end
+		if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
+			local glfsw, glfsh = 256, 67
+			if GroupLootFrame1 then
+				glfsw, glfsh = GroupLootFrame1:GetSize()
+			end
 
-							local uiScale = GameTooltip:GetEffectiveScale()
-							local cursorX, cursorY = GetCursorPosition()
-							cursorX = cursorX / uiScale
-							cursorY = cursorY / uiScale
-							MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
-						end
-					end
+			GroupLootContainer:SetSize(glfsw, glfsh)
+			if GroupLootContainer:GetPoint() == nil then
+				GroupLootContainer:SetPoint("CENTER", 0, 0)
+			end
 
-					gtsetpoint = false
-				end
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "GroupLootContainer",
+					["lstr"] = "LID_GROUPLOOTCONTAINER",
+					["sw"] = glfsw,
+					["sh"] = glfsh,
+				}
 			)
-
-			function MoveAny:ThinkGameTooltip()
-				if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then
-					MoveAny:After(0.1, MoveAny.ThinkGameTooltip, "ThinkGameTooltip EditModeSHOWN")
-
-					return
-				end
-
-				if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() and GameTooltip:IsVisible() then
-					local owner = GameTooltip:GetOwner()
-					if owner == UIParent then
-						if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
-							local point1, _, point3 = MAGameTooltip:GetPoint()
-							MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
-							MoveAny:After(TOOLTIP_REFRESH_RATE_ACTIVE_INCOMBAT, MoveAny.ThinkGameTooltip, "ThinkGameTooltip INCOMBAT")
-
-							return
-						end
-
-						local uiScale = GameTooltip:GetEffectiveScale()
-						local cursorX, cursorY = GetCursorPosition()
-						cursorX = cursorX / uiScale
-						cursorY = cursorY / uiScale
-						MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
-						MoveAny:After(TOOLTIP_REFRESH_RATE_ACTIVE_NOTINCOMBAT, MoveAny.ThinkGameTooltip, "ThinkGameTooltip NOTINCOMBAT")
-					else
-						MoveAny:After(TOOLTIP_REFRESH_RATE_IDLE, MoveAny.ThinkGameTooltip, "ThinkGameTooltip OTHER PARENT")
-					end
-				else
-					MoveAny:After(TOOLTIP_REFRESH_RATE_IDLE, MoveAny.ThinkGameTooltip, "ThinkGameTooltip NOT SHOWN")
-				end
-			end
-
-			MoveAny:ThinkGameTooltip()
-		end
-	end
-
-	-- BOTTOM
-	if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
-		ZoneAbilityFrame:SetParent(MoveAny:GetMainPanel())
-		ZoneAbilityFrame:ClearAllPoints()
-		ZoneAbilityFrame:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 200)
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ZoneAbilityFrame",
-				["lstr"] = "LID_ZONEABILITYFRAME",
-				["userplaced"] = true
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("EventToastManagerFrame", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "EventToastManagerFrame",
-				["lstr"] = "LID_EventToastManagerFrame",
-				["sw"] = 36 * 2,
-				["sh"] = 36 * 2
-			}
-		)
-	end
-
-	if MoveAny:GetWoWBuild() == "RETAIL" then
-		MoveAny:LoadAddOn("Blizzard_ArchaeologyUI")
-	end
-
-	if MoveAny:IsEnabled("ARCHEOLOGYDIGSITEPROGRESSBAR", false) and ARCHEOLOGYDIGSITEPROGRESSBAR then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "ArcheologyDigsiteProgressBar",
-				["lstr"] = "LID_ARCHEOLOGYDIGSITEPROGRESSBAR",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("UIERRORSFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "UIErrorsFrame",
-				["lstr"] = "LID_UIERRORSFRAME",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BOSSBANNER", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BossBanner",
-				["lstr"] = "LID_BOSSBANNER",
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
-		local glfsw, glfsh = 256, 67
-		if GroupLootFrame1 then
-			glfsw, glfsh = GroupLootFrame1:GetSize()
-		end
-
-		GroupLootContainer:SetSize(glfsw, glfsh)
-		if GroupLootContainer:GetPoint() == nil then
-			GroupLootContainer:SetPoint("CENTER", 0, 0)
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "GroupLootContainer",
-				["lstr"] = "LID_GROUPLOOTCONTAINER",
-				["sw"] = glfsw,
-				["sh"] = glfsh,
-			}
-		)
-	elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
-		local glfsw, glfsh = 244, 84
-		if GroupLootFrame1 then
-			glfsw, glfsh = GroupLootFrame1:GetSize()
-			for x = 2, 10 do
-				local glf = _G["GroupLootFrame" .. x]
-				if glf then
-					hooksecurefunc(
-						glf,
-						"SetPoint",
-						function(sel, ...)
-							if sel.glfsetpoint then return end
-							sel.glfsetpoint = true
-							sel:SetMovable(true)
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(false)
-							end
-
-							MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
-							sel.glfsetpoint = false
-						end
-					)
-
-					hooksecurefunc(
-						GroupLootFrame1,
-						"SetScale",
-						function(sel, scale)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if scale and type(scale) == "number" then
-								glf:SetScale(scale)
-							end
-						end
-					)
-
-					hooksecurefunc(
-						GroupLootFrame1,
-						"SetAlpha",
-						function(sel, alpha)
-							glf:SetAlpha(alpha)
-						end
-					)
-				end
-			end
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "GroupLootFrame1",
-				["lstr"] = "LID_GROUPLOOTFRAME1",
-				["sw"] = glfsw,
-				["sh"] = glfsh,
-				["px"] = 0,
-				["py"] = 200,
-				["an"] = "BOTTOM",
-				["re"] = "BOTTOM"
-			}
-		)
-	end
-
-	if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
-		if BonusRollFrame:GetPoint() == nil then
-			BonusRollFrame:SetPoint("CENTER", 0, 0)
-		end
-
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "BonusRollFrame",
-				["lstr"] = "LID_BONUSROLLFRAME",
-			}
-		)
-	end
-
-	if SpellActivationOverlayFrame and MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "SpellActivationOverlayFrame",
-				["lstr"] = "LID_SPELLACTIVATIONOVERLAYFRAME"
-			}
-		)
-	end
-
-	if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
-		MoveAny:After(
-			1,
-			function()
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "MainStatusTrackingBarContainer",
-						["lstr"] = "LID_MainStatusTrackingBarContainer",
-					}
-				)
-			end, "MainStatusTrackingBarContainer"
-		)
-	end
-
-	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
-		MoveAny:After(
-			1,
-			function()
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "SecondaryStatusTrackingBarContainer",
-						["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
-					}
-				)
-			end, "SecondaryStatusTrackingBarContainer"
-		)
-	end
-
-	if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
-		-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
-		MoveAny:After(
-			1,
-			function()
-				local ssw, ssh = StatusTrackingBarManager:GetSize()
-				MoveAny:RegisterWidget(
-					{
-						["name"] = "StatusTrackingBarManager",
-						["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
-						["sw"] = ssw - 6,
-						["sh"] = ssh - 8,
-						["cleft"] = 0,
-						["cright"] = 2,
-						["ctop"] = 4,
-						["cbottom"] = 4,
-						["posx"] = 1,
-						["posy"] = 4,
-					}
-				)
-			end, "MainStatusTrackingBarContainer"
-		)
-	end
-
-	if MainMenuExpBar and ReputationWatchBar then
-		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
-			local opts = nil
-			ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
-			function ReputationWatchBar:UpdateSize()
-				opts = MoveAny:GetEleOptions("ReputationWatchBar", "RegisterWidget: ReputationWatchBar")
-				opts = opts or {}
-				opts["WIDTH"] = opts["WIDTH"] or 1024
-				opts["HEIGHT"] = opts["HEIGHT"] or 15
-				if opts["WIDTH"] and opts["HEIGHT"] then
-					if hookedRep == false then
-						hookedRep = true
+		elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
+			local glfsw, glfsh = 244, 84
+			if GroupLootFrame1 then
+				glfsw, glfsh = GroupLootFrame1:GetSize()
+				for x = 2, 10 do
+					local glf = _G["GroupLootFrame" .. x]
+					if glf then
 						hooksecurefunc(
-							ReputationWatchBar,
-							"SetHeight",
-							function(sel, nh)
-								if sel.ma_setheight then return end
-								sel.ma_setheight = true
-								sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
-								sel.ma_setheight = false
+							glf,
+							"SetPoint",
+							function(sel, ...)
+								if sel.glfsetpoint then return end
+								sel.glfsetpoint = true
+								sel:SetMovable(true)
+								if sel.SetUserPlaced and sel:IsMovable() then
+									sel:SetUserPlaced(false)
+								end
+
+								MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
+								sel.glfsetpoint = false
+							end
+						)
+
+						hooksecurefunc(
+							GroupLootFrame1,
+							"SetScale",
+							function(sel, scale)
+								if InCombatLockdown() and sel:IsProtected() then return false end
+								if scale and type(scale) == "number" then
+									glf:SetScale(scale)
+								end
+							end
+						)
+
+						hooksecurefunc(
+							GroupLootFrame1,
+							"SetAlpha",
+							function(sel, alpha)
+								glf:SetAlpha(alpha)
 							end
 						)
 					end
+				end
+			end
 
-					ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					if ReputationWatchBar_MA_DRAG then
-						ReputationWatchBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					end
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "GroupLootFrame1",
+					["lstr"] = "LID_GROUPLOOTFRAME1",
+					["sw"] = glfsw,
+					["sh"] = glfsh,
+					["px"] = 0,
+					["py"] = 200,
+					["an"] = "BOTTOM",
+					["re"] = "BOTTOM"
+				}
+			)
+		end
 
-					if ReputationWatchBar.StatusBar then
-						if hookedRepStatus == false then
-							hookedRepStatus = true
+		if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
+			if BonusRollFrame:GetPoint() == nil then
+				BonusRollFrame:SetPoint("CENTER", 0, 0)
+			end
+
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "BonusRollFrame",
+					["lstr"] = "LID_BONUSROLLFRAME",
+				}
+			)
+		end
+
+		if SpellActivationOverlayFrame and MoveAny:IsEnabled("SPELLACTIVATIONOVERLAYFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "SpellActivationOverlayFrame",
+					["lstr"] = "LID_SPELLACTIVATIONOVERLAYFRAME"
+				}
+			)
+		end
+
+		if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
+			MoveAny:After(
+				1,
+				function()
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "MainStatusTrackingBarContainer",
+							["lstr"] = "LID_MainStatusTrackingBarContainer",
+						}
+					)
+				end, "MainStatusTrackingBarContainer"
+			)
+		end
+
+		if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
+			MoveAny:After(
+				1,
+				function()
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "SecondaryStatusTrackingBarContainer",
+							["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
+						}
+					)
+				end, "SecondaryStatusTrackingBarContainer"
+			)
+		end
+
+		if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager and MoveAny:IsEnabled("STATUSTRACKINGBARMANAGER", false) then
+			-- StatusTrackingBarManager:EnableMouse( true ) -- destroys tooltip
+			MoveAny:After(
+				1,
+				function()
+					local ssw, ssh = StatusTrackingBarManager:GetSize()
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "StatusTrackingBarManager",
+							["lstr"] = "LID_STATUSTRACKINGBARMANAGER",
+							["sw"] = ssw - 6,
+							["sh"] = ssh - 8,
+							["cleft"] = 0,
+							["cright"] = 2,
+							["ctop"] = 4,
+							["cbottom"] = 4,
+							["posx"] = 1,
+							["posy"] = 4,
+						}
+					)
+				end, "MainStatusTrackingBarContainer"
+			)
+		end
+
+		if MainMenuExpBar and ReputationWatchBar then
+			if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
+				local opts = nil
+				ReputationWatchBar:SetParent(MoveAny:GetMainPanel())
+				function ReputationWatchBar:UpdateSize()
+					opts = MoveAny:GetEleOptions("ReputationWatchBar", "RegisterWidget: ReputationWatchBar")
+					opts = opts or {}
+					opts["WIDTH"] = opts["WIDTH"] or 1024
+					opts["HEIGHT"] = opts["HEIGHT"] or 15
+					if opts["WIDTH"] and opts["HEIGHT"] then
+						if hookedRep == false then
+							hookedRep = true
 							hooksecurefunc(
-								ReputationWatchBar.StatusBar,
+								ReputationWatchBar,
 								"SetHeight",
 								function(sel, nh)
 									if sel.ma_setheight then return end
@@ -6211,365 +6165,386 @@ function MoveAny:LoadAddon()
 							)
 						end
 
-						ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-						local last = nil
-						local id = 0
-						MoveAny:ForeachRegions(
-							ReputationWatchBar.StatusBar,
-							function(region, x)
-								if x == 5 or x == 6 or x == 7 or x == 8 or x == 9 or x == 10 or x == 11 or x == 12 then
-									if x < 9 then
-										region:SetTexCoord(0.01, 1.01, 0.03, 0.17)
-									end
+						ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						if ReputationWatchBar_MA_DRAG then
+							ReputationWatchBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						end
 
+						if ReputationWatchBar.StatusBar then
+							if hookedRepStatus == false then
+								hookedRepStatus = true
+								hooksecurefunc(
+									ReputationWatchBar.StatusBar,
+									"SetHeight",
+									function(sel, nh)
+										if sel.ma_setheight then return end
+										sel.ma_setheight = true
+										sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
+										sel.ma_setheight = false
+									end
+								)
+							end
+
+							ReputationWatchBar.StatusBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+							local last = nil
+							local id = 0
+							MoveAny:ForeachRegions(
+								ReputationWatchBar.StatusBar,
+								function(region, x)
+									if x == 5 or x == 6 or x == 7 or x == 8 or x == 9 or x == 10 or x == 11 or x == 12 then
+										if x < 9 then
+											region:SetTexCoord(0.01, 1.01, 0.03, 0.17)
+										end
+
+										region:ClearAllPoints()
+										if x == 5 or x == 9 then
+											region:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
+										else
+											region:SetPoint("LEFT", last, "RIGHT", 0, 0)
+										end
+
+										region:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
+										last = region
+										id = id + 1
+									end
+								end, "REPBAR"
+							)
+						end
+
+						if ReputationWatchBar.OverlayFrame and ReputationWatchBar.OverlayFrame.Text then
+							ReputationWatchBar.OverlayFrame.Text:SetText(ReputationWatchBar.OverlayFrame.Text:GetText())
+						end
+					end
+				end
+
+				ReputationWatchBar:UpdateSize()
+				ReputationWatchBar:ClearAllPoints()
+				ReputationWatchBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 130)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "ReputationWatchBar",
+						["lstr"] = "LID_REPUTATIONWATCHBAR",
+						["sw"] = opts and opts["WIDTH"] or nil,
+						["sh"] = opts and opts["HEIGHT"] or nil
+					}
+				)
+			end
+
+			if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
+				local opts = nil
+				MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
+				function MainMenuExpBar:UpdateSize()
+					opts = MoveAny:GetEleOptions("MainMenuExpBar", "RegisterWidget: MainMenuExpBar")
+					opts = opts or {}
+					opts["WIDTH"] = opts["WIDTH"] or 1024
+					opts["HEIGHT"] = opts["HEIGHT"] or 15
+					if opts["WIDTH"] and opts["HEIGHT"] then
+						MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						if MainMenuExpBar_MA_DRAG then
+							MainMenuExpBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
+						end
+
+						local last = nil
+						MoveAny:ForeachRegions(
+							MainMenuExpBar,
+							function(region, x)
+								if x == 1 then
+									region:SetSize(opts["WIDTH"], opts["HEIGHT"])
+								end
+
+								if x == 2 or x == 3 or x == 4 or x == 5 then
 									region:ClearAllPoints()
-									if x == 5 or x == 9 then
-										region:SetPoint("LEFT", ReputationWatchBar.StatusBar, "LEFT", 0, 0)
+									if x == 2 then
+										region:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
 									else
 										region:SetPoint("LEFT", last, "RIGHT", 0, 0)
 									end
 
 									region:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
 									last = region
-									id = id + 1
 								end
-							end, "REPBAR"
+							end, "XPBar"
 						)
-					end
 
-					if ReputationWatchBar.OverlayFrame and ReputationWatchBar.OverlayFrame.Text then
-						ReputationWatchBar.OverlayFrame.Text:SetText(ReputationWatchBar.OverlayFrame.Text:GetText())
+						if MainMenuBarExpText then
+							MainMenuBarExpText:SetText(MainMenuBarExpText:GetText())
+						end
 					end
 				end
+
+				MainMenuExpBar:UpdateSize()
+				MainMenuExpBar:ClearAllPoints()
+				MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MainMenuExpBar",
+						["lstr"] = "LID_MAINMENUEXPBAR",
+						["sw"] = opts and opts["WIDTH"] or nil,
+						["sh"] = opts and opts["HEIGHT"] or nil
+					}
+				)
+			end
+		end
+
+		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then
+			if MultiCastActionBarFrame then
+				MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel())
 			end
 
-			ReputationWatchBar:UpdateSize()
-			ReputationWatchBar:ClearAllPoints()
-			ReputationWatchBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 130)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ReputationWatchBar",
-					["lstr"] = "LID_REPUTATIONWATCHBAR",
-					["sw"] = opts and opts["WIDTH"] or nil,
-					["sh"] = opts and opts["HEIGHT"] or nil
-				}
-			)
-		end
-
-		if MoveAny:IsEnabled("MAINMENUEXPBAR", false) then
-			local opts = nil
-			MainMenuExpBar:SetParent(MoveAny:GetMainPanel())
-			function MainMenuExpBar:UpdateSize()
-				opts = MoveAny:GetEleOptions("MainMenuExpBar", "RegisterWidget: MainMenuExpBar")
-				opts = opts or {}
-				opts["WIDTH"] = opts["WIDTH"] or 1024
-				opts["HEIGHT"] = opts["HEIGHT"] or 15
-				if opts["WIDTH"] and opts["HEIGHT"] then
-					MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					if MainMenuExpBar_MA_DRAG then
-						MainMenuExpBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					end
-
-					local last = nil
-					MoveAny:ForeachRegions(
-						MainMenuExpBar,
-						function(region, x)
-							if x == 1 then
-								region:SetSize(opts["WIDTH"], opts["HEIGHT"])
-							end
-
-							if x == 2 or x == 3 or x == 4 or x == 5 then
-								region:ClearAllPoints()
-								if x == 2 then
-									region:SetPoint("LEFT", MainMenuExpBar, "LEFT", 0, 0)
-								else
-									region:SetPoint("LEFT", last, "RIGHT", 0, 0)
-								end
-
-								region:SetSize(opts["WIDTH"] / 4, opts["HEIGHT"])
-								last = region
-							end
-						end, "XPBar"
-					)
-
-					if MainMenuBarExpText then
-						MainMenuBarExpText:SetText(MainMenuBarExpText:GetText())
-					end
-				end
+			if MoveAny:IsEnabled("TOTEMBAR", false) then
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "MultiCastActionBarFrame",
+						["lstr"] = "LID_TOTEMBAR",
+						["userplaced"] = true,
+						["secure"] = true,
+						["soft"] = true,
+					}
+				)
 			end
+		end
 
-			MainMenuExpBar:UpdateSize()
-			MainMenuExpBar:ClearAllPoints()
-			MainMenuExpBar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 140)
+		if MoveAny:IsEnabled("ALERTFRAME", false) then
+			local afsw, afsh = 276, 68
 			MoveAny:RegisterWidget(
 				{
-					["name"] = "MainMenuExpBar",
-					["lstr"] = "LID_MAINMENUEXPBAR",
-					["sw"] = opts and opts["WIDTH"] or nil,
-					["sh"] = opts and opts["HEIGHT"] or nil
+					["name"] = "AlertFrame",
+					["lstr"] = "LID_ALERTFRAME",
+					["sw"] = afsw,
+					["sh"] = afsh
 				}
 			)
-		end
-	end
 
-	if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then
-		if MultiCastActionBarFrame then
-			MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel())
-		end
-
-		if MoveAny:IsEnabled("TOTEMBAR", false) then
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "MultiCastActionBarFrame",
-					["lstr"] = "LID_TOTEMBAR",
-					["userplaced"] = true,
-					["secure"] = true,
-					["soft"] = true,
-				}
-			)
-		end
-	end
-
-	if MoveAny:IsEnabled("ALERTFRAME", false) then
-		local afsw, afsh = 276, 68
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "AlertFrame",
-				["lstr"] = "LID_ALERTFRAME",
-				["sw"] = afsw,
-				["sh"] = afsh
-			}
-		)
-
-		if AlertFrame and AlertFrame.AddAlertFrame then
-			hooksecurefunc(
-				AlertFrame,
-				"AddAlertFrame",
-				function(se, frame)
-					if frame.ma_setup == nil then
-						frame.ma_setup = true
-						hooksecurefunc(
-							AlertFrame,
-							"SetScale",
-							function(sel, scale)
-								if InCombatLockdown() and sel:IsProtected() then return false end
-								if scale and type(scale) == "number" then
-									frame:SetScale(scale)
+			if AlertFrame and AlertFrame.AddAlertFrame then
+				hooksecurefunc(
+					AlertFrame,
+					"AddAlertFrame",
+					function(se, frame)
+						if frame.ma_setup == nil then
+							frame.ma_setup = true
+							hooksecurefunc(
+								AlertFrame,
+								"SetScale",
+								function(sel, scale)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if scale and type(scale) == "number" then
+										frame:SetScale(scale)
+									end
 								end
-							end
-						)
-
-						frame:SetScale(AlertFrame:GetScale())
-						hooksecurefunc(
-							AlertFrame,
-							"SetAlpha",
-							function(sel, alpha)
-								frame:SetAlpha(alpha)
-							end
-						)
-
-						frame:SetAlpha(AlertFrame:GetAlpha())
-					end
-				end
-			)
-		end
-	end
-
-	-- BOTTOMLEFT
-	for i = 1, 10 do
-		local cf = _G["ChatFrame" .. i]
-		if cf and i > 1 then
-			if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
-				local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
-				if cbf then
-					hooksecurefunc(
-						cbf,
-						"SetPoint",
-						function(sel, ...)
-							if sel.cbfsetpoint then return end
-							sel:SetMovable(true)
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(true)
-							end
-
-							sel.cbfsetpoint = true
-							MoveAny:After(
-								0.0,
-								function()
-									local ssw, _ = _G["ChatFrame" .. i .. "ButtonFrame"]:GetSize()
-									sel:SetSize(ssw, ssw * 6)
-									MoveAny:SetPoint(sel, "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
-									sel.cbfsetpoint = false
-								end, "cbfsetpoint"
 							)
-						end
-					)
 
-					cbf:SetMovable(true)
-					if cbf.SetUserPlaced and cbf:IsMovable() then
-						cbf:SetUserPlaced(true)
-					end
+							frame:SetScale(AlertFrame:GetScale())
+							hooksecurefunc(
+								AlertFrame,
+								"SetAlpha",
+								function(sel, alpha)
+									frame:SetAlpha(alpha)
+								end
+							)
 
-					cbf:ClearAllPoints()
-					cbf:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
-				end
-
-				function MoveAny:UpdateActiveTab()
-					local selectedId = 1
-					if SELECTED_CHAT_FRAME then
-						selectedId = SELECTED_CHAT_FRAME:GetID()
-					end
-
-					for x = 1, 10 do
-						local cbff = _G["ChatFrame" .. x .. "ButtonFrame"]
-						if cbff then
-							if x == selectedId then
-								cbff:Show()
-							else
-								cbff:Hide()
-							end
+							frame:SetAlpha(AlertFrame:GetAlpha())
 						end
 					end
-
-					MoveAny:After(0.1, MoveAny.UpdateActiveTab, "UpdateActiveTab")
-				end
-
-				MoveAny:UpdateActiveTab()
-			end
-
-			if MoveAny:IsEnabled("CHATEDITBOX", false) then
-				local ceb = _G["ChatFrame" .. i .. "EditBox"]
-				if ceb then
-					hooksecurefunc(
-						ceb,
-						"SetPoint",
-						function(sel, ...)
-							if sel.cebsetpoint then return end
-							sel:SetMovable(true)
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(true)
-							end
-
-							sel.cebsetpoint = true
-							if _G["ChatFrame" .. 1 .. "EditBox"] then
-								sel:SetSize(_G["ChatFrame" .. 1 .. "EditBox"]:GetSize())
-								MoveAny:SetPoint(sel, "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
-							end
-
-							sel.cebsetpoint = false
-						end
-					)
-
-					ceb:SetMovable(true)
-					if ceb.SetUserPlaced and ceb:IsMovable() then
-						ceb:SetUserPlaced(true)
-					end
-
-					ceb:ClearAllPoints()
-					ceb:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
-				end
+				)
 			end
 		end
-	end
 
-	if MoveAny:IsEnabled("LOSSOFCONTROLFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "LossOfControlFrame",
-				["lstr"] = "LID_LOSSOFCONTROLFRAME"
-			}
-		)
-	end
+		-- BOTTOMLEFT
+		for i = 1, 10 do
+			local cf = _G["ChatFrame" .. i]
+			if cf and i > 1 then
+				if MoveAny:IsEnabled("CHATBUTTONFRAME" .. i, false) then
+					local cbf = _G["ChatFrame" .. i .. "ButtonFrame"]
+					if cbf then
+						hooksecurefunc(
+							cbf,
+							"SetPoint",
+							function(sel, ...)
+								if sel.cbfsetpoint then return end
+								sel:SetMovable(true)
+								if sel.SetUserPlaced and sel:IsMovable() then
+									sel:SetUserPlaced(true)
+								end
 
-	if MoveAny:IsEnabled("GHOSTFRAME", false) then
-		MoveAny:RegisterWidget(
-			{
-				["name"] = "GhostFrame",
-				["lstr"] = "LID_GHOSTFRAME",
-				["sw"] = 130,
-				["sh"] = 45,
-			}
-		)
-	end
+								sel.cbfsetpoint = true
+								MoveAny:After(
+									0.0,
+									function()
+										local ssw, _ = _G["ChatFrame" .. i .. "ButtonFrame"]:GetSize()
+										sel:SetSize(ssw, ssw * 6)
+										MoveAny:SetPoint(sel, "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
+										sel.cbfsetpoint = false
+									end, "cbfsetpoint"
+								)
+							end
+						)
 
-	if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] and ArenaEnemyFrames then
-		ArenaEnemyFrames:SetMovable(true)
-		ArenaEnemyFrames:SetUserPlaced(true)
-		UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] = nil
-	end
+						cbf:SetMovable(true)
+						if cbf.SetUserPlaced and cbf:IsMovable() then
+							cbf:SetUserPlaced(true)
+						end
 
-	MoveAny:InitMALock()
-	if MoveAny.InitMinimap then
-		MoveAny:InitMinimap()
-	end
+						cbf:ClearAllPoints()
+						cbf:SetPoint("BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
+					end
 
-	if MoveAny.InitBuffBar then
-		MoveAny:InitBuffBar()
-	end
+					function MoveAny:UpdateActiveTab()
+						local selectedId = 1
+						if SELECTED_CHAT_FRAME then
+							selectedId = SELECTED_CHAT_FRAME:GetID()
+						end
 
-	if MoveAny.InitDebuffBar then
-		MoveAny:InitDebuffBar()
-	end
+						for x = 1, 10 do
+							local cbff = _G["ChatFrame" .. x .. "ButtonFrame"]
+							if cbff then
+								if x == selectedId then
+									cbff:Show()
+								else
+									cbff:Hide()
+								end
+							end
+						end
 
-	if not MoveAny:IsAddOnLoaded("Dominos") then
-		if MoveAny.InitMicroMenu then
-			MoveAny:InitMicroMenu()
+						MoveAny:After(0.1, MoveAny.UpdateActiveTab, "UpdateActiveTab")
+					end
+
+					MoveAny:UpdateActiveTab()
+				end
+
+				if MoveAny:IsEnabled("CHATEDITBOX", false) then
+					local ceb = _G["ChatFrame" .. i .. "EditBox"]
+					if ceb then
+						hooksecurefunc(
+							ceb,
+							"SetPoint",
+							function(sel, ...)
+								if sel.cebsetpoint then return end
+								sel:SetMovable(true)
+								if sel.SetUserPlaced and sel:IsMovable() then
+									sel:SetUserPlaced(true)
+								end
+
+								sel.cebsetpoint = true
+								if _G["ChatFrame" .. 1 .. "EditBox"] then
+									sel:SetSize(_G["ChatFrame" .. 1 .. "EditBox"]:GetSize())
+									MoveAny:SetPoint(sel, "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
+								end
+
+								sel.cebsetpoint = false
+							end
+						)
+
+						ceb:SetMovable(true)
+						if ceb.SetUserPlaced and ceb:IsMovable() then
+							ceb:SetUserPlaced(true)
+						end
+
+						ceb:ClearAllPoints()
+						ceb:SetPoint("CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
+					end
+				end
+			end
 		end
 
-		if MoveAny.InitBags then
-			MoveAny:InitBags()
-		end
-	end
-
-	if MoveAny.InitMAFPSFrame then
-		MoveAny:InitMAFPSFrame()
-	end
-
-	if MoveAny.InitMultiCastActionBar then
-		MoveAny:InitMultiCastActionBar()
-	end
-
-	if MoveAny.InitPartyFrame then
-		MoveAny:InitPartyFrame()
-	end
-
-	if MoveAny.MoveFrames then
-		MoveAny:MoveFrames()
-	end
-
-	if MoveAny.InitMAVehicleSeatIndicator then
-		MoveAny:InitMAVehicleSeatIndicator()
-	end
-
-	if WorldMapFrame then
-		if WorldMapFrame.Minimize then
-			hooksecurefunc(
-				WorldMapFrame,
-				"Minimize",
-				function(sel)
-					sel:SetScale(1)
-				end
-			)
-
-			hooksecurefunc(
-				WorldMapFrame,
-				"Maximize",
-				function(sel)
-					sel:SetScale(1)
-				end
+		if MoveAny:IsEnabled("LOSSOFCONTROLFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "LossOfControlFrame",
+					["lstr"] = "LID_LOSSOFCONTROLFRAME"
+				}
 			)
 		end
 
-		if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and WorldMapFrame.ScrollContainer then
-			WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
-				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
-				local scale = WorldMapFrame:GetScale()
-				if not MoveAny:IsAddOnLoaded("Mapster") and not MoveAny:IsAddOnLoaded("GW2_UI") then
-					return x / scale, y / scale
-				else
-					local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
+		if MoveAny:IsEnabled("GHOSTFRAME", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "GhostFrame",
+					["lstr"] = "LID_GHOSTFRAME",
+					["sw"] = 130,
+					["sh"] = 45,
+				}
+			)
+		end
 
-					return x / scale * reverseEffectiveScale, y / scale * reverseEffectiveScale
+		if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] and ArenaEnemyFrames then
+			ArenaEnemyFrames:SetMovable(true)
+			ArenaEnemyFrames:SetUserPlaced(true)
+			UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] = nil
+		end
+
+		MoveAny:InitMALock()
+		if MoveAny.InitMinimap then
+			MoveAny:InitMinimap()
+		end
+
+		if MoveAny.InitBuffBar then
+			MoveAny:InitBuffBar()
+		end
+
+		if MoveAny.InitDebuffBar then
+			MoveAny:InitDebuffBar()
+		end
+
+		if not MoveAny:IsAddOnLoaded("Dominos") then
+			if MoveAny.InitMicroMenu then
+				MoveAny:InitMicroMenu()
+			end
+
+			if MoveAny.InitBags then
+				MoveAny:InitBags()
+			end
+		end
+
+		if MoveAny.InitMAFPSFrame then
+			MoveAny:InitMAFPSFrame()
+		end
+
+		if MoveAny.InitMultiCastActionBar then
+			MoveAny:InitMultiCastActionBar()
+		end
+
+		if MoveAny.InitPartyFrame then
+			MoveAny:InitPartyFrame()
+		end
+
+		if MoveAny.MoveFrames then
+			MoveAny:MoveFrames()
+		end
+
+		if MoveAny.InitMAVehicleSeatIndicator then
+			MoveAny:InitMAVehicleSeatIndicator()
+		end
+
+		if WorldMapFrame then
+			if WorldMapFrame.Minimize then
+				hooksecurefunc(
+					WorldMapFrame,
+					"Minimize",
+					function(sel)
+						sel:SetScale(1)
+					end
+				)
+
+				hooksecurefunc(
+					WorldMapFrame,
+					"Maximize",
+					function(sel)
+						sel:SetScale(1)
+					end
+				)
+			end
+
+			if WorldMapFrame and MoveAny:GetWoWBuild() ~= "RETAIL" and WorldMapFrame.ScrollContainer then
+				WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
+					local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
+					local scale = WorldMapFrame:GetScale()
+					if not MoveAny:IsAddOnLoaded("Mapster") and not MoveAny:IsAddOnLoaded("GW2_UI") then
+						return x / scale, y / scale
+					else
+						local reverseEffectiveScale = 1 / UIParent:GetEffectiveScale()
+
+						return x / scale * reverseEffectiveScale, y / scale * reverseEffectiveScale
+					end
 				end
 			end
 		end
@@ -6585,10 +6560,14 @@ function MoveAny:LoadAddon()
 		MoveAny:After(
 			1,
 			function()
-				MoveAny:CheckAlphas()
+				if MoveAny.CheckAlphas then
+					MoveAny:CheckAlphas()
+				end
 			end, "CheckAlphas"
 		)
 
-		MoveAny:UpdateMALock()
+		if MoveAny.UpdateMALock then
+			MoveAny:UpdateMALock()
+		end
 	end
 end

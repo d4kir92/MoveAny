@@ -1317,6 +1317,7 @@ function MoveAny:ClearSelectEle()
 	end
 
 	MACurrentEle = nil
+	MoveAny:GridFrameThink()
 end
 
 function MoveAny:SelectEle(ele)
@@ -1328,6 +1329,7 @@ function MoveAny:SelectEle(ele)
 	end
 
 	MACurrentEle = ele
+	MoveAny:GridFrameThink()
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
 		MACurrentEle.name:Show()
@@ -1454,19 +1456,6 @@ function MoveAny:RegisterWidget(tab)
 
 		return
 	end
-
-	MoveAny:After(
-		1,
-		function()
-			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
-			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
-			if (enabled1 or enabled2) and (not forced1 and not forced2) then
-				MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
-
-				return
-			end
-		end, "RegisterWidget 1"
-	)
 
 	local frame = MoveAny:GetFrameByName(name)
 	if frame then
@@ -1636,6 +1625,19 @@ function MoveAny:RegisterWidget(tab)
 
 		return false
 	end
+
+	MoveAny:After(
+		1,
+		function()
+			enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
+			enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
+			if (enabled1 or enabled2) and (not forced1 and not forced2) then
+				MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
+
+				return
+			end
+		end, "RegisterWidget 1"
+	)
 
 	--MoveAny:TrySetParent(frame, MoveAny:GetMainPanel())
 	if cleft or cright or ctop or cbottom then

@@ -185,11 +185,11 @@ hooksecurefunc(
 if MoveAny:GetCVar("useUiScale") == "1" then
 	MoveAny:MAUI_SetScale(MoveAny:GetCVar("uiScale"))
 else
-	C_Timer.After(
+	MoveAny:After(
 		0,
 		function()
 			MoveAny:MAUI_SetScale(UIParent:GetScale())
-		end
+		end, "uiScale"
 	)
 end
 
@@ -321,7 +321,7 @@ function MoveAny:ToggleMALock()
 end
 
 local inCombat = false
-function MoveAny:UpdateMALock()
+function MoveAny:UpdateMALock(event)
 	if MoveAny:IsEnabled("MALOCK", false) and InCombatLockdown() then
 		inCombat = true
 		MoveAny:HideMALock()
@@ -329,9 +329,18 @@ function MoveAny:UpdateMALock()
 		inCombat = false
 		MoveAny:ShowMALock()
 	end
-
-	MoveAny:After(0.4, MoveAny.UpdateMALock, "UpdateMALock")
 end
+
+local maLockCheck = CreateFrame("Frame")
+MoveAny:RegisterEvent(maLockCheck, "PLAYER_REGEN_ENABLED")
+MoveAny:RegisterEvent(maLockCheck, "PLAYER_REGEN_DISABLED")
+MoveAny:OnEvent(
+	maLockCheck,
+	function(sel, event)
+		print("event", event)
+		MoveAny:UpdateMALock(event)
+	end, "maLockCheck"
+)
 
 function MoveAny:InitSlash()
 	MoveAny:AddSlash("move", MoveAny.ToggleMALock)

@@ -21,7 +21,7 @@ local oldHides = {}
 function MoveAny:PetBattleChat(frame)
 	if frame == nil then return end
 	oldHides[frame] = oldHides[frame] or frame.Hide
-	if MoveAny:IsInPetBattle() then
+	if MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
 		frame.Hide = frame.Show
 	else
 		frame.Hide = oldHides[frame]
@@ -43,7 +43,7 @@ function MoveAny:DoUpdateMicroBar(from)
 		MoveAny:PetBattleChat(ChatFrame1)
 	end
 
-	if MoveAny:IsInPetBattle() or PetBattleFrame and PetBattleFrame:IsShown() then
+	if MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() or PetBattleFrame and PetBattleFrame:IsShown() then
 		ChatFrame1:SetShown(true)
 	end
 

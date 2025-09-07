@@ -35,32 +35,6 @@ if C_Widget.IsWidget(ScriptErrorsFrame) and ScriptErrorsFrame.DragArea then
 	MoveAny:TrySetParent(ScriptErrorsFrame.DragArea, MoveAny:GetHidden())
 end
 
-local tab = {}
-function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
-	if window == nil then
-		MoveAny:INFO("[SetPoint] WINDOW IS NIL")
-
-		return
-	end
-
-	tab[window] = tab[window] or false
-	MoveAny:SafeExec(
-		window,
-		function()
-			if p1 then
-				local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
-				local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
-				tab[window] = true
-				ClearAllPoints(window)
-				SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
-				tab[window] = false
-			end
-		end, "MoveAny:SetPoint"
-	)
-
-	return true
-end
-
 local currentWindowName = nil
 local prevMouseX = nil
 local prevMouseY = nil
