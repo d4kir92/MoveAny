@@ -337,7 +337,6 @@ MoveAny:RegisterEvent(maLockCheck, "PLAYER_REGEN_DISABLED")
 MoveAny:OnEvent(
 	maLockCheck,
 	function(sel, event)
-		print("event", event)
 		MoveAny:UpdateMALock(event)
 	end, "maLockCheck"
 )

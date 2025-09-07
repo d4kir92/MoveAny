@@ -54,12 +54,10 @@ function MoveAny:UpdateVisi()
 					local bar = abs[visiTab[i]]
 					if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
 						if not bar:IsShown() then
-							print("SHOW1")
 							bar:Show()
 						end
 					else
 						if bar:IsShown() then
-							print("HIDE1")
 							bar:Hide()
 						end
 					end
