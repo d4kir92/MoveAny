@@ -358,7 +358,7 @@ if false then
 		1,
 		function()
 			MoveAny:SetDebug(true)
-			if true then
+			if false then
 				MoveAny:DrawDebug(
 					"MoveAny Test DrawDebug 1",
 					function()
@@ -374,7 +374,7 @@ if false then
 				)
 			end
 
-			if true then
+			if false then
 				MoveAny:DrawDebug(
 					"MoveAny Test DrawDebug 2",
 					function()

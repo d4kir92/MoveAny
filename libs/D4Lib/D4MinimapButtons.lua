@@ -304,53 +304,90 @@ function D4:CreateMinimapButton(params)
     end
 
     animOut:SetStartDelay(1)
-    if animOut.fadeOut and animOut.fadeOut.SetToFinalAlpha then
+    if btn.fadeOut and btn.fadeOut.SetToFinalAlpha then
         btn.fadeOut:SetToFinalAlpha(true)
     end
 
-    btn.ia_visible = false
+    btn.fadeIn = btn:CreateAnimationGroup()
+    local animIn = btn.fadeIn:CreateAnimation("Alpha")
+    animIn:SetOrder(1)
+    animIn:SetDuration(0.2)
+    if animIn.SetFromAlpha then
+        animIn:SetFromAlpha(0)
+    end
+
+    if animIn.SetToAlpha then
+        animIn:SetToAlpha(1)
+    end
+
+    animIn:SetStartDelay(0.2)
+    if btn.fadeIn and btn.fadeIn.SetToFinalAlpha then
+        btn.fadeIn:SetToFinalAlpha(true)
+    end
+
+    local oldState = false
     local function BtnThink()
-        if btn.ia_visible_old ~= GetD4MinimapHover() then
-            btn.ia_visible_old = GetD4MinimapHover()
-            if GetD4MinimapHover() then
+        if oldState ~= (GetD4MinimapHover() or MouseIsOver(btn)) then
+            oldState = GetD4MinimapHover() or MouseIsOver(btn)
+            if GetD4MinimapHover() or MouseIsOver(btn) then
                 if D4:GetParent(btn) == Minimap then
                     btn.fadeOut:Stop()
+                    btn.fadeIn:Play()
                     btn:SetAlpha(1)
                 else
                     btn.fadeOut:Stop()
+                    btn.fadeIn:Stop()
                     btn:SetAlpha(1)
                 end
             else
                 if D4:GetParent(btn) == Minimap then
+                    btn.fadeIn:Stop()
                     btn.fadeOut:Play()
                 else
                     btn.fadeOut:Stop()
+                    btn.fadeIn:Stop()
                     btn:SetAlpha(1)
                 end
             end
         end
+    end
 
-        if InCombatLockdown() then
-            D4:After(
-                0.38,
-                function()
-                    BtnThink()
-                end, "D4 MinimapButton BtnThink inCombat"
-            )
-        else
-            D4:After(
-                0.19,
-                function()
-                    BtnThink()
-                end, "D4 MinimapButton BtnThink !inCombat"
-            )
+    btn:HookScript(
+        "OnEnter",
+        function()
+            BtnThink()
         end
-    end
+    )
 
-    BtnThink()
-    if D4:GetParent(btn) == Minimap then
-        btn.fadeOut:Play()
-    end
+    btn:HookScript(
+        "OnLeave",
+        function()
+            BtnThink()
+        end
+    )
+
+    Minimap:HookScript(
+        "OnEnter",
+        function()
+            BtnThink()
+        end
+    )
+
+    Minimap:HookScript(
+        "OnLeave",
+        function()
+            BtnThink()
+        end
+    )
+
+    D4:After(
+        4,
+        function()
+            if D4:GetParent(btn) == Minimap then
+                btn.fadeOut:Play()
+            end
+        end, "[D4] MinimapInit"
+    )
 
     if params.dbkey and params.dbkey ~= "" then
         if D4.IsEnabled then
