@@ -744,7 +744,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.178")
+	MoveAny:SetVersion(135994, "1.8.179")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -6560,10 +6560,10 @@ function MoveAny:LoadAddon()
 		MoveAny:After(
 			1,
 			function()
-				if MoveAny.CheckAlphas then
-					MoveAny:CheckAlphas()
+				if MoveAny.InitAlphas then
+					MoveAny:InitAlphas()
 				end
-			end, "CheckAlphas"
+			end, "Init CheckAlphas"
 		)
 
 		if MoveAny.UpdateMALock then

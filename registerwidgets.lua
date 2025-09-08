@@ -1424,6 +1424,20 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 	end
 end
 
+local enumAlpha = {}
+enumAlpha.INIT = "INIT"
+enumAlpha.ADDED = "ADDED"
+enumAlpha.COMBAT = "COMBAT"
+enumAlpha.RESTING = "RESTING"
+enumAlpha.FULLHEALTH = "FULLHEALTH"
+enumAlpha.AURA = "AURA"
+enumAlpha.VEHICLE = "VEHICLE"
+enumAlpha.PETBATTLE = "PETBATTLE"
+enumAlpha.OLD = "OLD"
+function MoveAny:GetEnumAlpha()
+	return enumAlpha
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1668,6 +1682,10 @@ function MoveAny:RegisterWidget(tab)
 
 	tinsert(MoveAny:GetEleFrames(), frame)
 	tinsert(MoveAny:GetAlphaFrames(), frame)
+	if MoveAny.UpdateAlphas then
+		MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().ADDED)
+	end
+
 	if frame and frame.GetChildren then
 		MoveAny:ForeachChildren(
 			frame,
@@ -2037,7 +2055,6 @@ local isstealthed = nil
 local ischatclosed = nil
 local lastchatab = nil
 local lastEle = nil
-local lastSize = 0
 local fullHP = false
 function MoveAny:SetEleAlpha(ele, alpha)
 	if ele and ele:GetAlpha() ~= alpha then
@@ -2047,7 +2064,7 @@ end
 
 function MoveAny:SetMouseEleAlpha(ele)
 	if lastEle and ele and ele ~= lastEle then
-		MoveAny:UpdateAlphas(ele)
+		MoveAny:UpdateAlphas("SETMOUSEELE", ele)
 	end
 
 	lastEle = ele
@@ -2083,51 +2100,126 @@ function MoveAny:IsDragonriding()
 	return UnitPowerBarID("player") == 631
 end
 
-function MoveAny:CheckAlphas()
-	if incombat ~= InCombatLockdown() then
-		incombat = InCombatLockdown()
-		MoveAny:UpdateAlphas()
-	elseif UnitInVehicle and invehicle ~= UnitInVehicle("player") then
-		invehicle = UnitInVehicle("player")
-		MoveAny:UpdateAlphas()
-	elseif MoveAny.IsDragonriding and isskyriding ~= MoveAny:IsDragonriding() then
-		isskyriding = MoveAny:IsDragonriding()
-		MoveAny:UpdateAlphas()
-	elseif IsMounted and ismounted ~= IsMounted() then
-		ismounted = IsMounted()
-		MoveAny:UpdateAlphas()
-	elseif IsResting and isresting ~= IsResting() then
-		isresting = IsResting()
-		MoveAny:UpdateAlphas()
-	elseif MoveAny.IsInPetBattle and inpetbattle ~= MoveAny:IsInPetBattle() then
-		inpetbattle = MoveAny:IsInPetBattle()
-		MoveAny:UpdateAlphas()
-	elseif fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
-		fullHP = UnitHealth("player") >= UnitHealthMax("player")
-		MoveAny:UpdateAlphas()
-	elseif IsStealthed and isstealthed ~= IsStealthed() then
-		isstealthed = IsStealthed()
-		MoveAny:UpdateAlphas()
-	elseif MoveAny.IsChatClosed and ischatclosed ~= MoveAny:IsChatClosed() then
-		ischatclosed = MoveAny:IsChatClosed()
-		if ischatclosed then
-			MoveAny:UpdateAlphas()
-		end
-	elseif MoveAny.CurrentChatTab and lastchatab ~= MoveAny:CurrentChatTab() then
-		lastchatab = MoveAny:CurrentChatTab()
-		MoveAny:UpdateAlphas()
-	end
+local alphasReady = false
+function MoveAny:InitAlphas()
+	local alphaFrameCombat = CreateFrame("Frame")
+	MoveAny:RegisterEvent(alphaFrameCombat, "PLAYER_REGEN_DISABLED")
+	MoveAny:RegisterEvent(alphaFrameCombat, "PLAYER_REGEN_ENABLED")
+	MoveAny:OnEvent(
+		alphaFrameCombat,
+		function(sel, event, ...)
+			if incombat ~= InCombatLockdown() then
+				incombat = InCombatLockdown()
+				MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().COMBAT)
+			end
+		end, "alphaFrameCombat"
+	)
 
-	if lastSize ~= getn(MoveAny:GetAlphaFrames()) then
-		lastSize = getn(MoveAny:GetAlphaFrames())
-		MoveAny:UpdateAlphas()
+	local alphaFrameResting = CreateFrame("Frame")
+	MoveAny:RegisterEvent(alphaFrameResting, "PLAYER_UPDATE_RESTING")
+	MoveAny:OnEvent(
+		alphaFrameResting,
+		function(sel, event, ...)
+			if IsResting and isresting ~= IsResting() then
+				isresting = IsResting()
+				MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().RESTING)
+			end
+		end, "alphaFrameResting"
+	)
+
+	local alphaFrameHealth = CreateFrame("Frame")
+	MoveAny:RegisterEvent(alphaFrameHealth, "UNIT_HEALTH", "player")
+	MoveAny:OnEvent(
+		alphaFrameHealth,
+		function(sel, event, ...)
+			if fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
+				fullHP = UnitHealth("player") >= UnitHealthMax("player")
+				MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().FULLHEALTH)
+			end
+		end, "alphaFrameHealth"
+	)
+
+	local alphaFrameAura = CreateFrame("Frame")
+	MoveAny:RegisterEvent(alphaFrameAura, "UNIT_AURA", "player")
+	MoveAny:OnEvent(
+		alphaFrameAura,
+		function(sel, event, ...)
+			local updateAlpha = false
+			if MoveAny.IsDragonriding and isskyriding ~= MoveAny:IsDragonriding() then
+				isskyriding = MoveAny:IsDragonriding()
+				updateAlpha = true
+			end
+
+			if IsMounted and ismounted ~= IsMounted() then
+				ismounted = IsMounted()
+				updateAlpha = true
+			end
+
+			if IsStealthed and isstealthed ~= IsStealthed() then
+				isstealthed = IsStealthed()
+				updateAlpha = true
+			end
+
+			if updateAlpha then
+				MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().AURA)
+			end
+		end, "alphaFrameAura"
+	)
+
+	local alphaFrameVehicle = CreateFrame("Frame")
+	MoveAny:RegisterEvent(alphaFrameVehicle, "UNIT_ENTERED_VEHICLE")
+	MoveAny:RegisterEvent(alphaFrameVehicle, "UNIT_EXITED_VEHICLE")
+	MoveAny:OnEvent(
+		alphaFrameVehicle,
+		function(sel, event, ...)
+			if UnitInVehicle and invehicle ~= UnitInVehicle("player") then
+				invehicle = UnitInVehicle("player")
+				MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().VEHICLE)
+			end
+		end, "alphaFrameVehicle"
+	)
+
+	local alphaFramePetBattle = CreateFrame("Frame")
+	MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_CLOSE")
+	MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_OPENING_DONE")
+	MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_OVER")
+	MoveAny:OnEvent(
+		alphaFramePetBattle,
+		function(sel, event, ...)
+			if MoveAny.IsInPetBattle and inpetbattle ~= MoveAny:IsInPetBattle() then
+				inpetbattle = MoveAny:IsInPetBattle()
+				MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().PETBATTLE)
+			end
+		end, "alphaFramePetBattle"
+	)
+
+	MoveAny:CheckAlphas()
+	alphasReady = true
+	MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().INIT)
+end
+
+function MoveAny:CheckAlphas()
+	local updateAlpha = false
+	if false then
+		-- OUTDATED?
+		if MoveAny.IsChatClosed and ischatclosed ~= MoveAny:IsChatClosed() then
+			ischatclosed = MoveAny:IsChatClosed()
+			if ischatclosed then
+				updateAlpha = true
+			end
+		end
+
+		if MoveAny.CurrentChatTab and lastchatab ~= MoveAny:CurrentChatTab() then
+			lastchatab = MoveAny:CurrentChatTab()
+			updateAlpha = true
+		end
 	end
 
 	local ele = MoveAny:GetMouseFocus()
 	if ele and ele ~= CompactRaidFrameManager then
 		if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
 			lastEle = nil
-			MoveAny:UpdateAlphas()
+			updateAlpha = true
 		end
 
 		if ele ~= WorldFrame and ele ~= UIParent then
@@ -2144,16 +2236,25 @@ function MoveAny:CheckAlphas()
 					end
 				elseif lastEle then
 					lastEle = nil
-					MoveAny:UpdateAlphas()
+					updateAlpha = true
 				end
 			end
 		end
 	elseif lastEle ~= nil then
 		lastEle = nil
-		MoveAny:UpdateAlphas()
+		updateAlpha = true
 	end
 
-	MoveAny:After(0.14, MoveAny.CheckAlphas, "CheckAlphas")
+	if updateAlpha then
+		MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().OLD)
+	end
+
+	MoveAny:After(
+		0.3,
+		function()
+			MoveAny:CheckAlphas()
+		end, "CheckAlphas"
+	)
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
@@ -2201,7 +2302,8 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
 	end
 end
 
-function MoveAny:UpdateAlphas(mouseEle)
+function MoveAny:UpdateAlphas(from, mouseEle)
+	if not alphasReady then return end
 	for i, ele in pairs(MoveAny:GetAlphaFrames()) do
 		MoveAny:UpdateAlpha(ele, mouseEle)
 	end

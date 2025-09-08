@@ -135,6 +135,7 @@ end
 function D4:RegisterEvent(frame, event, unit)
     if C_EventUtils == nil then
         frame:RegisterEvent(event)
+        D4:MSG("[D4] MISSING C_EventUtils")
 
         return
     end
