@@ -509,29 +509,29 @@ function MoveAny:MenuOptions(opt, frame)
 
 			local space = -30
 			local Y = -190
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSliderOld(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
 			if C_PetBattles then
-				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 				Y = Y + space
 			end
 
 			if DragonridingUtil then
-				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSKYRIDING", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSKYRIDING", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 				Y = Y + space
 			end
 
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.UpdateAlphas)
+			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 		elseif string.find(content.name, ACTIONBARS_LABEL) then
 			local slides = {}
 			local items = {}
@@ -1713,8 +1713,8 @@ function MoveAny:RegisterWidget(tab)
 
 	tinsert(MoveAny:GetEleFrames(), frame)
 	tinsert(MoveAny:GetAlphaFrames(), frame)
-	if MoveAny.UpdateAlphas then
-		MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().ADDED)
+	if MoveAny.SafeUpdateAlphas then
+		MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().ADDED)
 	end
 
 	if frame and frame.GetChildren then

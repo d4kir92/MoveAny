@@ -36,14 +36,6 @@ function MoveAny:SetEleAlpha(ele, alpha)
     end
 end
 
-function MoveAny:SetMouseEleAlpha(ele)
-    if lastEle and ele and ele ~= lastEle then
-        MoveAny:UpdateAlphas("SETMOUSEELE", ele)
-    end
-
-    lastEle = ele
-end
-
 function MoveAny:IsInPetBattle()
     local inPetBattle = false
     if C_PetBattles then
@@ -77,7 +69,7 @@ end
 function MoveAny:UpdateAlphaCombat()
     if incombat ~= InCombatLockdown() then
         incombat = InCombatLockdown()
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().COMBAT)
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().COMBAT)
     end
 end
 
@@ -97,7 +89,7 @@ end
 function MoveAny:UpdateAlphaResting()
     if IsResting and isresting ~= IsResting() then
         isresting = IsResting()
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().RESTING)
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().RESTING)
     end
 end
 
@@ -116,7 +108,7 @@ end
 function MoveAny:UpdateAlphaFullHealth()
     if fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
         fullHP = UnitHealth("player") >= UnitHealthMax("player")
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().FULLHEALTH)
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().FULLHEALTH)
     end
 end
 
@@ -149,7 +141,7 @@ function MoveAny:UpdateAlphaAura()
     end
 
     if updateAlpha then
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().AURA)
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().AURA)
     end
 end
 
@@ -168,7 +160,7 @@ end
 function MoveAny:UpdateAlphaVehicle()
     if UnitInVehicle and invehicle ~= UnitInVehicle("player") then
         invehicle = UnitInVehicle("player")
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().VEHICLE)
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().VEHICLE)
     end
 end
 
@@ -188,7 +180,7 @@ end
 function MoveAny:UpdateAlphaPetBattle()
     if MoveAny.IsInPetBattle and inpetbattle ~= MoveAny:IsInPetBattle() then
         inpetbattle = MoveAny:IsInPetBattle()
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().PETBATTLE)
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().PETBATTLE)
     end
 end
 
@@ -216,47 +208,44 @@ function MoveAny:InitAlphas()
     MoveAny:CheckAlphas()
     dufloaded = MoveAny:IsAddOnLoaded("DUnitFrames")
     alphasReady = true
-    MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().INIT)
+    MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().INIT)
+end
+
+function MoveAny:SetMouseEleAlpha(ele, last)
+    MoveAny:UpdateAlphas("SETMOUSEELE", ele, lastEle)
+    lastEle = last
 end
 
 function MoveAny:CheckAlphas()
-    local updateAlpha = false
     local ele = MoveAny:GetMouseFocus()
     if ele ~= lEle then
         lEle = ele
         if ele and ele ~= CompactRaidFrameManager then
             if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
-                lastEle = nil
-                updateAlpha = true
+                MoveAny:SetMouseEleAlpha(ele, nil)
             end
 
             if ele ~= WorldFrame and ele ~= UIParent and (not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame)) then
                 if tContains(MoveAny:GetAlphaFrames(), ele) then
                     ele:SetAlpha(1)
-                    MoveAny:SetMouseEleAlpha(ele)
+                    MoveAny:SetMouseEleAlpha(ele, ele)
                 elseif ele.GetMAEle then
                     ele = ele:GetMAEle()
                     if ele then
                         ele:SetAlpha(1)
-                        MoveAny:SetMouseEleAlpha(ele)
+                        MoveAny:SetMouseEleAlpha(ele, ele)
                     end
                 elseif lastEle then
-                    lastEle = nil
-                    updateAlpha = true
+                    MoveAny:SetMouseEleAlpha(ele, nil)
                 end
             end
         elseif lastEle ~= nil then
-            lastEle = nil
-            updateAlpha = true
+            MoveAny:SetMouseEleAlpha(ele, nil)
         end
     end
 
-    if updateAlpha then
-        MoveAny:UpdateAlphas(MoveAny:GetEnumAlpha().OLD)
-    end
-
     MoveAny:After(
-        0.3,
+        0.11,
         function()
             MoveAny:CheckAlphas()
         end, "CheckAlphas"
@@ -323,9 +312,43 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
     end
 end
 
-function MoveAny:UpdateAlphas(from, mouseEle)
+local timeStampAlpha = 0
+local retryAlpha = false
+local delayAlpha = 0.08
+function MoveAny:SafeUpdateAlphas(from, mouseEle, lastMouseEle)
+    if timeStampAlpha >= GetTime() then
+        retryAlpha = true
+
+        return
+    end
+
+    retryAlpha = false
+    timeStampAlpha = GetTime() + delayAlpha
+    MoveAny:UpdateAlphas(from, mouseEle, lastMouseEle)
+    MoveAny:After(
+        delayAlpha + 0.02,
+        function()
+            if retryAlpha then
+                retryAlpha = false
+                MoveAny:SafeUpdateAlphas(from, mouseEle, lastMouseEle)
+            end
+        end, "retryAlpha"
+    )
+end
+
+function MoveAny:UpdateAlphas(from, mouseEle, lastMouseEle)
     if not alphasReady then return end
-    for i, ele in pairs(MoveAny:GetAlphaFrames()) do
-        MoveAny:UpdateAlpha(ele, mouseEle)
+    if mouseEle or lastMouseEle then
+        if mouseEle then
+            MoveAny:UpdateAlpha(mouseEle, mouseEle)
+        end
+
+        if lastMouseEle then
+            MoveAny:UpdateAlpha(lastMouseEle, mouseEle)
+        end
+    else
+        for i, ele in pairs(MoveAny:GetAlphaFrames()) do
+            MoveAny:UpdateAlpha(ele, mouseEle)
+        end
     end
 end
