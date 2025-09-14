@@ -252,6 +252,7 @@ MoveAny:AddTrans("enUS", "LID_CENTERED", "Centered")
 MoveAny:AddTrans("enUS", "LID_LEFTALIGNED", "Left-aligned")
 MoveAny:AddTrans("enUS", "LID_RIGHTALIGNED", "Right-aligned")
 MoveAny:AddTrans("enUS", "LID_ALPHAISSKYRIDING", "Alpha (is Skyriding)")
+MoveAny:AddTrans("enUS", "LID_SUPERTRACKEDFRAME", "Waypoint Scale")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("enUS", "LID_ACTIONBARS", "Actionbars 1 + 5 + 6")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")

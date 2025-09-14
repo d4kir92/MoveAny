@@ -582,7 +582,7 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 					end
 
 					if func then
-						func()
+						func(valu)
 					end
 				end
 			end
@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.181")
+	MoveAny:SetVersion(135994, "1.8.182")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -881,7 +881,7 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		if ActionBarUpButton and ActionBarDownButton then
+		if getglobal("ActionBarUpButton") and getglobal("ActionBarDownButton") then
 			AddCheckBox(4, "MAPAGES", false)
 		end
 
@@ -893,16 +893,17 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "MINIMAP", false)
 		AddCheckBox(posx, "QUESTTRACKER", false)
-		if QuestTimerFrame then
+		if getglobal("QuestTimerFrame") then
 			AddCheckBox(posx, "QUESTTIMERFRAME", false)
 		end
 
 		AddCheckBox(posx, "MAPETFRAME", false)
+		local PetFrameHappiness = getglobal("PetFrameHappiness")
 		if PetFrameHappiness then
 			AddCheckBox(posx, "PETFRAMEHAPPINESS", false)
 		end
 
-		if PartyFrame or PartyMemberFrame1 then
+		if PartyFrame or getglobal("PartyMemberFrame1") then
 			AddCheckBox(posx, "PARTYFRAME", false, nil, nil, "ShowPartyFrames")
 		end
 
@@ -1056,6 +1057,21 @@ function MoveAny:InitMALock()
 		end
 
 		AddCategory("ADVANCED", 1, true)
+		if SuperTrackedFrame then
+			AddSlider(
+				8,
+				"SUPERTRACKEDFRAME",
+				1,
+				function(val)
+					SuperTrackedFrame:SetScale(val)
+				end, 0.1, 4.0, 0.1
+			)
+
+			if MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0) > 0 and MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0) ~= 1 then
+				SuperTrackedFrame:SetScale(MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0))
+			end
+		end
+
 		if MoveAny:IsValidFrame(EssentialCooldownViewer) then
 			AddCheckBox(4, "EssentialCooldownViewer", false)
 		end

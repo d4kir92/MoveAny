@@ -169,7 +169,8 @@
         "ReloadUI",
         "DragonridingUtil",
         "EncounterBar",
-        "Add"
+        "Add",
+        "SuperTrackedFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
