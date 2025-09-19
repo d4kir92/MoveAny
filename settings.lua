@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.184")
+	MoveAny:SetVersion(135994, "1.8.185")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5927,7 +5927,12 @@ function MoveAny:LoadAddon()
 						gtsetpoint = true
 						sel:SetMovable(true)
 						sel:SetUserPlaced(false)
-						if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then return end
+						if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then
+							gtsetpoint = false
+
+							return
+						end
+
 						if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
 							local owner = GameTooltip:GetOwner()
 							if owner == UIParent then
@@ -5950,6 +5955,27 @@ function MoveAny:LoadAddon()
 						gtsetpoint = false
 					end
 				)
+
+				function MoveAny:ThinkTooltip()
+					if GameTooltip:IsShown() then
+						GameTooltip:SetPoint(GameTooltip:GetPoint())
+						MoveAny:After(
+							0.03,
+							function()
+								MoveAny:ThinkTooltip()
+							end, "ThinkTooltip 1"
+						)
+					else
+						MoveAny:After(
+							0.3,
+							function()
+								MoveAny:ThinkTooltip()
+							end, "ThinkTooltip 2"
+						)
+					end
+				end
+
+				MoveAny:ThinkTooltip()
 			end
 		end
 
