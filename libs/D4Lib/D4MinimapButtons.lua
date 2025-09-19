@@ -291,103 +291,105 @@ function D4:CreateMinimapButton(params)
         )
     end
 
-    btn.fadeOut = btn:CreateAnimationGroup()
-    local animOut = btn.fadeOut:CreateAnimation("Alpha")
-    animOut:SetOrder(1)
-    animOut:SetDuration(0.2)
-    if animOut.SetFromAlpha then
-        animOut:SetFromAlpha(1)
-    end
+    if not params.noalpha then
+        btn.fadeOut = btn:CreateAnimationGroup()
+        local animOut = btn.fadeOut:CreateAnimation("Alpha")
+        animOut:SetOrder(1)
+        animOut:SetDuration(0.2)
+        if animOut.SetFromAlpha then
+            animOut:SetFromAlpha(1)
+        end
 
-    if animOut.SetToAlpha then
-        animOut:SetToAlpha(0)
-    end
+        if animOut.SetToAlpha then
+            animOut:SetToAlpha(0)
+        end
 
-    animOut:SetStartDelay(1)
-    if btn.fadeOut and btn.fadeOut.SetToFinalAlpha then
-        btn.fadeOut:SetToFinalAlpha(true)
-    end
+        animOut:SetStartDelay(1)
+        if btn.fadeOut and btn.fadeOut.SetToFinalAlpha then
+            btn.fadeOut:SetToFinalAlpha(true)
+        end
 
-    btn.fadeIn = btn:CreateAnimationGroup()
-    local animIn = btn.fadeIn:CreateAnimation("Alpha")
-    animIn:SetOrder(1)
-    animIn:SetDuration(0.2)
-    if animIn.SetFromAlpha then
-        animIn:SetFromAlpha(0)
-    end
+        btn.fadeIn = btn:CreateAnimationGroup()
+        local animIn = btn.fadeIn:CreateAnimation("Alpha")
+        animIn:SetOrder(1)
+        animIn:SetDuration(0.2)
+        if animIn.SetFromAlpha then
+            animIn:SetFromAlpha(0)
+        end
 
-    if animIn.SetToAlpha then
-        animIn:SetToAlpha(1)
-    end
+        if animIn.SetToAlpha then
+            animIn:SetToAlpha(1)
+        end
 
-    animIn:SetStartDelay(0.2)
-    if btn.fadeIn and btn.fadeIn.SetToFinalAlpha then
-        btn.fadeIn:SetToFinalAlpha(true)
-    end
+        animIn:SetStartDelay(0.2)
+        if btn.fadeIn and btn.fadeIn.SetToFinalAlpha then
+            btn.fadeIn:SetToFinalAlpha(true)
+        end
 
-    local oldState = false
-    local function BtnThink()
-        if oldState ~= (GetD4MinimapHover() or MouseIsOver(btn)) then
-            oldState = GetD4MinimapHover() or MouseIsOver(btn)
-            if GetD4MinimapHover() or MouseIsOver(btn) then
-                if D4:GetParent(btn) == Minimap then
-                    btn.fadeOut:Stop()
-                    btn.fadeIn:Play()
-                    btn:SetAlpha(1)
+        local oldState = false
+        local function BtnThink()
+            if oldState ~= (GetD4MinimapHover() or MouseIsOver(btn)) then
+                oldState = GetD4MinimapHover() or MouseIsOver(btn)
+                if GetD4MinimapHover() or MouseIsOver(btn) then
+                    if D4:GetParent(btn) == Minimap then
+                        btn.fadeOut:Stop()
+                        btn.fadeIn:Play()
+                        btn:SetAlpha(1)
+                    else
+                        btn.fadeOut:Stop()
+                        btn.fadeIn:Stop()
+                        btn:SetAlpha(1)
+                    end
                 else
-                    btn.fadeOut:Stop()
-                    btn.fadeIn:Stop()
-                    btn:SetAlpha(1)
+                    if D4:GetParent(btn) == Minimap then
+                        btn.fadeIn:Stop()
+                        btn.fadeOut:Play()
+                    else
+                        btn.fadeOut:Stop()
+                        btn.fadeIn:Stop()
+                        btn:SetAlpha(1)
+                    end
                 end
-            else
+            end
+        end
+
+        btn:HookScript(
+            "OnEnter",
+            function()
+                BtnThink()
+            end
+        )
+
+        btn:HookScript(
+            "OnLeave",
+            function()
+                BtnThink()
+            end
+        )
+
+        Minimap:HookScript(
+            "OnEnter",
+            function()
+                BtnThink()
+            end
+        )
+
+        Minimap:HookScript(
+            "OnLeave",
+            function()
+                BtnThink()
+            end
+        )
+
+        D4:After(
+            4,
+            function()
                 if D4:GetParent(btn) == Minimap then
-                    btn.fadeIn:Stop()
                     btn.fadeOut:Play()
-                else
-                    btn.fadeOut:Stop()
-                    btn.fadeIn:Stop()
-                    btn:SetAlpha(1)
                 end
-            end
-        end
+            end, "[D4] MinimapInit"
+        )
     end
-
-    btn:HookScript(
-        "OnEnter",
-        function()
-            BtnThink()
-        end
-    )
-
-    btn:HookScript(
-        "OnLeave",
-        function()
-            BtnThink()
-        end
-    )
-
-    Minimap:HookScript(
-        "OnEnter",
-        function()
-            BtnThink()
-        end
-    )
-
-    Minimap:HookScript(
-        "OnLeave",
-        function()
-            BtnThink()
-        end
-    )
-
-    D4:After(
-        4,
-        function()
-            if D4:GetParent(btn) == Minimap then
-                btn.fadeOut:Play()
-            end
-        end, "[D4] MinimapInit"
-    )
 
     if params.dbkey and params.dbkey ~= "" then
         if D4.IsEnabled then
