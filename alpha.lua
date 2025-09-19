@@ -66,22 +66,26 @@ function MoveAny:IsDragonriding()
     return UnitPowerBarID("player") == 631
 end
 
-function MoveAny:UpdateAlphaCombat()
-    if incombat ~= InCombatLockdown() then
-        incombat = InCombatLockdown()
+function MoveAny:UpdateAlphaCombat(inCom)
+    if incombat ~= inCom then
+        incombat = inCom
         MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().COMBAT)
     end
 end
 
 function MoveAny:InitAlphaCombat()
-    MoveAny:UpdateAlphaCombat()
+    MoveAny:UpdateAlphaCombat(InCombatLockdown())
     local alphaFrameCombat = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameCombat, "PLAYER_REGEN_DISABLED")
     MoveAny:RegisterEvent(alphaFrameCombat, "PLAYER_REGEN_ENABLED")
     MoveAny:OnEvent(
         alphaFrameCombat,
         function(sel, event, ...)
-            MoveAny:UpdateAlphaCombat()
+            if event == "PLAYER_REGEN_DISABLED" then
+                MoveAny:UpdateAlphaCombat(true)
+            else
+                MoveAny:UpdateAlphaCombat(false)
+            end
         end, "alphaFrameCombat"
     )
 end
@@ -252,22 +256,6 @@ function MoveAny:CheckAlphas()
     )
 end
 
---[[
- -- OUTDATED?
-local ischatclosed = nil
-local lastchatab = nil
-if MoveAny.IsChatClosed and ischatclosed ~= MoveAny:IsChatClosed() then
-    ischatclosed = MoveAny:IsChatClosed()
-    if ischatclosed then
-        updateAlpha = true
-    end
-end
-
-if MoveAny.CurrentChatTab and lastchatab ~= MoveAny:CurrentChatTab() then
-    lastchatab = MoveAny:CurrentChatTab()
-    updateAlpha = true
-end
-]]
 function MoveAny:UpdateAlpha(ele, mouseEle)
     if ele == nil then
         MoveAny:MSG("UpdateAlphas: ele is nil")
