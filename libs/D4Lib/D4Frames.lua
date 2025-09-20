@@ -217,6 +217,7 @@ function D4:CreateCheckbox(tab, text)
         cb:SetChecked(false)
     end
 
+    cb:SetHitRectInsets(0, 0, 0, 0)
     cb:SetScript(
         "OnClick",
         function(sel)
@@ -289,7 +290,7 @@ function D4:CreateSliderForCVAR(tab)
     tab.pTab = tab.pTab or "CENTER"
     tab.value = tab.value or nil
     local cb = D4:CreateCheckbox(tab, false)
-    tab.sw = 460
+    tab.sw = 430
     tab.value = tab.value2
     tab.key = tab.key or tab.name or ""
     tab.pTab = {tab.pTab[1], tab.pTab[2] + 32, tab.pTab[3] - 18}
@@ -331,7 +332,9 @@ function D4:CreateEditBox(tab)
         D4:INFO("[D4][CreateEditBox] " .. tab.key .. " has no name")
     end
 
-    cb.f:SetText(tab.prefix .. D4:Trans("LID_" .. tab.name) .. tab.suffix)
+    if tab.name and tab.name ~= "" then
+        cb.f:SetText(tab.prefix .. D4:Trans("LID_" .. tab.name) .. tab.suffix)
+    end
 
     return cb
 end
