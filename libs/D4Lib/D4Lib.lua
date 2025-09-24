@@ -296,6 +296,16 @@ function D4:GetItemInfo(itemID)
     return nil
 end
 
+function D4:GetItemCount(itemID)
+    if itemID == nil then return nil end
+    if C_Item and C_Item.GetItemCount then return C_Item.GetItemCount(itemID) end
+    local GetItemCount = getglobal("GetItemCount")
+    if GetItemCount then return GetItemCount(itemID) end
+    D4:MSG("[D4][GetItemCount] FAILED")
+
+    return nil
+end
+
 function D4:GetSpellPowerCost(spellId)
     if spellId == nil then return nil end
     if C_Spell and C_Spell.GetSpellPowerCost then return C_Spell.GetSpellPowerCost(spellId) end
