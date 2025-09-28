@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.187")
+	MoveAny:SetVersion(135994, "1.8.188")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -6035,82 +6035,86 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
-			local glfsw, glfsh = 256, 67
-			if GroupLootFrame1 then
-				glfsw, glfsh = GroupLootFrame1:GetSize()
+		if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) or MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
+			if MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
+				local glfsw, glfsh = 256, 67
+				if GroupLootFrame1 then
+					glfsw, glfsh = GroupLootFrame1:GetSize()
+				end
+
+				GroupLootContainer:SetSize(glfsw, glfsh)
+				if GroupLootContainer:GetPoint() == nil then
+					GroupLootContainer:SetPoint("CENTER", 0, 0)
+				end
+
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "GroupLootContainer",
+						["lstr"] = "LID_GROUPLOOTCONTAINER",
+						["sw"] = glfsw,
+						["sh"] = glfsh,
+					}
+				)
+			elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
+				local glfsw, glfsh = 244, 84
+				MoveAny:RegisterWidget(
+					{
+						["name"] = "GroupLootFrame1",
+						["lstr"] = "LID_GROUPLOOTFRAME1",
+						["sw"] = glfsw,
+						["sh"] = glfsh,
+						["px"] = 0,
+						["py"] = 200,
+						["an"] = "BOTTOM",
+						["re"] = "BOTTOM"
+					}
+				)
 			end
 
-			GroupLootContainer:SetSize(glfsw, glfsh)
-			if GroupLootContainer:GetPoint() == nil then
-				GroupLootContainer:SetPoint("CENTER", 0, 0)
-			end
-
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "GroupLootContainer",
-					["lstr"] = "LID_GROUPLOOTCONTAINER",
-					["sw"] = glfsw,
-					["sh"] = glfsh,
-				}
-			)
-		elseif MoveAny:IsEnabled("GROUPLOOTFRAME1", false) then
-			local glfsw, glfsh = 244, 84
 			if GroupLootFrame1 then
 				glfsw, glfsh = GroupLootFrame1:GetSize()
-				for x = 2, 10 do
-					local glf = _G["GroupLootFrame" .. x]
-					if glf then
-						hooksecurefunc(
-							glf,
-							"SetPoint",
-							function(sel, ...)
-								if sel.glfsetpoint then return end
-								sel.glfsetpoint = true
-								sel:SetMovable(true)
-								if sel.SetUserPlaced and sel:IsMovable() then
-									sel:SetUserPlaced(false)
+				for x = 1, 10 do
+					if x ~= 1 or MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then
+						local glf = _G["GroupLootFrame" .. x]
+						if glf then
+							hooksecurefunc(
+								glf,
+								"SetPoint",
+								function(sel, ...)
+									if sel.glfsetpoint then return end
+									sel.glfsetpoint = true
+									sel:SetMovable(true)
+									if sel.SetUserPlaced and sel:IsMovable() then
+										sel:SetUserPlaced(false)
+									end
+
+									MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
+									sel.glfsetpoint = false
 								end
+							)
 
-								MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
-								sel.glfsetpoint = false
-							end
-						)
-
-						hooksecurefunc(
-							GroupLootFrame1,
-							"SetScale",
-							function(sel, scale)
-								if InCombatLockdown() and sel:IsProtected() then return false end
-								if scale and type(scale) == "number" then
-									glf:SetScale(scale)
+							hooksecurefunc(
+								GroupLootFrame1,
+								"SetScale",
+								function(sel, scale)
+									if InCombatLockdown() and sel:IsProtected() then return false end
+									if scale and type(scale) == "number" then
+										glf:SetScale(scale)
+									end
 								end
-							end
-						)
+							)
 
-						hooksecurefunc(
-							GroupLootFrame1,
-							"SetAlpha",
-							function(sel, alpha)
-								glf:SetAlpha(alpha)
-							end
-						)
+							hooksecurefunc(
+								GroupLootFrame1,
+								"SetAlpha",
+								function(sel, alpha)
+									glf:SetAlpha(alpha)
+								end
+							)
+						end
 					end
 				end
 			end
-
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "GroupLootFrame1",
-					["lstr"] = "LID_GROUPLOOTFRAME1",
-					["sw"] = glfsw,
-					["sh"] = glfsh,
-					["px"] = 0,
-					["py"] = 200,
-					["an"] = "BOTTOM",
-					["re"] = "BOTTOM"
-				}
-			)
 		end
 
 		if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
