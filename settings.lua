@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.188")
+	MoveAny:SetVersion(135994, "1.8.189")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -1082,6 +1082,10 @@ function MoveAny:InitMALock()
 
 		if MoveAny:IsValidFrame(BuffBarCooldownViewer) then
 			AddCheckBox(4, "BuffBarCooldownViewer", false)
+		end
+
+		if MoveAny:IsValidFrame(UtilityCooldownViewer) then
+			AddCheckBox(4, "UtilityCooldownViewer", false)
 		end
 
 		AddCheckBox(4, "MINIMAPFLAG", false)
@@ -2582,6 +2586,15 @@ function MoveAny:LoadAddon()
 				{
 					["name"] = "EssentialCooldownViewer",
 					["lstr"] = "LID_EssentialCooldownViewer"
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("UtilityCooldownViewer", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "UtilityCooldownViewer",
+					["lstr"] = "LID_UtilityCooldownViewer"
 				}
 			)
 		end
