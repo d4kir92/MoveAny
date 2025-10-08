@@ -3,7 +3,7 @@ local hooksecurefunc = getglobal("hooksecurefunc")
 local CreateFrame = getglobal("CreateFrame")
 local InCombatLockdown = getglobal("InCombatLockdown")
 local tinsert = getglobal("tinsert")
-local MAFRAMES = {"StableFrame", "DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "PVPFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "PVPParentFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
+local MAFRAMES = {"CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "PVPFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "PVPParentFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 local MAFRAMESIGNORECLAMP = {}
 MAFRAMESIGNORECLAMP["TEST"] = true
 tinsert(MAFRAMES, "WorldMapFrame")
@@ -128,7 +128,7 @@ function MoveAny:FrameDragInfo(frame, c)
 	end
 end
 
-local EnableMouseFrames = {"PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ReadyCheckFrame", "RolePollPopup"}
+local EnableMouseFrames = {"RemixArtifactFrame", "RemixArtifactFrame.BorderContainer", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ReadyCheckFrame", "RolePollPopup"}
 local HookedEnableMouseFrames = {}
 local run = false
 local id = 0
@@ -273,9 +273,27 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		end
 
 		for i, name in pairs(EnableMouseFrames) do
-			local frame = _G[name]
+			local frame = MoveAny:GetFrameByName(name)
 			if C_Widget.IsWidget(frame) and HookedEnableMouseFrames[name] == nil then
+				EnableMouseFrames[name] = nil
 				HookedEnableMouseFrames[name] = true
+				if name == "RemixArtifactFrame.BorderContainer" then
+					frame:RegisterForDrag("LeftButton")
+					frame:HookScript(
+						"OnDragStart",
+						function(...)
+							RemixArtifactFrame:StartMoving()
+						end
+					)
+
+					frame:HookScript(
+						"OnDragStop",
+						function(...)
+							RemixArtifactFrame:StopMovingOrSizing()
+						end
+					)
+				end
+
 				hooksecurefunc(
 					frame,
 					"Show",
