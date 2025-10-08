@@ -293,6 +293,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						)
 
 						borderFrame:EnableMouse(false)
+						frame:SetClampRectInsets(0, 0, 0, 0)
 					end
 				end
 
