@@ -277,21 +277,23 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			if C_Widget.IsWidget(frame) and HookedEnableMouseFrames[name] == nil then
 				EnableMouseFrames[name] = nil
 				HookedEnableMouseFrames[name] = true
-				if name == "RemixArtifactFrame.BorderContainer" then
-					frame:RegisterForDrag("LeftButton")
-					frame:HookScript(
-						"OnDragStart",
-						function(...)
-							RemixArtifactFrame:StartMoving()
-						end
-					)
+				if name == "RemixArtifactFrame" then
+					for x, raf in pairs({"RemixArtifactFrame.BorderContainer", "RemixArtifactFrame.FxModelScene", "RemixArtifactFrame.ButtonsParent"}) do
+						local borderFrame = MoveAny:GetFrameByName(raf)
+						local enableMouse = false
+						hooksecurefunc(
+							borderFrame,
+							"EnableMouse",
+							function(sel)
+								if enableMouse then return end
+								enableMouse = true
+								sel:EnableMouse(false)
+								enableMouse = false
+							end
+						)
 
-					frame:HookScript(
-						"OnDragStop",
-						function(...)
-							RemixArtifactFrame:StopMovingOrSizing()
-						end
-					)
+						borderFrame:EnableMouse(false)
+					end
 				end
 
 				hooksecurefunc(
