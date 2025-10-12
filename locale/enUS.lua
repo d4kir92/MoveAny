@@ -254,6 +254,7 @@ MoveAny:AddTrans("enUS", "LID_RIGHTALIGNED", "Right-aligned")
 MoveAny:AddTrans("enUS", "LID_ALPHAISSKYRIDING", "Alpha (is Skyriding)")
 MoveAny:AddTrans("enUS", "LID_SUPERTRACKEDFRAME", "Waypoint Scale")
 MoveAny:AddTrans("enUS", "LID_UtilityCooldownViewer", "Utility Cooldown Viewer (Cooldown-Manager)")
+MoveAny:AddTrans("enUS", "LID_QUESTITEMSANCHOR", "Quest Items Anchor")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("enUS", "LID_ACTIONBARS", "Actionbars 1 + 5 + 6")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")

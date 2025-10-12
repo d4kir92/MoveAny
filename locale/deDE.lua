@@ -253,6 +253,7 @@ MoveAny:AddTrans("deDE", "LID_LEFTALIGNED", "Linksbündig")
 MoveAny:AddTrans("deDE", "LID_RIGHTALIGNED", "Rechtsbündig")
 MoveAny:AddTrans("deDE", "LID_ALPHAISSKYRIDING", "Sichtbarkeit (Skyriding)")
 MoveAny:AddTrans("deDE", "LID_UtilityCooldownViewer", "Strategische Abklingzeit Betrachter (Abklingzeitmanager)")
+MoveAny:AddTrans("deDE", "LID_QUESTITEMSANCHOR", "Quest Gegenstände-Anker")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
 	MoveAny:AddTrans("deDE", "LID_ACTIONBARS", "Aktionsleisten 1 + 5 + 6")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")

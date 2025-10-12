@@ -386,6 +386,15 @@ function D4:GetDetailedItemLevelInfo(itemInfo)
     return nil, nil, nil
 end
 
+function D4:GetContainerItemInfo(bagID, slotID)
+    if slotID < 0 then return nil end
+    if C_Container and C_Container.GetContainerItemInfo then return C_Container.GetContainerItemInfo(bagID, slotID) end
+    local GetContainerItemInfo = getglobal("GetContainerItemInfo")
+    if GetContainerItemInfo then return GetContainerItemInfo(bagID, slotID) end
+
+    return nil
+end
+
 function D4:GetContainerItemLink(bagID, slotID)
     if slotID < 0 then return nil end
     if C_Container and C_Container.GetContainerItemLink then return C_Container.GetContainerItemLink(bagID, slotID) end

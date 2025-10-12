@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.194")
+	MoveAny:SetVersion(135994, "1.8.195")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -893,6 +893,7 @@ function MoveAny:InitMALock()
 
 		AddCheckBox(posx, "MINIMAP", false)
 		AddCheckBox(posx, "QUESTTRACKER", false)
+		AddCheckBox(posx, "QUESTITEMSANCHOR", false)
 		if getglobal("QuestTimerFrame") then
 			AddCheckBox(posx, "QUESTTIMERFRAME", false)
 		end
@@ -4876,6 +4877,223 @@ function MoveAny:LoadAddon()
 			)
 		end
 
+		if MoveAny:IsEnabled("QUESTITEMSANCHOR", false) then
+			local use = USE_COLON or ITEM_SPELL_TRIGGER_ONUSE
+			local spacing = 6
+			local btnSize = 45
+			local maxButtons = 10
+			local found = {}
+			local QuestItemsAnchor = CreateFrame("Frame", "QuestItemsAnchor", UIParent)
+			QuestItemsAnchor:SetSize(btnSize, btnSize)
+			QuestItemsAnchor:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "QuestItemsAnchor",
+					["lstr"] = "LID_QUESTITEMSANCHOR",
+					["userplaced"] = true,
+					["secure"] = true,
+				}
+			)
+
+			local scanTT = CreateFrame("GameTooltip", "QIB_ScanTooltip", nil, "GameTooltipTemplate")
+			local function ItemHasUseEffect(itemLink)
+				if not itemLink then return false end
+				scanTT:ClearLines()
+				scanTT:SetHyperlink(itemLink)
+				for i = 2, scanTT:NumLines() do
+					local leftLine = _G["QIB_ScanTooltipTextLeft" .. i]
+					if leftLine then
+						local text = leftLine:GetText()
+						if text and text:find(use) then return true end
+					end
+				end
+
+				return false
+			end
+
+			local bar = CreateFrame("Frame", "QIBarFrame", UIParent)
+			bar:SetSize(btnSize, btnSize)
+			bar:SetPoint("LEFT", QuestItemsAnchor, "LEFT", 0, 0)
+			bar:Show()
+			scanTT:SetOwner(UIParent, "ANCHOR_NONE")
+			local QUEST_ITEM_TOKEN = ITEM_BIND_QUEST or ITEM_BIND_QUESTABLE or "Quest Item"
+			local function GetItemIDFromLink(link)
+				if not link then return nil end
+				local id = link:match("item:(%d+):")
+				if not id then
+					id = link:match("item:(%d+)")
+				end
+
+				return tonumber(id)
+			end
+
+			local function CreateQuestButton(i)
+				local b = CreateFrame("Button", "QIB_QuestButton" .. i, bar, "SecureActionButtonTemplate")
+				b:SetSize(btnSize, btnSize)
+				if true then
+					b.icon = _G[b:GetName() .. "Icon"] or b:CreateTexture(nil, "ARTWORK")
+					b.icon:SetAllPoints(b)
+					b.count = _G[b:GetName() .. "Count"] or b:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+					b.count:SetPoint("BOTTOMRIGHT", -2, 2)
+					b.cd = CreateFrame("Cooldown", b:GetName() .. "Cooldown", b, "CooldownFrameTemplate")
+					b.cd:SetAllPoints(b)
+					b:SetNormalTexture("UI-HUD-ActionBar-IconFrame-AddRow")
+					b:GetNormalTexture():SetSize(54, 53)
+					b:GetNormalTexture():ClearAllPoints()
+					b:GetNormalTexture():SetPoint("TOPLEFT")
+					b:SetHighlightTexture("UI-HUD-ActionBar-IconFrame-Mouseover", "ADD")
+					b:GetHighlightTexture():SetSize(49, 48)
+					b:GetHighlightTexture():ClearAllPoints()
+					b:GetHighlightTexture():SetPoint("TOPLEFT")
+					b:SetPushedTexture("UI-HUD-ActionBar-IconFrame-Down")
+					b:GetPushedTexture():SetSize(49, 48)
+					b:GetPushedTexture():ClearAllPoints()
+					b:GetPushedTexture():SetPoint("TOPLEFT")
+				end
+
+				b:RegisterForClicks("AnyUp", "AnyDown")
+				b:SetAttribute("type", "item")
+				b:HookScript(
+					"OnEnter",
+					function(sel)
+						if sel.itemLink then
+							GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+							GameTooltip:SetHyperlink(sel.itemLink)
+							GameTooltip:Show()
+						end
+					end
+				)
+
+				b:HookScript(
+					"OnLeave",
+					function()
+						GameTooltip:Hide()
+					end
+				)
+
+				return b
+			end
+
+			local buttons = {}
+			for i = 1, maxButtons do
+				buttons[i] = CreateQuestButton(i)
+				buttons[i]:SetPoint("LEFT", bar, "LEFT", (i - 1) * (btnSize + spacing), 0)
+				buttons[i]:Hide()
+			end
+
+			local function ClearFound()
+				for k in pairs(found) do
+					found[k] = nil
+				end
+			end
+
+			local function TooltipHasQuestToken()
+				for i = 1, scanTT:NumLines() do
+					local line = _G["QIB_ScanTooltipTextLeft" .. i]
+					if not line then break end
+					local text = line:GetText()
+					if text and text:find(QUEST_ITEM_TOKEN) then return true end
+				end
+
+				return false
+			end
+
+			local function ScanBags()
+				ClearFound()
+				for bag = 0, NUM_BAG_SLOTS do
+					local slots = MoveAny:GetContainerNumSlots(bag)
+					if slots and slots > 0 then
+						for slot = 1, slots do
+							local link = MoveAny:GetContainerItemLink(bag, slot)
+							if link and ItemHasUseEffect(link) then
+								scanTT:ClearLines()
+								scanTT:SetBagItem(bag, slot)
+								if TooltipHasQuestToken() then
+									local key = string.format("%d:%d", bag, slot)
+									local _, count = MoveAny:GetContainerItemInfo(bag, slot)
+									local itemID = GetItemIDFromLink(link)
+									found[key] = {
+										link = link,
+										bag = bag,
+										slot = slot,
+										count = count or 1,
+										itemID = itemID,
+									}
+								end
+							end
+						end
+					end
+				end
+			end
+
+			local function RefreshBar()
+				for i = 1, #buttons do
+					buttons[i]:Hide()
+					buttons[i]:SetAttribute("item", nil)
+					buttons[i].itemLink = nil
+				end
+
+				local i = 1
+				for key, info in pairs(found) do
+					if i > #buttons then break end
+					local b = buttons[i]
+					if b.icon then
+						b.icon:SetTexture(select(10, GetItemInfo(info.link)) or GetItemIcon(info.link))
+					end
+
+					if b.count then
+						b.count:SetText(info.count > 1 and tostring(info.count) or "")
+					end
+
+					local itemLink = select(1, GetItemInfo(info.link))
+					b.itemLink = itemLink
+					b:SetAttribute("item", itemLink)
+					if info.itemID then
+						local start, dur = GetItemCooldown(info.itemID)
+						if b.cd then
+							if start and dur and dur > 0 then
+								b.cd:SetCooldown(start, dur)
+							else
+								b.cd:Clear()
+							end
+						end
+					elseif b.cd then
+						b.cd:Clear()
+					end
+
+					b:Show()
+					i = i + 1
+				end
+
+				local visible = i - 1
+				if visible == 0 then
+					bar:SetWidth(0)
+					bar:SetHeight(0)
+				else
+					bar:SetWidth(visible * (btnSize + spacing) - spacing)
+					bar:SetHeight(btnSize)
+				end
+			end
+
+			local function Update()
+				ScanBags()
+				RefreshBar()
+			end
+
+			local evt = CreateFrame("Frame")
+			evt:RegisterEvent("BAG_UPDATE_DELAYED")
+			evt:RegisterEvent("PLAYER_ENTERING_WORLD")
+			evt:RegisterEvent("BAG_UPDATE")
+			evt:SetScript(
+				"OnEvent",
+				function(sel, event, ...)
+					Update()
+				end
+			)
+
+			C_Timer.After(1, Update)
+		end
+
 		if MoveAny:IsEnabled("PARTYFRAME", false) then
 			if PartyFrame then
 				MoveAny:RegisterWidget(
@@ -6481,7 +6699,6 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	-- BOTTOMLEFT
 	for i = 1, 10 do
 		local cf = _G["ChatFrame" .. i]
 		if cf and i > 1 then
