@@ -427,7 +427,7 @@ function D4:CreateSlider(tab)
     slider:SetScript(
         "OnValueChanged",
         function(sel, val)
-            val = string.format("%." .. tab.decimals .. "f", val)
+            val = string.format("%." .. tab.decimals .. "f", val / tab.steps) * tab.steps
             val = tonumber(val)
             if TAB then
                 TAB[tab.key] = val
