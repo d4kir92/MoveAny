@@ -253,6 +253,8 @@ MoveAny:AddTrans("ruRU", "LID_LEFTALIGNED", "Выравнивание по ле�
 MoveAny:AddTrans("ruRU", "LID_RIGHTALIGNED", "Выравнивание по правому краю")
 MoveAny:AddTrans("ruRU", "LID_ALPHAISSKYRIDING", "Прозрачность (Небесная гонка)")
 MoveAny:AddTrans("ruRU", "LID_SUPERTRACKEDFRAME", "Масштаб точек маршрута")
+MoveAny:AddTrans("ruRU", "LID_UtilityCooldownViewer", "Важные способности и эффекты (Трекер восстановления)")
+MoveAny:AddTrans("ruRU", "LID_QUESTITEMSANCHOR", "Крепление предметов заданий")
 if MoveAny:GetWoWBuild() ~= "RETAIL" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
