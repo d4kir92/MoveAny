@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.197")
+	MoveAny:SetVersion(135994, "1.8.198")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4978,7 +4978,7 @@ function MoveAny:LoadAddon()
 			for i = 1, maxButtons do
 				buttons[i] = CreateQuestButton(i)
 				buttons[i]:SetPoint("LEFT", bar, "LEFT", (i - 1) * (btnSize + spacing), 0)
-				buttons[i]:Hide()
+				buttons[i]:SetAlpha(0)
 			end
 
 			local function ClearFound()
@@ -5028,7 +5028,7 @@ function MoveAny:LoadAddon()
 
 			local function RefreshBar()
 				for i = 1, #buttons do
-					buttons[i]:Hide()
+					buttons[i]:SetAlpha(0)
 					buttons[i]:SetAttribute("item", nil)
 					buttons[i].itemLink = nil
 				end
@@ -5061,7 +5061,7 @@ function MoveAny:LoadAddon()
 						b.cd:Clear()
 					end
 
-					b:Show()
+					b:SetAlpha(1)
 					i = i + 1
 				end
 
