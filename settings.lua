@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.198")
+	MoveAny:SetVersion(135994, "1.8.199")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4911,7 +4911,7 @@ function MoveAny:LoadAddon()
 				return false
 			end
 
-			local bar = CreateFrame("Frame", "QIBarFrame", UIParent)
+			local bar = CreateFrame("Frame", "QIBarFrame", QuestItemsAnchor)
 			bar:SetSize(btnSize, btnSize)
 			bar:SetPoint("LEFT", QuestItemsAnchor, "LEFT", 0, 0)
 			bar:Show()
@@ -4930,13 +4930,34 @@ function MoveAny:LoadAddon()
 			local function CreateQuestButton(i)
 				local b = CreateFrame("Button", "QIB_QuestButton" .. i, bar, "SecureActionButtonTemplate")
 				b:SetSize(btnSize, btnSize)
+				b.cooldown = CreateFrame("Cooldown", "$parentCooldown", b, "CooldownFrameTemplate")
+				b.cooldown:SetAllPoints(b)
+				b:RegisterEvent("BAG_UPDATE_COOLDOWN")
+				b:RegisterEvent("PLAYER_ENTERING_WORLD")
+				b:SetScript(
+					"OnEvent",
+					function(sel, event)
+						local itemName = sel:GetAttribute("item")
+						if itemName == nil then return end
+						local itemID = GetItemInfoInstant(itemName)
+						if itemID then
+							local start, duration, enable = C_Container.GetItemCooldown(itemID)
+							if enable == 1 and duration > 0 then
+								sel.cooldown:SetCooldown(start, duration)
+							else
+								sel.cooldown:Clear()
+							end
+						else
+							sel.cooldown:Clear()
+						end
+					end
+				)
+
 				if true then
 					b.icon = _G[b:GetName() .. "Icon"] or b:CreateTexture(nil, "ARTWORK")
 					b.icon:SetAllPoints(b)
 					b.count = _G[b:GetName() .. "Count"] or b:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
 					b.count:SetPoint("BOTTOMRIGHT", -2, 2)
-					b.cd = CreateFrame("Cooldown", b:GetName() .. "Cooldown", b, "CooldownFrameTemplate")
-					b.cd:SetAllPoints(b)
 					b:SetNormalTexture("UI-HUD-ActionBar-IconFrame-AddRow")
 					b:GetNormalTexture():SetSize(54, 53)
 					b:GetNormalTexture():ClearAllPoints()
@@ -5048,19 +5069,6 @@ function MoveAny:LoadAddon()
 					local itemLink = select(1, GetItemInfo(info.link))
 					b.itemLink = itemLink
 					b:SetAttribute("item", itemLink)
-					if info.itemID then
-						local start, dur = GetItemCooldown(info.itemID)
-						if b.cd then
-							if start and dur and dur > 0 then
-								b.cd:SetCooldown(start, dur)
-							else
-								b.cd:Clear()
-							end
-						end
-					elseif b.cd then
-						b.cd:Clear()
-					end
-
 					b:SetAlpha(1)
 					i = i + 1
 				end
@@ -5075,7 +5083,22 @@ function MoveAny:LoadAddon()
 				end
 			end
 
+			local inCombat = false
 			local function Update()
+				if inCombat then return end
+				if InCombatLockdown() then
+					inCombat = true
+					C_Timer.After(
+						0.1,
+						function()
+							inCombat = false
+							Update()
+						end
+					)
+
+					return
+				end
+
 				ScanBags()
 				RefreshBar()
 			end
@@ -5084,6 +5107,7 @@ function MoveAny:LoadAddon()
 			evt:RegisterEvent("BAG_UPDATE_DELAYED")
 			evt:RegisterEvent("PLAYER_ENTERING_WORLD")
 			evt:RegisterEvent("BAG_UPDATE")
+			evt:RegisterEvent("QUEST_ACCEPTED")
 			evt:SetScript(
 				"OnEvent",
 				function(sel, event, ...)
