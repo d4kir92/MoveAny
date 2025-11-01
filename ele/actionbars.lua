@@ -593,6 +593,16 @@ function MoveAny:CustomBars()
 					end
 				end
 
+				if btn.cooldown then
+					hooksecurefunc(
+						bar,
+						"SetAlpha",
+						function(sel, alpha)
+							btn.cooldown:SetAlpha(alpha)
+						end
+					)
+				end
+
 				local alwaysShow = GetCVarBool("alwaysShowActionBars")
 				local alwaysShowInt = nil
 				if alwaysShow then

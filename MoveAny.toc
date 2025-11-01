@@ -2,10 +2,10 @@
 ## Interface-BCC: 20504
 ## Interface-Wrath: 30300, 30403
 ## Interface-Cata: 40402
-## Interface-Mists: 50501
+## Interface-Mists: 50502
 ## Interface: 110205
 
-## Version: 1.8.199
+## Version: 1.8.200
 ## Title: M|cff3FC7EBove|rA|cff3FC7EBny|r |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t
 ## Notes: Move Any Ui or Frame
 ## Notes-ruRU: MoveAny - аддон, с помощью которого можно разблокировать и перемещать элементы интерфейса
