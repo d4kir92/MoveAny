@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.200")
+	MoveAny:SetVersion(135994, "1.8.201")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -5019,6 +5019,13 @@ function MoveAny:LoadAddon()
 				return false
 			end
 
+			local function IsQuestItem(itemInfo)
+				local _, _, _, _, _, itemType = C_Item.GetItemInfo(itemInfo)
+				if itemType == "Quest" then return true end
+
+				return false
+			end
+
 			local function ScanBags()
 				ClearFound()
 				for bag = 0, NUM_BAG_SLOTS do
@@ -5029,7 +5036,7 @@ function MoveAny:LoadAddon()
 							if link and ItemHasUseEffect(link) then
 								scanTT:ClearLines()
 								scanTT:SetBagItem(bag, slot)
-								if TooltipHasQuestToken() then
+								if TooltipHasQuestToken() or IsQuestItem(link) then
 									local key = string.format("%d:%d", bag, slot)
 									local _, count = MoveAny:GetContainerItemInfo(bag, slot)
 									local itemID = GetItemIDFromLink(link)
@@ -5108,10 +5115,20 @@ function MoveAny:LoadAddon()
 			evt:RegisterEvent("PLAYER_ENTERING_WORLD")
 			evt:RegisterEvent("BAG_UPDATE")
 			evt:RegisterEvent("QUEST_ACCEPTED")
+			evt:RegisterEvent("QUEST_COMPLETE")
 			evt:SetScript(
 				"OnEvent",
 				function(sel, event, ...)
-					Update()
+					if event == "QUEST_ACCEPTED" then
+						C_Timer.After(
+							0.3,
+							function()
+								Update()
+							end
+						)
+					else
+						Update()
+					end
 				end
 			)
 
