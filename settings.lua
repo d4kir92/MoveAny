@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.201")
+	MoveAny:SetVersion(135994, "1.8.202")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4886,6 +4886,7 @@ function MoveAny:LoadAddon()
 			local QuestItemsAnchor = CreateFrame("Frame", "QuestItemsAnchor", UIParent)
 			QuestItemsAnchor:SetSize(btnSize, btnSize)
 			QuestItemsAnchor:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			QuestItemsAnchor:EnableMouse(false)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "QuestItemsAnchor",
@@ -4915,6 +4916,7 @@ function MoveAny:LoadAddon()
 			bar:SetSize(btnSize, btnSize)
 			bar:SetPoint("LEFT", QuestItemsAnchor, "LEFT", 0, 0)
 			bar:Show()
+			bar:EnableMouse(false)
 			scanTT:SetOwner(UIParent, "ANCHOR_NONE")
 			local QUEST_ITEM_TOKEN = ITEM_BIND_QUEST or ITEM_BIND_QUESTABLE or "Quest Item"
 			local function GetItemIDFromLink(link)
