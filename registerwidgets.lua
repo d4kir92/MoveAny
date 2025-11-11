@@ -495,24 +495,29 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
-			local fullhp = MoveAny:CreateCheckButton("FULLHPENABLED", content)
-			fullhp:SetSize(btnsize, btnsize)
-			fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -220)
-			fullhp:SetChecked(MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp1"))
-			fullhp:SetScript(
-				"OnClick",
-				function()
-					local checked = fullhp:GetChecked()
-					MoveAny:SetEleOption(name, "FULLHPENABLED", checked)
-				end
-			)
+			if MoveAny:GetWoWBuildNr() < 120000 then
+				local fullhp = MoveAny:CreateCheckButton("FULLHPENABLED", content)
+				fullhp:SetSize(btnsize, btnsize)
+				fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -220)
+				fullhp:SetChecked(MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp1"))
+				fullhp:SetScript(
+					"OnClick",
+					function()
+						local checked = fullhp:GetChecked()
+						MoveAny:SetEleOption(name, "FULLHPENABLED", checked)
+					end
+				)
+			end
 
 			local space = -30
 			local Y = -190
 			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			MoveAny:CreateSliderOld(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-			Y = Y + space
+			if MoveAny:GetWoWBuildNr() < 120000 then
+				MoveAny:CreateSliderOld(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
+				Y = Y + space
+			end
+
 			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
 			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
@@ -1361,7 +1366,9 @@ function MoveAny:ClearSelectEle()
 	end
 
 	MACurrentEle = nil
-	MoveAny:GridFrameThink()
+	if MoveAny.GridFrameThink then
+		MoveAny:GridFrameThink()
+	end
 end
 
 function MoveAny:SelectEle(ele)
@@ -1373,7 +1380,10 @@ function MoveAny:SelectEle(ele)
 	end
 
 	MACurrentEle = ele
-	MoveAny:GridFrameThink()
+	if MoveAny.GridFrameThink then
+		MoveAny:GridFrameThink()
+	end
+
 	if MACurrentEle and MACurrentEle.t then
 		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
 		MACurrentEle.name:Show()

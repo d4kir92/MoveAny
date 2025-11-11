@@ -110,6 +110,7 @@ function MoveAny:InitAlphaResting()
 end
 
 function MoveAny:UpdateAlphaFullHealth()
+    if MoveAny:GetWoWBuildNr() < 120000 then return end
     if fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
         fullHP = UnitHealth("player") >= UnitHealthMax("player")
         MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().FULLHEALTH)
@@ -122,6 +123,7 @@ function MoveAny:InitAlphaFullHealth()
     MoveAny:OnEvent(
         alphaFrameHealth,
         function(sel, event, ...)
+            if MoveAny:GetWoWBuildNr() < 120000 then return end
             MoveAny:UpdateAlphaFullHealth()
         end, "alphaFrameHealth"
     )
