@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.205")
+	MoveAny:SetVersion(135994, "1.8.206")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4324,9 +4324,11 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if not MoveAny:IsEnabledBartender4("ExtraActionBar") then
-			if ExtraAbilityContainer then
-				if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
+		if MoveAny:IsEnabled("ExtraActionBarFrame", true) or MoveAny:IsEnabled("ExtraActionButton1", true) then
+			if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+				MoveAny:WARN("Bartender4 is enabled and you enabled ExtraActionBar, only 1 addon should move the ExtraActionBar!")
+			else
+				if ExtraAbilityContainer then
 					ExtraAbilityContainer:SetSize(180, 100)
 					MoveAny:RegisterWidget(
 						{
@@ -4335,9 +4337,7 @@ function MoveAny:LoadAddon()
 							["userplaced"] = true
 						}
 					)
-				end
-			elseif ExtraActionBarFrame then
-				if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
+				elseif ExtraActionBarFrame then
 					ExtraActionBarFrame:SetParent(UIParent)
 					MoveAny:RegisterWidget(
 						{
@@ -4348,9 +4348,7 @@ function MoveAny:LoadAddon()
 					)
 
 					MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
-				end
-			elseif ExtraActionButton1 then
-				if MoveAny:IsEnabled("ExtraActionButton1", true) then
+				elseif ExtraActionButton1 then
 					local setParent = false
 					hooksecurefunc(
 						ExtraActionButton1,
@@ -4373,8 +4371,6 @@ function MoveAny:LoadAddon()
 					)
 				end
 			end
-		else
-			MoveAny:WARN("Bartender4 is enabled and you enabled ExtraActionBar, only 1 addon should move the ExtraActionBar!")
 		end
 
 		if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
