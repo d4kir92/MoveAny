@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.206")
+	MoveAny:SetVersion(135994, "1.8.207")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4324,11 +4324,11 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:IsEnabled("ExtraActionBarFrame", true) or MoveAny:IsEnabled("ExtraActionButton1", true) then
-			if MoveAny:IsEnabledBartender4("ExtraActionBar") then
-				MoveAny:WARN("Bartender4 is enabled and you enabled ExtraActionBar, only 1 addon should move the ExtraActionBar!")
-			else
-				if ExtraAbilityContainer then
+		if ExtraAbilityContainer then
+			if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
+				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
+				else
 					ExtraAbilityContainer:SetSize(180, 100)
 					MoveAny:RegisterWidget(
 						{
@@ -4337,7 +4337,13 @@ function MoveAny:LoadAddon()
 							["userplaced"] = true
 						}
 					)
-				elseif ExtraActionBarFrame then
+				end
+			end
+		elseif ExtraActionBarFrame then
+			if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
+				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
+				else
 					ExtraActionBarFrame:SetParent(UIParent)
 					MoveAny:RegisterWidget(
 						{
@@ -4348,7 +4354,13 @@ function MoveAny:LoadAddon()
 					)
 
 					MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
-				elseif ExtraActionButton1 then
+				end
+			end
+		elseif ExtraActionButton1 then
+			if MoveAny:IsEnabled("ExtraActionButton1", true) then
+				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
+				else
 					local setParent = false
 					hooksecurefunc(
 						ExtraActionButton1,
