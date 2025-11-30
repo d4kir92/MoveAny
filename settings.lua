@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.208")
+	MoveAny:SetVersion(135994, "1.8.209")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4905,10 +4905,10 @@ function MoveAny:LoadAddon()
 			)
 
 			local scanTT = CreateFrame("GameTooltip", "QIB_ScanTooltip", nil, "GameTooltipTemplate")
-			local function ItemHasUseEffect(itemLink)
-				if not itemLink then return false end
+			local function ItemHasUseEffect(link)
+				if not link then return false end
 				scanTT:ClearLines()
-				scanTT:SetHyperlink(itemLink)
+				scanTT:SetHyperlink(link)
 				for i = 2, scanTT:NumLines() do
 					local leftLine = _G["QIB_ScanTooltipTextLeft" .. i]
 					if leftLine then
@@ -4987,9 +4987,9 @@ function MoveAny:LoadAddon()
 				b:HookScript(
 					"OnEnter",
 					function(sel)
-						if sel.itemLink then
+						if sel.link then
 							GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
-							GameTooltip:SetHyperlink(sel.itemLink)
+							GameTooltip:SetHyperlink(sel.link)
 							GameTooltip:Show()
 						end
 					end
@@ -5068,7 +5068,7 @@ function MoveAny:LoadAddon()
 				for i = 1, #buttons do
 					buttons[i]:SetAlpha(0)
 					buttons[i]:SetAttribute("item", nil)
-					buttons[i].itemLink = nil
+					buttons[i].link = nil
 				end
 
 				local i = 1
@@ -5083,9 +5083,8 @@ function MoveAny:LoadAddon()
 						b.count:SetText(info.count > 1 and tostring(info.count) or "")
 					end
 
-					local itemLink = select(1, GetItemInfo(info.link))
-					b.itemLink = itemLink
-					b:SetAttribute("item", itemLink)
+					b.link = info.link
+					b:SetAttribute("item", info.link)
 					b:SetAlpha(1)
 					i = i + 1
 				end
