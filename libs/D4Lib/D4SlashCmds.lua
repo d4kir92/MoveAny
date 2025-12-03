@@ -1,47 +1,19 @@
 local _, D4 = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local cmds = {}
 function D4:AddSlash(name, func)
-    if name == nil then
-        D4:MSG("failed to add slash command, missing name")
-
-        return false
+    local cmdName = string.upper(name)
+    if not getglobal("SlashCmdList") then
+        setglobal("SlashCmdList", {})
     end
 
-    cmds["/" .. string.upper(name)] = func
+    if getglobal("SlashCmdList")[cmdName] then return end
+    SlashCmdList[cmdName] = function(msg)
+        func(msg)
+    end
+
+    local i = 1
+    while getglobal("SLASH_" .. cmdName .. i) ~= nil do
+        i = i + 1
+    end
+
+    setglobal("SLASH_" .. cmdName .. i, "/" .. name)
 end
-
-function D4:InitSlash()
-    local lastMessage = ""
-    if ChatEdit_ParseText and type(ChatEdit_ParseText) == "function" then
-        hooksecurefunc(
-            "ChatEdit_ParseText",
-            function(editBox, send, parseIfNoSpace)
-                if send == 0 and editBox:GetText() ~= "" then
-                    lastMessage = editBox:GetText()
-                end
-            end
-        )
-    else
-        D4:MSG("FAILED TO ADD SLASH COMMAND #1")
-    end
-
-    if ChatEdit_SendText and type(ChatEdit_SendText) == "function" then
-        hooksecurefunc(
-            "ChatEdit_SendText",
-            function(frame)
-                if lastMessage and lastMessage ~= "" then
-                    local cmd = string.upper(lastMessage)
-                    if cmds[cmd] ~= nil then
-                        cmds[cmd]()
-                        lastMessage = ""
-                    end
-                end
-            end
-        )
-    else
-        D4:MSG("FAILED TO ADD SLASH COMMAND #2")
-    end
-end
-
-D4:InitSlash()

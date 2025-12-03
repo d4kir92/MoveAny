@@ -135,37 +135,57 @@ function MoveAny:UpdateActionBar(frame)
 			local parent = MicroMenu or MAMenuBar
 			if frame == MAMenuBar then
 				if MoveAny:GetWoWBuild() == "RETAIL" then
-					if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-						if HelpMicroButton then
-							HelpMicroButton:SetParent(parent)
-						end
+					if HousingMicroButton then
+						if rows == 13 then
+							if HelpMicroButton then
+								HelpMicroButton:SetParent(parent)
+							end
 
-						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
-						end
-					elseif rows == 11 or rows == 1 then
-						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
-						end
+							if MainMenuMicroButton then
+								MainMenuMicroButton:SetParent(parent)
+							end
+						else
+							if HelpMicroButton then
+								HelpMicroButton:SetParent(MoveAny:GetHidden())
+							end
 
-						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
-						end
-					elseif rows == 10 or rows == 5 or rows == 2 then
-						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
-						end
-
-						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(MoveAny:GetHidden())
+							if MainMenuMicroButton then
+								MainMenuMicroButton:SetParent(parent)
+							end
 						end
 					else
-						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
-						end
+						if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+							if HelpMicroButton then
+								HelpMicroButton:SetParent(parent)
+							end
 
-						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							if MainMenuMicroButton then
+								MainMenuMicroButton:SetParent(parent)
+							end
+						elseif rows == 11 or rows == 1 then
+							if HelpMicroButton then
+								HelpMicroButton:SetParent(MoveAny:GetHidden())
+							end
+
+							if MainMenuMicroButton then
+								MainMenuMicroButton:SetParent(parent)
+							end
+						elseif rows == 10 or rows == 5 or rows == 2 then
+							if HelpMicroButton then
+								HelpMicroButton:SetParent(MoveAny:GetHidden())
+							end
+
+							if MainMenuMicroButton then
+								MainMenuMicroButton:SetParent(MoveAny:GetHidden())
+							end
+						else
+							if HelpMicroButton then
+								HelpMicroButton:SetParent(MoveAny:GetHidden())
+							end
+
+							if MainMenuMicroButton then
+								MainMenuMicroButton:SetParent(parent)
+							end
 						end
 					end
 				elseif MoveAny:GetWoWBuild() == "MISTS" then

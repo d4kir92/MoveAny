@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.210")
+	MoveAny:SetVersion(135994, "1.8.211")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4406,7 +4406,12 @@ function MoveAny:LoadAddon()
 
 		if MoveAny:GetWoWBuild() == "RETAIL" then
 			local ABNames = {}
-			ABNames[1] = "MainMenuBar"
+			if MainActionBar then
+				ABNames[1] = "MainActionBar"
+			else
+				ABNames[1] = "MainMenuBar"
+			end
+
 			ABNames[2] = "MultiBarBottomLeft"
 			ABNames[3] = "MultiBarBottomRight"
 			ABNames[4] = "MultiBarRight"
