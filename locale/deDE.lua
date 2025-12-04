@@ -35,6 +35,7 @@ MoveAny:AddTrans("deDE", "LID_WARLOCKPOWERFRAME", "Hexenmeister Macht Fenster (S
 MoveAny:AddTrans("deDE", "LID_MONKHARMONYBARFRAME", "Mönch Harmonie Fenster (Chi)")
 MoveAny:AddTrans("deDE", "LID_MONKSTAGGERBAR", "Monk Staffeln Leiste  (Chi)")
 MoveAny:AddTrans("deDE", "LID_MAGEARCANECHARGESFRAME", "Magier Arkane Ladungen Fenster")
+MoveAny:AddTrans("deDE", "LID_PRIESTBARFRAME", "Priester Schatten Kugeln Fenster")
 MoveAny:AddTrans("deDE", "LID_ESSENCEPLAYERFRAME", "Essenz Spieler Fenster (Rufer)")
 MoveAny:AddTrans("deDE", "LID_PALADINPOWERBARFRAME", "Paladin Machtleiste (Heilige Macht)")
 MoveAny:AddTrans("deDE", "LID_MAFPSFrame", "FPS (Neuer FPS-Zähler)")

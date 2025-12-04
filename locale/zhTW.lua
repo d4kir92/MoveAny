@@ -35,6 +35,7 @@ MoveAny:AddTrans("zhTW", "LID_WARLOCKPOWERFRAME", "術士能量條 (靈魂碎片
 MoveAny:AddTrans("zhTW", "LID_MONKHARMONYBARFRAME", "武僧真氣條 (真氣)")
 MoveAny:AddTrans("zhTW", "LID_MONKSTAGGERBAR", "武僧醉拳條")
 MoveAny:AddTrans("zhTW", "LID_MAGEARCANECHARGESFRAME", "法師奧術充能條")
+MoveAny:AddTrans("zhTW", "LID_PRIESTBARFRAME", "Priester Shadow Orbs Frame")
 MoveAny:AddTrans("zhTW", "LID_ESSENCEPLAYERFRAME", "喚魔師精華條")
 MoveAny:AddTrans("zhTW", "LID_PALADINPOWERBARFRAME", "聖騎士能量條 (神聖能量)")
 MoveAny:AddTrans("zhTW", "LID_MAFPSFrame", "幀數 (新FPS計數器)")

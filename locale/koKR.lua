@@ -33,6 +33,7 @@ MoveAny:AddTrans("koKR", "LID_WARLOCKPOWERFRAME", "워록 파워 프레임 (샤�
 MoveAny:AddTrans("koKR", "LID_MONKHARMONYBARFRAME", "수도사 하모니 프레임 (기)")
 MoveAny:AddTrans("koKR", "LID_MONKSTAGGERBAR", "수도사 스태거 바 (기)")
 MoveAny:AddTrans("koKR", "LID_MAGEARCANECHARGESFRAME", "마법사 아케인 충전 프레임")
+MoveAny:AddTrans("koKR", "LID_PRIESTBARFRAME", "Priester Shadow Orbs Frame")
 MoveAny:AddTrans("koKR", "LID_ESSENCEPLAYERFRAME", "에센스 플레이어 프레임 (이보커)")
 MoveAny:AddTrans("koKR", "LID_PALADINPOWERBARFRAME", "성기사 파워 바 (신성력)")
 MoveAny:AddTrans("koKR", "LID_MAFPSFrame", "FPS (새로운 FPS-카운터)")
