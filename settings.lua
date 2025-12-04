@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.211")
+	MoveAny:SetVersion(135994, "1.8.212")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -4528,7 +4528,24 @@ function MoveAny:LoadAddon()
 			MA_RightEndCap.tex = MA_RightEndCap:CreateTexture("MA_RightEndCap.tex", "OVERLAY")
 			MA_RightEndCap.tex:SetAllPoints(MA_RightEndCap)
 			local factionGroup = UnitFactionGroup("player")
-			if MainMenuBar.EndCaps then
+			if MainActionBar and MainActionBar.EndCaps then
+				MA_LeftEndCap:SetSize(MainActionBar.EndCaps.LeftEndCap:GetSize())
+				MA_LeftEndCap.tex:SetTexCoord(MainActionBar.EndCaps.LeftEndCap:GetTexCoord())
+				MA_RightEndCap:SetSize(MainActionBar.EndCaps.RightEndCap:GetSize())
+				MA_RightEndCap.tex:SetTexCoord(MainActionBar.EndCaps.RightEndCap:GetTexCoord())
+				if factionGroup and factionGroup ~= "Neutral" then
+					if factionGroup == "Alliance" then
+						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
+						MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-right")
+					elseif factionGroup == "Horde" then
+						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-left")
+						MA_RightEndCap.tex:SetAtlas("ui-hud-actionbar-wyvern-right")
+					end
+				end
+
+				MainActionBar.EndCaps:SetParent(MoveAny:GetHidden())
+				MainActionBar.BorderArt:SetParent(MoveAny:GetHidden())
+			elseif MainMenuBar and MainMenuBar.EndCaps then
 				MA_LeftEndCap:SetSize(MainMenuBar.EndCaps.LeftEndCap:GetSize())
 				MA_LeftEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.LeftEndCap:GetTexCoord())
 				MA_RightEndCap:SetSize(MainMenuBar.EndCaps.RightEndCap:GetSize())
@@ -4545,7 +4562,7 @@ function MoveAny:LoadAddon()
 
 				MainMenuBar.EndCaps:SetParent(MoveAny:GetHidden())
 				MainMenuBar.BorderArt:SetParent(MoveAny:GetHidden())
-			elseif MainMenuBarLeftEndCap then
+			elseif MainMenuBar and MainMenuBarLeftEndCap then
 				MA_LeftEndCap:SetSize(MainMenuBarLeftEndCap:GetSize())
 				MA_LeftEndCap.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
 				MA_LeftEndCap.tex:SetTexCoord(MainMenuBarLeftEndCap:GetTexCoord())
