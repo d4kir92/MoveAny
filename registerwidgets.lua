@@ -248,7 +248,7 @@ function MoveAny:MenuOptions(opt, frame)
 	local name = MoveAny:GetFrameName(optionFrame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
 	local tabs = {GENERAL}
-	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then
+	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainActionBar" or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then
 		table.insert(tabs, ACTIONBARS_LABEL)
 	end
 
@@ -557,7 +557,7 @@ function MoveAny:MenuOptions(opt, frame)
 			UpdateRowItems()
 			local MAActionBar1 = getglobal("MAActionBar1")
 			local vmin = 1
-			if frame == MAActionBar1 or frame == MainMenuBar then
+			if frame == MAActionBar1 or frame == MainActionBar or frame == MainMenuBar then
 				vmin = 6
 			end
 
@@ -805,7 +805,7 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			if frame == MAActionBar1 then
+			if frame == MAActionBar1 or frame == MainActionBar then
 				local catstealth = MoveAny:CreateCheckButton("catstealth", content)
 				catstealth:SetSize(btnsize, btnsize)
 				catstealth:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
@@ -2088,7 +2088,7 @@ end
 
 function MoveAny:AnyActionbarEnabled()
 	if MoveAny:GetWoWBuild() ~= "RETAIL" then
-		return MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR3", false) or MoveAny:IsEnabled("ACTIONBAR4", false) or MoveAny:IsEnabled("ACTIONBAR7", false) or MoveAny:IsEnabled("ACTIONBAR8", false) or MoveAny:IsEnabled("ACTIONBAR9", false) or MoveAny:IsEnabled("ACTIONBAR10", false)
+		return MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR1", false) or MoveAny:IsEnabled("ACTIONBAR3", false) or MoveAny:IsEnabled("ACTIONBAR4", false) or MoveAny:IsEnabled("ACTIONBAR7", false) or MoveAny:IsEnabled("ACTIONBAR8", false) or MoveAny:IsEnabled("ACTIONBAR9", false) or MoveAny:IsEnabled("ACTIONBAR10", false)
 	else
 		return false
 	end
