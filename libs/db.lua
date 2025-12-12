@@ -6,7 +6,7 @@ function MoveAny:DEBUG()
 end
 
 function MoveAny:CheckDB(from)
-	if MoveAny:Loaded() == false then
+	if MoveAny:Loaded(from) == false then
 		MoveAny:INFO("CheckDB", from)
 	end
 
@@ -630,7 +630,12 @@ local mf = CreateFrame("FRAME")
 MoveAny:RegisterEvent(mf, "PLAYER_LOGIN")
 MoveAny:RegisterEvent(mf, "ADDON_LOADED")
 local loaded = false
-function MoveAny:Loaded()
+local once = true
+function MoveAny:Loaded(from)
+	if once then
+		once = false
+	end
+
 	return loaded
 end
 
@@ -638,15 +643,15 @@ function MoveAny:AddonLoaded(event, ...)
 	if event == "ADDON_LOADED" then
 		if select(1, ...) == AddonName then
 			loaded = true
-			if MoveAny.LoadAddon then
-				MoveAny:LoadAddon()
-			end
-
 			MoveAny:UnregisterEvent(mf, event)
 		end
 	elseif event == "PLAYER_LOGIN" then
 		if MoveAny.PlayerLogin then
 			MoveAny:PlayerLogin()
+		end
+
+		if MoveAny.LoadAddon then
+			MoveAny:LoadAddon()
 		end
 
 		MoveAny:UnregisterEvent(mf, event)

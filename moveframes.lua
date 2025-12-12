@@ -181,7 +181,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	if run then return end
 	run = true
 	local runId = id
-	if MoveAny:Loaded() and MoveAny:IsEnabled("MOVEFRAMES", true) then
+	if MoveAny:Loaded("UpdateMoveFrames") and MoveAny:IsEnabled("MOVEFRAMES", true) then
 		if once then
 			once = false
 			if WorldMapFrame then
@@ -707,16 +707,16 @@ local allowedFrameTypes = {}
 allowedFrameTypes["frame"] = true
 allowedFrameTypes["Frame"] = true
 allowedFrameTypes["FRAME"] = true
-hooksecurefunc(
-	"CreateFrame",
-	function(frameType, frameName, parent, template)
-		if allowedFrameTypes[frameType] then
-			MoveAny:UpdateMoveFrames("CreateFrame", 0.1)
-		end
-	end
-)
-
 function MoveAny:MoveFrames()
+	hooksecurefunc(
+		"CreateFrame",
+		function(frameType, frameName, parent, template)
+			if allowedFrameTypes[frameType] then
+				MoveAny:UpdateMoveFrames("CreateFrame", 0.1)
+			end
+		end
+	)
+
 	if MoveAny:IsEnabled("MOVESMALLBAGS", false) then
 		for i = 1, 20 do
 			if _G["ContainerFrame" .. i] and not MAFS["ContainerFrame" .. i] then
