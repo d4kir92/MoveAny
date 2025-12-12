@@ -5048,6 +5048,7 @@ function MoveAny:LoadAddon()
 				buttons[i] = CreateQuestButton(i)
 				buttons[i]:SetPoint("LEFT", bar, "LEFT", (i - 1) * (btnSize + spacing), 0)
 				buttons[i]:SetAlpha(0)
+				buttons[i]:EnableMouse(false)
 			end
 
 			local function ClearFound()
@@ -5107,6 +5108,7 @@ function MoveAny:LoadAddon()
 					buttons[i]:SetAlpha(0)
 					buttons[i]:SetAttribute("item", nil)
 					buttons[i].link = nil
+					buttons[i]:EnableMouse(false)
 				end
 
 				local i = 1
@@ -5124,6 +5126,7 @@ function MoveAny:LoadAddon()
 					b.link = info.link
 					b:SetAttribute("item", info.link)
 					b:SetAlpha(1)
+					b:EnableMouse(true)
 					i = i + 1
 				end
 
