@@ -294,6 +294,7 @@ function D4:CreateSliderForCVAR(tab)
     tab.value = tab.value2
     tab.key = tab.key or tab.name or ""
     tab.pTab = {tab.pTab[1], tab.pTab[2] + 32, tab.pTab[3] - 18}
+    tab.defaultValue = tab.defaultValue or nil
     D4:CreateSlider(tab)
 
     return cb
@@ -365,6 +366,7 @@ function D4:CreateSlider(tab)
     tab.steps = tab.steps or 1
     tab.decimals = tab.decimals or 0
     tab.key = tab.key or tab.name or ""
+    tab.defaultValue = tab.defaultValue or nil
     local slider = nil
     if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
         slider = CreateFrame("Slider", tab.key, tab.parent, "UISliderTemplate")
@@ -408,7 +410,12 @@ function D4:CreateSlider(tab)
 
     local struct = D4:Trans("LID_" .. tab.key)
     if struct and tab.value then
-        slider.Text:SetText(string.format(struct, tab.value))
+        local text = string.format(struct, tab.value)
+        if tab.defaultValue then
+            text = string.format("%s (%s: %s)", text, D4:Trans("LID_DEFAULT"), tab.defaultValue)
+        end
+
+        slider.Text:SetText(text)
     end
 
     D4:SetFontSize(slider.Low, 10, "THINOUTLINE")
@@ -427,9 +434,9 @@ function D4:CreateSlider(tab)
     slider:SetScript(
         "OnValueChanged",
         function(sel, val)
-            val = string.format("%." .. tab.decimals .. "f", val / tab.steps) * tab.steps
+            val = string.format("%." .. tab.decimals .. "f", string.format("%." .. tab.decimals .. "f", val / tab.steps) * tab.steps)
             val = tonumber(val)
-            if TAB then
+            if TAB and val ~= TAB[tab.key] then
                 TAB[tab.key] = val
             end
 
@@ -445,7 +452,12 @@ function D4:CreateSlider(tab)
 
             local struct2 = D4:Trans("LID_" .. tab.key)
             if struct2 then
-                slider.Text:SetText(string.format(struct2, val))
+                local text = string.format(struct2, val)
+                if tab.defaultValue then
+                    text = string.format("%s (%s: %s)", text, D4:Trans("LID_DEFAULT"), tab.defaultValue)
+                end
+
+                slider.Text:SetText(text)
             else
                 D4:MSG("[D4][CreateSlider][OnValueChanged] Missing format string:", tab.key)
             end
@@ -863,6 +875,7 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     slider.color = {0, 1, 0, 1}
     slider.func = func
     slider.pTab = {"TOPLEFT", X + 5, Y}
+    slider.defaultValue = slider.defaultValue or nil
     D4:CreateSlider(slider)
     Y = Y - 30
 end

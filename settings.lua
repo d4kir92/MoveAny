@@ -748,7 +748,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.218")
+	MoveAny:SetVersion(135994, "1.8.219")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2521,9 +2521,11 @@ function MoveAny:LoadAddon()
 
 	if PetBattleFrame then
 		PetBattleFrame:SetFrameLevel(1001)
-		PetBattleFrame:SetFrameStrata("DIALOG")
 		PetBattleFrame.BottomFrame:SetFrameLevel(1002)
-		PetBattleFrame.BottomFrame:SetFrameStrata("DIALOG")
+		if not MoveAny:IsAddOnLoaded("ElvUI") then
+			PetBattleFrame:SetFrameStrata("DIALOG")
+			PetBattleFrame.BottomFrame:SetFrameStrata("DIALOG")
+		end
 	end
 
 	local MainMenuExpBar = getglobal("MainMenuExpBar")
