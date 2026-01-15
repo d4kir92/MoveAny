@@ -20,6 +20,8 @@ end
 
 local hookedBags = {}
 local run = false
+local hooksetsize = nil
+local ma_bags_setsize = false
 function MoveAny:UpdateBags()
 	if run then return end
 	run = true
@@ -91,17 +93,17 @@ function MoveAny:UpdateBags()
 		BagsBar:SetSize(sw, sh)
 		local BagsBar_MA_DRAG = getglobal("BagsBar_MA_DRAG")
 		if BagsBar_MA_DRAG then
-			if BagsBar_MA_DRAG.hooksetsize == nil then
-				BagsBar_MA_DRAG.hooksetsize = true
+			if hooksetsize == nil then
+				hooksetsize = true
 				hooksecurefunc(
 					BagsBar_MA_DRAG,
 					"SetSize",
 					function(sel, w, h)
 						if InCombatLockdown() and sel:IsProtected() then return false end
-						if sel.ma_bags_setsize then return end
-						sel.ma_bags_setsize = true
+						if ma_bags_setsize then return end
+						ma_bags_setsize = true
 						MoveAny:UpdateBags()
-						sel.ma_bags_setsize = false
+						ma_bags_setsize = false
 					end
 				)
 			end
