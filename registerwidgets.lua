@@ -171,66 +171,70 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 end
 
 function MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
-	if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-		local slider = CreateFrame("Slider", nil, parent, "UISliderTemplate")
-		slider:SetSize(parent:GetWidth() - 20 - x, 16)
-		slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
-		if slider.Low == nil then
-			slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
-			slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-			MoveAny:SetFontSize(slider.Low, 10, "THINOUTLINE")
-			slider.Low:SetTextColor(1, 1, 1)
-		end
-
-		if slider.High == nil then
-			slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
-			slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-			MoveAny:SetFontSize(slider.High, 10, "THINOUTLINE")
-			slider.High:SetTextColor(1, 1, 1)
-		end
-
-		if slider.Text == nil then
-			slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
-			slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-			MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
-			slider.Text:SetTextColor(1, 1, 1)
-		end
-
-		slider.Low:SetText(vmin)
-		slider.High:SetText(vmax)
-		if lanArray then
-			slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
-		else
-			slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
-		end
-
-		slider:SetMinMaxValues(vmin, vmax)
-		slider:SetObeyStepOnDrag(true)
-		slider:SetValueStep(steps)
-		slider:SetValue(MoveAny:GetEleOption(name, key, value, "Slider1"))
-		slider:SetScript(
-			"OnValueChanged",
-			function(sel, val)
-				val = tonumber(string.format("%" .. steps .. "f", val))
-				if val then
-					MoveAny:SetEleOption(name, key, val)
-					if lanArray then
-						slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[val])
-					else
-						slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. val)
-					end
-
-					if func then
-						func()
-					end
-				end
-			end
-		)
-
-		return slider
+	local slider = nil
+	if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+		slider = CreateFrame("Slider", nil, parent, "MinimalSliderWithSteppersTemplate")
+	elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+		slider = CreateFrame("Slider", nil, parent, "UISliderTemplate")
+	else
+		slider = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate")
 	end
 
-	return nil
+	slider:SetSize(parent:GetWidth() - 20 - x, 16)
+	slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+	if slider.Low == nil then
+		slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
+		slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
+		MoveAny:SetFontSize(slider.Low, 10, "THINOUTLINE")
+		slider.Low:SetTextColor(1, 1, 1)
+	end
+
+	if slider.High == nil then
+		slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
+		slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
+		MoveAny:SetFontSize(slider.High, 10, "THINOUTLINE")
+		slider.High:SetTextColor(1, 1, 1)
+	end
+
+	if slider.Text == nil then
+		slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
+		slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
+		MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
+		slider.Text:SetTextColor(1, 1, 1)
+	end
+
+	slider.Low:SetText(vmin)
+	slider.High:SetText(vmax)
+	if lanArray then
+		slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
+	else
+		slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
+	end
+
+	slider:SetMinMaxValues(vmin, vmax)
+	slider:SetObeyStepOnDrag(true)
+	slider:SetValueStep(steps)
+	slider:SetValue(MoveAny:GetEleOption(name, key, value, "Slider1"))
+	slider:SetScript(
+		"OnValueChanged",
+		function(sel, val)
+			val = tonumber(string.format("%" .. steps .. "f", val))
+			if val then
+				MoveAny:SetEleOption(name, key, val)
+				if lanArray then
+					slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[val])
+				else
+					slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. val)
+				end
+
+				if func then
+					func()
+				end
+			end
+		end
+	)
+
+	return slider
 end
 
 function MoveAny:MenuOptions(opt, frame)
@@ -572,8 +576,15 @@ function MoveAny:MenuOptions(opt, frame)
 			local rows = opts["ROWS"] or 1
 			local offset = opts["OFFSET"] or 0
 			local PY = -20
-			if frame ~= MAMenuBar and optionFrame ~= StanceBarAnchor and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				slides.sliderCount = CreateFrame("Slider", nil, content, "UISliderTemplate")
+			if frame ~= MAMenuBar and optionFrame ~= StanceBarAnchor then
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+					slides.sliderCount = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+					slides.sliderCount = CreateFrame("Slider", nil, content, "UISliderTemplate")
+				else
+					slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				end
+
 				local sliderCount = slides.sliderCount
 				sliderCount:SetSize(content:GetWidth() - 110, 16)
 				sliderCount:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
@@ -628,8 +639,15 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			if #items >= 1 and optionFrame ~= StanceBarAnchor and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				slides.sliderRows = CreateFrame("Slider", nil, content, "UISliderTemplate")
+			if #items >= 1 and optionFrame ~= StanceBarAnchor then
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+					slides.sliderRows = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+					slides.sliderRows = CreateFrame("Slider", nil, content, "UISliderTemplate")
+				else
+					slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				end
+
 				local sliderRows = slides.sliderRows
 				sliderRows:SetSize(content:GetWidth() - 110, 16)
 				sliderRows:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
@@ -684,8 +702,15 @@ function MoveAny:MenuOptions(opt, frame)
 				PY = PY - 30
 			end
 
-			if optionFrame ~= StanceBarAnchor and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
+			if optionFrame ~= StanceBarAnchor then
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+					slides.offset = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+					slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
+				else
+					slides.offset = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				end
+
 				local sliderOffset = slides.offset
 				sliderOffset:SetSize(content:GetWidth() - 110, 16)
 				sliderOffset:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
@@ -756,8 +781,16 @@ function MoveAny:MenuOptions(opt, frame)
 			end
 
 			opts["SPACING"] = opts["SPACING"] or 2
-			if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				local slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
+			if true then
+				local slider = nil
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+					slider = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+					slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
+				else
+					slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+				end
+
 				slider:SetSize(content:GetWidth() - 110, 16)
 				slider:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
 				if slider.Low == nil then
@@ -1213,97 +1246,111 @@ function MoveAny:MenuOptions(opt, frame)
 			local width = opts["WIDTH"]
 			opts["HEIGHT"] = opts["HEIGHT"] or 15
 			local height = opts["HEIGHT"]
-			if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				local sliderW = CreateFrame("Slider", nil, content, "UISliderTemplate")
-				sliderW:SetSize(content:GetWidth() - 30, 16)
-				sliderW:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -30)
-				if sliderW.Low == nil then
-					sliderW.Low = sliderW:CreateFontString(nil, nil, "GameFontNormal")
-					sliderW.Low:SetPoint("BOTTOMLEFT", sliderW, "BOTTOMLEFT", 0, -12)
-					MoveAny:SetFontSize(sliderW.Low, 10, "THINOUTLINE")
-					sliderW.Low:SetTextColor(1, 1, 1)
-				end
-
-				if sliderW.High == nil then
-					sliderW.High = sliderW:CreateFontString(nil, nil, "GameFontNormal")
-					sliderW.High:SetPoint("BOTTOMRIGHT", sliderW, "BOTTOMRIGHT", 0, -12)
-					MoveAny:SetFontSize(sliderW.High, 10, "THINOUTLINE")
-					sliderW.High:SetTextColor(1, 1, 1)
-				end
-
-				if sliderW.Text == nil then
-					sliderW.Text = sliderW:CreateFontString(nil, nil, "GameFontNormal")
-					sliderW.Text:SetPoint("TOP", sliderW, "TOP", 0, 16)
-					MoveAny:SetFontSize(sliderW.Text, 12, "THINOUTLINE")
-					sliderW.Text:SetTextColor(1, 1, 1)
-				end
-
-				sliderW.Low:SetText(100)
-				sliderW.High:SetText(1024)
-				sliderW.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. width)
-				sliderW:SetMinMaxValues(100, 1024)
-				sliderW:SetObeyStepOnDrag(true)
-				sliderW:SetValueStep(2)
-				sliderW:SetValue(width)
-				sliderW:SetScript(
-					"OnValueChanged",
-					function(sel, valu)
-						valu = tonumber(string.format("%" .. 0 .. "f", valu))
-						if valu and valu ~= opts["WIDTH"] then
-							opts["WIDTH"] = valu
-							sel.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. valu)
-							if frame and frame.UpdateSize then
-								frame:UpdateSize()
-							end
-						end
-					end
-				)
-
-				local sliderH = CreateFrame("Slider", nil, content, "UISliderTemplate")
-				sliderH:SetSize(content:GetWidth() - 30, 16)
-				sliderH:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -60)
-				if sliderH.Low == nil then
-					sliderH.Low = sliderH:CreateFontString(nil, nil, "GameFontNormal")
-					sliderH.Low:SetPoint("BOTTOMLEFT", sliderH, "BOTTOMLEFT", 0, -12)
-					MoveAny:SetFontSize(sliderH.Low, 10, "THINOUTLINE")
-					sliderH.Low:SetTextColor(1, 1, 1)
-				end
-
-				if sliderH.High == nil then
-					sliderH.High = sliderH:CreateFontString(nil, nil, "GameFontNormal")
-					sliderH.High:SetPoint("BOTTOMRIGHT", sliderH, "BOTTOMRIGHT", 0, -12)
-					MoveAny:SetFontSize(sliderH.High, 10, "THINOUTLINE")
-					sliderH.High:SetTextColor(1, 1, 1)
-				end
-
-				if sliderH.Text == nil then
-					sliderH.Text = sliderH:CreateFontString(nil, nil, "GameFontNormal")
-					sliderH.Text:SetPoint("TOP", sliderH, "TOP", 0, 16)
-					MoveAny:SetFontSize(sliderH.Text, 12, "THINOUTLINE")
-					sliderH.Text:SetTextColor(1, 1, 1)
-				end
-
-				sliderH.Low:SetText(2)
-				sliderH.High:SetText(64)
-				sliderH.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. height)
-				sliderH:SetMinMaxValues(2, 64)
-				sliderH:SetObeyStepOnDrag(true)
-				sliderH:SetValueStep(1)
-				sliderH:SetValue(height)
-				sliderH:SetScript(
-					"OnValueChanged",
-					function(sel, valu)
-						valu = tonumber(string.format("%" .. 0 .. "f", valu))
-						if valu and valu ~= opts["HEIGHT"] then
-							opts["HEIGHT"] = valu
-							sel.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. valu)
-							if frame and frame.UpdateSize then
-								frame:UpdateSize()
-							end
-						end
-					end
-				)
+			local sliderW = nil
+			if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+				sliderW = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+			elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+				sliderW = CreateFrame("Slider", nil, content, "UISliderTemplate")
+			else
+				sliderW = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
 			end
+
+			sliderW:SetSize(content:GetWidth() - 30, 16)
+			sliderW:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -30)
+			if sliderW.Low == nil then
+				sliderW.Low = sliderW:CreateFontString(nil, nil, "GameFontNormal")
+				sliderW.Low:SetPoint("BOTTOMLEFT", sliderW, "BOTTOMLEFT", 0, -12)
+				MoveAny:SetFontSize(sliderW.Low, 10, "THINOUTLINE")
+				sliderW.Low:SetTextColor(1, 1, 1)
+			end
+
+			if sliderW.High == nil then
+				sliderW.High = sliderW:CreateFontString(nil, nil, "GameFontNormal")
+				sliderW.High:SetPoint("BOTTOMRIGHT", sliderW, "BOTTOMRIGHT", 0, -12)
+				MoveAny:SetFontSize(sliderW.High, 10, "THINOUTLINE")
+				sliderW.High:SetTextColor(1, 1, 1)
+			end
+
+			if sliderW.Text == nil then
+				sliderW.Text = sliderW:CreateFontString(nil, nil, "GameFontNormal")
+				sliderW.Text:SetPoint("TOP", sliderW, "TOP", 0, 16)
+				MoveAny:SetFontSize(sliderW.Text, 12, "THINOUTLINE")
+				sliderW.Text:SetTextColor(1, 1, 1)
+			end
+
+			sliderW.Low:SetText(100)
+			sliderW.High:SetText(1024)
+			sliderW.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. width)
+			sliderW:SetMinMaxValues(100, 1024)
+			sliderW:SetObeyStepOnDrag(true)
+			sliderW:SetValueStep(2)
+			sliderW:SetValue(width)
+			sliderW:SetScript(
+				"OnValueChanged",
+				function(sel, valu)
+					valu = tonumber(string.format("%" .. 0 .. "f", valu))
+					if valu and valu ~= opts["WIDTH"] then
+						opts["WIDTH"] = valu
+						sel.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. valu)
+						if frame and frame.UpdateSize then
+							frame:UpdateSize()
+						end
+					end
+				end
+			)
+
+			local sliderH = nil
+			if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+				sliderH = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+			elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+				sliderH = CreateFrame("Slider", nil, content, "UISliderTemplate")
+			else
+				sliderH = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
+			end
+
+			sliderH:SetSize(content:GetWidth() - 30, 16)
+			sliderH:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -60)
+			if sliderH.Low == nil then
+				sliderH.Low = sliderH:CreateFontString(nil, nil, "GameFontNormal")
+				sliderH.Low:SetPoint("BOTTOMLEFT", sliderH, "BOTTOMLEFT", 0, -12)
+				MoveAny:SetFontSize(sliderH.Low, 10, "THINOUTLINE")
+				sliderH.Low:SetTextColor(1, 1, 1)
+			end
+
+			if sliderH.High == nil then
+				sliderH.High = sliderH:CreateFontString(nil, nil, "GameFontNormal")
+				sliderH.High:SetPoint("BOTTOMRIGHT", sliderH, "BOTTOMRIGHT", 0, -12)
+				MoveAny:SetFontSize(sliderH.High, 10, "THINOUTLINE")
+				sliderH.High:SetTextColor(1, 1, 1)
+			end
+
+			if sliderH.Text == nil then
+				sliderH.Text = sliderH:CreateFontString(nil, nil, "GameFontNormal")
+				sliderH.Text:SetPoint("TOP", sliderH, "TOP", 0, 16)
+				MoveAny:SetFontSize(sliderH.Text, 12, "THINOUTLINE")
+				sliderH.Text:SetTextColor(1, 1, 1)
+			end
+
+			sliderH.Low:SetText(2)
+			sliderH.High:SetText(64)
+			sliderH.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. height)
+			sliderH:SetMinMaxValues(2, 64)
+			sliderH:SetObeyStepOnDrag(true)
+			sliderH:SetValueStep(1)
+			sliderH:SetValue(height)
+			sliderH:SetScript(
+				"OnValueChanged",
+				function(sel, valu)
+					valu = tonumber(string.format("%" .. 0 .. "f", valu))
+					if valu and valu ~= opts["HEIGHT"] then
+						opts["HEIGHT"] = valu
+						sel.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. valu)
+						if frame and frame.UpdateSize then
+							frame:UpdateSize()
+						end
+					end
+				end
+			)
 		elseif string.find(content.name, MoveAny:Trans("LID_BAGEXTRAS")) then
 			local hide = MoveAny:CreateCheckButton("HideSmallBags", content)
 			hide:SetSize(btnsize, btnsize)

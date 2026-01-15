@@ -536,7 +536,14 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 	if sls[key] == nil and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 		posy = posy - 10
 		local name = "sls[" .. key .. "]"
-		sls[key] = CreateFrame("Slider", name, MALock.SC, "UISliderTemplate")
+		if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+			sls[key] = CreateFrame("Slider", name, MALock.SC, "MinimalSliderWithSteppersTemplate")
+		elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+			sls[key] = CreateFrame("Slider", name, MALock.SC, "UISliderTemplate")
+		else
+			sls[key] = CreateFrame("Slider", name, MALock.SC, "OptionsSliderTemplate")
+		end
+
 		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x + 5, posy)
 		sls[key]:SetSize(MALock.SC:GetWidth() - 30 - x, 16)
 		if sls[key].Low == nil then
@@ -1896,8 +1903,16 @@ function MoveAny:ShowProfiles()
 						tinsert(profileNames, name)
 					end
 
-					if DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-						local sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
+					if true then
+						local sliderProfiles = nil
+						if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
+							sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "MinimalSliderWithSteppersTemplate")
+						elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
+							sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
+						else
+							sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "OptionsSliderTemplate")
+						end
+
 						sliderProfiles:SetSize(MAAddProfile:GetWidth() - 20, 16)
 						sliderProfiles:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", 10, -26 - 30 - br)
 						if sliderProfiles.Low == nil then
@@ -2445,7 +2460,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.228")
+	MoveAny:SetVersion(135994, "1.8.229")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
