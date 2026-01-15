@@ -13,6 +13,7 @@ end
 
 function MoveAny:GetMicroButtonYOffset()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return -3 end
+	if MoveAny:GetWoWBuild() == "TBC" then return -3 end
 
 	return -4
 end
@@ -215,14 +216,20 @@ function MoveAny:InitMicroMenu()
 					end
 
 					local sw2, sh2 = MoveAny:GetMicroButtonSize()
-					if MoveAny:GetWoWBuild() ~= "RETAIL" then
+					if MoveAny:GetWoWBuild() == "RETAIL" then
+						mb:SetSize(sw2, sh2)
+					elseif MoveAny:GetWoWBuild() == "TBC" then
+						mb:SetParent(MAMenuBar)
+						mb.ofx = -2
+						mb.ofy = 2
+						mb.rsw = 24
+						mb.rsh = 33
+					else
 						mb:SetParent(MAMenuBar)
 						mb.ofx = -2
 						mb.ofy = 22
 						mb.rsw = 24
 						mb.rsh = 33
-					else
-						mb:SetSize(sw2, sh2)
 					end
 
 					if i == 1 or mb == MainMenuMicroButton then
