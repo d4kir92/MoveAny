@@ -570,7 +570,6 @@ function MoveAny:CustomBars()
 			local bar = getglobal(name)
 			bar:SetFrameLevel(4)
 			bar:SetSize(36 * 12, 36)
-			print(name)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
 			if i > 1 then
 				bar:SetAttribute("actionpage", i)

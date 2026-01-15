@@ -172,8 +172,8 @@ end
 
 function MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
 	local slider = nil
-	if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-		slider = CreateFrame("Slider", nil, parent, "MinimalSliderWithSteppersTemplate")
+	if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+		slider = CreateFrame("Slider", nil, parent, "MinimalSliderTemplate")
 	elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 		slider = CreateFrame("Slider", nil, parent, "UISliderTemplate")
 	else
@@ -577,8 +577,8 @@ function MoveAny:MenuOptions(opt, frame)
 			local offset = opts["OFFSET"] or 0
 			local PY = -20
 			if frame ~= MAMenuBar and optionFrame ~= StanceBarAnchor then
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-					slides.sliderCount = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+					slides.sliderCount = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
 				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 					slides.sliderCount = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				else
@@ -640,8 +640,8 @@ function MoveAny:MenuOptions(opt, frame)
 			end
 
 			if #items >= 1 and optionFrame ~= StanceBarAnchor then
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-					slides.sliderRows = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+					slides.sliderRows = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
 				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 					slides.sliderRows = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				else
@@ -703,8 +703,8 @@ function MoveAny:MenuOptions(opt, frame)
 			end
 
 			if optionFrame ~= StanceBarAnchor then
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-					slides.offset = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+					slides.offset = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
 				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 					slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				else
@@ -783,8 +783,8 @@ function MoveAny:MenuOptions(opt, frame)
 			opts["SPACING"] = opts["SPACING"] or 2
 			if true then
 				local slider = nil
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-					slider = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+					slider = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
 				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 					slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
 				else
@@ -1247,8 +1247,8 @@ function MoveAny:MenuOptions(opt, frame)
 			opts["HEIGHT"] = opts["HEIGHT"] or 15
 			local height = opts["HEIGHT"]
 			local sliderW = nil
-			if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-				sliderW = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+			if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+				sliderW = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
 			elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 				sliderW = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			else
@@ -1300,8 +1300,8 @@ function MoveAny:MenuOptions(opt, frame)
 			)
 
 			local sliderH = nil
-			if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-				sliderH = CreateFrame("Slider", nil, content, "MinimalSliderWithSteppersTemplate")
+			if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+				sliderH = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
 			elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 				sliderH = CreateFrame("Slider", nil, content, "UISliderTemplate")
 			else

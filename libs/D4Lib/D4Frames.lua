@@ -368,8 +368,8 @@ function D4:CreateSlider(tab)
     tab.key = tab.key or tab.name or ""
     tab.defaultValue = tab.defaultValue or nil
     local slider = nil
-    if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-        slider = CreateFrame("Slider", tab.key, tab.parent, "MinimalSliderWithSteppersTemplate")
+    if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+        slider = CreateFrame("Slider", tab.key, tab.parent, "MinimalSliderTemplate")
     elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
         slider = CreateFrame("Slider", tab.key, tab.parent, "UISliderTemplate")
     else

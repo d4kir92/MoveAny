@@ -536,8 +536,8 @@ local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
 	if sls[key] == nil and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 		posy = posy - 10
 		local name = "sls[" .. key .. "]"
-		if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-			sls[key] = CreateFrame("Slider", name, MALock.SC, "MinimalSliderWithSteppersTemplate")
+		if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+			sls[key] = CreateFrame("Slider", name, MALock.SC, "MinimalSliderTemplate")
 		elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 			sls[key] = CreateFrame("Slider", name, MALock.SC, "UISliderTemplate")
 		else
@@ -1905,8 +1905,8 @@ function MoveAny:ShowProfiles()
 
 					if true then
 						local sliderProfiles = nil
-						if DoesTemplateExist and DoesTemplateExist("MinimalSliderWithSteppersTemplate") then
-							sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "MinimalSliderWithSteppersTemplate")
+						if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
+							sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "MinimalSliderTemplate")
 						elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 							sliderProfiles = CreateFrame("Slider", nil, MAAddProfile, "UISliderTemplate")
 						else
@@ -2460,7 +2460,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.229")
+	MoveAny:SetVersion(135994, "1.8.230")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4576,8 +4576,13 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				MainActionBar.EndCaps:SetParent(MoveAny:GetHidden())
-				MainActionBar.BorderArt:SetParent(MoveAny:GetHidden())
+				if MainActionBar.EndCaps then
+					MainActionBar.EndCaps:SetParent(MoveAny:GetHidden())
+				end
+
+				if MainActionBar.BorderArt then
+					MainActionBar.BorderArt:SetParent(MoveAny:GetHidden())
+				end
 			elseif MainMenuBar and MainMenuBar.EndCaps then
 				MA_LeftEndCap:SetSize(MainMenuBar.EndCaps.LeftEndCap:GetSize())
 				MA_LeftEndCap.tex:SetTexCoord(MainMenuBar.EndCaps.LeftEndCap:GetTexCoord())
@@ -4593,9 +4598,16 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				MainMenuBar.EndCaps:SetParent(MoveAny:GetHidden())
-				MainMenuBar.BorderArt:SetParent(MoveAny:GetHidden())
-			elseif MainMenuBar and MainMenuBarLeftEndCap then
+				if MainActionBar.EndCaps then
+					MainActionBar.EndCaps:SetParent(MoveAny:GetHidden())
+				end
+
+				if MainActionBar.BorderArt then
+					MainActionBar.BorderArt:SetParent(MoveAny:GetHidden())
+				end
+			end
+
+			if MainMenuBar and MainMenuBarLeftEndCap then
 				MA_LeftEndCap:SetSize(MainMenuBarLeftEndCap:GetSize())
 				MA_LeftEndCap.tex:SetTexture(MainMenuBarLeftEndCap:GetTexture())
 				MA_LeftEndCap.tex:SetTexCoord(MainMenuBarLeftEndCap:GetTexCoord())
