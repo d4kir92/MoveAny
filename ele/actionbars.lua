@@ -282,6 +282,32 @@ function MoveAny:UpdateActionBar(frame)
 							MainMenuMicroButton:SetParent(MoveAny:GetHidden())
 						end
 					end
+				elseif MoveAny:GetWoWBuild() == "TBC" then
+					if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(parent)
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					elseif rows == 10 or rows == 5 or rows == 2 then
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MoveAny:GetHidden())
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(parent)
+						end
+					else
+						if HelpMicroButton then
+							HelpMicroButton:SetParent(MoveAny:GetHidden())
+						end
+
+						if MainMenuMicroButton then
+							MainMenuMicroButton:SetParent(MoveAny:GetHidden())
+						end
+					end
 				elseif MoveAny:GetWoWBuild() ~= "CLASSIC" then
 					MoveAny:INFO("Missing WoW Build for MAMenuBar (MicroMenu)")
 				end
@@ -633,10 +659,12 @@ function MoveAny:CustomBars()
 
 				btn:SetAttribute("statehidden", false)
 				btn:SetAttribute("showgrid", alwaysShowInt)
-				if alwaysShow then
-					getglobal("ActionButton_ShowGrid")(btn)
-				else
-					getglobal("ActionButton_HideGrid")(btn)
+				if getglobal("ActionButton_ShowGrid") and getglobal("ActionButton_HideGrid") then
+					if alwaysShow then
+						getglobal("ActionButton_ShowGrid")(btn)
+					else
+						getglobal("ActionButton_HideGrid")(btn)
+					end
 				end
 
 				if getglobal(btnname .. "FloatingBG") == nil then
