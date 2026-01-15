@@ -748,7 +748,6 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MoveAny:SetVersion(135994, "1.8.227")
 	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
@@ -2446,7 +2445,8 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	if MoveAny.GetVersion and MoveAny:GetVersion() and MoveAny.Trans then
+	MoveAny:SetVersion(135994, "1.8.228")
+	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
 				["name"] = "MoveAny",
