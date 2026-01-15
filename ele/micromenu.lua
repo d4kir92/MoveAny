@@ -6,13 +6,13 @@ local tinsert = getglobal("tinsert")
 local tremove = getglobal("tremove")
 local GetTime = getglobal("GetTime")
 function MoveAny:GetMicroButtonSize()
-	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then return 24, 32 end
+	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 32 end
 
 	return 24, 33
 end
 
 function MoveAny:GetMicroButtonYOffset()
-	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then return -3 end
+	if MoveAny:GetWoWBuild() == "RETAIL" then return -3 end
 	if MoveAny:GetWoWBuild() == "TBC" then return -3 end
 
 	return -4
@@ -145,7 +145,7 @@ function MoveAny:InitMicroMenu()
 		local MBTNS = MICRO_BUTTONS
 		if MICRO_BUTTONS == nil then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-		elseif MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+		elseif MoveAny:GetWoWBuild() == "RETAIL" then
 			MBTNS = {"CharacterMicroButton", "ProfessionMicroButton", "PlayerSpellsMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "HousingMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
 		elseif MoveAny:GetWoWBuild() == "CATA" then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "PVPMicroButton", "LFGMicroButton", "EJMicroButton", "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
@@ -176,7 +176,7 @@ function MoveAny:InitMicroMenu()
 		if MicroButtonAndBagsBar then
 			local p1, _, p3, p4, p5 = MicroButtonAndBagsBar:GetPoint()
 			MAMenuBar:SetPoint(p1, MoveAny:GetMainPanel(), p3, p4, p5)
-		elseif MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+		elseif MoveAny:GetWoWBuild() ~= "RETAIL" then
 			MAMenuBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 0)
 		else
 			MAMenuBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
@@ -216,7 +216,7 @@ function MoveAny:InitMicroMenu()
 					end
 
 					local sw2, sh2 = MoveAny:GetMicroButtonSize()
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" then
 						mb:SetSize(sw2, sh2)
 					elseif MoveAny:GetWoWBuild() == "TBC" then
 						mb:SetParent(MAMenuBar)
@@ -264,7 +264,7 @@ function MoveAny:InitMicroMenu()
 
 					mb:ClearAllPoints()
 					mb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" then
 						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					else
 						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
@@ -278,7 +278,7 @@ function MoveAny:InitMicroMenu()
 						end
 					)
 
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" then
 						hooksecurefunc(
 							MAMenuBar,
 							"SetScale",

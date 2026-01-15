@@ -114,7 +114,7 @@ local function CreateTabs(frame, args)
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
-		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			template = "PanelTabButtonTemplate"
 		end
 
