@@ -115,7 +115,7 @@ MoveAny:AddTrans("frFR", "LID_RESETELEMENT", "Reset Element")
 MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE1", "S'il vous plaît, changez le LAYOUT en Editmode (de Blizzard) pour un CUSTOM LAYOUT.")
 MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE2", "MoveAny ne fonctionne pas avec un Preset Profile, il est principalement en lecture seule.")
 MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE3", "ESC -> Editmode -> Layout : [CUSTOM-LAYOUT] (pas de Preset Layout)")
-if MoveAny:GetWoWBuild() ~= "RETAIL" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
 	MoveAny:AddTrans("frFR", "LID_ACTIONBARS", "Barre d'action 1 + 5 + 6")
 	MoveAny:AddTrans("frFR", "LID_ACTIONBAR1", "Barre d'action 1 (Barre principale)")
 	MoveAny:AddTrans("frFR", "LID_ACTIONBAR2", "Barre d'action 2 (2. Page of Barre d'action 1)")

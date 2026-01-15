@@ -246,7 +246,7 @@ MoveAny:AddTrans("zhTW", "LID_FOCUSFRAMETOTBUFFMOVER", "焦點的目標增益效
 MoveAny:AddTrans("zhTW", "LID_FOCUSFRAMETOTDEBUFFMOVER", "焦點的目標減益效果")
 MoveAny:AddTrans("zhTW", "LID_PRESSESCTOLEAVE", "按ESC退出選擇模式")
 MoveAny:AddTrans("zhTW", "LID_BINDINGFORMAT", "動作條 %s 按鈕 %s")
-if MoveAny:GetWoWBuild() ~= "RETAIL" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
     MoveAny:AddTrans("zhTW", "LID_ACTIONBARS", "動作條 1 + 5 + 6")
     MoveAny:AddTrans("zhTW", "LID_ACTIONBAR1", "動作條1 (主欄)")
     MoveAny:AddTrans("zhTW", "LID_ACTIONBAR2", "動作條2 (動作條1的第二頁)")

@@ -108,7 +108,7 @@ function MoveAny:UpdateActionBar(frame)
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 					frame:SetScale(1)
 					rows = 2
-					if MoveAny:GetWoWBuild() == "RETAIL" and MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
 						spacing = 15
 						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
 							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
@@ -134,7 +134,7 @@ function MoveAny:UpdateActionBar(frame)
 
 			local parent = MicroMenu or MAMenuBar
 			if frame == MAMenuBar then
-				if MoveAny:GetWoWBuild() == "RETAIL" and MoveAny:GetWoWBuild() == "TBC" then
+				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() ~= "TBC" then
 					if HousingMicroButton then
 						if rows == 13 then
 							if HelpMicroButton then
@@ -416,7 +416,7 @@ function MoveAny:UpdateActionBar(frame)
 end
 
 function MoveAny:InitActionBarLayouts()
-	if MoveAny:GetWoWBuild() == "RETAIL" and MoveAny:GetWoWBuild() == "TBC" then
+	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() ~= "TBC" then
 		MASetPoint("MainMenuBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
 		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
 		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight

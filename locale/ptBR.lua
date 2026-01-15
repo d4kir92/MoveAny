@@ -112,7 +112,7 @@ MoveAny:AddTrans("ptBR", "LID_TICKETSTATUSFRAME", "Ticket Frame")
 MoveAny:AddTrans("ptBR", "LID_LOSSOFCONTROLFRAME", "Loss of Control Frame (Perda do Quadro de Controle)")
 MoveAny:AddTrans("ptBR", "LID_TargetFrameNumericalThreat", "Percentual de Ameaça")
 MoveAny:AddTrans("ptBR", "LID_RESETELEMENT", "Reset Element")
-if MoveAny:GetWoWBuild() ~= "RETAIL" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
 	MoveAny:AddTrans("ptBR", "LID_ACTIONBARS", "Barra de ação 1 + 5 + 6")
 	MoveAny:AddTrans("ptBR", "LID_ACTIONBAR1", "Barra de ação 1 (Barra principal)")
 	MoveAny:AddTrans("ptBR", "LID_ACTIONBAR2", "Barra de ação 2 (2. Página da barra de ação 1)")

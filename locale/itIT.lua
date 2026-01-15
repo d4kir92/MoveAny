@@ -161,7 +161,7 @@ MoveAny:AddTrans("itIT", "LID_EclipseBarFrame", "Eclipse Bar Frame (Druid)")
 MoveAny:AddTrans("itIT", "LID_REQUIRESFOR", "Requires: %s")
 MoveAny:AddTrans("itIT", "LID_REQUIREDFOR", "Required for: %s")
 MoveAny:AddTrans("itIT", "LID_RESETELEMENT", "Reset Element")
-if MoveAny:GetWoWBuild() ~= "RETAIL" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
 	MoveAny:AddTrans("itIT", "LID_ACTIONBARS", "Barra d'azioni 1 + 5 + 6")
 	MoveAny:AddTrans("itIT", "LID_ACTIONBAR1", "Barra d'azioni 1 (barra principale)")
 	MoveAny:AddTrans("itIT", "LID_ACTIONBAR2", "Barra d'azioni 2 (2. Pagina della barra d'azioni 1)")

@@ -223,7 +223,7 @@ MoveAny:AddTrans("koKR", "LID_MINIMAPLFGFRAME", "LFG 미니맵 버튼")
 MoveAny:AddTrans("koKR", "LID_QUESTTIMERFRAME", "퀘스트 타이머 프레임")
 MoveAny:AddTrans("koKR", "LID_BATTLEFIELDMAPFRAME", "전장 맵")
 MoveAny:GetWoWBuild()
-if MoveAny:GetWoWBuild() ~= "RETAIL" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
 	MoveAny:AddTrans("koKR", "LID_ACTIONBARS", "액션바 1 + 5 + 6")
 	MoveAny:AddTrans("koKR", "LID_ACTIONBAR1", "액션바 1 (메인 바)")
 	MoveAny:AddTrans("koKR", "LID_ACTIONBAR2", "액션바 2 (2. 액션바 1의 페이지)")
