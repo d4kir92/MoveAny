@@ -117,7 +117,7 @@ function MoveAny:InitDebuffBar()
 			MADEBUFFSPACINGX = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGX", 4)
 			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
-			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() ~= "TBC") and DebuffFrame ~= nil then
+			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC") and DebuffFrame ~= nil then
 				MoveAny:ForeachChildren(
 					DebuffFrame.AuraContainer,
 					function(child)

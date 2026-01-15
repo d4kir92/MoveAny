@@ -186,7 +186,7 @@ function MoveAny:InitBags()
 
 			for i, mbname in pairs(BAGS) do
 				local bb = getglobal(mbname)
-				if bb and MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+				if bb and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") then
 					hooksecurefunc(
 						bb,
 						"Hide",

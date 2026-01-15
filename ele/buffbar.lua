@@ -427,7 +427,7 @@ function MoveAny:InitBuffBar()
 				TempEnchant3:SetPoint("CENTER", 0, 0)
 			end
 
-			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() ~= "TBC" then
+			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
 				MoveAny:ForeachChildren(
 					BuffFrame.AuraContainer,
 					function(child)

@@ -114,7 +114,7 @@ local function CreateTabs(frame, args)
 	local sw, sh = frame:GetSize()
 	for i = 1, frame.numTabs do
 		local template = "CharacterFrameTabButtonTemplate"
-		if MoveAny:GetWoWBuild() == "RETAIL" then
+		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
 			template = "PanelTabButtonTemplate"
 		end
 
@@ -856,7 +856,7 @@ function MoveAny:MenuOptions(opt, frame)
 			--MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
 			if name == "MABuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
 					MoveAny:CreateSliderOld(
 						content,
 						10,
@@ -1046,7 +1046,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:Trans("LID_DEBUFFS")) then
 			local y = -20
 			if name == "MADebuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
 					MoveAny:CreateSliderOld(
 						content,
 						10,

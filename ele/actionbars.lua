@@ -134,7 +134,7 @@ function MoveAny:UpdateActionBar(frame)
 
 			local parent = MicroMenu or MAMenuBar
 			if frame == MAMenuBar then
-				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() ~= "TBC" then
+				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
 					if HousingMicroButton then
 						if rows == 13 then
 							if HelpMicroButton then
@@ -416,7 +416,7 @@ function MoveAny:UpdateActionBar(frame)
 end
 
 function MoveAny:InitActionBarLayouts()
-	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() ~= "TBC" then
+	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
 		MASetPoint("MainMenuBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
 		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
 		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
@@ -468,7 +468,7 @@ end
 
 local once = true
 function MoveAny:CustomBars()
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:IsEnabled("ACTIONBARS", false) then
+	if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
 			local texture = getglobal("MainMenuMaxLevelBar" .. i)
 			if texture then
@@ -570,6 +570,7 @@ function MoveAny:CustomBars()
 			local bar = getglobal(name)
 			bar:SetFrameLevel(4)
 			bar:SetSize(36 * 12, 36)
+			print(name)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
 			if i > 1 then
 				bar:SetAttribute("actionpage", i)

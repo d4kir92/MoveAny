@@ -361,7 +361,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 
 							local WorldMapFrameMove = getglobal("WorldMapFrameMove")
-							if MoveAny:GetWoWBuild() ~= "RETAIL" and WorldMapFrame and WorldMapFrameMove then
+							if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and WorldMapFrame and WorldMapFrameMove then
 								local offsetl = 15
 								local offsetr = 7
 								local offsett = 18
