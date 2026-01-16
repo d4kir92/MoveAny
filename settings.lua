@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.234")
+	MoveAny:SetVersion(135994, "1.8.235")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -5770,7 +5770,7 @@ function MoveAny:LoadAddon()
 				)
 			end
 
-			if MoveAny:IsEnabled("IASKILLS", true) and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") then
+			if MoveAny:IsEnabled("IASKILLS", true) and (MoveAny:GetWoWBuild() ~= "RETAIL") then
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "IASkills",
