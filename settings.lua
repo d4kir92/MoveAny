@@ -1216,7 +1216,7 @@ function MoveAny:InitMALock()
 
 		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
 			AddCategory("ImproveAny", nil, nil, true)
-			if MoveAny:GetWoWBuild() ~= "RETAIL" then
+			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then
 				AddCheckBox(4, "IASKILLS", true)
 			end
 
@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.235")
+	MoveAny:SetVersion(135994, "1.8.236")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -5770,7 +5770,7 @@ function MoveAny:LoadAddon()
 				)
 			end
 
-			if MoveAny:IsEnabled("IASKILLS", true) and (MoveAny:GetWoWBuild() ~= "RETAIL") then
+			if IASkills and MoveAny:IsEnabled("IASKILLS", true) and (MoveAny:GetWoWBuild() ~= "RETAIL") then
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "IASkills",
