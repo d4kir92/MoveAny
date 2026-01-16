@@ -824,6 +824,10 @@ function MoveAny:InitMALock()
 		AddCategory("BUILTIN", 1, true)
 		local posx = 4
 		AddCheckBox(posx, "PLAYERFRAME", false)
+		if PlayerFrameGroupIndicator then
+			AddCheckBox(posx, "PLAYERFRAMEGROUPINDICATOR", false)
+		end
+
 		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
 		AddCheckBox(posx, "TARGETFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 		AddCheckBox(posx, "TARGETFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
@@ -2460,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.232")
+	MoveAny:SetVersion(135994, "1.8.233")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -3036,6 +3040,16 @@ function MoveAny:LoadAddon()
 				{
 					["name"] = "PlayerFrame",
 					["lstr"] = "LID_PLAYERFRAME",
+					["userplaced"] = true
+				}
+			)
+		end
+
+		if MoveAny:IsEnabled("PLAYERFRAMEGROUPINDICATOR", false) then
+			MoveAny:RegisterWidget(
+				{
+					["name"] = "PlayerFrameGroupIndicator",
+					["lstr"] = "LID_PLAYERFRAMEGROUPINDICATOR",
 					["userplaced"] = true
 				}
 			)
