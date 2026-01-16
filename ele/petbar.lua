@@ -57,98 +57,100 @@ end
 
 function MoveAny:InitPetBar()
 	local PetActionBarFrame = getglobal("PetActionBarFrame")
-	if not PetActionBar and MoveAny:IsEnabled("PETBAR", false) then
-		bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
-		bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
-		bar.btns = {}
-		if _G["PetActionButton" .. 1] then
-			btnsize = _G["PetActionButton" .. 1]:GetSize()
-		end
-
-		for i = 1, 10 do
-			local bb = _G["PetActionButton" .. i]
-			if bb then
-				bb:SetSize(btnsize, btnsize)
-				hooksecurefunc(
-					bb,
-					"SetParent",
-					function(sel, ...)
-						if sel.ma_setparent then return end
-						sel.ma_setparent = true
-						bb:SetParent(bar)
-						sel.ma_setparent = false
-					end
-				)
-
-				hooksecurefunc(
-					bar,
-					"SetPoint",
-					function(sel, ...)
-						bb:SetParent(bar)
-						bb:SetMovable(true)
-						if bb.SetUserPlaced and bb:IsMovable() then
-							bb:SetUserPlaced(false)
-						end
-
-						MoveAny:SetPoint(bb, "TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
-					end
-				)
-
-				bb:ClearAllPoints()
-				bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
-				tinsert(bar.btns, bb)
+	if MoveAny:IsEnabled("PETBAR", false) then
+		if not PetActionBar then
+			bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
+			bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
+			bar.btns = {}
+			if _G["PetActionButton" .. 1] then
+				btnsize = _G["PetActionButton" .. 1]:GetSize()
 			end
-		end
 
-		bar:SetSize(10 * btnsize, btnsize)
-		local ShowPetActionBar = getglobal("ShowPetActionBar")
-		if ShowPetActionBar then
-			hooksecurefunc(
-				"ShowPetActionBar",
-				function()
-					bar:SetAlpha(1)
-					bar.ma_show = true
+			for i = 1, 10 do
+				local bb = _G["PetActionButton" .. i]
+				if bb then
+					bb:SetSize(btnsize, btnsize)
+					hooksecurefunc(
+						bb,
+						"SetParent",
+						function(sel, ...)
+							if sel.ma_setparent then return end
+							sel.ma_setparent = true
+							bb:SetParent(bar)
+							sel.ma_setparent = false
+						end
+					)
+
+					hooksecurefunc(
+						bar,
+						"SetPoint",
+						function(sel, ...)
+							bb:SetParent(bar)
+							bb:SetMovable(true)
+							if bb.SetUserPlaced and bb:IsMovable() then
+								bb:SetUserPlaced(false)
+							end
+
+							MoveAny:SetPoint(bb, "TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
+						end
+					)
+
+					bb:ClearAllPoints()
+					bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
+					tinsert(bar.btns, bb)
 				end
-			)
+			end
 
-			hooksecurefunc(
-				"HidePetActionBar",
-				function()
-					if UnitExists("pet") then
+			bar:SetSize(10 * btnsize, btnsize)
+			local ShowPetActionBar = getglobal("ShowPetActionBar")
+			if ShowPetActionBar then
+				hooksecurefunc(
+					"ShowPetActionBar",
+					function()
 						bar:SetAlpha(1)
 						bar.ma_show = true
-					else
-						bar:SetAlpha(0)
-						bar.ma_show = false
 					end
+				)
+
+				hooksecurefunc(
+					"HidePetActionBar",
+					function()
+						if UnitExists("pet") then
+							bar:SetAlpha(1)
+							bar.ma_show = true
+						else
+							bar:SetAlpha(0)
+							bar.ma_show = false
+						end
+					end
+				)
+			else
+				MoveAny:MSG("MISSING ShowPetActionBar")
+			end
+
+			MoveAny:UpdatePetBar()
+		elseif PetActionBar then
+			PetActionBar.btns = {}
+			for i = 1, 12 do
+				local btn = _G["PetActionButton" .. i]
+				if btn then
+					tinsert(PetActionBar.btns, btn)
 				end
-			)
-		else
-			MoveAny:MSG("MISSING ShowPetActionBar")
-		end
-
-		MoveAny:UpdatePetBar()
-	elseif PetActionBar then
-		PetActionBar.btns = {}
-		for i = 1, 12 do
-			local btn = _G["PetActionButton" .. i]
-			if btn then
-				tinsert(PetActionBar.btns, btn)
 			end
-		end
 
-		bar = PetActionBar
-		MoveAny:UpdatePetBar()
-	elseif PetActionBarFrame then
-		PetActionBarFrame.btns = {}
-		for i = 1, 12 do
-			local btn = _G["PetActionButton" .. i]
-			if btn then
-				tinsert(PetActionBarFrame.btns, btn)
+			bar = PetActionBar
+			MoveAny:UpdatePetBar()
+		elseif PetActionBarFrame then
+			PetActionBarFrame.btns = {}
+			for i = 1, 12 do
+				local btn = _G["PetActionButton" .. i]
+				if btn then
+					tinsert(PetActionBarFrame.btns, btn)
+				end
 			end
-		end
 
-		bar = PetActionBar
-		MoveAny:UpdatePetBar()
+			bar = PetActionBar
+			MoveAny:UpdatePetBar()
+		end
 	end
 end

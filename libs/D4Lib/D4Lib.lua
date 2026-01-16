@@ -871,6 +871,7 @@ function D4:GetRole(className, specId)
 end
 
 function D4:GetSpecIcon(className, specId)
+    if specId == nil then return nil end
     if GetSpecializationInfoForClassID then
         local classId = classIds[className]
         if classId then
