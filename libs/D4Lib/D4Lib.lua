@@ -935,7 +935,7 @@ function D4:GetTalentInfo()
         end
 
         return specid, icon
-    elseif GetPrimaryTalentTree and GetPrimaryTalentTree() then
+    elseif D4:GetWoWBuild() ~= "TBC" and GetPrimaryTalentTree and GetPrimaryTalentTree() then
         specid = GetPrimaryTalentTree()
         if specid and GetTalentTabInfo then
             _, _, _, icon = GetTalentTabInfo(specid)

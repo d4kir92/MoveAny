@@ -137,6 +137,7 @@ function MoveAny:InitPetBar()
 			end
 		end
 
+		bar = PetActionBar
 		MoveAny:UpdatePetBar()
 	elseif PetActionBarFrame then
 		PetActionBarFrame.btns = {}
@@ -147,6 +148,7 @@ function MoveAny:InitPetBar()
 			end
 		end
 
+		bar = PetActionBar
 		MoveAny:UpdatePetBar()
 	end
 end
