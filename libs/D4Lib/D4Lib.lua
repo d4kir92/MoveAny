@@ -798,6 +798,7 @@ local specRoless = {
     ["DEMONHUNTER"] = {
         [1] = "DAMAGER",
         [2] = "TANK",
+        [3] = "DAMAGER",
     },
     ["EVOKER"] = {
         [1] = "DAMAGER",

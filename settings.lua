@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.237")
+	MoveAny:SetVersion(135994, "1.8.238")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2538,13 +2538,9 @@ function MoveAny:LoadAddon()
 		MoveAny:MSG(MoveAny:Trans("LID_STARTHELP3"))
 	end
 
-	if PetBattleFrame then
-		PetBattleFrame:SetFrameLevel(1001)
-		PetBattleFrame.BottomFrame:SetFrameLevel(1002)
-		if not MoveAny:IsAddOnLoaded("ElvUI") then
-			PetBattleFrame:SetFrameStrata("DIALOG")
-			PetBattleFrame.BottomFrame:SetFrameStrata("DIALOG")
-		end
+	if PetBattleFrame and not MoveAny:IsAddOnLoaded("ElvUI") then
+		PetBattleFrame:SetFrameStrata("DIALOG")
+		PetBattleFrame.BottomFrame:SetFrameStrata("DIALOG")
 	end
 
 	local MainMenuExpBar = getglobal("MainMenuExpBar")
