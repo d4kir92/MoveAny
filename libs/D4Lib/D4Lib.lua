@@ -1173,6 +1173,40 @@ D4:After(
             D4:AddTrans("deDE", "LID_DAMAGER", "Schadem")
             D4:AddTrans("enUS", "LID_NOROLE", "No Role")
             D4:AddTrans("deDE", "LID_NOROLE", "Keine Rolle")
+            if PlayerFrame.RangeFix == nil then
+                PlayerFrame.RangeFix = true
+                local cufs = {}
+                hooksecurefunc(
+                    "CompactUnitFrame_OnLoad",
+                    function(frame)
+                        local name = frame:GetName()
+                        if name and name:sub(1, 7) == "Compact" then
+                            cufs[frame] = true
+                        end
+                    end
+                )
+
+                for i = 1, 5 do
+                    cufs[_G["CompactPartyFrameMember" .. i]] = true
+                    cufs[_G["CompactPartyFramePet" .. i]] = true
+                end
+
+                C_Timer.NewTicker(
+                    0.29,
+                    function()
+                        for frame in pairs(cufs) do
+                            if frame and frame:IsShown() then
+                                local unit = frame.displayedUnit
+                                if unit and unit ~= "" then
+                                    local inRange = UnitInRange(unit)
+                                    frame:SetAlpha(inRange and 1 or 0.45)
+                                end
+                            end
+                        end
+                    end
+                )
+            end
+
             local function SetupRoleMenu(ownerRegion, rootDescription, contextData)
                 if rootDescription.D4SetRole then return end
                 rootDescription.D4SetRole = true
