@@ -1,4 +1,4 @@
-local _, D4 = ...
+local addonName, D4 = ...
 local hooksecurefunc = getglobal("hooksecurefunc")
 local GetBuildInfo = getglobal("GetBuildInfo")
 local CreateFrame = getglobal("CreateFrame")
@@ -867,6 +867,10 @@ else
     }
 end
 
+function D4:GetSpecTable()
+    return specRoless
+end
+
 function D4:GetRole(className, specId)
     return specRoless[className][specId]
 end
@@ -1161,18 +1165,6 @@ D4:After(
     1,
     function()
         if D4:GetWoWBuild() == "TBC" then
-            D4:AddTrans("enUS", "LID_CHOOSEROLE", "Select Role")
-            D4:AddTrans("deDE", "LID_CHOOSEROLE", "Rolle wählen")
-            D4:AddTrans("enUS", "LID_NOTLEADER", "Not Leader")
-            D4:AddTrans("deDE", "LID_NOTLEADER", "Nicht Anführer")
-            D4:AddTrans("enUS", "LID_TANK", "Tank")
-            D4:AddTrans("deDE", "LID_TANK", "Schutz")
-            D4:AddTrans("enUS", "LID_HEALER", "Healer")
-            D4:AddTrans("deDE", "LID_HEALER", "Heiler")
-            D4:AddTrans("enUS", "LID_DAMAGER", "Damage")
-            D4:AddTrans("deDE", "LID_DAMAGER", "Schadem")
-            D4:AddTrans("enUS", "LID_NOROLE", "No Role")
-            D4:AddTrans("deDE", "LID_NOROLE", "Keine Rolle")
             if PlayerFrame.RangeFix == nil then
                 PlayerFrame.RangeFix = true
                 local cufs = {}
@@ -1205,82 +1197,111 @@ D4:After(
                         end
                     end
                 )
+
+                local blizzFixed = CreateFrame("Frame")
+                blizzFixed:RegisterEvent("UNIT_IN_RANGE_UPDATE")
+                blizzFixed:SetScript(
+                    "OnEvent",
+                    function()
+                        blizzFixed:UnregisterEvent("UNIT_IN_RANGE_UPDATE")
+                        D4:MSG("[D4] BLIZZ FIXED RAID RANGE? Please tell D4KiR", addonName)
+                    end
+                )
             end
 
-            local function SetupRoleMenu(ownerRegion, rootDescription, contextData)
-                if rootDescription.D4SetRole then return end
-                rootDescription.D4SetRole = true
-                local unit = contextData.unit
-                if unit == nil then return end
-                if not UnitIsPlayer(unit) then return end
-                if not IsInGroup() and not IsInRaid() then return end
-                rootDescription:CreateDivider()
-                local isLeader = UnitIsGroupLeader("player")
-                local isAssistant = UnitIsGroupAssistant("player")
-                local roleMenu = rootDescription:CreateButton(D4:Trans("LID_CHOOSEROLE") .. " (by D4KiR)")
-                if UnitIsUnit(unit, "player") or isLeader or isAssistant then
-                    roleMenu:SetEnabled(true)
-                else
-                    roleMenu:SetEnabled(false)
-                end
-
-                local function IsRole(role)
+            if true then
+                D4:AddTrans("enUS", "LID_CHOOSEROLE", "Select Role")
+                D4:AddTrans("deDE", "LID_CHOOSEROLE", "Rolle wählen")
+                D4:AddTrans("enUS", "LID_NOTLEADER", "Not Leader")
+                D4:AddTrans("deDE", "LID_NOTLEADER", "Nicht Anführer")
+                D4:AddTrans("enUS", "LID_TANK", "Tank")
+                D4:AddTrans("deDE", "LID_TANK", "Schutz")
+                D4:AddTrans("enUS", "LID_HEALER", "Healer")
+                D4:AddTrans("deDE", "LID_HEALER", "Heiler")
+                D4:AddTrans("enUS", "LID_DAMAGER", "Damage")
+                D4:AddTrans("deDE", "LID_DAMAGER", "Schadem")
+                D4:AddTrans("enUS", "LID_NOROLE", "No Role")
+                D4:AddTrans("deDE", "LID_NOROLE", "Keine Rolle")
+                local function IsRole(unit, role)
                     return UnitGroupRolesAssigned(unit) == role
                 end
 
-                local function CanClassBeRole(targetRole)
-                    for i = 1, GetNumSpecializations() do
-                        local role = GetSpecializationRole(i)
-                        if role == targetRole then return true end
+                local function CanClassBeRole(unit, targetRole)
+                    local tab = D4:GetSpecTable()
+                    local _, class = UnitClass(unit, targetRole)
+                    if tab[class] then
+                        for i, role in pairs(tab[class]) do
+                            if role == targetRole then return true end
+                        end
+                    else
+                        D4:MSG("[CanClassBeRole] Failed to find Class", class)
                     end
 
                     return false
                 end
 
-                local tankBtn = roleMenu:CreateRadio(
-                    "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t " .. D4:Trans("LID_TANK"),
-                    function() return IsRole("TANK") end,
-                    function()
-                        UnitSetRole(unit, "TANK")
+                local function SetupRoleMenu(ownerRegion, rootDescription, contextData)
+                    if rootDescription.D4SetRole then return end
+                    rootDescription.D4SetRole = true
+                    local unit = contextData.unit
+                    if unit == nil then return end
+                    if not UnitIsPlayer(unit) then return end
+                    if not IsInGroup() and not IsInRaid() then return end
+                    rootDescription:CreateDivider()
+                    local isLeader = UnitIsGroupLeader("player")
+                    local isAssistant = UnitIsGroupAssistant("player")
+                    local roleMenu = rootDescription:CreateButton(D4:Trans("LID_CHOOSEROLE") .. " (by D4KiR)")
+                    if UnitIsUnit(unit, "player") or isLeader or isAssistant then
+                        roleMenu:SetEnabled(true)
+                    else
+                        roleMenu:SetEnabled(false)
                     end
-                )
 
-                tankBtn:SetEnabled(CanClassBeRole("TANK"))
-                local healBtn = roleMenu:CreateRadio(
-                    "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t " .. D4:Trans("LID_HEALER"),
-                    function() return IsRole("HEALER") end,
-                    function()
-                        UnitSetRole(unit, "HEALER")
-                    end
-                )
+                    local tankBtn = roleMenu:CreateRadio(
+                        "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t " .. D4:Trans("LID_TANK"),
+                        function() return IsRole(unit, "TANK") end,
+                        function()
+                            UnitSetRole(unit, "TANK")
+                        end
+                    )
 
-                healBtn:SetEnabled(CanClassBeRole("HEALER"))
-                local dpsBtn = roleMenu:CreateRadio(
-                    "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t " .. D4:Trans("LID_DAMAGER"),
-                    function() return IsRole("DAMAGER") end,
-                    function()
-                        UnitSetRole(unit, "DAMAGER")
-                    end
-                )
+                    tankBtn:SetEnabled(CanClassBeRole(unit, "TANK"))
+                    local healBtn = roleMenu:CreateRadio(
+                        "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t " .. D4:Trans("LID_HEALER"),
+                        function() return IsRole(unit, "HEALER") end,
+                        function()
+                            UnitSetRole(unit, "HEALER")
+                        end
+                    )
 
-                dpsBtn:SetEnabled(CanClassBeRole("DAMAGER"))
-                roleMenu:CreateRadio(
-                    D4:Trans("LID_NOROLE"),
-                    function() return IsRole("NONE") end,
-                    function()
-                        UnitSetRole(unit, "NONE")
-                    end
-                )
-            end
+                    healBtn:SetEnabled(CanClassBeRole(unit, "HEALER"))
+                    local dpsBtn = roleMenu:CreateRadio(
+                        "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t " .. D4:Trans("LID_DAMAGER"),
+                        function() return IsRole(unit, "DAMAGER") end,
+                        function()
+                            UnitSetRole(unit, "DAMAGER")
+                        end
+                    )
 
-            local menuTypes = {"MENU_UNIT_SELF", "MENU_UNIT_TARGET", "MENU_UNIT_FOCUS", "MENU_UNIT_PARTY", "MENU_UNIT_RAID", "MENU_UNIT_PLAYER",}
-            for _, menuType in ipairs(menuTypes) do
-                Menu.ModifyMenu(
-                    menuType,
-                    function(ownerRegion, rootDescription, contextData)
-                        SetupRoleMenu(ownerRegion, rootDescription, contextData, "target")
-                    end
-                )
+                    dpsBtn:SetEnabled(CanClassBeRole(unit, "DAMAGER"))
+                    roleMenu:CreateRadio(
+                        D4:Trans("LID_NOROLE"),
+                        function() return IsRole(unit, "NONE") end,
+                        function()
+                            UnitSetRole(unit, "NONE")
+                        end
+                    )
+                end
+
+                local menuTypes = {"MENU_UNIT_SELF", "MENU_UNIT_TARGET", "MENU_UNIT_FOCUS", "MENU_UNIT_PARTY", "MENU_UNIT_RAID", "MENU_UNIT_PLAYER",}
+                for _, menuType in ipairs(menuTypes) do
+                    Menu.ModifyMenu(
+                        menuType,
+                        function(ownerRegion, rootDescription, contextData)
+                            SetupRoleMenu(ownerRegion, rootDescription, contextData, "target")
+                        end
+                    )
+                end
             end
         end
     end, "TBC FIX"
