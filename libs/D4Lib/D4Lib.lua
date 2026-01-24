@@ -1204,16 +1204,6 @@ D4:After(
                         end
                     end
                 )
-
-                local blizzFixed = CreateFrame("Frame")
-                blizzFixed:RegisterEvent("UNIT_IN_RANGE_UPDATE")
-                blizzFixed:SetScript(
-                    "OnEvent",
-                    function()
-                        blizzFixed:UnregisterEvent("UNIT_IN_RANGE_UPDATE")
-                        D4:MSG("[D4] BLIZZ FIXED RAID RANGE? Please tell D4KiR", addonName)
-                    end
-                )
             end
 
             if true then
