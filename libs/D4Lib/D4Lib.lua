@@ -871,7 +871,14 @@ function D4:GetSpecTable()
     return specRoless
 end
 
-function D4:GetRole(className, specId)
+function D4:GetRole(unit)
+    if UnitGroupRolesAssigned then return UnitGroupRolesAssigned(unit) end
+    D4:MSG("[D4] FAILED TO GET ROLE FOR", unit)
+
+    return "NONE"
+end
+
+function D4:GetRoleByTab(className, specId)
     return specRoless[className][specId]
 end
 
