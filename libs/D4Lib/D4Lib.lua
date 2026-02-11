@@ -1009,7 +1009,7 @@ function D4:GetTalentInfo()
                 specid = i
                 icon = iconTexture
                 local _, class = UnitClass("PLAYER")
-                if GetActiveTalentGroup and class == "DRUID" and D4:GetWoWBuild() ~= "CATA" then
+                if GetActiveTalentGroup and class == "DRUID" and D4:GetWoWBuild() ~= "CATA" and D4:GetWoWBuild() ~= "TBC" then
                     local group = GetActiveTalentGroup()
                     local role = GetTalentGroupRole(group)
                     if role == "DAMAGER" then
@@ -1287,8 +1287,12 @@ D4:After(
                 end
 
                 local function SetupRoleMenu(ownerRegion, rootDescription, contextData)
-                    if rootDescription.D4SetRole then return end
-                    rootDescription.D4SetRole = true
+                    if rootDescription.EnumerateElementDescriptions then
+                        for _, elementData in rootDescription:EnumerateElementDescriptions() do
+                            if elementData.isD4 then return end
+                        end
+                    end
+
                     local unit = contextData.unit
                     if unit == nil then return end
                     if not UnitIsPlayer(unit) then return end
@@ -1296,6 +1300,7 @@ D4:After(
                     local isLeader = UnitIsGroupLeader("player")
                     local isAssistant = UnitIsGroupAssistant("player")
                     local roleMenu = MenuUtil.CreateButton(D4:Trans("LID_CHOOSEROLE") .. " (by D4KiR)")
+                    roleMenu.isD4 = true
                     rootDescription:Insert(roleMenu, 2)
                     if UnitIsUnit(unit, "player") or isLeader or isAssistant then
                         roleMenu:SetEnabled(true)
