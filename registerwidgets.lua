@@ -1958,7 +1958,8 @@ function MoveAny:RegisterWidget(tab)
 		frame:EnableMouse(false)
 	end
 
-	frame.ma_secure = secure
+	local elesetpoint = false
+	local ma_secure = secure
 	local bToSmall = false
 	if sw or sh then
 		bToSmall = true
@@ -1999,9 +2000,8 @@ function MoveAny:RegisterWidget(tab)
 		frame,
 		pointFunc,
 		function(sel, p1, p2, p3, p4, p5)
-			if sel.elesetpoint then return end
-			--sel.layoutApplyInProgress = true
-			if not sel.ma_secure then
+			if elesetpoint then return end
+			if not ma_secure then
 				if sel.SetMovable then
 					sel:SetMovable(true)
 				end
@@ -2010,7 +2010,7 @@ function MoveAny:RegisterWidget(tab)
 					sel:SetUserPlaced(userplaced or false)
 				end
 
-				sel.elesetpoint = true
+				elesetpoint = true
 				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 				if dbp1 and dbp3 then
 					MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
@@ -2020,12 +2020,12 @@ function MoveAny:RegisterWidget(tab)
 					MoveAny:UpdateActionBar(sel)
 				end
 
-				sel.elesetpoint = false
+				elesetpoint = false
 			end
 		end
 	)
 
-	if not frame.ma_secure then
+	if not ma_secure then
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 		if dbp1 and dbp3 then
 			if noreparent then
