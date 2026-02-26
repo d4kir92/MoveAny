@@ -1183,6 +1183,18 @@ function D4:DrawDebug(name, callback, fontSize, sw, sh, p1, p2, p3, p4, p5)
     return fDebug
 end
 
+function D4:EasyFind(word)
+    for i, v in pairs(_G) do
+        if i and type(i) == "string" and string.find(string.lower(i), word) then
+            print("i", i, "v", v)
+        end
+
+        if v and type(v) == "string" and string.find(string.lower(v), word) then
+            print("i", i, "v", v)
+        end
+    end
+end
+
 function D4:FindInGlobal(name, exact, ...)
     local args = {...}
     D4:After(

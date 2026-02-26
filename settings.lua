@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.250")
+	MoveAny:SetVersion(135994, "1.8.251")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6319,7 +6319,11 @@ function MoveAny:LoadAddon()
 
 				function MoveAny:ThinkTooltip()
 					if GameTooltip:IsShown() then
-						GameTooltip:SetPoint(GameTooltip:GetPoint())
+						local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
+						if p1 then
+							GameTooltip:SetPoint(p1, p2, p3, p4, p5)
+						end
+
 						MoveAny:After(
 							0.03,
 							function()

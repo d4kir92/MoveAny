@@ -7124,6 +7124,7 @@ local function InitRealms()
                 end
             end
         end
+    elseif D4:GetWoWBuild() == "TBC" then
     else
         if missingWoWBuildOnce then
             missingWoWBuildOnce = false
