@@ -710,13 +710,25 @@ if D4:GetWoWBuild() == "CLASSIC" then
 end
 
 function D4:ReplaceStr(text, old, new)
-    if text == nil then return "" end
-    local b, e = text:find(old, 1, true)
-    if b == nil then
-        return text
-    else
-        return text:sub(1, b - 1) .. new .. text:sub(e + 1)
+    text = tostring(text or "")
+    old = tostring(old or "")
+    if old == "" then return text end
+    new = tostring(new or "")
+    local parts = {}
+    local startPos = 1
+    while true do
+        local b, e = text:find(old, startPos, true)
+        if not b then
+            table.insert(parts, text:sub(startPos))
+            break
+        end
+
+        table.insert(parts, text:sub(startPos, b - 1))
+        table.insert(parts, new)
+        startPos = e + 1
     end
+
+    return table.concat(parts)
 end
 
 local genderNames = {"", "Male", "Female"}
