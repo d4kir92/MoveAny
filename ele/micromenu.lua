@@ -359,7 +359,7 @@ function MoveAny:InitMicroMenu()
 			end
 
 			MoveAny:After(
-				1,
+				2,
 				function()
 					if MoveAny.UpdateMicroBar then
 						MoveAny:UpdateMicroBar("INIT DELAYED")

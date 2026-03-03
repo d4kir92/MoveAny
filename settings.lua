@@ -1325,7 +1325,7 @@ function MoveAny:InitMALock()
 	MALock.save:SetScript(
 		"OnClick",
 		function()
-			MoveAny:TrySaveEditMode()
+			--MoveAny:TrySaveEditMode()
 			if MALock.save then
 				MALock.save:Disable()
 			end
@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.254")
+	MoveAny:SetVersion(135994, "1.8.255")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{

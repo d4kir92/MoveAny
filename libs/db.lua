@@ -673,5 +673,4 @@ function MoveAny:TrySaveEditMode()
 		EditModeManagerFrame.CloseButton:Click()
 	end
 end
-
-MoveAny:TrySaveEditMode()
+--MoveAny:TrySaveEditMode()

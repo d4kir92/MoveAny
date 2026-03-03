@@ -384,7 +384,7 @@ function MoveAny:MenuOptions(opt, frame)
 				"OnClick",
 				function()
 					MoveAny:ResetElement(name)
-					MoveAny:TrySaveEditMode()
+					--MoveAny:TrySaveEditMode()
 					if C_UI then
 						C_UI.Reload()
 					else
