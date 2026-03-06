@@ -297,11 +297,19 @@ D4:RegisterEvent(fSecure, "PLAYER_REGEN_ENABLED")
 D4:OnEvent(
     fSecure,
     function()
-        for i, func in pairs(callbacks) do
-            func()
-        end
+        local ok = xpcall(
+            function(call)
+                for i, func in pairs(calls) do
+                    func()
+                end
 
-        callbacks = {}
+                callbacks = {}
+            end, function(err) end, callbacks
+        )
+
+        if not ok then
+            print("NOT OK")
+        end
     end, "fSecure"
 )
 
@@ -324,7 +332,15 @@ function D4:SafeExec(sel, func, from)
         return
     end
 
-    func()
+    local ok = xpcall(
+        function(fun)
+            func()
+        end, function(err) end, func
+    )
+
+    if not ok then
+        print("SAFE EXEC NOT OK")
+    end
 end
 
 function D4:GetCVar(name)

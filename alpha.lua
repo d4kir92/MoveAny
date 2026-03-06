@@ -218,37 +218,45 @@ function MoveAny:InitAlphas()
 end
 
 function MoveAny:SetMouseEleAlpha(ele, last)
-    MoveAny:UpdateAlphas("SETMOUSEELE", ele, lastEle)
-    lastEle = last
+    xpcall(
+        function()
+            MoveAny:UpdateAlphas("SETMOUSEELE", ele, lastEle)
+            lastEle = last
+        end, function(err) end
+    )
 end
 
 function MoveAny:CheckAlphas()
-    local ele = MoveAny:GetMouseFocus()
-    if ele ~= lEle then
-        lEle = ele
-        if ele and ele ~= CompactRaidFrameManager then
-            if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
-                MoveAny:SetMouseEleAlpha(ele, nil)
-            end
-
-            if ele ~= WorldFrame and ele ~= UIParent and (not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame)) then
-                if tContains(MoveAny:GetAlphaFrames(), ele) then
-                    ele:SetAlpha(1)
-                    MoveAny:SetMouseEleAlpha(ele, ele)
-                elseif ele.GetMAEle then
-                    ele = ele:GetMAEle()
-                    if ele then
-                        ele:SetAlpha(1)
-                        MoveAny:SetMouseEleAlpha(ele, ele)
+    xpcall(
+        function()
+            local ele = MoveAny:GetMouseFocus()
+            if ele ~= lEle then
+                lEle = ele
+                if ele and ele ~= CompactRaidFrameManager then
+                    if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
+                        MoveAny:SetMouseEleAlpha(ele, nil)
                     end
-                elseif lastEle then
+
+                    if ele ~= WorldFrame and ele ~= UIParent and (not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame)) then
+                        if tContains(MoveAny:GetAlphaFrames(), ele) then
+                            ele:SetAlpha(1)
+                            MoveAny:SetMouseEleAlpha(ele, ele)
+                        elseif ele.GetMAEle then
+                            ele = ele:GetMAEle()
+                            if ele then
+                                ele:SetAlpha(1)
+                                MoveAny:SetMouseEleAlpha(ele, ele)
+                            end
+                        elseif lastEle then
+                            MoveAny:SetMouseEleAlpha(ele, nil)
+                        end
+                    end
+                elseif lastEle ~= nil then
                     MoveAny:SetMouseEleAlpha(ele, nil)
                 end
             end
-        elseif lastEle ~= nil then
-            MoveAny:SetMouseEleAlpha(ele, nil)
-        end
-    end
+        end, function(err) end
+    )
 
     MoveAny:After(
         0.11,

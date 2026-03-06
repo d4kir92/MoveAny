@@ -93,7 +93,6 @@ function MoveAny:UpdateActionBar(frame)
 
 			local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
 			opts["ROWS"] = opts["ROWS"] or nil
-			opts["OFFSET"] = opts["OFFSET"] or nil
 			opts["SPACING"] = opts["SPACING"] or dSpacing
 			opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
 			local flipped = opts["FLIPPED"]
@@ -101,9 +100,9 @@ function MoveAny:UpdateActionBar(frame)
 				opts["ROWS"] = abpoints[name]["ROWS"]
 			end
 
-			local offset = opts["OFFSET"] or 0
 			local rows = tonumber(opts["ROWS"] or 1)
 			local spacing = tonumber(opts["SPACING"])
+			local offset = opts["OFFSET"] or 0
 			if frame == MAMenuBar then
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 					frame:SetScale(1)
