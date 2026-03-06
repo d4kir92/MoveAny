@@ -418,7 +418,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 			end
 
 			local ele = MoveAny:GetSelectEleName("LID_" .. key)
-			if ele and _G[ele .. "_MA_DRAG"] and MoveAny:GetCurrentEle() == _G[ele .. "_MA_DRAG"] then
+			if ele and MoveAny:GetDragFromName(name) and MoveAny:GetCurrentEle() == MoveAny:GetDragFromName(name) then
 				lstr = "|cFFFFFF00" .. lstr .. "|r"
 				MoveAny:ResetSelectedText()
 				lastSelected = cb
@@ -474,7 +474,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 				local ele = MoveAny:GetSelectEleName("LID_" .. key)
 				if ele then
 					local f = _G[ele]
-					local df = _G[ele .. "_MA_DRAG"]
+					local df = MoveAny:GetDragFromName(ele)
 					if df then
 						if btn == "LeftButton" then
 							MoveAny:SelectEle(df)
@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.255")
+	MoveAny:SetVersion(135994, "1.8.256")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6653,8 +6653,8 @@ function MoveAny:LoadAddon()
 					end
 
 					ReputationWatchBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					if ReputationWatchBar_MA_DRAG then
-						ReputationWatchBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					if MoveAny:GetDragFromName("ReputationWatchBar") then
+						MoveAny:GetDragFromName("ReputationWatchBar"):SetSize(opts["WIDTH"], opts["HEIGHT"])
 					end
 
 					if ReputationWatchBar.StatusBar then
@@ -6727,8 +6727,8 @@ function MoveAny:LoadAddon()
 				opts["HEIGHT"] = opts["HEIGHT"] or 15
 				if opts["WIDTH"] and opts["HEIGHT"] then
 					MainMenuExpBar:SetSize(opts["WIDTH"], opts["HEIGHT"])
-					if MainMenuExpBar_MA_DRAG then
-						MainMenuExpBar_MA_DRAG:SetSize(opts["WIDTH"], opts["HEIGHT"])
+					if MoveAny:GetDragFromName("MainMenuExpBar") then
+						MoveAny:GetDragFromName("MainMenuExpBar"):SetSize(opts["WIDTH"], opts["HEIGHT"])
 					end
 
 					local last = nil

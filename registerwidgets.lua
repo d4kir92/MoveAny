@@ -403,7 +403,7 @@ function MoveAny:MenuOptions(opt, frame)
 				function()
 					local checked = hide:GetChecked()
 					MoveAny:SetEleOption(name, "Hide", checked)
-					local dragf = _G[name .. "_MA_DRAG"]
+					local dragf = MoveAny:GetDragFromName(name)
 					if checked then
 						MoveAny:HideFrame(optionFrame)
 						dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
@@ -437,7 +437,7 @@ function MoveAny:MenuOptions(opt, frame)
 				function()
 					local checked = clickthrough:GetChecked()
 					MoveAny:SetEleOption(name, "ClickThrough", checked)
-					local dragf = _G[name .. "_MA_DRAG"]
+					local dragf = MoveAny:GetDragFromName(name)
 					if checked then
 						if optionFrame then
 							dragf:Show()
@@ -1525,6 +1525,11 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 	end
 end
 
+local cacheDrags = {}
+function MoveAny:GetDragFromName(name)
+	return cacheDrags[name]
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1563,9 +1568,9 @@ function MoveAny:RegisterWidget(tab)
 		MoveAny:AddFrameName(frame, name)
 	end
 
-	if _G[name .. "_MA_DRAG"] == nil then
-		_G[name .. "_MA_DRAG"] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
-		local dragframe = _G[name .. "_MA_DRAG"]
+	if MoveAny:GetDragFromName(name) == nil then
+		cacheDrags[name] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
+		local dragframe = MoveAny:GetDragFromName(name)
 		MoveAny:SetClampedToScreen(dragframe, true, "RegisterWidget 1")
 		dragframe:SetFrameStrata("MEDIUM")
 		dragframe:SetFrameLevel(99)
@@ -1709,7 +1714,7 @@ function MoveAny:RegisterWidget(tab)
 		tinsert(MoveAny:GetDragFrames(), dragframe)
 	end
 
-	local dragf = _G[name .. "_MA_DRAG"]
+	local dragf = MoveAny:GetDragFromName(name)
 	if frame then
 		dragf:Show()
 	else
@@ -1755,7 +1760,7 @@ function MoveAny:RegisterWidget(tab)
 					if sel.scri then return end
 					sel.scri = true
 					sel:SetClampRectInsets(l, r, t, b)
-					local df = _G[name .. "_MA_DRAG"]
+					local df = MoveAny:GetDragFromName(name)
 					if df then
 						df:SetClampRectInsets(l, r, t, b)
 					end
@@ -2052,7 +2057,7 @@ function MoveAny:RegisterWidget(tab)
 				sel:SetScale(newScale)
 			end
 
-			local dragframe = _G[name .. "_MA_DRAG"]
+			local dragframe = MoveAny:GetDragFromName(name)
 			if dragframe then
 				dragframe:SetScale(newScale)
 			end
@@ -2067,7 +2072,7 @@ function MoveAny:RegisterWidget(tab)
 		function(sel, w, h)
 			if InCombatLockdown() and sel:IsProtected() then return false end
 			local isToSmall = false
-			local df = _G[name .. "_MA_DRAG"]
+			local df = MoveAny:GetDragFromName(name)
 			if df.SetSize then
 				df:SetSize(w, h)
 			end
@@ -2104,7 +2109,7 @@ function MoveAny:RegisterWidget(tab)
 		end, "RegisterWidget SetScale"
 	)
 
-	local dragframe = _G[name .. "_MA_DRAG"]
+	local dragframe = MoveAny:GetDragFromName(name)
 	dragframe:SetSize(sw, sh)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)

@@ -396,7 +396,6 @@ function MoveAny:UpdateActionBar(frame)
 				if not InCombatLockdown() then
 					frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
 					if frame ~= StanceBar then
-						local mover = getglobal(name .. "_MA_DRAG")
 						local sw, sh = frame:GetSize()
 						local osw, osh = MoveAny:GetEleSize(name)
 						sw = MoveAny:MathR(sw)
@@ -405,6 +404,7 @@ function MoveAny:UpdateActionBar(frame)
 							MoveAny:SetEleSize(name, sw, sh)
 						end
 
+						local mover = MoveAny:GetDragFromName(name)
 						if mover then
 							mover:SetSize(frame:GetSize())
 						end
