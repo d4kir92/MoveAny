@@ -297,7 +297,7 @@ D4:RegisterEvent(fSecure, "PLAYER_REGEN_ENABLED")
 D4:OnEvent(
     fSecure,
     function()
-        local ok = xpcall(
+        xpcall(
             function(call)
                 for i, func in pairs(calls) do
                     func()
@@ -306,10 +306,6 @@ D4:OnEvent(
                 callbacks = {}
             end, function(err) end, callbacks
         )
-
-        if not ok then
-            print("NOT OK")
-        end
     end, "fSecure"
 )
 
@@ -339,7 +335,7 @@ function D4:SafeExec(sel, func, from)
     )
 
     if not ok then
-        print("SAFE EXEC NOT OK")
+        callbacks[from] = func
     end
 end
 
