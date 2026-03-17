@@ -755,7 +755,7 @@ function MoveAny:InitMALock()
 		end
 	)
 
-	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
+	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()))
 	MALock.CloseButton:SetScript(
 		"OnClick",
 		function()
@@ -1802,7 +1802,7 @@ function MoveAny:ShowProfiles()
 			end
 		)
 
-		MAProfiles.TitleText:SetText(format("|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r v|cff3FC7EB%s", MoveAny:GetVersion()))
+		MAProfiles.TitleText:SetText(format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()))
 		MAProfiles.CloseButton:SetScript(
 			"OnClick",
 			function()
@@ -2464,14 +2464,14 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.258")
+	MoveAny:SetVersion(135994, "1.8.259")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
 				["name"] = "MoveAny",
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
-				["vTT"] = {{"|T135994:16:16:0:0|t M|cff3FC7EBove|rA|cff3FC7EBny|r", "v|cff3FC7EB" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
+				["vTT"] = {{"|T135994:16:16:0:0|t Move|rAny|r", "v" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,

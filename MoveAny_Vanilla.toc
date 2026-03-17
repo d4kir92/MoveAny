@@ -1,11 +1,20 @@
 ## Interface: 11508
-## Version: 1.8.258
-## Title: M|cff3FC7EBove|rA|cff3FC7EBny|r |T135994:16:16:0:0|t by |cff3FC7EBD4KiR |T132115:16:16:0:0|t
+## Version: 1.8.259
+## Title: MoveAny |T135994:16:16:0:0|t by |cff55d2ffD4KiR |T132115:16:16:0:0|t
 ## Notes: Move Any Ui or Frame
 ## Notes-ruRU: MoveAny - аддон, с помощью которого можно разблокировать и перемещать элементы интерфейса
-## Author: D|cff3FC7EB4KiR |T132115:16:16:0:0|t
-## Category: D|cff3FC7EB4KiR |T132115:16:16:0:0|t
-## X-Category: D|cff3FC7EB4KiR |T132115:16:16:0:0|t
+## Author: D4KiR |T132115:16:16:0:0|t
+## Category: UI Overhaul
+## Category-deDE: UI-Überholung
+## Category-esES: Renovación de la Interfaz de Usuario
+## Category-esMX: Renovación de la Interfaz de Usuario
+## Category-frFR: Révision de l'Interface Utilisateur
+## Category-itIT: Revisione dell'interfaccia utente
+## Category-koKR: UI 개조
+## Category-ptBR: Reformulação da Interface do Usuário
+## Category-ruRU: Переработка интерфейса
+## Category-zhCN: UI重构
+## Category-zhTW: UI重構
 ## DefaultState: enabled
 ## SavedVariables: MATAB
 ## SavedVariablesPerCharacter: MATABPC
