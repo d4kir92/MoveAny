@@ -15,6 +15,36 @@ local MAEF = {}
 local startRegisterWidget = false
 local missingWidgets = {}
 local retryFrame = CreateFrame("Frame")
+local vehicleWidgets = {}
+local vehicleListener = nil
+
+local function MA_ApplyWidgetState(name, frame)
+    if not frame or not name then return end
+    if InCombatLockdown() and frame:IsProtected() then return end
+
+    local dbp1, target, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+    if dbp1 and dbp3 then
+        MoveAny:SetPoint(frame, dbp1, target, dbp3, dbp4, dbp5)
+    end
+end
+
+local function MA_EnsureVehicleListener()
+    if vehicleListener then return end
+    vehicleListener = CreateFrame("Frame")
+    vehicleListener:RegisterEvent("UNIT_ENTERING_VEHICLE")
+    vehicleListener:RegisterEvent("UNIT_ENTERED_VEHICLE")
+    vehicleListener:RegisterEvent("UNIT_EXITING_VEHICLE")
+    vehicleListener:RegisterEvent("UNIT_EXITED_VEHICLE")
+	vehicleListener:SetScript("OnEvent", function(_, event, unit)
+		if unit and unit ~= "player" then return end
+		for name, frame in pairs(vehicleWidgets) do
+			if frame then
+				MA_ApplyWidgetState(name, frame)
+			end
+		end
+	end)
+end
+
 MoveAny:OnEvent(
 	retryFrame,
 	function(sel, event, ...)
@@ -1963,6 +1993,11 @@ function MoveAny:RegisterWidget(tab)
 		frame:EnableMouse(false)
 	end
 
+	MA_EnsureVehicleListener()
+	if name and frame then
+		vehicleWidgets[name] = frame
+	end
+
 	local elesetpoint = false
 	local ma_secure = secure
 	local bToSmall = false
@@ -2026,6 +2061,18 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				elesetpoint = false
+			end
+		end
+	)
+
+	hooksecurefunc(
+		frame,
+		"SetParent",
+		function(sel, parent)
+			local target = MoveAny:GetMainPanel()
+			if parent ~= target and parent ~= UIParent and parent ~= MoveAny:GetHidden() then
+				if InCombatLockdown() and sel:IsProtected() then return end
+				sel:SetParent(target)
 			end
 		end
 	)
