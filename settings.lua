@@ -418,7 +418,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 			end
 
 			local ele = MoveAny:GetSelectEleName("LID_" .. key)
-			if ele and MoveAny:GetDragFromName(name) and MoveAny:GetCurrentEle() == MoveAny:GetDragFromName(name) then
+			if ele and MoveAny:GetDragFromName(key) and MoveAny:GetCurrentEle() == MoveAny:GetDragFromName(key) then
 				lstr = "|cFFFFFF00" .. lstr .. "|r"
 				MoveAny:ResetSelectedText()
 				lastSelected = cb
@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.262")
+	MoveAny:SetVersion(135994, "1.8.263")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
