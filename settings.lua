@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.264")
+	MoveAny:SetVersion(135994, "1.8.266")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6144,32 +6144,40 @@ function MoveAny:LoadAddon()
 		end
 
 		function MoveAny:GameTooltipOnDefaultPosition()
-			local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
-			if p1 and p2 and p3 and p4 and p5 then
-				if p2 == _G["MAGameTooltip"] then
-					return true
-				elseif p2 == UIParent or p2 == UIParent then
-					if gtp4 == nil and gtp5 == nil then
-						_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
-						gtp4 = floor(gtp4)
-						gtp5 = floor(gtp5)
+			local ok, result = pcall(
+				function()
+					local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
+					if p1 and p2 and p3 and p4 and p5 then
+						if p2 == _G["MAGameTooltip"] then
+							return true
+						elseif p2 == UIParent or p2 == UIParent then
+							if gtp4 == nil and gtp5 == nil then
+								_, _, _, gtp4, gtp5 = GameTooltip:GetPoint()
+								gtp4 = floor(gtp4)
+								gtp5 = floor(gtp5)
+							end
+
+							if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+								p4 = floor(p4)
+								p5 = floor(p5)
+								if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then return true end
+							end
+						elseif p2 == GameTooltipDefaultContainer then
+							if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
+								p4 = floor(p4)
+								p5 = floor(p5)
+								if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then return true end
+							end
+						end
 					end
 
-					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
-						p4 = floor(p4)
-						p5 = floor(p5)
-						if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then return true end
-					end
-				elseif p2 == GameTooltipDefaultContainer then
-					if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
-						p4 = floor(p4)
-						p5 = floor(p5)
-						if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then return true end
-					end
+					return false
 				end
-			end
+			)
 
-			return false
+			if ok then return result end
+
+			return true
 		end
 
 		if MoveAny:IsEnabled("GAMETOOLTIP", false) or MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) then

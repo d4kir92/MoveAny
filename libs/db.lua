@@ -559,7 +559,7 @@ function MoveAny:GetGridSize()
 end
 
 function MoveAny:GetSnapSize()
-	return MoveAny:MAGV("GRIDSIZE", 10)
+	return MoveAny:MAGV("SNAPSIZE", 10)
 end
 
 function MoveAny:GetSnapWindowSize()
