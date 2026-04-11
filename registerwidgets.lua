@@ -2007,23 +2007,31 @@ function MoveAny:RegisterWidget(tab)
 		function(sel, p1, p2, p3, p4, p5)
 			if elesetpoint then return end
 			if not ma_secure then
-				if sel.SetMovable then
-					sel:SetMovable(true)
-				end
+				pcall(
+					function()
+						if sel.SetMovable then
+							sel:SetMovable(true)
+						end
 
-				if sel.SetUserPlaced and sel:IsMovable() then
-					sel:SetUserPlaced(userplaced or false)
-				end
+						if sel.SetUserPlaced and sel.SetMovable and sel:IsMovable() then
+							sel:SetUserPlaced(userplaced or false)
+						end
+					end
+				)
 
 				elesetpoint = true
-				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-				if dbp1 and dbp3 then
-					MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
-				end
+				pcall(
+					function()
+						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+						if dbp1 and dbp3 then
+							MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
+						end
 
-				if sel == MAMenuBar then
-					MoveAny:UpdateActionBar(sel)
-				end
+						if sel == MAMenuBar then
+							MoveAny:UpdateActionBar(sel)
+						end
+					end
+				)
 
 				elesetpoint = false
 			end
