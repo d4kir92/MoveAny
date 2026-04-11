@@ -1,8 +1,4 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local tinsert = getglobal("tinsert")
-local LibStub = getglobal("LibStub")
 local btnsize = 30
 local once = true
 function MoveAny:GetStanceBarCount()
@@ -10,7 +6,7 @@ function MoveAny:GetStanceBarCount()
 	if GetNumShapeshiftForms() > 0 then
 		cou = GetNumShapeshiftForms()
 	else
-		cou = getglobal("NUM_STANCE_SLOTS") or 0
+		cou = NUM_STANCE_SLOTS or 0
 	end
 
 	return cou or 0

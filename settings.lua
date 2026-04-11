@@ -1,20 +1,4 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local strsplit = getglobal("strsplit")
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local GetScreenWidth = getglobal("GetScreenWidth")
-local GetScreenHeight = getglobal("GetScreenHeight")
-local tinsert = getglobal("tinsert")
-local strfind = getglobal("strfind")
-local strupper = getglobal("strupper")
-local strlower = getglobal("strlower")
-local format = getglobal("format")
-local C_Widget = getglobal("C_Widget")
-local C_UI = getglobal("C_UI")
-local C_ChatInfo = getglobal("C_ChatInfo")
-local SHOW_MULTI_ACTIONBAR_3 = getglobal("SHOW_MULTI_ACTIONBAR_3")
-local Enum = getglobal("Enum")
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -851,7 +835,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "GAMETOOLTIP", false, nil, nil, "ShowHudTooltip")
 		AddCheckBox(posx, "PETBAR", false, nil, nil, "ShowPetActionBar")
 		AddCheckBox(posx, "STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
-		if PossessActionBar or getglobal("PossessBarFrame") then
+		if PossessActionBar or PossessBarFrame then
 			AddCheckBox(posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar")
 		end
 
@@ -891,7 +875,7 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		if getglobal("ActionBarUpButton") and getglobal("ActionBarDownButton") then
+		if ActionBarUpButton and ActionBarDownButton then
 			AddCheckBox(4, "MAPAGES", false)
 		end
 
@@ -904,17 +888,16 @@ function MoveAny:InitMALock()
 		AddCheckBox(posx, "MINIMAP", false)
 		AddCheckBox(posx, "QUESTTRACKER", false)
 		AddCheckBox(posx, "QUESTITEMSANCHOR", false)
-		if getglobal("QuestTimerFrame") then
+		if QuestTimerFrame then
 			AddCheckBox(posx, "QUESTTIMERFRAME", false)
 		end
 
 		AddCheckBox(posx, "MAPETFRAME", false)
-		local PetFrameHappiness = getglobal("PetFrameHappiness")
 		if PetFrameHappiness then
 			AddCheckBox(posx, "PETFRAMEHAPPINESS", false)
 		end
 
-		if PartyFrame or getglobal("PartyMemberFrame1") then
+		if PartyFrame or PartyMemberFrame1 then
 			AddCheckBox(posx, "PARTYFRAME", false, nil, nil, "ShowPartyFrames")
 		end
 
@@ -971,7 +954,6 @@ function MoveAny:InitMALock()
 			AddCheckBox(4, "QUEUESTATUSFRAME", false)
 		end
 
-		local MainMenuExpBar = getglobal("MainMenuExpBar")
 		if MoveAny:IsValidFrame(MainMenuExpBar) then
 			AddCheckBox(4, "MAINMENUEXPBAR", false)
 			AddCheckBox(4, "REPUTATIONWATCHBAR", false)
@@ -1469,7 +1451,7 @@ function MoveAny:InitMALock()
 		function()
 			MAGridFrame = CreateFrame("Frame", "MAGridFrame", MoveAny:GetMainPanel())
 			function MoveAny:GridFrameThink()
-				if getglobal("MACurrentEle") then
+				if MACurrentEle then
 					MAGridFrame:EnableMouse(true)
 				else
 					MAGridFrame:EnableMouse(false)
@@ -2464,7 +2446,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.270")
+	MoveAny:SetVersion(135994, "1.8.271")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2492,7 +2474,6 @@ function MoveAny:IsEnabledBartender4(element)
 		realm = GetRealmName()
 	end
 
-	local Bartender4DB = getglobal("Bartender4DB")
 	if Bartender4DB == nil then return false end
 	if Bartender4DB["namespaces"] == nil then return false end
 	if Bartender4DB["namespaces"][element] == nil then return false end
@@ -2544,10 +2525,7 @@ function MoveAny:LoadAddon()
 		PetBattleFrame.BottomFrame:SetFrameStrata("DIALOG")
 	end
 
-	local MainMenuExpBar = getglobal("MainMenuExpBar")
-	local UIPARENT_MANAGED_FRAME_POSITIONS = getglobal("UIPARENT_MANAGED_FRAME_POSITIONS")
 	if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and MoveAny:IsEnabled("ACTIONBARS", false) then
-		local MainMenuBarPerformanceBarFrame = getglobal("MainMenuBarPerformanceBarFrame")
 		if MainMenuBarPerformanceBarFrame then
 			MainMenuBarPerformanceBarFrame:SetParent(MoveAny:GetHidden())
 		end
@@ -2556,7 +2534,6 @@ function MoveAny:LoadAddon()
 			UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBar"] = nil
 		end
 
-		local MainMenuBarArtFrame = getglobal("MainMenuBarArtFrame")
 		if MainMenuBarArtFrame then
 			if UIPARENT_MANAGED_FRAME_POSITIONS then
 				UIPARENT_MANAGED_FRAME_POSITIONS["MainMenuBarArtFrame"] = nil
@@ -2569,12 +2546,10 @@ function MoveAny:LoadAddon()
 			MainMenuBar:SetParent(MoveAny:GetHidden())
 		end
 
-		local MainMenuBarOverlayFrame = getglobal("MainMenuBarOverlayFrame")
 		if MainMenuBarOverlayFrame then
 			MainMenuBarOverlayFrame:SetParent(MoveAny:GetHidden())
 		end
 
-		local MainMenuBarExpText = getglobal("MainMenuBarExpText")
 		if MainMenuBarExpText then
 			MainMenuBarExpText:SetParent(MainMenuExpBar)
 			MainMenuBarExpText:SetDrawLayer("OVERLAY")
@@ -4309,7 +4284,7 @@ function MoveAny:LoadAddon()
 				local btn = _G["StanceButton" .. i]
 				if btn then
 					function btn:GetMAEle()
-						return getglobal("StanceBarAnchor")
+						return StanceBarAnchor
 					end
 
 					if _G["StanceButton" .. i .. "NormalTexture2"] then
@@ -4338,7 +4313,6 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		local PossessBarFrame = getglobal("PossessBarFrame")
 		if PossessActionBar then
 			if MoveAny:IsEnabled("POSSESSBAR", false) then
 				MoveAny:RegisterWidget(
@@ -4913,8 +4887,6 @@ function MoveAny:LoadAddon()
 							ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
 							ObjectiveTrackerFrame:SetSize(240, 600)
 							ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
-							local QuestWatchFrame = getglobal("QuestWatchFrame")
-							local WatchFrame = getglobal("WatchFrame")
 							if QuestWatchFrame then
 								hooksecurefunc(
 									QuestWatchFrame,
@@ -6091,7 +6063,6 @@ function MoveAny:LoadAddon()
 			MoveAny:After(
 				3,
 				function()
-					local LeaPlusDB = getglobal("LeaPlusDB")
 					local ltpEnhancedMinimap = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
 					if ltpEnhancedMinimap then
 						MoveAny:INFO("LeatrixPlus \"EnhancedMinimap\" is enabled, which will block moving the minimap.")
@@ -6111,20 +6082,22 @@ function MoveAny:LoadAddon()
 					}
 				)
 			else
-				if MultiBarRight then
-					MultiBarRight.OldSetScale = MultiBarRight.OldSetScale or MultiBarRight.SetScale
-					MultiBarRight.SetScale = function(sel, scale)
-						if scale > 0 then
-							MultiBarRight:OldSetScale(scale)
+				if false then
+					if MultiBarRight then
+						MultiBarRight.OldSetScale = MultiBarRight.OldSetScale or MultiBarRight.SetScale
+						MultiBarRight.SetScale = function(sel, scale)
+							if scale > 0 then
+								MultiBarRight:OldSetScale(scale)
+							end
 						end
 					end
-				end
 
-				if MultiBarLeft then
-					MultiBarLeft.OldSetScale = MultiBarLeft.OldSetScale or MultiBarLeft.SetScale
-					MultiBarLeft.SetScale = function(sel, scale)
-						if scale > 0 then
-							MultiBarLeft:OldSetScale(scale)
+					if MultiBarLeft then
+						MultiBarLeft.OldSetScale = MultiBarLeft.OldSetScale or MultiBarLeft.SetScale
+						MultiBarLeft.SetScale = function(sel, scale)
+							if scale > 0 then
+								MultiBarLeft:OldSetScale(scale)
+							end
 						end
 					end
 				end
@@ -6793,7 +6766,6 @@ function MoveAny:LoadAddon()
 						end, "XPBar"
 					)
 
-					local MainMenuBarExpText = getglobal("MainMenuBarExpText")
 					if MainMenuBarExpText then
 						MainMenuBarExpText:SetText(MainMenuBarExpText:GetText())
 					end

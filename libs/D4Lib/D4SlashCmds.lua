@@ -1,19 +1,19 @@
 local _, D4 = ...
 function D4:AddSlash(name, func)
     local cmdName = string.upper(name)
-    if not getglobal("SlashCmdList") then
-        setglobal("SlashCmdList", {})
+    if not _G["SlashCmdList"] then
+        _G["SlashCmdList"] = {}
     end
 
-    if getglobal("SlashCmdList")[cmdName] then return end
+    if _G["SlashCmdList"][cmdName] then return end
     SlashCmdList[cmdName] = function(msg)
         func(msg)
     end
 
     local i = 1
-    while getglobal("SLASH_" .. cmdName .. i) ~= nil do
+    while _G["SLASH_" .. cmdName .. i] ~= nil do
         i = i + 1
     end
 
-    setglobal("SLASH_" .. cmdName .. i, "/" .. name)
+    _G["SLASH_" .. cmdName .. i] = "/" .. name
 end

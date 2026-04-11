@@ -1,9 +1,4 @@
 local _, D4 = ...
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local securecall = getglobal("securecall")
-local strsplit = getglobal("strsplit")
-local OpacitySliderFrame = getglobal("OpacitySliderFrame")
 local X = 0
 local Y = 0
 local PARENT = nil
@@ -378,24 +373,24 @@ function D4:CreateSlider(tab)
 
     slider:SetSize(tab.sw, 16)
     slider:SetPoint(unpack(tab.pTab))
-    if getglobal(tab.key .. "Low") then
-        slider.Low = getglobal(tab.key .. "Low")
+    if _G[tab.key .. "Low"] then
+        slider.Low = _G[tab.key .. "Low"]
     elseif slider.Low == nil then
         slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
         slider.Low:SetTextColor(1, 1, 1)
     end
 
-    if getglobal(tab.key .. "High") then
-        slider.High = getglobal(tab.key .. "High")
+    if _G[tab.key .. "High"] then
+        slider.High = _G[tab.key .. "High"]
     elseif slider.High == nil then
         slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
         slider.High:SetTextColor(1, 1, 1)
     end
 
-    if getglobal(tab.key .. "High") then
-        setglobal(tab.key .. "High", slider.High)
+    if _G[tab.key .. "High"] then
+        _G[tab.key .. "High"] = slider.High
     end
 
     if slider.Text == nil then

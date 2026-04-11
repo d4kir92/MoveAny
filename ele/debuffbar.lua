@@ -5,9 +5,6 @@ local MADEBUFFSPACINGX = 4
 local MADEBUFFSPACINGY = 10
 local once = true
 local MADebuffBar = nil
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local LibStub = getglobal("LibStub")
 function MoveAny:GetDebuffBar()
 	return MADebuffBar
 end
@@ -41,8 +38,6 @@ end
 
 local started = false
 function MoveAny:InitDebuffBar()
-	local BuffFrame = getglobal("BuffFrame")
-	local DebuffFrame = getglobal("DebuffFrame")
 	local buff = BuffFrame or DebuffFrame
 	if MoveAny:IsEnabled("DEBUFFS", false) and DebuffFrame == nil then
 		MADebuffBar = CreateFrame("Frame", "MADebuffBar", MoveAny:GetMainPanel())
@@ -70,7 +65,7 @@ function MoveAny:InitDebuffBar()
 			MADebuffBar:SetSize(sw1, sh1)
 		end
 
-		local DebuffButton1 = getglobal("DebuffButton1")
+		local DebuffButton1 = _G["DebuffButton1"]
 		if MoveAny:DEBUG() then
 			DebuffButton1.t = DebuffButton1:CreateTexture()
 			DebuffButton1.t:SetAllPoints(DebuffButton1)
@@ -145,7 +140,7 @@ function MoveAny:InitDebuffBar()
 				)
 			else
 				for bid = 1, 32 do
-					local bbtn = getglobal("DebuffButton" .. bid)
+					local bbtn = _G["DebuffButton" .. bid]
 					if bbtn then
 						if bbtn.masetup == nil then
 							bbtn.masetup = true
@@ -181,7 +176,7 @@ function MoveAny:InitDebuffBar()
 									local numBuffs = 1
 									local prevBuff = nil
 									for i = 1, 32 do
-										local btn = getglobal("DebuffButton" .. i)
+										local btn = _G["DebuffButton" .. i]
 										if i == bid then break end
 										if btn and MoveAny:GetParent(btn) == MADebuffBar then
 											numBuffs = numBuffs + 1
@@ -252,11 +247,11 @@ function MoveAny:InitDebuffBar()
 					end
 
 					for i = 1, 32 do
-						local btn = getglobal("DebuffButton" .. i)
+						local btn = _G["DebuffButton" .. i]
 						if btn and not btn.MasqueButtonData then
 							btn.MasqueButtonData = {
 								Button = btn,
-								Icon = getglobal("DebuffButton" .. "IconTexture"),
+								Icon = _G["DebuffButton" .. "IconTexture"],
 							}
 
 							MAMasqueBuffs:AddButton(btn, btn.MasqueButtonData, "Item")

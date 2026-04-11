@@ -1,14 +1,14 @@
 local _, D4 = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local GetBuildInfo = getglobal("GetBuildInfo")
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local GetTime = getglobal("GetTime")
-local tinsert = getglobal("tinsert")
-local tremove = getglobal("tremove")
-local CUSTOM_CLASS_COLORS = getglobal("CUSTOM_CLASS_COLORS")
-local RAID_CLASS_COLORS = getglobal("RAID_CLASS_COLORS")
-local GetAtlasInfo = getglobal("GetAtlasInfo")
+local hooksecurefunc = _G["hooksecurefunc"]
+local GetBuildInfo = _G["GetBuildInfo"]
+local CreateFrame = _G["CreateFrame"]
+local InCombatLockdown = _G["InCombatLockdown"]
+local GetTime = _G["GetTime"]
+local tinsert = _G["tinsert"]
+local tremove = _G["tremove"]
+local CUSTOM_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"]
+local RAID_CLASS_COLORS = _G["RAID_CLASS_COLORS"]
+local GetAtlasInfo = _G["GetAtlasInfo"]
 --[[ Basics ]]
 local buildNr = select(4, GetBuildInfo())
 local buildName = "CLASSIC"
@@ -33,9 +33,9 @@ function D4:GetWoWBuild()
 end
 
 D4.oldWow = D4.oldWow or false
-if getglobal("C_Timer") == nil then
+if _G["C_Timer"] == nil then
     D4:MSG("[D4] ADD MISSING: C_Timer")
-    setglobal("C_Timer", {})
+    _G["C_Timer"] = {}
     local f = CreateFrame("Frame")
     f.tab = {}
     f:HookScript(
@@ -85,8 +85,8 @@ function D4:ExtraAfter(duration, callback, from)
     eaf:Show()
 end
 
-if getglobal("C_Widget") == nil then
-    setglobal("C_Widget", {})
+if _G["C_Widget"] == nil then
+    _G["C_Widget"] = {}
     function C_Widget.IsWidget(frame)
         if frame and frame.GetName then return true end
 
@@ -350,7 +350,6 @@ end
 function D4:GetItemInfo(itemID)
     if itemID == nil then return nil end
     if C_Item and C_Item.GetItemInfo then return C_Item.GetItemInfo(itemID) end
-    local GetItemInfo = getglobal("GetItemInfo")
     if GetItemInfo then return GetItemInfo(itemID) end
     D4:MSG("[D4][GetItemInfo] FAILED")
 
@@ -360,7 +359,6 @@ end
 function D4:GetItemCount(itemID)
     if itemID == nil then return nil end
     if C_Item and C_Item.GetItemCount then return C_Item.GetItemCount(itemID) end
-    local GetItemCount = getglobal("GetItemCount")
     if GetItemCount then return GetItemCount(itemID) end
     D4:MSG("[D4][GetItemCount] FAILED")
 
@@ -370,7 +368,6 @@ end
 function D4:GetSpellPowerCost(spellId)
     if spellId == nil then return nil end
     if C_Spell and C_Spell.GetSpellPowerCost then return C_Spell.GetSpellPowerCost(spellId) end
-    local GetSpellPowerCost = getglobal("GetSpellPowerCost")
     if GetSpellPowerCost then return GetSpellPowerCost(spellId) end
     D4:MSG("[D4][GetSpellPowerCost] FAILED")
 
@@ -386,7 +383,6 @@ function D4:GetSpellInfo(spellID)
         return tab
     end
 
-    local GetSpellInfo = getglobal("GetSpellInfo")
     if GetSpellInfo then return GetSpellInfo(spellID) end
     D4:MSG("[D4][GetSpellInfo] FAILED")
 
@@ -396,7 +392,6 @@ end
 function D4:IsSpellInRange(spellID, spellType, unit)
     if spellID == nil then return nil end
     if C_Spell and C_Spell.IsSpellInRange then return C_Spell.IsSpellInRange(spellID, unit) end
-    local IsSpellInRange = getglobal("IsSpellInRange")
     if IsSpellInRange then return IsSpellInRange(spellID, spellType, unit) end
     D4:MSG("[D4][IsSpellInRange] FAILED")
 
@@ -406,7 +401,6 @@ end
 function D4:GetSpellCharges(spellID)
     if spellID == nil then return nil end
     if C_Spell and C_Spell.GetSpellCharges then return C_Spell.GetSpellCharges(spellID) end
-    local GetSpellCharges = getglobal("GetSpellCharges")
     if GetSpellCharges then return GetSpellCharges(spellID) end
     D4:MSG("[D4][GetSpellCharges] FAILED")
 
@@ -415,7 +409,6 @@ end
 
 function D4:GetSpellCastCount(...)
     if C_Spell and C_Spell.GetSpellCastCount then return C_Spell.GetSpellCastCount(...) end
-    local GetSpellCastCount = getglobal("GetSpellCastCount")
     if GetSpellCastCount then return GetSpellCastCount(...) end
     D4:MSG("[D4][GetSpellCastCount] FAILED")
 
@@ -424,7 +417,6 @@ end
 
 function D4:GetMouseFocus()
     if GetMouseFoci then return GetMouseFoci()[1] end
-    local GetMouseFocus = getglobal("GetMouseFocus")
     if GetMouseFocus then return GetMouseFocus() end
     D4:MSG("[D4][GetMouseFocus] FAILED")
 
@@ -433,7 +425,6 @@ end
 
 function D4:GetItemGem(hyperLink, index)
     if C_Item and C_Item.GetItemGem then return C_Item.GetItemGem(hyperLink, index) end
-    local GetItemGem = getglobal("GetItemGem")
     if GetItemGem then return GetItemGem(hyperLink, index) end
 
     return nil, nil
@@ -441,7 +432,6 @@ end
 
 function D4:GetDetailedItemLevelInfo(itemInfo)
     if C_Item and C_Item.GetDetailedItemLevelInfo then return C_Item.GetDetailedItemLevelInfo(itemInfo) end
-    local GetDetailedItemLevelInfo = getglobal("GetDetailedItemLevelInfo")
     if GetDetailedItemLevelInfo then return GetDetailedItemLevelInfo(itemInfo) end
 
     return nil, nil, nil
@@ -450,7 +440,6 @@ end
 function D4:GetContainerItemInfo(bagID, slotID)
     if slotID < 0 then return nil end
     if C_Container and C_Container.GetContainerItemInfo then return C_Container.GetContainerItemInfo(bagID, slotID) end
-    local GetContainerItemInfo = getglobal("GetContainerItemInfo")
     if GetContainerItemInfo then return GetContainerItemInfo(bagID, slotID) end
 
     return nil
@@ -459,7 +448,6 @@ end
 function D4:GetContainerItemLink(bagID, slotID)
     if slotID < 0 then return nil end
     if C_Container and C_Container.GetContainerItemLink then return C_Container.GetContainerItemLink(bagID, slotID) end
-    local GetContainerItemLink = getglobal("GetContainerItemLink")
     if GetContainerItemLink then return GetContainerItemLink(bagID, slotID) end
 
     return nil
@@ -467,7 +455,6 @@ end
 
 local function D4GetContainerNumSlots(bagID)
     if C_Container and C_Container.GetContainerNumSlots then return C_Container.GetContainerNumSlots(bagID) end
-    local GetContainerNumSlots = getglobal("GetContainerNumSlots")
     if GetContainerNumSlots then return GetContainerNumSlots(bagID) end
 
     return nil
@@ -485,7 +472,6 @@ end
 
 function D4:UnitAura(...)
     if C_UnitAuras and C_UnitAuras.GetAuraDataByIndex then return C_UnitAuras.GetAuraDataByIndex(...) end
-    local UnitAura = getglobal("UnitAura")
     if UnitAura then return UnitAura(...) end
     D4:MSG("[D4][UnitAura] FAILED")
 
@@ -494,7 +480,6 @@ end
 
 function D4:LoadAddOn(name)
     if C_AddOns and C_AddOns.LoadAddOn then return C_AddOns.LoadAddOn(name) end
-    local LoadAddOn = getglobal("LoadAddOn")
     if LoadAddOn then return LoadAddOn(name) end
     D4:MSG("[D4][LoadAddOn] FAILED")
 
@@ -508,7 +493,6 @@ function D4:IsAddOnLoaded(name, from)
         return loaded
     end
 
-    local IsAddOnLoaded = getglobal("IsAddOnLoaded")
     if IsAddOnLoaded then return IsAddOnLoaded(name) end
     D4:MSG("[D4][IsAddOnLoaded] FAILED")
 
@@ -971,8 +955,6 @@ end
 local icons = {}
 local searchIcons = true
 function D4:GetTalentIcons()
-    local GetPrimaryTalentTree = getglobal("GetPrimaryTalentTree")
-    local GetTalentTabInfo = getglobal("GetTalentTabInfo")
     if searchIcons then
         if GetSpecialization and GetSpecialization() then
             if GetSpecializationInfo then
@@ -1150,9 +1132,6 @@ D4:RegisterEvent(f, "PLAYER_LOGIN")
 D4:OnEvent(
     f,
     function(self, event, ...)
-        local GetTrackingTexture = getglobal("GetTrackingTexture")
-        local MiniMapTracking = getglobal("MiniMapTracking")
-        local MiniMapTrackingIcon = getglobal("MiniMapTrackingIcon")
         if GetTrackingTexture then
             local trackingTexture = GetTrackingTexture()
             if trackingTexture and MiniMapTracking and MiniMapTrackingIcon and not MiniMapTrackingIcon:GetTexture() then
@@ -1267,142 +1246,151 @@ end
 D4:After(
     1,
     function()
-        if D4:GetWoWBuild() == "TBC" then
-            if PlayerFrame.RangeFix == nil then
-                PlayerFrame.RangeFix = true
-                local cufs = {}
-                hooksecurefunc(
-                    "CompactUnitFrame_OnLoad",
-                    function(frame)
-                        local name = frame:GetName()
-                        if name and name:sub(1, 7) == "Compact" then
-                            cufs[frame] = true
-                        end
+        if D4:GetWoWBuild() == "TBC" and PlayerFrame.RangeFix == nil then
+            PlayerFrame.RangeFix = true
+            local cufs = {}
+            hooksecurefunc(
+                "CompactUnitFrame_OnLoad",
+                function(frame)
+                    local name = frame:GetName()
+                    if name and name:sub(1, 7) == "Compact" then
+                        cufs[frame] = true
                     end
-                )
-
-                for i = 1, 5 do
-                    cufs[_G["CompactPartyFrameMember" .. i]] = true
-                    cufs[_G["CompactPartyFramePet" .. i]] = true
                 end
+            )
 
-                C_Timer.NewTicker(
-                    0.29,
-                    function()
-                        for frame in pairs(cufs) do
-                            if frame and frame:IsShown() then
-                                local unit = frame.displayedUnit
-                                if unit and unit ~= "" then
-                                    local inRange = UnitInRange(unit)
-                                    frame:SetAlpha(inRange and 1 or 0.45)
-                                end
+            for i = 1, 5 do
+                cufs[_G["CompactPartyFrameMember" .. i]] = true
+                cufs[_G["CompactPartyFramePet" .. i]] = true
+            end
+
+            C_Timer.NewTicker(
+                0.29,
+                function()
+                    for frame in pairs(cufs) do
+                        if frame and frame:IsShown() then
+                            local unit = frame.displayedUnit
+                            if unit and unit ~= "" then
+                                local inRange = UnitInRange(unit)
+                                frame:SetAlpha(inRange and 1 or 0.45)
                             end
                         end
                     end
+                end
+            )
+        end
+
+        if (D4:GetWoWBuild() == "TBC" or D4:GetWoWBuild() == "RETAIL") and PlayerFrame.RoleFix == nil then
+            PlayerFrame.RoleFix = true
+            D4:AddTrans("enUS", "LID_CHOOSEROLE", "Select Role")
+            D4:AddTrans("deDE", "LID_CHOOSEROLE", "Rolle wählen")
+            D4:AddTrans("enUS", "LID_NOTLEADER", "Not Leader")
+            D4:AddTrans("deDE", "LID_NOTLEADER", "Nicht Anführer")
+            D4:AddTrans("enUS", "LID_TANK", "Tank")
+            D4:AddTrans("deDE", "LID_TANK", "Schutz")
+            D4:AddTrans("enUS", "LID_HEALER", "Healer")
+            D4:AddTrans("deDE", "LID_HEALER", "Heiler")
+            D4:AddTrans("enUS", "LID_DAMAGER", "Damage")
+            D4:AddTrans("deDE", "LID_DAMAGER", "Schadem")
+            D4:AddTrans("enUS", "LID_NOROLE", "No Role")
+            D4:AddTrans("deDE", "LID_NOROLE", "Keine Rolle")
+            local function IsRole(unit, role)
+                return UnitGroupRolesAssigned(unit) == role
+            end
+
+            local function CanClassBeRole(unit, targetRole)
+                local tab = D4:GetSpecTable()
+                local _, class = UnitClass(unit, targetRole)
+                if tab[class] then
+                    for i, role in pairs(tab[class]) do
+                        if role == targetRole then return true end
+                    end
+                else
+                    D4:MSG("[CanClassBeRole] Failed to find Class", class)
+                end
+
+                return false
+            end
+
+            local function SetupRoleMenu(ownerRegion, rootDescription, contextData)
+                if D4:GetWoWBuild() == "RETAIL" then
+                    local _, _, difficultyID = GetInstanceInfo()
+                    if difficultyID ~= 208 then return end
+                end
+
+                if rootDescription.EnumerateElementDescriptions then
+                    for _, elementData in rootDescription:EnumerateElementDescriptions() do
+                        if elementData.isD4 then return end
+                    end
+                end
+
+                local unit = contextData.unit
+                if unit == nil then return end
+                if not UnitIsPlayer(unit) then return end
+                if not IsInGroup() and not IsInRaid() then return end
+                local isLeader = UnitIsGroupLeader("player")
+                local isAssistant = UnitIsGroupAssistant("player")
+                local roleMenu = MenuUtil.CreateButton(D4:Trans("LID_CHOOSEROLE") .. " (by D4KiR)")
+                roleMenu.isD4 = true
+                if D4:GetWoWBuild() == "TBC" then
+                    rootDescription:Insert(roleMenu, 2)
+                else
+                    rootDescription:Insert(roleMenu, 40)
+                end
+
+                if UnitIsUnit(unit, "player") or isLeader or isAssistant then
+                    roleMenu:SetEnabled(true)
+                else
+                    roleMenu:SetEnabled(false)
+                end
+
+                local tankBtn = roleMenu:CreateRadio(
+                    "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t " .. D4:Trans("LID_TANK"),
+                    function() return IsRole(unit, "TANK") end,
+                    function()
+                        UnitSetRole(unit, "TANK")
+                    end
+                )
+
+                tankBtn:SetEnabled(CanClassBeRole(unit, "TANK"))
+                local healBtn = roleMenu:CreateRadio(
+                    "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t " .. D4:Trans("LID_HEALER"),
+                    function() return IsRole(unit, "HEALER") end,
+                    function()
+                        UnitSetRole(unit, "HEALER")
+                    end
+                )
+
+                healBtn:SetEnabled(CanClassBeRole(unit, "HEALER"))
+                local dpsBtn = roleMenu:CreateRadio(
+                    "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t " .. D4:Trans("LID_DAMAGER"),
+                    function() return IsRole(unit, "DAMAGER") end,
+                    function()
+                        UnitSetRole(unit, "DAMAGER")
+                    end
+                )
+
+                dpsBtn:SetEnabled(CanClassBeRole(unit, "DAMAGER"))
+                roleMenu:CreateRadio(
+                    D4:Trans("LID_NOROLE"),
+                    function() return IsRole(unit, "NONE") end,
+                    function()
+                        UnitSetRole(unit, "NONE")
+                    end
                 )
             end
 
-            if true then
-                D4:AddTrans("enUS", "LID_CHOOSEROLE", "Select Role")
-                D4:AddTrans("deDE", "LID_CHOOSEROLE", "Rolle wählen")
-                D4:AddTrans("enUS", "LID_NOTLEADER", "Not Leader")
-                D4:AddTrans("deDE", "LID_NOTLEADER", "Nicht Anführer")
-                D4:AddTrans("enUS", "LID_TANK", "Tank")
-                D4:AddTrans("deDE", "LID_TANK", "Schutz")
-                D4:AddTrans("enUS", "LID_HEALER", "Healer")
-                D4:AddTrans("deDE", "LID_HEALER", "Heiler")
-                D4:AddTrans("enUS", "LID_DAMAGER", "Damage")
-                D4:AddTrans("deDE", "LID_DAMAGER", "Schadem")
-                D4:AddTrans("enUS", "LID_NOROLE", "No Role")
-                D4:AddTrans("deDE", "LID_NOROLE", "Keine Rolle")
-                local function IsRole(unit, role)
-                    return UnitGroupRolesAssigned(unit) == role
-                end
-
-                local function CanClassBeRole(unit, targetRole)
-                    local tab = D4:GetSpecTable()
-                    local _, class = UnitClass(unit, targetRole)
-                    if tab[class] then
-                        for i, role in pairs(tab[class]) do
-                            if role == targetRole then return true end
-                        end
-                    else
-                        D4:MSG("[CanClassBeRole] Failed to find Class", class)
+            local menuTypes = {"MENU_UNIT_SELF", "MENU_UNIT_TARGET", "MENU_UNIT_FOCUS", "MENU_UNIT_PARTY", "MENU_UNIT_RAID", "MENU_UNIT_PLAYER", "MENU_UNIT_RAID_PLAYER"}
+            for _, menuType in ipairs(menuTypes) do
+                Menu.ModifyMenu(
+                    menuType,
+                    function(ownerRegion, rootDescription, contextData)
+                        SetupRoleMenu(ownerRegion, rootDescription, contextData, "target")
                     end
-
-                    return false
-                end
-
-                local function SetupRoleMenu(ownerRegion, rootDescription, contextData)
-                    if rootDescription.EnumerateElementDescriptions then
-                        for _, elementData in rootDescription:EnumerateElementDescriptions() do
-                            if elementData.isD4 then return end
-                        end
-                    end
-
-                    local unit = contextData.unit
-                    if unit == nil then return end
-                    if not UnitIsPlayer(unit) then return end
-                    if not IsInGroup() and not IsInRaid() then return end
-                    local isLeader = UnitIsGroupLeader("player")
-                    local isAssistant = UnitIsGroupAssistant("player")
-                    local roleMenu = MenuUtil.CreateButton(D4:Trans("LID_CHOOSEROLE") .. " (by D4KiR)")
-                    roleMenu.isD4 = true
-                    rootDescription:Insert(roleMenu, 2)
-                    if UnitIsUnit(unit, "player") or isLeader or isAssistant then
-                        roleMenu:SetEnabled(true)
-                    else
-                        roleMenu:SetEnabled(false)
-                    end
-
-                    local tankBtn = roleMenu:CreateRadio(
-                        "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:0:19:22:41|t " .. D4:Trans("LID_TANK"),
-                        function() return IsRole(unit, "TANK") end,
-                        function()
-                            UnitSetRole(unit, "TANK")
-                        end
-                    )
-
-                    tankBtn:SetEnabled(CanClassBeRole(unit, "TANK"))
-                    local healBtn = roleMenu:CreateRadio(
-                        "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:1:20|t " .. D4:Trans("LID_HEALER"),
-                        function() return IsRole(unit, "HEALER") end,
-                        function()
-                            UnitSetRole(unit, "HEALER")
-                        end
-                    )
-
-                    healBtn:SetEnabled(CanClassBeRole(unit, "HEALER"))
-                    local dpsBtn = roleMenu:CreateRadio(
-                        "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:16:16:0:0:64:64:20:39:22:41|t " .. D4:Trans("LID_DAMAGER"),
-                        function() return IsRole(unit, "DAMAGER") end,
-                        function()
-                            UnitSetRole(unit, "DAMAGER")
-                        end
-                    )
-
-                    dpsBtn:SetEnabled(CanClassBeRole(unit, "DAMAGER"))
-                    roleMenu:CreateRadio(
-                        D4:Trans("LID_NOROLE"),
-                        function() return IsRole(unit, "NONE") end,
-                        function()
-                            UnitSetRole(unit, "NONE")
-                        end
-                    )
-                end
-
-                local menuTypes = {"MENU_UNIT_SELF", "MENU_UNIT_TARGET", "MENU_UNIT_FOCUS", "MENU_UNIT_PARTY", "MENU_UNIT_RAID", "MENU_UNIT_PLAYER",}
-                for _, menuType in ipairs(menuTypes) do
-                    Menu.ModifyMenu(
-                        menuType,
-                        function(ownerRegion, rootDescription, contextData)
-                            SetupRoleMenu(ownerRegion, rootDescription, contextData, "target")
-                        end
-                    )
-                end
+                )
             end
         end
-    end, "TBC FIX"
+    end, "SetRole FIX"
 )
 
 local inspectCache = {}

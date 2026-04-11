@@ -1,8 +1,4 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local tinsert = getglobal("tinsert")
 local MAFRAMES = {"ClickBindingFrame", "TransmogFrame", "PVPParentFrame", "HouseListFrame", "WatchFrameAutoQuestPopUp1", "GuildControlUI", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 local MAFRAMESIGNORECLAMP = {}
 MAFRAMESIGNORECLAMP["TEST"] = true
@@ -218,7 +214,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							WorldMapFrame:EnableMouse(true)
 						end
 
-						local WorldMapTitleButton = getglobal("WorldMapTitleButton")
 						if WorldMapTitleButton and not hookedWorldMapTitle then
 							hookedWorldMapTitle = true
 							hooksecurefunc(
@@ -331,7 +326,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					local frame = MoveAny:GetFrameByName(name)
 					if frame ~= nil and frame:IsVisible() and (not InCombatLockdown() or not frame:IsProtected()) then
 						MAFS[name] = nil
-						local DragonflightUIProfessionFrame = getglobal("DragonflightUIProfessionFrame")
 						if (name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame) or (name == "BankFrame" and MoveAny:IsAddOnLoaded("Sorted", "BankFrame")) then
 							frame:SetAlpha(0)
 							local enableMouse = false
@@ -360,7 +354,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetClampedToScreen(fm, true, "UpdateMoveFrames 1")
 							end
 
-							local WorldMapFrameMove = getglobal("WorldMapFrameMove")
 							if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and WorldMapFrame and WorldMapFrameMove then
 								local offsetl = 15
 								local offsetr = 7
@@ -536,7 +529,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 						end
 
-						local CharacterNameText = getglobal("CharacterNameText")
 						if CharacterNameText and frame == CharacterFrame and PaperDollItemsFrame then
 							CharacterNameText:HookScript(
 								"OnMouseDown",
@@ -750,7 +742,6 @@ function MoveAny:MoveFrames()
 		end, "ADDON_LOADED 123"
 	)
 
-	local BattlefieldFrame = getglobal("BattlefieldFrame")
 	if BattlefieldFrame then
 		BattlefieldFrame:EnableMouse(false)
 	end

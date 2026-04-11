@@ -1,5 +1,4 @@
 local AddonName, MoveAny = ...
-local CreateFrame = getglobal("CreateFrame")
 local MADEBUG = false
 function MoveAny:DEBUG()
 	return MADEBUG
@@ -378,7 +377,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"] = p3
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"] = p4
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"] = p5
-	local frame = getglobal(key)
+	local frame = _G[key]
 	if frame and p1 and p3 then
 		local cap = frame.FClearAllPoints or frame.ClearAllPoints
 		cap(frame)
@@ -387,7 +386,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 		local systemFrame = frame
 		local systemInfo = frame.systemInfo
 		if frame.GetRealEle then
-			systemFrame = getglobal("MABuffBar"):GetRealEle()
+			systemFrame = MABuffBar:GetRealEle()
 			systemInfo = systemFrame.systemInfo
 		end
 
@@ -486,7 +485,7 @@ function MoveAny:SetEleScale(key, scale)
 	if scale > 0 then
 		MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = scale
-		local frame = getglobal(key)
+		local frame = _G[key]
 		if frame then
 			frame:SetScale(scale)
 		end
@@ -598,7 +597,6 @@ function MoveAny:InitDB()
 		end
 	end
 
-	local MAITAB = getglobal("MAITAB")
 	if MAITAB then
 		MoveAny:HR()
 		MoveAny:MSG("...MoveAndImprove detected, importing Profiles...")

@@ -1,7 +1,4 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
 local tries = 0
 function MoveAny:InitMAVehicleSeatIndicator()
 	tries = tries + 1

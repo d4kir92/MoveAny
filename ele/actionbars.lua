@@ -3,17 +3,17 @@ local MAMaxAB = 10
 local btns = {}
 local abpoints = {}
 local abs = {}
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local tinsert = getglobal("tinsert")
-local LibStub = getglobal("LibStub")
-local GetActionBarToggles = getglobal("GetActionBarToggles")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local IsMouseButtonDown = getglobal("IsMouseButtonDown")
-local GetOverrideBarIndex = getglobal("GetOverrideBarIndex")
-local GetTempShapeshiftBarIndex = getglobal("GetTempShapeshiftBarIndex")
-local GetVehicleBarIndex = getglobal("GetVehicleBarIndex")
-local UnitClass = getglobal("UnitClass")
+local hooksecurefunc = _G["hooksecurefunc"]
+local CreateFrame = _G["CreateFrame"]
+local tinsert = _G["tinsert"]
+local LibStub = _G["LibStub"]
+local GetActionBarToggles = _G["GetActionBarToggles"]
+local InCombatLockdown = _G["InCombatLockdown"]
+local IsMouseButtonDown = _G["IsMouseButtonDown"]
+local GetOverrideBarIndex = _G["GetOverrideBarIndex"]
+local GetTempShapeshiftBarIndex = _G["GetTempShapeshiftBarIndex"]
+local GetVehicleBarIndex = _G["GetVehicleBarIndex"]
+local UnitClass = _G["UnitClass"]
 function MoveAny:GetAllActionBars()
 	return abs
 end
@@ -81,8 +81,9 @@ function MoveAny:CheckIfMicroMenuInVehicle(frame)
 	return false
 end
 
+local ma_setpoint_ab = false
 function MoveAny:UpdateActionBar(frame)
-	if frame.ma_setpoint_ab then return end
+	if ma_setpoint_ab then return end
 	MoveAny:SafeExec(
 		frame,
 		function()
@@ -445,16 +446,16 @@ local function UpdateActionBarBackground(show)
 		if ab and ab.btns then
 			for id, abtn in pairs(ab.btns) do
 				local btnname = MoveAny:GetName(abtn)
-				if btnname and getglobal(btnname .. "FloatingBG") then
-					getglobal(btnname .. "FloatingBG"):Show()
+				if btnname and _G[btnname .. "FloatingBG"] then
+					_G[btnname .. "FloatingBG"]:Show()
 				end
 
-				if btnname and getglobal(btnname .. "NormalTexture") then
+				if btnname and _G[btnname .. "NormalTexture"] then
 					if show == nil then
 						if show == true or show == 1 then
-							getglobal("ActionButton_ShowGrid")(abtn)
+							_G["ActionButton_ShowGrid"](abtn)
 						elseif show == false or show == 0 then
-							getglobal("ActionButton_HideGrid")(abtn)
+							_G["ActionButton_HideGrid"](abtn)
 						end
 					end
 				else
@@ -469,7 +470,7 @@ local once = true
 function MoveAny:CustomBars()
 	if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
-			local texture = getglobal("MainMenuMaxLevelBar" .. i)
+			local texture = _G["MainMenuMaxLevelBar" .. i]
 			if texture then
 				hooksecurefunc(
 					texture,
@@ -486,9 +487,9 @@ function MoveAny:CustomBars()
 			end
 		end
 
-		if getglobal("StanceBarLeft") then
+		if _G["StanceBarLeft"] then
 			hooksecurefunc(
-				getglobal("StanceBarLeft"),
+				_G["StanceBarLeft"],
 				"Show",
 				function(sel)
 					if sel.mahide then return end
@@ -498,12 +499,12 @@ function MoveAny:CustomBars()
 				end
 			)
 
-			getglobal("StanceBarLeft"):Hide()
+			_G["StanceBarLeft"]:Hide()
 		end
 
-		if getglobal("StanceBarMiddle") then
+		if _G["StanceBarMiddle"] then
 			hooksecurefunc(
-				getglobal("StanceBarMiddle"),
+				_G["StanceBarMiddle"],
 				"Show",
 				function(sel)
 					if sel.mahide then return end
@@ -513,12 +514,12 @@ function MoveAny:CustomBars()
 				end
 			)
 
-			getglobal("StanceBarMiddle"):Hide()
+			_G["StanceBarMiddle"]:Hide()
 		end
 
-		if getglobal("StanceBarRight") then
+		if _G["StanceBarRight"] then
 			hooksecurefunc(
-				getglobal("StanceBarRight"),
+				_G["StanceBarRight"],
 				"Show",
 				function(sel)
 					if sel.mahide then return end
@@ -528,12 +529,12 @@ function MoveAny:CustomBars()
 				end
 			)
 
-			getglobal("StanceBarRight"):Hide()
+			_G["StanceBarRight"]:Hide()
 		end
 
-		if getglobal("SlidingActionBarTexture0") then
+		if _G["SlidingActionBarTexture0"] then
 			hooksecurefunc(
-				getglobal("SlidingActionBarTexture0"),
+				_G["SlidingActionBarTexture0"],
 				"Show",
 				function(sel)
 					if sel.mahide then return end
@@ -543,12 +544,12 @@ function MoveAny:CustomBars()
 				end
 			)
 
-			getglobal("SlidingActionBarTexture0"):Hide()
+			_G["SlidingActionBarTexture0"]:Hide()
 		end
 
-		if getglobal("SlidingActionBarTexture1") then
+		if _G["SlidingActionBarTexture1"] then
 			hooksecurefunc(
-				getglobal("SlidingActionBarTexture1"),
+				_G["SlidingActionBarTexture1"],
 				"Show",
 				function(sel)
 					if sel.mahide then return end
@@ -558,15 +559,15 @@ function MoveAny:CustomBars()
 				end
 			)
 
-			getglobal("SlidingActionBarTexture1"):Hide()
+			_G["SlidingActionBarTexture1"]:Hide()
 		end
 	end
 
 	for i = 1, MAMaxAB do
 		if i ~= 2 and i <= 6 and MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
 			local name = "MAActionBar" .. i
-			setglobal(name, CreateFrame("Frame", name, MoveAny:GetMainPanel(), "SecureHandlerStateTemplate"))
-			local bar = getglobal(name)
+			_G[name] = CreateFrame("Frame", name, MoveAny:GetMainPanel(), "SecureHandlerStateTemplate")
+			local bar = _G[name]
 			bar:SetFrameLevel(4)
 			bar:SetSize(36 * 12, 36)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
@@ -582,8 +583,7 @@ function MoveAny:CustomBars()
 					btnname = btns[i] .. x
 				end
 
-				setglobal("BINDING_NAME_CLICK " .. btnname .. ":LeftButton", MoveAny:Trans("LID_BINDINGFORMAT", nil, i, x))
-				local btn = getglobal(btnname)
+				local btn = _G[btnname]
 				local id = (i - 1) * 12 + x
 				if btn == nil then
 					btn = MoveAny:CreateCheckButton(btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
@@ -632,22 +632,22 @@ function MoveAny:CustomBars()
 
 				btn:SetAttribute("statehidden", false)
 				btn:SetAttribute("showgrid", alwaysShowInt)
-				if getglobal("ActionButton_ShowGrid") and getglobal("ActionButton_HideGrid") then
+				if _G["ActionButton_ShowGrid"] and _G["ActionButton_HideGrid"] then
 					if alwaysShow then
-						getglobal("ActionButton_ShowGrid")(btn)
+						_G["ActionButton_ShowGrid"](btn)
 					else
-						getglobal("ActionButton_HideGrid")(btn)
+						_G["ActionButton_HideGrid"](btn)
 					end
 				end
 
-				if getglobal(btnname .. "FloatingBG") == nil then
-					setglobal(btnname .. "FloatingBG", btn:CreateTexture(btnname .. "FloatingBG", "BACKGROUND"))
-					getglobal(btnname .. "FloatingBG"):SetParent(btn)
-					getglobal(btnname .. "FloatingBG"):SetPoint("TOPLEFT", -15, 15)
-					getglobal(btnname .. "FloatingBG"):SetPoint("BOTTOMRIGHT", 15, -15)
-					getglobal(btnname .. "FloatingBG"):SetTexture("Interface/Buttons/UI-Quickslot")
-					getglobal(btnname .. "FloatingBG"):SetVertexColor(1, 1, 0, 0.4)
-					getglobal(btnname .. "FloatingBG"):SetDrawLayer("BACKGROUND", -1)
+				if _G[btnname .. "FloatingBG"] == nil then
+					_G[btnname .. "FloatingBG"] = btn:CreateTexture(btnname .. "FloatingBG", "BACKGROUND")
+					_G[btnname .. "FloatingBG"]:SetParent(btn)
+					_G[btnname .. "FloatingBG"]:SetPoint("TOPLEFT", -15, 15)
+					_G[btnname .. "FloatingBG"]:SetPoint("BOTTOMRIGHT", 15, -15)
+					_G[btnname .. "FloatingBG"]:SetTexture("Interface/Buttons/UI-Quickslot")
+					_G[btnname .. "FloatingBG"]:SetVertexColor(1, 1, 0, 0.4)
+					_G[btnname .. "FloatingBG"]:SetDrawLayer("BACKGROUND", -1)
 				end
 
 				btn.maid = id
@@ -659,10 +659,10 @@ function MoveAny:CustomBars()
 					btn,
 					"SetPoint",
 					function(sel, ...)
-						if getglobal(name).ma_setpoint_ab then return end
-						getglobal(name).ma_setpoint_ab = true
-						MoveAny:UpdateActionBar(getglobal(name))
-						getglobal(name).ma_setpoint_ab = false
+						if ma_setpoint_ab then return end
+						ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						ma_setpoint_ab = false
 					end
 				)
 
@@ -670,10 +670,10 @@ function MoveAny:CustomBars()
 					btn,
 					"SetParent",
 					function(sel, ...)
-						if getglobal(name).ma_setpoint_ab then return end
-						getglobal(name).ma_setpoint_ab = true
-						MoveAny:UpdateActionBar(getglobal(name))
-						getglobal(name).ma_setpoint_ab = false
+						if ma_setpoint_ab then return end
+						ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						ma_setpoint_ab = false
 					end
 				)
 
@@ -681,17 +681,17 @@ function MoveAny:CustomBars()
 					btn,
 					"SetSize",
 					function(sel, ...)
-						if getglobal(name).ma_setpoint_ab then return end
-						getglobal(name).ma_setpoint_ab = true
-						MoveAny:UpdateActionBar(getglobal(name))
-						getglobal(name).ma_setpoint_ab = false
+						if ma_setpoint_ab then return end
+						ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						ma_setpoint_ab = false
 					end
 				)
 
 				tinsert(bar.btns, btn)
 			end
 
-			MoveAny:UpdateActionBar(getglobal(name))
+			MoveAny:UpdateActionBar(_G[name])
 		end
 	end
 
@@ -708,8 +708,8 @@ function MoveAny:CustomBars()
 					for y, btn in pairs(bar.btns) do
 						if btn then
 							local btnName = MoveAny:GetName(btn)
-							if getglobal(btnName .. "FloatingBG") then
-								getglobal(btnName .. "FloatingBG"):SetParent(MoveAny:GetHidden())
+							if _G[btnName .. "FloatingBG"] then
+								_G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden())
 							end
 
 							local parent = MoveAny:GetName(MoveAny:GetParent(btn))
@@ -722,7 +722,7 @@ function MoveAny:CustomBars()
 							if not btn.MasqueButtonData then
 								btn.MasqueButtonData = {
 									Button = btn,
-									Icon = getglobal(btnName .. "IconTexture"),
+									Icon = _G[btnName .. "IconTexture"],
 								}
 							end
 
@@ -755,7 +755,7 @@ MoveAny:OnEvent(
 	f,
 	function(sel, event)
 		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
-			local frame = getglobal("MAActionBar" .. 1)
+			local frame = _G["MAActionBar" .. 1]
 			if frame and frame.init == nil then
 				frame.init = true
 				frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
@@ -843,12 +843,12 @@ MoveAny:OnEvent(
 
 				local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
 				for i = 1, 12 do
-					local button = getglobal("ActionButton" .. i)
+					local button = _G["ActionButton" .. i]
 					AttributeChangedFrame:SetFrameRef("ActionButton" .. i, button)
 				end
 
 				for i = 1, 6 do
-					local overrideButton = getglobal("OverrideActionBarButton" .. i)
+					local overrideButton = _G["OverrideActionBarButton" .. i]
 					if overrideButton then
 						AttributeChangedFrame:SetFrameRef("OverrideActionBarButton" .. i, overrideButton)
 					end

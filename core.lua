@@ -1,7 +1,7 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
+local hooksecurefunc = _G["hooksecurefunc"]
+local CreateFrame = _G["CreateFrame"]
+local InCombatLockdown = _G["InCombatLockdown"]
 local colors = {}
 colors["bg"] = {0.03, 0.03, 0.03}
 colors["se"] = {1.0, 1.0, 0.0}
@@ -348,8 +348,8 @@ function MoveAny:InitSlash()
 		MoveAny:AddSlash("rl", C_UI.Reload)
 		MoveAny:AddSlash("rel", C_UI.Reload)
 	else
-		MoveAny:AddSlash("rl", getglobal("ReloadUI"))
-		MoveAny:AddSlash("rel", getglobal("ReloadUI"))
+		MoveAny:AddSlash("rl", _G["ReloadUI"])
+		MoveAny:AddSlash("rel", _G["ReloadUI"])
 	end
 end
 

@@ -1,15 +1,10 @@
 local _, MoveAny = ...
-local tinsert = getglobal("tinsert")
-local hooksecurefunc = getglobal("hooksecurefunc")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local CreateFrame = getglobal("CreateFrame")
-local LibStub = getglobal("LibStub")
 local KEYBAG = {"KeyRingButton"}
 local SMALLBAGS = {"CharacterBag3Slot", "CharacterBag2Slot", "CharacterBag1Slot", "CharacterBag0Slot"}
 local BAGS = {"CharacterBag3Slot", "CharacterBag2Slot", "CharacterBag1Slot", "CharacterBag0Slot"}
 function MoveAny:BAGSTryAdd(fra, index)
-	if getglobal(fra) == nil then return end
-	if fra and not tContains(BAGS, fra) then
+	if fra == nil then return end
+	if not tContains(BAGS, fra) then
 		if index then
 			tinsert(BAGS, index, tostring(fra))
 		else
@@ -27,14 +22,14 @@ function MoveAny:UpdateBags()
 	run = true
 	if MoveAny:GetEleOption("BagsBar", "HideSmallBags", false) then
 		for i, v in pairs(SMALLBAGS) do
-			local bag = getglobal(v)
+			local bag = _G[v]
 			if bag then
 				MoveAny:HideFrame(bag, true)
 			end
 		end
 	else
 		for i, v in pairs(SMALLBAGS) do
-			local bag = getglobal(v)
+			local bag = _G[v]
 			if bag then
 				MoveAny:ShowFrame(bag)
 			end
@@ -43,14 +38,14 @@ function MoveAny:UpdateBags()
 
 	if MoveAny:GetEleOption("BagsBar", "HideKeyBag", false) then
 		for i, v in pairs(KEYBAG) do
-			local bag = getglobal(v)
+			local bag = _G[v]
 			if bag then
 				MoveAny:HideFrame(bag, true)
 			end
 		end
 	else
 		for i, v in pairs(KEYBAG) do
-			local bag = getglobal(v)
+			local bag = _G[v]
 			if bag then
 				MoveAny:ShowFrame(bag)
 			end
@@ -64,7 +59,7 @@ function MoveAny:UpdateBags()
 	MoveAny:BAGSTryAdd("MainMenuBarBackpackButton")
 	local sw, sh = 0, 0
 	for i, mbname in pairs(BAGS) do
-		local bb = getglobal(mbname)
+		local bb = _G[mbname]
 		if bb ~= nil and bb:IsShown() and MoveAny:GetParent(bb):IsShown() and bb:GetAlpha() > 0 then
 			if not tContains(hookedBags, mbname) then
 				tinsert(hookedBags, mbname)
@@ -113,10 +108,10 @@ function MoveAny:UpdateBags()
 
 		local x = 0
 		for i, mbname in pairs(BAGS) do
-			local bb = getglobal(mbname)
+			local bb = _G[mbname]
 			if bb ~= nil and bb:IsShown() and MoveAny:GetParent(bb):IsShown() and bb:GetAlpha() > 0 then
 				local w, h = bb:GetSize()
-				if MoveAny:GetParent(bb) == getglobal("MainMenuBarArtFrame") then
+				if MainMenuBarArtFrame and MoveAny:GetParent(bb) == MainMenuBarArtFrame then
 					bb:SetParent(BagsBar)
 				end
 
@@ -185,7 +180,7 @@ function MoveAny:InitBags()
 			end
 
 			for i, mbname in pairs(BAGS) do
-				local bb = getglobal(mbname)
+				local bb = _G[mbname]
 				if bb and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") then
 					hooksecurefunc(
 						bb,
@@ -210,8 +205,8 @@ function MoveAny:InitBags()
 		1,
 		function()
 			for i, v in pairs(BAGS) do
-				local bagF = getglobal(v)
-				local NT = getglobal(v .. "NormalTexture")
+				local bagF = _G[v]
+				local NT = _G[v .. "NormalTexture"]
 				if NT and bagF and NT.scalesetup == nil then
 					NT.scalesetup = true
 					if NT:GetTexture() == 130841 then
@@ -231,11 +226,11 @@ function MoveAny:InitBags()
 						local group = MSQ:Group("MA Blizzard Bags")
 						for i, v in pairs(BAGS) do
 							if v ~= "KeyRingButton" and v ~= "BagToggle" then
-								local btn = getglobal(v)
+								local btn = _G[v]
 								if not btn.MasqueButtonData then
 									btn.MasqueButtonData = {
 										Button = btn,
-										Icon = getglobal(v .. "IconTexture"),
+										Icon = _G[v .. "IconTexture"],
 									}
 
 									group:AddButton(btn, btn.MasqueButtonData, "Item")

@@ -1,18 +1,15 @@
 local _, MoveAny = ...
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local hooksecurefunc = getglobal("hooksecurefunc")
 function MoveAny:InitArenaEnemyFrames()
-	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and getglobal("Arena_LoadUI") then
-		if _G["ArenaEnemyFrame" .. 1] == nil and getglobal("Arena_LoadUI") then
-			getglobal("Arena_LoadUI")()
+	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and _G["Arena_LoadUI"] then
+		if _G["ArenaEnemyFrame" .. 1] == nil and _G["Arena_LoadUI"] then
+			_G["Arena_LoadUI"]()
 		end
 
-		if getglobal("ArenaEnemyFrames") then
-			local arenaFrames = getglobal("ArenaEnemyFrames")
+		if ArenaEnemyFrames then
+			local arenaFrames = ArenaEnemyFrames
 			if _G["ArenaEnemyFrame" .. 1] then
 				local sw, sh = _G["ArenaEnemyFrame" .. 1]:GetSize()
-				getglobal("ArenaEnemyFrames"):SetSize(sw, sh * 5 + 4 * 21)
+				ArenaEnemyFrames:SetSize(sw, sh * 5 + 4 * 21)
 			end
 
 			local MAArenaEnemyFrames = CreateFrame("FRAME", "MAArenaEnemyFrames", MoveAny:GetMainPanel())
@@ -112,13 +109,13 @@ function MoveAny:InitArenaEnemyFrames()
 end
 
 function MoveAny:InitArenaPrepFrames()
-	if MoveAny:IsEnabled("ARENAPREPFRAMES", false) and getglobal("Arena_LoadUI") then
-		if _G["ArenaPrepFrame" .. 1] == nil and getglobal("Arena_LoadUI") then
-			getglobal("Arena_LoadUI")()
+	if MoveAny:IsEnabled("ARENAPREPFRAMES", false) and _G["Arena_LoadUI"] then
+		if _G["ArenaPrepFrame" .. 1] == nil and _G["Arena_LoadUI"] then
+			_G["Arena_LoadUI"]()
 		end
 
-		if getglobal("ArenaPrepFrames") then
-			local prepFrames = getglobal("ArenaPrepFrames")
+		if ArenaPrepFrames then
+			local prepFrames = ArenaPrepFrames
 			if _G["ArenaPrepFrame" .. 1] then
 				local sw, sh = _G["ArenaPrepFrame" .. 1]:GetSize()
 				prepFrames:SetSize(sw, sh * 5 + 4 * 21)

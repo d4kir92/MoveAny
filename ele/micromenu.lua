@@ -1,10 +1,4 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local tinsert = getglobal("tinsert")
-local tremove = getglobal("tremove")
-local GetTime = getglobal("GetTime")
 function MoveAny:GetMicroButtonSize()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 32 end
 

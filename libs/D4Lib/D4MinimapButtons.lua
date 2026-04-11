@@ -1,7 +1,4 @@
 local _, D4 = ...
-local CreateFrame = getglobal("CreateFrame")
-local InCombatLockdown = getglobal("InCombatLockdown")
-local GetCursorPosition = getglobal("GetCursorPosition")
 local deg, atan2 = math.deg, math.atan2
 local rad, cos, sin, sqrt, max, min = math.rad, math.cos, math.sin, math.sqrt, math.max, math.min
 local mmShapes = {
@@ -35,7 +32,6 @@ function D4:UpdatePosition(button, position, parent)
         q = q + 2
     end
 
-    local GetMinimapShape = getglobal("GetMinimapShape")
     local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
     local qt = mmShapes[minimapShape]
     local w = (Minimap:GetWidth() / 2) + button:GetWidth() / 2 - button:GetWidth() / 5
@@ -69,38 +65,7 @@ function D4:UpdatePosition(button, position, parent)
 end
 
 function D4:GetMMBtn(name)
-    return getglobal(name)
-end
-
-if GetD4MinimapHover == nil then
-    local MinimapHover = false
-    if Minimap.IsMouseOver == nil then
-        local function MinimapHoverThink()
-            local mouseFocus = D4:GetMouseFocus()
-            local btnFocus = false
-            if mouseFocus and D4:GetParent(mouseFocus) ~= nil then
-                btnFocus = D4:GetParent(mouseFocus) == Minimap
-            end
-
-            MinimapHover = MouseIsOver(Minimap) or btnFocus
-            D4:After(
-                0.15,
-                function()
-                    MinimapHoverThink()
-                end, "MinimapHoverThink"
-            )
-        end
-
-        MinimapHoverThink()
-    end
-
-    function GetD4MinimapHover()
-        if Minimap.IsMouseOver == nil then
-            return MinimapHover
-        else
-            return Minimap:IsMouseOver()
-        end
-    end
+    return _G[name]
 end
 
 function D4:CreateMinimapButton(params)
@@ -328,9 +293,9 @@ function D4:CreateMinimapButton(params)
 
         local oldState = false
         local function BtnThink()
-            if oldState ~= (GetD4MinimapHover() or MouseIsOver(btn)) then
-                oldState = GetD4MinimapHover() or MouseIsOver(btn)
-                if GetD4MinimapHover() or MouseIsOver(btn) then
+            if oldState ~= MouseIsOver(btn) then
+                oldState = MouseIsOver(btn)
+                if MouseIsOver(btn) then
                     if D4:GetParent(btn) == Minimap then
                         btn.fadeOut:Stop()
                         btn.fadeIn:Play()
@@ -443,7 +408,6 @@ function D4:HideMMBtn(name)
 end
 
 function D4:UpdateLTP()
-    local LeaPlusDB = getglobal("LeaPlusDB")
     local MinimapModder = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
     if MinimapModder then
         local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"

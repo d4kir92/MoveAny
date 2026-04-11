@@ -1,8 +1,4 @@
 local _, MoveAny = ...
-local hooksecurefunc = getglobal("hooksecurefunc")
-local CreateFrame = getglobal("CreateFrame")
-local LibStub = getglobal("LibStub")
-local tinsert = getglobal("tinsert")
 local btnsize = 36
 local once = true
 local bar = nil
@@ -56,7 +52,6 @@ function MoveAny:UpdatePetBar()
 end
 
 function MoveAny:InitPetBar()
-	local PetActionBarFrame = getglobal("PetActionBarFrame")
 	if MoveAny:IsEnabled("PETBAR", false) then
 		if not PetActionBar then
 			bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
@@ -102,7 +97,6 @@ function MoveAny:InitPetBar()
 			end
 
 			bar:SetSize(10 * btnsize, btnsize)
-			local ShowPetActionBar = getglobal("ShowPetActionBar")
 			if ShowPetActionBar then
 				hooksecurefunc(
 					"ShowPetActionBar",

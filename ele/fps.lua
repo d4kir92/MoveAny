@@ -1,7 +1,4 @@
 local _, MoveAny = ...
-local CreateFrame = getglobal("CreateFrame")
-local format = getglobal("format")
-local GetFramerate = getglobal("GetFramerate")
 local config_update = 1
 function MoveAny:InitMAFPSFrame()
 	if MoveAny:IsEnabled("MAFPSFrame", false) then

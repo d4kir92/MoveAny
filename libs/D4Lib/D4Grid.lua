@@ -1,7 +1,4 @@
 local _, D4 = ...
-local CreateFrame = getglobal("CreateFrame")
-local GetScreenWidth = getglobal("GetScreenWidth")
-local GetScreenHeight = getglobal("GetScreenHeight")
 local grid = nil
 function D4:Grid(n, snap)
     n = n or 0
