@@ -2464,7 +2464,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.269")
+	MoveAny:SetVersion(135994, "1.8.270")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6175,14 +6175,11 @@ function MoveAny:LoadAddon()
 		end
 
 		function MoveAny:GameTooltipOnDefaultPosition()
-			print("TEST")
 			local ok, result = pcall(
 				function()
 					local p1, p2, p3, p4, p5 = GameTooltip:GetPoint()
 					if p1 and p2 and p3 and p4 and p5 then
 						if p2 == _G["MAGameTooltip"] then
-							print("TRUE1")
-
 							return true
 						elseif p2 == UIParent or p2 == UIParent then
 							if gtp4 == nil and gtp5 == nil then
@@ -6194,26 +6191,16 @@ function MoveAny:LoadAddon()
 							if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
 								p4 = floor(p4)
 								p5 = floor(p5)
-								if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then
-									print("TRUE2")
-
-									return true
-								end
+								if MoveAny:NearNumber(p4, gtp4, 5) and MoveAny:NearNumber(p5, gtp5, 5) then return true end
 							end
 						elseif p2 == GameTooltipDefaultContainer then
 							if p1 == "BOTTOMRIGHT" and p3 == "BOTTOMRIGHT" then
 								p4 = floor(p4)
 								p5 = floor(p5)
-								if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then
-									print("TRUE3")
-
-									return true
-								end
+								if MoveAny:NearNumber(p4, 0, 5) and MoveAny:NearNumber(p5, 0, 5) then return true end
 							end
 						end
 					end
-
-					print("FALSE1")
 
 					return false
 				end
