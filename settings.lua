@@ -2446,7 +2446,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.272")
+	MoveAny:SetVersion(135994, "1.8.273")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6082,7 +6082,8 @@ function MoveAny:LoadAddon()
 					}
 				)
 			else
-				if false then
+				if MoveAny:GetWoWBuild() == "CLASSIC" then
+					-- BREAKS VEHICLES -> ONLY ADD ON CLASSIC ERA
 					if MultiBarRight then
 						MultiBarRight.OldSetScale = MultiBarRight.OldSetScale or MultiBarRight.SetScale
 						MultiBarRight.SetScale = function(sel, scale)
