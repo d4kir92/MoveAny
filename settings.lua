@@ -2446,7 +2446,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.271")
+	MoveAny:SetVersion(135994, "1.8.272")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6292,6 +6292,7 @@ function MoveAny:LoadAddon()
 				)
 			else
 				local CURSOR_OFFSET = 22
+				local defaultPosi = {}
 				hooksecurefunc(
 					GameTooltip,
 					"SetPoint",
@@ -6302,26 +6303,26 @@ function MoveAny:LoadAddon()
 							function()
 								sel:SetMovable(true)
 								sel:SetUserPlaced(false)
-								if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then
-									gtsetpoint = false
-
-									return
-								end
-
+								if C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame:IsShown() then return end
 								if MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) and GameTooltip:IsShown() then
-									if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
-										local point1, _, point3 = MAGameTooltip:GetPoint()
-										MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
-										gtsetpoint = false
+									local owner = GameTooltip:GetOwner()
+									defaultPosi[owner] = defaultPosi[owner] or MoveAny:GameTooltipOnDefaultPosition()
+									if owner == UIParent or owner == MoveAny:GetMainPanel() or defaultPosi[owner] then
+										if InCombatLockdown() and MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false) then
+											local point1, _, point3 = MAGameTooltip:GetPoint()
+											MoveAny:SetPoint(GameTooltip, point1, MAGameTooltip, point3, 0, 0)
+
+											return
+										end
+
+										local uiScale = GameTooltip:GetEffectiveScale()
+										local cursorX, cursorY = GetCursorPosition()
+										cursorX = cursorX / uiScale
+										cursorY = cursorY / uiScale
+										MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
 
 										return
 									end
-
-									local uiScale = GameTooltip:GetEffectiveScale()
-									local cursorX, cursorY = GetCursorPosition()
-									cursorX = cursorX / uiScale
-									cursorY = cursorY / uiScale
-									MoveAny:SetPoint(GameTooltip, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", cursorX + CURSOR_OFFSET, cursorY + CURSOR_OFFSET)
 								end
 							end
 						)
