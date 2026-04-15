@@ -1328,7 +1328,6 @@ D4:After(
                 if unit == nil then return end
                 if not UnitIsPlayer(unit) then return end
                 if not IsInGroup() and not IsInRaid() then return end
-                if D4:GetWoWBuild() == "RETAIL" and UnitGroupRolesAssigned ~= nil and UnitGroupRolesAssigned(unit) ~= nil and UnitGroupRolesAssigned(unit) ~= "NONE" then return end
                 local isLeader = UnitIsGroupLeader("player")
                 local isAssistant = UnitIsGroupAssistant("player")
                 local roleMenu = MenuUtil.CreateButton(D4:Trans("LID_CHOOSEROLE") .. " (by D4KiR)")
@@ -1336,7 +1335,7 @@ D4:After(
                 if D4:GetWoWBuild() == "TBC" then
                     rootDescription:Insert(roleMenu, 2)
                 else
-                    rootDescription:Insert(roleMenu, 40)
+                    rootDescription:Insert(roleMenu, 2)
                 end
 
                 if UnitIsUnit(unit, "player") or isLeader or isAssistant then
