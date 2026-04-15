@@ -1,5 +1,5 @@
 ## Interface: 20505
-## Version: 1.8.276
+## Version: 1.8.277
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff55d2ffD4KiR |T132115:16:16:0:0|t
 ## Notes: Move Any Ui or Frame
 ## Notes-ruRU: MoveAny - аддон, с помощью которого можно разблокировать и перемещать элементы интерфейса
