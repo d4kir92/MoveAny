@@ -2261,8 +2261,19 @@ function MoveAny:ShowProfiles()
 					-- Send out Profile Shop
 					local function ShareProfile()
 						if MAShareProfile:IsVisible() then
-							C_ChatInfo.SendAddonMessage(PREFIX, "SP;" .. name, "PARTY")
-							MoveAny:After(4, ShareProfile, "ShareProfile")
+							local chatType
+							if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+								chatType = "INSTANCE_CHAT"
+							elseif IsInRaid() then
+								chatType = "RAID"
+							elseif IsInGroup() then
+								chatType = "PARTY"
+							end
+
+							if chatType then
+								C_ChatInfo.SendAddonMessage(PREFIX, "SP;" .. name, chatType)
+								MoveAny:After(4, ShareProfile, "ShareProfile")
+							end
 						end
 					end
 
@@ -2446,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.277")
+	MoveAny:SetVersion(135994, "1.8.278")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{

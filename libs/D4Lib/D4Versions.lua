@@ -137,7 +137,20 @@ D4:OnEvent(
                                         end
 
                                         if ver then
-                                            C_ChatInfo.SendAddonMessage(pre, string.format("A;%s;V;%s", AddonName, ver))
+                                            local chatType
+                                            if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+                                                chatType = "INSTANCE_CHAT"
+                                            elseif IsInRaid() then
+                                                chatType = "RAID"
+                                            elseif IsInGroup() then
+                                                chatType = "PARTY"
+                                            elseif IsInGuild() then
+                                                chatType = "GUILD"
+                                            end
+
+                                            if chatType then
+                                                C_ChatInfo.SendAddonMessage(pre, string.format("A;%s;V;%s", AddonName, ver), chatType)
+                                            end
                                         end
                                     end, "D4 PLAYER_ENTERING_WORLD 2"
                                 )
