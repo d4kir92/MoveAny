@@ -2446,7 +2446,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.273")
+	MoveAny:SetVersion(135994, "1.8.274")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -5196,25 +5196,31 @@ function MoveAny:LoadAddon()
 				RefreshBar()
 			end
 
+			local updateItems = false
 			local evt = CreateFrame("Frame")
 			evt:RegisterEvent("BAG_UPDATE_DELAYED")
 			evt:RegisterEvent("PLAYER_ENTERING_WORLD")
 			evt:RegisterEvent("BAG_UPDATE")
 			evt:RegisterEvent("QUEST_ACCEPTED")
 			evt:RegisterEvent("QUEST_COMPLETE")
+			evt:RegisterEvent("QUEST_LOG_UPDATE")
 			evt:SetScript(
 				"OnEvent",
 				function(sel, event, ...)
-					if event == "QUEST_ACCEPTED" then
-						C_Timer.After(
-							0.3,
-							function()
-								Update()
-							end
-						)
-					else
-						Update()
-					end
+					if updateItems then return end
+					updateItems = true
+					C_Timer.After(
+						0.3,
+						function()
+							pcall(
+								function()
+									Update()
+								end
+							)
+
+							updateItems = false
+						end
+					)
 				end
 			)
 
