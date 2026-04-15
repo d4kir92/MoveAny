@@ -1335,7 +1335,21 @@ D4:After(
                 if D4:GetWoWBuild() == "TBC" then
                     rootDescription:Insert(roleMenu, 2)
                 else
-                    rootDescription:Insert(roleMenu, 2)
+                    local insertIndex = nil
+                    if rootDescription.EnumerateElementDescriptions then
+                        for index, elementData in rootDescription:EnumerateElementDescriptions() do
+                            if elementData.text and elementData.text:find(INSTANCE_WALK_IN_LEAVE or "Leave Delve") then
+                                insertIndex = index + 1
+                                break
+                            end
+                        end
+                    end
+
+                    if insertIndex then
+                        rootDescription:Insert(roleMenu, insertIndex - 1)
+                    else
+                        rootDescription:Insert(roleMenu, 2)
+                    end
                 end
 
                 if UnitIsUnit(unit, "player") or isLeader or isAssistant then
