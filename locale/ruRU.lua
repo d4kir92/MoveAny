@@ -35,7 +35,7 @@ MoveAny:AddTrans("ruRU", "LID_WARLOCKPOWERFRAME", "Чернокнижник - О
 MoveAny:AddTrans("ruRU", "LID_MONKHARMONYBARFRAME", "Монах - Гармония (Ци)")
 MoveAny:AddTrans("ruRU", "LID_MONKSTAGGERBAR", "Монах - Пошатывание (Ци)")
 MoveAny:AddTrans("ruRU", "LID_MAGEARCANECHARGESFRAME", "Маг - Чародейские заряды")
-MoveAny:AddTrans("ruRU", "LID_PRIESTBARFRAME", "Priester Shadow Orbs Frame")
+MoveAny:AddTrans("ruRU", "LID_PRIESTBARFRAME", "Жрец - Сферы Тьмы")
 MoveAny:AddTrans("ruRU", "LID_ESSENCEPLAYERFRAME", "Пробудитель - Эссенции")
 MoveAny:AddTrans("ruRU", "LID_PALADINPOWERBARFRAME", "Паладин - Энергия Света")
 MoveAny:AddTrans("ruRU", "LID_MAFPSFrame", "FPS (Новый FPS-счетчик)")
@@ -256,6 +256,7 @@ MoveAny:AddTrans("ruRU", "LID_ALPHAISSKYRIDING", "Прозрачность (Не
 MoveAny:AddTrans("ruRU", "LID_SUPERTRACKEDFRAME", "Масштаб точек маршрута")
 MoveAny:AddTrans("ruRU", "LID_UtilityCooldownViewer", "Важные способности и эффекты (Трекер восстановления)")
 MoveAny:AddTrans("ruRU", "LID_QUESTITEMSANCHOR", "Крепление предметов заданий")
+MoveAny:AddTrans("ruRU", "LID_PLAYERFRAMEGROUPINDICATOR", "Номер группы игрока")
 if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
