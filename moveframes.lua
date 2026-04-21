@@ -702,6 +702,36 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	end
 end
 
+function MoveAny:MoveParent(receive, from)
+	receive:SetMovable(true)
+	receive:EnableMouse(true)
+	from:HookScript(
+		"OnMouseDown",
+		function(sel, button)
+			if button == "LeftButton" then
+				pcall(
+					function()
+						receive:StartMoving()
+					end
+				)
+			end
+		end
+	)
+
+	from:HookScript(
+		"OnMouseUp",
+		function(sel, button)
+			if button == "LeftButton" then
+				pcall(
+					function()
+						receive:StopMovingOrSizing()
+					end
+				)
+			end
+		end
+	)
+end
+
 local allowedFrameTypes = {}
 allowedFrameTypes["frame"] = true
 allowedFrameTypes["Frame"] = true
@@ -730,6 +760,7 @@ function MoveAny:MoveFrames()
 
 	if MoveAny:IsAddOnLoaded("GW2_UI") == false then
 		MAFS["MailFrame"] = "MailFrame"
+		MoveAny:MoveParent(MailFrame, SendMailFrame)
 	end
 
 	MoveAny:UpdateMoveFrames("Start", true)
