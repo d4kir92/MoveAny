@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.284")
+	MoveAny:SetVersion(135994, "1.8.285")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2532,6 +2532,7 @@ function MoveAny:InitGLF(glf, x)
 
 	local p1, _, p3 = GroupLootContainer:GetPoint()
 	if p1 and p3 then
+		glf:ClearAllPoints()
 		glf:SetPoint(GroupLootContainer:GetPoint())
 	end
 
