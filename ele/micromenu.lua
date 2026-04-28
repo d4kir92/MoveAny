@@ -139,7 +139,9 @@ function MoveAny:InitMicroMenu()
 		local MBTNS = MICRO_BUTTONS
 		if MICRO_BUTTONS == nil then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-		elseif MoveAny:GetWoWBuild() == "RETAIL" then
+		end
+
+		if MoveAny:GetWoWBuild() == "RETAIL" then
 			MBTNS = {"CharacterMicroButton", "ProfessionMicroButton", "PlayerSpellsMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "HousingMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
 		elseif MoveAny:GetWoWBuild() == "CATA" then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "PVPMicroButton", "LFGMicroButton", "EJMicroButton", "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
@@ -257,13 +259,7 @@ function MoveAny:InitMicroMenu()
 					end
 
 					mb:ClearAllPoints()
-					mb:SetPoint("TOPLEFT", MAMenuBar, "TOPLEFT", 0, 0)
-					if MoveAny:GetWoWBuild() == "RETAIL" then
-						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
-					else
-						mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
-					end
-
+					mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					hooksecurefunc(
 						MAMenuBar,
 						"SetAlpha",
