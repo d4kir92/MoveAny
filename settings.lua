@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.283")
+	MoveAny:SetVersion(135994, "1.8.284")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2495,6 +2495,67 @@ function MoveAny:IsEnabledBartender4(element)
 	else
 		return false
 	end
+end
+
+local GLFs = {}
+local GLFc = 5
+function MoveAny:InitGLF(glf, x)
+	if not glf then return end
+	if GLFs[glf] then return end
+	local index = x
+	if not x then
+		index = GLFc
+		GLFc = GLFc + 1
+	end
+
+	GLFs[index] = glf
+	hooksecurefunc(
+		glf,
+		"SetPoint",
+		function(sel, ...)
+			if sel.glfsetpoint then return end
+			sel.glfsetpoint = true
+			sel:SetMovable(true)
+			if sel.SetUserPlaced and sel:IsMovable() then
+				sel:SetUserPlaced(false)
+			end
+
+			if index == 1 then
+				MoveAny:SetPoint(sel, "CENTER", GroupLootContainer, "CENTER", 0, 4)
+			else
+				MoveAny:SetPoint(sel, "BOTTOM", GLFs[index - 1], "TOP", 0, 14)
+			end
+
+			sel.glfsetpoint = false
+		end
+	)
+
+	local p1, _, p3 = GroupLootContainer:GetPoint()
+	if p1 and p3 then
+		glf:SetPoint(GroupLootContainer:GetPoint())
+	end
+
+	hooksecurefunc(
+		GroupLootContainer,
+		"SetScale",
+		function(sel, scale)
+			if InCombatLockdown() and sel:IsProtected() then return false end
+			if scale and type(scale) == "number" then
+				glf:SetScale(scale)
+			end
+		end
+	)
+
+	glf:SetScale(GroupLootContainer:GetScale())
+	hooksecurefunc(
+		GroupLootContainer,
+		"SetAlpha",
+		function(sel, alpha)
+			glf:SetAlpha(alpha)
+		end
+	)
+
+	glf:SetAlpha(GroupLootContainer:GetAlpha())
 end
 
 local msgOnce = {}
@@ -6458,51 +6519,15 @@ function MoveAny:LoadAddon()
 
 			for x = 1, 10 do
 				local glf = _G["GroupLootFrame" .. x]
-				if glf then
-					hooksecurefunc(
-						glf,
-						"SetPoint",
-						function(sel, ...)
-							if sel.glfsetpoint then return end
-							sel.glfsetpoint = true
-							sel:SetMovable(true)
-							if sel.SetUserPlaced and sel:IsMovable() then
-								sel:SetUserPlaced(false)
-							end
-
-							if x == 1 then
-								MoveAny:SetPoint(sel, "CENTER", GroupLootContainer, "CENTER", 0, 4)
-							else
-								MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 14)
-							end
-
-							sel.glfsetpoint = false
-						end
-					)
-
-					hooksecurefunc(
-						GroupLootContainer,
-						"SetScale",
-						function(sel, scale)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if scale and type(scale) == "number" then
-								glf:SetScale(scale)
-							end
-						end
-					)
-
-					glf:SetScale(GroupLootContainer:GetScale())
-					hooksecurefunc(
-						GroupLootContainer,
-						"SetAlpha",
-						function(sel, alpha)
-							glf:SetAlpha(alpha)
-						end
-					)
-
-					glf:SetAlpha(GroupLootContainer:GetAlpha())
-				end
+				MoveAny:InitGLF(glf, x)
 			end
+
+			hooksecurefunc(
+				"AlertFrame_ShowNewAlert",
+				function(sel)
+					MoveAny:InitGLF(sel)
+				end
+			)
 
 			if false then
 				MoveAny:After(
@@ -6523,6 +6548,19 @@ function MoveAny:LoadAddon()
 								glf:Show()
 							end
 						end
+
+						MoveAny:After(
+							1,
+							function()
+								print("GO", LootWonAlertSystem)
+								MoveAny:ForeachRegions(
+									GroupLootContainer,
+									function(child, x)
+										print(x, MoveAny:GetName(child))
+									end, "TEST LOOT"
+								)
+							end, "TEST LOOT2"
+						)
 					end, "TEST LOOT"
 				)
 			end
