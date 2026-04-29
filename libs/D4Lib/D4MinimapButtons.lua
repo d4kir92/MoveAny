@@ -97,7 +97,7 @@ function D4:CreateMinimapButton(params)
     _G["MinimapButton_D4Lib_LibDBIcon_" .. params.name] = CreateFrame("Button", "MinimapButton_D4Lib_LibDBIcon_" .. params.name, params.parent or Minimap)
     local btn = _G["MinimapButton_D4Lib_LibDBIcon_" .. params.name]
     btn:SetFrameLevel(501)
-    btn.border = params.border
+    btn.d4border = params.border
     btn.db = params.dbtab
     btn.db.minimapPos = btn.db.minimapPos or 0
     btn.minimapPos = btn.minimapPos or 0

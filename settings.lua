@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.287")
+	MoveAny:SetVersion(135994, "1.8.288")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2498,53 +2498,11 @@ function MoveAny:IsEnabledBartender4(element)
 end
 
 local GLFs = {}
-local GLFc = 5
 function MoveAny:InitGLF(glf, x)
 	if not glf then return end
 	if GLFs[glf] then return end
-	if glf.NeedButton == nil and glf.ItemName == nil then return end
-	local index = x
-	if not x then
-		index = GLFc
-		GLFc = GLFc + 1
-	end
-
-	GLFs[index] = glf
-	hooksecurefunc(
-		glf,
-		"SetPoint",
-		function(sel, ...)
-			if sel.glfsetpoint then return end
-			sel.glfsetpoint = true
-			local _, relativeTo = ...
-			if relativeTo == sel then
-				sel.glfsetpoint = false
-
-				return
-			end
-
-			sel:SetMovable(true)
-			if sel.SetUserPlaced and sel:IsMovable() then
-				sel:SetUserPlaced(false)
-			end
-
-			if index == 1 then
-				MoveAny:SetPoint(sel, "CENTER", GroupLootContainer, "CENTER", 0, 4)
-			elseif GLFs[index - 1] then
-				MoveAny:SetPoint(sel, "BOTTOM", GLFs[index - 1], "TOP", 0, 14)
-			else
-				MoveAny:SetPoint(sel, "CENTER", GroupLootContainer, "CENTER", 0, 4)
-			end
-
-			sel.glfsetpoint = false
-		end
-	)
-
-	local p1, _, p3 = GroupLootContainer:GetPoint()
-	if p1 and p3 then
-		MoveAny:SetPoint(glf, p1, GroupLootContainer, p3, 0, 0)
-	end
-
+	if glf == BonusRollFrame then return end
+	if glf.CurrentCountFrame ~= nil then return end
 	hooksecurefunc(
 		GroupLootContainer,
 		"SetScale",
@@ -6527,37 +6485,74 @@ function MoveAny:LoadAddon()
 				}
 			)
 
-			for x = 1, 10 do
-				local glf = _G["GroupLootFrame" .. x]
-				MoveAny:InitGLF(glf, x)
+			if GroupLootContainer_Update then
+				hooksecurefunc(
+					"GroupLootContainer_Update",
+					function(container)
+						if container == nil then return end
+						if container.maxIndex == nil then return end
+						if container.rollFrames == nil then return end
+						for i = 1, container.maxIndex do
+							local frame = container.rollFrames[i]
+							if frame then
+								MoveAny:InitGLF(frame, i)
+								local reservedSize = 78
+								MoveAny:SetPoint(frame, "CENTER", container, "BOTTOM", 0, reservedSize * (i - 1 + 0.5))
+							end
+						end
+					end
+				)
 			end
 
-			hooksecurefunc(
-				"AlertFrame_ShowNewAlert",
-				function(sel)
-					MoveAny:InitGLF(sel)
-				end
-			)
-
 			if false then
+				function GetLootRollItemInfo(rollID)
+					local texture = 1
+					local name = "TEST"
+					local count = 1
+					local quality = 5
+					local bindOnPickUp = false
+					local canNeed = true
+					local canGreed = true
+					local canDisenchant = false
+					local reasonNeed = LOOT_ROLL_INELIGIBLE_REASON1
+					local reasonGreed = LOOT_ROLL_INELIGIBLE_REASON1
+					local reasonDisenchant = LOOT_ROLL_INELIGIBLE_REASON1
+					local deSkillRequired = 1
+					local canTransmog = true
+
+					return texture, name, count, quality, bindOnPickUp, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired, canTransmog
+				end
+
+				if false then
+					hooksecurefunc(
+						"GroupLootContainer_AddFrame",
+						function(parent, frame, ...)
+							print(MoveAny:GetName(parent), MoveAny:GetName(frame), ...)
+						end
+					)
+
+					hooksecurefunc(
+						"GroupLootContainer_Update",
+						function(parent)
+							print(parent, #parent.rollFrames)
+						end
+					)
+				end
+
 				MoveAny:After(
 					1,
 					function()
-						GroupLootContainer.Hide = GroupLootContainer.Show
-						GroupLootContainer:Show()
 						local rollID = 1
 						local rollTime = 60
 						for x = 1, 10 do
 							local glf = _G["GroupLootFrame" .. x]
 							if glf then
-								glf.rollID = rollID + 1
-								glf.rollTime = rollTime
-								glf.Timer:SetMinMaxValues(0, rollTime)
-								GroupLootContainer_AddFrame(GroupLootContainer, glf)
-								glf.Hide = glf.Show
-								glf:Show()
+								GroupLootContainer_AddRoll(rollID, rollTime)
+								rollID = rollID + 1
 							end
 						end
+
+						BonusRollFrame_StartBonusRoll(1, "Test", 60, 1813, 1, 1, 1, 1, 1)
 					end, "TEST LOOT"
 				)
 			end
