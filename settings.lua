@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.285")
+	MoveAny:SetVersion(135994, "1.8.286")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2502,6 +2502,7 @@ local GLFc = 5
 function MoveAny:InitGLF(glf, x)
 	if not glf then return end
 	if GLFs[glf] then return end
+	if glf.NeedButton == nil and glf.ItemName == nil then return end
 	local index = x
 	if not x then
 		index = GLFc
@@ -2515,6 +2516,13 @@ function MoveAny:InitGLF(glf, x)
 		function(sel, ...)
 			if sel.glfsetpoint then return end
 			sel.glfsetpoint = true
+			local _, relativeTo = ...
+			if relativeTo == sel then
+				sel.glfsetpoint = false
+
+				return
+			end
+
 			sel:SetMovable(true)
 			if sel.SetUserPlaced and sel:IsMovable() then
 				sel:SetUserPlaced(false)
@@ -2522,8 +2530,10 @@ function MoveAny:InitGLF(glf, x)
 
 			if index == 1 then
 				MoveAny:SetPoint(sel, "CENTER", GroupLootContainer, "CENTER", 0, 4)
-			else
+			elseif GLFs[index - 1] then
 				MoveAny:SetPoint(sel, "BOTTOM", GLFs[index - 1], "TOP", 0, 14)
+			else
+				MoveAny:SetPoint(sel, "CENTER", GroupLootContainer, "CENTER", 0, 4)
 			end
 
 			sel.glfsetpoint = false
@@ -2532,8 +2542,7 @@ function MoveAny:InitGLF(glf, x)
 
 	local p1, _, p3 = GroupLootContainer:GetPoint()
 	if p1 and p3 then
-		glf:ClearAllPoints()
-		glf:SetPoint(GroupLootContainer:GetPoint())
+		MoveAny:SetPoint(glf, p1, GroupLootContainer, p3, 0, 0)
 	end
 
 	hooksecurefunc(
@@ -6549,19 +6558,6 @@ function MoveAny:LoadAddon()
 								glf:Show()
 							end
 						end
-
-						MoveAny:After(
-							1,
-							function()
-								print("GO", LootWonAlertSystem)
-								MoveAny:ForeachRegions(
-									GroupLootContainer,
-									function(child, x)
-										print(x, MoveAny:GetName(child))
-									end, "TEST LOOT"
-								)
-							end, "TEST LOOT2"
-						)
 					end, "TEST LOOT"
 				)
 			end
