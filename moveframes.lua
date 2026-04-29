@@ -463,25 +463,41 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 
 							if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
-								currentWindowName = name
-								MoveAny:UpdateCurrentWindow()
-								GameTooltip:Hide()
+								pcall(
+									function()
+										currentWindowName = name
+										MoveAny:UpdateCurrentWindow()
+										GameTooltip:Hide()
+									end
+								)
 							elseif (MoveAny:IsEnabled("FRAMESKEYDRAG", false) and MoveAny:IsFrameKeyDown() and btn == "LeftButton") or (not MoveAny:IsEnabled("FRAMESKEYDRAG", false) and btn == "LeftButton") then
-								fm:StartMoving()
-								fm:SetUserPlaced(false)
-								ma_ismoving[fm] = true
-								fm:UpdatePreview()
+								pcall(
+									function()
+										fm:StartMoving()
+										fm:SetUserPlaced(false)
+										ma_ismoving[fm] = true
+										fm:UpdatePreview()
+									end
+								)
 							elseif (MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsFrameKeyDown() and MoveAny:IsResetButtonDown(btn)) or (not MoveAny:IsEnabled("FRAMESKEYRESET", false) and MoveAny:IsResetButtonDown(btn)) then
-								MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
-								MoveAny:SetFrameScale(name, nil)
-								frame:SetScale(1)
-								MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
+								pcall(
+									function()
+										MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
+										MoveAny:SetFrameScale(name, nil)
+										frame:SetScale(1)
+										MoveAny:MSG("[" .. name .. "] is reset, reopen the frame.")
+									end
+								)
 							else
-								if MoveAny:IsResetButtonDown(btn) then
-									MoveAny:FrameDragInfo(frame, 0)
-								else
-									MoveAny:FrameDragInfo(frame, 20)
-								end
+								pcall(
+									function()
+										if MoveAny:IsResetButtonDown(btn) then
+											MoveAny:FrameDragInfo(frame, 0)
+										else
+											MoveAny:FrameDragInfo(frame, 20)
+										end
+									end
+								)
 							end
 						end
 
