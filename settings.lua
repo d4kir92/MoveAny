@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.288")
+	MoveAny:SetVersion(135994, "1.8.289")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -6432,6 +6432,46 @@ function MoveAny:LoadAddon()
 					["sh"] = 36 * 2
 				}
 			)
+
+			if EventToastManagerFrame.HideButton then
+				EventToastManagerFrame.HideButton:EnableMouse(true)
+				local enableMouse = false
+				hooksecurefunc(
+					EventToastManagerFrame.HideButton,
+					"EnableMouse",
+					function(s, bo)
+						if enableMouse then return end
+						enableMouse = true
+						s:EnableMouse(true)
+						enableMouse = false
+					end
+				)
+			end
+
+			if false then
+				-- Überfluss testen
+				if not EventToastManagerFrame then
+					UIParentLoadAddOn("Blizzard_EventToast")
+				end
+
+				function C_EventToastManager:GetNextToastToDisplay()
+					return {
+						extraUiWidgetSetID = 1532,
+						eventType = 17,
+						instructionText = "",
+						uiTextureKit = "midnight-score",
+						subtitle = "Ereignis abgeschlossen! 900 Ungetrübten Überfluss erhalten",
+						link = "",
+						flags = 0,
+						sortOrder = 0,
+						title = "ABGESCHLOSSEN",
+						eventToastID = 384,
+						displayType = 8,
+					}
+				end
+
+				EventToastManagerFrame:DisplayToast(true)
+			end
 		end
 
 		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
