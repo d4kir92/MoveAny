@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.289")
+	MoveAny:SetVersion(135994, "1.8.290")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4815,6 +4815,7 @@ function MoveAny:LoadAddon()
 					cbottom = -4
 				end
 
+				local cfTab = {}
 				if MoveAny:IsEnabled("CHAT" .. x, false) then
 					MoveAny:RegisterWidget(
 						{
@@ -4832,10 +4833,10 @@ function MoveAny:LoadAddon()
 						cf,
 						"SetClampRectInsets",
 						function(sel, ...)
-							if sel.scri then return end
-							sel.scri = true
+							if cfTab[sel] then return end
+							cfTab[sel] = true
 							sel:SetClampRectInsets(cleft, cright, ctop, cbottom)
-							sel.scri = false
+							cfTab[sel] = false
 						end
 					)
 

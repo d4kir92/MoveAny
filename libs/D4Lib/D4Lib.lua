@@ -416,6 +416,7 @@ function D4:GetSpellCastCount(...)
 end
 
 function D4:GetMouseFocus()
+    if GetMouseOverWidget then return GetMouseOverWidget() end
     if GetMouseFoci then return GetMouseFoci()[1] end
     if GetMouseFocus then return GetMouseFocus() end
     D4:MSG("[D4][GetMouseFocus] FAILED")
@@ -740,14 +741,26 @@ function D4:GetRaceAtlas(race, gender)
     return ("raceicon-%s-%s"):format(race:lower(), gender:lower())
 end
 
+local invalidAtlas = {}
+local raceAtlasFix = {}
+raceAtlasFix["scourge"] = "Undead"
+raceAtlasFix["highmountaintauren"] = "Highmountain"
+raceAtlasFix["lightforgeddraenei"] = "Lightforged"
+raceAtlasFix["zandalaritroll"] = "Zandalari"
 function D4:GetRaceIcon(race, gender)
-    if race:lower() == "scourge" and C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
-        race = "Undead"
+    if raceAtlasFix[race:lower()] ~= nil and C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
+        race = raceAtlasFix[race:lower()]
     end
 
-    local atlas = "|A:" .. D4:GetRaceAtlas(race, genderNames[gender]) .. ":16:16:0:0|a"
-    if C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
-        D4:INFO("[D4][GetRaceIcon] INVALID ATLAS", race, gender)
+    local raceAtlas = D4:GetRaceAtlas(race, genderNames[gender])
+    local atlas = "|A:" .. raceAtlas .. ":16:16:0:0|a"
+    if C_Texture.GetAtlasInfo(raceAtlas) == nil then
+        if invalidAtlas[raceAtlas] == nil then
+            invalidAtlas[raceAtlas] = true
+            D4:INFO("[D4][GetRaceIcon] INVALID ATLAS", race, gender)
+        end
+
+        return atlas
     end
 
     return atlas

@@ -63,7 +63,7 @@ function MoveAny:CurrentChatTab()
 end
 
 function MoveAny:IsDragonriding()
-    return UnitPowerBarID("player") == 631
+    return GetBonusBarIndex() == 11 and GetBonusBarOffset() == 5
 end
 
 function MoveAny:UpdateAlphaCombat(inCom)
@@ -230,8 +230,8 @@ function MoveAny:CheckAlphas()
     xpcall(
         function()
             local ele = MoveAny:GetMouseFocus()
-            if ele ~= lEle then
-                lEle = ele
+            local eleID = ele.GetDebugName and ele:GetDebugName()
+            if lEle == nil or (eleID and lEle ~= eleID) then
                 if ele and ele ~= CompactRaidFrameManager then
                     if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
                         MoveAny:SetMouseEleAlpha(ele, nil)
@@ -259,7 +259,7 @@ function MoveAny:CheckAlphas()
     )
 
     MoveAny:After(
-        0.11,
+        0.09,
         function()
             MoveAny:CheckAlphas()
         end, "CheckAlphas"
