@@ -728,7 +728,7 @@ function D4:ReplaceStr(text, old, new)
     return table.concat(parts)
 end
 
-local genderNames = {"", "Male", "Female"}
+local genderNames = {"", "male", "female"}
 function D4:GetClassAtlas(class)
     return ("classicon-%s"):format(class)
 end
@@ -738,18 +738,34 @@ function D4:GetClassIcon(class)
 end
 
 function D4:GetRaceAtlas(race, gender)
+    local raceIcon = ("raceicon128-%s-%s"):format(race:lower(), gender:lower())
+    if C_Texture.GetAtlasInfo(raceIcon) then return raceIcon end
+
     return ("raceicon-%s-%s"):format(race:lower(), gender:lower())
 end
 
 local invalidAtlas = {}
 local raceAtlasFix = {}
-raceAtlasFix["scourge"] = "Undead"
-raceAtlasFix["highmountaintauren"] = "Highmountain"
-raceAtlasFix["lightforgeddraenei"] = "Lightforged"
-raceAtlasFix["zandalaritroll"] = "Zandalari"
+raceAtlasFix["scourge"] = "undead"
+raceAtlasFix["highmountaintauren"] = "highmountain"
+raceAtlasFix["lightforgeddraenei"] = "lightforged"
+raceAtlasFix["zandalaritroll"] = "zandalari"
+raceAtlasFix["harronir"] = "haranir"
+raceAtlasFix["earthendwarf"] = "earthen"
+if false then
+    for i, v in ipairs(C_Texture.GetAtlasElements()) do
+        if v:lower():find("raceicon") and (v:lower():find("dwarf") or v:lower():find("dwarf")) then
+            print("Möglicher Key: " .. v)
+        end
+    end
+end
+
 function D4:GetRaceIcon(race, gender)
-    if raceAtlasFix[race:lower()] ~= nil and C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
-        race = raceAtlasFix[race:lower()]
+    if race == nil then return end
+    if gender == nil then return end
+    race = race:lower()
+    if raceAtlasFix[race] ~= nil and C_Texture.GetAtlasInfo(D4:GetRaceAtlas(race, genderNames[gender])) == nil then
+        race = raceAtlasFix[race]
     end
 
     local raceAtlas = D4:GetRaceAtlas(race, genderNames[gender])
