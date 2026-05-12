@@ -757,7 +757,7 @@ function MoveAny:MoveFrames()
 		"CreateFrame",
 		function(frameType, frameName, parent, template)
 			if allowedFrameTypes[frameType] then
-				MoveAny:UpdateMoveFrames("CreateFrame", false, 0.5)
+				MoveAny:UpdateMoveFrames("CreateFrame", false, 0.2)
 			end
 		end
 	)
