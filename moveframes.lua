@@ -757,7 +757,7 @@ function MoveAny:MoveFrames()
 		"CreateFrame",
 		function(frameType, frameName, parent, template)
 			if allowedFrameTypes[frameType] then
-				MoveAny:UpdateMoveFrames("CreateFrame", false, 0.1)
+				MoveAny:UpdateMoveFrames("CreateFrame", false)
 			end
 		end
 	)
@@ -779,13 +779,13 @@ function MoveAny:MoveFrames()
 		MoveAny:MoveParent(MailFrame, SendMailFrame)
 	end
 
-	MoveAny:UpdateMoveFrames("Start", true, nil)
+	MoveAny:UpdateMoveFrames("Start", true)
 	local f = CreateFrame("Frame")
 	MoveAny:RegisterEvent(f, "ADDON_LOADED")
 	MoveAny:OnEvent(
 		f,
 		function(sel, event, ...)
-			MoveAny:UpdateMoveFrames("ADDON_LOADED", true, 0.1)
+			MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
 		end, "ADDON_LOADED 123"
 	)
 
