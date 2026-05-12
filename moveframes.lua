@@ -757,7 +757,7 @@ function MoveAny:MoveFrames()
 		"CreateFrame",
 		function(frameType, frameName, parent, template)
 			if allowedFrameTypes[frameType] then
-				MoveAny:UpdateMoveFrames("CreateFrame", false, 0.2)
+				MoveAny:UpdateMoveFrames("CreateFrame", false, 0.1)
 			end
 		end
 	)
@@ -785,7 +785,7 @@ function MoveAny:MoveFrames()
 	MoveAny:OnEvent(
 		f,
 		function(sel, event, ...)
-			MoveAny:UpdateMoveFrames("ADDON_LOADED", true, 0.5)
+			MoveAny:UpdateMoveFrames("ADDON_LOADED", true, 0.1)
 		end, "ADDON_LOADED 123"
 	)
 
