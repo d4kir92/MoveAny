@@ -180,8 +180,12 @@ function MoveAny:CheckSave(frameObj, name)
 end
 
 function MoveAny:UpdateMoveFrames(from, force, ts)
-	id = id + 1
-	if run then return end
+	if run then
+		id = id + 1
+
+		return
+	end
+
 	run = true
 	local runId = id
 	if MoveAny:Loaded("UpdateMoveFrames") and MoveAny:IsEnabled("MOVEFRAMES", true) then
@@ -662,7 +666,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetPoint(frame, p1, p2, p3, p4, p5)
 							end
 						end
-					elseif C_Widget.IsWidget(frame) and waitingFrames[name] == nil and frame.Show then
+					elseif frame ~= nil and C_Widget.IsWidget(frame) and waitingFrames[name] == nil and frame.Show then
 						waitingFrames[name] = true
 						hooksecurefunc(
 							frame,
@@ -687,7 +691,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	else
 		for i, name in pairs(MAFS) do
 			local frame = MoveAny:GetFrameByName(name)
-			if frame ~= nil and waitingFrames[name] == nil and frame.Show then
+			if frame ~= nil and C_Widget.IsWidget(frame) and waitingFrames[name] == nil and frame.Show then
 				waitingFrames[name] = true
 				hooksecurefunc(
 					frame,
@@ -709,12 +713,20 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			function()
 				run = false
 				if runId ~= id then
-					MoveAny:UpdateMoveFrames("RETRY: " .. from, force, ts)
+					MoveAny:UpdateMoveFrames("RETRY: " .. from, force)
 				end
-			end, "UpdateMoveFrames"
+			end, "UpdateMoveFrames 1"
 		)
 	else
-		run = false
+		MoveAny:After(
+			0,
+			function()
+				run = false
+				if runId ~= id then
+					MoveAny:UpdateMoveFrames("RETRY: " .. from, force)
+				end
+			end, "UpdateMoveFrames 2"
+		)
 	end
 end
 
@@ -779,7 +791,7 @@ function MoveAny:MoveFrames()
 		MoveAny:MoveParent(MailFrame, SendMailFrame)
 	end
 
-	MoveAny:UpdateMoveFrames("Start", true)
+	MoveAny:UpdateMoveFrames("Start", true, 1.4)
 	local f = CreateFrame("Frame")
 	MoveAny:RegisterEvent(f, "ADDON_LOADED")
 	MoveAny:OnEvent(
