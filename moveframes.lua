@@ -718,15 +718,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			end, "UpdateMoveFrames 1"
 		)
 	else
-		MoveAny:After(
-			0,
-			function()
-				run = false
-				if runId ~= id then
-					MoveAny:UpdateMoveFrames("RETRY: " .. from, force)
-				end
-			end, "UpdateMoveFrames 2"
-		)
+		run = false
 	end
 end
 
