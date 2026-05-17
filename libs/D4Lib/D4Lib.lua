@@ -738,10 +738,10 @@ function D4:GetClassIcon(class)
 end
 
 function D4:GetRaceAtlas(race, gender)
-    local raceIcon = ("raceicon128-%s-%s"):format(race:lower(), gender:lower())
+    local raceIcon = ("raceicon-%s-%s"):format(race:lower(), gender:lower())
     if C_Texture.GetAtlasInfo(raceIcon) then return raceIcon end
 
-    return ("raceicon-%s-%s"):format(race:lower(), gender:lower())
+    return ("raceicon128-%s-%s"):format(race:lower(), gender:lower())
 end
 
 local invalidAtlas = {}
@@ -769,8 +769,24 @@ function D4:GetRaceIcon(race, gender)
     end
 
     local raceAtlas = D4:GetRaceAtlas(race, genderNames[gender])
+    local info = C_Texture.GetAtlasInfo(raceAtlas)
     local atlas = "|A:" .. raceAtlas .. ":16:16:0:0|a"
-    if C_Texture.GetAtlasInfo(raceAtlas) == nil then
+    if info then
+        local zoom = 1 / 0.82
+        local atlasPixelW = info.width / (info.rightTexCoord - info.leftTexCoord)
+        local atlasPixelH = info.height / (info.bottomTexCoord - info.topTexCoord)
+        local uW = info.rightTexCoord - info.leftTexCoord
+        local vH = info.bottomTexCoord - info.topTexCoord
+        local uCenter = (info.leftTexCoord + info.rightTexCoord) / 2
+        local vCenter = (info.topTexCoord + info.bottomTexCoord) / 2
+        local cropLeft = (uCenter - uW / zoom / 2) * atlasPixelW
+        local cropRight = (uCenter + uW / zoom / 2) * atlasPixelW
+        local cropTop = (vCenter - vH / zoom / 2) * atlasPixelH
+        local cropBottom = (vCenter + vH / zoom / 2) * atlasPixelH
+        atlas = "|T" .. info.file .. ":16:16:0:0:" .. atlasPixelW .. ":" .. atlasPixelH .. ":" .. cropLeft .. ":" .. cropRight .. ":" .. cropTop .. ":" .. cropBottom .. "|t"
+
+        return atlas
+    elseif C_Texture.GetAtlasInfo(raceAtlas) == nil then
         if invalidAtlas[raceAtlas] == nil then
             invalidAtlas[raceAtlas] = true
             D4:INFO("[D4][GetRaceIcon] INVALID ATLAS", race, gender)

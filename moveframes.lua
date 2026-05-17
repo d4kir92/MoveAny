@@ -674,7 +674,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							function()
 								if waitingFramesDone[name] == nil then
 									waitingFramesDone[name] = true
-									MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true, ts)
+									MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true, nil)
 								end
 							end
 						)
@@ -699,7 +699,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					function()
 						if waitingFramesDone[name] == nil then
 							waitingFramesDone[name] = true
-							MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true, ts)
+							MoveAny:UpdateMoveFrames("WAITING: " .. name .. " From: " .. from, true, nil)
 						end
 					end
 				)
