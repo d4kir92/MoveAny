@@ -325,7 +325,7 @@ function MoveAny:InitMicroMenu()
 					end
 
 					mb:Show()
-					tinsert(MAMenuBar.btns, mb)
+					MoveAny:AddAbBtns(MAMenuBar, mb)
 				end
 			end
 
