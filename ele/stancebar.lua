@@ -59,7 +59,7 @@ function MoveAny:UpdateStanceBar()
 					MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
 				end
 
-				for y, btn in pairs(StanceBar.btns) do
+				for y, btn in pairs(MoveAny:GetAbBtns(StanceBar)) do
 					if btn then
 						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then

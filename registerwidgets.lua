@@ -539,8 +539,8 @@ function MoveAny:MenuOptions(opt, frame)
 			local slides = {}
 			local items = {}
 			local function UpdateRowItems()
-				if frame.btns then
-					local maxBtns = getn(frame.btns)
+				if MoveAny:GetAbBtns(frame) then
+					local maxBtns = getn(MoveAny:GetAbBtns(frame))
 					if frame ~= MAMenuBar and frame ~= StanceBar and opts["COUNT"] and opts["COUNT"] > 0 then
 						maxBtns = opts["COUNT"]
 					end
@@ -559,8 +559,8 @@ function MoveAny:MenuOptions(opt, frame)
 			end
 
 			local max = 1
-			if frame.btns then
-				max = getn(frame.btns)
+			if MoveAny:GetAbBtns(frame) then
+				max = getn(MoveAny:GetAbBtns(frame))
 			else
 				max = 1
 			end

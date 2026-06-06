@@ -95,6 +95,13 @@ function MoveAny:AddAbBtns(frame, btn)
 	end
 end
 
+function MoveAny:GetAbBtns(frame)
+	local name = MoveAny:GetName(frame) or BarNames[frame]
+	abbtns[name] = abbtns[name] or {}
+
+	return abbtns[name]
+end
+
 local ma_setpoint_ab = false
 function MoveAny:UpdateActionBar(frame)
 	if ma_setpoint_ab then return end
@@ -302,7 +309,7 @@ function MoveAny:UpdateActionBar(frame)
 			end
 
 			local maxbtns = 0
-			for i, abtn in pairs(frame.btns) do
+			for i, abtn in pairs(MoveAny:GetAbBtns(frame)) do
 				if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() then
 					maxbtns = maxbtns + 1
 				end
@@ -328,12 +335,12 @@ function MoveAny:UpdateActionBar(frame)
 				cols = math.ceil(cols)
 			end
 
-			if frame.btns and frame.btns[1] then
-				local fSizeW, fSizeH = frame.btns[1]:GetSize()
-				local ofx = frame.btns[1].ofx or 0
-				local ofy = frame.btns[1].ofy or 0
-				local rsw = frame.btns[1].rsw
-				local rsh = frame.btns[1].rsh
+			if MoveAny:GetAbBtns(frame) and MoveAny:GetAbBtns(frame)[1] then
+				local fSizeW, fSizeH = MoveAny:GetAbBtns(frame)[1]:GetSize()
+				local ofx = MoveAny:GetAbBtns(frame)[1].ofx or 0
+				local ofy = MoveAny:GetAbBtns(frame)[1].ofy or 0
+				local rsw = MoveAny:GetAbBtns(frame)[1].rsw
+				local rsh = MoveAny:GetAbBtns(frame)[1].rsh
 				if rsw then
 					fSizeW = MoveAny:MathR(rsw, 0)
 				else
@@ -347,7 +354,7 @@ function MoveAny:UpdateActionBar(frame)
 				end
 
 				local id = 1
-				for i, abtn in pairs(frame.btns) do
+				for i, abtn in pairs(MoveAny:GetAbBtns(frame)) do
 					if not InCombatLockdown() then
 						if flipped then
 							MoveAny:SetPoint(abtn, "BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
@@ -457,8 +464,8 @@ end
 local function UpdateActionBarBackground(show)
 	for name, bar in pairs(abs) do
 		local ab = bar
-		if ab and ab.btns then
-			for id, abtn in pairs(ab.btns) do
+		if ab and MoveAny:GetAbBtns(ab) then
+			for id, abtn in pairs(MoveAny:GetAbBtns(ab)) do
 				local btnname = MoveAny:GetName(abtn)
 				if btnname and _G[btnname .. "FloatingBG"] then
 					_G[btnname .. "FloatingBG"]:Show()
@@ -719,7 +726,7 @@ function MoveAny:CustomBars()
 				local MAMasqueGroups = {}
 				MAMasqueGroups.Groups = {}
 				for x, bar in pairs(abs) do
-					for y, btn in pairs(bar.btns) do
+					for y, btn in pairs(MoveAny:GetAbBtns(bar)) do
 						if btn then
 							local btnName = MoveAny:GetName(btn)
 							if _G[btnName .. "FloatingBG"] then

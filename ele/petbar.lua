@@ -15,7 +15,7 @@ function MoveAny:UpdatePetBar()
 					MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
 				end
 
-				for y, btn in pairs(bar.btns) do
+				for y, btn in pairs(MoveAny:GetAbBtns(bar)) do
 					if btn then
 						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
