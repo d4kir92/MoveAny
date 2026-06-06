@@ -184,7 +184,7 @@ function MoveAny:InitMicroMenu()
 			MAMenuBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
-		MAMenuBar.btns = {}
+		MoveAny:ResetAbBtns(MAMenuBar)
 		hooksecurefunc(
 			MAMenuBar,
 			"SetParent",

@@ -56,7 +56,7 @@ function MoveAny:InitPetBar()
 		if not PetActionBar then
 			bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
 			bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
-			bar.btns = {}
+			MoveAny:ResetAbBtns(bar)
 			if _G["PetActionButton" .. 1] then
 				btnsize = _G["PetActionButton" .. 1]:GetSize()
 			end
@@ -124,7 +124,7 @@ function MoveAny:InitPetBar()
 
 			MoveAny:UpdatePetBar()
 		elseif PetActionBar then
-			PetActionBar.btns = {}
+			MoveAny:ResetAbBtns(PetActionBar)
 			for i = 1, 12 do
 				local btn = _G["PetActionButton" .. i]
 				if btn then
@@ -135,7 +135,7 @@ function MoveAny:InitPetBar()
 			bar = PetActionBar
 			MoveAny:UpdatePetBar()
 		elseif PetActionBarFrame then
-			PetActionBarFrame.btns = {}
+			MoveAny:ResetAbBtns(PetActionBarFrame)
 			for i = 1, 12 do
 				local btn = _G["PetActionButton" .. i]
 				if btn then

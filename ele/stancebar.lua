@@ -21,7 +21,7 @@ function MoveAny:UpdateStanceBar()
 	local cou = MoveAny:GetStanceBarCount()
 	if StanceBar and cou and stanceBarCount ~= cou then
 		stanceBarCount = cou
-		StanceBar.btns = {}
+		ResetAbBtns(StanceBar)
 		-- wrong class/no stances: 10
 		if cou ~= 10 then
 			for i = 1, cou do
@@ -45,7 +45,6 @@ function MoveAny:UpdateStanceBar()
 
 		StanceBar:SetSize(cou * btnsize, btnsize)
 		if MoveAny.UpdateActionBar then
-			StanceBar.btns = StanceBar.btns or {}
 			MoveAny:UpdateActionBar(StanceBar)
 		end
 
@@ -101,11 +100,9 @@ function MoveAny:InitStanceBar()
 	if not StanceBar then
 		StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
 		StanceBar:SetSize(btnsize, btnsize)
-		StanceBar.btns = StanceBar.btns or {}
 	end
 
 	if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
-		StanceBar.btns = StanceBar.btns or {}
 		local setStanceBarPoint = false
 		hooksecurefunc(
 			StanceBar,
@@ -161,7 +158,6 @@ function MoveAny:InitStanceBar()
 
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(StanceBar, "StanceBar")
-			StanceBar.btns = StanceBar.btns or {}
 			MoveAny:UpdateActionBar(StanceBar)
 		end
 	end

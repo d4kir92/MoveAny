@@ -4517,7 +4517,6 @@ function MoveAny:LoadAddon()
 					local ab = _G[name]
 					if ab then
 						for x = 1, 12 do
-							ab.btns = ab.btns or {}
 							local abtn = _G[name .. "Button" .. x]
 							if i == 1 then
 								abtn = _G["ActionButton" .. x]

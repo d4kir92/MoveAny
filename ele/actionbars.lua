@@ -82,6 +82,11 @@ function MoveAny:CheckIfMicroMenuInVehicle(frame)
 end
 
 local abbtns = {}
+function MoveAny:ResetAbBtns(frame)
+	local name = MoveAny:GetName(frame) or BarNames[frame]
+	abbtns[name] = {}
+end
+
 function MoveAny:AddAbBtns(frame, btn)
 	local name = MoveAny:GetName(frame) or BarNames[frame]
 	abbtns[name] = abbtns[name] or {}
@@ -584,7 +589,7 @@ function MoveAny:CustomBars()
 				bar:SetAttribute("actionpage", i)
 			end
 
-			bar.btns = {}
+			MoveAny:ResetAbBtns(bar)
 			tinsert(abs, bar)
 			for x = 1, 12 do
 				local btnname = "ActionBar" .. i .. "Button" .. x
