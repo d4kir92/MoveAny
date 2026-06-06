@@ -6,7 +6,7 @@ if not MoveAny:IsAddOnLoaded("Leatrix_Maps") then
 	tinsert(MAFRAMES, "WorldMapFrame")
 end
 
-if MoveAny:GetWoWBuild() ~= "TBC" then
+if MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 	tinsert(MAFRAMES, "PVPFrame")
 end
 
@@ -358,7 +358,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetClampedToScreen(fm, true, "UpdateMoveFrames 1")
 							end
 
-							if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and WorldMapFrame and WorldMapFrameMove then
+							if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS") and WorldMapFrame and WorldMapFrameMove then
 								local offsetl = 15
 								local offsetr = 7
 								local offsett = 18

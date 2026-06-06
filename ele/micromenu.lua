@@ -8,6 +8,7 @@ end
 function MoveAny:GetMicroButtonYOffset()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return -3 end
 	if MoveAny:GetWoWBuild() == "TBC" then return -3 end
+	if MoveAny:GetWoWBuild() == "MISTS" then return -3 end
 
 	return -4
 end
@@ -34,7 +35,7 @@ function MoveAny:DoUpdateMicroBar(from)
 		MoveAny:DEB("UpdateMicroBar", microCount)
 	end
 
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 		MoveAny:PetBattleChat(ChatFrame1)
 	end
 
@@ -226,6 +227,12 @@ function MoveAny:InitMicroMenu()
 						mb.ofy = 2
 						mb.rsw = 24
 						mb.rsh = 33
+					elseif MoveAny:GetWoWBuild() == "MISTS" then
+						mb:SetParent(MAMenuBar)
+						mb.ofx = -2
+						mb.ofy = 2
+						mb.rsw = 24
+						mb.rsh = 33
 					else
 						mb:SetParent(MAMenuBar)
 						mb.ofx = -2
@@ -361,7 +368,7 @@ function MoveAny:InitMicroMenu()
 						MoveAny:UpdateMicroBar("INIT DELAYED")
 					end
 
-					if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+					if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 						function MoveAny:UpdateMicroMenu()
 							local overrideChanged = false
 							local parentChanged = false

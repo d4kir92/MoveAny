@@ -882,7 +882,7 @@ function MoveAny:MenuOptions(opt, frame)
 			--MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
 			if name == "MABuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 					MoveAny:CreateSliderOld(
 						content,
 						10,
@@ -1072,7 +1072,7 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:Trans("LID_DEBUFFS")) then
 			local y = -20
 			if name == "MADebuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 					MoveAny:CreateSliderOld(
 						content,
 						10,
@@ -1462,7 +1462,7 @@ function MoveAny:IsPresetProfileActive()
 	return true
 end
 
-if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 	MoveAny:After(
 		1,
 		function()
@@ -2137,7 +2137,7 @@ function MoveAny:RegisterWidget(tab)
 end
 
 function MoveAny:AnyActionbarEnabled()
-	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 		return MoveAny:IsEnabled("ACTIONBARS", false) or MoveAny:IsEnabled("ACTIONBAR1", false) or MoveAny:IsEnabled("ACTIONBAR3", false) or MoveAny:IsEnabled("ACTIONBAR4", false) or MoveAny:IsEnabled("ACTIONBAR7", false) or MoveAny:IsEnabled("ACTIONBAR8", false) or MoveAny:IsEnabled("ACTIONBAR9", false) or MoveAny:IsEnabled("ACTIONBAR10", false)
 	else
 		return false

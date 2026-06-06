@@ -262,7 +262,7 @@ MoveAny:AddToEMMap("PartyFrame", "ShowPartyFrames")
 MoveAny:AddToEMMap("CompactRaidFrameContainer", "ShowRaidFrames")
 MoveAny:AddToEMMap("CompactArenaFrame", "ShowArenaFrames")
 function MoveAny:IsBlizEditModeEnabled()
-	if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC") or (C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame.numLayouts) then return true end
+	if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS") or (C_Widget.IsWidget(EditModeManagerFrame) and EditModeManagerFrame.numLayouts) then return true end
 
 	return false
 end
@@ -774,7 +774,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(
 			4,
 			"SHOWMINIMAPBUTTON",
-			MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC",
+			MoveAny:GetWoWBuild() ~= "RETAIL",
 			function(sel, value)
 				if value then
 					MoveAny:ShowMMBtn("MoveAny")
@@ -861,7 +861,7 @@ function MoveAny:InitMALock()
 			AddCheckBox(posx, "OVERRIDEACTIONBAR", false)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 			AddCheckBox(posx, "ACTIONBARS", false)
 			AddCheckBox(4, "ACTIONBAR3", false)
 			AddCheckBox(4, "ACTIONBAR4", false)
@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.300")
+	MoveAny:SetVersion(135994, "1.8.301")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -3226,7 +3226,7 @@ function MoveAny:LoadAddon()
 				if msgOnce["TargetFrameBuffMover"] == nil then
 					msgOnce["TargetFrameBuffMover"] = true
 					MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TargetFrame Buff enabled in MoveAny.")
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						MoveAny:MSG("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
@@ -3372,7 +3372,7 @@ function MoveAny:LoadAddon()
 				if msgOnce["TARGETFRAMEDEBUFFMOVER"] == nil then
 					msgOnce["TARGETFRAMEDEBUFFMOVER"] = true
 					MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAME DEBUFF enabled in MoveAny.")
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
@@ -3518,7 +3518,7 @@ function MoveAny:LoadAddon()
 				if msgOnce["TARGETFRAMETOTDEBUFFMOVER"] == nil then
 					msgOnce["TARGETFRAMETOTDEBUFFMOVER"] = true
 					MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAME TOT DEBUFF enabled in MoveAny.")
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
@@ -3664,7 +3664,7 @@ function MoveAny:LoadAddon()
 				if msgOnce["TARGETFRAMEBUFFMOVER"] == nil then
 					msgOnce["TARGETFRAMEBUFFMOVER"] = true
 					MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAME BUFF enabled in MoveAny.")
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
@@ -3845,7 +3845,7 @@ function MoveAny:LoadAddon()
 					if msgOnce["FocusFrameBuffMover"] == nil then
 						msgOnce["FocusFrameBuffMover"] = true
 						MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FocusFrame Buff enabled in MoveAny.")
-						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 							MoveAny:MSG("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 						end
 					end
@@ -3991,7 +3991,7 @@ function MoveAny:LoadAddon()
 					if msgOnce["FOCUSFRAMEDEBUFFMOVER"] == nil then
 						msgOnce["FOCUSFRAMEDEBUFFMOVER"] = true
 						MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAME DEBUFF enabled in MoveAny.")
-						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 							MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 						end
 					end
@@ -4137,7 +4137,7 @@ function MoveAny:LoadAddon()
 					if msgOnce["FOCUSFRAMETOTDEBUFFMOVER"] == nil then
 						msgOnce["FOCUSFRAMETOTDEBUFFMOVER"] = true
 						MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAME TOT DEBUFF enabled in MoveAny.")
-						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 							MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 						end
 					end
@@ -4283,7 +4283,7 @@ function MoveAny:LoadAddon()
 					if msgOnce["FOCUSFRAMEBUFFMOVER"] == nil then
 						msgOnce["FOCUSFRAMEBUFFMOVER"] = true
 						MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAME BUFF enabled in MoveAny.")
-						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+						if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 							MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 						end
 					end
@@ -4486,7 +4486,7 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 			local ABNames = {}
 			if MainActionBar then
 				ABNames[1] = "MainActionBar"
@@ -4494,13 +4494,24 @@ function MoveAny:LoadAddon()
 				ABNames[1] = "MainMenuBar"
 			end
 
-			ABNames[2] = "MultiBarBottomLeft"
-			ABNames[3] = "MultiBarBottomRight"
-			ABNames[4] = "MultiBarRight"
-			ABNames[5] = "MultiBarLeft"
-			ABNames[6] = "MultiBar" .. 5
-			ABNames[7] = "MultiBar" .. 6
-			ABNames[8] = "MultiBar" .. 7
+			if MoveAny:GetWoWBuild() == "MISTS" then
+				ABNames[2] = "MultiBarBottomLeft"
+				ABNames[3] = "MultiBarRight"
+				ABNames[4] = "MultiBarLeft"
+				ABNames[5] = "MultiBarBottomRight"
+				ABNames[6] = "MultiBar" .. 5
+				ABNames[7] = "MultiBar" .. 6
+				ABNames[8] = "MultiBar" .. 7
+			else
+				ABNames[2] = "MultiBarBottomLeft"
+				ABNames[3] = "MultiBarBottomRight"
+				ABNames[4] = "MultiBarRight"
+				ABNames[5] = "MultiBarLeft"
+				ABNames[6] = "MultiBar" .. 5
+				ABNames[7] = "MultiBar" .. 6
+				ABNames[8] = "MultiBar" .. 7
+			end
+
 			for i = 1, 8 do
 				if ABNames[i] and MoveAny:IsEnabled("ACTIONBAR" .. i, false) then
 					local name = ABNames[i]
@@ -4802,7 +4813,7 @@ function MoveAny:LoadAddon()
 				local cright = 2
 				local ctop = 22
 				local cbottom = -34
-				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 					cright = 16
 				end
 
@@ -5375,7 +5386,7 @@ function MoveAny:LoadAddon()
 				if msgOnce["TARGETFRAMESPELLBAR"] == nil then
 					msgOnce["TARGETFRAMESPELLBAR"] = true
 					MoveAny:INFO("TARGETFRAME must be enabled in MoveAny, when you have TARGETFRAME SPELLBAR enabled in MoveAny.")
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						MoveAny:INFO("If TARGETFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end
@@ -5404,7 +5415,7 @@ function MoveAny:LoadAddon()
 				if msgOnce["FOCUSFRAMESPELLBAR"] == nil then
 					msgOnce["FOCUSFRAMESPELLBAR"] = true
 					MoveAny:INFO("FOCUSFRAME must be enabled in MoveAny, when you have FOCUSFRAME SPELLBAR enabled in MoveAny.")
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						MoveAny:INFO("If FOCUSFRAME is enabled in Blizzard-Editmode, you need to disable it there in the Blizzard-Editmode")
 					end
 				end

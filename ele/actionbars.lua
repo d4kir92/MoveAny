@@ -83,20 +83,56 @@ end
 
 local abbtns = {}
 function MoveAny:ResetAbBtns(frame)
-	local name = MoveAny:GetName(frame) or BarNames[frame]
+	if frame == nil then
+		print("[ResetAbBtns] frame IS NIL")
+
+		return {}
+	end
+
+	local name = MoveAny:GetName(frame)
+	if name == nil then
+		print("[ResetAbBtns] name IS NIL")
+
+		return
+	end
+
 	abbtns[name] = {}
 end
 
 function MoveAny:AddAbBtns(frame, btn)
-	local name = MoveAny:GetName(frame) or BarNames[frame]
+	if frame == nil then
+		print("[AddAbBtns] frame IS NIL")
+
+		return
+	end
+
+	local name = MoveAny:GetName(frame)
+	if name == nil then
+		print("[AddAbBtns] name IS NIL")
+
+		return
+	end
+
 	abbtns[name] = abbtns[name] or {}
-	if tContains(abbtns[name], btn) then
+	if not tContains(abbtns[name], btn) then
 		tinsert(abbtns[name], btn)
 	end
 end
 
 function MoveAny:GetAbBtns(frame)
-	local name = MoveAny:GetName(frame) or BarNames[frame]
+	if frame == nil then
+		print("[GetAbBtns] frame IS NIL")
+
+		return {}
+	end
+
+	local name = MoveAny:GetName(frame)
+	if name == nil then
+		print("[GetAbBtns] name IS NIL")
+
+		return
+	end
+
 	abbtns[name] = abbtns[name] or {}
 
 	return abbtns[name]
@@ -129,7 +165,7 @@ function MoveAny:UpdateActionBar(frame)
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 					frame:SetScale(1)
 					rows = 2
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						spacing = 15
 						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
 							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
@@ -439,6 +475,17 @@ end
 function MoveAny:InitActionBarLayouts()
 	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
 		MASetPoint("MainMenuBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
+		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
+		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
+		MASetPoint("MultiBarRight", "RIGHT", MoveAny:GetMainPanel(), "RIGHT", 0, 0, 12) -- MultiBarRight
+		MASetPoint("MultiBarLeft", "RIGHT", MoveAny:GetMainPanel(), "RIGHT", -36, 0, 12) -- MultiBarLeft
+		MASetPoint("MultiBar" .. 5, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- "MultiBar" .. 5
+		MASetPoint("MultiBar" .. 6, "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- "MultiBar" .. 6
+		MASetPoint("MultiBar" .. 7, "CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0, 1) -- "MultiBar" .. 7
+		MASetPoint("MultiBar" .. 8, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 1 * 36, 1)
+		MASetPoint("MultiBar" .. 9, "CENTER", MoveAny:GetMainPanel(), "CENTER", -360, 2 * 36, 1)
+	elseif MoveAny:GetWoWBuild() == "MISTS" then
+		MASetPoint("MainActionBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
 		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
 		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
 		MASetPoint("MultiBarRight", "RIGHT", MoveAny:GetMainPanel(), "RIGHT", 0, 0, 12) -- MultiBarRight
@@ -775,7 +822,7 @@ MoveAny:RegisterEvent(f, "UPDATE_SHAPESHIFT_FORM")
 MoveAny:OnEvent(
 	f,
 	function(sel, event)
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 			local frame = _G["MAActionBar" .. 1]
 			if frame and frame.init == nil then
 				frame.init = true
@@ -801,7 +848,7 @@ MoveAny:OnEvent(
 
 					self:SetAttribute("actionpage", newstate);
 				]])
-				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 					--[[
 					https://wowwiki-archive.fandom.com/wiki/API_GetBonusBarOffset
 					Offsets:
