@@ -4528,7 +4528,7 @@ function MoveAny:LoadAddon()
 									return ab
 								end
 
-								table.insert(ab.btns, abtn)
+								MoveAny:AddAbBtns(ab, abtn)
 							else
 								MoveAny:ERR("ACTION BUTTON NOT FOUND " .. name)
 							end

@@ -1,6 +1,7 @@
 local _, MoveAny = ...
 local btnsize = 30
 local once = true
+local stanceBarCount = -1
 function MoveAny:GetStanceBarCount()
 	local cou = 0
 	if GetNumShapeshiftForms() > 0 then
@@ -18,8 +19,8 @@ function MoveAny:UpdateStanceBar()
 	end
 
 	local cou = MoveAny:GetStanceBarCount()
-	if StanceBar and cou and StanceBar.cou ~= cou then
-		StanceBar.cou = cou
+	if StanceBar and cou and stanceBarCount ~= cou then
+		stanceBarCount = cou
 		StanceBar.btns = {}
 		-- wrong class/no stances: 10
 		if cou ~= 10 then
@@ -37,7 +38,7 @@ function MoveAny:UpdateStanceBar()
 						bb:SetParent(StanceBar)
 					end
 
-					tinsert(StanceBar.btns, bb)
+					MoveAny:AddAbBtns(StanceBar, bb)
 				end
 			end
 		end
@@ -100,7 +101,6 @@ function MoveAny:InitStanceBar()
 	if not StanceBar then
 		StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
 		StanceBar:SetSize(btnsize, btnsize)
-		StanceBar.cou = -1
 		StanceBar.btns = StanceBar.btns or {}
 	end
 
@@ -152,7 +152,7 @@ function MoveAny:InitStanceBar()
 		if StanceBar.actionButtons then
 			for i, v in pairs(StanceBar.actionButtons) do
 				if i <= cou then
-					tinsert(StanceBar.btns, v)
+					MoveAny:AddAbBtns(StanceBar, v)
 				end
 			end
 		else

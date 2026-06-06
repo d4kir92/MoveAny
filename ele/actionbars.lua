@@ -81,6 +81,15 @@ function MoveAny:CheckIfMicroMenuInVehicle(frame)
 	return false
 end
 
+local abbtns = {}
+function MoveAny:AddAbBtns(frame, btn)
+	local name = MoveAny:GetName(frame) or BarNames[frame]
+	abbtns[name] = abbtns[name] or {}
+	if tContains(abbtns[name], btn) then
+		tinsert(abbtns[name], btn)
+	end
+end
+
 local ma_setpoint_ab = false
 function MoveAny:UpdateActionBar(frame)
 	if ma_setpoint_ab then return end
@@ -688,7 +697,7 @@ function MoveAny:CustomBars()
 					end
 				)
 
-				tinsert(bar.btns, btn)
+				MoveAny:AddAbBtns(bar, btn)
 			end
 
 			MoveAny:UpdateActionBar(_G[name])

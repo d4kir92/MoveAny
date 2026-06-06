@@ -92,7 +92,7 @@ function MoveAny:InitPetBar()
 
 					bb:ClearAllPoints()
 					bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
-					tinsert(bar.btns, bb)
+					MoveAny:AddAbBtns(bar, bb)
 				end
 			end
 
@@ -128,7 +128,7 @@ function MoveAny:InitPetBar()
 			for i = 1, 12 do
 				local btn = _G["PetActionButton" .. i]
 				if btn then
-					tinsert(PetActionBar.btns, btn)
+					MoveAny:AddAbBtns(PetActionBar, btn)
 				end
 			end
 
@@ -139,7 +139,7 @@ function MoveAny:InitPetBar()
 			for i = 1, 12 do
 				local btn = _G["PetActionButton" .. i]
 				if btn then
-					tinsert(PetActionBarFrame.btns, btn)
+					MoveAny:AddAbBtns(PetActionBarFrame, btn)
 				end
 			end
 
