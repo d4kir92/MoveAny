@@ -21,7 +21,7 @@ function MoveAny:UpdateStanceBar()
 	local cou = MoveAny:GetStanceBarCount()
 	if StanceBar and cou and stanceBarCount ~= cou then
 		stanceBarCount = cou
-		ResetAbBtns(StanceBar)
+		MoveAny:ResetAbBtns(StanceBar)
 		-- wrong class/no stances: 10
 		if cou ~= 10 then
 			for i = 1, cou do
