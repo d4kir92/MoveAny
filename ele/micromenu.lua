@@ -137,12 +137,14 @@ function MoveAny:InitMicroMenu()
 			)
 		end
 
-		local MBTNS = nil
+		local MBTNS = {}
 		if MICRO_BUTTONS == nil then
 			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
 		else
 			for i, v in pairs(MICRO_BUTTONS) do
-				tinsert(MBTNS, v)
+				if v ~= "SocialsMicroButton" then
+					tinsert(MBTNS, v)
+				end
 			end
 		end
 
