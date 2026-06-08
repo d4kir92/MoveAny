@@ -230,8 +230,13 @@ function MoveAny:CheckAlphas()
     xpcall(
         function()
             local ele = MoveAny:GetMouseFocus()
-            local eleID = ele.GetDebugName and ele:GetDebugName()
-            if lEle == nil or (eleID and lEle ~= eleID) then
+            local eleID = nil
+            if ele ~= nil then
+                eleID = ele.GetDebugName and ele:GetDebugName()
+            end
+
+            if lEle ~= eleID then
+                lEle = eleID
                 if ele and ele ~= CompactRaidFrameManager then
                     if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
                         MoveAny:SetMouseEleAlpha(ele, nil)

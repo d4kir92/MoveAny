@@ -139,6 +139,61 @@ function MoveAny:GetAbBtns(frame)
 end
 
 local ma_setpoint_ab = false
+local HiddenButtons = {}
+local hookedHidden = {}
+function MoveAny:SetupHide(btn)
+	if hookedHidden[btn] == nil then
+		hookedHidden[btn] = true
+		hooksecurefunc(
+			btn,
+			"SetAlpha",
+			function(sel, alpha)
+				if HiddenButtons[sel] ~= nil and alpha and alpha > 0 then
+					sel:SetAlpha(0)
+				end
+			end
+		)
+
+		hooksecurefunc(
+			btn,
+			"EnableMouse",
+			function(sel, enabled)
+				if HiddenButtons[sel] ~= nil and enabled then
+					sel:EnableMouse(false)
+				end
+			end
+		)
+	end
+end
+
+function MoveAny:HideBtn(btn)
+	HiddenButtons[btn] = true
+	MoveAny:SetupHide(btn)
+	btn:SetAlpha(0)
+	btn:EnableMouse(false)
+	if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
+		-- On Retail it is only hidden when changed parent
+		btn:SetParent(MoveAny:GetHidden())
+	end
+end
+
+function MoveAny:ShowBtn(btn)
+	HiddenButtons[btn] = nil
+	MoveAny:SetupHide(btn)
+	btn:SetAlpha(1)
+	btn:EnableMouse(true)
+	if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
+		local parent = MicroMenu or MAMenuBar
+		if parent then
+			btn:SetParent(parent)
+		end
+	end
+end
+
+function MoveAny:IsHiddenBtn(btn)
+	return HiddenButtons[btn]
+end
+
 function MoveAny:UpdateActionBar(frame)
 	if ma_setpoint_ab then return end
 	MoveAny:SafeExec(
@@ -189,164 +244,189 @@ function MoveAny:UpdateActionBar(frame)
 				end
 			end
 
-			local parent = MicroMenu or MAMenuBar
 			if frame == MAMenuBar then
-				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
-					if HousingMicroButton then
-						if rows == 13 then
-							if HelpMicroButton then
-								HelpMicroButton:SetParent(parent)
-							end
+				if MoveAny:GetWoWBuild() == "RETAIL" then
+					if rows == 13 then
+						if HelpMicroButton then
+							MoveAny:ShowBtn(HelpMicroButton)
+						end
 
-							if MainMenuMicroButton then
-								MainMenuMicroButton:SetParent(parent)
-							end
-						else
-							if HelpMicroButton then
-								HelpMicroButton:SetParent(MoveAny:GetHidden())
-							end
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					elseif rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
 
-							if MainMenuMicroButton then
-								MainMenuMicroButton:SetParent(parent)
-							end
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					elseif rows == 11 or rows == 1 then
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
+
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					elseif rows == 10 or rows == 5 or rows == 2 then
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
+
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					else
-						if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-							if HelpMicroButton then
-								HelpMicroButton:SetParent(parent)
-							end
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
 
-							if MainMenuMicroButton then
-								MainMenuMicroButton:SetParent(parent)
-							end
-						elseif rows == 11 or rows == 1 then
-							if HelpMicroButton then
-								HelpMicroButton:SetParent(MoveAny:GetHidden())
-							end
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					end
+				elseif MoveAny:GetWoWBuild() == "TBC" then
+					if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+						if HelpMicroButton then
+							MoveAny:ShowBtn(HelpMicroButton)
+						end
 
-							if MainMenuMicroButton then
-								MainMenuMicroButton:SetParent(parent)
-							end
-						elseif rows == 10 or rows == 5 or rows == 2 then
-							if HelpMicroButton then
-								HelpMicroButton:SetParent(MoveAny:GetHidden())
-							end
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					elseif rows == 11 or rows == 1 then
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
 
-							if MainMenuMicroButton then
-								MainMenuMicroButton:SetParent(MoveAny:GetHidden())
-							end
-						else
-							if HelpMicroButton then
-								HelpMicroButton:SetParent(MoveAny:GetHidden())
-							end
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					elseif rows == 10 or rows == 5 or rows == 2 then
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
 
-							if MainMenuMicroButton then
-								MainMenuMicroButton:SetParent(parent)
-							end
+						if MainMenuMicroButton then
+							MoveAny:HideBtn(MainMenuMicroButton)
+						end
+					else
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
+
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					end
 				elseif MoveAny:GetWoWBuild() == "MISTS" then
 					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					elseif rows == 11 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					elseif rows == 10 or rows == 5 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(MainMenuMicroButton)
 						end
 					else
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					end
 				elseif MoveAny:GetWoWBuild() == "CATA" then
 					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					elseif rows == 11 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					elseif rows == 10 or rows == 5 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(MainMenuMicroButton)
 						end
 					else
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					end
 				elseif MoveAny:GetWoWBuild() == "WRATH" then
 					if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					elseif rows == 10 or rows == 5 or rows == 2 then
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(parent)
+							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
 					else
 						if HelpMicroButton then
-							HelpMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
-							MainMenuMicroButton:SetParent(MoveAny:GetHidden())
+							MoveAny:HideBtn(MainMenuMicroButton)
 						end
 					end
-				elseif MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "CLASSIC" then
+				elseif MoveAny:GetWoWBuild() == "CLASSIC" then
+					if SocialsMicroButton then
+						MoveAny:HideBtn(SocialsMicroButton)
+					end
+				else
 					MoveAny:INFO("Missing WoW Build for MAMenuBar (MicroMenu)")
 				end
 			end
 
 			local maxbtns = 0
 			for i, abtn in pairs(MoveAny:GetAbBtns(frame)) do
-				if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() then
+				if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then
 					maxbtns = maxbtns + 1
 				end
 			end
@@ -444,7 +524,7 @@ function MoveAny:UpdateActionBar(frame)
 							end
 						end
 
-						if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() then
+						if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then
 							id = id + 1
 						end
 					end

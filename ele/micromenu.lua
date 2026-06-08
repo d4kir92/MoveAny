@@ -196,16 +196,14 @@ function MoveAny:InitMicroMenu()
 					for i, mbname in pairs(MBTNS) do
 						local mb = _G[mbname]
 						if mb then
-							mb:SetAlpha(0)
-							mb:EnableMouse(false)
+							MoveAny:HideBtn(mb)
 						end
 					end
 				else
 					for i, mbname in pairs(MBTNS) do
 						local mb = _G[mbname]
 						if mb then
-							mb:SetAlpha(1)
-							mb:EnableMouse(true)
+							MoveAny:ShowBtn(mb)
 						end
 					end
 				end
