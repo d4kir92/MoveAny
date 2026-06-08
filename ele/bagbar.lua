@@ -24,7 +24,7 @@ function MoveAny:UpdateBags()
 		for i, v in pairs(SMALLBAGS) do
 			local bag = _G[v]
 			if bag then
-				MoveAny:HideFrame(bag, true)
+				MoveAny:HideFrame(bag)
 			end
 		end
 	else
@@ -40,7 +40,7 @@ function MoveAny:UpdateBags()
 		for i, v in pairs(KEYBAG) do
 			local bag = _G[v]
 			if bag then
-				MoveAny:HideFrame(bag, true)
+				MoveAny:HideFrame(bag)
 			end
 		end
 	else

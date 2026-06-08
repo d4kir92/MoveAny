@@ -28,41 +28,7 @@ MoveAny:GetHidden().unit = "player"
 MoveAny:GetHidden().auraRows = 0
 local sethidden = {}
 local sethiddenSetup = {}
-function MoveAny:HideFrame(frame, soft)
-	if not soft then
-		if InCombatLockdown() then
-			MoveAny:After(
-				0.1,
-				function()
-					MoveAny:HideFrame(frame, soft)
-				end, "HideFrame"
-			)
-
-			return
-		end
-
-		sethidden[frame] = true
-		if sethiddenSetup[frame] == nil then
-			sethiddenSetup[frame] = true
-			local setparent = false
-			hooksecurefunc(
-				frame,
-				"SetParent",
-				function(sel, parent)
-					if sethidden[sel] == nil then return end
-					if setparent then return end
-					setparent = true
-					MoveAny:TrySetParent(sel, MoveAny:GetHidden())
-					setparent = false
-				end
-			)
-		end
-
-		MoveAny:TrySetParent(frame, MoveAny:GetHidden())
-
-		return
-	end
-
+function MoveAny:HideFrame(frame)
 	sethidden[frame] = true
 	if sethiddenSetup[frame] == nil then
 		sethiddenSetup[frame] = true
@@ -87,24 +53,49 @@ function MoveAny:HideFrame(frame, soft)
 							if not InCombatLockdown() then
 								child:EnableMouse(false)
 							end
-						end, "HideFrame"
+						end, "HideFrame 1"
 					)
 				end
 
 				setalpha = false
 			end
 		)
+
+		local enableMouse = false
+		hooksecurefunc(
+			frame,
+			"EnableMouse",
+			function(sel, alpha)
+				if sethidden[sel] == nil then return end
+				if enableMouse then return end
+				enableMouse = true
+				sel:EnableMouse(false)
+				if sel.GetChildren then
+					MoveAny:ForeachChildren(
+						sel,
+						function(child)
+							if not InCombatLockdown() then
+								child:EnableMouse(false)
+							end
+						end, "HideFrame 2"
+					)
+				end
+
+				enableMouse = false
+			end
+		)
 	end
 
 	frame:SetAlpha(0)
-	frame:EnableMouse(false)
 	if InCombatLockdown() then
 		MoveAny:After(
 			0.1,
 			function()
-				MoveAny:HideFrame(frame, soft)
+				MoveAny:HideFrame(frame)
 			end, "HideFrame 2"
 		)
+	else
+		frame:EnableMouse(false)
 	end
 end
 

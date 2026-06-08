@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.304")
+	MoveAny:SetVersion(135994, "1.8.305")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -5699,7 +5699,8 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "MAMenuBar",
-					["lstr"] = "LID_MICROMENU"
+					["lstr"] = "LID_MICROMENU",
+					["soft"] = true
 				}
 			)
 		end
@@ -5745,7 +5746,7 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("DEBUFFS", false) then
-			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC") and DebuffFrame then
+			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS") and DebuffFrame then
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "DebuffFrame",

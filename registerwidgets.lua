@@ -1545,7 +1545,6 @@ function MoveAny:RegisterWidget(tab)
 	local posx = tab.posx
 	local posy = tab.posy
 	local setup = tab.setup
-	local soft = tab.soft
 	tab.delay = tab.delay or 0.2
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
@@ -2112,7 +2111,7 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:ClearAllPoints()
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
-		MoveAny:HideFrame(frame, soft)
+		MoveAny:HideFrame(frame)
 		dragframe.t:SetVertexColor(MoveAny:GetColor("hidden"))
 		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 			dragframe:Hide()

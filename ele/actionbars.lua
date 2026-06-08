@@ -288,6 +288,10 @@ function MoveAny:UpdateActionBar(frame)
 						end
 					end
 				elseif MoveAny:GetWoWBuild() == "TBC" then
+					if SocialsMicroButton then
+						MoveAny:HideBtn(SocialsMicroButton)
+					end
+
 					if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
 						if HelpMicroButton then
 							MoveAny:ShowBtn(HelpMicroButton)
