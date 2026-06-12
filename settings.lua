@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.305")
+	MoveAny:SetVersion(135994, "1.8.306")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4934,77 +4934,91 @@ function MoveAny:LoadAddon()
 							}
 						)
 					else
-						if ObjectiveTrackerFrame == nil then
-							ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
-							ObjectiveTrackerFrame:SetSize(240, 600)
-							ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
-							if QuestWatchFrame then
-								hooksecurefunc(
-									QuestWatchFrame,
-									"SetPoint",
-									function(sel, ...)
-										if sel.qwfsetpoint then return end
-										sel.qwfsetpoint = true
-										sel:SetMovable(true)
-										if sel.SetUserPlaced and sel:IsMovable() then
-											sel:SetUserPlaced(false)
+						if WatchFrameLines then
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "WatchFrameLines",
+									["lstr"] = "LID_QUESTTRACKER",
+									["userplaced"] = true,
+									["secure"] = true,
+									["sw"] = 300,
+									["sh"] = 600,
+								}
+							)
+						else
+							if ObjectiveTrackerFrame == nil then
+								print("OH OH!!!")
+								ObjectiveTrackerFrame = CreateFrame("Frame", "ObjectiveTrackerFrame", MoveAny:GetMainPanel())
+								ObjectiveTrackerFrame:SetSize(240, 600)
+								ObjectiveTrackerFrame:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
+								if QuestWatchFrame then
+									hooksecurefunc(
+										QuestWatchFrame,
+										"SetPoint",
+										function(sel, ...)
+											if sel.qwfsetpoint then return end
+											sel.qwfsetpoint = true
+											sel:SetMovable(true)
+											if sel.SetUserPlaced and sel:IsMovable() then
+												sel:SetUserPlaced(false)
+											end
+
+											sel:SetParent(ObjectiveTrackerFrame)
+											MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+											sel.qwfsetpoint = false
 										end
+									)
 
-										sel:SetParent(ObjectiveTrackerFrame)
-										MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-										sel.qwfsetpoint = false
+									QuestWatchFrame:SetMovable(true)
+									if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
+										QuestWatchFrame:SetUserPlaced(false)
 									end
-								)
 
-								QuestWatchFrame:SetMovable(true)
-								if QuestWatchFrame.SetUserPlaced and QuestWatchFrame:IsMovable() then
-									QuestWatchFrame:SetUserPlaced(false)
+									QuestWatchFrame:SetParent(ObjectiveTrackerFrame)
+									QuestWatchFrame:ClearAllPoints()
+									QuestWatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+									QuestWatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
 								end
 
-								QuestWatchFrame:SetParent(ObjectiveTrackerFrame)
-								QuestWatchFrame:ClearAllPoints()
-								QuestWatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-								QuestWatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
-							end
+								if WatchFrame then
+									hooksecurefunc(
+										WatchFrame,
+										"SetPoint",
+										function(sel, ...)
+											if sel.wfsetpoint then return end
+											sel.wfsetpoint = true
+											sel:SetMovable(true)
+											if sel.SetUserPlaced and sel:IsMovable() then
+												sel:SetUserPlaced(false)
+											end
 
-							if WatchFrame then
-								hooksecurefunc(
-									WatchFrame,
-									"SetPoint",
-									function(sel, ...)
-										if sel.wfsetpoint then return end
-										sel.wfsetpoint = true
-										sel:SetMovable(true)
-										if sel.SetUserPlaced and sel:IsMovable() then
-											sel:SetUserPlaced(false)
+											sel:SetParent(ObjectiveTrackerFrame)
+											MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+											sel.wfsetpoint = false
 										end
+									)
 
-										sel:SetParent(ObjectiveTrackerFrame)
-										MoveAny:SetPoint(sel, "TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-										sel.wfsetpoint = false
+									WatchFrame:SetMovable(true)
+									if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
+										WatchFrame:SetUserPlaced(false)
 									end
-								)
 
-								WatchFrame:SetMovable(true)
-								if WatchFrame.SetUserPlaced and WatchFrame:IsMovable() then
-									WatchFrame:SetUserPlaced(false)
+									WatchFrame:SetParent(ObjectiveTrackerFrame)
+									WatchFrame:ClearAllPoints()
+									WatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
+									WatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
 								end
-
-								WatchFrame:SetParent(ObjectiveTrackerFrame)
-								WatchFrame:ClearAllPoints()
-								WatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame, "TOPLEFT", 0, 0)
-								WatchFrame:SetSize(ObjectiveTrackerFrame:GetSize())
 							end
+
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "ObjectiveTrackerFrame",
+									["lstr"] = "LID_QUESTTRACKER",
+									["userplaced"] = true,
+									["secure"] = true,
+								}
+							)
 						end
-
-						MoveAny:RegisterWidget(
-							{
-								["name"] = "ObjectiveTrackerFrame",
-								["lstr"] = "LID_QUESTTRACKER",
-								["userplaced"] = true,
-								["secure"] = true,
-							}
-						)
 					end
 				end, "QUESTTRACKER"
 			)
