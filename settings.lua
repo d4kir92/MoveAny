@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.309")
+	MoveAny:SetVersion(135994, "1.8.310")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4934,7 +4934,16 @@ function MoveAny:LoadAddon()
 							}
 						)
 					else
-						if ObjectiveTrackerFrame2 == nil then
+						if ObjectiveTrackerFrame ~= nil then
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "ObjectiveTrackerFrame",
+									["lstr"] = "LID_QUESTTRACKER",
+									["userplaced"] = true,
+									["secure"] = true,
+								}
+							)
+						elseif ObjectiveTrackerFrame2 == nil then
 							ObjectiveTrackerFrame2 = CreateFrame("Frame", "ObjectiveTrackerFrame2", MoveAny:GetMainPanel())
 							ObjectiveTrackerFrame2:SetSize(240, 600)
 							ObjectiveTrackerFrame2:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
@@ -4996,24 +5005,16 @@ function MoveAny:LoadAddon()
 								WatchFrame:ClearAllPoints()
 								WatchFrame:SetPoint("TOPLEFT", ObjectiveTrackerFrame2, "TOPLEFT", 0, 0)
 								WatchFrame:SetSize(ObjectiveTrackerFrame2:GetSize())
-								MoveAny:RegisterWidget(
-									{
-										["name"] = "ObjectiveTrackerFrame2",
-										["lstr"] = "LID_QUESTTRACKER",
-										["userplaced"] = true,
-										["secure"] = true,
-									}
-								)
-							else
-								MoveAny:RegisterWidget(
-									{
-										["name"] = "ObjectiveTrackerFrame",
-										["lstr"] = "LID_QUESTTRACKER",
-										["userplaced"] = true,
-										["secure"] = true,
-									}
-								)
 							end
+
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "ObjectiveTrackerFrame2",
+									["lstr"] = "LID_QUESTTRACKER",
+									["userplaced"] = true,
+									["secure"] = true,
+								}
+							)
 						end
 					end
 				end, "QUESTTRACKER"
