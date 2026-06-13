@@ -2112,6 +2112,20 @@ function MoveAny:RegisterWidget(tab)
 	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
 		MoveAny:HideFrame(frame)
+		MoveAny:After(
+			1,
+			function()
+				MoveAny:HideFrame(frame)
+			end, "HIDE DELAY 1"
+		)
+
+		MoveAny:After(
+			4,
+			function()
+				MoveAny:HideFrame(frame)
+			end, "HIDE DELAY 2"
+		)
+
 		dragframe.t:SetVertexColor(MoveAny:GetColor("hidden"))
 		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 			dragframe:Hide()

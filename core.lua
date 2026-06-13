@@ -49,11 +49,12 @@ function MoveAny:HideFrame(frame)
 					MoveAny:ForeachChildren(
 						sel,
 						function(child)
+							child:SetIgnoreParentAlpha(false)
 							child:SetAlpha(0)
 							if not InCombatLockdown() then
 								child:EnableMouse(false)
 							end
-						end, "HideFrame 1"
+						end, "HideFrame ForeachChildren 1"
 					)
 				end
 
@@ -77,11 +78,20 @@ function MoveAny:HideFrame(frame)
 							if not InCombatLockdown() then
 								child:EnableMouse(false)
 							end
-						end, "HideFrame 2"
+						end, "HideFrame ForeachChildren 2"
 					)
 				end
 
 				enableMouse = false
+			end
+		)
+
+		hooksecurefunc(
+			"CreateFrame",
+			function(_, _, parent)
+				if parent and parent == frame then
+					MoveAny:HideFrame(frame)
+				end
 			end
 		)
 	end
@@ -92,7 +102,7 @@ function MoveAny:HideFrame(frame)
 			0.1,
 			function()
 				MoveAny:HideFrame(frame)
-			end, "HideFrame 2"
+			end, "HideFrame After"
 		)
 	else
 		frame:EnableMouse(false)
