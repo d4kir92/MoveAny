@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.307")
+	MoveAny:SetVersion(135994, "1.8.308")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4935,12 +4935,10 @@ function MoveAny:LoadAddon()
 						)
 					else
 						if ObjectiveTrackerFrame2 == nil then
-							print("OLD")
 							ObjectiveTrackerFrame2 = CreateFrame("Frame", "ObjectiveTrackerFrame2", MoveAny:GetMainPanel())
 							ObjectiveTrackerFrame2:SetSize(240, 600)
 							ObjectiveTrackerFrame2:SetPoint("TOPRIGHT", MoveAny:GetMainPanel(), "TOPRIGHT", -85, -180)
 							if QuestWatchFrame then
-								print("MÖÖÖ")
 								local qwfsetpoint = false
 								hooksecurefunc(
 									QuestWatchFrame,
