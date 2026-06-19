@@ -2457,7 +2457,7 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.311")
+	MoveAny:SetVersion(135994, "1.8.312")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2971,6 +2971,7 @@ function MoveAny:LoadAddon()
 				EssencePlayerFrame,
 				"Setup",
 				function()
+					if wasrun then return end
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "EssencePlayerFrame",
