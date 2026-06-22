@@ -107,20 +107,32 @@ function MoveAny:FrameDragInfo(frame, c)
 	else
 		local text = nil
 		if IsMouseButtonDown("RightButton") then
-			if MoveAny:IsEnabled("SCALEFRAMES", true) then
-				if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
-					text = format(MoveAny:Trans("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
-				end
+			if MoveAny:IsEnabled("LOCKWINDOWS", false) then
+				text = MoveAny:Trans("LID_LOCKEDWINDOWS") .. "."
 			else
-				text = MoveAny:Trans("LID_FRAMESCALEDISABLED")
+				if MoveAny:IsEnabled("SCALEFRAMES", true) then
+					if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then
+						text = format(MoveAny:Trans("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+					end
+				else
+					text = MoveAny:Trans("LID_FRAMESCALEDISABLED")
+				end
 			end
 		elseif IsMouseButtonDown("LeftButton") then
-			if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then
-				text = format(MoveAny:Trans("LID_FRAMESKEYDRAG"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+			if MoveAny:IsEnabled("LOCKWINDOWS", false) then
+				text = MoveAny:Trans("LID_LOCKEDWINDOWS") .. "."
+			else
+				if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then
+					text = format(MoveAny:Trans("LID_FRAMESKEYDRAG"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+				end
 			end
 		elseif IsMouseButtonDown("MiddleButton") then
-			if MoveAny:IsEnabled("FRAMESKEYRESET", false) then
-				text = format(MoveAny:Trans("LID_FRAMESKEYRESET"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+			if MoveAny:IsEnabled("LOCKWINDOWS", false) then
+				text = MoveAny:Trans("LID_LOCKEDWINDOWS") .. "."
+			else
+				if MoveAny:IsEnabled("FRAMESKEYRESET", false) then
+					text = format(MoveAny:Trans("LID_FRAMESKEYRESET"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "."
+				end
 			end
 		end
 
@@ -466,7 +478,17 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								end
 							end
 
-							if (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
+							if MoveAny:IsEnabled("LOCKWINDOWS", false) then
+								pcall(
+									function()
+										if MoveAny:IsResetButtonDown(btn) then
+											MoveAny:FrameDragInfo(frame, 0)
+										else
+											MoveAny:FrameDragInfo(frame, 20)
+										end
+									end
+								)
+							elseif (MoveAny:IsEnabled("FRAMESKEYSCALE", false) and MoveAny:IsFrameKeyDown() and btn == "RightButton") or (not MoveAny:IsEnabled("FRAMESKEYSCALE", false) and btn == "RightButton") then
 								pcall(
 									function()
 										currentWindowName = name

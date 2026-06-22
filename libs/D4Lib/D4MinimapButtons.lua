@@ -189,6 +189,8 @@ function D4:CreateMinimapButton(params)
                 params:funcL()
             elseif btnName == "RightButton" and params.funcR then
                 params:funcR()
+            elseif btnName == "MiddleButton" and params.funcM then
+                params:funcM()
             end
         end
     )
@@ -232,10 +234,14 @@ function D4:CreateMinimapButton(params)
                         params:funcSL()
                     elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then
                         params:funcSR()
+                    elseif btnName == "MiddleButton" and IsShiftKeyDown() and params.funcSM then
+                        params:funcSM()
                     elseif btnName == "LeftButton" and params.funcL then
                         params:funcL()
                     elseif btnName == "RightButton" and params.funcR then
                         params:funcR()
+                    elseif btnName == "MiddleButton" and params.funcM then
+                        params:funcM()
                     end
                 end,
                 funcOnEnter = function(button)

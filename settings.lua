@@ -2457,7 +2457,13 @@ function MoveAny:PlayerLogin()
 		end
 	end
 
-	MoveAny:SetVersion(135994, "1.8.312")
+	local function MAGetLockText()
+		if MoveAny:IsEnabled("LOCKWINDOWS", false) then return MoveAny:Trans("LID_UNLOCKWINDOWS") end
+
+		return MoveAny:Trans("LID_LOCKWINDOWS")
+	end
+
+	MoveAny:SetVersion(135994, "1.8.313")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2465,12 +2471,25 @@ function MoveAny:PlayerLogin()
 				["icon"] = 135994,
 				["dbtab"] = MATAB,
 				["vTT"] = {{"|T135994:16:16:0:0|t Move|rAny|r", "v" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
+				["vTTUpdate"] = function(sel, tt)
+					tt:AddDoubleLine(MoveAny:Trans("LID_MIDDLECLICK"), MAGetLockText())
+
+					return false
+				end,
 				["funcL"] = function()
 					MoveAny:ToggleMALock()
 				end,
 				["funcR"] = function()
 					MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
 					MoveAny:HideMMBtn("MoveAny")
+				end,
+				["funcM"] = function()
+					MoveAny:SetEnabled("LOCKWINDOWS", not MoveAny:IsEnabled("LOCKWINDOWS", false))
+					if MoveAny:IsEnabled("LOCKWINDOWS", false) then
+						MoveAny:MSG(MoveAny:Trans("LID_WINDOWSARENOWLOCKED"))
+					else
+						MoveAny:MSG(MoveAny:Trans("LID_WINDOWSARENOWUNLOCKED"))
+					end
 				end,
 				["dbkey"] = "SHOWMINIMAPBUTTON"
 			}
@@ -2972,6 +2991,7 @@ function MoveAny:LoadAddon()
 				"Setup",
 				function()
 					if wasrun then return end
+					wasrun = true
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "EssencePlayerFrame",
@@ -2981,8 +3001,6 @@ function MoveAny:LoadAddon()
 							["soft"] = true,
 						}
 					)
-
-					wasrun = true
 				end
 			)
 
