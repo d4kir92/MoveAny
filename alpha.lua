@@ -31,9 +31,24 @@ function MoveAny:GetAlphaFrames()
     return MAAF
 end
 
+local checkAlphasRunning = false
+function MoveAny:StartCheckAlphas()
+    if checkAlphasRunning then return end
+    checkAlphasRunning = true
+    MoveAny:CheckAlphas()
+end
+
 function MoveAny:AddAlphaFrame(frame)
     tinsert(MAAF, frame)
     MAAFS[frame] = true
+    frame:HookScript(
+        "OnEnter",
+        function()
+            if alphasReady then
+                MoveAny:StartCheckAlphas()
+            end
+        end
+    )
 end
 
 function MoveAny:IsAlphaFrame(frame)
@@ -221,7 +236,6 @@ function MoveAny:InitAlphas()
     MoveAny:InitAlphaAura()
     MoveAny:InitAlphaVehicle()
     MoveAny:InitAlphaPetBattle()
-    MoveAny:CheckAlphas()
     dufloaded = MoveAny:IsAddOnLoaded("DUnitFrames")
     alphasReady = true
     MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().INIT)
@@ -273,12 +287,17 @@ function MoveAny:CheckAlphas()
         end
     )
 
-    MoveAny:After(
-        0.15,
-        function()
-            MoveAny:CheckAlphas()
-        end, "CheckAlphas"
-    )
+    if lastEle ~= nil or lEle ~= nil then
+        print("AFTER")
+        MoveAny:After(
+            0.15,
+            function()
+                MoveAny:CheckAlphas()
+            end, "CheckAlphas"
+        )
+    else
+        checkAlphasRunning = false
+    end
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
