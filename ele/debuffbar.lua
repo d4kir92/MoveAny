@@ -164,6 +164,7 @@ function MoveAny:InitDebuffBar()
 								return MADebuffBar
 							end
 
+							MoveAny:RegisterChildAlphaFrame(bbtn, MADebuffBar)
 							hooksecurefunc(
 								bbtn,
 								"SetPoint",

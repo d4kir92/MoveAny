@@ -218,6 +218,7 @@ function MoveAny:InitMicroMenu()
 						return MAMenuBar
 					end
 
+					MoveAny:RegisterChildAlphaFrame(mb, MAMenuBar)
 					local sw2, sh2 = MoveAny:GetMicroButtonSize()
 					if MoveAny:GetWoWBuild() == "RETAIL" then
 						mb:SetSize(sw2, sh2)

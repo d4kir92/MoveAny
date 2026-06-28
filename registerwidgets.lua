@@ -1781,6 +1781,8 @@ function MoveAny:RegisterWidget(tab)
 				function child:GetMAEle()
 					return frame
 				end
+
+				MoveAny:RegisterChildAlphaFrame(child, frame)
 			end, "GetMAEle 1"
 		)
 	end

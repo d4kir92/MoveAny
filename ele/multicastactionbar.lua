@@ -6,6 +6,8 @@ function MoveAny:InitMultiCastActionBar()
 			function btn:GetMAEle()
 				return MultiCastActionBarFrame
 			end
+
+			MoveAny:RegisterChildAlphaFrame(btn, MultiCastActionBarFrame)
 		end
 	end
 
@@ -19,6 +21,8 @@ function MoveAny:InitMultiCastActionBar()
 						function btn:GetMAEle()
 							return MultiCastActionBarFrame
 						end
+
+						MoveAny:RegisterChildAlphaFrame(btn, MultiCastActionBarFrame)
 					end
 				end
 			end
@@ -29,5 +33,7 @@ function MoveAny:InitMultiCastActionBar()
 		function MultiCastFlyoutFrameCloseButton:GetMAEle()
 			return MultiCastActionBarFrame
 		end
+
+		MoveAny:RegisterChildAlphaFrame(MultiCastFlyoutFrameCloseButton, MultiCastActionBarFrame)
 	end
 end

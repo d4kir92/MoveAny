@@ -114,6 +114,8 @@ function MoveAny:InitBuffBar()
 							function db:GetMAEle()
 								return MABuffBar
 							end
+
+							MoveAny:RegisterChildAlphaFrame(db, MABuffBar)
 						end
 
 						if olddb then
@@ -427,6 +429,7 @@ function MoveAny:InitBuffBar()
 								return MABuffBar
 							end
 
+							MoveAny:RegisterChildAlphaFrame(child, MABuffBar)
 							if MoveAny:GetEleOption("MABuffBar", "ClickThrough", false, "ClickThrough6") then
 								hooksecurefunc(
 									child,
@@ -454,6 +457,7 @@ function MoveAny:InitBuffBar()
 								return MABuffBar
 							end
 
+							MoveAny:RegisterChildAlphaFrame(bbtn, MABuffBar)
 							if MoveAny:GetEleOption("MABuffBar", "ClickThrough", false, "ClickThrough7") then
 								hooksecurefunc(
 									bbtn,

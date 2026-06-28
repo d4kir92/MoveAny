@@ -10,7 +10,6 @@ local invehicle = nil
 local incombat = nil
 local inpetbattle = nil
 local isstealthed = nil
-local lEle = nil
 local lastEle = nil
 local fullHP = false
 local enumAlpha = {}
@@ -31,21 +30,52 @@ function MoveAny:GetAlphaFrames()
     return MAAF
 end
 
-local checkAlphasRunning = false
-function MoveAny:StartCheckAlphas()
-    if checkAlphasRunning then return end
-    checkAlphasRunning = true
-    MoveAny:CheckAlphas()
-end
-
 function MoveAny:AddAlphaFrame(frame)
     tinsert(MAAF, frame)
     MAAFS[frame] = true
     frame:HookScript(
         "OnEnter",
         function()
-            if alphasReady then
-                MoveAny:StartCheckAlphas()
+            if not alphasReady then return end
+            frame:SetAlpha(1)
+            MoveAny:SetMouseEleAlpha(frame, frame)
+        end
+    )
+
+    frame:HookScript(
+        "OnLeave",
+        function()
+            if not alphasReady then return end
+            local prev = lastEle
+            lastEle = nil
+            if prev then
+                MoveAny:UpdateAlpha(prev, nil)
+            end
+        end
+    )
+end
+
+function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
+    if not child or not parentAlphaFrame then return end
+    if child.ma_alpha_hooked then return end
+    child.ma_alpha_hooked = true
+    child:HookScript(
+        "OnEnter",
+        function()
+            if not alphasReady then return end
+            parentAlphaFrame:SetAlpha(1)
+            MoveAny:SetMouseEleAlpha(parentAlphaFrame, parentAlphaFrame)
+        end
+    )
+
+    child:HookScript(
+        "OnLeave",
+        function()
+            if not alphasReady then return end
+            local prev = lastEle
+            lastEle = nil
+            if prev then
+                MoveAny:UpdateAlpha(prev, nil)
             end
         end
     )
@@ -248,56 +278,6 @@ function MoveAny:SetMouseEleAlpha(ele, last)
             lastEle = last
         end
     )
-end
-
-function MoveAny:CheckAlphas()
-    pcall(
-        function()
-            local ele = MoveAny:GetMouseFocus()
-            local eleID = nil
-            if ele ~= nil then
-                eleID = ele.GetDebugName and ele:GetDebugName()
-            end
-
-            if lEle ~= eleID then
-                lEle = eleID
-                if ele and ele ~= CompactRaidFrameManager then
-                    if ele and (ele == WorldFrame or ele == UIParent) and lastEle ~= nil and ele ~= lastEle then
-                        MoveAny:SetMouseEleAlpha(ele, nil)
-                    end
-
-                    if ele ~= WorldFrame and ele ~= UIParent and (not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame)) then
-                        if MoveAny:IsAlphaFrame(ele) then
-                            ele:SetAlpha(1)
-                            MoveAny:SetMouseEleAlpha(ele, ele)
-                        elseif ele.GetMAEle then
-                            ele = ele:GetMAEle()
-                            if ele then
-                                ele:SetAlpha(1)
-                                MoveAny:SetMouseEleAlpha(ele, ele)
-                            end
-                        elseif lastEle then
-                            MoveAny:SetMouseEleAlpha(ele, nil)
-                        end
-                    end
-                elseif lastEle ~= nil then
-                    MoveAny:SetMouseEleAlpha(ele, nil)
-                end
-            end
-        end
-    )
-
-    if lastEle ~= nil or lEle ~= nil then
-        print("AFTER")
-        MoveAny:After(
-            0.15,
-            function()
-                MoveAny:CheckAlphas()
-            end, "CheckAlphas"
-        )
-    else
-        checkAlphasRunning = false
-    end
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)

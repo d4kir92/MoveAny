@@ -4346,6 +4346,7 @@ function MoveAny:LoadAddon()
 						return StanceBarAnchor
 					end
 
+					MoveAny:RegisterChildAlphaFrame(btn, StanceBarAnchor)
 					if _G["StanceButton" .. i .. "NormalTexture2"] then
 						_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
 						_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", btn, "CENTER", 0, 0)
@@ -4557,6 +4558,7 @@ function MoveAny:LoadAddon()
 									return ab
 								end
 
+								MoveAny:RegisterChildAlphaFrame(abtn, ab)
 								MoveAny:AddAbBtns(ab, abtn)
 							else
 								MoveAny:ERR("ACTION BUTTON NOT FOUND " .. name)
@@ -4760,6 +4762,8 @@ function MoveAny:LoadAddon()
 						function ChatFrameMenuButton:GetMAEle()
 							return cbf
 						end
+
+						MoveAny:RegisterChildAlphaFrame(ChatFrameMenuButton, cbf)
 					end
 
 					if ChatFrameChannelButton then
@@ -4768,6 +4772,8 @@ function MoveAny:LoadAddon()
 						function ChatFrameChannelButton:GetMAEle()
 							return cbf
 						end
+
+						MoveAny:RegisterChildAlphaFrame(ChatFrameChannelButton, cbf)
 					end
 				end
 			end

@@ -131,6 +131,8 @@ function MoveAny:UpdateBags()
 					function bb:GetMAEle()
 						return BagsBar
 					end
+
+					MoveAny:RegisterChildAlphaFrame(bb, BagsBar)
 				end
 
 				bb.px = x
