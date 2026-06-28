@@ -525,7 +525,7 @@ function MoveAny:MenuOptions(opt, frame)
 			Y = Y + space
 			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
-			if C_PetBattles then
+			if MoveAny:IsPetBattleAvailable() then
 				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 				Y = Y + space
 			end

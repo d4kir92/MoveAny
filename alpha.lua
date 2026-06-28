@@ -94,6 +94,12 @@ function MoveAny:SetEleAlpha(ele, alpha)
     end
 end
 
+function MoveAny:IsPetBattleAvailable()
+    if C_PetBattles and C_PetJournal and C_PetJournal.IsPetBattleUnlocked then return C_PetJournal.IsPetBattleUnlocked() == true or C_PetJournal.IsPetBattleUnlocked() == false end
+
+    return false
+end
+
 function MoveAny:IsInPetBattle()
     local inPetBattle = false
     if C_PetBattles then
@@ -249,6 +255,7 @@ function MoveAny:UpdateAlphaPetBattle()
 end
 
 function MoveAny:InitAlphaPetBattle()
+    if not MoveAny:IsPetBattleAvailable() then return end
     MoveAny:UpdateAlphaPetBattle()
     local alphaFramePetBattle = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_CLOSE")
@@ -293,13 +300,13 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
             if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame) then
                 if ele.ma_show ~= nil and ele.ma_show == false then
                     MoveAny:SetEleAlpha(ele, 0)
-                elseif MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
+                elseif inpetbattle then
                     MoveAny:SetEleAlpha(ele, opts.petBattle)
                 elseif ele == mouseEle then
                     MoveAny:SetEleAlpha(ele, 1)
                 elseif incombat then
                     MoveAny:SetEleAlpha(ele, opts.inCombat)
-                elseif opts.fullHPEnabled and UnitHealth("player") >= UnitHealthMax("player") then
+                elseif opts.fullHPEnabled and fullHP then
                     MoveAny:SetEleAlpha(ele, opts.fullHealth)
                 elseif UnitInVehicle and invehicle then
                     MoveAny:SetEleAlpha(ele, opts.inVehicle)
