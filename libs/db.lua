@@ -3,6 +3,7 @@ local MADEBUG = false
 local CACHE_EMPTY = {}
 local framePointCache = {}
 local frameScaleCache = {}
+local elePointCache = {}
 function MoveAny:DEBUG()
 	return MADEBUG
 end
@@ -50,6 +51,7 @@ function MoveAny:SetCP(name)
 	MATABPC["CURRENTPROFILE"] = name
 	framePointCache = {}
 	frameScaleCache = {}
+	elePointCache = {}
 end
 
 function MoveAny:GetValidProfileName(name)
@@ -371,14 +373,22 @@ end
 
 function MoveAny:GetElePoint(key)
 	if key then
+		local c = elePointCache[key]
+		if c ~= nil then
+			if c == CACHE_EMPTY then return nil, MoveAny:GetMainPanel(), nil, nil, nil end
+			return c[1], MoveAny:GetMainPanel(), c[2], c[3], c[4]
+		end
 		MoveAny:CheckDB("GetElePoint")
 		MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 		local an = MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"]
-		--local pa = MoveAny:GetTab()["ELES"]["POINTS"][key]["PA"]
 		local re = MoveAny:GetTab()["ELES"]["POINTS"][key]["RE"]
 		local px = MoveAny:GetTab()["ELES"]["POINTS"][key]["PX"]
 		local py = MoveAny:GetTab()["ELES"]["POINTS"][key]["PY"]
-
+		if an then
+			elePointCache[key] = {an, re, px, py}
+		else
+			elePointCache[key] = CACHE_EMPTY
+		end
 		return an, MoveAny:GetMainPanel(), re, px, py
 	else
 		MoveAny:MSG_Error("[GetElePoint] KEY not found")
@@ -388,6 +398,7 @@ function MoveAny:GetElePoint(key)
 end
 
 function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
+	elePointCache[key] = nil
 	MoveAny:CheckDB("SetElePoint")
 	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 	MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"] = p1
@@ -444,6 +455,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 end
 
 function MoveAny:ResetElement(name)
+	elePointCache[name] = nil
 	MoveAny:CheckDB("ResetElement")
 	if MoveAny:GetTab() and MoveAny:GetTab()["ELES"] then
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}

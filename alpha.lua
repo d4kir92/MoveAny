@@ -16,9 +16,11 @@ local maFrameShow = {}
 function MoveAny:SetMAShow(frame, val)
     maFrameShow[frame] = val
 end
+
 function MoveAny:GetMAShow(frame)
     return maFrameShow[frame]
 end
+
 local fullHP = false
 local enumAlpha = {}
 enumAlpha.INIT = "INIT"
@@ -203,19 +205,28 @@ end
 
 function MoveAny:UpdateAlphaAura()
     local updateAlpha = false
-    if MoveAny.IsDragonriding and isskyriding ~= MoveAny:IsDragonriding() then
-        isskyriding = MoveAny:IsDragonriding()
-        updateAlpha = true
+    if MoveAny.IsDragonriding then
+        local v = MoveAny:IsDragonriding()
+        if isskyriding ~= v then
+            isskyriding = v
+            updateAlpha = true
+        end
     end
 
-    if IsMounted and ismounted ~= IsMounted() then
-        ismounted = IsMounted()
-        updateAlpha = true
+    if IsMounted then
+        local v = IsMounted()
+        if ismounted ~= v then
+            ismounted = v
+            updateAlpha = true
+        end
     end
 
-    if IsStealthed and isstealthed ~= IsStealthed() then
-        isstealthed = IsStealthed()
-        updateAlpha = true
+    if IsStealthed then
+        local v = IsStealthed()
+        if isstealthed ~= v then
+            isstealthed = v
+            updateAlpha = true
+        end
     end
 
     if updateAlpha then
@@ -236,9 +247,12 @@ function MoveAny:InitAlphaAura()
 end
 
 function MoveAny:UpdateAlphaVehicle()
-    if UnitInVehicle and invehicle ~= UnitInVehicle("player") then
-        invehicle = UnitInVehicle("player")
-        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().VEHICLE)
+    if UnitInVehicle then
+        local v = UnitInVehicle("player")
+        if invehicle ~= v then
+            invehicle = v
+            MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().VEHICLE)
+        end
     end
 end
 

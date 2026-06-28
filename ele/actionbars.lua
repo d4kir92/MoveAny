@@ -447,7 +447,9 @@ function MoveAny:UpdateActionBar(frame)
 			end
 
 			local maxbtns = 0
-			for i, abtn in pairs(MoveAny:GetAbBtns(frame)) do
+			local abtns = MoveAny:GetAbBtns(frame)
+			for i = 1, #abtns do
+				local abtn = abtns[i]
 				if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then
 					maxbtns = maxbtns + 1
 				end
@@ -492,7 +494,9 @@ function MoveAny:UpdateActionBar(frame)
 				end
 
 				local id = 1
-				for i, abtn in pairs(MoveAny:GetAbBtns(frame)) do
+				local abtns2 = MoveAny:GetAbBtns(frame)
+				for i = 1, #abtns2 do
+					local abtn = abtns2[i]
 					if not InCombatLockdown() then
 						if flipped then
 							MoveAny:SetPoint(abtn, "BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
