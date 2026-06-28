@@ -174,20 +174,20 @@ function MoveAny:InitAlphaResting()
 end
 
 function MoveAny:UpdateAlphaFullHealth()
-    if MoveAny:GetWoWBuildNr() >= 120000 then return end
-    if fullHP ~= (UnitHealth("player") >= UnitHealthMax("player")) then
-        fullHP = UnitHealth("player") >= UnitHealthMax("player")
+    local newFullHP = UnitHealth("player") >= UnitHealthMax("player")
+    if fullHP ~= newFullHP then
+        fullHP = newFullHP
         MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().FULLHEALTH)
     end
 end
 
 function MoveAny:InitAlphaFullHealth()
+    if MoveAny:GetWoWBuildNr() >= 120000 then return end
     local alphaFrameHealth = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameHealth, "UNIT_HEALTH", "player")
     MoveAny:OnEvent(
         alphaFrameHealth,
         function(sel, event, ...)
-            if MoveAny:GetWoWBuildNr() >= 120000 then return end
             MoveAny:UpdateAlphaFullHealth()
         end, "alphaFrameHealth"
     )
@@ -248,8 +248,9 @@ function MoveAny:InitAlphaVehicle()
 end
 
 function MoveAny:UpdateAlphaPetBattle()
-    if MoveAny.IsInPetBattle and inpetbattle ~= MoveAny:IsInPetBattle() then
-        inpetbattle = MoveAny:IsInPetBattle()
+    local newState = C_PetBattles and C_PetBattles.IsInBattle() or false
+    if inpetbattle ~= newState then
+        inpetbattle = newState
         MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().PETBATTLE)
     end
 end
