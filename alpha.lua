@@ -85,8 +85,10 @@ function MoveAny:IsAlphaFrame(frame)
     return MAAFS[frame] == true
 end
 
+local eleAlphaCache = {}
 function MoveAny:SetEleAlpha(ele, alpha)
-    if ele and ele:GetAlpha() ~= alpha then
+    if ele and eleAlphaCache[ele] ~= alpha then
+        eleAlphaCache[ele] = alpha
         ele:SetAlpha(alpha)
     end
 end
@@ -380,8 +382,9 @@ function MoveAny:UpdateAlphas(from, mouseEle, lastMouseEle)
             MoveAny:UpdateAlpha(lastMouseEle, mouseEle)
         end
     else
-        for i, ele in pairs(MoveAny:GetAlphaFrames()) do
-            MoveAny:UpdateAlpha(ele, mouseEle)
+        local frames = MoveAny:GetAlphaFrames()
+        for i = 1, #frames do
+            MoveAny:UpdateAlpha(frames[i], mouseEle)
         end
     end
 end
