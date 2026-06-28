@@ -6472,15 +6472,12 @@ function MoveAny:LoadAddon()
 								MoveAny:ThinkTooltip()
 							end, "ThinkTooltip 1"
 						)
-					else
-						MoveAny:After(
-							0.02,
-							function()
-								MoveAny:ThinkTooltip()
-							end, "ThinkTooltip 2"
-						)
 					end
 				end
+
+				GameTooltip:HookScript("OnShow", function()
+					MoveAny:ThinkTooltip()
+				end)
 
 				MoveAny:ThinkTooltip()
 			end
