@@ -7190,12 +7190,12 @@ function D4:GetRealmLang(realmName)
 end
 
 local function InitRealmLangs()
-    --[[ deDE ]]
+    -- deDE 
     realmLangs["Deutsch"] = "deDE"
     realmLangs["German"] = "deDE"
     realmLangs["독일어"] = "deDE"
     realmLangs["德國"] = "deDE"
-    --[[ esES ]]
+    -- esES 
     realmLangs["Spanish"] = "esES"
     realmLangs["Spanisch"] = "esES"
     realmLangs["스페인어"] = "esES"
@@ -7204,7 +7204,7 @@ local function InitRealmLangs()
     realmLangs["Lateinamerika"] = "esES"
     realmLangs["Latin America"] = "esES"
     realmLangs["西班牙"] = "esES"
-    --[[ enUS ]]
+    -- enUS 
     if region == regions["EU"] then
         realmLangs["English"] = "enGB"
         realmLangs["Englisch"] = "enGB"
@@ -7239,37 +7239,37 @@ local function InitRealmLangs()
         realmLangs["Classic Era"] = "enUS"
     end
 
-    --[[ enGB ]]
+    -- enGB 
     realmLangs["大洋洲"] = "enGB"
     realmLangs["오세아니아"] = "enGB"
     realmLangs["Ozeanisch"] = "enGB"
     realmLangs["Oceanic"] = "enGB"
     realmLangs["英國"] = "enGB"
-    --[[ frFR ]]
+    -- frFR 
     realmLangs["French"] = "frFR"
     realmLangs["Französisch"] = "frFR"
     realmLangs["프랑스어"] = "frFR"
     realmLangs["法國"] = "frFR"
-    --[[ itIT ]]
+    -- itIT 
     realmLangs["Italian"] = "itIT"
     realmLangs["Italienisch"] = "itIT"
     realmLangs["이탈리아어"] = "itIT"
     realmLangs["義大利"] = "itIT"
-    --[[ koKR ]]
+    -- koKR 
     realmLangs["Korea"] = "koKR"
     realmLangs["한국"] = "koKR"
     realmLangs["韓國"] = "koKR"
-    --[[ ptBR ]]
+    -- ptBR 
     realmLangs["巴西"] = "ptBR"
     realmLangs["브라질"] = "ptBR"
     realmLangs["Brasilien"] = "ptBR"
     realmLangs["Brazil"] = "ptBR"
-    --[[ ruRU ]]
+    -- ruRU 
     realmLangs["Russian"] = "ruRU"
     realmLangs["Russisch"] = "ruRU"
     realmLangs["러시아어"] = "ruRU"
     realmLangs["俄羅斯"] = "ruRU"
-    --[[ cnTW ]]
+    -- cnTW 
     realmLangs["Taiwan"] = "chTW"
     realmLangs["대만"] = "chTW"
     realmLangs["台灣"] = "chTW"

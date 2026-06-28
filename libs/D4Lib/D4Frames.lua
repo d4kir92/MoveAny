@@ -168,7 +168,7 @@ function D4:SetFontSize(element, fontSize, newFontFlags)
     element:SetFont(fontType, fontSize, newFontFlags or fontFlags)
 end
 
---[[ INPUTS ]]
+-- INPUTS 
 function D4:AddCategory(tab)
     if tab.parent == nil then
         D4:MSG("[D4] Missing Parent for AddCategory")
@@ -718,7 +718,7 @@ function D4:CreateCheckButton(name, parent, templates)
     end
 end
 
---[[ FRAMES ]]
+-- FRAMES 
 function D4:CreateWindow(tab)
     tab.parent = tab.parent or UIParent
     tab.sw = tab.sw or 100
