@@ -46,33 +46,48 @@ visiTab[2] = 4
 visiTab[3] = 2
 visiTab[4] = 3
 function MoveAny:UpdateVisi()
-	if GetActionBarToggles then
-		local barVisibles = {GetActionBarToggles()}
-		if not InCombatLockdown() then
-			for i = 1, 5 do
-				if visiTab[i] and abs[visiTab[i]] then
-					local bar = abs[visiTab[i]]
-					if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
-						if not bar:IsShown() then
-							bar:Show()
-						end
-					else
-						if bar:IsShown() then
-							bar:Hide()
-						end
+	if not GetActionBarToggles then return end
+	local barVisibles = {GetActionBarToggles()}
+	if not InCombatLockdown() then
+		for i = 1, #visiTab do
+			if visiTab[i] and abs[visiTab[i]] then
+				local bar = abs[visiTab[i]]
+				if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
+					if not bar:IsShown() then
+						bar:Show()
+					end
+				else
+					if bar:IsShown() then
+						bar:Hide()
 					end
 				end
 			end
 		end
-
-		MoveAny:After(
-			0.5,
-			function()
-				MoveAny:UpdateVisi()
-			end, "UpdateVisi"
-		)
 	end
 end
+
+local visiPending = false
+local visiFrame = CreateFrame("Frame")
+MoveAny:RegisterEvent(visiFrame, "CVAR_UPDATE")
+MoveAny:RegisterEvent(visiFrame, "PLAYER_ENTERING_WORLD")
+MoveAny:RegisterEvent(visiFrame, "PLAYER_REGEN_ENABLED")
+MoveAny:OnEvent(
+	visiFrame,
+	function(sel, event, cvar)
+		if event == "PLAYER_REGEN_ENABLED" then
+			if visiPending then
+				visiPending = false
+				MoveAny:UpdateVisi()
+			end
+		elseif event == "PLAYER_ENTERING_WORLD" or cvar == "enableMultiActionBars" then
+			if InCombatLockdown() then
+				visiPending = true
+			else
+				MoveAny:UpdateVisi()
+			end
+		end
+	end, "UpdateVisi"
+)
 
 MoveAny:UpdateVisi()
 function MoveAny:CheckIfMicroMenuInVehicle(frame)

@@ -607,10 +607,6 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							function(sel, p1, p2, p3, p4, p5)
 								if maframesetpoint[sel] then return end
 								maframesetpoint[sel] = true
-								sel:SetMovable(true)
-								if sel.SetUserPlaced and sel:IsMovable() then
-									sel:SetUserPlaced(false)
-								end
 
 								if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 								local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
