@@ -519,7 +519,7 @@ function MoveAny:UpdateActionBar(frame)
 									function(sel)
 										if ma_abtn_hide[sel] then return end
 										ma_abtn_hide[sel] = true
-										if sel.hide and sel:IsShown() then
+										if sel.ma_hide and sel:IsShown() then
 											sel:Hide()
 										end
 
@@ -531,7 +531,7 @@ function MoveAny:UpdateActionBar(frame)
 
 						abtn.oldparent = abtn.oldparent or MoveAny:GetParent(abtn)
 						if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
-							abtn.hide = true
+							abtn.ma_hide = true
 							abtn:SetParent(MoveAny:GetHidden())
 							if abtn:IsShown() then
 								abtn:Hide()
@@ -539,7 +539,7 @@ function MoveAny:UpdateActionBar(frame)
 						end
 
 						if frame == MAMenuBar then
-							abtn.hide = false
+							abtn.ma_hide = false
 							if not abtn:IsShown() then
 								abtn:Show()
 							end

@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local ma_set_s = {}
+local ma_SetScaleAdjustment = {}
 function MoveAny:GetMicroButtonSize()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 32 end
 
@@ -324,10 +325,10 @@ function MoveAny:InitMicroMenu()
 							MicroMenu,
 							"SetScaleAdjustment",
 							function(sel)
-								if sel.ma_SetScaleAdjustment then return end
-								sel.ma_SetScaleAdjustment = true
+								if ma_SetScaleAdjustment[sel] then return end
+								ma_SetScaleAdjustment[sel] = true
 								sel:SetScaleAdjustment(1)
-								sel.ma_SetScaleAdjustment = false
+								ma_SetScaleAdjustment[sel] = false
 							end
 						)
 

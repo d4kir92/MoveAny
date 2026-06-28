@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local ma_aef_hide = {}
 function MoveAny:InitArenaEnemyFrames()
 	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and _G["Arena_LoadUI"] then
 		if _G["ArenaEnemyFrame" .. 1] == nil and _G["Arena_LoadUI"] then
@@ -81,10 +82,10 @@ function MoveAny:InitArenaEnemyFrames()
 					arenaFrames,
 					"Hide",
 					function(sel)
-						if sel.ma_hide2 then return end
-						sel.ma_hide2 = true
+						if ma_aef_hide[sel] then return end
+						ma_aef_hide[sel] = true
 						sel:Show()
-						sel.ma_hide2 = false
+						ma_aef_hide[sel] = false
 					end
 				)
 
@@ -94,10 +95,10 @@ function MoveAny:InitArenaEnemyFrames()
 						_G["ArenaEnemyFrame" .. i],
 						"Hide",
 						function(sel)
-							if sel.ma_hide2 then return end
-							sel.ma_hide2 = true
+							if ma_aef_hide[sel] then return end
+							ma_aef_hide[sel] = true
 							sel:Show()
-							sel.ma_hide2 = false
+							ma_aef_hide[sel] = false
 						end
 					)
 
@@ -190,10 +191,10 @@ function MoveAny:InitArenaPrepFrames()
 					prepFrames,
 					"Hide",
 					function(sel)
-						if sel.ma_hide2 then return end
-						sel.ma_hide2 = true
+						if ma_aef_hide[sel] then return end
+						ma_aef_hide[sel] = true
 						sel:Show()
-						sel.ma_hide2 = false
+						ma_aef_hide[sel] = false
 					end
 				)
 
@@ -203,10 +204,10 @@ function MoveAny:InitArenaPrepFrames()
 						_G["ArenaPrepFrame" .. i],
 						"Hide",
 						function(sel)
-							if sel.ma_hide2 then return end
-							sel.ma_hide2 = true
+							if ma_aef_hide[sel] then return end
+							ma_aef_hide[sel] = true
 							sel:Show()
-							sel.ma_hide2 = false
+							ma_aef_hide[sel] = false
 						end
 					)
 

@@ -4797,10 +4797,10 @@ function MoveAny:LoadAddon()
 						ceb,
 						"SetClampRectInsets",
 						function(sel)
-							if sel.setclamprectinsets_ma then return end
-							sel.setclamprectinsets_ma = true
+							if sel.ma_setclamprectinsets then return end
+							sel.ma_setclamprectinsets = true
 							sel:SetClampRectInsets(2, 2, 2, 2)
-							sel.setclamprectinsets_ma = false
+							sel.ma_setclamprectinsets = false
 						end
 					)
 
@@ -5158,9 +5158,9 @@ function MoveAny:LoadAddon()
 				b:HookScript(
 					"OnEnter",
 					function(sel)
-						if sel.link then
+						if sel.ma_link then
 							GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
-							GameTooltip:SetHyperlink(sel.link)
+							GameTooltip:SetHyperlink(sel.ma_link)
 							GameTooltip:Show()
 						end
 					end
@@ -5240,7 +5240,7 @@ function MoveAny:LoadAddon()
 				for i = 1, #buttons do
 					buttons[i]:SetAlpha(0)
 					buttons[i]:SetAttribute("item", nil)
-					buttons[i].link = nil
+					buttons[i].ma_link = nil
 					buttons[i]:EnableMouse(false)
 				end
 
@@ -5256,7 +5256,7 @@ function MoveAny:LoadAddon()
 						b.count:SetText(info.count > 1 and tostring(info.count) or "")
 					end
 
-					b.link = info.link
+					b.ma_link = info.link
 					b:SetAttribute("item", info.link)
 					b:SetAlpha(1)
 					b:EnableMouse(true)
@@ -5505,8 +5505,8 @@ function MoveAny:LoadAddon()
 				CompactRaidFrameManager,
 				"SetPoint",
 				function(sel, ...)
-					if sel.crfmsetpoint then return end
-					sel.crfmsetpoint = true
+					if sel.ma_crfmsetpoint then return end
+					sel.ma_crfmsetpoint = true
 					sel:SetMovable(true)
 					if sel.SetUserPlaced and sel:IsMovable() then
 						sel:SetUserPlaced(false)
@@ -5516,7 +5516,7 @@ function MoveAny:LoadAddon()
 						MoveAny:SetPoint(sel, "RIGHT", MACompactRaidFrameManager, "RIGHT", 0, 0)
 					end
 
-					sel.crfmsetpoint = false
+					sel.ma_crfmsetpoint = false
 				end
 			)
 
@@ -6309,10 +6309,10 @@ function MoveAny:LoadAddon()
 				"SetScale",
 				function(sel, ...)
 					if InCombatLockdown() and sel:IsProtected() then return false end
-					if sel.gtsetscale then return end
-					sel.gtsetscale = true
+					if sel.ma_gtsetscale then return end
+					sel.ma_gtsetscale = true
 					sel:SetScale(MAGameTooltip:GetScale())
-					sel.gtsetscale = false
+					sel.ma_gtsetscale = false
 				end
 			)
 
@@ -6321,10 +6321,10 @@ function MoveAny:LoadAddon()
 				"SetScale",
 				function(sel, ...)
 					if InCombatLockdown() and sel:IsProtected() then return false end
-					if sel.gtsetscale2 then return end
-					sel.gtsetscale2 = true
+					if sel.ma_gtsetscale2 then return end
+					sel.ma_gtsetscale2 = true
 					GameTooltip:SetScale(sel:GetScale())
-					sel.gtsetscale2 = false
+					sel.ma_gtsetscale2 = false
 				end
 			)
 
@@ -6347,14 +6347,14 @@ function MoveAny:LoadAddon()
 				GameTooltip,
 				"SetAlpha",
 				function(sel, alpha)
-					if sel.gtsetalpha then return end
-					sel.gtsetalpha = true
+					if sel.ma_gtsetalpha then return end
+					sel.ma_gtsetalpha = true
 					sel:SetAlpha(MAGameTooltip:GetAlpha())
 					if sel.NineSlice then
 						sel.NineSlice:SetAlpha(MAGameTooltip:GetAlpha())
 					end
 
-					sel.gtsetalpha = false
+					sel.ma_gtsetalpha = false
 				end
 			)
 
@@ -6362,8 +6362,8 @@ function MoveAny:LoadAddon()
 				MAGameTooltip,
 				"SetAlpha",
 				function(sel, alpha)
-					if sel.gtsetalpha then return end
-					sel.gtsetalpha = true
+					if sel.ma_gtsetalpha then return end
+					sel.ma_gtsetalpha = true
 					GameTooltip:SetAlpha(MAGameTooltip:GetAlpha())
 					for i, textName in pairs(texts) do
 						local text = _G[textName]
@@ -6372,7 +6372,7 @@ function MoveAny:LoadAddon()
 						end
 					end
 
-					sel.gtsetalpha = false
+					sel.ma_gtsetalpha = false
 				end
 			)
 
@@ -6679,15 +6679,15 @@ function MoveAny:LoadAddon()
 						glf,
 						"SetPoint",
 						function(sel, ...)
-							if sel.glfsetpoint then return end
-							sel.glfsetpoint = true
+							if sel.ma_glfsetpoint then return end
+							sel.ma_glfsetpoint = true
 							sel:SetMovable(true)
 							if sel.SetUserPlaced and sel:IsMovable() then
 								sel:SetUserPlaced(false)
 							end
 
 							MoveAny:SetPoint(sel, "BOTTOM", _G["GroupLootFrame" .. (x - 1)], "TOP", 0, 4)
-							sel.glfsetpoint = false
+							sel.ma_glfsetpoint = false
 						end
 					)
 
@@ -7006,20 +7006,20 @@ function MoveAny:LoadAddon()
 						cbf,
 						"SetPoint",
 						function(sel, ...)
-							if sel.cbfsetpoint then return end
+							if sel.ma_cbfsetpoint then return end
 							sel:SetMovable(true)
 							if sel.SetUserPlaced and sel:IsMovable() then
 								sel:SetUserPlaced(true)
 							end
 
-							sel.cbfsetpoint = true
+							sel.ma_cbfsetpoint = true
 							MoveAny:After(
 								0.0,
 								function()
 									local ssw, _ = _G["ChatFrame" .. i .. "ButtonFrame"]:GetSize()
 									sel:SetSize(ssw, ssw * 6)
 									MoveAny:SetPoint(sel, "BOTTOM", _G["ChatFrame" .. 1 .. "ButtonFrame"], "BOTTOM", 0, 0)
-									sel.cbfsetpoint = false
+									sel.ma_cbfsetpoint = false
 								end, "cbfsetpoint"
 							)
 						end
@@ -7064,19 +7064,19 @@ function MoveAny:LoadAddon()
 						ceb,
 						"SetPoint",
 						function(sel, ...)
-							if sel.cebsetpoint then return end
+							if sel.ma_cebsetpoint then return end
 							sel:SetMovable(true)
 							if sel.SetUserPlaced and sel:IsMovable() then
 								sel:SetUserPlaced(true)
 							end
 
-							sel.cebsetpoint = true
+							sel.ma_cebsetpoint = true
 							if _G["ChatFrame" .. 1 .. "EditBox"] then
 								sel:SetSize(_G["ChatFrame" .. 1 .. "EditBox"]:GetSize())
 								MoveAny:SetPoint(sel, "CENTER", _G["ChatFrame" .. 1 .. "EditBox"], "CENTER", 0, 0)
 							end
 
-							sel.cebsetpoint = false
+							sel.ma_cebsetpoint = false
 						end
 					)
 

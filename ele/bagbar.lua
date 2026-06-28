@@ -127,7 +127,7 @@ function MoveAny:UpdateBags()
 						function(sel, ...)
 							if ma_bags_setpoint[sel] then return end
 							ma_bags_setpoint[sel] = true
-							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", sel.px, -(sel.psh / 2 - sel.ph / 2))
+							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", sel.ma_px, -(sel.ma_psh / 2 - sel.ma_ph / 2))
 							ma_bags_setpoint[sel] = false
 						end
 					)
@@ -139,9 +139,9 @@ function MoveAny:UpdateBags()
 					MoveAny:RegisterChildAlphaFrame(bb, BagsBar)
 				end
 
-				bb.px = x
-				bb.psh = sh
-				bb.ph = h
+				bb.ma_px = x
+				bb.ma_psh = sh
+				bb.ma_ph = h
 				bb:ClearAllPoints()
 				bb:SetPoint("TOPLEFT", BagsBar, "TOPLEFT", x, -(sh / 2 - h / 2))
 				x = x + w

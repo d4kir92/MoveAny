@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local ma_setalpha = {}
+local ma_mm_show = {}
 function MoveAny:InitMinimap()
 	if not MoveAny:IsEnabled("MINIMAP", false) then return end
 	if ElvUI then return end
@@ -51,10 +52,10 @@ function MoveAny:InitMinimap()
 					btn,
 					"Hide",
 					function(sel)
-						if sel.ma_show2 then return end
-						sel.ma_show2 = true
+						if ma_mm_show[sel] then return end
+						ma_mm_show[sel] = true
 						sel:Show()
-						sel.ma_show2 = false
+						ma_mm_show[sel] = false
 					end
 				)
 

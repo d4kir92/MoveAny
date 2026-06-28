@@ -3,6 +3,9 @@ local ma_db_setpoint = {}
 local ma_enablemouse = {}
 local ma_debuffsetpoint = {}
 local ma_setpoint_bbtn = {}
+local ma_setpoint_te1 = {}
+local ma_setpoint_te2 = {}
+local ma_setpoint_te3 = {}
 local btnsize = 36
 local MABUFFLIMIT = 10
 local MABUFFSPACINGX = 4
@@ -216,8 +219,8 @@ function MoveAny:InitBuffBar()
 			BuffFrame,
 			"SetPoint",
 			function(sel, ...)
-				if sel.buffsetpoint then return end
-				sel.buffsetpoint = true
+				if sel.ma_buffsetpoint then return end
+				sel.ma_buffsetpoint = true
 				sel:SetMovable(true)
 				if sel.SetUserPlaced and sel:IsMovable() then
 					sel:SetUserPlaced(false)
@@ -225,7 +228,7 @@ function MoveAny:InitBuffBar()
 
 				sel:SetParent(MABuffBar)
 				MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
-				sel.buffsetpoint = false
+				sel.ma_buffsetpoint = false
 			end
 		)
 
@@ -276,8 +279,8 @@ function MoveAny:InitBuffBar()
 				TempEnchant1,
 				"SetPoint",
 				function(sel, ...)
-					if sel.ma_setpoint_te1 then return end
-					sel.ma_setpoint_te1 = true
+					if ma_setpoint_te1[sel] then return end
+					ma_setpoint_te1[sel] = true
 					sel:SetMovable(true)
 					if sel.SetUserPlaced and sel:IsMovable() then
 						sel:SetUserPlaced(false)
@@ -302,7 +305,7 @@ function MoveAny:InitBuffBar()
 						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 					end
 
-					sel.ma_setpoint_te1 = false
+					ma_setpoint_te1[sel] = false
 				end
 			)
 		end
@@ -312,8 +315,8 @@ function MoveAny:InitBuffBar()
 				TempEnchant2,
 				"SetPoint",
 				function(sel, ...)
-					if sel.ma_setpoint_te2 then return end
-					sel.ma_setpoint_te2 = true
+					if ma_setpoint_te2[sel] then return end
+					ma_setpoint_te2[sel] = true
 					sel:SetMovable(true)
 					if sel.SetUserPlaced and sel:IsMovable() then
 						sel:SetUserPlaced(false)
@@ -343,7 +346,7 @@ function MoveAny:InitBuffBar()
 						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 					end
 
-					sel.ma_setpoint_te2 = false
+					ma_setpoint_te2[sel] = false
 				end
 			)
 		end
@@ -353,8 +356,8 @@ function MoveAny:InitBuffBar()
 				TempEnchant3,
 				"SetPoint",
 				function(sel, ...)
-					if sel.ma_setpoint_te3 then return end
-					sel.ma_setpoint_te3 = true
+					if ma_setpoint_te3[sel] then return end
+					ma_setpoint_te3[sel] = true
 					sel:SetMovable(true)
 					if sel.SetUserPlaced and sel:IsMovable() then
 						sel:SetUserPlaced(false)
@@ -379,7 +382,7 @@ function MoveAny:InitBuffBar()
 						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
 					end
 
-					sel.ma_setpoint_te3 = false
+					ma_setpoint_te3[sel] = false
 				end
 			)
 		end
