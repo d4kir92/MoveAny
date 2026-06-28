@@ -89,7 +89,7 @@ function MoveAny:UpdateCurrentWindow()
 			end
 
 			updatingFrame = false
-			MoveAny:After(0.02, MoveAny.UpdateCurrentWindow, "UpdateCurrentWindow")
+			MoveAny:After(0.033, MoveAny.UpdateCurrentWindow, "UpdateCurrentWindow")
 		end
 	end
 end
@@ -426,7 +426,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 										end
 									end
 
-									MoveAny:After(0.01, fm.UpdatePreview, "UpdatePreview")
+									MoveAny:After(0.033, fm.UpdatePreview, "UpdatePreview")
 								end
 							end
 						end
@@ -783,6 +783,13 @@ function MoveAny:MoveFrames()
 		"CreateFrame",
 		function(frameType, frameName, parent, template)
 			if allowedFrameTypes[frameType] then
+				if next(MAFS) == nil then return end
+				if run then
+					id = id + 1
+
+					return
+				end
+
 				MoveAny:UpdateMoveFrames("CreateFrame", false)
 			end
 		end

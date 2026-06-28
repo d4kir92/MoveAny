@@ -35,6 +35,7 @@ hooksecurefunc(
 	"CreateFrame",
 	function(...)
 		if not startRegisterWidget then return end
+		if next(missingWidgets) == nil then return end
 		MoveAny:SafeRetryRegisterWidgets()
 	end
 )
@@ -1463,31 +1464,34 @@ function MoveAny:IsPresetProfileActive()
 end
 
 if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
+	local lastCheck = false
+	local wasPreset = false
+	function MoveAny:ThinkHelpFrame()
+		local isPreset = MoveAny:IsPresetProfileActive()
+		if lastCheck ~= isPreset then
+			lastCheck = isPreset
+			if isPreset then
+				MoveAny:MSG(MoveAny:Trans("LID_PLEASESWITCHPROFILE1") .. " " .. MoveAny:Trans("LID_PLEASESWITCHPROFILE2") .. " " .. MoveAny:Trans("LID_PLEASESWITCHPROFILE3"))
+			elseif wasPreset then
+				MoveAny:MSG("ALL GOOD.")
+			end
+		end
+	end
+
 	MoveAny:After(
 		1,
 		function()
-			local lastCheck = false
-			local wasPreset = MoveAny:IsPresetProfileActive()
-			function MoveAny:ThinkHelpFrame()
-				local isPreset = MoveAny:IsPresetProfileActive()
-				if lastCheck ~= isPreset then
-					lastCheck = isPreset
-					if isPreset then
-						MoveAny:MSG(MoveAny:Trans("LID_PLEASESWITCHPROFILE1") .. " " .. MoveAny:Trans("LID_PLEASESWITCHPROFILE2") .. " " .. MoveAny:Trans("LID_PLEASESWITCHPROFILE3"))
-					elseif wasPreset then
-						MoveAny:MSG("ALL GOOD.")
-					end
-				end
-
-				if isPreset then
-					MoveAny:After(0.5, MoveAny.ThinkHelpFrame, "ThinkHelpFrame 1")
-				else
-					MoveAny:After(1.1, MoveAny.ThinkHelpFrame, "ThinkHelpFrame 2")
-				end
-			end
-
+			wasPreset = MoveAny:IsPresetProfileActive()
 			MoveAny:ThinkHelpFrame()
-		end, "ThinkHelpFrame 3"
+			local helpEventFrame = CreateFrame("Frame")
+			MoveAny:RegisterEvent(helpEventFrame, "EDIT_MODE_LAYOUTS_UPDATED")
+			MoveAny:OnEvent(
+				helpEventFrame,
+				function()
+					MoveAny:ThinkHelpFrame()
+				end, "ThinkHelpFrame Event"
+			)
+		end, "ThinkHelpFrame Init"
 	)
 end
 
@@ -1765,7 +1769,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	tinsert(MoveAny:GetEleFrames(), frame)
-	tinsert(MoveAny:GetAlphaFrames(), frame)
+	MoveAny:AddAlphaFrame(frame)
 	if MoveAny.SafeUpdateAlphas then
 		MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().ADDED)
 	end

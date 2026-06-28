@@ -1,6 +1,7 @@
 local _, MoveAny = ...
 local dufloaded = false
 local MAAF = {}
+local MAAFS = {}
 local alphasReady = false
 local isresting = nil
 local ismounted = nil
@@ -28,6 +29,15 @@ end
 
 function MoveAny:GetAlphaFrames()
     return MAAF
+end
+
+function MoveAny:AddAlphaFrame(frame)
+    tinsert(MAAF, frame)
+    MAAFS[frame] = true
+end
+
+function MoveAny:IsAlphaFrame(frame)
+    return MAAFS[frame] == true
 end
 
 function MoveAny:SetEleAlpha(ele, alpha)
@@ -243,7 +253,7 @@ function MoveAny:CheckAlphas()
                     end
 
                     if ele ~= WorldFrame and ele ~= UIParent and (not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame and ele.GetMAEle and ele:GetMAEle() and ele:GetMAEle() ~= PlayerFrame and ele:GetMAEle() ~= TargetFrame)) then
-                        if tContains(MoveAny:GetAlphaFrames(), ele) then
+                        if MoveAny:IsAlphaFrame(ele) then
                             ele:SetAlpha(1)
                             MoveAny:SetMouseEleAlpha(ele, ele)
                         elseif ele.GetMAEle then
