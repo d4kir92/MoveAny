@@ -5,7 +5,6 @@ function MoveAny:DEBUG()
 end
 
 local dbChecked = false
-local cachedTab = nil
 function MoveAny:CheckDB(from)
 	if dbChecked then return end
 	if MoveAny:Loaded(from) == false then
@@ -46,7 +45,6 @@ end
 function MoveAny:SetCP(name)
 	MoveAny:CheckDB("SetCP")
 	MATABPC["CURRENTPROFILE"] = name
-	cachedTab = nil
 end
 
 function MoveAny:GetValidProfileName(name)
@@ -228,10 +226,8 @@ end
 
 function MoveAny:GetTab()
 	MoveAny:CheckDB("GetTab")
-	if cachedTab then return cachedTab end
-	cachedTab = MATAB["PROFILES"][MoveAny:GetCP()]
 
-	return cachedTab
+	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
 function MoveAny:MAGV(key, val)
@@ -629,7 +625,6 @@ function MoveAny:InitDB()
 		MoveAny:HR()
 	end
 
-	cachedTab = nil
 	dbChecked = true
 end
 
