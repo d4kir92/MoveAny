@@ -3,6 +3,7 @@ local ma_setparent = {}
 local btnsize = 36
 local once = true
 local bar = nil
+local petbarReady = false
 function MoveAny:UpdatePetBar()
 	if bar then
 		-- Masque
@@ -16,7 +17,9 @@ function MoveAny:UpdatePetBar()
 					MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
 				end
 
-				for y, btn in pairs(MoveAny:GetAbBtns(bar)) do
+				local abtns = MoveAny:GetAbBtns(bar)
+				for y = 1, #abtns do
+					local btn = abtns[y]
 					if btn then
 						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
@@ -48,9 +51,21 @@ function MoveAny:UpdatePetBar()
 			MoveAny:UpdateActionBar(bar)
 		end
 	end
-
-	MoveAny:After(0.4, MoveAny.UpdatePetBar, "UpdatePetBar")
 end
+
+local petbarEventFrame = CreateFrame("Frame")
+MoveAny:RegisterEvent(petbarEventFrame, "PET_BAR_UPDATE")
+MoveAny:RegisterEvent(petbarEventFrame, "UNIT_PET")
+MoveAny:RegisterEvent(petbarEventFrame, "UPDATE_BONUS_ACTIONBAR")
+MoveAny:OnEvent(
+	petbarEventFrame,
+	function(sel, event, unit)
+		if event == "UNIT_PET" and unit ~= "player" then return end
+		if petbarReady then
+			MoveAny:UpdatePetBar()
+		end
+	end, "UpdatePetBar"
+)
 
 function MoveAny:InitPetBar()
 	if MoveAny:IsEnabled("PETBAR", false) then
@@ -123,6 +138,7 @@ function MoveAny:InitPetBar()
 				MoveAny:MSG("MISSING ShowPetActionBar")
 			end
 
+			petbarReady = true
 			MoveAny:UpdatePetBar()
 		elseif PetActionBar then
 			MoveAny:ResetAbBtns(PetActionBar)
@@ -134,6 +150,7 @@ function MoveAny:InitPetBar()
 			end
 
 			bar = PetActionBar
+			petbarReady = true
 			MoveAny:UpdatePetBar()
 		elseif PetActionBarFrame then
 			MoveAny:ResetAbBtns(PetActionBarFrame)
@@ -145,6 +162,7 @@ function MoveAny:InitPetBar()
 			end
 
 			bar = PetActionBar
+			petbarReady = true
 			MoveAny:UpdatePetBar()
 		end
 	end

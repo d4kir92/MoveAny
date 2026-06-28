@@ -60,7 +60,9 @@ function MoveAny:UpdateStanceBar()
 					MSQ:Register("MoveAny Blizzard Action Bars", function() end, {})
 				end
 
-				for y, btn in pairs(MoveAny:GetAbBtns(StanceBar)) do
+				local abtns = MoveAny:GetAbBtns(StanceBar)
+				for y = 1, #abtns do
+					local btn = abtns[y]
 					if btn then
 						local btnName = MoveAny:GetName(btn)
 						if _G[btnName .. "FloatingBG"] then
@@ -87,9 +89,18 @@ function MoveAny:UpdateStanceBar()
 			end
 		end
 	end
-
-	MoveAny:After(1, MoveAny.UpdateStanceBar, "UpdateStanceBar")
 end
+
+local stanceEventFrame = CreateFrame("Frame")
+MoveAny:RegisterEvent(stanceEventFrame, "UPDATE_SHAPESHIFT_FORMS")
+MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ENTERING_WORLD")
+MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ALIVE")
+MoveAny:OnEvent(
+	stanceEventFrame,
+	function(sel, event)
+		MoveAny:UpdateStanceBar()
+	end, "UpdateStanceBar"
+)
 
 function MoveAny:InitStanceBar()
 	if not StanceBarAnchor then
