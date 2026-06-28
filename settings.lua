@@ -4,6 +4,7 @@ local ma_set_parent_elpmb = {}
 local ma_setalpha = {}
 local ma_bb_set_scale = {}
 local ma_uab_setsize = {}
+local ma_uab_setpoint = {}
 local ma_helper_setpoint = {}
 local ma_ktb_setpoint = {}
 local ma_set_alpha = {}
@@ -4591,7 +4592,10 @@ function MoveAny:LoadAddon()
 							bar,
 							"SetPoint",
 							function(sel, ...)
+								if ma_uab_setpoint[sel] then return end
+								ma_uab_setpoint[sel] = true
 								MoveAny:UpdateActionBar(bar)
+								ma_uab_setpoint[sel] = false
 							end
 						)
 

@@ -157,7 +157,7 @@ function MoveAny:GetAbBtns(frame)
 end
 
 local ma_setpoint_ab = false
-local updatePending = {}
+local insideUpdateActionBar = {}
 local HiddenButtons = {}
 local hookedHidden = {}
 function MoveAny:SetupHide(btn)
@@ -215,6 +215,8 @@ end
 
 function MoveAny:UpdateActionBar(frame)
 	if ma_setpoint_ab then return end
+	if insideUpdateActionBar[frame] then return end
+	insideUpdateActionBar[frame] = true
 	MoveAny:SafeExec(
 		frame,
 		function()
@@ -499,10 +501,11 @@ function MoveAny:UpdateActionBar(frame)
 				for i = 1, #abtns2 do
 					local abtn = abtns2[i]
 					if not InCombatLockdown() then
+						abtn:ClearAllPoints()
 						if flipped then
-							MoveAny:SetPoint(abtn, "BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+							abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 						else
-							MoveAny:SetPoint(abtn, "TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+							abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 						end
 
 						if ma_setup[abtn] == nil then
@@ -576,6 +579,8 @@ function MoveAny:UpdateActionBar(frame)
 			end
 		end, "UpdateActionBar"
 	)
+
+	insideUpdateActionBar[frame] = false
 end
 
 function MoveAny:InitActionBarLayouts()
@@ -834,14 +839,9 @@ function MoveAny:CustomBars()
 					"SetPoint",
 					function(sel, ...)
 						if ma_setpoint_ab then return end
-						if updatePending[name] then return end
-						updatePending[name] = true
-						C_Timer.After(0, function()
-							updatePending[name] = false
-							ma_setpoint_ab = true
-							MoveAny:UpdateActionBar(_G[name])
-							ma_setpoint_ab = false
-						end)
+						ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						ma_setpoint_ab = false
 					end
 				)
 
@@ -850,14 +850,9 @@ function MoveAny:CustomBars()
 					"SetParent",
 					function(sel, ...)
 						if ma_setpoint_ab then return end
-						if updatePending[name] then return end
-						updatePending[name] = true
-						C_Timer.After(0, function()
-							updatePending[name] = false
-							ma_setpoint_ab = true
-							MoveAny:UpdateActionBar(_G[name])
-							ma_setpoint_ab = false
-						end)
+						ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						ma_setpoint_ab = false
 					end
 				)
 
@@ -866,14 +861,9 @@ function MoveAny:CustomBars()
 					"SetSize",
 					function(sel, ...)
 						if ma_setpoint_ab then return end
-						if updatePending[name] then return end
-						updatePending[name] = true
-						C_Timer.After(0, function()
-							updatePending[name] = false
-							ma_setpoint_ab = true
-							MoveAny:UpdateActionBar(_G[name])
-							ma_setpoint_ab = false
-						end)
+						ma_setpoint_ab = true
+						MoveAny:UpdateActionBar(_G[name])
+						ma_setpoint_ab = false
 					end
 				)
 
