@@ -351,6 +351,9 @@ function MoveAny:SetEleOption(element, key, value)
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
 	MoveAny:EnableSave("SetEleOption", key, true, false, false)
+	if MoveAny.InvalidateAlphaOptionsCache then
+		MoveAny:InvalidateAlphaOptionsCache(element)
+	end
 end
 
 function MoveAny:GetElePoint(key)

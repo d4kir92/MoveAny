@@ -274,7 +274,7 @@ function MoveAny:CheckAlphas()
     )
 
     MoveAny:After(
-        0.09,
+        0.15,
         function()
             MoveAny:CheckAlphas()
         end, "CheckAlphas"
@@ -287,42 +287,61 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
     else
         local name = MoveAny:GetFrameName(ele)
         if name ~= nil then
-            local alphaInCombat = MoveAny:GetEleOption(name, "ALPHAINCOMBAT", 1, "Alpha1")
-            local alphaIsFullHealth = MoveAny:GetEleOption(name, "ALPHAISFULLHEALTH", 1, "Alpha2")
-            local alphaInVehicle = MoveAny:GetEleOption(name, "ALPHAINVEHICLE", 1, "Alpha3")
-            local alphaIsMounted = MoveAny:GetEleOption(name, "ALPHAISMOUNTED", 1, "Alpha4")
-            local alphaInRestedArea = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA", 1, "Alpha5")
-            local alphaIsStealthed = MoveAny:GetEleOption(name, "ALPHAISSTEALTHED", 1, "Alpha6")
-            local alphaIsInPetBattle = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE", 1, "Alpha7")
-            local alphaNotInCombat = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT", 1, "Alpha8")
-            local alphaSkyriding = MoveAny:GetEleOption(name, "ALPHAISSKYRIDING", 1, "Alpha9")
+            local opts = MoveAny:GetCachedAlphaOptions(name)
             if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame) then
                 if ele.ma_show ~= nil and ele.ma_show == false then
                     MoveAny:SetEleAlpha(ele, 0)
                 elseif MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() then
-                    MoveAny:SetEleAlpha(ele, alphaIsInPetBattle)
+                    MoveAny:SetEleAlpha(ele, opts.petBattle)
                 elseif ele == mouseEle then
                     MoveAny:SetEleAlpha(ele, 1)
                 elseif incombat then
-                    MoveAny:SetEleAlpha(ele, alphaInCombat)
-                elseif MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp2") and UnitHealth("player") >= UnitHealthMax("player") then
-                    MoveAny:SetEleAlpha(ele, alphaIsFullHealth)
+                    MoveAny:SetEleAlpha(ele, opts.inCombat)
+                elseif opts.fullHPEnabled and UnitHealth("player") >= UnitHealthMax("player") then
+                    MoveAny:SetEleAlpha(ele, opts.fullHealth)
                 elseif UnitInVehicle and invehicle then
-                    MoveAny:SetEleAlpha(ele, alphaInVehicle)
+                    MoveAny:SetEleAlpha(ele, opts.inVehicle)
                 elseif isskyriding then
-                    MoveAny:SetEleAlpha(ele, alphaSkyriding)
+                    MoveAny:SetEleAlpha(ele, opts.skyriding)
                 elseif IsMounted and ismounted then
-                    MoveAny:SetEleAlpha(ele, alphaIsMounted)
+                    MoveAny:SetEleAlpha(ele, opts.mounted)
                 elseif IsResting and isresting then
-                    MoveAny:SetEleAlpha(ele, alphaInRestedArea)
+                    MoveAny:SetEleAlpha(ele, opts.resting)
                 elseif IsStealthed and isstealthed then
-                    MoveAny:SetEleAlpha(ele, alphaIsStealthed)
+                    MoveAny:SetEleAlpha(ele, opts.stealthed)
                 elseif not incombat then
-                    MoveAny:SetEleAlpha(ele, alphaNotInCombat)
+                    MoveAny:SetEleAlpha(ele, opts.notInCombat)
                 end
             end
         end
     end
+end
+
+local alphaOptionsCache = {}
+function MoveAny:InvalidateAlphaOptionsCache(name)
+    if name then
+        alphaOptionsCache[name] = nil
+    else
+        alphaOptionsCache = {}
+    end
+end
+
+function MoveAny:GetCachedAlphaOptions(name)
+    if alphaOptionsCache[name] then return alphaOptionsCache[name] end
+    local opts = {
+        inCombat      = MoveAny:GetEleOption(name, "ALPHAINCOMBAT",      1,     "Alpha1"),
+        fullHealth    = MoveAny:GetEleOption(name, "ALPHAISFULLHEALTH",   1,     "Alpha2"),
+        inVehicle     = MoveAny:GetEleOption(name, "ALPHAINVEHICLE",      1,     "Alpha3"),
+        mounted       = MoveAny:GetEleOption(name, "ALPHAISMOUNTED",      1,     "Alpha4"),
+        resting       = MoveAny:GetEleOption(name, "ALPHAINRESTEDAREA",   1,     "Alpha5"),
+        stealthed     = MoveAny:GetEleOption(name, "ALPHAISSTEALTHED",    1,     "Alpha6"),
+        petBattle     = MoveAny:GetEleOption(name, "ALPHAISINPETBATTLE",  1,     "Alpha7"),
+        notInCombat   = MoveAny:GetEleOption(name, "ALPHANOTINCOMBAT",    1,     "Alpha8"),
+        skyriding     = MoveAny:GetEleOption(name, "ALPHAISSKYRIDING",    1,     "Alpha9"),
+        fullHPEnabled = MoveAny:GetEleOption(name, "FULLHPENABLED",       false, "fullhp2"),
+    }
+    alphaOptionsCache[name] = opts
+    return opts
 end
 
 local timeStampAlpha = 0
