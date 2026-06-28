@@ -174,6 +174,7 @@ function MoveAny:InitAlphaResting()
 end
 
 function MoveAny:UpdateAlphaFullHealth()
+    if incombat then return end
     local newFullHP = UnitHealth("player") >= UnitHealthMax("player")
     if fullHP ~= newFullHP then
         fullHP = newFullHP
