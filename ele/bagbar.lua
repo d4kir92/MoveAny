@@ -21,6 +21,7 @@ local ma_bags_setsize_frame = {}
 local ma_bags_setpoint = {}
 local ma_setparent = {}
 local ma_show_guard = {}
+local ma_setup = {}
 local ma_px = {}
 local ma_psh = {}
 local ma_ph = {}
@@ -122,8 +123,8 @@ function MoveAny:UpdateBags()
 					bb:SetParent(BagsBar)
 				end
 
-				if bb.ma_setup == nil then
-					bb.ma_setup = true
+				if ma_setup[bb] == nil then
+					ma_setup[bb] = true
 					hooksecurefunc(
 						bb,
 						"SetPoint",

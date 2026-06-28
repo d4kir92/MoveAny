@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local ma_ismoving = {}
+local ma_setup = {}
 local ma_enablemouse = {}
 local ma_scri = {}
 local ma_setscale_ele = {}
@@ -1625,8 +1626,8 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				dragframe.t:SetAlpha(0.8)
-				if dragframe.ma_setup == nil and not InCombatLockdown() then
-					dragframe.ma_setup = true
+				if ma_setup[dragframe] == nil and not InCombatLockdown() then
+					ma_setup[dragframe] = true
 					dragframe:EnableKeyboard(true)
 					dragframe:SetPropagateKeyboardInput(true)
 					dragframe:HookScript(

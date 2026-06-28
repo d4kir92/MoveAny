@@ -111,8 +111,8 @@ end
 
 function MoveAny:UpdateChildBuffs(bb, name)
 	if bb ~= nil then
-		if bb.ma_setup == nil then
-			bb.ma_setup = true
+		if ma_setup[bb] == nil then
+			ma_setup[bb] = true
 			hooksecurefunc(
 				bb,
 				"SetAlpha",

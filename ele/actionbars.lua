@@ -1,6 +1,7 @@
 local _, MoveAny = ...
 local ma_abtn_hide = {}
 local ma_hide = {}
+local ma_setup = {}
 local MAMaxAB = 10
 local btns = {}
 local abpoints = {}
@@ -499,8 +500,8 @@ function MoveAny:UpdateActionBar(frame)
 							MoveAny:SetPoint(abtn, "TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 						end
 
-						if abtn.ma_setup == nil then
-							abtn.ma_setup = true
+						if ma_setup[abtn] == nil then
+							ma_setup[abtn] = true
 							if frame == MAMenuBar then
 								hooksecurefunc(
 									abtn,

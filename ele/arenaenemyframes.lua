@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local ma_aef_hide = {}
+local ma_setup = {}
 function MoveAny:InitArenaEnemyFrames()
 	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and _G["Arena_LoadUI"] then
 		if _G["ArenaEnemyFrame" .. 1] == nil and _G["Arena_LoadUI"] then
@@ -47,8 +48,8 @@ function MoveAny:InitArenaEnemyFrames()
 				for i = 1, 5 do
 					local bb = _G["ArenaEnemyFrame" .. i]
 					if bb then
-						if bb.ma_setup == nil then
-							bb.ma_setup = true
+						if ma_setup[bb] == nil then
+							ma_setup[bb] = true
 							hooksecurefunc(
 								bb,
 								"SetAlpha",
@@ -156,8 +157,8 @@ function MoveAny:InitArenaPrepFrames()
 				for i = 1, 5 do
 					local bb = _G["ArenaPrepFrame" .. i]
 					if bb then
-						if bb.ma_setup == nil then
-							bb.ma_setup = true
+						if ma_setup[bb] == nil then
+							ma_setup[bb] = true
 							hooksecurefunc(
 								bb,
 								"SetAlpha",

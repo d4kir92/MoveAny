@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local ma_setup = {}
 local btnsize = 30
 local once = true
 local stanceBarCount = -1
@@ -27,8 +28,8 @@ function MoveAny:UpdateStanceBar()
 			for i = 1, cou do
 				local bb = _G["StanceButton" .. i]
 				if bb then
-					if bb.ma_setup == nil then
-						bb.ma_setup = true
+					if ma_setup[bb] == nil then
+						ma_setup[bb] = true
 						bb:SetSize(btnsize, btnsize)
 						bb:SetMovable(true)
 						if bb.SetUserPlaced and bb:IsMovable() then
