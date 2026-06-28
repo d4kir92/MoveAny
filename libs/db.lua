@@ -378,8 +378,10 @@ function MoveAny:GetElePoint(key)
 		local c = elePointCache[key]
 		if c ~= nil then
 			if c == CACHE_EMPTY then return nil, MoveAny:GetMainPanel(), nil, nil, nil end
+
 			return c[1], MoveAny:GetMainPanel(), c[2], c[3], c[4]
 		end
+
 		MoveAny:CheckDB("GetElePoint")
 		MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}
 		local an = MoveAny:GetTab()["ELES"]["POINTS"][key]["AN"]
@@ -391,6 +393,7 @@ function MoveAny:GetElePoint(key)
 		else
 			elePointCache[key] = CACHE_EMPTY
 		end
+
 		return an, MoveAny:GetMainPanel(), re, px, py
 	else
 		MoveAny:MSG_Error("[GetElePoint] KEY not found")
@@ -508,7 +511,9 @@ function MoveAny:GetEleScale(key)
 	else
 		result = 1
 	end
+
 	eleScaleCache[key] = result
+
 	return result
 end
 

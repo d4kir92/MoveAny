@@ -629,7 +629,7 @@ function MoveAny:MenuOptions(opt, frame)
 							end
 
 							if MoveAny.UpdateActionBar then
-								MoveAny:UpdateActionBar(frame)
+								MoveAny:UpdateActionBar(frame, "MenuOptions")
 							end
 						end
 					end
@@ -692,7 +692,7 @@ function MoveAny:MenuOptions(opt, frame)
 							end
 
 							if MoveAny.UpdateActionBar then
-								MoveAny:UpdateActionBar(frame)
+								MoveAny:UpdateActionBar(frame, "MenuOptions2")
 							end
 						end
 					end
@@ -749,7 +749,7 @@ function MoveAny:MenuOptions(opt, frame)
 							opts["OFFSET"] = value
 							sel.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. value)
 							if MoveAny.UpdateActionBar then
-								MoveAny:UpdateActionBar(frame)
+								MoveAny:UpdateActionBar(frame, "MenuOptions3")
 							end
 						end
 					end
@@ -767,7 +767,7 @@ function MoveAny:MenuOptions(opt, frame)
 						local checked = flipped:GetChecked()
 						MoveAny:SetEleOption(name, "FLIPPED", checked)
 						if MoveAny.UpdateActionBar then
-							MoveAny:UpdateActionBar(frame)
+							MoveAny:UpdateActionBar(frame, "MenuOptions4")
 						end
 					end
 				)
@@ -828,7 +828,7 @@ function MoveAny:MenuOptions(opt, frame)
 							opts["SPACING"] = valu
 							slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. valu)
 							if MoveAny.UpdateActionBar then
-								MoveAny:UpdateActionBar(frame)
+								MoveAny:UpdateActionBar(frame, "MenuOptions5")
 							end
 						end
 					end
@@ -2030,7 +2030,7 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				if sel == MAMenuBar then
-					MoveAny:UpdateActionBar(sel)
+					MoveAny:UpdateActionBar(sel, "RegisterWidget sel == MAMenuBar")
 				end
 
 				elesetpoint = false

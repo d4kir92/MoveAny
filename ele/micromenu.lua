@@ -49,7 +49,7 @@ function MoveAny:DoUpdateMicroBar(from)
 	MoveAny:SetPoint(MAMenuBar, MAMenuBar:GetPoint())
 	if MoveAny.UpdateActionBar then
 		updateBar = true
-		MoveAny:UpdateActionBar(MAMenuBar)
+		MoveAny:UpdateActionBar(MAMenuBar, "DoUpdateMicroBar")
 		updateBar = false
 	end
 end

@@ -46,7 +46,7 @@ function MoveAny:UpdateStanceBar()
 
 		StanceBar:SetSize(cou * btnsize, btnsize)
 		if MoveAny.UpdateActionBar then
-			MoveAny:UpdateActionBar(StanceBar)
+			MoveAny:UpdateActionBar(StanceBar, "UpdateStanceBar")
 		end
 
 		-- Masque
@@ -170,7 +170,7 @@ function MoveAny:InitStanceBar()
 
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(StanceBar, "StanceBar")
-			MoveAny:UpdateActionBar(StanceBar)
+			MoveAny:UpdateActionBar(StanceBar, "InitStanceBar")
 		end
 	end
 end

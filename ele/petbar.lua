@@ -48,7 +48,7 @@ function MoveAny:UpdatePetBar()
 
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(bar, "MAPetBar")
-			MoveAny:UpdateActionBar(bar)
+			MoveAny:UpdateActionBar(bar, "UpdatePetBar")
 		end
 	end
 end

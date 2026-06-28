@@ -2475,7 +2475,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.8.315")
+	MoveAny:SetVersion(135994, "1.8.316")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2512,7 +2512,7 @@ function MoveAny:PlayerLogin()
 	if MoveAny.AnyActionbarEnabled and MoveAny:AnyActionbarEnabled() then
 		MoveAny:CustomBars()
 		for i, bar in pairs(MoveAny:GetAllActionBars()) do
-			MoveAny:UpdateActionBar(bar)
+			MoveAny:UpdateActionBar(bar, "PlayerLogin")
 		end
 	end
 end
@@ -4594,7 +4594,7 @@ function MoveAny:LoadAddon()
 							function(sel, ...)
 								if ma_uab_setpoint[sel] then return end
 								ma_uab_setpoint[sel] = true
-								MoveAny:UpdateActionBar(bar)
+								MoveAny:UpdateActionBar(bar, "LoadAddon")
 								ma_uab_setpoint[sel] = false
 							end
 						)
@@ -4606,12 +4606,12 @@ function MoveAny:LoadAddon()
 								if InCombatLockdown() and sel:IsProtected() then return false end
 								if ma_uab_setsize[sel] then return end
 								ma_uab_setsize[sel] = true
-								MoveAny:UpdateActionBar(bar)
+								MoveAny:UpdateActionBar(bar, "LoadAddon2")
 								ma_uab_setsize[sel] = false
 							end
 						)
 
-						MoveAny:UpdateActionBar(bar)
+						MoveAny:UpdateActionBar(bar, "LoadAddon3")
 					end
 				end
 			end
@@ -5897,6 +5897,8 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) and UIWidgetTopCenterContainerFrame then
+			print("HIER")
+			UIWidgetTopCenterContainerFrame:SetSize(36 * 5, 36 * 2)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "UIWidgetTopCenterContainerFrame",
@@ -6648,14 +6650,14 @@ function MoveAny:LoadAddon()
 					hooksecurefunc(
 						"GroupLootContainer_AddFrame",
 						function(parent, frame, ...)
-							print(MoveAny:GetName(parent), MoveAny:GetName(frame), ...)
+							print("DEBUG", MoveAny:GetName(parent), MoveAny:GetName(frame), ...)
 						end
 					)
 
 					hooksecurefunc(
 						"GroupLootContainer_Update",
 						function(parent)
-							print(parent, #parent.rollFrames)
+							print("DEBUG", parent, #parent.rollFrames)
 						end
 					)
 				end
