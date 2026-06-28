@@ -6127,9 +6127,19 @@ function MoveAny:LoadAddon()
 							end
 						end
 					end
-
-					MoveAny:After(1, MoveAny.HandleBossFrames, "HandleBossFrames")
 				end
+
+				local bossEventFrame = CreateFrame("Frame")
+				MoveAny:RegisterEvent(bossEventFrame, "INSTANCE_ENCOUNTER_ENGAGE_UNIT")
+				MoveAny:RegisterEvent(bossEventFrame, "BOSS_KILL")
+				MoveAny:RegisterEvent(bossEventFrame, "ENCOUNTER_END")
+				MoveAny:RegisterEvent(bossEventFrame, "PLAYER_ENTERING_WORLD")
+				MoveAny:OnEvent(
+					bossEventFrame,
+					function(sel, event)
+						MoveAny:HandleBossFrames()
+					end, "HandleBossFrames"
+				)
 
 				MoveAny:HandleBossFrames()
 			end
