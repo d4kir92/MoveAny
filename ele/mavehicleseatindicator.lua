@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local ma_vsisetpoint = {}
 local tries = 0
 function MoveAny:InitMAVehicleSeatIndicator()
 	tries = tries + 1
@@ -10,15 +11,15 @@ function MoveAny:InitMAVehicleSeatIndicator()
 			MAVehicleSeatIndicator,
 			"SetPoint",
 			function(sel, ...)
-				if sel.mavsisetpoint then return end
-				sel.mavsisetpoint = true
+				if ma_vsisetpoint[sel] then return end
+				ma_vsisetpoint[sel] = true
 				sel:SetMovable(true)
 				if sel.SetUserPlaced and sel:IsMovable() then
 					sel:SetUserPlaced(false)
 				end
 
 				MoveAny:SetPoint(VehicleSeatIndicator, "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
-				sel.mavsisetpoint = false
+				ma_vsisetpoint[sel] = false
 			end
 		)
 
@@ -45,15 +46,15 @@ function MoveAny:InitMAVehicleSeatIndicator()
 			VehicleSeatIndicator,
 			"SetPoint",
 			function(sel, ...)
-				if sel.vsisetpoint then return end
-				sel.vsisetpoint = true
+				if ma_vsisetpoint[sel] then return end
+				ma_vsisetpoint[sel] = true
 				sel:SetMovable(true)
 				if sel.SetUserPlaced and sel:IsMovable() then
 					sel:SetUserPlaced(false)
 				end
 
 				MoveAny:SetPoint(sel, "CENTER", MAVehicleSeatIndicator, "CENTER", 0, 0)
-				sel.vsisetpoint = false
+				ma_vsisetpoint[sel] = false
 			end
 		)
 

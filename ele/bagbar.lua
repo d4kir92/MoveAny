@@ -17,6 +17,10 @@ local hookedBags = {}
 local run = false
 local hooksetsize = nil
 local ma_bags_setsize = false
+local ma_bags_setsize_frame = {}
+local ma_bags_setpoint = {}
+local ma_setparent = {}
+local ma_show_guard = {}
 function MoveAny:UpdateBags()
 	if run then return end
 	run = true
@@ -68,10 +72,10 @@ function MoveAny:UpdateBags()
 					"SetParent",
 					function(sel, parent)
 						if run then return end
-						if sel.ma_setparent then return end
-						sel.ma_setparent = true
+						if ma_setparent[sel] then return end
+						ma_setparent[sel] = true
 						MoveAny:UpdateBags()
-						sel.ma_setparent = false
+						ma_setparent[sel] = false
 					end
 				)
 			end
@@ -121,10 +125,10 @@ function MoveAny:UpdateBags()
 						bb,
 						"SetPoint",
 						function(sel, ...)
-							if sel.ma_bags_setpoint then return end
-							sel.ma_bags_setpoint = true
+							if ma_bags_setpoint[sel] then return end
+							ma_bags_setpoint[sel] = true
 							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", sel.px, -(sel.psh / 2 - sel.ph / 2))
-							sel.ma_bags_setpoint = false
+							ma_bags_setpoint[sel] = false
 						end
 					)
 
@@ -166,10 +170,10 @@ function MoveAny:InitBags()
 				"SetSize",
 				function(sel, w, h)
 					if InCombatLockdown() and sel:IsProtected() then return false end
-					if sel.ma_bags_setsize then return end
-					sel.ma_bags_setsize = true
+					if ma_bags_setsize_frame[sel] then return end
+					ma_bags_setsize_frame[sel] = true
 					MoveAny:UpdateBags()
-					sel.ma_bags_setsize = false
+					ma_bags_setsize_frame[sel] = false
 				end
 			)
 
@@ -188,10 +192,10 @@ function MoveAny:InitBags()
 						bb,
 						"Hide",
 						function(sel)
-							if sel.mashow then return end
-							sel.mashow = true
+							if ma_show_guard[sel] then return end
+							ma_show_guard[sel] = true
 							sel:Show()
-							sel.mashow = false
+							ma_show_guard[sel] = false
 						end
 					)
 

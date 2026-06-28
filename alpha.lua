@@ -12,6 +12,13 @@ local inpetbattle = nil
 local isstealthed = nil
 local lastEle = nil
 local hookedChildren = {}
+local maFrameShow = {}
+function MoveAny:SetMAShow(frame, val)
+    maFrameShow[frame] = val
+end
+function MoveAny:GetMAShow(frame)
+    return maFrameShow[frame]
+end
 local fullHP = false
 local enumAlpha = {}
 enumAlpha.INIT = "INIT"
@@ -300,7 +307,7 @@ function MoveAny:UpdateAlpha(ele, mouseEle)
         if name ~= nil then
             local opts = MoveAny:GetCachedAlphaOptions(name)
             if not dufloaded or (dufloaded and ele ~= PlayerFrame and ele ~= TargetFrame) then
-                if ele.ma_show ~= nil and ele.ma_show == false then
+                if maFrameShow[ele] == false then
                     MoveAny:SetEleAlpha(ele, 0)
                 elseif inpetbattle then
                     MoveAny:SetEleAlpha(ele, opts.petBattle)

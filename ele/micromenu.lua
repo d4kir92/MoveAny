@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local ma_set_s = {}
 function MoveAny:GetMicroButtonSize()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 32 end
 
@@ -300,10 +301,10 @@ function MoveAny:InitMicroMenu()
 							"SetScale",
 							function(sel, scale)
 								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_set_s then return end
-								sel.ma_set_s = true
+								if ma_set_s[sel] then return end
+								ma_set_s[sel] = true
 								mb:SetScale(MAMenuBar:GetScale())
-								sel.ma_set_s = false
+								ma_set_s[sel] = false
 							end
 						)
 

@@ -1,4 +1,14 @@
 local _, MoveAny = ...
+local ma_set_parent = {}
+local ma_set_parent_elpmb = {}
+local ma_setalpha = {}
+local ma_bb_set_scale = {}
+local ma_uab_setsize = {}
+local ma_helper_setpoint = {}
+local ma_ktb_setpoint = {}
+local ma_set_alpha = {}
+local ma_setheight = {}
+local ma_setup = {}
 local PREFIX = "MOAN"
 local MASendProfiles = {}
 local MAWantProfiles = {}
@@ -2718,10 +2728,10 @@ function MoveAny:LoadAddon()
 				MiniMapLFGFrame,
 				"SetParent",
 				function(sel)
-					if sel.ma_set_parent then return end
-					sel.ma_set_parent = true
+					if ma_set_parent[sel] then return end
+					ma_set_parent[sel] = true
 					sel:SetParent(UIParent)
-					sel.ma_set_parent = false
+					ma_set_parent[sel] = false
 				end
 			)
 
@@ -2741,10 +2751,10 @@ function MoveAny:LoadAddon()
 				LFGMinimapFrame,
 				"SetParent",
 				function(sel)
-					if sel.ma_set_parent then return end
-					sel.ma_set_parent = true
+					if ma_set_parent[sel] then return end
+					ma_set_parent[sel] = true
 					sel:SetParent(UIParent)
-					sel.ma_set_parent = false
+					ma_set_parent[sel] = false
 				end
 			)
 
@@ -2790,13 +2800,13 @@ function MoveAny:LoadAddon()
 					hooksecurefunc(
 						"CastingBarFrame_ApplyAlpha",
 						function(sel, alpha)
-							if sel.ma_setalpha then return end
-							sel.ma_setalpha = true
+							if ma_setalpha[sel] then return end
+							ma_setalpha[sel] = true
 							if alpha == 1 then
 								MoveAny:UpdateAlpha(CastingBarFrame, mouseEle)
 							end
 
-							sel.ma_setalpha = false
+							ma_setalpha[sel] = false
 						end
 					)
 				end
@@ -3230,10 +3240,10 @@ function MoveAny:LoadAddon()
 								"SetScale",
 								function(sel)
 									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
+									if ma_bb_set_scale[sel] then return end
+									ma_bb_set_scale[sel] = true
 									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
+									ma_bb_set_scale[sel] = false
 								end
 							)
 
@@ -3376,10 +3386,10 @@ function MoveAny:LoadAddon()
 								"SetScale",
 								function(sel)
 									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
+									if ma_bb_set_scale[sel] then return end
+									ma_bb_set_scale[sel] = true
 									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
+									ma_bb_set_scale[sel] = false
 								end
 							)
 
@@ -3522,10 +3532,10 @@ function MoveAny:LoadAddon()
 								"SetScale",
 								function(sel)
 									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
+									if ma_bb_set_scale[sel] then return end
+									ma_bb_set_scale[sel] = true
 									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
+									ma_bb_set_scale[sel] = false
 								end
 							)
 
@@ -3668,10 +3678,10 @@ function MoveAny:LoadAddon()
 								"SetScale",
 								function(sel)
 									if InCombatLockdown() and sel:IsProtected() then return false end
-									if sel.ma_bb_set_scale then return end
-									sel.ma_bb_set_scale = true
+									if ma_bb_set_scale[sel] then return end
+									ma_bb_set_scale[sel] = true
 									frame:UpdateScaleAndAlpha()
-									sel.ma_bb_set_scale = false
+									ma_bb_set_scale[sel] = false
 								end
 							)
 
@@ -3849,10 +3859,10 @@ function MoveAny:LoadAddon()
 									"SetScale",
 									function(sel)
 										if InCombatLockdown() and sel:IsProtected() then return false end
-										if sel.ma_bb_set_scale then return end
-										sel.ma_bb_set_scale = true
+										if ma_bb_set_scale[sel] then return end
+										ma_bb_set_scale[sel] = true
 										frame:UpdateScaleAndAlpha()
-										sel.ma_bb_set_scale = false
+										ma_bb_set_scale[sel] = false
 									end
 								)
 
@@ -3995,10 +4005,10 @@ function MoveAny:LoadAddon()
 									"SetScale",
 									function(sel)
 										if InCombatLockdown() and sel:IsProtected() then return false end
-										if sel.ma_bb_set_scale then return end
-										sel.ma_bb_set_scale = true
+										if ma_bb_set_scale[sel] then return end
+										ma_bb_set_scale[sel] = true
 										frame:UpdateScaleAndAlpha()
-										sel.ma_bb_set_scale = false
+										ma_bb_set_scale[sel] = false
 									end
 								)
 
@@ -4141,10 +4151,10 @@ function MoveAny:LoadAddon()
 									"SetScale",
 									function(sel)
 										if InCombatLockdown() and sel:IsProtected() then return false end
-										if sel.ma_bb_set_scale then return end
-										sel.ma_bb_set_scale = true
+										if ma_bb_set_scale[sel] then return end
+										ma_bb_set_scale[sel] = true
 										frame:UpdateScaleAndAlpha()
-										sel.ma_bb_set_scale = false
+										ma_bb_set_scale[sel] = false
 									end
 								)
 
@@ -4287,10 +4297,10 @@ function MoveAny:LoadAddon()
 									"SetScale",
 									function(sel)
 										if InCombatLockdown() and sel:IsProtected() then return false end
-										if sel.ma_bb_set_scale then return end
-										sel.ma_bb_set_scale = true
+										if ma_bb_set_scale[sel] then return end
+										ma_bb_set_scale[sel] = true
 										frame:UpdateScaleAndAlpha()
-										sel.ma_bb_set_scale = false
+										ma_bb_set_scale[sel] = false
 									end
 								)
 
@@ -4581,10 +4591,10 @@ function MoveAny:LoadAddon()
 							"SetSize",
 							function(sel, ...)
 								if InCombatLockdown() and sel:IsProtected() then return false end
-								if sel.ma_uab_setsize then return end
-								sel.ma_uab_setsize = true
+								if ma_uab_setsize[sel] then return end
+								ma_uab_setsize[sel] = true
 								MoveAny:UpdateActionBar(bar)
-								sel.ma_uab_setsize = false
+								ma_uab_setsize[sel] = false
 							end
 						)
 
@@ -4926,11 +4936,11 @@ function MoveAny:LoadAddon()
 									Questie_BaseFrame,
 									"SetPoint",
 									function(sel, ...)
-										if sel.ma_helper_setpoint then return end
-										sel.ma_helper_setpoint = true
+										if ma_helper_setpoint[sel] then return end
+										ma_helper_setpoint[sel] = true
 										Questie_BaseFrame:ClearAllPoints()
 										Questie_BaseFrame:SetPoint("TOPLEFT", questieHelper, "TOPLEFT", 0, 0)
-										sel.ma_helper_setpoint = false
+										ma_helper_setpoint[sel] = false
 									end
 								)
 
@@ -5574,10 +5584,10 @@ function MoveAny:LoadAddon()
 							ktb,
 							"SetPoint",
 							function(sel, ...)
-								if sel.ma_ktb_setpoint then return end
-								sel.ma_ktb_setpoint = true
+								if ma_ktb_setpoint[sel] then return end
+								ma_ktb_setpoint[sel] = true
 								MoveAny:SetPoint(sel, "TOP", MAKTB, "TOP", 0, kbr)
-								sel.ma_ktb_setpoint = false
+								ma_ktb_setpoint[sel] = false
 							end
 						)
 
@@ -6034,7 +6044,7 @@ function MoveAny:LoadAddon()
 								frame,
 								"Show",
 								function(sel)
-									sel.ma_show = true
+									MoveAny:SetMAShow(sel, true)
 									sel:SetAlpha(1)
 								end
 							)
@@ -6043,7 +6053,7 @@ function MoveAny:LoadAddon()
 								frame,
 								"Hide",
 								function(sel)
-									sel.ma_show = false
+									MoveAny:SetMAShow(sel, false)
 									sel:SetAlpha(0)
 								end
 							)
@@ -6052,16 +6062,16 @@ function MoveAny:LoadAddon()
 								frame,
 								"SetAlpha",
 								function(sel, alpha)
-									if sel.ma_set_alpha then return end
-									sel.ma_set_alpha = true
-									if UnitExists(frame.unit) or sel.ma_show or alpha > 0 then
+									if ma_set_alpha[sel] then return end
+									ma_set_alpha[sel] = true
+									if UnitExists(frame.unit) or MoveAny:GetMAShow(sel) or alpha > 0 then
 										local a = alpha or 1
 										sel:SetAlpha(a)
 									else
 										sel:SetAlpha(1)
 									end
 
-									sel.ma_set_alpha = false
+									ma_set_alpha[sel] = false
 								end
 							)
 
@@ -6100,10 +6110,10 @@ function MoveAny:LoadAddon()
 						local unit = "boss" .. i
 						if frame then
 							if UnitExists(unit) then
-								frame.ma_show = true
+								MoveAny:SetMAShow(frame, true)
 								frame:SetAlpha(1)
 							else
-								frame.ma_show = false
+								MoveAny:SetMAShow(frame, false)
 								frame:SetAlpha(0)
 							end
 						end
@@ -6216,13 +6226,13 @@ function MoveAny:LoadAddon()
 				ExpansionLandingPageMinimapButton,
 				"SetParent",
 				function(sel)
-					if sel.ma_set_parent_elpmb then return end
-					sel.ma_set_parent_elpmb = true
+					if ma_set_parent_elpmb[sel] then return end
+					ma_set_parent_elpmb[sel] = true
 					if MoveAny:GetParent(sel) ~= MoveAny:GetHidden() then
 						sel:SetParent(UIParent)
 					end
 
-					sel.ma_set_parent_elpmb = false
+					ma_set_parent_elpmb[sel] = false
 				end
 			)
 
@@ -6794,10 +6804,10 @@ function MoveAny:LoadAddon()
 							ReputationWatchBar,
 							"SetHeight",
 							function(sel, nh)
-								if sel.ma_setheight then return end
-								sel.ma_setheight = true
+								if ma_setheight[sel] then return end
+								ma_setheight[sel] = true
 								sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
-								sel.ma_setheight = false
+								ma_setheight[sel] = false
 							end
 						)
 					end
@@ -6814,10 +6824,10 @@ function MoveAny:LoadAddon()
 								ReputationWatchBar.StatusBar,
 								"SetHeight",
 								function(sel, nh)
-									if sel.ma_setheight then return end
-									sel.ma_setheight = true
+									if ma_setheight[sel] then return end
+									ma_setheight[sel] = true
 									sel:SetSize(opts["WIDTH"], opts["HEIGHT"])
-									sel.ma_setheight = false
+									ma_setheight[sel] = false
 								end
 							)
 						end
@@ -6957,8 +6967,8 @@ function MoveAny:LoadAddon()
 				AlertFrame,
 				"AddAlertFrame",
 				function(se, frame)
-					if frame.ma_setup == nil then
-						frame.ma_setup = true
+					if ma_setup[frame] == nil then
+						ma_setup[frame] = true
 						hooksecurefunc(
 							AlertFrame,
 							"SetScale",

@@ -411,18 +411,16 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								local fM = _G[name .. "Move"]
 								if fM and ma_ismoving[fM] then
 									if fM:GetLeft() then
-										fM.ma_x = fM:GetLeft()
-										fM.ma_y = fM:GetTop() - fM:GetHeight()
-										fM.ma_x = MoveAny:Snap(fM.ma_x, MoveAny:GetSnapWindowSize())
-										fM.ma_y = MoveAny:Snap(fM.ma_y, MoveAny:GetSnapWindowSize())
-										MoveAny:SaveFramePointToDB(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
+										local mx = MoveAny:Snap(fM:GetLeft(), MoveAny:GetSnapWindowSize())
+										local my = MoveAny:Snap(fM:GetTop() - fM:GetHeight(), MoveAny:GetSnapWindowSize())
+										MoveAny:SaveFramePointToDB(name, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", mx, my)
 										local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 										if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 										if dbp1 and dbp3 then
 											MoveAny:SetPoint(frame, dbp1, nil, dbp3, dbp4, dbp5)
 										else
 											frame:ClearAllPoints()
-											frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", fM.ma_x, fM.ma_y)
+											frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", mx, my)
 										end
 									end
 
@@ -607,11 +605,9 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							function(sel, p1, p2, p3, p4, p5)
 								if maframesetpoint[sel] then return end
 								maframesetpoint[sel] = true
-
 								if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 								local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 								if dbp1 and dbp3 then
-									sel.maretrysetpoint = nil
 									local w, h = sel:GetSize()
 									MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
 									if sel:GetNumPoints() > 1 then

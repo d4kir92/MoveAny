@@ -1,4 +1,8 @@
 local _, MoveAny = ...
+local ma_ismoving = {}
+local ma_enablemouse = {}
+local ma_scri = {}
+local ma_setscale_ele = {}
 local framelevel = 1100
 local btnsize = 24
 local ses = {}
@@ -1671,7 +1675,7 @@ function MoveAny:RegisterWidget(tab)
 				if btn == "LeftButton" then
 					dragframe:SetMovable(true)
 					dragframe:StartMoving()
-					dragframe.ma_ismoving = true
+					ma_ismoving[dragframe] = true
 				elseif btn == "RightButton" then
 					MoveAny:ToggleElementOptions(name, fram, dragframe)
 				end
@@ -1682,8 +1686,8 @@ function MoveAny:RegisterWidget(tab)
 			"OnMouseUp",
 			function()
 				local fram = _G[name]
-				if dragframe.ma_ismoving then
-					dragframe.ma_ismoving = false
+				if ma_ismoving[dragframe] then
+					ma_ismoving[dragframe] = false
 					dragframe:StopMovingOrSizing()
 					dragframe:SetMovable(false)
 					local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
@@ -1752,15 +1756,15 @@ function MoveAny:RegisterWidget(tab)
 				frame,
 				"SetClampRectInsets",
 				function(sel, ...)
-					if sel.scri then return end
-					sel.scri = true
+					if ma_scri[sel] then return end
+					ma_scri[sel] = true
 					sel:SetClampRectInsets(l, r, t, b)
 					local df = MoveAny:GetDragFromName(name)
 					if df then
 						df:SetClampRectInsets(l, r, t, b)
 					end
 
-					sel.scri = false
+					ma_scri[sel] = false
 				end
 			)
 
@@ -1928,8 +1932,8 @@ function MoveAny:RegisterWidget(tab)
 			frame,
 			"EnableMouse",
 			function(sel, bo)
-				if sel.ma_enablemouse then return end
-				sel.ma_enablemouse = true
+				if ma_enablemouse[sel] then return end
+				ma_enablemouse[sel] = true
 				sel:EnableMouse(false)
 				if sel.AuraContainer then
 					MoveAny:ForeachChildren(
@@ -1951,7 +1955,7 @@ function MoveAny:RegisterWidget(tab)
 					)
 				end
 
-				sel.ma_enablemouse = false
+				ma_enablemouse[sel] = false
 			end
 		)
 
@@ -2049,8 +2053,8 @@ function MoveAny:RegisterWidget(tab)
 		"SetScale",
 		function(sel, scale)
 			if InCombatLockdown() and sel:IsProtected() then return false end
-			if sel.masetscale_ele then return end
-			sel.masetscale_ele = true
+			if ma_setscale_ele[sel] then return end
+			ma_setscale_ele[sel] = true
 			local newScale = MoveAny:GetEleScale(name) or 1
 			if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 				newScale = 1
@@ -2065,7 +2069,7 @@ function MoveAny:RegisterWidget(tab)
 				dragframe:SetScale(newScale)
 			end
 
-			sel.masetscale_ele = false
+			ma_setscale_ele[sel] = false
 		end
 	)
 

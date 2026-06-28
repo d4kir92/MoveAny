@@ -1,4 +1,6 @@
 local _, MoveAny = ...
+local ma_enablemouse = {}
+local ma_setpoint_bbtn = {}
 local btnsize = 36
 local MADEBUFFLIMIT = 10
 local MADEBUFFSPACINGX = 4
@@ -125,10 +127,10 @@ function MoveAny:InitDebuffBar()
 										child,
 										"EnableMouse",
 										function(sel, bo)
-											if sel.ma_enablemouse then return end
-											sel.ma_enablemouse = true
+											if ma_enablemouse[sel] then return end
+											ma_enablemouse[sel] = true
 											sel:EnableMouse(false)
-											sel.ma_enablemouse = false
+											ma_enablemouse[sel] = false
 										end
 									)
 
@@ -149,10 +151,10 @@ function MoveAny:InitDebuffBar()
 									bbtn,
 									"EnableMouse",
 									function(sel, bo)
-										if sel.ma_enablemouse then return end
-										sel.ma_enablemouse = true
+										if ma_enablemouse[sel] then return end
+										ma_enablemouse[sel] = true
 										sel:EnableMouse(false)
-										sel.ma_enablemouse = false
+										ma_enablemouse[sel] = false
 									end
 								)
 
@@ -169,8 +171,8 @@ function MoveAny:InitDebuffBar()
 								bbtn,
 								"SetPoint",
 								function(sel, ...)
-									if sel.setpoint_bbtn then return end
-									sel.setpoint_bbtn = true
+									if ma_setpoint_bbtn[sel] then return end
+									ma_setpoint_bbtn[sel] = true
 									local p1, _, p3, _, _ = MADebuffBar:GetPoint()
 									local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
 									local sw2, sh2 = sel:GetSize()
@@ -226,7 +228,7 @@ function MoveAny:InitDebuffBar()
 										end
 									end
 
-									sel.setpoint_bbtn = false
+									ma_setpoint_bbtn[sel] = false
 								end
 							)
 						end

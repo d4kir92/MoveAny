@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local ma_setalpha = {}
 function MoveAny:InitMinimap()
 	if not MoveAny:IsEnabled("MINIMAP", false) then return end
 	if ElvUI then return end
@@ -16,10 +17,10 @@ function MoveAny:InitMinimap()
 		function()
 			local alpha = MoveAny:GetMainPanel():GetAlpha()
 			if alpha == 0 then
-				if self.ma_setalpha then return end
-				self.ma_setalpha = true
+				if ma_setalpha[self] then return end
+				ma_setalpha[self] = true
 				Minimap:SetAlpha(0)
-				self.ma_setalpha = false
+				ma_setalpha[self] = false
 			end
 		end
 	)
@@ -31,10 +32,10 @@ function MoveAny:InitMinimap()
 			function()
 				local alpha = MoveAny:GetMainPanel():GetAlpha()
 				if alpha == 0 then
-					if self.ma_setalpha then return end
-					self.ma_setalpha = true
+					if ma_setalpha[self] then return end
+					ma_setalpha[self] = true
 					MinimapBackdrop:SetAlpha(0)
-					self.ma_setalpha = false
+					ma_setalpha[self] = false
 				end
 			end
 		)
@@ -50,10 +51,10 @@ function MoveAny:InitMinimap()
 					btn,
 					"Hide",
 					function(sel)
-						if sel.mashow then return end
-						sel.mashow = true
+						if sel.ma_show2 then return end
+						sel.ma_show2 = true
 						sel:Show()
-						sel.mashow = false
+						sel.ma_show2 = false
 					end
 				)
 

@@ -81,10 +81,10 @@ function MoveAny:InitArenaEnemyFrames()
 					arenaFrames,
 					"Hide",
 					function(sel)
-						if sel.mahide then return end
-						sel.mahide = true
+						if sel.ma_hide2 then return end
+						sel.ma_hide2 = true
 						sel:Show()
-						sel.mahide = false
+						sel.ma_hide2 = false
 					end
 				)
 
@@ -94,10 +94,10 @@ function MoveAny:InitArenaEnemyFrames()
 						_G["ArenaEnemyFrame" .. i],
 						"Hide",
 						function(sel)
-							if sel.mahide then return end
-							sel.mahide = true
+							if sel.ma_hide2 then return end
+							sel.ma_hide2 = true
 							sel:Show()
-							sel.mahide = false
+							sel.ma_hide2 = false
 						end
 					)
 
@@ -190,10 +190,10 @@ function MoveAny:InitArenaPrepFrames()
 					prepFrames,
 					"Hide",
 					function(sel)
-						if sel.mahide then return end
-						sel.mahide = true
+						if sel.ma_hide2 then return end
+						sel.ma_hide2 = true
 						sel:Show()
-						sel.mahide = false
+						sel.ma_hide2 = false
 					end
 				)
 
@@ -203,10 +203,10 @@ function MoveAny:InitArenaPrepFrames()
 						_G["ArenaPrepFrame" .. i],
 						"Hide",
 						function(sel)
-							if sel.mahide then return end
-							sel.mahide = true
+							if sel.ma_hide2 then return end
+							sel.ma_hide2 = true
 							sel:Show()
-							sel.mahide = false
+							sel.ma_hide2 = false
 						end
 					)
 

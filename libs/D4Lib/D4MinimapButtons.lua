@@ -124,7 +124,7 @@ function D4:CreateMinimapButton(params)
         btn:SetScript(
             "OnDragStart",
             function(sel)
-                sel.isMouseDown = true
+                sel.d4_isMouseDown = true
                 sel:SetScript(
                     "OnUpdate",
                     function(se)
@@ -153,7 +153,7 @@ function D4:CreateMinimapButton(params)
             "OnDragStop",
             function(sel)
                 sel:SetScript("OnUpdate", nil)
-                sel.isMouseDown = false
+                sel.d4_isMouseDown = false
             end
         )
     end
@@ -180,7 +180,7 @@ function D4:CreateMinimapButton(params)
     btn:SetScript(
         "OnClick",
         function(sel, btnName)
-            if sel.isMouseDown then return end
+            if sel.d4_isMouseDown then return end
             if btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
                 params:funcSL()
             elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then

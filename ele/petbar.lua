@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local ma_setparent = {}
 local btnsize = 36
 local once = true
 local bar = nil
@@ -69,10 +70,10 @@ function MoveAny:InitPetBar()
 						bb,
 						"SetParent",
 						function(sel, ...)
-							if sel.ma_setparent then return end
-							sel.ma_setparent = true
+							if ma_setparent[sel] then return end
+							ma_setparent[sel] = true
 							bb:SetParent(bar)
-							sel.ma_setparent = false
+							ma_setparent[sel] = false
 						end
 					)
 
@@ -102,7 +103,7 @@ function MoveAny:InitPetBar()
 					"ShowPetActionBar",
 					function()
 						bar:SetAlpha(1)
-						bar.ma_show = true
+						MoveAny:SetMAShow(bar, true)
 					end
 				)
 
@@ -111,10 +112,10 @@ function MoveAny:InitPetBar()
 					function()
 						if UnitExists("pet") then
 							bar:SetAlpha(1)
-							bar.ma_show = true
+							MoveAny:SetMAShow(bar, true)
 						else
 							bar:SetAlpha(0)
-							bar.ma_show = false
+							MoveAny:SetMAShow(bar, false)
 						end
 					end
 				)

@@ -1,4 +1,6 @@
 local _, MoveAny = ...
+local ma_abtn_hide = {}
+local ma_hide = {}
 local MAMaxAB = 10
 local btns = {}
 local abpoints = {}
@@ -504,10 +506,10 @@ function MoveAny:UpdateActionBar(frame)
 									abtn,
 									"Hide",
 									function(sel)
-										if sel.ma_abtn_hide then return end
-										sel.ma_abtn_hide = true
+										if ma_abtn_hide[sel] then return end
+										ma_abtn_hide[sel] = true
 										sel:Show()
-										sel.ma_abtn_hide = false
+										ma_abtn_hide[sel] = false
 									end
 								)
 							else
@@ -515,13 +517,13 @@ function MoveAny:UpdateActionBar(frame)
 									abtn,
 									"Show",
 									function(sel)
-										if sel.ma_abtn_hide then return end
-										sel.ma_abtn_hide = true
+										if ma_abtn_hide[sel] then return end
+										ma_abtn_hide[sel] = true
 										if sel.hide and sel:IsShown() then
 											sel:Hide()
 										end
 
-										sel.ma_abtn_hide = false
+										ma_abtn_hide[sel] = false
 									end
 								)
 							end
@@ -643,10 +645,10 @@ function MoveAny:CustomBars()
 					texture,
 					"Show",
 					function(sel)
-						if sel.mahide then return end
-						sel.mahide = true
+						if ma_hide[sel] then return end
+						ma_hide[sel] = true
 						sel:Hide()
-						sel.mahide = false
+						ma_hide[sel] = false
 					end
 				)
 
@@ -659,10 +661,10 @@ function MoveAny:CustomBars()
 				_G["StanceBarLeft"],
 				"Show",
 				function(sel)
-					if sel.mahide then return end
-					sel.mahide = true
+					if ma_hide[sel] then return end
+					ma_hide[sel] = true
 					sel:Hide()
-					sel.mahide = false
+					ma_hide[sel] = false
 				end
 			)
 
@@ -674,10 +676,10 @@ function MoveAny:CustomBars()
 				_G["StanceBarMiddle"],
 				"Show",
 				function(sel)
-					if sel.mahide then return end
-					sel.mahide = true
+					if ma_hide[sel] then return end
+					ma_hide[sel] = true
 					sel:Hide()
-					sel.mahide = false
+					ma_hide[sel] = false
 				end
 			)
 
@@ -689,10 +691,10 @@ function MoveAny:CustomBars()
 				_G["StanceBarRight"],
 				"Show",
 				function(sel)
-					if sel.mahide then return end
-					sel.mahide = true
+					if ma_hide[sel] then return end
+					ma_hide[sel] = true
 					sel:Hide()
-					sel.mahide = false
+					ma_hide[sel] = false
 				end
 			)
 
@@ -704,10 +706,10 @@ function MoveAny:CustomBars()
 				_G["SlidingActionBarTexture0"],
 				"Show",
 				function(sel)
-					if sel.mahide then return end
-					sel.mahide = true
+					if ma_hide[sel] then return end
+					ma_hide[sel] = true
 					sel:Hide()
-					sel.mahide = false
+					ma_hide[sel] = false
 				end
 			)
 
@@ -719,10 +721,10 @@ function MoveAny:CustomBars()
 				_G["SlidingActionBarTexture1"],
 				"Show",
 				function(sel)
-					if sel.mahide then return end
-					sel.mahide = true
+					if ma_hide[sel] then return end
+					ma_hide[sel] = true
 					sel:Hide()
-					sel.mahide = false
+					ma_hide[sel] = false
 				end
 			)
 
