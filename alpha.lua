@@ -11,6 +11,7 @@ local incombat = nil
 local inpetbattle = nil
 local isstealthed = nil
 local lastEle = nil
+local hookedChildren = {}
 local fullHP = false
 local enumAlpha = {}
 enumAlpha.INIT = "INIT"
@@ -57,8 +58,8 @@ end
 
 function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
     if not child or not parentAlphaFrame then return end
-    if child.ma_alpha_hooked then return end
-    child.ma_alpha_hooked = true
+    if hookedChildren[child] then return end
+    hookedChildren[child] = true
     child:HookScript(
         "OnEnter",
         function()
