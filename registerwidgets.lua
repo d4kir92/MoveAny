@@ -1964,6 +1964,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	local elesetpoint = false
+	local movableSetup = false
 	local ma_secure = secure
 	local bToSmall = false
 	if sw or sh then
@@ -2007,31 +2008,30 @@ function MoveAny:RegisterWidget(tab)
 		function(sel, p1, p2, p3, p4, p5)
 			if elesetpoint then return end
 			if not ma_secure then
-				pcall(
-					function()
-						if sel.SetMovable then
-							sel:SetMovable(true)
-						end
+				if not movableSetup then
+					movableSetup = true
+					pcall(
+						function()
+							if sel.SetMovable then
+								sel:SetMovable(true)
+							end
 
-						if sel.SetUserPlaced and sel.SetMovable and sel:IsMovable() then
-							sel:SetUserPlaced(userplaced or false)
+							if sel.SetUserPlaced and sel.SetMovable and sel:IsMovable() then
+								sel:SetUserPlaced(userplaced or false)
+							end
 						end
-					end
-				)
+					)
+				end
 
 				elesetpoint = true
-				pcall(
-					function()
-						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-						if dbp1 and dbp3 then
-							MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
-						end
+				local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+				if dbp1 and dbp3 then
+					MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5)
+				end
 
-						if sel == MAMenuBar then
-							MoveAny:UpdateActionBar(sel)
-						end
-					end
-				)
+				if sel == MAMenuBar then
+					MoveAny:UpdateActionBar(sel)
+				end
 
 				elesetpoint = false
 			end
@@ -2053,7 +2053,8 @@ function MoveAny:RegisterWidget(tab)
 		frame,
 		"SetScale",
 		function(sel, scale)
-			if InCombatLockdown() and sel:IsProtected() then return false end
+			local icl = InCombatLockdown()
+			if icl and sel:IsProtected() then return false end
 			if ma_setscale_ele[sel] then return end
 			ma_setscale_ele[sel] = true
 			local newScale = MoveAny:GetEleScale(name) or 1
@@ -2061,7 +2062,7 @@ function MoveAny:RegisterWidget(tab)
 				newScale = 1
 			end
 
-			if newScale and type(newScale) == "number" and newScale > 0 and scale ~= newScale and not InCombatLockdown() then
+			if newScale and type(newScale) == "number" and newScale > 0 and scale ~= newScale and not icl then
 				sel:SetScale(newScale)
 			end
 

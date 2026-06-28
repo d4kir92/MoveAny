@@ -4,6 +4,7 @@ local CACHE_EMPTY = {}
 local framePointCache = {}
 local frameScaleCache = {}
 local elePointCache = {}
+local eleScaleCache = {}
 function MoveAny:DEBUG()
 	return MADEBUG
 end
@@ -52,6 +53,7 @@ function MoveAny:SetCP(name)
 	framePointCache = {}
 	frameScaleCache = {}
 	elePointCache = {}
+	eleScaleCache = {}
 end
 
 function MoveAny:GetValidProfileName(name)
@@ -456,6 +458,7 @@ end
 
 function MoveAny:ResetElement(name)
 	elePointCache[name] = nil
+	eleScaleCache[name] = nil
 	MoveAny:CheckDB("ResetElement")
 	if MoveAny:GetTab() and MoveAny:GetTab()["ELES"] then
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
@@ -486,25 +489,31 @@ function MoveAny:SetEleSize(key, sw, sh)
 end
 
 function MoveAny:GetEleScale(key)
+	local c = eleScaleCache[key]
+	if c ~= nil then return c end
 	MoveAny:CheckDB("GetEleScale")
 	MoveAny:GetTab()["ELES"]["SIZES"][key] = MoveAny:GetTab()["ELES"]["SIZES"][key] or {}
 	local scale = MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"]
 	if scale and type(scale) ~= "number" then
-		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = tonumber(scale)
+		scale = tonumber(scale)
+		MoveAny:GetTab()["ELES"]["SIZES"][key]["SCALE"] = scale
 	end
 
+	local result
 	if scale and tonumber(scale) > 0 then
-		return tonumber(scale)
+		result = tonumber(scale)
 	elseif scale then
 		MoveAny:MSG("[GetEleScale] SCALE <= 0, key: " .. tostring(key))
-
-		return 1
+		result = 1
+	else
+		result = 1
 	end
-
-	return 1
+	eleScaleCache[key] = result
+	return result
 end
 
 function MoveAny:SetEleScale(key, scale)
+	eleScaleCache[key] = nil
 	MoveAny:CheckDB("SetEleScale")
 	if scale == nil then
 		MoveAny:MSG("[SetEleScale] NO SCALE, key: " .. tostring(key))
