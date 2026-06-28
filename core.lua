@@ -30,6 +30,14 @@ local sethidden = {}
 local sethiddenSetup = {}
 local sethiddenParent = {}
 local oldsethiddenparent = {}
+local createFrameHookRegistered = false
+local function onCreateFrameHideCheck(_, _, parent)
+	if parent == nil then return end
+	if sethidden[parent] then
+		MoveAny:HideFrame(parent)
+	end
+end
+
 function MoveAny:HideFrame(frame)
 	sethidden[frame] = true
 	if sethiddenSetup[frame] == nil then
@@ -119,15 +127,10 @@ function MoveAny:HideFrame(frame)
 				end
 			)
 
-			hooksecurefunc(
-				"CreateFrame",
-				function(_, _, parent)
-					if sethidden[frame] == nil then return end
-					if parent and parent == frame then
-						MoveAny:HideFrame(frame)
-					end
-				end
-			)
+			if not createFrameHookRegistered then
+				createFrameHookRegistered = true
+				hooksecurefunc("CreateFrame", onCreateFrameHideCheck)
+			end
 		end
 	end
 
