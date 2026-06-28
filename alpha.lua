@@ -67,6 +67,7 @@ end
 
 function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
     if not child or not parentAlphaFrame then return end
+    if not child:IsMouseEnabled() then return end
     if hookedChildren[child] then return end
     hookedChildren[child] = true
     child:HookScript(

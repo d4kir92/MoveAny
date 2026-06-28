@@ -2475,7 +2475,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.8.316")
+	MoveAny:SetVersion(135994, "1.9.0")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -5897,8 +5897,6 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) and UIWidgetTopCenterContainerFrame then
-			print("HIER")
-			UIWidgetTopCenterContainerFrame:SetSize(36 * 5, 36 * 2)
 			MoveAny:RegisterWidget(
 				{
 					["name"] = "UIWidgetTopCenterContainerFrame",
