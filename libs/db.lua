@@ -1,5 +1,8 @@
 local AddonName, MoveAny = ...
 local MADEBUG = false
+local CACHE_EMPTY = {}
+local framePointCache = {}
+local frameScaleCache = {}
 function MoveAny:DEBUG()
 	return MADEBUG
 end
@@ -45,6 +48,8 @@ end
 function MoveAny:SetCP(name)
 	MoveAny:CheckDB("SetCP")
 	MATABPC["CURRENTPROFILE"] = name
+	framePointCache = {}
+	frameScaleCache = {}
 end
 
 function MoveAny:GetValidProfileName(name)
@@ -279,6 +284,14 @@ function MoveAny:SetEnabled(element, value)
 	if element ~= "MALOCK" then
 		MoveAny:EnableSave("SetEnabled", element, value, oldVal, false)
 	end
+
+	if element == "SAVEFRAMEPOSITION" then
+		framePointCache = {}
+	end
+
+	if element == "SAVEFRAMESCALE" then
+		frameScaleCache = {}
+	end
 end
 
 function MoveAny:IsEnabled(element, value, settings)
@@ -504,17 +517,24 @@ function MoveAny:SetEleScale(key, scale)
 end
 
 function MoveAny:GetFramePoint(key)
+	local c = framePointCache[key]
+	if c ~= nil then
+		if c == CACHE_EMPTY then return nil, nil, nil, nil, nil end
+
+		return c[1], nil, c[2], c[3], c[4]
+	end
+
 	MoveAny:CheckDB("GetFramePoint")
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key] = MoveAny:GetTab()["FRAMES"]["POINTS"][key] or {}
 	if MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then
-		local an = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["AN"]
-		--local pa = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PA"]
-		local re = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["RE"]
-		local px = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PX"]
-		local py = MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PY"]
+		local pt = MoveAny:GetTab()["FRAMES"]["POINTS"][key]
+		local an, re, px, py = pt["AN"], pt["RE"], pt["PX"], pt["PY"]
+		framePointCache[key] = {an, re, px, py}
 
 		return an, nil, re, px, py
 	end
+
+	framePointCache[key] = CACHE_EMPTY
 
 	return nil, nil, nil, nil, nil
 end
@@ -529,16 +549,28 @@ function MoveAny:SaveFramePointToDB(key, p1, p2, p3, p4, p5)
 		MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PX"] = p4
 		MoveAny:GetTab()["FRAMES"]["POINTS"][key]["PY"] = p5
 	end
+
+	framePointCache[key] = nil
 end
 
 function MoveAny:GetFrameScale(key)
+	local c = frameScaleCache[key]
+	if c ~= nil then
+		if c == CACHE_EMPTY then return nil end
+
+		return c
+	end
+
 	MoveAny:CheckDB("GetFrameScale")
 	MoveAny:GetTab()["FRAMES"]["SIZES"][key] = MoveAny:GetTab()["FRAMES"]["SIZES"][key] or {}
 	if MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
 		local scale = MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"]
+		frameScaleCache[key] = scale ~= nil and scale or CACHE_EMPTY
 
 		return scale
 	end
+
+	frameScaleCache[key] = CACHE_EMPTY
 
 	return nil
 end
@@ -549,6 +581,8 @@ function MoveAny:SetFrameScale(key, scale)
 	if MoveAny:IsEnabled("SAVEFRAMESCALE", true) then
 		MoveAny:GetTab()["FRAMES"]["SIZES"][key]["SCALE"] = scale
 	end
+
+	frameScaleCache[key] = nil
 end
 
 function MoveAny:GetMinimapTable()
