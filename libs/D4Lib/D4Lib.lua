@@ -131,22 +131,12 @@ function D4:After(time, callback, from)
     end
 
     if not ready then
-        D4:ExtraAfter(
-            time,
-            function()
-                callback()
-            end, from
-        )
+        D4:ExtraAfter(time, callback, from)
 
         return
     end
 
-    C_Timer.After(
-        time,
-        function()
-            callback()
-        end
-    )
+    C_Timer.After(time, callback)
 end
 
 function D4:GetCountAfter()
