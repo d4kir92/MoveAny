@@ -2468,14 +2468,6 @@ MoveAny:OnEvent(
 local hookedRep = false
 local hookedRepStatus = false
 function MoveAny:PlayerLogin()
-	MoveAny:InitActionBarLayouts()
-	if MoveAny.AnyActionbarEnabled and MoveAny:AnyActionbarEnabled() then
-		MoveAny:CustomBars()
-		for i, bar in pairs(MoveAny:GetAllActionBars()) do
-			MoveAny:UpdateActionBar(bar)
-		end
-	end
-
 	local function MAGetLockText()
 		if MoveAny:IsEnabled("LOCKWINDOWS", false) then return MoveAny:Trans("LID_UNLOCKWINDOWS") end
 
@@ -2513,6 +2505,14 @@ function MoveAny:PlayerLogin()
 				["dbkey"] = "SHOWMINIMAPBUTTON"
 			}
 		)
+	end
+
+	MoveAny:InitActionBarLayouts()
+	if MoveAny.AnyActionbarEnabled and MoveAny:AnyActionbarEnabled() then
+		MoveAny:CustomBars()
+		for i, bar in pairs(MoveAny:GetAllActionBars()) do
+			MoveAny:UpdateActionBar(bar)
+		end
 	end
 end
 
@@ -6475,9 +6475,12 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				GameTooltip:HookScript("OnShow", function()
-					MoveAny:ThinkTooltip()
-				end)
+				GameTooltip:HookScript(
+					"OnShow",
+					function()
+						MoveAny:ThinkTooltip()
+					end
+				)
 
 				MoveAny:ThinkTooltip()
 			end
