@@ -1625,8 +1625,8 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				dragframe.t:SetAlpha(0.8)
-				if dragframe.setup == nil and not InCombatLockdown() then
-					dragframe.setup = true
+				if dragframe.ma_setup == nil and not InCombatLockdown() then
+					dragframe.ma_setup = true
 					dragframe:EnableKeyboard(true)
 					dragframe:SetPropagateKeyboardInput(true)
 					dragframe:HookScript(

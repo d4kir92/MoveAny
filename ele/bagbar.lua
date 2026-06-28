@@ -21,6 +21,9 @@ local ma_bags_setsize_frame = {}
 local ma_bags_setpoint = {}
 local ma_setparent = {}
 local ma_show_guard = {}
+local ma_px = {}
+local ma_psh = {}
+local ma_ph = {}
 function MoveAny:UpdateBags()
 	if run then return end
 	run = true
@@ -119,15 +122,15 @@ function MoveAny:UpdateBags()
 					bb:SetParent(BagsBar)
 				end
 
-				if bb.setup == nil then
-					bb.setup = true
+				if bb.ma_setup == nil then
+					bb.ma_setup = true
 					hooksecurefunc(
 						bb,
 						"SetPoint",
 						function(sel, ...)
 							if ma_bags_setpoint[sel] then return end
 							ma_bags_setpoint[sel] = true
-							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", sel.ma_px, -(sel.ma_psh / 2 - sel.ma_ph / 2))
+							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", ma_px[sel], -(ma_psh[sel] / 2 - ma_ph[sel] / 2))
 							ma_bags_setpoint[sel] = false
 						end
 					)
@@ -139,9 +142,9 @@ function MoveAny:UpdateBags()
 					MoveAny:RegisterChildAlphaFrame(bb, BagsBar)
 				end
 
-				bb.ma_px = x
-				bb.ma_psh = sh
-				bb.ma_ph = h
+				ma_px[bb] = x
+				ma_psh[bb] = sh
+				ma_ph[bb] = h
 				bb:ClearAllPoints()
 				bb:SetPoint("TOPLEFT", BagsBar, "TOPLEFT", x, -(sh / 2 - h / 2))
 				x = x + w

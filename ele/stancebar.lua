@@ -27,8 +27,8 @@ function MoveAny:UpdateStanceBar()
 			for i = 1, cou do
 				local bb = _G["StanceButton" .. i]
 				if bb then
-					if bb.setup == nil then
-						bb.setup = true
+					if bb.ma_setup == nil then
+						bb.ma_setup = true
 						bb:SetSize(btnsize, btnsize)
 						bb:SetMovable(true)
 						if bb.SetUserPlaced and bb:IsMovable() then

@@ -47,8 +47,8 @@ function MoveAny:InitArenaEnemyFrames()
 				for i = 1, 5 do
 					local bb = _G["ArenaEnemyFrame" .. i]
 					if bb then
-						if bb.setup == nil then
-							bb.setup = true
+						if bb.ma_setup == nil then
+							bb.ma_setup = true
 							hooksecurefunc(
 								bb,
 								"SetAlpha",
@@ -156,8 +156,8 @@ function MoveAny:InitArenaPrepFrames()
 				for i = 1, 5 do
 					local bb = _G["ArenaPrepFrame" .. i]
 					if bb then
-						if bb.setup == nil then
-							bb.setup = true
+						if bb.ma_setup == nil then
+							bb.ma_setup = true
 							hooksecurefunc(
 								bb,
 								"SetAlpha",

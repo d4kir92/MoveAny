@@ -1,5 +1,6 @@
 local _, MoveAny = ...
 local ma_db_setpoint = {}
+local ma_buffsetpoint = {}
 local ma_enablemouse = {}
 local ma_debuffsetpoint = {}
 local ma_setpoint_bbtn = {}
@@ -219,8 +220,8 @@ function MoveAny:InitBuffBar()
 			BuffFrame,
 			"SetPoint",
 			function(sel, ...)
-				if sel.ma_buffsetpoint then return end
-				sel.ma_buffsetpoint = true
+				if ma_buffsetpoint[sel] then return end
+				ma_buffsetpoint[sel] = true
 				sel:SetMovable(true)
 				if sel.SetUserPlaced and sel:IsMovable() then
 					sel:SetUserPlaced(false)
@@ -228,7 +229,7 @@ function MoveAny:InitBuffBar()
 
 				sel:SetParent(MABuffBar)
 				MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
-				sel.ma_buffsetpoint = false
+				ma_buffsetpoint[sel] = false
 			end
 		)
 
