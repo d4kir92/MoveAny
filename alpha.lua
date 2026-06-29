@@ -71,6 +71,8 @@ function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
     if child == UIParent then return end
     if child == MoveAny:GetMainPanel() then return end
     if hookedChildren[child] then return end
+    if child:IsProtected() then return end
+    if child.IsForbidden and child:IsForbidden() then return end
     hookedChildren[child] = true
     child:HookScript(
         "OnEnter",
