@@ -893,7 +893,59 @@ function MoveAny:InitActionBar1()
 	if build ~= "RETAIL" and build ~= "TBC" and build ~= "MISTS" then
 		local frame = _G["MAActionBar" .. 1]
 		if frame then
-			frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
+			for i = 1, 12 do
+				frame:SetFrameRef("ActionButton" .. i, _G["ActionButton" .. i])
+			end
+
+			if build ~= "CLASSIC" then
+				for i = 1, 6 do
+					local ob = _G["OverrideActionBarButton" .. i]
+					if ob then
+						frame:SetFrameRef("OverrideActionBarButton" .. i, ob)
+					end
+				end
+			end
+
+			frame:Execute([[
+				buttons = table.new()
+				for i = 1, 12 do
+					buttons[i] = self:GetFrameRef('ActionButton'..i)
+				end
+				overridebuttons = table.new()
+				for i = 1, 6 do
+					overridebuttons[i] = self:GetFrameRef('OverrideActionBarButton'..i)
+				end
+			]])
+			local showButtons
+			if build == "CLASSIC" then
+				showButtons = [[
+					for i = 1, 12 do
+						local btn = buttons[i]
+						if btn then btn:Show() end
+					end
+				]]
+			else
+				showButtons = [[
+					if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
+						for i = 1, 12 do
+							local btn = overridebuttons[i]
+							if btn and btn:GetAttribute('statehidden') then
+								btn:Hide()
+							else
+								btn = buttons[i]
+								if btn then btn:Show() end
+							end
+						end
+					else
+						for i = 1, 12 do
+							local btn = buttons[i]
+							if btn then btn:Show() end
+						end
+					end
+				]]
+			end
+
+			frame:SetAttribute("_onstate-page", [[
 				if newstate == "possess" or newstate == "dragon" or newstate == "11" then
 					if HasVehicleActionBar() then
 						newstate = GetVehicleBarIndex()
@@ -913,8 +965,8 @@ function MoveAny:InitActionBar1()
 					end
 				end
 
-				self:SetAttribute("actionpage", newstate);
-			]])
+				self:SetAttribute("actionpage", newstate)
+			]] .. showButtons)
 			--[[
 				https://wowwiki-archive.fandom.com/wiki/API_GetBonusBarOffset
 				Offsets:
@@ -937,67 +989,6 @@ function MoveAny:InitActionBar1()
 
 			barParts[#barParts + 1] = "[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
 			RegisterStateDriver(frame, "page", table.concat(barParts))
-			local _onAttributeChanged = [[
-		 		if name ~= 'statehidden' then return end
-				if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
-					for i = 1, 12 do
-						local btn = overridebuttons[i]
-						if btn and btn:GetAttribute('statehidden') then
-							btn:Hide()
-						else
-							btn = buttons[i]
-							if btn then
-								btn:Show()
-							end
-						end
-					end
-				else
-					for i = 1, 12 do
-						local btn = buttons[i]
-						if btn then							
-							btn:Show()							
-						end
-					end
-				end
-			]]
-			if build == "CLASSIC" then
-				_onAttributeChanged = [[
-					if name ~= 'statehidden' then return end
-					for i = 1, 12 do
-						local btn = buttons[i]
-						if btn then
-							btn:Show()
-						end
-					end
-				]]
-			end
-
-			local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
-			for i = 1, 12 do
-				local button = _G["ActionButton" .. i]
-				AttributeChangedFrame:SetFrameRef("ActionButton" .. i, button)
-			end
-
-			for i = 1, 6 do
-				local overrideButton = _G["OverrideActionBarButton" .. i]
-				if overrideButton then
-					AttributeChangedFrame:SetFrameRef("OverrideActionBarButton" .. i, overrideButton)
-				end
-			end
-
-			AttributeChangedFrame:Execute([[
-				buttons = table.new()
-				for i = 1, 12 do
-					buttons[i] = self:GetFrameRef('ActionButton'..i)
-				end
-
-				overridebuttons = table.new()
-				for j = 1, 12 do
-					overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
-				end
-			]])
-			AttributeChangedFrame:SetAttribute("_onattributechanged", _onAttributeChanged)
-			RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
 		end
 	end
 end
