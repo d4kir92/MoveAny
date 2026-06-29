@@ -891,7 +891,8 @@ end
 function MoveAny:InitActionBar1()
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 		local frame = _G["MAActionBar" .. 1]
-		frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
+		if frame then
+			frame:SetAttribute("_onstate-page", [[ -- arguments: self, stateid, newstate
 					if newstate == "possess" or newstate == "dragon" or newstate == "11" then
 						if HasVehicleActionBar() then
 							newstate = GetVehicleBarIndex()
@@ -913,8 +914,8 @@ function MoveAny:InitActionBar1()
 
 					self:SetAttribute("actionpage", newstate);
 				]])
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
-			--[[
+			if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
+				--[[
 				https://wowwiki-archive.fandom.com/wiki/API_GetBonusBarOffset
 				Offsets:
 				Caster: 0 -> 6
@@ -923,23 +924,23 @@ function MoveAny:InitActionBar1()
 				Bear: 3 -> 9
 				Moonkin: 4 -> 10
 			]]
-			local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;"
-			for i = 6, 2, -1 do
-				bars = bars .. "[bonusbar:5,bar:" .. i .. "]" .. i .. ";[bonusbar:4,bar:" .. i .. "]" .. i .. ";[bonusbar:3,bar:" .. i .. "]" .. i .. ";[bonusbar:2,bar:" .. i .. "]" .. i .. ";[bonusbar:1,bar:" .. i .. "]" .. i .. ";"
+				local bars = "[overridebar]" .. GetOverrideBarIndex() .. ";[shapeshift]" .. GetTempShapeshiftBarIndex() .. ";[vehicleui]" .. GetVehicleBarIndex() .. ";[possessbar]16;"
+				for i = 6, 2, -1 do
+					bars = bars .. "[bonusbar:5,bar:" .. i .. "]" .. i .. ";[bonusbar:4,bar:" .. i .. "]" .. i .. ";[bonusbar:3,bar:" .. i .. "]" .. i .. ";[bonusbar:2,bar:" .. i .. "]" .. i .. ";[bonusbar:1,bar:" .. i .. "]" .. i .. ";"
+				end
+
+				local _, class = UnitClass("player")
+				if class == "DRUID" and MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
+					bars = bars .. "[bonusbar:1,stealth]8;"
+				end
+
+				bars = bars .. "[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
+				RegisterStateDriver(frame, "page", bars)
+			else
+				MoveAny:MSG("MISSING EXPANSION")
 			end
 
-			local _, class = UnitClass("player")
-			if class == "DRUID" and MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
-				bars = bars .. "[bonusbar:1,stealth]8;"
-			end
-
-			bars = bars .. "[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
-			RegisterStateDriver(frame, "page", bars)
-		else
-			MoveAny:MSG("MISSING EXPANSION")
-		end
-
-		local _onAttributeChanged = [[
+			local _onAttributeChanged = [[
 		 		if name ~= 'statehidden' then return end
 				if HasOverrideActionBar() or HasVehicleActionBar() or HasTempShapeshiftActionBar() then
 					for i = 1, 12 do
@@ -969,8 +970,8 @@ function MoveAny:InitActionBar1()
 					end
 				end
 			]]
-		if MoveAny:GetWoWBuild() == "CLASSIC" then
-			_onAttributeChanged = [[			
+			if MoveAny:GetWoWBuild() == "CLASSIC" then
+				_onAttributeChanged = [[			
 					if name ~= 'statehidden' then return end
 					for i = 1, 12 do
 						local btn = buttons[i]
@@ -982,22 +983,22 @@ function MoveAny:InitActionBar1()
 						end
 					end
 				]]
-		end
-
-		local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
-		for i = 1, 12 do
-			local button = _G["ActionButton" .. i]
-			AttributeChangedFrame:SetFrameRef("ActionButton" .. i, button)
-		end
-
-		for i = 1, 6 do
-			local overrideButton = _G["OverrideActionBarButton" .. i]
-			if overrideButton then
-				AttributeChangedFrame:SetFrameRef("OverrideActionBarButton" .. i, overrideButton)
 			end
-		end
 
-		AttributeChangedFrame:Execute([[
+			local AttributeChangedFrame = CreateFrame("Frame", nil, MoveAny:GetMainPanel(), "SecureHandlerAttributeTemplate")
+			for i = 1, 12 do
+				local button = _G["ActionButton" .. i]
+				AttributeChangedFrame:SetFrameRef("ActionButton" .. i, button)
+			end
+
+			for i = 1, 6 do
+				local overrideButton = _G["OverrideActionBarButton" .. i]
+				if overrideButton then
+					AttributeChangedFrame:SetFrameRef("OverrideActionBarButton" .. i, overrideButton)
+				end
+			end
+
+			AttributeChangedFrame:Execute([[
 				buttons = table.new()
 				for i = 1, 12 do
 					buttons[i] = self:GetFrameRef('ActionButton'..i)
@@ -1008,7 +1009,8 @@ function MoveAny:InitActionBar1()
 					overridebuttons[j] = self:GetFrameRef('OverrideActionBarButton'..j)
 				end
 			]])
-		AttributeChangedFrame:SetAttribute("_onattributechanged", _onAttributeChanged)
-		RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
+			AttributeChangedFrame:SetAttribute("_onattributechanged", _onAttributeChanged)
+			RegisterStateDriver(AttributeChangedFrame, "visibility", "[overridebar][shapeshift][vehicleui][possessbar] show; hide")
+		end
 	end
 end

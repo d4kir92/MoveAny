@@ -100,8 +100,16 @@ function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
         overlay:EnableMouse(true)
         overlay:SetPropagateMouseClicks(true)
         local onEnter, onLeave = makeAlphaEnterLeave(parentAlphaFrame)
-        overlay:SetScript("OnEnter", onEnter)
-        overlay:SetScript("OnLeave", onLeave)
+        overlay:SetScript("OnEnter", function(self)
+            onEnter()
+            local fn = child:GetScript("OnEnter")
+            if fn then pcall(fn, child) end
+        end)
+        overlay:SetScript("OnLeave", function(self)
+            onLeave()
+            local fn = child:GetScript("OnLeave")
+            if fn then pcall(fn, child) end
+        end)
 
         return
     end
