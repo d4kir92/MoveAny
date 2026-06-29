@@ -91,18 +91,9 @@ function MoveAny:UpdateStanceBar()
 	end
 end
 
-local stanceEventFrame = CreateFrame("Frame")
-MoveAny:RegisterEvent(stanceEventFrame, "UPDATE_SHAPESHIFT_FORMS")
-MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ENTERING_WORLD")
-MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ALIVE")
-MoveAny:OnEvent(
-	stanceEventFrame,
-	function(sel, event)
-		MoveAny:UpdateStanceBar()
-	end, "UpdateStanceBar"
-)
-
 function MoveAny:InitStanceBar()
+	local enabled, forced = MoveAny:IsInEditModeEnabled("StanceBarAnchor")
+	if enabled and not forced then return end
 	if MoveAny:IsEnabled("STANCEBARANCHOR", false) then
 		if not StanceBarAnchor then
 			StanceBarAnchor = CreateFrame("Frame", "StanceBarAnchor", MoveAny:GetMainPanel())
@@ -167,6 +158,17 @@ function MoveAny:InitStanceBar()
 		else
 			MoveAny:UpdateStanceBar()
 		end
+
+		local stanceEventFrame = CreateFrame("Frame")
+		MoveAny:RegisterEvent(stanceEventFrame, "UPDATE_SHAPESHIFT_FORMS")
+		MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ENTERING_WORLD")
+		MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ALIVE")
+		MoveAny:OnEvent(
+			stanceEventFrame,
+			function(sel, event)
+				MoveAny:UpdateStanceBar()
+			end, "UpdateStanceBar"
+		)
 
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(StanceBar, "StanceBar")
