@@ -103,18 +103,18 @@ MoveAny:OnEvent(
 )
 
 function MoveAny:InitStanceBar()
-	if not StanceBarAnchor then
-		StanceBarAnchor = CreateFrame("Frame", "StanceBarAnchor", MoveAny:GetMainPanel())
-		StanceBarAnchor:SetSize(btnsize, btnsize)
-		StanceBarAnchor:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 120)
-	end
+	if MoveAny:IsEnabled("STANCEBARANCHOR", false) then
+		if not StanceBarAnchor then
+			StanceBarAnchor = CreateFrame("Frame", "StanceBarAnchor", MoveAny:GetMainPanel())
+			StanceBarAnchor:SetSize(btnsize, btnsize)
+			StanceBarAnchor:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 120)
+		end
 
-	if not StanceBar then
-		StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
-		StanceBar:SetSize(btnsize, btnsize)
-	end
+		if not StanceBar then
+			StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
+			StanceBar:SetSize(btnsize, btnsize)
+		end
 
-	if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
 		local setStanceBarPoint = false
 		hooksecurefunc(
 			StanceBar,
