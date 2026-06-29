@@ -65,35 +65,50 @@ function MoveAny:AddAlphaFrame(frame)
     )
 end
 
+local function makeAlphaEnterLeave(parentAlphaFrame)
+    local onEnter = function()
+        if not alphasReady then return end
+        parentAlphaFrame:SetAlpha(1)
+        MoveAny:SetMouseEleAlpha(parentAlphaFrame, parentAlphaFrame)
+    end
+
+    local onLeave = function()
+        if not alphasReady then return end
+        local prev = lastEle
+        lastEle = nil
+        if prev then
+            MoveAny:UpdateAlpha(prev, nil)
+        end
+    end
+
+    return onEnter, onLeave
+end
+
 function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
     if not child or not parentAlphaFrame then return end
     if not child:IsMouseEnabled() then return end
     if child == UIParent then return end
     if child == MoveAny:GetMainPanel() then return end
     if hookedChildren[child] then return end
-    if child:IsProtected() then return end
     if child.IsForbidden and child:IsForbidden() then return end
     hookedChildren[child] = true
-    child:HookScript(
-        "OnEnter",
-        function()
-            if not alphasReady then return end
-            parentAlphaFrame:SetAlpha(1)
-            MoveAny:SetMouseEleAlpha(parentAlphaFrame, parentAlphaFrame)
-        end
-    )
+    if child.IsProtected and child:IsProtected() then
+        if not UIParent.SetPropagateMouseClicks then return end
+        local overlay = CreateFrame("Frame", nil, child)
+        overlay:SetAllPoints()
+        overlay:SetAlpha(0)
+        overlay:EnableMouse(true)
+        overlay:SetPropagateMouseClicks(true)
+        local onEnter, onLeave = makeAlphaEnterLeave(parentAlphaFrame)
+        overlay:SetScript("OnEnter", onEnter)
+        overlay:SetScript("OnLeave", onLeave)
 
-    child:HookScript(
-        "OnLeave",
-        function()
-            if not alphasReady then return end
-            local prev = lastEle
-            lastEle = nil
-            if prev then
-                MoveAny:UpdateAlpha(prev, nil)
-            end
-        end
-    )
+        return
+    end
+
+    local onEnter, onLeave = makeAlphaEnterLeave(parentAlphaFrame)
+    child:HookScript("OnEnter", onEnter)
+    child:HookScript("OnLeave", onLeave)
 end
 
 function MoveAny:IsAlphaFrame(frame)
