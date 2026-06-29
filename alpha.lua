@@ -92,56 +92,6 @@ function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
     if hookedChildren[child] then return end
     if child.IsForbidden and child:IsForbidden() then return end
     hookedChildren[child] = true
-    if child.IsProtected and child:IsProtected() then
-        if not UIParent.SetPropagateMouseClicks then return end
-        local overlay = CreateFrame("Frame", nil, child)
-        overlay:SetAllPoints()
-        overlay:SetAlpha(0)
-        overlay:SetPropagateMouseClicks(true)
-        overlay:EnableMouse(not InCombatLockdown())
-        overlay:RegisterEvent("PLAYER_REGEN_DISABLED")
-        overlay:RegisterEvent("PLAYER_REGEN_ENABLED")
-        overlay:SetScript(
-            "OnEvent",
-            function(sel, event)
-                print(event)
-                pcall(
-                    function()
-                        print(sel)
-                        sel:EnableMouse(event == "PLAYER_REGEN_ENABLED")
-                    end
-                )
-            end
-        )
-
-        local onEnter, onLeave = makeAlphaEnterLeave(parentAlphaFrame)
-        overlay:SetScript(
-            "OnEnter",
-            function(sel)
-                onEnter()
-                local fn = child:GetScript("OnEnter")
-                if fn then
-                    local error = pcall(fn, child)
-                    print(error)
-                end
-            end
-        )
-
-        overlay:SetScript(
-            "OnLeave",
-            function(sel)
-                onLeave()
-                local fn = child:GetScript("OnLeave")
-                if fn then
-                    local error = pcall(fn, child)
-                    print(error)
-                end
-            end
-        )
-
-        return
-    end
-
     local onEnter, onLeave = makeAlphaEnterLeave(parentAlphaFrame)
     child:HookScript("OnEnter", onEnter)
     child:HookScript("OnLeave", onLeave)
