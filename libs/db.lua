@@ -420,7 +420,12 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 		local systemFrame = frame
 		local systemInfo = frame.systemInfo
 		if frame.GetRealEle then
-			systemFrame = MABuffBar:GetRealEle()
+			if MABuffBar then
+				systemFrame = MABuffBar:GetRealEle()
+			elseif BuffFrame then
+				systemFrame = BuffFrame
+			end
+
 			systemInfo = systemFrame.systemInfo
 		end
 
