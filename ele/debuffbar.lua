@@ -43,6 +43,7 @@ function MoveAny:InitDebuffBar()
 	local buff = BuffFrame or DebuffFrame
 	if MoveAny:IsEnabled("DEBUFFS", false) and DebuffFrame == nil then
 		MADebuffBar = CreateFrame("Frame", "MADebuffBar", MoveAny:GetMainPanel())
+		MADebuffBar:EnableMouse(false)
 		local sw1, sh1 = buff:GetSize()
 		MADebuffBar:SetSize(sw1, sh1)
 		MADebuffBar:SetPoint(buff:GetPoint())

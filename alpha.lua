@@ -43,6 +43,7 @@ end
 function MoveAny:AddAlphaFrame(frame)
     tinsert(MAAF, frame)
     MAAFS[frame] = true
+    if not frame:IsMouseEnabled() then return end
     frame:HookScript(
         "OnEnter",
         function()
