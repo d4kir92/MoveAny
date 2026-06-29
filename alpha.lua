@@ -41,7 +41,7 @@ function MoveAny:GetAlphaFrames()
 end
 
 function MoveAny:AddAlphaFrame(frame)
-    tinsert(MAAF, frame)
+    MAAF[#MAAF + 1] = frame
     MAAFS[frame] = true
     if not frame:IsMouseEnabled() then return end
     frame:HookScript(

@@ -971,7 +971,7 @@ function MoveAny:InitActionBar1()
 				end
 			]]
 			if MoveAny:GetWoWBuild() == "CLASSIC" then
-				_onAttributeChanged = [[			
+				_onAttributeChanged = [[	
 					if name ~= 'statehidden' then return end
 					for i = 1, 12 do
 						local btn = buttons[i]
