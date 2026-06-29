@@ -97,19 +97,47 @@ function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
         local overlay = CreateFrame("Frame", nil, child)
         overlay:SetAllPoints()
         overlay:SetAlpha(0)
-        overlay:EnableMouse(true)
         overlay:SetPropagateMouseClicks(true)
+        overlay:EnableMouse(not InCombatLockdown())
+        overlay:RegisterEvent("PLAYER_REGEN_DISABLED")
+        overlay:RegisterEvent("PLAYER_REGEN_ENABLED")
+        overlay:SetScript(
+            "OnEvent",
+            function(sel, event)
+                print(event)
+                pcall(
+                    function()
+                        print(sel)
+                        sel:EnableMouse(event == "PLAYER_REGEN_ENABLED")
+                    end
+                )
+            end
+        )
+
         local onEnter, onLeave = makeAlphaEnterLeave(parentAlphaFrame)
-        overlay:SetScript("OnEnter", function(self)
-            onEnter()
-            local fn = child:GetScript("OnEnter")
-            if fn then pcall(fn, child) end
-        end)
-        overlay:SetScript("OnLeave", function(self)
-            onLeave()
-            local fn = child:GetScript("OnLeave")
-            if fn then pcall(fn, child) end
-        end)
+        overlay:SetScript(
+            "OnEnter",
+            function(sel)
+                onEnter()
+                local fn = child:GetScript("OnEnter")
+                if fn then
+                    local error = pcall(fn, child)
+                    print(error)
+                end
+            end
+        )
+
+        overlay:SetScript(
+            "OnLeave",
+            function(sel)
+                onLeave()
+                local fn = child:GetScript("OnLeave")
+                if fn then
+                    local error = pcall(fn, child)
+                    print(error)
+                end
+            end
+        )
 
         return
     end
