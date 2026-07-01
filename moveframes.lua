@@ -89,7 +89,7 @@ function MoveAny:UpdateCurrentWindow()
 			end
 
 			updatingFrame = false
-			MoveAny:After(0.033, MoveAny.UpdateCurrentWindow, "UpdateCurrentWindow")
+			MoveAny:After(0.0033, MoveAny.UpdateCurrentWindow, "UpdateCurrentWindow")
 		end
 	end
 end
@@ -424,7 +424,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 										end
 									end
 
-									MoveAny:After(0.033, fm.UpdatePreview, "UpdatePreview")
+									MoveAny:After(0.0033, fm.UpdatePreview, "UpdatePreview")
 								end
 							end
 						end
