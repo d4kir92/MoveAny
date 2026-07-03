@@ -69,6 +69,8 @@ function D4:FoundHigher(name)
 end
 
 function D4:IsHigherVersion(ov1, ov2, ov3, cv1, cv2, cv3)
+    ov1, ov2, ov3 = tonumber(ov1) or 0, tonumber(ov2) or 0, tonumber(ov3) or 0
+    cv1, cv2, cv3 = tonumber(cv1) or 0, tonumber(cv2) or 0, tonumber(cv3) or 0
     if ov1 > cv1 then
         return true
     elseif ov1 == cv1 then
