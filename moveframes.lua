@@ -739,31 +739,7 @@ end
 function MoveAny:MoveParent(receive, from)
 	receive:SetMovable(true)
 	receive:EnableMouse(true)
-	from:HookScript(
-		"OnMouseDown",
-		function(sel, button)
-			if button == "LeftButton" then
-				pcall(
-					function()
-						receive:StartMoving()
-					end
-				)
-			end
-		end
-	)
-
-	from:HookScript(
-		"OnMouseUp",
-		function(sel, button)
-			if button == "LeftButton" then
-				pcall(
-					function()
-						receive:StopMovingOrSizing()
-					end
-				)
-			end
-		end
-	)
+	from:EnableMouse(false)
 end
 
 local allowedFrameTypes = {}
