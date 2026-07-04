@@ -158,6 +158,19 @@ end
 
 local ma_setpoint_ab = false
 local insideUpdateActionBar = {}
+local pendingBarUpdate = {}
+local function ScheduleUpdateActionBar(bar, from)
+	if pendingBarUpdate[bar] then return end
+	pendingBarUpdate[bar] = true
+	C_Timer.After(
+		0,
+		function()
+			pendingBarUpdate[bar] = false
+			MoveAny:UpdateActionBar(bar, from)
+		end
+	)
+end
+
 local HiddenButtons = {}
 local hookedHidden = {}
 function MoveAny:SetupHide(btn)
@@ -811,9 +824,7 @@ function MoveAny:CustomBars()
 					"SetPoint",
 					function(sel, ...)
 						if ma_setpoint_ab then return end
-						ma_setpoint_ab = true
-						MoveAny:UpdateActionBar(_G[name], "BTN SetPoint")
-						ma_setpoint_ab = false
+						ScheduleUpdateActionBar(_G[name], "BTN SetPoint")
 					end
 				)
 
@@ -822,9 +833,7 @@ function MoveAny:CustomBars()
 					"SetParent",
 					function(sel, ...)
 						if ma_setpoint_ab then return end
-						ma_setpoint_ab = true
-						MoveAny:UpdateActionBar(_G[name], "BTN SetParent")
-						ma_setpoint_ab = false
+						ScheduleUpdateActionBar(_G[name], "BTN SetParent")
 					end
 				)
 
@@ -833,9 +842,7 @@ function MoveAny:CustomBars()
 					"SetSize",
 					function(sel, ...)
 						if ma_setpoint_ab then return end
-						ma_setpoint_ab = true
-						MoveAny:UpdateActionBar(_G[name], "BTN SetSize")
-						ma_setpoint_ab = false
+						ScheduleUpdateActionBar(_G[name], "BTN SetSize")
 					end
 				)
 
