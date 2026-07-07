@@ -168,6 +168,11 @@ function MoveAny:MAFrameStopMoving(frameObj, name)
 			fM:StopMovingOrSizing()
 			fM:SetUserPlaced(false)
 		end
+
+		local scale = frameObj:GetScale()
+		if scale and scale > 0 then
+			fM:SetScale(scale)
+		end
 	end
 
 	currentWindowName = nil
