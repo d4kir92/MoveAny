@@ -745,7 +745,7 @@ raceAtlasFix["earthendwarf"] = "earthen"
 if false then
     for i, v in ipairs(C_Texture.GetAtlasElements()) do
         if v:lower():find("raceicon") and (v:lower():find("dwarf") or v:lower():find("dwarf")) then
-            print("Möglicher Key: " .. v)
+            D4:MSG("Möglicher Key: " .. v)
         end
     end
 end
@@ -1226,19 +1226,19 @@ function D4:EasyFind(word, exact)
     for i, v in pairs(_G) do
         if exact then
             if i and type(i) == "string" and string.lower(i) == word then
-                print("i", i, "v", v)
+                D4:MSG("i", i, "v", v)
             end
 
             if v and type(v) == "string" and string.lower(v) == word then
-                print("i", i, "v", v)
+                D4:MSG("i", i, "v", v)
             end
         else
             if i and type(i) == "string" and string.find(string.lower(i), word, 1, true) then
-                print("i", i, "v", v)
+                D4:MSG("i", i, "v", v)
             end
 
             if v and type(v) == "string" and string.find(string.lower(v), word, 1, true) then
-                print("i", i, "v", v)
+                D4:MSG("i", i, "v", v)
             end
         end
     end
@@ -1252,7 +1252,7 @@ function D4:FindInGlobal(name, exact, ...)
             for i, v in pairs(_G) do
                 if exact then
                     if v and type(v) == "string" and v == name then
-                        print("i", i, "v", v)
+                        D4:MSG("i", i, "v", v)
                     end
                 else
                     if v and type(v) == "string" and string.find(v, name, 1, true) then
@@ -1266,10 +1266,10 @@ function D4:FindInGlobal(name, exact, ...)
                             end
 
                             if all then
-                                print("v", v, "i", i)
+                                D4:MSG("v", v, "i", i)
                             end
                         else
-                            print("v", v, "i", i)
+                            D4:MSG("v", v, "i", i)
                         end
                     end
                 end
