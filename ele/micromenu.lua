@@ -140,25 +140,7 @@ function MoveAny:InitMicroMenu()
 			)
 		end
 
-		local MBTNS = {}
-		if MICRO_BUTTONS == nil then
-			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-		else
-			for i, v in pairs(MICRO_BUTTONS) do
-				if v ~= "SocialsMicroButton" then
-					tinsert(MBTNS, v)
-				end
-			end
-		end
-
-		if MoveAny:GetWoWBuild() == "RETAIL" then
-			MBTNS = {"CharacterMicroButton", "ProfessionMicroButton", "PlayerSpellsMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "HousingMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "HelpMicroButton", "MainMenuMicroButton"}
-		elseif MoveAny:GetWoWBuild() == "CATA" then
-			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "CollectionsMicroButton", "PVPMicroButton", "LFGMicroButton", "EJMicroButton", "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
-		elseif MoveAny:GetWoWBuild() == "MISTS" then
-			MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton", "PVPMicroButton", "LFGMicroButton", "CollectionsMicroButton", "EJMicroButton", "StoreMicroButton", "MainMenuMicroButton"}
-		end
-
+		local MBTNS = MoveAny:GetMicroMenuButtons()
 		if MoveAny:GetWoWBuild() == "CLASSIC" then
 			for i, v in pairs(MBTNS) do
 				if v == "LFGMicroButton" then

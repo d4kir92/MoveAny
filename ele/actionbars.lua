@@ -326,7 +326,7 @@ function MoveAny:UpdateActionBar(bar, from)
 						MoveAny:HideBtn(SocialsMicroButton)
 					end
 
-					if rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+					if rows == 3 or rows == 9 then
 						if HelpMicroButton then
 							MoveAny:ShowBtn(HelpMicroButton)
 						end
@@ -334,21 +334,21 @@ function MoveAny:UpdateActionBar(bar, from)
 						if MainMenuMicroButton then
 							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
-					elseif rows == 11 or rows == 1 then
+
+						if StoreMicroButton then
+							MoveAny:ShowBtn(StoreMicroButton)
+						end
+					elseif rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 5 or rows == 6 or rows == 7 or rows == 8 then
 						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
+							MoveAny:ShowBtn(HelpMicroButton)
 						end
 
 						if MainMenuMicroButton then
 							MoveAny:ShowBtn(MainMenuMicroButton)
 						end
-					elseif rows == 10 or rows == 5 or rows == 2 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
 
-						if MainMenuMicroButton then
-							MoveAny:HideBtn(MainMenuMicroButton)
+						if StoreMicroButton then
+							MoveAny:HideBtn(StoreMicroButton)
 						end
 					else
 						if HelpMicroButton then
