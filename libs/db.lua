@@ -363,11 +363,16 @@ function MoveAny:SetEleOption(element, key, value)
 		return value
 	end
 
+	local ignoreReload = false
+	if string.find(key, "ALPHA", 1, true) then
+		ignoreReload = true
+	end
+
 	MoveAny:CheckDB("SetEleOption")
 	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
-	MoveAny:EnableSave("SetEleOption", key, true, false, false)
+	MoveAny:EnableSave("SetEleOption", key, true, false, ignoreReload)
 	if MoveAny.InvalidateAlphaOptionsCache then
 		MoveAny:InvalidateAlphaOptionsCache(element)
 	end
