@@ -288,7 +288,7 @@ D4:OnEvent(
     fSecure,
     function()
         xpcall(
-            function(call)
+            function(calls)
                 for i, func in pairs(calls) do
                     func()
                 end
