@@ -2475,7 +2475,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.18")
+	MoveAny:SetVersion(135994, "1.9.19")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4453,7 +4453,19 @@ function MoveAny:LoadAddon()
 				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
 					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
 				else
-					ExtraAbilityContainer:SetSize(180, 100)
+					local setParent = false
+					hooksecurefunc(
+						ExtraAbilityContainer,
+						"SetParent",
+						function(sel, parent)
+							if setParent then return end
+							setParent = true
+							sel:SetParent(MoveAny:GetMainPanel())
+							setParent = false
+						end
+					)
+
+					ExtraAbilityContainer:SetParent(MoveAny:GetMainPanel())
 					MoveAny:RegisterWidget(
 						{
 							["name"] = "ExtraAbilityContainer",
