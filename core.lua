@@ -187,7 +187,7 @@ function MoveAny:SetMAUIPAlpha(alpha)
 end
 
 local uiscalecvar = CreateFrame("Frame")
---MoveAny:RegisterEvent(uiscalecvar, "CVAR_UPDATE")
+MoveAny:RegisterEvent(uiscalecvar, "CVAR_UPDATE")
 MoveAny:OnEvent(
 	uiscalecvar,
 	function(self, event, target, value)

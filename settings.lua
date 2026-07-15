@@ -2475,7 +2475,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.19")
+	MoveAny:SetVersion(135994, "1.9.20")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -4448,78 +4448,83 @@ function MoveAny:LoadAddon()
 			)
 		end
 
-		if ExtraAbilityContainer then
-			if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
-				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
-					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
-				else
-					local setParent = false
-					hooksecurefunc(
-						ExtraAbilityContainer,
-						"SetParent",
-						function(sel, parent)
-							if setParent then return end
-							setParent = true
-							sel:SetParent(MoveAny:GetMainPanel())
-							setParent = false
+		C_Timer.After(
+			0,
+			function()
+				if ExtraAbilityContainer then
+					if MoveAny:IsEnabled("EXTRAABILITYCONTAINER", false) then
+						if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+							MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
+						else
+							local setParent = false
+							hooksecurefunc(
+								ExtraAbilityContainer,
+								"SetParent",
+								function(sel, parent)
+									if setParent then return end
+									setParent = true
+									sel:SetParent(MoveAny:GetMainPanel())
+									setParent = false
+								end
+							)
+
+							ExtraAbilityContainer:SetParent(MoveAny:GetMainPanel())
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "ExtraAbilityContainer",
+									["lstr"] = "LID_EXTRAABILITYCONTAINER",
+									["userplaced"] = true
+								}
+							)
 						end
-					)
+					end
+				elseif ExtraActionBarFrame then
+					if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
+						if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+							MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
+						else
+							ExtraActionBarFrame:SetParent(UIParent)
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "ExtraActionBarFrame",
+									["lstr"] = "LID_ExtraActionBarFrame",
+									["userplaced"] = true
+								}
+							)
 
-					ExtraAbilityContainer:SetParent(MoveAny:GetMainPanel())
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "ExtraAbilityContainer",
-							["lstr"] = "LID_EXTRAABILITYCONTAINER",
-							["userplaced"] = true
-						}
-					)
-				end
-			end
-		elseif ExtraActionBarFrame then
-			if MoveAny:IsEnabled("ExtraActionBarFrame", true) then
-				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
-					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
-				else
-					ExtraActionBarFrame:SetParent(UIParent)
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "ExtraActionBarFrame",
-							["lstr"] = "LID_ExtraActionBarFrame",
-							["userplaced"] = true
-						}
-					)
-
-					MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
-				end
-			end
-		elseif ExtraActionButton1 then
-			if MoveAny:IsEnabled("ExtraActionButton1", true) then
-				if MoveAny:IsEnabledBartender4("ExtraActionBar") then
-					MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
-				else
-					local setParent = false
-					hooksecurefunc(
-						ExtraActionButton1,
-						"SetParent",
-						function(sel, parent)
-							if setParent then return end
-							setParent = true
-							sel:SetParent(UIParent)
-							setParent = false
+							MoveAny:SetPoint(ExtraActionBarFrame, "CENTER", MainMenuBar, "CENTER", 0, 0)
 						end
-					)
+					end
+				elseif ExtraActionButton1 then
+					if MoveAny:IsEnabled("ExtraActionButton1", true) then
+						if MoveAny:IsEnabledBartender4("ExtraActionBar") then
+							MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
+						else
+							local setParent = false
+							hooksecurefunc(
+								ExtraActionButton1,
+								"SetParent",
+								function(sel, parent)
+									if setParent then return end
+									setParent = true
+									sel:SetParent(UIParent)
+									setParent = false
+								end
+							)
 
-					ExtraActionButton1:SetParent(UIParent)
-					MoveAny:RegisterWidget(
-						{
-							["name"] = "ExtraActionButton1",
-							["lstr"] = "LID_ExtraActionButton1",
-							["userplaced"] = true
-						}
-					)
+							ExtraActionButton1:SetParent(UIParent)
+							MoveAny:RegisterWidget(
+								{
+									["name"] = "ExtraActionButton1",
+									["lstr"] = "LID_ExtraActionButton1",
+									["userplaced"] = true
+								}
+							)
+						end
+					end
 				end
 			end
-		end
+		)
 
 		if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
 			MoveAny:RegisterWidget(
@@ -6505,18 +6510,23 @@ function MoveAny:LoadAddon()
 		end
 
 		-- BOTTOM
-		if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
-			ZoneAbilityFrame:SetParent(MoveAny:GetMainPanel())
-			ZoneAbilityFrame:ClearAllPoints()
-			ZoneAbilityFrame:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 200)
-			MoveAny:RegisterWidget(
-				{
-					["name"] = "ZoneAbilityFrame",
-					["lstr"] = "LID_ZONEABILITYFRAME",
-					["userplaced"] = true
-				}
-			)
-		end
+		C_Timer.After(
+			0,
+			function()
+				if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
+					ZoneAbilityFrame:SetParent(MoveAny:GetMainPanel())
+					ZoneAbilityFrame:ClearAllPoints()
+					ZoneAbilityFrame:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 200)
+					MoveAny:RegisterWidget(
+						{
+							["name"] = "ZoneAbilityFrame",
+							["lstr"] = "LID_ZONEABILITYFRAME",
+							["userplaced"] = true
+						}
+					)
+				end
+			end
+		)
 
 		if MoveAny:IsEnabled("EventToastManagerFrame", false) then
 			MoveAny:RegisterWidget(
