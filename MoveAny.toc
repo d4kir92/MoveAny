@@ -1,11 +1,11 @@
-## Interface-Classic: 11508
+## Interface-Classic: 11509
 ## Interface-BCC: 20506
 ## Interface-Wrath: 30300, 30403
 ## Interface-Cata: 40402
 ## Interface-Mists: 50504
-## Interface: 120100, 120007
+## Interface: 120100
 
-## Version: 1.9.21
+## Version: 1.9.22
 ## Title: MoveAny by |cff55d2ffD4KiR |T132115:16:16:0:0|t
 ## Notes: Move Any Ui or Frame
 ## Notes-ruRU: MoveAny - аддон, с помощью которого можно разблокировать и перемещать элементы интерфейса
