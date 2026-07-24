@@ -57,7 +57,7 @@ function MoveAny:InitDebuffBar()
 			MADebuffBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
 			if MoveAny:IsEnabled("BUFFS", false) then
 				MADebuffBar:SetSize(btnsize * 10, btnsize * 3)
 			else
@@ -115,7 +115,7 @@ function MoveAny:InitDebuffBar()
 			MADEBUFFSPACINGX = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGX", 4)
 			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
-			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC") and DebuffFrame ~= nil then
+			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC") and DebuffFrame ~= nil then
 				MoveAny:ForeachChildren(
 					DebuffFrame.AuraContainer,
 					function(child)

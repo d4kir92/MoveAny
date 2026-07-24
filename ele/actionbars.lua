@@ -254,7 +254,7 @@ function MoveAny:UpdateActionBar(bar, from)
 				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
 					frame:SetScale(1)
 					rows = 2
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
+					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 						spacing = 15
 						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
 							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
@@ -457,6 +457,40 @@ function MoveAny:UpdateActionBar(bar, from)
 					if SocialsMicroButton then
 						MoveAny:HideBtn(SocialsMicroButton)
 					end
+
+					if rows == 3 or rows == 9 then
+						if HelpMicroButton then
+							MoveAny:ShowBtn(HelpMicroButton)
+						end
+
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+
+						if StoreMicroButton then
+							MoveAny:ShowBtn(StoreMicroButton)
+						end
+					elseif rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 5 or rows == 6 or rows == 7 or rows == 8 then
+						if HelpMicroButton then
+							MoveAny:ShowBtn(HelpMicroButton)
+						end
+
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+
+						if StoreMicroButton then
+							MoveAny:HideBtn(StoreMicroButton)
+						end
+					else
+						if HelpMicroButton then
+							MoveAny:HideBtn(HelpMicroButton)
+						end
+
+						if MainMenuMicroButton then
+							MoveAny:ShowBtn(MainMenuMicroButton)
+						end
+					end
 				else
 					MoveAny:INFO("Missing WoW Build for MAMenuBar (MicroMenu)")
 				end
@@ -603,7 +637,7 @@ function MoveAny:UpdateActionBar(bar, from)
 end
 
 function MoveAny:InitActionBarLayouts()
-	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+	if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" then
 		MASetPoint("MainMenuBar", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 0, 1) -- MainMenuBar
 		MASetPoint("MultiBarBottomLeft", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -60, 1) -- MultiBarBottomLeft
 		MASetPoint("MultiBarBottomRight", "BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, -120, 1) -- MultiBarBottomRight
@@ -640,7 +674,7 @@ end
 
 local once = true
 function MoveAny:CustomBars()
-	if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and MoveAny:IsEnabled("ACTIONBARS", false) then
+	if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC") and MoveAny:IsEnabled("ACTIONBARS", false) then
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
 			if texture then
@@ -897,7 +931,7 @@ end
 
 function MoveAny:InitActionBar1()
 	local build = MoveAny:GetWoWBuild()
-	if build ~= "RETAIL" and build ~= "TBC" and build ~= "MISTS" then
+	if build ~= "RETAIL" and build ~= "CLASSIC" and build ~= "TBC" and build ~= "MISTS" then
 		local frame = _G["MAActionBar" .. 1]
 		if frame then
 			for i = 1, 12 do

@@ -42,7 +42,7 @@ end
 local once = true
 function MoveAny:InitBuffBar()
 	local dbtab = {}
-	if MoveAny:IsEnabled("BUFFS", false) and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC") and BuffFrame ~= nil then
+	if MoveAny:IsEnabled("BUFFS", false) and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC") and BuffFrame ~= nil then
 		local MABuffBar = CreateFrame("Frame", "MABuffBar", MoveAny:GetMainPanel())
 		local sw1, sh1 = BuffFrame:GetSize()
 		MABuffBar:SetSize(sw1, sh1)
@@ -57,7 +57,7 @@ function MoveAny:InitBuffBar()
 			MABuffBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
 			if MoveAny:IsEnabled("DEBUFFS", false) then
 				MABuffBar:SetSize(btnsize * 10, btnsize * 3)
 			else
@@ -427,7 +427,7 @@ function MoveAny:InitBuffBar()
 				TempEnchant3:SetPoint("CENTER", 0, 0)
 			end
 
-			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "TBC" then
+			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" then
 				MoveAny:ForeachChildren(
 					BuffFrame.AuraContainer,
 					function(child)

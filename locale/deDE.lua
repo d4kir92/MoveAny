@@ -261,7 +261,7 @@ MoveAny:AddTrans("deDE", "LID_UNLOCKWINDOWS", "Fenster entsperren")
 MoveAny:AddTrans("deDE", "LID_LOCKEDWINDOWS", "Fenster sind gesperrt")
 MoveAny:AddTrans("deDE", "LID_WINDOWSARENOWUNLOCKED", "Fenster sind nun entsperrt")
 MoveAny:AddTrans("deDE", "LID_WINDOWSARENOWLOCKED", "Fenster sind nun gesperrt")
-if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
 	MoveAny:AddTrans("deDE", "LID_ACTIONBARS", "Aktionsleisten 1 + 5 + 6")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR1", "Aktionsleiste 1 (Hauptleiste)")
 	MoveAny:AddTrans("deDE", "LID_ACTIONBAR2", "Aktionsleiste 2 (2. Seite von Aktionsleiste 1)")

@@ -375,11 +375,18 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 								MoveAny:SetClampedToScreen(fm, true, "UpdateMoveFrames 1")
 							end
 
-							if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS") and WorldMapFrame and WorldMapFrameMove then
+							if (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS") and WorldMapFrame and WorldMapFrameMove then
 								local offsetl = 15
 								local offsetr = 7
 								local offsett = 18
 								local offsetb = 23
+								if MoveAny:GetWoWBuild() == "CLASSIC" then
+									offsetl = 15
+									offsetr = 7
+									offsett = 0
+									offsetb = 1
+								end
+
 								if MoveAny:IsAddOnLoaded("ElvUI") then
 									offsetl = 8
 									offsetr = 66

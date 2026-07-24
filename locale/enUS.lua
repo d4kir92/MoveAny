@@ -262,7 +262,7 @@ MoveAny:AddTrans("enUS", "LID_UNLOCKWINDOWS", "Unlock Windows")
 MoveAny:AddTrans("enUS", "LID_LOCKEDWINDOWS", "Windows are Locked")
 MoveAny:AddTrans("enUS", "LID_WINDOWSARENOWUNLOCKED", "Windows are now Unlocked")
 MoveAny:AddTrans("enUS", "LID_WINDOWSARENOWLOCKED", "Windows are now Locked")
-if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "TBC" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
 	MoveAny:AddTrans("enUS", "LID_ACTIONBARS", "Actionbars 1 + 5 + 6")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR2", "Actionbars 2 (2. Page of Actionbar 1)")
