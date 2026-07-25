@@ -1500,7 +1500,7 @@ function D4:GetMicroMenuButtons()
         elseif D4:GetWoWBuild() == "TBC" then
             MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton", "StoreMicroButton"}
         elseif D4:GetWoWBuild() == "CLASSIC" then
-            MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "GuildMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
+            MBTNS = {"CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton", "QuestLogMicroButton", "GuildMicroButton", "LFDMicroButton", "WorldMapMicroButton", "MainMenuMicroButton", "HelpMicroButton"}
         end
     end
 
