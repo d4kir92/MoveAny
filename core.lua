@@ -40,6 +40,17 @@ end
 
 function MoveAny:HideFrame(frame)
 	sethidden[frame] = true
+	if InCombatLockdown() and frame:IsProtected() then
+		MoveAny:After(
+			0.1,
+			function()
+				MoveAny:HideFrame(frame)
+			end, "HideFrame After"
+		)
+	else
+		frame:EnableMouse(false)
+	end
+
 	if sethiddenSetup[frame] == nil then
 		sethiddenSetup[frame] = true
 		local ok = pcall(
@@ -135,16 +146,6 @@ function MoveAny:HideFrame(frame)
 	end
 
 	frame:SetAlpha(0)
-	if InCombatLockdown() then
-		MoveAny:After(
-			0.1,
-			function()
-				MoveAny:HideFrame(frame)
-			end, "HideFrame After"
-		)
-	else
-		frame:EnableMouse(false)
-	end
 end
 
 function MoveAny:ShowFrame(frame)
