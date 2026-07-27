@@ -115,13 +115,12 @@ function MoveAny:InitStanceBar()
 				setStanceBarPoint = true
 				MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] or "CENTERED"
 				local orientation = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"]
-				StanceBar:ClearAllPoints()
 				if orientation == "LEFTALIGNED" then
-					StanceBar:SetPoint("LEFT", StanceBarAnchor, "LEFT", 0, 0)
+					MoveAny:SetPoint(StanceBar, "LEFT", StanceBarAnchor, "LEFT", 0, 0)
 				elseif orientation == "CENTERED" then
-					StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
+					MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0)
 				elseif orientation == "RIGHTALIGNED" then
-					StanceBar:SetPoint("RIGHT", StanceBarAnchor, "RIGHT", 0, 0)
+					MoveAny:SetPoint(StanceBar, "RIGHT", StanceBarAnchor, "RIGHT", 0, 0)
 				else
 					MoveAny:INFO("WRONG ORIENTATION", orientation)
 				end

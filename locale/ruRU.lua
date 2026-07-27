@@ -257,7 +257,7 @@ MoveAny:AddTrans("ruRU", "LID_SUPERTRACKEDFRAME", "Масштаб точек м�
 MoveAny:AddTrans("ruRU", "LID_UtilityCooldownViewer", "Важные способности и эффекты (Трекер восстановления)")
 MoveAny:AddTrans("ruRU", "LID_QUESTITEMSANCHOR", "Крепление предметов заданий")
 MoveAny:AddTrans("ruRU", "LID_PLAYERFRAMEGROUPINDICATOR", "Номер группы игрока")
-if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
+if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR2", "Панель действий 2 (2. Страница панели действий 1)")

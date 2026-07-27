@@ -876,8 +876,7 @@ function MoveAny:MenuOptions(opt, frame)
 					},
 					content,
 					function(valu)
-						StanceBar:ClearAllPoints()
-						StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
+						MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0)
 					end
 				)
 

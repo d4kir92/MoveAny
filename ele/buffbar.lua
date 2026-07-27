@@ -57,7 +57,7 @@ function MoveAny:InitBuffBar()
 			MABuffBar:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		end
 
-		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
+		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 			if MoveAny:IsEnabled("DEBUFFS", false) then
 				MABuffBar:SetSize(btnsize * 10, btnsize * 3)
 			else
@@ -427,7 +427,7 @@ function MoveAny:InitBuffBar()
 				TempEnchant3:SetPoint("CENTER", 0, 0)
 			end
 
-			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" then
+			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 				MoveAny:ForeachChildren(
 					BuffFrame.AuraContainer,
 					function(child)

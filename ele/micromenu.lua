@@ -329,6 +329,10 @@ function MoveAny:InitMicroMenu()
 				end
 			end
 
+			if GuildMicroButton then
+				MoveAny:SetPoint(SocialsMicroButton, "CENTER", GuildMicroButton, "CENTER", 0, 0)
+			end
+
 			local f = CreateFrame("Frame")
 			MoveAny:RegisterEvent(f, "UNIT_EXITED_VEHICLE", "player")
 			MoveAny:RegisterEvent(f, "ACTIONBAR_PAGE_CHANGED")

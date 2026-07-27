@@ -2475,7 +2475,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.26")
+	MoveAny:SetVersion(135994, "1.9.27")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton(
 			{
@@ -2886,9 +2886,20 @@ function MoveAny:LoadAddon()
 				MonkHarmonyBarFrame = CreateFrame("Frame", "MonkHarmonyBarFrame", UIParent)
 				MonkHarmonyBarFrame:SetSize(118, 28)
 				MonkHarmonyBarFrame:SetPoint(MonkHarmonyBar:GetPoint())
-				MonkHarmonyBar:ClearAllPoints()
-				MonkHarmonyBar:SetPoint("CENTER", MonkHarmonyBarFrame, "CENTER", 0, 0)
+				MoveAny:SetPoint(MonkHarmonyBar, "CENTER", MonkHarmonyBarFrame, "CENTER", 0, 0)
 				MonkHarmonyBar:SetParent(MonkHarmonyBarFrame)
+				local mhb_setpoint = false
+				hooksecurefunc(
+					MonkHarmonyBar,
+					"SetPoint",
+					function()
+						if mhb_setpoint then return end
+						mhb_setpoint = true
+						MoveAny:SetPoint(MonkHarmonyBar, "CENTER", MonkHarmonyBarFrame, "CENTER", 0, 0)
+						MonkHarmonyBar:SetParent(MonkHarmonyBarFrame)
+						mhb_setpoint = false
+					end
+				)
 			end
 
 			MoveAny:RegisterWidget(
@@ -4390,7 +4401,8 @@ function MoveAny:LoadAddon()
 				{
 					["name"] = "StanceBarAnchor",
 					["lstr"] = "LID_STANCEBARANCHOR",
-					["secure"] = true
+					["secure"] = true,
+					["userplaced"] = true,
 				}
 			)
 		end
@@ -6071,7 +6083,7 @@ function MoveAny:LoadAddon()
 					local frame = _G["Boss" .. i .. "TargetFrame"]
 					if frame then
 						frame:SetScale(1)
-						if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" then
+						if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 							hooksecurefunc(
 								frame,
 								"Show",
@@ -6216,7 +6228,7 @@ function MoveAny:LoadAddon()
 				end, "MINIMAP 123"
 			)
 
-			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" then
+			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 				MoveAny:RegisterWidget(
 					{
 						["name"] = "MinimapCluster",
@@ -6579,7 +6591,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
-		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" then
+		if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 			MoveAny:LoadAddOn("Blizzard_ArchaeologyUI")
 		end
 
