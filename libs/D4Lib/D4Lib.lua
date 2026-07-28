@@ -1186,6 +1186,17 @@ D4:OnEvent(
     end, "MiniMapTracking"
 )
 
+if D4:GetWoWBuild() == "CLASSIC" and MiniMapTracking and MiniMapTracking.fixed == nil then
+    MiniMapTracking.fixed = true
+    local p1, p2, p3, p4, p5 = MiniMapTracking:GetPoint()
+    if p1 == "TOPLEFT" and p2 == nil and p3 == "TOPLEFT" then
+        MiniMapTracking:SetScale(0.75)
+        MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, -20)
+    else
+        D4:MSG("Blizzard fixed MiniMapTracking, please tell D4KiR", p1, p2, p3, p4, p5)
+    end
+end
+
 function D4:DrawDebug(name, callback, fontSize, sw, sh, p1, p2, p3, p4, p5)
     sw = sw or 100
     sh = sh or 50
