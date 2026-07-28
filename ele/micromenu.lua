@@ -329,7 +329,7 @@ function MoveAny:InitMicroMenu()
 				end
 			end
 
-			if GuildMicroButton then
+			if GuildMicroButton and SocialsMicroButton then
 				SocialsMicroButton:SetScale(0.5)
 				MoveAny:SetPoint(SocialsMicroButton, "CENTER", GuildMicroButton, "CENTER", 0, 0)
 			end
