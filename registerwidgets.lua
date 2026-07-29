@@ -163,7 +163,7 @@ local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
 			end
 
 			p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-			parent.pos:SetText(format("Position X: %d Y:%d", p4, p5))
+			parent.pos:SetText(format("%s X: %d Y:%d", MoveAny:Trans("LID_POSITION"), p4, p5))
 		end
 	)
 
@@ -299,7 +299,7 @@ function MoveAny:MenuOptions(opt, frame)
 			content.pos = content:CreateFontString(nil, nil, "GameFontNormal")
 			content.pos:SetPoint("TOPLEFT", content, "TOPLEFT", 4, -4)
 			local _, _, _, p4, p5 = MoveAny:GetElePoint(name)
-			content.pos:SetText(format("Position X: %d Y:%d", p4, p5))
+			content.pos:SetText(format("%s X: %d Y:%d", MoveAny:Trans("LID_POSITION"), p4, p5))
 			MAMoveButton(content, name, btnsize * 2, -btnsize * 1, 0, 5, "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
 			MAMoveButton(content, name, btnsize * 2, -btnsize * 2, 0, 1, "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
 			MAMoveButton(content, name, btnsize * 2, -btnsize * 4, 0, -1, "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
@@ -311,7 +311,7 @@ function MoveAny:MenuOptions(opt, frame)
 			content.scale = content:CreateFontString(nil, nil, "GameFontNormal")
 			content.scale:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -4)
 			local scale = MoveAny:GetEleScale(name) or 1
-			content.scale:SetText(format("Scale: %0.1f", scale))
+			content.scale:SetText(format("%s: %0.1f", MoveAny:Trans("LID_SCALE"), scale))
 			local sup = MoveAny:CreateButton("sup", content, true)
 			sup:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
 			sup:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
@@ -323,7 +323,7 @@ function MoveAny:MenuOptions(opt, frame)
 				function()
 					local val = tonumber(string.format("%.1f", optionFrame:GetScale() + 0.1))
 					MoveAny:SetEleScale(name, val)
-					content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
+					content.scale:SetText(format("%s: %0.1f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
 				end
 			)
 
@@ -338,7 +338,7 @@ function MoveAny:MenuOptions(opt, frame)
 				function()
 					local val = tonumber(string.format("%.2f", optionFrame:GetScale() + 0.01))
 					MoveAny:SetEleScale(name, val)
-					content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
+					content.scale:SetText(format("%s: %0.2f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
 				end
 			)
 
@@ -354,7 +354,7 @@ function MoveAny:MenuOptions(opt, frame)
 					if frame:GetScale() > 0.2 then
 						local val = tonumber(string.format("%.1f", optionFrame:GetScale() - 0.1))
 						MoveAny:SetEleScale(name, val)
-						content.scale:SetText(format("Scale: %0.1f", MoveAny:GetEleScale(name)))
+						content.scale:SetText(format("%s: %0.1f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
 					end
 				end
 			)
@@ -371,7 +371,7 @@ function MoveAny:MenuOptions(opt, frame)
 					if frame:GetScale() > 0.2 then
 						local val = tonumber(string.format("%.2f", optionFrame:GetScale() - 0.01))
 						MoveAny:SetEleScale(name, val)
-						content.scale:SetText(format("Scale: %0.2f", MoveAny:GetEleScale(name)))
+						content.scale:SetText(format("%s: %0.2f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
 					end
 				end
 			)
@@ -1700,7 +1700,7 @@ function MoveAny:RegisterWidget(tab)
 
 					if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
 						local tab1 = dragframe.opt.tabs[1]
-						tab1.content.pos:SetText(format("Position X: %d Y:%d", p4, p5))
+						tab1.content.pos:SetText(format("%s X: %d Y:%d", MoveAny:Trans("LID_POSITION"), p4, p5))
 					end
 
 					dragframe:SetMovable(true)

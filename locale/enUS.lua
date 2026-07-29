@@ -262,6 +262,8 @@ MoveAny:AddTrans("enUS", "LID_UNLOCKWINDOWS", "Unlock Windows")
 MoveAny:AddTrans("enUS", "LID_LOCKEDWINDOWS", "Windows are Locked")
 MoveAny:AddTrans("enUS", "LID_WINDOWSARENOWUNLOCKED", "Windows are now Unlocked")
 MoveAny:AddTrans("enUS", "LID_WINDOWSARENOWLOCKED", "Windows are now Locked")
+MoveAny:AddTrans("enUS", "LID_POSITION", "Position")
+MoveAny:AddTrans("enUS", "LID_SCALE", "Scale")
 if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 	MoveAny:AddTrans("enUS", "LID_ACTIONBARS", "Actionbars 1 + 5 + 6")
 	MoveAny:AddTrans("enUS", "LID_ACTIONBAR1", "Actionbars 1 (Main Bar)")
