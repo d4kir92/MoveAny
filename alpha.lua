@@ -31,6 +31,7 @@ enumAlpha.FULLHEALTH = "FULLHEALTH"
 enumAlpha.AURA = "AURA"
 enumAlpha.VEHICLE = "VEHICLE"
 enumAlpha.PETBATTLE = "PETBATTLE"
+enumAlpha.BONUSBAR = "BONUSBAR"
 enumAlpha.OLD = "OLD"
 function MoveAny:GetEnumAlpha()
     return enumAlpha
@@ -210,7 +211,7 @@ function MoveAny:InitAlphaFullHealth()
     )
 end
 
-function MoveAny:UpdateAlphaAura()
+function MoveAny:UpdateAlphaBonusBar()
     local updateAlpha = false
     if MoveAny.IsDragonriding then
         local v = MoveAny:IsDragonriding()
@@ -220,6 +221,25 @@ function MoveAny:UpdateAlphaAura()
         end
     end
 
+    if updateAlpha then
+        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().BONUSBAR)
+    end
+end
+
+function MoveAny:InitAlphaBonusBar()
+    MoveAny:UpdateAlphaBonusBar()
+    local alphaFrameBonusBar = CreateFrame("Frame")
+    MoveAny:RegisterEvent(alphaFrameBonusBar, "UPDATE_BONUS_ACTIONBAR")
+    MoveAny:OnEvent(
+        alphaFrameBonusBar,
+        function(sel, event, ...)
+            MoveAny:UpdateAlphaBonusBar()
+        end, "alphaFrameBonusBar"
+    )
+end
+
+function MoveAny:UpdateAlphaAura()
+    local updateAlpha = false
     if IsMounted then
         local v = IsMounted()
         if ismounted ~= v then
@@ -303,6 +323,7 @@ function MoveAny:InitAlphas()
     MoveAny:InitAlphaCombat()
     MoveAny:InitAlphaResting()
     MoveAny:InitAlphaFullHealth()
+    MoveAny:InitAlphaBonusBar()
     MoveAny:InitAlphaAura()
     MoveAny:InitAlphaVehicle()
     MoveAny:InitAlphaPetBattle()
