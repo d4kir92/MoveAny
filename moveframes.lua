@@ -56,36 +56,34 @@ function MoveAny:UpdateCurrentWindow()
 
 			if currentWindowName ~= nil and MoveAny:IsEnabled("SCALEFRAMES", true) then
 				local curMouseX, curMouseY = GetCursorPosition()
-				if prevMouseX and prevMouseY then
-					if curMouseY > prevMouseY then
-						local newScale = math.min(currentWindow:GetScale() + 0.006, 2.5)
-						if newScale > 0 then
-							newScale = tonumber(string.format("%.3f", newScale)) or 1
-							currentWindow:SetScale(newScale)
-							if currentWindow.isMaximized and newScale > 1 then
-								newScale = 1
-							end
-
-							MoveAny:SetFrameScale(currentWindowName, newScale)
-						end
-					elseif curMouseY < prevMouseY then
-						local newScale = math.max(currentWindow:GetScale() - 0.006, 0.5)
-						if newScale > 0 then
-							newScale = tonumber(string.format("%.3f", newScale)) or 1
-							currentWindow:SetScale(newScale)
-							if currentWindow.isMaximized and newScale > 1 then
-								newScale = 1
-							end
-
-							MoveAny:SetFrameScale(currentWindowName, newScale)
-						end
+				if curMouseX and curMouseY and prevMouseX and prevMouseY then
+					local deltaX = curMouseX - prevMouseX
+					local deltaY = curMouseY - prevMouseY
+					-- Die Achse mit der größeren Bewegung auswählen
+					local delta
+					if math.abs(deltaX) > math.abs(deltaY) then
+						delta = deltaX
+					else
+						delta = deltaY
 					end
+
+					local sensitivity = 0.0024
+					local scaleChange = delta * sensitivity
+					local newScale = currentWindow:GetScale() + scaleChange
+					newScale = MoveAny:MClamp(newScale, 0.5, 2.5)
+					newScale = tonumber(string.format("%.3f", newScale)) or 1
+					currentWindow:SetScale(newScale)
+					if currentWindow.isMaximized and newScale > 1 then
+						newScale = 1
+						currentWindow:SetScale(newScale)
+					end
+
+					MoveAny:SetFrameScale(currentWindowName, newScale)
 				end
 
+				prevMouseX, prevMouseY = curMouseX, curMouseY
 				GameTooltip:SetOwner(currentWindow, "ANCHOR_CURSOR")
 				GameTooltip:SetText(MoveAny:MathR(currentWindow:GetScale() * 100) .. "%")
-				prevMouseX = curMouseX
-				prevMouseY = curMouseY
 			end
 
 			updatingFrame = false
