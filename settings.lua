@@ -3166,41 +3166,53 @@ function MoveAny:LoadAddon()
 								end
 							end
 
+							local buffSize = nil
 							local added = {}
-							function frame:Update()
+							function frame:Update(from)
 								if TargetFrame and TargetFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-									local targetEffectiveScale = TargetFrame:GetScale()
-									local targetAbsoluteX = targetCenterX / targetEffectiveScale
-									local targetAbsoluteY = targetCenterY / targetEffectiveScale
-									frame.PX = frameAbsoluteX - targetAbsoluteX
-									frame.PY = frameAbsoluteY - targetAbsoluteY
 									for i, bb in pairs(MoveAny:UpdateTargetFrameBuffs()) do
 										if bb then
 											if added[bb] == nil then
 												local setPoint = false
+												buffSize = buffSize or bb:GetSize()
 												hooksecurefunc(
 													bb,
 													"SetPoint",
 													function(sel, ...)
 														if setPoint then return end
 														setPoint = true
+														if buffSize < 10 then
+															buffSize = 10
+														end
+
+														bb:SetSize(buffSize, buffSize)
+														local frameEffScale = frame:GetEffectiveScale()
+														local targetEffScale = TargetFrame:GetEffectiveScale()
+														local frameCenterX, frameCenterY = frame:GetCenter()
+														local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+														local frameRealX = frameCenterX * frameEffScale
+														local frameRealY = frameCenterY * frameEffScale
+														local targetRealX = targetCenterX * targetEffScale
+														local targetRealY = targetCenterY * targetEffScale
+														frame.PX = frameRealX - targetRealX
+														frame.PY = frameRealY - targetRealY
 														local MABUFFMODE = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFMODE", 0)
 														local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFLIMIT", 10)
 														local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGX", 4)
 														local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameBuffMover", "MABUFFSPACINGY", 10)
 														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
-														sel:ClearAllPoints()
+														local col = (added[bb] - 1) % MABUFFLIMIT
+														local selScale = sel:GetEffectiveScale()
+														local pixelX = frame.PX + col * (buffSize * selScale + MABUFFSPACINGX)
+														local pixelY
 														if MABUFFMODE == 1 then
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+															pixelY = frame.PY + row * (buffSize * selScale + MABUFFSPACINGY)
 														else
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+															pixelY = frame.PY - row * (buffSize * selScale + MABUFFSPACINGY)
 														end
 
+														sel:ClearAllPoints()
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", pixelX / selScale, pixelY / selScale)
 														setPoint = false
 													end
 												)
@@ -3208,22 +3220,15 @@ function MoveAny:LoadAddon()
 
 											if added[bb] ~= i then
 												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
 											end
+
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
 										end
 									end
 								end
-
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "frame:Update LoadAddon"
-								)
 							end
 
-							frame:Update()
 							TargetFrame:HookScript(
 								"OnShow",
 								function()
@@ -3231,6 +3236,8 @@ function MoveAny:LoadAddon()
 										buffsDelay,
 										function()
 											MoveAny:UpdateTargetBuffs()
+											frame:UpdateScaleAndAlpha()
+											frame:Update("INIT")
 										end, "TargetFrame OnShow"
 									)
 
@@ -3245,6 +3252,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateTargetBuffs()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("UNIT_AURA")
 								end, "bbf 7"
 							)
 
@@ -3253,6 +3261,7 @@ function MoveAny:LoadAddon()
 								"SetPoint",
 								function()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("frame SetPoint")
 								end
 							)
 
@@ -3312,41 +3321,54 @@ function MoveAny:LoadAddon()
 								end
 							end
 
+							local buffSize = nil
 							local added = {}
-							function frame:Update()
+							function frame:Update(from)
 								if TargetFrame and TargetFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-									local targetEffectiveScale = TargetFrame:GetScale()
-									local targetAbsoluteX = targetCenterX / targetEffectiveScale
-									local targetAbsoluteY = targetCenterY / targetEffectiveScale
-									frame.PX = frameAbsoluteX - targetAbsoluteX
-									frame.PY = frameAbsoluteY - targetAbsoluteY
 									for i, bb in pairs(MoveAny:UpdateTargetFrameDebuffs()) do
 										if bb then
 											if added[bb] == nil then
 												local setPoint = false
+												buffSize = buffSize or bb:GetSize()
 												hooksecurefunc(
 													bb,
 													"SetPoint",
 													function(sel, ...)
 														if setPoint then return end
 														setPoint = true
+														if buffSize < 10 then
+															buffSize = 10
+														end
+
+														bb:SetSize(buffSize, buffSize)
+														local frameEffScale = frame:GetEffectiveScale()
+														local targetEffScale = TargetFrame:GetEffectiveScale()
+														local frameCenterX, frameCenterY = frame:GetCenter()
+														local targetCenterX, targetCenterY = TargetFrame:GetCenter()
+														local frameRealX = frameCenterX * frameEffScale
+														local frameRealY = frameCenterY * frameEffScale
+														local targetRealX = targetCenterX * targetEffScale
+														local targetRealY = targetCenterY * targetEffScale
+														frame.PX = frameRealX - targetRealX
+														frame.PY = frameRealY - targetRealY
 														local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFMODE", 0)
 														local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFLIMIT", 10)
 														local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGX", 4)
 														local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameDebuffMover", "MADEBUFFSPACINGY", 10)
 														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
+														local col = (added[bb] - 1) % MADEBUFFLIMIT
+														local selScale = sel:GetEffectiveScale()
+														local pixelX = frame.PX + col * (buffSize * selScale + MADEBUFFSPACINGX)
+														local pixelY
 														sel:ClearAllPoints()
 														if MADEBUFFMODE == 1 then
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+															pixelY = frame.PY + row * (buffSize * selScale + MADEBUFFSPACINGY)
 														else
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+															pixelY = frame.PY - row * (buffSize * selScale + MADEBUFFSPACINGY)
 														end
 
+														sel:ClearAllPoints()
+														sel:SetPoint("CENTER", TargetFrame, "CENTER", pixelX / selScale, pixelY / selScale)
 														setPoint = false
 													end
 												)
@@ -3354,22 +3376,15 @@ function MoveAny:LoadAddon()
 
 											if added[bb] ~= i then
 												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
 											end
+
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
 										end
 									end
 								end
-
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "TargetFrame Update"
-								)
 							end
 
-							frame:Update()
 							TargetFrame:HookScript(
 								"OnShow",
 								function()
@@ -3377,6 +3392,8 @@ function MoveAny:LoadAddon()
 										buffsDelay,
 										function()
 											MoveAny:UpdateTargetDebuffs()
+											frame:UpdateScaleAndAlpha()
+											frame:Update("INIT")
 										end, "TargetFrame OnShow 2"
 									)
 
@@ -3391,6 +3408,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateTargetDebuffs()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("UNIT_AURA")
 								end, "bbf 7"
 							)
 
@@ -3399,6 +3417,7 @@ function MoveAny:LoadAddon()
 								"SetPoint",
 								function()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("frame SetPoint")
 								end
 							)
 
@@ -3458,41 +3477,53 @@ function MoveAny:LoadAddon()
 								end
 							end
 
+							local buffSize = nil
 							local added = {}
-							function frame:Update()
-								if TargetFrame and TargetFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-									local targetEffectiveScale = TargetFrame:GetScale()
-									local targetAbsoluteX = targetCenterX / targetEffectiveScale
-									local targetAbsoluteY = targetCenterY / targetEffectiveScale
-									frame.PX = frameAbsoluteX - targetAbsoluteX
-									frame.PY = frameAbsoluteY - targetAbsoluteY
+							function frame:Update(from)
+								if TargetFrameToT and TargetFrameToT:GetLeft() then
 									for i, bb in pairs(MoveAny:UpdateTargetFrameToTDebuffs()) do
 										if bb then
 											if added[bb] == nil then
 												local setPoint = false
+												buffSize = buffSize or bb:GetSize()
 												hooksecurefunc(
 													bb,
 													"SetPoint",
 													function(sel, ...)
 														if setPoint then return end
 														setPoint = true
+														if buffSize < 10 then
+															buffSize = 10
+														end
+
+														bb:SetSize(buffSize, buffSize)
+														local frameEffScale = frame:GetEffectiveScale()
+														local targetEffScale = TargetFrameToT:GetEffectiveScale()
+														local frameCenterX, frameCenterY = frame:GetCenter()
+														local targetCenterX, targetCenterY = TargetFrameToT:GetCenter()
+														local frameRealX = frameCenterX * frameEffScale
+														local frameRealY = frameCenterY * frameEffScale
+														local targetRealX = targetCenterX * targetEffScale
+														local targetRealY = targetCenterY * targetEffScale
+														frame.PX = frameRealX - targetRealX
+														frame.PY = frameRealY - targetRealY
 														local MADEBUFFMODE = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFMODE", 0)
 														local MADEBUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFLIMIT", 10)
 														local MADEBUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGX", 4)
 														local MADEBUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTDebuffMover", "MADEBUFFSPACINGY", 10)
 														local row = math.floor((added[bb] - 1) / MADEBUFFLIMIT)
-														sel:ClearAllPoints()
+														local col = (added[bb] - 1) % MADEBUFFLIMIT
+														local selScale = sel:GetEffectiveScale()
+														local pixelX = frame.PX + col * (buffSize * selScale + MADEBUFFSPACINGX)
+														local pixelY
 														if MADEBUFFMODE == 1 then
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + row * (21 + MADEBUFFSPACINGY))
+															pixelY = frame.PY + row * (buffSize * selScale + MADEBUFFSPACINGY)
 														else
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MADEBUFFLIMIT) * (21 + MADEBUFFSPACINGX), frame.PY + -(row * (21 + MADEBUFFSPACINGY)))
+															pixelY = frame.PY - row * (buffSize * selScale + MADEBUFFSPACINGY)
 														end
 
+														sel:ClearAllPoints()
+														sel:SetPoint("CENTER", TargetFrameToT, "CENTER", pixelX / selScale, pixelY / selScale)
 														setPoint = false
 													end
 												)
@@ -3500,22 +3531,15 @@ function MoveAny:LoadAddon()
 
 											if added[bb] ~= i then
 												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
 											end
+
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrameToT, "RIGHT", 0, 0)
 										end
 									end
 								end
-
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "TargetFrame Update 2"
-								)
 							end
 
-							frame:Update()
 							TargetFrame:HookScript(
 								"OnShow",
 								function()
@@ -3523,6 +3547,8 @@ function MoveAny:LoadAddon()
 										buffsDelay,
 										function()
 											MoveAny:UpdateTargetToTDebuffs()
+											frame:UpdateScaleAndAlpha()
+											frame:Update("INIT")
 										end, "t123"
 									)
 
@@ -3537,6 +3563,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateTargetToTDebuffs()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("UNIT_AURA")
 								end, "bbf 6"
 							)
 
@@ -3545,6 +3572,7 @@ function MoveAny:LoadAddon()
 								"SetPoint",
 								function()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("frame SetPoint")
 								end
 							)
 
@@ -3604,41 +3632,55 @@ function MoveAny:LoadAddon()
 								end
 							end
 
+							local buffSize = nil
 							local added = {}
 							function frame:Update()
-								if TargetFrame and TargetFrame:GetLeft() then
-									local frameCenterX, frameCenterY = frame:GetCenter()
-									local frameEffectiveScale = frame:GetScale()
-									local frameAbsoluteX = frameCenterX / frameEffectiveScale
-									local frameAbsoluteY = frameCenterY / frameEffectiveScale
-									local targetCenterX, targetCenterY = TargetFrame:GetCenter()
-									local targetEffectiveScale = TargetFrame:GetScale()
-									local targetAbsoluteX = targetCenterX / targetEffectiveScale
-									local targetAbsoluteY = targetCenterY / targetEffectiveScale
-									frame.PX = frameAbsoluteX - targetAbsoluteX
-									frame.PY = frameAbsoluteY - targetAbsoluteY
+								if TargetFrameToT and TargetFrameToT:GetLeft() then
 									for i, bb in pairs(MoveAny:UpdateTargetFrameToTBuffs()) do
 										if bb then
 											if added[bb] == nil then
 												local setPoint = false
+												buffSize = buffSize or bb:GetSize()
 												hooksecurefunc(
 													bb,
 													"SetPoint",
 													function(sel, ...)
 														if setPoint then return end
 														setPoint = true
+														if buffSize < 10 then
+															buffSize = 10
+														end
+
+														bb:SetSize(buffSize, buffSize)
+														local frameEffScale = frame:GetEffectiveScale()
+														local targetEffScale = TargetFrameToT:GetEffectiveScale()
+														local frameCenterX, frameCenterY = frame:GetCenter()
+														local targetCenterX, targetCenterY = TargetFrameToT:GetCenter()
+														local frameRealX = frameCenterX * frameEffScale
+														local frameRealY = frameCenterY * frameEffScale
+														local targetRealX = targetCenterX * targetEffScale
+														local targetRealY = targetCenterY * targetEffScale
+														frame.PX = frameRealX - targetRealX
+														frame.PY = frameRealY - targetRealY
 														local MABUFFMODE = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFMODE", 0)
 														local MABUFFLIMIT = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFLIMIT", 10)
 														local MABUFFSPACINGX = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGX", 4)
 														local MABUFFSPACINGY = MoveAny:GetEleOption("TargetFrameToTBuffMover", "MABUFFSPACINGY", 10)
 														local row = math.floor((added[bb] - 1) / MABUFFLIMIT)
-														sel:ClearAllPoints()
+														local col = (added[bb] - 1) % MABUFFLIMIT
+														local selScale = sel:GetEffectiveScale()
+														local pixelX = frame.PX + col * (buffSize * selScale + MABUFFSPACINGX)
+														local pixelY
 														if MABUFFMODE == 1 then
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+															sel:SetPoint("CENTER", TargetFrameToT, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + row * (21 + MABUFFSPACINGY))
+															pixelY = frame.PY + row * (buffSize * selScale + MABUFFSPACINGY)
 														else
-															sel:SetPoint("CENTER", TargetFrame, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+															sel:SetPoint("CENTER", TargetFrameToT, "CENTER", frame.PX + ((added[bb] - 1) % MABUFFLIMIT) * (21 + MABUFFSPACINGX), frame.PY + -(row * (21 + MABUFFSPACINGY)))
+															pixelY = frame.PY - row * (buffSize * selScale + MABUFFSPACINGY)
 														end
 
+														sel:ClearAllPoints()
+														sel:SetPoint("CENTER", TargetFrameToT, "CENTER", pixelX / selScale, pixelY / selScale)
 														setPoint = false
 													end
 												)
@@ -3646,22 +3688,15 @@ function MoveAny:LoadAddon()
 
 											if added[bb] ~= i then
 												added[bb] = i
-												bb:ClearAllPoints()
-												bb:SetPoint("LEFT", TargetFrame, "RIGHT", 0, 0)
 											end
+
+											bb:ClearAllPoints()
+											bb:SetPoint("LEFT", TargetFrameToT, "RIGHT", 0, 0)
 										end
 									end
 								end
-
-								MoveAny:After(
-									0.1,
-									function()
-										frame:Update()
-									end, "t234"
-								)
 							end
 
-							frame:Update()
 							TargetFrame:HookScript(
 								"OnShow",
 								function()
@@ -3669,6 +3704,8 @@ function MoveAny:LoadAddon()
 										buffsDelay,
 										function()
 											MoveAny:UpdateTargetToTBuffs()
+											frame:UpdateScaleAndAlpha()
+											frame:Update("INIT")
 										end, "t345"
 									)
 
@@ -3683,6 +3720,7 @@ function MoveAny:LoadAddon()
 								function()
 									MoveAny:UpdateTargetToTBuffs()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("UNIT_AURA")
 								end, "bbf 5"
 							)
 
@@ -3691,6 +3729,7 @@ function MoveAny:LoadAddon()
 								"SetPoint",
 								function()
 									frame:UpdateScaleAndAlpha()
+									frame:Update("frame SetPoint")
 								end
 							)
 
