@@ -13,12 +13,7 @@ function D4:GetName(frame, bStr)
         end
     end
 
-    local ok, name = pcall(
-        function()
-            if type(frame) == "table" and type(frame.GetName) == "function" then return frame:GetName() end
-        end
-    )
-
+    local ok, name = pcall(function() if type(frame) == "table" and type(frame.GetName) == "function" then return frame:GetName() end end)
     if ok then
         if name ~= nil then
             return name
@@ -42,99 +37,63 @@ end
 
 function D4:GetParent(frame)
     if frame == nil then return nil end
-    local ok, parent = pcall(
-        function()
-            if type(frame) == "table" and type(frame.GetParent) == "function" then return frame:GetParent() end
-        end
-    )
-
+    local ok, parent = pcall(function() if type(frame) == "table" and type(frame.GetParent) == "function" then return frame:GetParent() end end)
     if ok then return parent end
-
     return nil
 end
 
 function D4:GetText(frame)
     if frame == nil then return nil end
-    local ok, text = pcall(
-        function()
-            if type(frame) == "table" and type(frame.GetText) == "function" then return frame:GetText() end
-        end
-    )
-
+    local ok, text = pcall(function() if type(frame) == "table" and type(frame.GetText) == "function" then return frame:GetText() end end)
     if ok then return text end
-
     return nil
 end
 
 function D4:SetClampedToScreen(frame, value, from)
     if frame == nil then return end
     if value == nil then return end
-    local ok = pcall(
-        function()
-            if frame == nil then return false end
-            if InCombatLockdown() and frame:IsProtected() then return false end
-            if type(frame) == "table" and type(frame.SetClampedToScreen) == "function" then
-                frame:SetClampedToScreen(value)
-
-                return true
-            end
+    local ok = pcall(function()
+        if frame == nil then return false end
+        if InCombatLockdown() and frame:IsProtected() then return false end
+        if type(frame) == "table" and type(frame.SetClampedToScreen) == "function" then
+            frame:SetClampedToScreen(value)
+            return true
         end
-    )
-
+    end)
     return ok
 end
 
 function D4:TrySetParent(frame, parent)
     if frame == nil then
         D4:INFO("[D4] Missing Frame for TrySetParent", frame)
-
         return false
     end
 
     if parent == nil then
         D4:INFO("[D4] Missing Parent for TrySetParent", parent)
-
         return false
     end
 
     if frame:IsProtected() and InCombatLockdown() then return false end
-    local ok = pcall(
-        function()
-            if type(frame) == "table" and type(frame.SetParent) == "function" then
-                frame:SetParent(parent)
-            end
-        end
-    )
-
+    local ok = pcall(function() if type(frame) == "table" and type(frame.SetParent) == "function" then frame:SetParent(parent) end end)
     if ok then return true end
-
     return false
 end
 
 function D4:TrySetScale(frame, scale)
     if frame == nil then
         D4:INFO("[D4] Missing Frame for TrySetScale", frame)
-
         return false
     end
 
     if scale == nil then
         D4:INFO("[D4] Missing Scale for TrySetScale", scale)
-
         return false
     end
 
     if frame:IsProtected() and InCombatLockdown() then return false end
-    local ok = pcall(
-        function()
-            if type(frame) == "table" and type(frame.SetScale) == "function" then
-                frame:SetScale(scale)
-            end
-        end
-    )
-
+    local ok = pcall(function() if type(frame) == "table" and type(frame.SetScale) == "function" then frame:SetScale(scale) end end)
     if ok then return true end
-
     return false
 end
 
@@ -142,7 +101,6 @@ function D4:TryRun(callback, ...)
     if callback == nil then return end
     local ok, ret = pcall(function(...) return callback(...) end, ...)
     if ok then return ret end
-
     return nil
 end
 
@@ -150,7 +108,6 @@ function D4:TrySec(callback, ...)
     if callback == nil then return end
     local ok, ret = securecall(function(...) return callback(...) end, ...)
     if ok then return ret end
-
     return nil
 end
 
@@ -161,7 +118,6 @@ function D4:SetFontSize(element, fontSize, newFontFlags)
     local fontType, _, fontFlags = element:GetFont()
     if fontType == nil then
         D4:MSG("SetFontSize FAILED #1:", D4:GetName(element))
-
         return
     end
 
@@ -172,7 +128,6 @@ end
 function D4:AddCategory(tab)
     if tab.parent == nil then
         D4:MSG("[D4] Missing Parent for AddCategory")
-
         return
     end
 
@@ -181,24 +136,17 @@ function D4:AddCategory(tab)
     tab.pTab = tab.pTab or {"CENTER"}
     tab.parent.f = tab.parent:CreateFontString(nil, nil, "GameFontNormal")
     tab.parent.f:SetPoint(unpack(tab.pTab))
-    if tab.key and tab.name and tab.name == "" then
-        D4:INFO("[D4][AddCategory] " .. tab.key .. " has no name")
-    end
-
+    if tab.key and tab.name and tab.name == "" then D4:INFO("[D4][AddCategory] " .. tab.key .. " has no name") end
     tab.parent.f:SetText(D4:Trans("LID_" .. tab.name))
 end
 
 function D4:CreateCheckbox(tab, text)
     if tab.parent == nil then
         D4:MSG("[D4] Missing Parent for CreateCheckbox")
-
         return
     end
 
-    if text == nil then
-        text = true
-    end
-
+    if text == nil then text = true end
     tab.sw = tab.sw or 25
     tab.sh = tab.sh or 25
     tab.pTab = tab.pTab or {"CENTER"}
@@ -213,36 +161,24 @@ function D4:CreateCheckbox(tab, text)
     end
 
     cb:SetHitRectInsets(0, 0, 0, 0)
-    cb:SetScript(
-        "OnClick",
-        function(sel)
-            tab:funcV(sel:GetChecked())
-        end
-    )
-
+    cb:SetScript("OnClick", function(sel) tab:funcV(sel:GetChecked()) end)
     if text then
         cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
         cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-        if tab.key and tab.name and tab.name == "" then
-            D4:INFO("[D4][CreateCheckbox] " .. tab.key .. " has no name")
-        end
-
+        if tab.key and tab.name and tab.name == "" then D4:INFO("[D4][CreateCheckbox] " .. tab.key .. " has no name") end
         cb.f:SetText(D4:Trans("LID_" .. tab.name))
     end
-
     return cb
 end
 
 function D4:CreateCheckboxForCVAR(tab)
     if tab.name == nil then
         D4:MSG("[D4] Missing name for [CreateCheckboxForCVAR]")
-
         return
     end
 
     if tab.parent == nil then
         D4:MSG("[D4] Missing Parent for CreateCheckbox")
-
         return
     end
 
@@ -257,25 +193,16 @@ function D4:CreateCheckboxForCVAR(tab)
         local p1, p2, p3 = unpack(tab.pTab)
         cb2:SetPoint(p1, p2 + 25, p3)
         cb2:SetChecked(tab.value2)
-        cb2:SetScript(
-            "OnClick",
-            function(sel)
-                tab:funcV2(sel:GetChecked())
-            end
-        )
-
+        cb2:SetScript("OnClick", function(sel) tab:funcV2(sel:GetChecked()) end)
         cb.f:SetPoint("LEFT", cb, "RIGHT", 25, 0)
-
         return cb
     end
-
     return nil
 end
 
 function D4:CreateSliderForCVAR(tab)
     if tab.name == nil then
         D4:MSG("[D4] Missing name for [CreateSliderForCVAR]")
-
         return
     end
 
@@ -291,14 +218,12 @@ function D4:CreateSliderForCVAR(tab)
     tab.pTab = {tab.pTab[1], tab.pTab[2] + 32, tab.pTab[3] - 18}
     tab.defaultValue = tab.defaultValue or nil
     D4:CreateSlider(tab)
-
     return cb
 end
 
 function D4:CreateEditBox(tab)
     if tab.parent == nil then
         D4:MSG("[D4] Missing Parent for CreateEditBox")
-
         return
     end
 
@@ -315,40 +240,25 @@ function D4:CreateEditBox(tab)
     cb:SetText(tab.value)
     cb:SetAutoFocus(false)
     cb:SetNumeric(tab.numeric)
-    cb:SetScript(
-        "OnTextChanged",
-        function(sel)
-            tab:funcV(sel:GetText())
-        end
-    )
-
+    cb:SetScript("OnTextChanged", function(sel) tab:funcV(sel:GetText()) end)
     cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
     cb.f:SetPoint("LEFT", cb, "RIGHT", 10, 0)
-    if tab.key and tab.name and tab.name == "" then
-        D4:INFO("[D4][CreateEditBox] " .. tab.key .. " has no name")
-    end
-
-    if tab.name and tab.name ~= "" then
-        cb.f:SetText(tab.prefix .. D4:Trans("LID_" .. tab.name) .. tab.suffix)
-    end
-
+    if tab.key and tab.name and tab.name == "" then D4:INFO("[D4][CreateEditBox] " .. tab.key .. " has no name") end
+    if tab.name and tab.name ~= "" then cb.f:SetText(tab.prefix .. D4:Trans("LID_" .. tab.name) .. tab.suffix) end
     return cb
 end
 
 function D4:CreateSlider(tab)
     if tab.parent == nil then
         D4:MSG("[D4] Missing Parent for CreateSlider")
-
         return
     end
 
     if tab.key == nil then
         D4:MSG("[D4][CreateSlider] Missing format string:", tab.key, tab.value)
-
         return
     elseif tab.value == nil or type(tonumber(tab.value)) ~= "number" then
         D4:MSG("[D4][CreateSlider] Missing value:", tab.key, tab.value)
-
         return
     end
 
@@ -389,10 +299,7 @@ function D4:CreateSlider(tab)
         slider.High:SetTextColor(1, 1, 1)
     end
 
-    if _G[tab.key .. "High"] then
-        _G[tab.key .. "High"] = slider.High
-    end
-
+    if _G[tab.key .. "High"] then _G[tab.key .. "High"] = slider.High end
     if slider.Text == nil then
         slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
         slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
@@ -401,17 +308,11 @@ function D4:CreateSlider(tab)
 
     slider.Low:SetText(tab.vmin)
     slider.High:SetText(tab.vmax)
-    if tab.name and tab.key and tab.key == "" then
-        D4:INFO("[D4][CreateSlider] " .. tab.name .. " has no key")
-    end
-
+    if tab.name and tab.key and tab.key == "" then D4:INFO("[D4][CreateSlider] " .. tab.name .. " has no key") end
     local struct = D4:Trans("LID_" .. tab.key)
     if struct and tab.value then
         local text = string.format(struct, tab.value)
-        if tab.defaultValue then
-            text = string.format("%s (%s: %s)", text, D4:Trans("LID_DEFAULT"), tab.defaultValue)
-        end
-
+        if tab.defaultValue then text = string.format("%s (%s: %s)", text, D4:Trans("LID_DEFAULT"), tab.defaultValue) end
         slider.Text:SetText(text)
     end
 
@@ -419,61 +320,41 @@ function D4:CreateSlider(tab)
     D4:SetFontSize(slider.High, 10, "THINOUTLINE")
     D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
     slider:SetMinMaxValues(tab.vmin, tab.vmax)
-    if slider.SetObeyStepOnDra then
-        slider:SetObeyStepOnDrag(true)
-    end
-
+    if slider.SetObeyStepOnDra then slider:SetObeyStepOnDrag(true) end
     slider:SetValueStep(tab.steps)
-    if tab.value then
-        slider:SetValue(tab.value)
-    end
-
-    slider:SetScript(
-        "OnValueChanged",
-        function(sel, val)
-            val = string.format("%." .. tab.decimals .. "f", string.format("%." .. tab.decimals .. "f", val / tab.steps) * tab.steps)
-            val = tonumber(val)
-            if TAB and val ~= TAB[tab.key] then
-                TAB[tab.key] = val
-            end
-
-            if tab.funcV2 then
-                tab:funcV2(val)
-            elseif tab.funcV then
-                tab:funcV(val)
-            end
-
-            if tab.func then
-                tab:func(val)
-            end
-
-            local struct2 = D4:Trans("LID_" .. tab.key)
-            if struct2 then
-                local text = string.format(struct2, val)
-                if tab.defaultValue then
-                    text = string.format("%s (%s: %s)", text, D4:Trans("LID_DEFAULT"), tab.defaultValue)
-                end
-
-                slider.Text:SetText(text)
-            else
-                D4:MSG("[D4][CreateSlider][OnValueChanged] Missing format string:", tab.key)
-            end
+    if tab.value then slider:SetValue(tab.value) end
+    slider:SetScript("OnValueChanged", function(sel, val)
+        val = string.format("%." .. tab.decimals .. "f", string.format("%." .. tab.decimals .. "f", val / tab.steps) * tab.steps)
+        val = tonumber(val)
+        if TAB and val ~= TAB[tab.key] then TAB[tab.key] = val end
+        if tab.funcV2 then
+            tab:funcV2(val)
+        elseif tab.funcV then
+            tab:funcV(val)
         end
-    )
+
+        if tab.func then tab:func(val) end
+        local struct2 = D4:Trans("LID_" .. tab.key)
+        if struct2 then
+            local text = string.format(struct2, val)
+            if tab.defaultValue then text = string.format("%s (%s: %s)", text, D4:Trans("LID_DEFAULT"), tab.defaultValue) end
+            slider.Text:SetText(text)
+        else
+            D4:MSG("[D4][CreateSlider][OnValueChanged] Missing format string:", tab.key)
+        end
+    end)
 
     if slider.SetText == nil then
         function slider:SetText(text)
             slider.Text:SetText(text)
         end
     end
-
     return slider
 end
 
 function D4:GetColor(name, from)
     if TAB == nil then
         D4:MSG("[D4] [GetColor] Missing TAB", from)
-
         return 0, 0, 0, 0
     end
 
@@ -481,14 +362,12 @@ function D4:GetColor(name, from)
     local g = TAB[name .. "_G"] or 0
     local b = TAB[name .. "_B"] or 0
     local a = TAB[name .. "_A"] or 0
-
     return r, g, b, a
 end
 
 function D4:SetColor(name, r, g, b, a)
     if TAB == nil then
         D4:MSG("[SetColor] Missing TAB")
-
         return
     end
 
@@ -519,76 +398,45 @@ end
 function D4:AddColorPicker(key, value, func, x, y)
     if TAB == nil then
         D4:MSG("[D4][AddColorPicker] Missing TAB")
-
         return
     end
 
     if key and key == "" then
         D4:INFO("[D4][AddColorPicker] has no key")
-
         return
     end
 
-    if TAB[key .. "_R"] == nil then
-        TAB[key .. "_R"] = value.R
-    end
-
-    if TAB[key .. "_G"] == nil then
-        TAB[key .. "_G"] = value.G
-    end
-
-    if TAB[key .. "_B"] == nil then
-        TAB[key .. "_B"] = value.B
-    end
-
-    if TAB[key .. "_A"] == nil then
-        TAB[key .. "_A"] = value.A
-    end
-
+    if TAB[key .. "_R"] == nil then TAB[key .. "_R"] = value.R end
+    if TAB[key .. "_G"] == nil then TAB[key .. "_G"] = value.G end
+    if TAB[key .. "_B"] == nil then TAB[key .. "_B"] = value.B end
+    if TAB[key .. "_A"] == nil then TAB[key .. "_A"] = value.A end
     local btn = D4:CreateButton(key, PARENT)
     btn:SetSize(180, 25)
     btn:SetPoint("TOPLEFT", PARENT, "TOPLEFT", x, Y)
     btn:SetText(D4:Trans("LID_" .. key))
-    btn:SetScript(
-        "OnClick",
-        function()
-            local r, g, b, a = D4:GetColor(key)
-            if D4:GetWoWBuild() ~= "RETAIL" then
-                a = 1 - a
+    btn:SetScript("OnClick", function()
+        local r, g, b, a = D4:GetColor(key)
+        if D4:GetWoWBuild() ~= "RETAIL" then a = 1 - a end
+        D4:ShowColorPicker(r, g, b, a, function(restore)
+            local newR, newG, newB, newA
+            if restore then
+                newR, newG, newB, newA = unpack(restore)
+            else
+                local alpha = 1
+                if ColorPickerFrame.GetColorAlpha then
+                    alpha = ColorPickerFrame:GetColorAlpha()
+                else
+                    alpha = OpacitySliderFrame:GetValue()
+                end
+
+                if D4:GetWoWBuild() ~= "RETAIL" then alpha = 1 - alpha end
+                newA, newR, newG, newB = alpha, ColorPickerFrame:GetColorRGB()
             end
 
-            D4:ShowColorPicker(
-                r,
-                g,
-                b,
-                a,
-                function(restore)
-                    local newR, newG, newB, newA
-                    if restore then
-                        newR, newG, newB, newA = unpack(restore)
-                    else
-                        local alpha = 1
-                        if ColorPickerFrame.GetColorAlpha then
-                            alpha = ColorPickerFrame:GetColorAlpha()
-                        else
-                            alpha = OpacitySliderFrame:GetValue()
-                        end
-
-                        if D4:GetWoWBuild() ~= "RETAIL" then
-                            alpha = 1 - alpha
-                        end
-
-                        newA, newR, newG, newB = alpha, ColorPickerFrame:GetColorRGB()
-                    end
-
-                    D4:SetColor(key, newR, newG, newB, newA)
-                    if func then
-                        func()
-                    end
-                end
-            )
-        end
-    )
+            D4:SetColor(key, newR, newG, newB, newA)
+            if func then func() end
+        end)
+    end)
 end
 
 function D4:CheckTemplates(templates)
@@ -598,7 +446,6 @@ function D4:CheckTemplates(templates)
     for i, v in ipairs(tab) do
         if not (DoesTemplateExist and DoesTemplateExist(v)) then return false end
     end
-
     return true
 end
 
@@ -615,13 +462,7 @@ function D4:CreateFrame(name, parent, templates)
         fra.CloseButton:SetPoint("TOPRIGHT", fra, "TOPRIGHT", 0, 0)
         fra.CloseButton:SetSize(25, 25)
         fra.CloseButton:SetText("X")
-        fra.CloseButton:SetScript(
-            "OnClick",
-            function(sel, btm)
-                fra:Hide()
-            end
-        )
-
+        fra.CloseButton:SetScript("OnClick", function(sel, btm) fra:Hide() end)
         fra.bg = fra:CreateTexture(name .. ".bg", "ARTWORK")
         fra.bg:SetAllPoints(fra)
         if fra.bg.SetColorTexture then
@@ -629,7 +470,6 @@ function D4:CreateFrame(name, parent, templates)
         else
             fra.bg:SetTexture(0.03, 0.03, 0.03, 0.5)
         end
-
         return fra
     end
 end
@@ -657,7 +497,6 @@ function D4:CreateButton(name, parent, noDefaultTemplate, templates)
         function btn:SetText(text)
             btn.Text:SetText(text)
         end
-
         return btn
     end
 end
@@ -672,17 +511,14 @@ function D4:CreateCheckButton(name, parent, templates)
         btn.cb = CreateFrame("CheckButton", name .. ".cb", btn)
         btn.cb:SetSize(24, 24)
         btn.cb:SetPoint("LEFT", btn, "LEFT", 0, 0)
-        btn.cb:HookScript(
-            "OnClick",
-            function(sel, button)
-                btn:Click()
-                if btn.cb:GetChecked() then
-                    btn.X:SetText("X")
-                else
-                    btn.X:SetText("")
-                end
+        btn.cb:HookScript("OnClick", function(sel, button)
+            btn:Click()
+            if btn.cb:GetChecked() then
+                btn.X:SetText("X")
+            else
+                btn.X:SetText("")
             end
-        )
+        end)
 
         btn.bg = btn:CreateTexture(name .. ".bg", "ARTWORK")
         btn.bg:SetAllPoints(btn.cb)
@@ -713,7 +549,6 @@ function D4:CreateCheckButton(name, parent, templates)
         function btn:GetChecked()
             return btn.cb:GetChecked()
         end
-
         return btn
     end
 end
@@ -736,10 +571,7 @@ function D4:CreateWindow(tab)
     fra:SetScript("OnDragStart", fra.StartMoving)
     fra:SetScript("OnDragStop", fra.StopMovingOrSizing)
     fra:Hide()
-    if fra.TitleText then
-        fra.TitleText:SetText(tab.title)
-    end
-
+    if fra.TitleText then fra.TitleText:SetText(tab.title) end
     return fra
 end
 
@@ -778,16 +610,13 @@ function D4:AppendCategory(name, x, y)
         Y = Y - 50
     end
 
-    D4:AddCategory(
-        {
-            ["name"] = name,
-            ["parent"] = PARENT,
-            ["pTab"] = {"TOPLEFT", x or X, y or Y},
-        }
-    )
+    D4:AddCategory({
+        ["name"] = name,
+        ["parent"] = PARENT,
+        ["pTab"] = {"TOPLEFT", x or X, y or Y},
+    })
 
     Y = Y - 20
-
     return Y
 end
 
@@ -799,7 +628,6 @@ function D4:AppendCheckbox(key, value, func, x, y)
             TABIsNil = true
             D4:MSG("TAB is nil #1")
         end
-
         return Y
     end
 
@@ -809,23 +637,18 @@ function D4:AppendCheckbox(key, value, func, x, y)
         val = TAB[key]
     end
 
-    D4:CreateCheckbox(
-        {
-            ["name"] = key,
-            ["parent"] = PARENT,
-            ["pTab"] = {"TOPLEFT", x or X, y or Y},
-            ["value"] = val,
-            ["funcV"] = function(sel, checked)
-                TAB[key] = checked
-                if func then
-                    func(sel, checked)
-                end
-            end
-        }
-    )
+    D4:CreateCheckbox({
+        ["name"] = key,
+        ["parent"] = PARENT,
+        ["pTab"] = {"TOPLEFT", x or X, y or Y},
+        ["value"] = val,
+        ["funcV"] = function(sel, checked)
+            TAB[key] = checked
+            if func then func(sel, checked) end
+        end
+    })
 
     Y = Y - 20
-
     return Y
 end
 
@@ -833,11 +656,9 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
     Y = Y - 24
     if key == nil then
         D4:MSG("[D4][AppendSlider] Missing key:", key, value)
-
         return
     elseif value == nil then
         D4:MSG("[D4][AppendSlider] Missing value:", key, value)
-
         return
     end
 
@@ -846,17 +667,12 @@ function D4:AppendSlider(key, value, min, max, steps, decimals, func, lstr)
             TABIsNil = true
             D4:MSG("TAB is nil #2")
         end
-
         return Y
     end
 
-    if TAB[key] == nil then
-        TAB[key] = value
-    end
-
+    if TAB[key] == nil then TAB[key] = value end
     if TAB[key] and not (type(TAB[key]) == "number" or type(TAB[key]) == "string") then
         D4:MSG("[D4][AppendSlider] WRONG TYPE value:", TAB[key])
-
         return
     end
 
@@ -890,7 +706,6 @@ function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix, 
             TABIsNil = true
             D4:MSG("TAB is nil #1")
         end
-
         return Y
     end
 
@@ -902,53 +717,39 @@ function D4:AppendEditbox(key, value, func, x, y, numeric, tab, prefix, suffix, 
     end
 
     Y = Y - 4
-    local eb = D4:CreateEditBox(
-        {
-            ["name"] = lstr or key,
-            ["parent"] = PARENT,
-            ["pTab"] = {"TOPLEFT", x or X, y or Y},
-            ["value"] = val,
-            ["funcV"] = function(sel, text)
-                if numeric then
-                    text = tonumber(text)
-                end
-
-                t[key] = text
-                if func then
-                    func(sel, text)
-                end
-            end,
-            ["prefix"] = prefix,
-            ["suffix"] = suffix,
-            ["numeric"] = numeric
-        }
-    )
+    local eb = D4:CreateEditBox({
+        ["name"] = lstr or key,
+        ["parent"] = PARENT,
+        ["pTab"] = {"TOPLEFT", x or X, y or Y},
+        ["value"] = val,
+        ["funcV"] = function(sel, text)
+            if numeric then text = tonumber(text) end
+            t[key] = text
+            if func then func(sel, text) end
+        end,
+        ["prefix"] = prefix,
+        ["suffix"] = suffix,
+        ["numeric"] = numeric
+    })
 
     Y = Y - 20
-
     return Y, eb
 end
 
 function D4:CreateDropdown(key, value, choices, parent, func)
     if TAB == nil then
         D4:MSG("[D4] Missing TAB in CreateDropdown")
-
         return
     end
 
-    if TAB[key] == nil then
-        TAB[key] = value
-    end
-
+    if TAB[key] == nil then TAB[key] = value end
     if key and key == "" then
         D4:INFO("[D4][CreateDropdown] has no key")
-
         return nil
     end
 
     if choices[TAB[key]] == nil then
         D4:INFO("[D4][CreateDropdown] key not exists in TAB")
-
         return nil
     end
 
@@ -959,31 +760,18 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         DropDown:SetDefaultText(D4:Trans("LID_" .. choices[TAB[key]]))
         DropDown:SetPoint("TOPLEFT", X + 5, Y)
         DropDown:SetWidth(200)
-        DropDown:SetupMenu(
-            function(dropdown, rootDescription)
-                if key and key == "" then
-                    D4:INFO("[D4][CreateDropdown] has no key")
-                end
-
-                rootDescription:CreateTitle(D4:Trans("LID_" .. key))
-                for data, name in pairs(choices) do
-                    if key and name and name == "" then
-                        D4:INFO("[D4][CreateDropdown] " .. key .. " has no name")
-                    end
-
-                    rootDescription:CreateButton(
-                        D4:Trans("LID_" .. name),
-                        function()
-                            TAB[key] = data
-                            DropDown:SetDefaultText(D4:Trans("LID_" .. name))
-                            if func then
-                                func(data)
-                            end
-                        end
-                    )
-                end
+        DropDown:SetupMenu(function(dropdown, rootDescription)
+            if key and key == "" then D4:INFO("[D4][CreateDropdown] has no key") end
+            rootDescription:CreateTitle(D4:Trans("LID_" .. key))
+            for data, name in pairs(choices) do
+                if key and name and name == "" then D4:INFO("[D4][CreateDropdown] " .. key .. " has no name") end
+                rootDescription:CreateButton(D4:Trans("LID_" .. name), function()
+                    TAB[key] = data
+                    DropDown:SetDefaultText(D4:Trans("LID_" .. name))
+                    if func then func(data) end
+                end)
             end
-        )
+        end)
     else
         DropDown = CreateFrame("Frame", "WPDemoDropDown", parent, "UIDropDownMenuTemplate")
         DropDown:SetPoint("TOPLEFT", -10, Y)
@@ -994,7 +782,6 @@ function D4:CreateDropdown(key, value, choices, parent, func)
                 for data, name in pairs(choices) do
                     if name and name == "" then
                         D4:INFO("[D4][CreateDropdown] has no name")
-
                         return nil
                     end
 
@@ -1013,16 +800,13 @@ function D4:CreateDropdown(key, value, choices, parent, func)
             TAB[key] = newValue
             UIDropDownMenu_SetText(DropDown, newValue)
             CloseDropDownMenus()
-            if func then
-                func(newValue)
-            end
+            if func then func(newValue) end
         end
     end
 
     local text = parent:CreateFontString(nil, nil, "GameFontNormal")
     text:SetPoint("BOTTOMLEFT", DropDown, "TOPLEFT", X + 16, 2)
     text:SetText(D4:Trans("LID_" .. key))
-
     return DropDown
 end
 

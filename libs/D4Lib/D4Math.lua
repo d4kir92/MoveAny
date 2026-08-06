@@ -5,6 +5,5 @@ function D4:MClamp(val, vmin, vmax)
     elseif val > vmax then
         return vmax
     end
-
     return val
 end

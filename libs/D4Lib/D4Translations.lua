@@ -17,29 +17,21 @@ langs["zhTW"] = true
 function D4:TryTrans(key, lang, ...)
     if key == nil then return "" end
     if key:find("LID_") then return D4:Trans(key, lang, ...) end
-
     return key
 end
 
 function D4:Trans(key, lang, ...)
     D4.trans = D4.trans or {}
-    if lang == nil then
-        lang = GetLocale()
-    end
-
+    if lang == nil then lang = GetLocale() end
     if key and strfind(key, "LID_", 1, true) == nil then
         D4:INFO("[D4]", key)
-
         return key
     end
 
     if langs[lang] == nil then
         missingLang[lang] = true
         local ver = "MISSING"
-        if D4.GetVersion then
-            ver = D4:GetVersion()
-        end
-
+        if D4.GetVersion then ver = D4:GetVersion() end
         D4:MSG("[GET] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", ..., ")")
     end
 
@@ -47,10 +39,7 @@ function D4:Trans(key, lang, ...)
     if key and key ~= "" and key ~= "LID_" and D4.trans["enUS"] and D4.trans["enUS"][key] == nil and key and key ~= "" and missingTranslationsEn[key] == nil then
         missingTranslationsEn[key] = true
         local ver = "MISSING"
-        if D4.GetVersion then
-            ver = D4:GetVersion()
-        end
-
+        if D4.GetVersion then ver = D4:GetVersion() end
         D4:MSG("TRANSLATION-KEY IS MISSING [" .. key .. "]", ver, "(", lang, ..., ")")
     end
 
@@ -63,20 +52,13 @@ function D4:Trans(key, lang, ...)
         if key and key ~= "" and key ~= "LID_" and missingTranslations[key] == nil then
             missingTranslations[key] = true
             local ver = "MISSING"
-            if D4.GetVersion then
-                ver = D4:GetVersion()
-            end
-
+            if D4.GetVersion then ver = D4:GetVersion() end
             D4:MSG("TRANSLATION MISSING [" .. key .. "]", ver, "(", lang, ..., ")")
         end
-
         return key
     end
 
-    if select(1, ...) then
-        result = string.format(result, ...)
-    end
-
+    if select(1, ...) then result = string.format(result, ...) end
     return result or key
 end
 
@@ -84,35 +66,28 @@ function D4:AddTrans(lang, key, value)
     D4.trans = D4.trans or {}
     if lang == nil then
         D4:MSG("[D4:AddTrans] lang is nil")
-
         return false
     end
 
     if key and strfind(key, "LID_", 1, true) == nil then
         D4:MSG("[D4:AddTrans] Missing LID_ for " .. key)
-
         return false
     end
 
     if langs[lang] == nil then
         missingLang[lang] = true
         local ver = "MISSING"
-        if D4.GetVersion then
-            ver = D4:GetVersion()
-        end
-
+        if D4.GetVersion then ver = D4:GetVersion() end
         D4:MSG("[ADD] LANGUAGE IS MISSING [" .. lang .. "]", ver, "(", value, ")")
     end
 
     if key == nil then
         D4:MSG("[D4][AddTrans] key is nil")
-
         return false
     end
 
     if value == nil then
         D4:MSG("[D4][AddTrans] value is nil")
-
         return false
     end
 

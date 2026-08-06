@@ -25,14 +25,8 @@ function D4:UpdatePosition(button, position, parent)
     pos[button] = position or 225
     local angle = rad(pos[button])
     local x, y, q = cos(angle), sin(angle), 1
-    if x < 0 then
-        q = q + 1
-    end
-
-    if y > 0 then
-        q = q + 2
-    end
-
+    if x < 0 then q = q + 1 end
+    if y > 0 then q = q + 2 end
     local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
     local qt = mmShapes[minimapShape]
     local w = (Minimap:GetWidth() / 2) + button:GetWidth() / 2 - button:GetWidth() / 5
@@ -49,19 +43,12 @@ function D4:UpdatePosition(button, position, parent)
     end
 
     if InCombatLockdown() and button:IsProtected() then
-        D4:After(
-            0.1,
-            function()
-                D4:UpdatePosition(button, position, parent)
-            end, "UpdatePosition"
-        )
-
+        D4:After(0.1, function() D4:UpdatePosition(button, position, parent) end, "UpdatePosition")
         return false
     end
 
     button:ClearAllPoints()
     button:SetPoint("CENTER", parent, "CENTER", x, y)
-
     return true
 end
 
@@ -72,28 +59,22 @@ end
 function D4:CreateMinimapButton(params)
     if params.icon == nil and params.atlas == nil then
         D4:MSG("[CreateMinimapButton] Missing Icon/Atlas")
-
         return
     end
 
     if params.name == nil then
         D4:MSG("[CreateMinimapButton] Missing Name")
-
         return
     end
 
     if params.dbtab == nil then
         D4:MSG("[CreateMinimapButton] Missing Database")
-
         return
     end
 
     params.sw = params.sw or 31
     params.sh = params.sh or 31
-    if params.border == nil then
-        params.border = true
-    end
-
+    if params.border == nil then params.border = true end
     params.dbtab[params.name] = params.dbtab[params.name] or {}
     _G["MinimapButton_D4Lib_LibDBIcon_" .. params.name] = CreateFrame("Button", "MinimapButton_D4Lib_LibDBIcon_" .. params.name, params.parent or Minimap)
     local btn = _G["MinimapButton_D4Lib_LibDBIcon_" .. params.name]
@@ -122,41 +103,32 @@ function D4:CreateMinimapButton(params)
         btn:RegisterForClicks("AnyUp")
         btn:RegisterForDrag("LeftButton")
         btn:SetMovable(true)
-        btn:SetScript(
-            "OnDragStart",
-            function(sel)
-                d4_isMouseDown[sel] = true
-                sel:SetScript(
-                    "OnUpdate",
-                    function(se)
-                        local mx, my = Minimap:GetCenter()
-                        local px, py = GetCursorPosition()
-                        local scale = Minimap:GetEffectiveScale()
-                        px, py = px / scale, py / scale
-                        local posi = 0
-                        if se.db then
-                            posi = deg(atan2(py - my, px - mx)) % 360
-                            se.db.minimapPos = posi
-                        else
-                            posi = deg(atan2(py - my, px - mx)) % 360
-                            se.minimapPos = posi
-                        end
+        btn:SetScript("OnDragStart", function(sel)
+            d4_isMouseDown[sel] = true
+            sel:SetScript("OnUpdate", function(se)
+                local mx, my = Minimap:GetCenter()
+                local px, py = GetCursorPosition()
+                local scale = Minimap:GetEffectiveScale()
+                px, py = px / scale, py / scale
+                local posi = 0
+                if se.db then
+                    posi = deg(atan2(py - my, px - mx)) % 360
+                    se.db.minimapPos = posi
+                else
+                    posi = deg(atan2(py - my, px - mx)) % 360
+                    se.minimapPos = posi
+                end
 
-                        D4:UpdatePosition(se, posi)
-                    end
-                )
+                D4:UpdatePosition(se, posi)
+            end)
 
-                sel.tooltip:Hide()
-            end
-        )
+            sel.tooltip:Hide()
+        end)
 
-        btn:SetScript(
-            "OnDragStop",
-            function(sel)
-                sel:SetScript("OnUpdate", nil)
-                d4_isMouseDown[sel] = false
-            end
-        )
+        btn:SetScript("OnDragStop", function(sel)
+            sel:SetScript("OnUpdate", nil)
+            d4_isMouseDown[sel] = false
+        end)
     end
 
     btn.overlay = btn:CreateTexture(nil, "OVERLAY")
@@ -174,93 +146,68 @@ function D4:CreateMinimapButton(params)
         btn.icon:SetSize(params.sw * 0.65, params.sh * 0.65)
     end
 
-    if params.border == false then
-        btn.overlay:Hide()
-    end
-
-    btn:SetScript(
-        "OnClick",
-        function(sel, btnName)
-            if d4_isMouseDown[sel] then return end
-            if btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
-                params:funcSL()
-            elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then
-                params:funcSR()
-            elseif btnName == "LeftButton" and params.funcL then
-                params:funcL()
-            elseif btnName == "RightButton" and params.funcR then
-                params:funcR()
-            elseif btnName == "MiddleButton" and params.funcM then
-                params:funcM()
-            end
+    if params.border == false then btn.overlay:Hide() end
+    btn:SetScript("OnClick", function(sel, btnName)
+        if d4_isMouseDown[sel] then return end
+        if btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
+            params:funcSL()
+        elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then
+            params:funcSR()
+        elseif btnName == "LeftButton" and params.funcL then
+            params:funcL()
+        elseif btnName == "RightButton" and params.funcR then
+            params:funcR()
+        elseif btnName == "MiddleButton" and params.funcM then
+            params:funcM()
         end
-    )
+    end)
 
     btn.tooltip = CreateFrame("GameTooltip", params.name .. "_tooltip", UIParent, "GameTooltipTemplate")
-    btn:SetScript(
-        "OnEnter",
-        function(sel)
-            btn.tooltip:SetOwner(sel, "ANCHOR_RIGHT")
-            if params.vTT then
-                for i, v in pairs(params.vTT) do
-                    btn.tooltip:AddDoubleLine(v[1], v[2])
-                end
+    btn:SetScript("OnEnter", function(sel)
+        btn.tooltip:SetOwner(sel, "ANCHOR_RIGHT")
+        if params.vTT then
+            for i, v in pairs(params.vTT) do
+                btn.tooltip:AddDoubleLine(v[1], v[2])
             end
-
-            if params.vTTUpdate then
-                params:vTTUpdate(btn.tooltip)
-            end
-
-            btn.tooltip:Show()
         end
-    )
 
-    btn:SetScript(
-        "OnLeave",
-        function(sel)
-            btn.tooltip:Hide()
-        end
-    )
+        if params.vTTUpdate then params:vTTUpdate(btn.tooltip) end
+        btn.tooltip:Show()
+    end)
 
+    btn:SetScript("OnLeave", function(sel) btn.tooltip:Hide() end)
     if AddonCompartmentFrame and (params.addoncomp == nil or params.addoncomp == true) then
-        AddonCompartmentFrame:RegisterAddon(
-            {
-                text = params.name,
-                icon = params.icon,
-                registerForAnyClick = true,
-                notCheckable = true,
-                func = function(button, menuInputData, menu)
-                    local btnName = menuInputData.buttonName
-                    if btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
-                        params:funcSL()
-                    elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then
-                        params:funcSR()
-                    elseif btnName == "MiddleButton" and IsShiftKeyDown() and params.funcSM then
-                        params:funcSM()
-                    elseif btnName == "LeftButton" and params.funcL then
-                        params:funcL()
-                    elseif btnName == "RightButton" and params.funcR then
-                        params:funcR()
-                    elseif btnName == "MiddleButton" and params.funcM then
-                        params:funcM()
+        AddonCompartmentFrame:RegisterAddon({
+            text = params.name,
+            icon = params.icon,
+            registerForAnyClick = true,
+            notCheckable = true,
+            func = function(button, menuInputData, menu)
+                local btnName = menuInputData.buttonName
+                if btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
+                    params:funcSL()
+                elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then
+                    params:funcSR()
+                elseif btnName == "MiddleButton" and IsShiftKeyDown() and params.funcSM then
+                    params:funcSM()
+                elseif btnName == "LeftButton" and params.funcL then
+                    params:funcL()
+                elseif btnName == "RightButton" and params.funcR then
+                    params:funcR()
+                elseif btnName == "MiddleButton" and params.funcM then
+                    params:funcM()
+                end
+            end,
+            funcOnEnter = function(button)
+                MenuUtil.ShowTooltip(button, function(tooltip)
+                    if not tooltip or not tooltip.AddLine then return end
+                    for i, v in pairs(params.vTT) do
+                        tooltip:AddDoubleLine(v[1], v[2])
                     end
-                end,
-                funcOnEnter = function(button)
-                    MenuUtil.ShowTooltip(
-                        button,
-                        function(tooltip)
-                            if not tooltip or not tooltip.AddLine then return end
-                            for i, v in pairs(params.vTT) do
-                                tooltip:AddDoubleLine(v[1], v[2])
-                            end
-                        end
-                    )
-                end,
-                funcOnLeave = function(button)
-                    MenuUtil.HideTooltip(button)
-                end,
-            }
-        )
+                end)
+            end,
+            funcOnLeave = function(button) MenuUtil.HideTooltip(button) end,
+        })
     end
 
     if not params.noalpha then
@@ -268,36 +215,18 @@ function D4:CreateMinimapButton(params)
         local animOut = btn.fadeOut:CreateAnimation("Alpha")
         animOut:SetOrder(1)
         animOut:SetDuration(0.1)
-        if animOut.SetFromAlpha then
-            animOut:SetFromAlpha(1)
-        end
-
-        if animOut.SetToAlpha then
-            animOut:SetToAlpha(0)
-        end
-
+        if animOut.SetFromAlpha then animOut:SetFromAlpha(1) end
+        if animOut.SetToAlpha then animOut:SetToAlpha(0) end
         animOut:SetStartDelay(0.1)
-        if btn.fadeOut and btn.fadeOut.SetToFinalAlpha then
-            btn.fadeOut:SetToFinalAlpha(true)
-        end
-
+        if btn.fadeOut and btn.fadeOut.SetToFinalAlpha then btn.fadeOut:SetToFinalAlpha(true) end
         btn.fadeIn = btn:CreateAnimationGroup()
         local animIn = btn.fadeIn:CreateAnimation("Alpha")
         animIn:SetOrder(1)
         animIn:SetDuration(0.1)
-        if animIn.SetFromAlpha then
-            animIn:SetFromAlpha(0)
-        end
-
-        if animIn.SetToAlpha then
-            animIn:SetToAlpha(1)
-        end
-
+        if animIn.SetFromAlpha then animIn:SetFromAlpha(0) end
+        if animIn.SetToAlpha then animIn:SetToAlpha(1) end
         animIn:SetStartDelay(0.1)
-        if btn.fadeIn and btn.fadeIn.SetToFinalAlpha then
-            btn.fadeIn:SetToFinalAlpha(true)
-        end
-
+        if btn.fadeIn and btn.fadeIn.SetToFinalAlpha then btn.fadeIn:SetToFinalAlpha(true) end
         local insideBtn = false
         local insideMinimap = false
         local oldState = false
@@ -328,46 +257,27 @@ function D4:CreateMinimapButton(params)
             end
         end
 
-        btn:HookScript(
-            "OnEnter",
-            function()
-                insideBtn = true
-                BtnThink()
-            end
-        )
+        btn:HookScript("OnEnter", function()
+            insideBtn = true
+            BtnThink()
+        end)
 
-        btn:HookScript(
-            "OnLeave",
-            function()
-                insideBtn = false
-                BtnThink()
-            end
-        )
+        btn:HookScript("OnLeave", function()
+            insideBtn = false
+            BtnThink()
+        end)
 
-        Minimap:HookScript(
-            "OnEnter",
-            function()
-                insideMinimap = true
-                BtnThink()
-            end
-        )
+        Minimap:HookScript("OnEnter", function()
+            insideMinimap = true
+            BtnThink()
+        end)
 
-        Minimap:HookScript(
-            "OnLeave",
-            function()
-                insideMinimap = false
-                BtnThink()
-            end
-        )
+        Minimap:HookScript("OnLeave", function()
+            insideMinimap = false
+            BtnThink()
+        end)
 
-        D4:After(
-            4,
-            function()
-                if D4:GetParent(btn) == Minimap then
-                    btn.fadeOut:Play()
-                end
-            end, "[D4] MinimapInit"
-        )
+        D4:After(4, function() if D4:GetParent(btn) == Minimap then btn.fadeOut:Play() end end, "[D4] MinimapInit")
     end
 
     if params.dbkey and params.dbkey ~= "" then
@@ -387,14 +297,12 @@ function D4:CreateMinimapButton(params)
     elseif params.dbkey == nil then
         D4:MSG("Missing dbkey in CreateMinimapButton", params.name, params.dbkey)
     end
-
     return btn
 end
 
 function D4:ShowMMBtn(name)
     if name == nil then
         D4:MSG("[ShowMMBtn] Missing Name")
-
         return
     end
 
@@ -409,7 +317,6 @@ end
 function D4:HideMMBtn(name)
     if name == nil then
         D4:MSG("[HideMMBtn] Missing Name")
-
         return
     end
 
@@ -427,29 +334,19 @@ function D4:UpdateLTP()
         local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"
         --local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
         local btnParent = _G["LeaPlusGlobalMinimapCombinedButtonFrame"]
-        D4:ForeachChildren(
-            Minimap,
-            function(child)
-                local name = D4:GetName(child)
-                if name then
-                    local s1 = string.find(string.lower(name), "libdbicon")
-                    if s1 and s1 > 1 and child.ltp == nil then
-                        child.ltp = true
-                        child:SetScale(0.75)
-                        D4:UpdatePosition(child, pos[child])
-                        if CombineAddonButtons and btnParent then
-                            child:SetParent(btnParent)
-                        end
-                    end
+        D4:ForeachChildren(Minimap, function(child)
+            local name = D4:GetName(child)
+            if name then
+                local s1 = string.find(string.lower(name), "libdbicon")
+                if s1 and s1 > 1 and child.ltp == nil then
+                    child.ltp = true
+                    child:SetScale(0.75)
+                    D4:UpdatePosition(child, pos[child])
+                    if CombineAddonButtons and btnParent then child:SetParent(btnParent) end
                 end
-            end, "MMBtns"
-        )
+            end
+        end, "MMBtns")
     end
 end
 
-D4:After(
-    4,
-    function()
-        D4:UpdateLTP()
-    end, "UpdateLTP"
-)
+D4:After(4, function() D4:UpdateLTP() end, "UpdateLTP")

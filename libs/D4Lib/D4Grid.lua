@@ -4,7 +4,6 @@ function D4:Grid(n, snap)
     n = n or 0
     snap = snap or 10
     local mod = n % snap
-
     return (mod > (snap / 2)) and (n - mod + snap) or (n - mod)
 end
 
@@ -105,7 +104,6 @@ function D4:CreateGrid()
     end
 
     D4:UpdateGrid()
-
     return grid
 end
 
@@ -136,15 +134,11 @@ end
 function D4:HideGrid(frame)
     D4:AddHelper(frame, true)
     D4:CreateGrid()
-    if grid then
-        grid:Hide()
-    end
+    if grid then grid:Hide() end
 end
 
 function D4:ShowGrid(frame)
     D4:AddHelper(frame, false)
     D4:CreateGrid()
-    if grid then
-        grid:Show()
-    end
+    if grid then grid:Show() end
 end
