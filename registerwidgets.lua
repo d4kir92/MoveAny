@@ -156,6 +156,12 @@ function MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vm
 	if slider.Text == nil then
 		slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
 		slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
+		if lanArray then
+			slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
+		else
+			slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
+		end
+
 		MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
 		slider.Text:SetTextColor(1, 1, 1)
 	end
@@ -364,6 +370,7 @@ function MoveAny:MenuOptions(opt, frame)
 			end)
 
 			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
@@ -462,6 +469,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 				if sliderCount.Text == nil then
 					sliderCount.Text = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
+					sliderCount.Text:SetText(MoveAny:Trans("LID_COUNT") .. ": " .. count)
 					sliderCount.Text:SetPoint("TOP", sliderCount, "TOP", 0, 16)
 					MoveAny:SetFontSize(sliderCount.Text, 12, "THINOUTLINE")
 					sliderCount.Text:SetTextColor(1, 1, 1)
@@ -521,6 +529,7 @@ function MoveAny:MenuOptions(opt, frame)
 				if sliderRows.Text == nil then
 					sliderRows.Text = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
 					sliderRows.Text:SetPoint("TOP", sliderRows, "TOP", 0, 16)
+					sliderRows.Text:SetText(MoveAny:Trans("LID_ROWS") .. ": " .. rows)
 					MoveAny:SetFontSize(sliderRows.Text, 12, "THINOUTLINE")
 					sliderRows.Text:SetTextColor(1, 1, 1)
 				end
@@ -579,6 +588,7 @@ function MoveAny:MenuOptions(opt, frame)
 				if sliderOffset.Text == nil then
 					sliderOffset.Text = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
 					sliderOffset.Text:SetPoint("TOP", sliderOffset, "TOP", 0, 16)
+					sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
 					MoveAny:SetFontSize(sliderOffset.Text, 12, "THINOUTLINE")
 					sliderOffset.Text:SetTextColor(1, 1, 1)
 				end
@@ -612,6 +622,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end)
 
 				flipped.text = flipped:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+				flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
 				MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
 				flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
 				flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
@@ -648,6 +659,7 @@ function MoveAny:MenuOptions(opt, frame)
 				if slider.Text == nil then
 					slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
 					slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
+					slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. opts["SPACING"])
 					MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
 					slider.Text:SetTextColor(1, 1, 1)
 				end
@@ -687,6 +699,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end)
 
 				catstealth.text = catstealth:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+				catstealth.text:SetText(MoveAny:Trans("LID_CHANGEONCATSTEALTH"))
 				MoveAny:SetFontSize(catstealth.text, 12, "THINOUTLINE")
 				catstealth.text:SetPoint("LEFT", catstealth, "RIGHT", 0, 0)
 				catstealth.text:SetText(MoveAny:Trans("LID_CHANGEONCATSTEALTH"))
