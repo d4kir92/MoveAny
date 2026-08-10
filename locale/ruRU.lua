@@ -257,6 +257,13 @@ MoveAny:AddTrans("ruRU", "LID_SUPERTRACKEDFRAME", "Масштаб точек м�
 MoveAny:AddTrans("ruRU", "LID_UtilityCooldownViewer", "Важные способности и эффекты (Трекер восстановления)")
 MoveAny:AddTrans("ruRU", "LID_QUESTITEMSANCHOR", "Крепление предметов заданий")
 MoveAny:AddTrans("ruRU", "LID_PLAYERFRAMEGROUPINDICATOR", "Номер группы игрока")
+MoveAny:AddTrans("ruRU", "LID_LOCKWINDOWS", "Заблокировать окна")
+MoveAny:AddTrans("ruRU", "LID_UNLOCKWINDOWS", "Разблокировать окна")
+MoveAny:AddTrans("ruRU", "LID_LOCKEDWINDOWS", "Окна заблокированы")
+MoveAny:AddTrans("ruRU", "LID_WINDOWSARENOWUNLOCKED", "Окна теперь разблокированы")
+MoveAny:AddTrans("ruRU", "LID_WINDOWSARENOWLOCKED", "Окна теперь заблокированы")
+MoveAny:AddTrans("ruRU", "LID_POSITION", "Позиция")
+MoveAny:AddTrans("ruRU", "LID_SCALE", "Масштаб")
 if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
     MoveAny:AddTrans("ruRU", "LID_ACTIONBARS", "Панели действий 1 + 5 + 6")
     MoveAny:AddTrans("ruRU", "LID_ACTIONBAR1", "Панель действий 1 (главная панель)")
