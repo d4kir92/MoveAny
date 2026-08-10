@@ -24,7 +24,7 @@ function D4:Trans(key, lang, ...)
     D4.trans = D4.trans or {}
     if lang == nil then lang = GetLocale() end
     if key and strfind(key, "LID_", 1, true) == nil then
-        D4:INFO("[D4]", key)
+        D4:INFO("[D4] PREFIX missing:", key)
         return key
     end
 

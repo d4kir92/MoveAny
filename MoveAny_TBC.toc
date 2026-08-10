@@ -1,8 +1,17 @@
 ## Interface: 20506
 ## Version: 1.9.38
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff55d2ffD4KiR |T132115:16:16:0:0|t
-## Notes: Move Any Ui or Frame
+## Notes: MoveAny is an add-on that lets you unlock and move user interface elements
+## Notes-deDE: MoveAny ist ein Add-on, mit dem Sie Elemente der Benutzeroberfläche entsperren und verschieben können
+## Notes-esES: MoveAny es un complemento que te permite desbloquear y mover elementos de la interfaz de usuario
+## Notes-esMX: MoveAny es un complemento que te permite desbloquear y mover elementos de la interfaz de usuario
+## Notes-frFR: MoveAny est un module complémentaire qui vous permet de déverrouiller et de déplacer les éléments de l'interface utilisateur
+## Notes-itIT: MoveAny è un add-on che ti permette di sbloccare e spostare gli elementi dell'interfaccia utente
+## Notes-koKR: MoveAny는 사용자 인터페이스 요소의 잠금을 해제하고 이동할 수 있는 애드온입니다
+## Notes-ptBR: MoveAny é um addon que permite desbloquear e mover elementos da interface do usuário
 ## Notes-ruRU: MoveAny - аддон, с помощью которого можно разблокировать и перемещать элементы интерфейса
+## Notes-zhCN: MoveAny 是一个可以让你解锁并移动用户界面元素的插件
+## Notes-zhTW: MoveAny 是一個可以讓你解鎖並移動使用者介面元素的外掛
 ## Author: D4KiR |T132115:16:16:0:0|t
 ## Category: UI Overhaul
 ## Category-deDE: UI-Überholung
@@ -31,6 +40,7 @@ libs\buffutils.lua
 locale\enUS.lua
 locale\deDE.lua
 locale\esES.lua
+locale\esMX.lua
 locale\frFR.lua
 locale\itIT.lua
 locale\koKR.lua
