@@ -482,45 +482,10 @@ end, "D4 1")
 if D4:GetWoWBuild() == "CLASSIC" then
     D4:After(2, function()
         -- FIX HEALTH
-        D4.fixedHealth = D4.fixedHealth or false
-        if D4.fixedHealth == false then
-            D4.fixedHealth = true
-            local foundText = false
-            local HealthBarTexts = {_G["TargetFrameHealthBar"].RightText, _G["TargetFrameHealthBar"].LeftText, _G["TargetFrameHealthBar"].TextString, _G["TargetFrameTextureFrameDeadText"]}
-            for _, healthBar in pairs(HealthBarTexts) do
-                if _G["TargetFrameHealthBar"].TextString ~= nil then foundText = true end
-            end
-
-            if foundText == false then
-                _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarText", "BORDER", "TextStatusBarText")
-                _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarTextLeft", "BORDER", "TextStatusBarText")
-                _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarTextRight", "BORDER", "TextStatusBarText")
-                _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarText", "BORDER", "TextStatusBarText")
-                _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarTextLeft", "BORDER", "TextStatusBarText")
-                _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarTextRight", "BORDER", "TextStatusBarText")
-                _G["TargetFrameHealthBarText"]:ClearAllPoints()
-                _G["TargetFrameHealthBarTextLeft"]:ClearAllPoints()
-                _G["TargetFrameHealthBarTextRight"]:ClearAllPoints()
-                _G["TargetFrameManaBarText"]:ClearAllPoints()
-                _G["TargetFrameManaBarTextLeft"]:ClearAllPoints()
-                _G["TargetFrameManaBarTextRight"]:ClearAllPoints()
-                _G["TargetFrameHealthBarText"]:SetPoint("CENTER", _G["TargetFrameHealthBar"], "CENTER", 0, 0)
-                _G["TargetFrameHealthBarTextLeft"]:SetPoint("LEFT", _G["TargetFrameHealthBar"], "LEFT", 0, 0)
-                _G["TargetFrameHealthBarTextRight"]:SetPoint("RIGHT", _G["TargetFrameHealthBar"], "RIGHT", 0, 0)
-                _G["TargetFrameManaBarText"]:SetPoint("CENTER", _G["TargetFrameManaBar"], "CENTER", 0, 0)
-                _G["TargetFrameManaBarTextLeft"]:SetPoint("LEFT", _G["TargetFrameManaBar"], "LEFT", 2, 0)
-                _G["TargetFrameManaBarTextRight"]:SetPoint("RIGHT", _G["TargetFrameManaBar"], "RIGHT", -2, 0)
-                _G["TargetFrameHealthBar"].LeftText = _G["TargetFrameHealthBarTextLeft"]
-                _G["TargetFrameHealthBar"].RightText = _G["TargetFrameHealthBarTextRight"]
-                _G["TargetFrameManaBar"].LeftText = _G["TargetFrameManaBarTextLeft"]
-                _G["TargetFrameManaBar"].RightText = _G["TargetFrameManaBarTextRight"]
-                UnitFrameHealthBar_Initialize("target", _G["TargetFrameHealthBar"], _G["TargetFrameHealthBarText"], true)
-                UnitFrameManaBar_Initialize("target", _G["TargetFrameManaBar"], _G["TargetFrameManaBarText"], true)
-                if FocusFrame then
-                    UnitFrameHealthBar_Initialize("focus", _G["FocusFrameHealthBar"], _G["FocusFrameHealthBarText"], true)
-                    UnitFrameManaBar_Initialize("focus", _G["FocusFrameManaBar"], _G["FocusFrameManaBarText"], true)
-                end
-
+        TargetFrameTextureFrame.fixedHealth = TargetFrameTextureFrame.fixedHealth or false
+        if TargetFrameTextureFrame.fixedHealth == false then
+            TargetFrameTextureFrame.fixedHealth = true
+            if TargetFrameTextureFrame and TargetFrameTextureFrame.HealthBarText then
                 local function TextStatusBar_UpdateTextStringWithValues(statusFrame, textString, value, valueMin, valueMax)
                     if statusFrame.LeftText and statusFrame.RightText then
                         statusFrame.LeftText:SetText("")
@@ -603,7 +568,133 @@ if D4:GetWoWBuild() == "CLASSIC" then
                     end
                 end
 
-                hooksecurefunc("TextStatusBar_UpdateTextStringWithValues", TextStatusBar_UpdateTextStringWithValues)
+                if TargetFrameHealthBar and TargetFrameTextureFrame.HealthBarText then hooksecurefunc(TargetFrameHealthBar, "UpdateTextStringWithValues", TextStatusBar_UpdateTextStringWithValues) end
+                if TargetFrameManaBar and TargetFrameTextureFrame.ManaBarText then hooksecurefunc(TargetFrameManaBar, "UpdateTextStringWithValues", TextStatusBar_UpdateTextStringWithValues) end
+                if FocusFrameHealthBar and FocusFrameTextureFrame.HealthBarText then hooksecurefunc(FocusFrameHealthBar, "UpdateTextStringWithValues", TextStatusBar_UpdateTextStringWithValues) end
+                if FocusFrameManaBar and FocusFrameTextureFrame.ManaBarText then hooksecurefunc(FocusFrameManaBar, "UpdateTextStringWithValues", TextStatusBar_UpdateTextStringWithValues) end
+            else
+                local foundText = false
+                local HealthBarTexts = {_G["FocusFrameHealthBar"].RightText, _G["TargetFrameHealthBar"].LeftText, _G["TargetFrameHealthBar"].TextString, _G["TargetFrameTextureFrameDeadText"]}
+                for _, healthBar in pairs(HealthBarTexts) do
+                    if _G["TargetFrameHealthBar"].TextString ~= nil then foundText = true end
+                end
+
+                if foundText == false then
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarText", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarTextLeft", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameHealthBarTextRight", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarText", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarTextLeft", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameTextureFrame"]:CreateFontString("TargetFrameManaBarTextRight", "BORDER", "TextStatusBarText")
+                    _G["TargetFrameHealthBarText"]:ClearAllPoints()
+                    _G["TargetFrameHealthBarTextLeft"]:ClearAllPoints()
+                    _G["TargetFrameHealthBarTextRight"]:ClearAllPoints()
+                    _G["TargetFrameManaBarText"]:ClearAllPoints()
+                    _G["TargetFrameManaBarTextLeft"]:ClearAllPoints()
+                    _G["TargetFrameManaBarTextRight"]:ClearAllPoints()
+                    _G["TargetFrameHealthBarText"]:SetPoint("CENTER", _G["TargetFrameHealthBar"], "CENTER", 0, 0)
+                    _G["TargetFrameHealthBarTextLeft"]:SetPoint("LEFT", _G["TargetFrameHealthBar"], "LEFT", 0, 0)
+                    _G["TargetFrameHealthBarTextRight"]:SetPoint("RIGHT", _G["TargetFrameHealthBar"], "RIGHT", 0, 0)
+                    _G["TargetFrameManaBarText"]:SetPoint("CENTER", _G["TargetFrameManaBar"], "CENTER", 0, 0)
+                    _G["TargetFrameManaBarTextLeft"]:SetPoint("LEFT", _G["TargetFrameManaBar"], "LEFT", 2, 0)
+                    _G["TargetFrameManaBarTextRight"]:SetPoint("RIGHT", _G["TargetFrameManaBar"], "RIGHT", -2, 0)
+                    _G["TargetFrameHealthBar"].LeftText = _G["TargetFrameHealthBarTextLeft"]
+                    _G["TargetFrameHealthBar"].RightText = _G["TargetFrameHealthBarTextRight"]
+                    _G["TargetFrameManaBar"].LeftText = _G["TargetFrameManaBarTextLeft"]
+                    _G["TargetFrameManaBar"].RightText = _G["TargetFrameManaBarTextRight"]
+                    UnitFrameHealthBar_Initialize("target", _G["TargetFrameHealthBar"], _G["TargetFrameHealthBarText"], true)
+                    UnitFrameManaBar_Initialize("target", _G["TargetFrameManaBar"], _G["TargetFrameManaBarText"], true)
+                    if FocusFrame then
+                        UnitFrameHealthBar_Initialize("focus", _G["FocusFrameHealthBar"], _G["FocusFrameHealthBarText"], true)
+                        UnitFrameManaBar_Initialize("focus", _G["FocusFrameManaBar"], _G["FocusFrameManaBarText"], true)
+                    end
+
+                    if TextStatusBar_UpdateTextStringWithValues then
+                        local function UpdateTextStringWithValues(statusFrame, textString, value, valueMin, valueMax)
+                            if statusFrame.LeftText and statusFrame.RightText then
+                                statusFrame.LeftText:SetText("")
+                                statusFrame.RightText:SetText("")
+                                statusFrame.LeftText:Hide()
+                                statusFrame.RightText:Hide()
+                            end
+
+                            if (tonumber(valueMax) ~= valueMax or valueMax > 0) and not statusFrame.pauseUpdates then
+                                statusFrame:Show()
+                                if (statusFrame.cvar and GetCVar(statusFrame.cvar) == "1" and statusFrame.textLockable) or statusFrame.forceShow then
+                                    textString:Show()
+                                elseif statusFrame.lockShow > 0 and (not statusFrame.forceHideText) then
+                                    textString:Show()
+                                else
+                                    textString:SetText("")
+                                    textString:Hide()
+                                    return
+                                end
+
+                                if value == 0 and statusFrame.zeroText then
+                                    textString:SetText(statusFrame.zeroText)
+                                    statusFrame.isZero = 1
+                                    textString:Show()
+                                    return
+                                end
+
+                                statusFrame.isZero = nil
+                                local valueDisplay = value
+                                local valueMaxDisplay = valueMax
+                                if statusFrame.numericDisplayTransformFunc then
+                                    valueDisplay, valueMaxDisplay = statusFrame.numericDisplayTransformFunc(value, valueMax)
+                                else
+                                    valueDisplay = AbbreviateLargeNumbers(value)
+                                    valueMaxDisplay = AbbreviateLargeNumbers(valueMax)
+                                end
+
+                                local shouldUsePrefix = statusFrame.prefix and (statusFrame.alwaysPrefix or not (statusFrame.cvar and GetCVar(statusFrame.cvar) == "1" and statusFrame.textLockable))
+                                local displayMode = GetCVar("statusTextDisplay")
+                                if statusFrame.showNumeric then displayMode = "NUMERIC" end
+                                if statusFrame.disablePercentages and displayMode == "PERCENT" then displayMode = "NUMERIC" end
+                                if valueMax <= 0 or displayMode == "NUMERIC" or displayMode == "NONE" then
+                                    if shouldUsePrefix then
+                                        textString:SetText(statusFrame.prefix .. " " .. valueDisplay .. " / " .. valueMaxDisplay)
+                                    else
+                                        textString:SetText(valueDisplay .. " / " .. valueMaxDisplay)
+                                    end
+                                elseif displayMode == "BOTH" then
+                                    if statusFrame.LeftText and statusFrame.RightText then
+                                        if not statusFrame.disablePercentages and (not statusFrame.powerToken or statusFrame.powerToken == "MANA") then
+                                            statusFrame.LeftText:SetText(math.ceil((value / valueMax) * 100) .. "%")
+                                            statusFrame.LeftText:Show()
+                                        end
+
+                                        statusFrame.RightText:SetText(valueDisplay)
+                                        statusFrame.RightText:Show()
+                                        textString:Hide()
+                                    else
+                                        valueDisplay = valueDisplay .. " / " .. valueMaxDisplay
+                                        if not statusFrame.disablePercentages then valueDisplay = "(" .. math.ceil((value / valueMax) * 100) .. "%) " .. valueDisplay end
+                                    end
+
+                                    textString:SetText(valueDisplay)
+                                elseif displayMode == "PERCENT" then
+                                    valueDisplay = math.ceil((value / valueMax) * 100) .. "%"
+                                    if shouldUsePrefix then
+                                        textString:SetText(statusFrame.prefix .. " " .. valueDisplay)
+                                    else
+                                        textString:SetText(valueDisplay)
+                                    end
+                                end
+                            else
+                                textString:Hide()
+                                textString:SetText("")
+                                if not statusFrame.alwaysShow then
+                                    statusFrame:Hide()
+                                else
+                                    statusFrame:SetValue(0)
+                                end
+                            end
+                        end
+
+                        hooksecurefunc("TextStatusBar_UpdateTextStringWithValues", UpdateTextStringWithValues)
+                    end
+                end
             end
         end
     end, "FixHealth")
