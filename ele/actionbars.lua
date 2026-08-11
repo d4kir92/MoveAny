@@ -56,13 +56,9 @@ function MoveAny:UpdateVisi()
 			if visiTab[i] and abs[visiTab[i]] then
 				local bar = abs[visiTab[i]]
 				if i ~= 4 and barVisibles[i] or barVisibles[i] and barVisibles[i - 1] then
-					if not bar:IsShown() then
-						bar:Show()
-					end
+					if not bar:IsShown() then bar:Show() end
 				else
-					if bar:IsShown() then
-						bar:Hide()
-					end
+					if bar:IsShown() then bar:Hide() end
 				end
 			end
 		end
@@ -74,28 +70,24 @@ local visiFrame = CreateFrame("Frame")
 MoveAny:RegisterEvent(visiFrame, "CVAR_UPDATE")
 MoveAny:RegisterEvent(visiFrame, "PLAYER_ENTERING_WORLD")
 MoveAny:RegisterEvent(visiFrame, "PLAYER_REGEN_ENABLED")
-MoveAny:OnEvent(
-	visiFrame,
-	function(sel, event, cvar)
-		if event == "PLAYER_REGEN_ENABLED" then
-			if visiPending then
-				visiPending = false
-				MoveAny:UpdateVisi()
-			end
-		elseif event == "PLAYER_ENTERING_WORLD" or cvar == "enableMultiActionBars" then
-			if InCombatLockdown() then
-				visiPending = true
-			else
-				MoveAny:UpdateVisi()
-			end
+MoveAny:OnEvent(visiFrame, function(sel, event, cvar)
+	if event == "PLAYER_REGEN_ENABLED" then
+		if visiPending then
+			visiPending = false
+			MoveAny:UpdateVisi()
 		end
-	end, "UpdateVisi"
-)
+	elseif event == "PLAYER_ENTERING_WORLD" or cvar == "enableMultiActionBars" then
+		if InCombatLockdown() then
+			visiPending = true
+		else
+			MoveAny:UpdateVisi()
+		end
+	end
+end, "UpdateVisi")
 
 MoveAny:UpdateVisi()
 function MoveAny:CheckIfMicroMenuInVehicle(frame)
 	if frame == MAMenuBar and ((PetBattleFrame and PetBattleFrame:IsShown()) or (OverrideActionBar and OverrideActionBar:IsShown())) then return true end
-
 	return false
 end
 
@@ -103,14 +95,12 @@ local abbtns = {}
 function MoveAny:ResetAbBtns(frame)
 	if frame == nil then
 		print("[ResetAbBtns] frame IS NIL")
-
 		return {}
 	end
 
 	local name = MoveAny:GetName(frame)
 	if name == nil then
 		print("[ResetAbBtns] name IS NIL")
-
 		return
 	end
 
@@ -120,39 +110,32 @@ end
 function MoveAny:AddAbBtns(frame, btn)
 	if frame == nil then
 		print("[AddAbBtns] frame IS NIL")
-
 		return
 	end
 
 	local name = MoveAny:GetName(frame)
 	if name == nil then
 		print("[AddAbBtns] name IS NIL")
-
 		return
 	end
 
 	abbtns[name] = abbtns[name] or {}
-	if not tContains(abbtns[name], btn) then
-		tinsert(abbtns[name], btn)
-	end
+	if not tContains(abbtns[name], btn) then tinsert(abbtns[name], btn) end
 end
 
 function MoveAny:GetAbBtns(frame)
 	if frame == nil then
 		print("[GetAbBtns] frame IS NIL")
-
 		return {}
 	end
 
 	local name = MoveAny:GetName(frame)
 	if name == nil then
 		print("[GetAbBtns] name IS NIL")
-
 		return
 	end
 
 	abbtns[name] = abbtns[name] or {}
-
 	return abbtns[name]
 end
 
@@ -162,13 +145,10 @@ local pendingBarUpdate = {}
 local function ScheduleUpdateActionBar(bar, from)
 	if pendingBarUpdate[bar] then return end
 	pendingBarUpdate[bar] = true
-	C_Timer.After(
-		0,
-		function()
-			pendingBarUpdate[bar] = false
-			MoveAny:UpdateActionBar(bar, from)
-		end
-	)
+	C_Timer.After(0, function()
+		pendingBarUpdate[bar] = false
+		MoveAny:UpdateActionBar(bar, from)
+	end)
 end
 
 local HiddenButtons = {}
@@ -176,25 +156,8 @@ local hookedHidden = {}
 function MoveAny:SetupHide(btn)
 	if hookedHidden[btn] == nil then
 		hookedHidden[btn] = true
-		hooksecurefunc(
-			btn,
-			"SetAlpha",
-			function(sel, alpha)
-				if HiddenButtons[sel] ~= nil and alpha and alpha > 0 then
-					sel:SetAlpha(0)
-				end
-			end
-		)
-
-		hooksecurefunc(
-			btn,
-			"EnableMouse",
-			function(sel, enabled)
-				if HiddenButtons[sel] ~= nil and enabled then
-					sel:EnableMouse(false)
-				end
-			end
-		)
+		hooksecurefunc(btn, "SetAlpha", function(sel, alpha) if HiddenButtons[sel] ~= nil and alpha and alpha > 0 then sel:SetAlpha(0) end end)
+		hooksecurefunc(btn, "EnableMouse", function(sel, enabled) if HiddenButtons[sel] ~= nil and enabled then sel:EnableMouse(false) end end)
 	end
 end
 
@@ -216,9 +179,7 @@ function MoveAny:ShowBtn(btn)
 	btn:EnableMouse(true)
 	if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
 		local parent = MicroMenu or MAMenuBar
-		if parent then
-			btn:SetParent(parent)
-		end
+		if parent then btn:SetParent(parent) end
 	end
 end
 
@@ -231,393 +192,235 @@ function MoveAny:UpdateActionBar(bar, from)
 	if insideUpdateActionBar[bar] then return end
 	ma_setpoint_ab = true
 	insideUpdateActionBar[bar] = true
-	xpcall(
-		function(frame)
-			local name = MoveAny:GetName(frame) or BarNames[frame]
-			if name == "StanceBar" then
-				name = "StanceBarAnchor"
-			end
-
-			local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
-			opts["ROWS"] = opts["ROWS"] or nil
-			opts["SPACING"] = opts["SPACING"] or dSpacing
-			opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
-			local flipped = opts["FLIPPED"]
-			if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then
-				opts["ROWS"] = abpoints[name]["ROWS"]
-			end
-
-			local rows = tonumber(opts["ROWS"] or 1)
-			local spacing = tonumber(opts["SPACING"])
-			local offset = opts["OFFSET"] or 0
-			if frame == MAMenuBar then
-				if MoveAny:CheckIfMicroMenuInVehicle(frame) then
-					frame:SetScale(1)
-					rows = 2
-					if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
-						spacing = 15
-						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
-							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
-						elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
-							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 3, -3)
-						end
-					else
-						if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
-							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
-						elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
-							MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
-						end
-					end
-
-					frame:SetFrameLevel(1003)
-					frame:SetFrameStrata("DIALOG")
-				elseif frame == MAMenuBar then
-					frame:SetScale(frame:GetScale() or 1)
-					frame:SetFrameLevel(1)
-					frame:SetFrameStrata("MEDIUM")
-				end
-			end
-
-			if frame == MAMenuBar then
-				if MoveAny:GetWoWBuild() == "RETAIL" then
-					if rows == 13 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 11 or rows == 1 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 10 or rows == 5 or rows == 2 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					else
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					end
-				elseif MoveAny:GetWoWBuild() == "TBC" then
-					if SocialsMicroButton then
-						MoveAny:HideBtn(SocialsMicroButton)
-					end
-
-					if rows == 3 or rows == 9 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-
-						if StoreMicroButton then
-							MoveAny:ShowBtn(StoreMicroButton)
-						end
-					elseif rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 5 or rows == 6 or rows == 7 or rows == 8 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-
-						if StoreMicroButton then
-							MoveAny:HideBtn(StoreMicroButton)
-						end
-					else
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					end
-				elseif MoveAny:GetWoWBuild() == "MISTS" then
-					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 11 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 10 or rows == 5 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:HideBtn(MainMenuMicroButton)
-						end
-					else
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					end
-				elseif MoveAny:GetWoWBuild() == "CATA" then
-					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 11 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 10 or rows == 5 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:HideBtn(MainMenuMicroButton)
-						end
-					else
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					end
-				elseif MoveAny:GetWoWBuild() == "WRATH" then
-					if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					elseif rows == 10 or rows == 5 or rows == 2 then
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					else
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:HideBtn(MainMenuMicroButton)
-						end
-					end
-				elseif MoveAny:GetWoWBuild() == "CLASSIC" then
-					if SocialsMicroButton then
-						MoveAny:HideBtn(SocialsMicroButton)
-					end
-
-					if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 5 or rows == 6 or rows == 7 or rows == 8 then
-						if HelpMicroButton then
-							MoveAny:ShowBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
-					else
-						if HelpMicroButton then
-							MoveAny:HideBtn(HelpMicroButton)
-						end
-
-						if MainMenuMicroButton then
-							MoveAny:ShowBtn(MainMenuMicroButton)
-						end
+	xpcall(function(frame)
+		local name = MoveAny:GetName(frame) or BarNames[frame]
+		if name == "StanceBar" then name = "StanceBarAnchor" end
+		local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
+		opts["ROWS"] = opts["ROWS"] or nil
+		opts["SPACING"] = opts["SPACING"] or dSpacing
+		opts["FLIPPED"] = opts["FLIPPED"] or dFlipped
+		local flipped = opts["FLIPPED"]
+		if opts["ROWS"] == nil and abpoints[name] and abpoints[name]["ROWS"] then opts["ROWS"] = abpoints[name]["ROWS"] end
+		local rows = tonumber(opts["ROWS"] or 1)
+		local spacing = tonumber(opts["SPACING"])
+		local offset = opts["OFFSET"] or 0
+		if frame == MAMenuBar then
+			if MoveAny:CheckIfMicroMenuInVehicle(frame) then
+				frame:SetScale(1)
+				rows = 2
+				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
+					spacing = 15
+					if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
+						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
+					elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
+						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 3, -3)
 					end
 				else
-					MoveAny:INFO("Missing WoW Build for MAMenuBar (MicroMenu)")
+					if C_Widget.IsWidget(PetBattleFrame) and PetBattleFrame:IsShown() then
+						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", -20, 10)
+					elseif C_Widget.IsWidget(OverrideActionBar) and OverrideActionBar:IsShown() then
+						MoveAny:SetPoint(frame, "BOTTOMRIGHT", PetBattleFrame.BottomFrame, "BOTTOMRIGHT", 30, 10)
+					end
 				end
-			end
 
-			local maxbtns = 0
-			local abtns = MoveAny:GetAbBtns(frame)
-			for i = 1, #abtns do
-				local abtn = abtns[i]
-				if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then
-					maxbtns = maxbtns + 1
+				frame:SetFrameLevel(1003)
+				frame:SetFrameStrata("DIALOG")
+			elseif frame == MAMenuBar then
+				frame:SetScale(frame:GetScale() or 1)
+				frame:SetFrameLevel(1)
+				frame:SetFrameStrata("MEDIUM")
+			end
+		end
+
+		if frame == MAMenuBar then
+			if MoveAny:GetWoWBuild() == "RETAIL" then
+				if rows == 13 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 11 or rows == 1 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 10 or rows == 5 or rows == 2 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				else
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
 				end
-			end
-
-			if maxbtns == 0 then
-				maxbtns = 1
-			end
-
-			opts["COUNT"] = tonumber(opts["COUNT"] or maxbtns)
-			local count = opts["COUNT"] or maxbtns
-			local maxB = maxbtns
-			if frame ~= MAMenuBar and frame ~= StanceBar then
-				if count > 0 then
-					maxB = count
+			elseif MoveAny:GetWoWBuild() == "TBC" then
+				if SocialsMicroButton then MoveAny:HideBtn(SocialsMicroButton) end
+				if rows == 3 or rows == 9 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+					if StoreMicroButton then MoveAny:ShowBtn(StoreMicroButton) end
+				elseif rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 5 or rows == 6 or rows == 7 or rows == 8 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+					if StoreMicroButton then MoveAny:HideBtn(StoreMicroButton) end
+				else
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				end
+			elseif MoveAny:GetWoWBuild() == "MISTS" then
+				if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 11 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 10 or rows == 5 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:HideBtn(MainMenuMicroButton) end
+				else
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				end
+			elseif MoveAny:GetWoWBuild() == "CATA" then
+				if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 6 or rows == 7 or rows == 8 or rows == 9 or rows == 12 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 11 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 10 or rows == 5 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:HideBtn(MainMenuMicroButton) end
+				else
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				end
+			elseif MoveAny:GetWoWBuild() == "WRATH" then
+				if rows == 11 or rows == 9 or rows == 8 or rows == 7 or rows == 6 or rows == 4 or rows == 1 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				elseif rows == 10 or rows == 5 or rows == 2 then
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				else
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:HideBtn(MainMenuMicroButton) end
+				end
+			elseif MoveAny:GetWoWBuild() == "CLASSIC" then
+				if SocialsMicroButton then MoveAny:HideBtn(SocialsMicroButton) end
+				if rows == 1 or rows == 2 or rows == 3 or rows == 4 or rows == 5 or rows == 6 or rows == 7 or rows == 8 then
+					if HelpMicroButton then MoveAny:ShowBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
+				else
+					if HelpMicroButton then MoveAny:HideBtn(HelpMicroButton) end
+					if MainMenuMicroButton then MoveAny:ShowBtn(MainMenuMicroButton) end
 				end
 			else
-				maxB = maxbtns
+				MoveAny:INFO("Missing WoW Build for MAMenuBar (MicroMenu)")
+			end
+		end
+
+		local maxbtns = 0
+		local abtns = MoveAny:GetAbBtns(frame)
+		for i = 1, #abtns do
+			local abtn = abtns[i]
+			if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then maxbtns = maxbtns + 1 end
+		end
+
+		if maxbtns == 0 then maxbtns = 1 end
+		opts["COUNT"] = tonumber(opts["COUNT"] or maxbtns)
+		local count = opts["COUNT"] or maxbtns
+		local maxB = maxbtns
+		if frame ~= MAMenuBar and frame ~= StanceBar then
+			if count > 0 then maxB = count end
+		else
+			maxB = maxbtns
+		end
+
+		local cols = maxB / rows
+		if cols % 1 ~= 0 then cols = math.ceil(cols) end
+		if MoveAny:GetAbBtns(frame) and MoveAny:GetAbBtns(frame)[1] then
+			local fSizeW, fSizeH = MoveAny:GetAbBtns(frame)[1]:GetSize()
+			local ofx = MoveAny:GetAbBtns(frame)[1].ofx or 0
+			local ofy = MoveAny:GetAbBtns(frame)[1].ofy or 0
+			local rsw = MoveAny:GetAbBtns(frame)[1].rsw
+			local rsh = MoveAny:GetAbBtns(frame)[1].rsh
+			if rsw then
+				fSizeW = MoveAny:MathR(rsw, 0)
+			else
+				fSizeW = MoveAny:MathR(fSizeW, 0)
 			end
 
-			local cols = maxB / rows
-			if cols % 1 ~= 0 then
-				cols = math.ceil(cols)
+			if rsh then
+				fSizeH = MoveAny:MathR(rsh, 0)
+			else
+				fSizeH = MoveAny:MathR(fSizeH, 0)
 			end
 
-			if MoveAny:GetAbBtns(frame) and MoveAny:GetAbBtns(frame)[1] then
-				local fSizeW, fSizeH = MoveAny:GetAbBtns(frame)[1]:GetSize()
-				local ofx = MoveAny:GetAbBtns(frame)[1].ofx or 0
-				local ofy = MoveAny:GetAbBtns(frame)[1].ofy or 0
-				local rsw = MoveAny:GetAbBtns(frame)[1].rsw
-				local rsh = MoveAny:GetAbBtns(frame)[1].rsh
-				if rsw then
-					fSizeW = MoveAny:MathR(rsw, 0)
-				else
-					fSizeW = MoveAny:MathR(fSizeW, 0)
-				end
-
-				if rsh then
-					fSizeH = MoveAny:MathR(rsh, 0)
-				else
-					fSizeH = MoveAny:MathR(fSizeH, 0)
-				end
-
-				local id = 1
-				local abtns2 = MoveAny:GetAbBtns(frame)
-				for i = 1, #abtns2 do
-					local abtn = abtns2[i]
-					if not InCombatLockdown() then
-						abtn:ClearAllPoints()
-						if flipped then
-							abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
-						else
-							abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
-						end
-
-						if ma_setup[abtn] == nil then
-							ma_setup[abtn] = true
-							if frame == MAMenuBar then
-								hooksecurefunc(
-									abtn,
-									"Hide",
-									function(sel)
-										if ma_abtn_hide[sel] then return end
-										ma_abtn_hide[sel] = true
-										sel:Show()
-										ma_abtn_hide[sel] = false
-									end
-								)
-							else
-								hooksecurefunc(
-									abtn,
-									"Show",
-									function(sel)
-										if ma_abtn_hide[sel] then return end
-										ma_abtn_hide[sel] = true
-										if ma_hide[sel] and sel:IsShown() then
-											sel:Hide()
-										end
-
-										ma_abtn_hide[sel] = false
-									end
-								)
-							end
-						end
-
-						if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
-							ma_hide[abtn] = true
-							abtn:SetParent(MoveAny:GetHidden())
-							if abtn:IsShown() then
-								abtn:Hide()
-							end
-						end
-
-						if frame == MAMenuBar then
-							ma_hide[abtn] = false
-							if not abtn:IsShown() then
-								abtn:Show()
-							end
-						end
-
-						if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then
-							id = id + 1
-						end
-					end
-				end
-
+			local id = 1
+			local abtns2 = MoveAny:GetAbBtns(frame)
+			for i = 1, #abtns2 do
+				local abtn = abtns2[i]
 				if not InCombatLockdown() then
-					frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
-					if frame ~= StanceBar then
-						local sw, sh = frame:GetSize()
-						local osw, osh = MoveAny:GetEleSize(name)
-						sw = MoveAny:MathR(sw)
-						sh = MoveAny:MathR(sh)
-						if osw ~= sw or osh ~= sh then
-							MoveAny:SetEleSize(name, sw, sh)
-						end
+					abtn:ClearAllPoints()
+					if flipped then
+						abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+					else
+						abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+					end
 
-						local mover = MoveAny:GetDragFromName(name)
-						if mover then
-							mover:SetSize(frame:GetSize())
+					if ma_setup[abtn] == nil then
+						ma_setup[abtn] = true
+						if frame == MAMenuBar then
+							hooksecurefunc(abtn, "Hide", function(sel)
+								if ma_abtn_hide[sel] then return end
+								ma_abtn_hide[sel] = true
+								sel:Show()
+								ma_abtn_hide[sel] = false
+							end)
+						else
+							hooksecurefunc(abtn, "Show", function(sel)
+								if ma_abtn_hide[sel] then return end
+								ma_abtn_hide[sel] = true
+								if ma_hide[sel] and sel:IsShown() then sel:Hide() end
+								ma_abtn_hide[sel] = false
+							end)
 						end
 					end
+
+					if frame ~= MAMenuBar and frame ~= StanceBar and count > 0 and i > count then
+						ma_hide[abtn] = true
+						abtn:SetParent(MoveAny:GetHidden())
+						if abtn:IsShown() then abtn:Hide() end
+					end
+
+					if frame == MAMenuBar then
+						ma_hide[abtn] = false
+						if not abtn:IsShown() then abtn:Show() end
+					end
+
+					if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then id = id + 1 end
 				end
 			end
 
-			ma_setpoint_ab = false
-			insideUpdateActionBar[frame] = false
-		end,
-		function(err)
-			ma_setpoint_ab = false
-			insideUpdateActionBar[bar] = false
-			MoveAny:ERR("[UpdateActionBar] Error: " .. tostring(err))
-		end, bar
-	)
+			if not InCombatLockdown() then
+				frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
+				if frame ~= StanceBar then
+					local sw, sh = frame:GetSize()
+					local osw, osh = MoveAny:GetEleSize(name)
+					sw = MoveAny:MathR(sw)
+					sh = MoveAny:MathR(sh)
+					if osw ~= sw or osh ~= sh then MoveAny:SetEleSize(name, sw, sh) end
+					local mover = MoveAny:GetDragFromName(name)
+					if mover then mover:SetSize(frame:GetSize()) end
+				end
+			end
+		end
+
+		ma_setpoint_ab = false
+		insideUpdateActionBar[frame] = false
+	end, function(err)
+		ma_setpoint_ab = false
+		insideUpdateActionBar[bar] = false
+		MoveAny:ERR("[UpdateActionBar] Error: " .. tostring(err))
+	end, bar)
 end
 
 function MoveAny:InitActionBarLayouts()
@@ -662,92 +465,68 @@ function MoveAny:CustomBars()
 		for i = 0, 3 do
 			local texture = _G["MainMenuMaxLevelBar" .. i]
 			if texture then
-				hooksecurefunc(
-					texture,
-					"Show",
-					function(sel)
-						if ma_hide[sel] then return end
-						ma_hide[sel] = true
-						sel:Hide()
-						ma_hide[sel] = false
-					end
-				)
+				hooksecurefunc(texture, "Show", function(sel)
+					if ma_hide[sel] then return end
+					ma_hide[sel] = true
+					sel:Hide()
+					ma_hide[sel] = false
+				end)
 
 				texture:Hide()
 			end
 		end
 
 		if _G["StanceBarLeft"] then
-			hooksecurefunc(
-				_G["StanceBarLeft"],
-				"Show",
-				function(sel)
-					if ma_hide[sel] then return end
-					ma_hide[sel] = true
-					sel:Hide()
-					ma_hide[sel] = false
-				end
-			)
+			hooksecurefunc(_G["StanceBarLeft"], "Show", function(sel)
+				if ma_hide[sel] then return end
+				ma_hide[sel] = true
+				sel:Hide()
+				ma_hide[sel] = false
+			end)
 
 			_G["StanceBarLeft"]:Hide()
 		end
 
 		if _G["StanceBarMiddle"] then
-			hooksecurefunc(
-				_G["StanceBarMiddle"],
-				"Show",
-				function(sel)
-					if ma_hide[sel] then return end
-					ma_hide[sel] = true
-					sel:Hide()
-					ma_hide[sel] = false
-				end
-			)
+			hooksecurefunc(_G["StanceBarMiddle"], "Show", function(sel)
+				if ma_hide[sel] then return end
+				ma_hide[sel] = true
+				sel:Hide()
+				ma_hide[sel] = false
+			end)
 
 			_G["StanceBarMiddle"]:Hide()
 		end
 
 		if _G["StanceBarRight"] then
-			hooksecurefunc(
-				_G["StanceBarRight"],
-				"Show",
-				function(sel)
-					if ma_hide[sel] then return end
-					ma_hide[sel] = true
-					sel:Hide()
-					ma_hide[sel] = false
-				end
-			)
+			hooksecurefunc(_G["StanceBarRight"], "Show", function(sel)
+				if ma_hide[sel] then return end
+				ma_hide[sel] = true
+				sel:Hide()
+				ma_hide[sel] = false
+			end)
 
 			_G["StanceBarRight"]:Hide()
 		end
 
 		if _G["SlidingActionBarTexture0"] then
-			hooksecurefunc(
-				_G["SlidingActionBarTexture0"],
-				"Show",
-				function(sel)
-					if ma_hide[sel] then return end
-					ma_hide[sel] = true
-					sel:Hide()
-					ma_hide[sel] = false
-				end
-			)
+			hooksecurefunc(_G["SlidingActionBarTexture0"], "Show", function(sel)
+				if ma_hide[sel] then return end
+				ma_hide[sel] = true
+				sel:Hide()
+				ma_hide[sel] = false
+			end)
 
 			_G["SlidingActionBarTexture0"]:Hide()
 		end
 
 		if _G["SlidingActionBarTexture1"] then
-			hooksecurefunc(
-				_G["SlidingActionBarTexture1"],
-				"Show",
-				function(sel)
-					if ma_hide[sel] then return end
-					ma_hide[sel] = true
-					sel:Hide()
-					ma_hide[sel] = false
-				end
-			)
+			hooksecurefunc(_G["SlidingActionBarTexture1"], "Show", function(sel)
+				if ma_hide[sel] then return end
+				ma_hide[sel] = true
+				sel:Hide()
+				ma_hide[sel] = false
+			end)
 
 			_G["SlidingActionBarTexture1"]:Hide()
 		end
@@ -761,57 +540,37 @@ function MoveAny:CustomBars()
 			bar:SetFrameLevel(4)
 			bar:SetSize(36 * 12, 36)
 			bar:SetPoint(abpoints[name]["PO"], abpoints[name]["PA"], abpoints[name]["RE"], abpoints[name]["PX"], abpoints[name]["PY"])
-			if i > 1 then
-				bar:SetAttribute("actionpage", i)
-			end
-
+			if i > 1 then bar:SetAttribute("actionpage", i) end
 			MoveAny:ResetAbBtns(bar)
 			tinsert(abs, bar)
 			for x = 1, 12 do
 				local btnname = "ActionBar" .. i .. "Button" .. x
-				if btns[i] then
-					btnname = btns[i] .. x
-				end
-
+				if btns[i] then btnname = btns[i] .. x end
 				local btn = _G[btnname]
 				local id = (i - 1) * 12 + x
 				if btn == nil then
 					btn = MoveAny:CreateCheckButton(btnname, bar, "ActionBarButtonTemplate, SecureActionButtonTemplate")
 					--btn.commandName = "CLICK " .. btnname
 					btn:SetAttribute("action", id)
-					btn:HookScript(
-						"OnMouseDown",
-						function(sel)
-							if not InCombatLockdown() then
-								if GetCVar("ActionButtonUseKeyDown") == "1" then
-									if MoveAny:GetMouseFocus() == sel and IsMouseButtonDown("LeftButton") then
-										btn:RegisterForClicks("AnyUp")
-									else
-										btn:RegisterForClicks("AnyDown")
-									end
-								else
+					btn:HookScript("OnMouseDown", function(sel)
+						if not InCombatLockdown() then
+							if GetCVar("ActionButtonUseKeyDown") == "1" then
+								if MoveAny:GetMouseFocus() == sel and IsMouseButtonDown("LeftButton") then
 									btn:RegisterForClicks("AnyUp")
+								else
+									btn:RegisterForClicks("AnyDown")
 								end
+							else
+								btn:RegisterForClicks("AnyUp")
 							end
 						end
-					)
+					end)
 				else
 					btn.bindingID = x
-					if not InCombatLockdown() then
-						btn:RegisterForClicks("AnyUp")
-					end
+					if not InCombatLockdown() then btn:RegisterForClicks("AnyUp") end
 				end
 
-				if btn.cooldown then
-					hooksecurefunc(
-						bar,
-						"SetAlpha",
-						function(sel, alpha)
-							btn.cooldown:SetAlpha(alpha)
-						end
-					)
-				end
-
+				if btn.cooldown then hooksecurefunc(bar, "SetAlpha", function(sel, alpha) btn.cooldown:SetAlpha(alpha) end) end
 				local alwaysShow = GetCVarBool("alwaysShowActionBars")
 				local alwaysShowInt = nil
 				if alwaysShow then
@@ -837,32 +596,20 @@ function MoveAny:CustomBars()
 				btn:ClearAllPoints()
 				btn:SetPoint("TOPLEFT", MoveAny:GetParent(btn), "TOPLEFT", (x - 1) * 36, 0)
 				btn:SetSize(36, 36)
-				hooksecurefunc(
-					btn,
-					"SetPoint",
-					function(sel, ...)
-						if ma_setpoint_ab then return end
-						ScheduleUpdateActionBar(_G[name], "BTN SetPoint")
-					end
-				)
+				hooksecurefunc(btn, "SetPoint", function(sel, ...)
+					if ma_setpoint_ab then return end
+					ScheduleUpdateActionBar(_G[name], "BTN SetPoint")
+				end)
 
-				hooksecurefunc(
-					btn,
-					"SetParent",
-					function(sel, ...)
-						if ma_setpoint_ab then return end
-						ScheduleUpdateActionBar(_G[name], "BTN SetParent")
-					end
-				)
+				hooksecurefunc(btn, "SetParent", function(sel, ...)
+					if ma_setpoint_ab then return end
+					ScheduleUpdateActionBar(_G[name], "BTN SetParent")
+				end)
 
-				hooksecurefunc(
-					btn,
-					"SetSize",
-					function(sel, ...)
-						if ma_setpoint_ab then return end
-						ScheduleUpdateActionBar(_G[name], "BTN SetSize")
-					end
-				)
+				hooksecurefunc(btn, "SetSize", function(sel, ...)
+					if ma_setpoint_ab then return end
+					ScheduleUpdateActionBar(_G[name], "BTN SetSize")
+				end)
 
 				MoveAny:AddAbBtns(bar, btn)
 			end
@@ -884,16 +631,10 @@ function MoveAny:CustomBars()
 					for y, btn in pairs(MoveAny:GetAbBtns(bar)) do
 						if btn then
 							local btnName = MoveAny:GetName(btn)
-							if _G[btnName .. "FloatingBG"] then
-								_G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden())
-							end
-
+							if _G[btnName .. "FloatingBG"] then _G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden()) end
 							local parent = MoveAny:GetName(MoveAny:GetParent(btn))
 							local group = nil
-							if MAMasqueGroups.Groups["MA " .. parent] == nil then
-								MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
-							end
-
+							if MAMasqueGroups.Groups["MA " .. parent] == nil then MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent) end
 							group = MAMasqueGroups.Groups["MA " .. parent]
 							if not btn.MasqueButtonData then
 								btn.MasqueButtonData = {
@@ -925,9 +666,7 @@ function MoveAny:InitActionBar1()
 			if build ~= "CLASSIC" then
 				for i = 1, 6 do
 					local ob = _G["OverrideActionBarButton" .. i]
-					if ob then
-						frame:SetFrameRef("OverrideActionBarButton" .. i, ob)
-					end
+					if ob then frame:SetFrameRef("OverrideActionBarButton" .. i, ob) end
 				end
 			end
 
@@ -1008,10 +747,7 @@ function MoveAny:InitActionBar1()
 			end
 
 			local _, class = UnitClass("player")
-			if class == "DRUID" and MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then
-				barParts[#barParts + 1] = "[bonusbar:1,stealth]8;"
-			end
-
+			if class == "DRUID" and MoveAny:IsEnabled("CHANGEONCATSTEALTH", true) then barParts[#barParts + 1] = "[bonusbar:1,stealth]8;" end
 			barParts[#barParts + 1] = "[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;1"
 			RegisterStateDriver(frame, "page", table.concat(barParts))
 		end

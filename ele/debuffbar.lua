@@ -34,7 +34,6 @@ function MoveAny:GetDebuffPosition(name, p1, p3)
 	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MADEBUFFMODE"] == 5 then
 		return "CENTER", "CENTER"
 	end
-
 	return "TOPRIGHT", "TOPRIGHT"
 end
 
@@ -94,10 +93,7 @@ function MoveAny:InitDebuffBar()
 			end
 
 			dirH = "LEFT"
-			if rel == "LEFT" then
-				dirH = "RIGHT"
-			end
-
+			if rel == "LEFT" then dirH = "RIGHT" end
 			dirV = "BOTTOM"
 			if bp3 == "BOTTOMLEFT" then
 				dirV = "TOP"
@@ -116,31 +112,24 @@ function MoveAny:InitDebuffBar()
 			MADEBUFFSPACINGY = MoveAny:GetEleOption("MADebuffBar", "MADEBUFFSPACINGY", 10)
 			MoveAny:UpdateDebuffDirections()
 			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC") and DebuffFrame ~= nil then
-				MoveAny:ForeachChildren(
-					DebuffFrame.AuraContainer,
-					function(child)
-						if child then
-							child:SetParent(MADebuffBar)
-							if child.masetup == nil then
-								child.masetup = true
-								if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough4") then
-									hooksecurefunc(
-										child,
-										"EnableMouse",
-										function(sel, bo)
-											if ma_enablemouse[sel] then return end
-											ma_enablemouse[sel] = true
-											sel:EnableMouse(false)
-											ma_enablemouse[sel] = false
-										end
-									)
+				MoveAny:ForeachChildren(DebuffFrame.AuraContainer, function(child)
+					if child then
+						child:SetParent(MADebuffBar)
+						if child.masetup == nil then
+							child.masetup = true
+							if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough4") then
+								hooksecurefunc(child, "EnableMouse", function(sel, bo)
+									if ma_enablemouse[sel] then return end
+									ma_enablemouse[sel] = true
+									sel:EnableMouse(false)
+									ma_enablemouse[sel] = false
+								end)
 
-									child:EnableMouse(false)
-								end
+								child:EnableMouse(false)
 							end
 						end
-					end, "Debuffbar"
-				)
+					end
+				end, "Debuffbar")
 			else
 				for bid = 1, 32 do
 					local bbtn = _G["DebuffButton" .. bid]
@@ -148,16 +137,12 @@ function MoveAny:InitDebuffBar()
 						if bbtn.masetup == nil then
 							bbtn.masetup = true
 							if MoveAny:GetEleOption("MADebuffBar", "ClickThrough", false, "ClickThrough5") then
-								hooksecurefunc(
-									bbtn,
-									"EnableMouse",
-									function(sel, bo)
-										if ma_enablemouse[sel] then return end
-										ma_enablemouse[sel] = true
-										sel:EnableMouse(false)
-										ma_enablemouse[sel] = false
-									end
-								)
+								hooksecurefunc(bbtn, "EnableMouse", function(sel, bo)
+									if ma_enablemouse[sel] then return end
+									ma_enablemouse[sel] = true
+									sel:EnableMouse(false)
+									ma_enablemouse[sel] = false
+								end)
 
 								bbtn:EnableMouse(false)
 							end
@@ -168,70 +153,66 @@ function MoveAny:InitDebuffBar()
 							end
 
 							MoveAny:RegisterChildAlphaFrame(bbtn, MADebuffBar)
-							hooksecurefunc(
-								bbtn,
-								"SetPoint",
-								function(sel, ...)
-									if ma_setpoint_bbtn[sel] then return end
-									ma_setpoint_bbtn[sel] = true
-									local p1, _, p3, _, _ = MADebuffBar:GetPoint()
-									local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
-									local sw2, sh2 = sel:GetSize()
-									local numBuffs = 1
-									local prevBuff = nil
-									for i = 1, 32 do
-										local btn = _G["DebuffButton" .. i]
-										if i == bid then break end
-										if btn and MoveAny:GetParent(btn) == MADebuffBar then
-											numBuffs = numBuffs + 1
-											prevBuff = btn
-										end
+							hooksecurefunc(bbtn, "SetPoint", function(sel, ...)
+								if ma_setpoint_bbtn[sel] then return end
+								ma_setpoint_bbtn[sel] = true
+								local p1, _, p3, _, _ = MADebuffBar:GetPoint()
+								local bp1, bp3 = MoveAny:GetDebuffPosition("MADebuffBar", p1, p3)
+								local sw2, sh2 = sel:GetSize()
+								local numBuffs = 1
+								local prevBuff = nil
+								for i = 1, 32 do
+									local btn = _G["DebuffButton" .. i]
+									if i == bid then break end
+									if btn and MoveAny:GetParent(btn) == MADebuffBar then
+										numBuffs = numBuffs + 1
+										prevBuff = btn
 									end
-
-									local count = 0
-									local id = numBuffs + count
-									local caly = (id - 0.1) / MADEBUFFLIMIT
-									local cy = caly - caly % 1
-									if MoveAny:GetParent(bbtn) == MADebuffBar then
-										if numBuffs == 1 then
-											local posx = 0
-											if rel == "RIGHT" then
-												posx = -count * (sw2 + MADEBUFFSPACINGX)
-											else
-												posx = count * (sw2 + MADEBUFFSPACINGX)
-											end
-
-											local posy = 0
-											if MADEBUFFLIMIT == 1 then
-												posx = 0
-												if dirV == "BOTTOM" then
-													posy = 0
-												else
-													posy = 30 + MADEBUFFSPACINGY
-												end
-											end
-
-											MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, posx, posy)
-										else
-											if id % MADEBUFFLIMIT == 1 or MADEBUFFLIMIT == 1 then
-												if dirV == "BOTTOM" then
-													MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh2 + MADEBUFFSPACINGY))
-												else
-													MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh2 + MADEBUFFSPACINGY))
-												end
-											elseif prevBuff then
-												if rel == "RIGHT" then
-													MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MADEBUFFSPACINGX, 0)
-												else
-													MoveAny:SetPoint(sel, rel, prevBuff, dirH, MADEBUFFSPACINGX, 0)
-												end
-											end
-										end
-									end
-
-									ma_setpoint_bbtn[sel] = false
 								end
-							)
+
+								local count = 0
+								local id = numBuffs + count
+								local caly = (id - 0.1) / MADEBUFFLIMIT
+								local cy = caly - caly % 1
+								if MoveAny:GetParent(bbtn) == MADebuffBar then
+									if numBuffs == 1 then
+										local posx = 0
+										if rel == "RIGHT" then
+											posx = -count * (sw2 + MADEBUFFSPACINGX)
+										else
+											posx = count * (sw2 + MADEBUFFSPACINGX)
+										end
+
+										local posy = 0
+										if MADEBUFFLIMIT == 1 then
+											posx = 0
+											if dirV == "BOTTOM" then
+												posy = 0
+											else
+												posy = 30 + MADEBUFFSPACINGY
+											end
+										end
+
+										MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, posx, posy)
+									else
+										if id % MADEBUFFLIMIT == 1 or MADEBUFFLIMIT == 1 then
+											if dirV == "BOTTOM" then
+												MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, -cy * (sh2 + MADEBUFFSPACINGY))
+											else
+												MoveAny:SetPoint(sel, bp1, MADebuffBar, bp3, 0, cy * (sh2 + MADEBUFFSPACINGY))
+											end
+										elseif prevBuff then
+											if rel == "RIGHT" then
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MADEBUFFSPACINGX, 0)
+											else
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, MADEBUFFSPACINGX, 0)
+											end
+										end
+									end
+								end
+
+								ma_setpoint_bbtn[sel] = false
+							end)
 						end
 
 						bbtn:ClearAllPoints()
@@ -265,37 +246,16 @@ function MoveAny:InitDebuffBar()
 			end
 		end
 
-		if MADebuffBar then
-			hooksecurefunc(
-				MADebuffBar,
-				"SetPoint",
-				function(sel, ...)
-					MoveAny:UpdateDebuffs("SetPoint")
-				end
-			)
-		end
-
+		if MADebuffBar then hooksecurefunc(MADebuffBar, "SetPoint", function(sel, ...) MoveAny:UpdateDebuffs("SetPoint") end) end
 		local f = CreateFrame("FRAME")
 		MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
-		MoveAny:OnEvent(
-			f,
-			function(sel, event, ...)
-				if event == "UNIT_AURA" then
-					local unit = ...
-					if unit and unit == "player" then
-						MoveAny:UpdateDebuffs("event")
-					end
-				end
-			end, "UpdateDebuffs"
-		)
+		MoveAny:OnEvent(f, function(sel, event, ...)
+			if event == "UNIT_AURA" then
+				local unit = ...
+				if unit and unit == "player" then MoveAny:UpdateDebuffs("event") end
+			end
+		end, "UpdateDebuffs")
 
-		MoveAny:After(
-			1,
-			function()
-				if not started then
-					MoveAny:UpdateDebuffs("Init")
-				end
-			end, "UpdateDebuffs"
-		)
+		MoveAny:After(1, function() if not started then MoveAny:UpdateDebuffs("Init") end end, "UpdateDebuffs")
 	end
 end

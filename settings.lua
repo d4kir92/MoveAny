@@ -1882,7 +1882,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.40")
+	MoveAny:SetVersion(135994, "1.9.41")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -3517,7 +3517,10 @@ function MoveAny:LoadAddon()
 			hooksecurefunc(MACompactRaidFrameManager, "SetParent", function(sel, parent)
 				if parent == MoveAny:GetHidden() then
 					CompactRaidFrameManager:SetAlpha(0)
-					MoveAny:ForeachChildren(CompactRaidFrameManager, function(child) if child ~= CompactRaidFrameManagerBg and child ~= CompactRaidFrameManagerBorderRight and child ~= CompactRaidFrameManagerToggleButton then child:SetIgnoreParentAlpha(true) end end, "MACompactRaidFrameManager")
+					MoveAny:ForeachChildren(CompactRaidFrameManager, function(child)
+						if MoveAny:GetWoWBuild() ~= "RETAIL" then child:SetParent(MoveAny:GetHidden()) end
+						if child ~= CompactRaidFrameManagerBg and child ~= CompactRaidFrameManagerBorderRight and child ~= CompactRaidFrameManagerToggleButton then child:SetIgnoreParentAlpha(true) end
+					end, "MACompactRaidFrameManager")
 				end
 			end)
 

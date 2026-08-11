@@ -12,21 +12,18 @@ function MoveAny:InitMultiCastActionBar()
 	end
 
 	if MultiCastFlyoutFrameOpenButton then
-		MultiCastFlyoutFrameOpenButton:HookScript(
-			"OnClick",
-			function()
-				for i = 1, 10 do
-					local btn = _G["MultiCastFlyoutButton" .. i]
-					if btn then
-						function btn:GetMAEle()
-							return MultiCastActionBarFrame
-						end
-
-						MoveAny:RegisterChildAlphaFrame(btn, MultiCastActionBarFrame)
+		MultiCastFlyoutFrameOpenButton:HookScript("OnClick", function()
+			for i = 1, 10 do
+				local btn = _G["MultiCastFlyoutButton" .. i]
+				if btn then
+					function btn:GetMAEle()
+						return MultiCastActionBarFrame
 					end
+
+					MoveAny:RegisterChildAlphaFrame(btn, MultiCastActionBarFrame)
 				end
 			end
-		)
+		end)
 	end
 
 	if MultiCastFlyoutFrameCloseButton then

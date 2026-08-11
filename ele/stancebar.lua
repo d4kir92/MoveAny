@@ -10,15 +10,11 @@ function MoveAny:GetStanceBarCount()
 	else
 		cou = NUM_STANCE_SLOTS or 0
 	end
-
 	return cou or 0
 end
 
 function MoveAny:UpdateStanceBar()
-	if _G["StanceButton" .. 1] then
-		btnsize = _G["StanceButton" .. 1]:GetSize()
-	end
-
+	if _G["StanceButton" .. 1] then btnsize = _G["StanceButton" .. 1]:GetSize() end
 	local cou = MoveAny:GetStanceBarCount()
 	if StanceBar and cou and stanceBarCount ~= cou then
 		stanceBarCount = cou
@@ -32,10 +28,7 @@ function MoveAny:UpdateStanceBar()
 						ma_setup[bb] = true
 						bb:SetSize(btnsize, btnsize)
 						bb:SetMovable(true)
-						if bb.SetUserPlaced and bb:IsMovable() then
-							bb:SetUserPlaced(false)
-						end
-
+						if bb.SetUserPlaced and bb:IsMovable() then bb:SetUserPlaced(false) end
 						bb:SetParent(StanceBar)
 					end
 
@@ -45,10 +38,7 @@ function MoveAny:UpdateStanceBar()
 		end
 
 		StanceBar:SetSize(cou * btnsize, btnsize)
-		if MoveAny.UpdateActionBar then
-			MoveAny:UpdateActionBar(StanceBar, "UpdateStanceBar")
-		end
-
+		if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(StanceBar, "UpdateStanceBar") end
 		-- Masque
 		if LibStub then
 			local MSQ = LibStub("Masque", true)
@@ -65,16 +55,10 @@ function MoveAny:UpdateStanceBar()
 					local btn = abtns[y]
 					if btn then
 						local btnName = MoveAny:GetName(btn)
-						if _G[btnName .. "FloatingBG"] then
-							_G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden())
-						end
-
+						if _G[btnName .. "FloatingBG"] then _G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden()) end
 						local parent = MoveAny:GetName(MoveAny:GetParent(btn))
 						local group = nil
-						if MAMasqueGroups.Groups["MA " .. parent] == nil then
-							MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
-						end
-
+						if MAMasqueGroups.Groups["MA " .. parent] == nil then MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent) end
 						group = MAMasqueGroups.Groups["MA " .. parent]
 						if not btn.MasqueButtonData then
 							btn.MasqueButtonData = {
@@ -107,52 +91,32 @@ function MoveAny:InitStanceBar()
 		end
 
 		local setStanceBarPoint = false
-		hooksecurefunc(
-			StanceBar,
-			"SetPoint",
-			function(sel, ...)
-				if setStanceBarPoint then return end
-				setStanceBarPoint = true
-				MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] or "CENTERED"
-				local orientation = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"]
-				if orientation == "LEFTALIGNED" then
-					MoveAny:SetPoint(StanceBar, "LEFT", StanceBarAnchor, "LEFT", 0, 0)
-				elseif orientation == "CENTERED" then
-					MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0)
-				elseif orientation == "RIGHTALIGNED" then
-					MoveAny:SetPoint(StanceBar, "RIGHT", StanceBarAnchor, "RIGHT", 0, 0)
-				else
-					MoveAny:INFO("WRONG ORIENTATION", orientation)
-				end
-
-				setStanceBarPoint = false
+		hooksecurefunc(StanceBar, "SetPoint", function(sel, ...)
+			if setStanceBarPoint then return end
+			setStanceBarPoint = true
+			MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] or "CENTERED"
+			local orientation = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"]
+			if orientation == "LEFTALIGNED" then
+				MoveAny:SetPoint(StanceBar, "LEFT", StanceBarAnchor, "LEFT", 0, 0)
+			elseif orientation == "CENTERED" then
+				MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0)
+			elseif orientation == "RIGHTALIGNED" then
+				MoveAny:SetPoint(StanceBar, "RIGHT", StanceBarAnchor, "RIGHT", 0, 0)
+			else
+				MoveAny:INFO("WRONG ORIENTATION", orientation)
 			end
-		)
 
-		hooksecurefunc(
-			StanceBarAnchor,
-			"SetScale",
-			function(sel, scale)
-				StanceBar:SetScale(scale)
-			end
-		)
+			setStanceBarPoint = false
+		end)
 
-		hooksecurefunc(
-			StanceBarAnchor,
-			"SetAlpha",
-			function(sel, alpha)
-				StanceBar:SetAlpha(alpha)
-			end
-		)
-
+		hooksecurefunc(StanceBarAnchor, "SetScale", function(sel, scale) StanceBar:SetScale(scale) end)
+		hooksecurefunc(StanceBarAnchor, "SetAlpha", function(sel, alpha) StanceBar:SetAlpha(alpha) end)
 		StanceBar:ClearAllPoints()
 		StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
 		local cou = MoveAny:GetStanceBarCount()
 		if StanceBar.actionButtons then
 			for i, v in pairs(StanceBar.actionButtons) do
-				if i <= cou then
-					MoveAny:AddAbBtns(StanceBar, v)
-				end
+				if i <= cou then MoveAny:AddAbBtns(StanceBar, v) end
 			end
 		else
 			MoveAny:UpdateStanceBar()
@@ -162,13 +126,7 @@ function MoveAny:InitStanceBar()
 		MoveAny:RegisterEvent(stanceEventFrame, "UPDATE_SHAPESHIFT_FORMS")
 		MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ENTERING_WORLD")
 		MoveAny:RegisterEvent(stanceEventFrame, "PLAYER_ALIVE")
-		MoveAny:OnEvent(
-			stanceEventFrame,
-			function(sel, event)
-				MoveAny:UpdateStanceBar()
-			end, "UpdateStanceBar"
-		)
-
+		MoveAny:OnEvent(stanceEventFrame, function(sel, event) MoveAny:UpdateStanceBar() end, "UpdateStanceBar")
 		if MoveAny.UpdateActionBar then
 			MoveAny:AddBarName(StanceBar, "StanceBar")
 			MoveAny:UpdateActionBar(StanceBar, "InitStanceBar")

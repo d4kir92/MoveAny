@@ -35,7 +35,6 @@ function MoveAny:GetBuffPosition(name, p1, p3)
 	elseif MoveAny:GetEleOptions(name, "GetBuffPosition")["MABUFFMODE"] == 5 then
 		return "CENTER", "CENTER"
 	end
-
 	return "TOPRIGHT", "TOPRIGHT"
 end
 
@@ -108,16 +107,12 @@ function MoveAny:InitBuffBar()
 					if db then
 						if dbtab[i] == nil then
 							dbtab[i] = {}
-							hooksecurefunc(
-								db,
-								"SetPoint",
-								function(sel, o1, o2, o3, o4, o5)
-									if ma_db_setpoint[sel] then return end
-									ma_db_setpoint[sel] = true
-									MoveAny:SetPoint(sel, dbtab[i]["p1"], dbtab[i]["p2"], dbtab[i]["p3"], dbtab[i]["p4"], dbtab[i]["p5"])
-									ma_db_setpoint[sel] = false
-								end
-							)
+							hooksecurefunc(db, "SetPoint", function(sel, o1, o2, o3, o4, o5)
+								if ma_db_setpoint[sel] then return end
+								ma_db_setpoint[sel] = true
+								MoveAny:SetPoint(sel, dbtab[i]["p1"], dbtab[i]["p2"], dbtab[i]["p3"], dbtab[i]["p4"], dbtab[i]["p5"])
+								ma_db_setpoint[sel] = false
+							end)
 
 							function db:GetMAEle()
 								return MABuffBar
@@ -171,67 +166,38 @@ function MoveAny:InitBuffBar()
 				end
 			end
 
-			hooksecurefunc(
-				DebuffFrame,
-				"SetPoint",
-				function(sel, ...)
-					if ma_debuffsetpoint[sel] then return end
-					ma_debuffsetpoint[sel] = true
-					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs("SetPoint 3")
-					end
+			hooksecurefunc(DebuffFrame, "SetPoint", function(sel, ...)
+				if ma_debuffsetpoint[sel] then return end
+				ma_debuffsetpoint[sel] = true
+				if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("SetPoint 3") end
+				ma_debuffsetpoint[sel] = false
+			end)
 
-					ma_debuffsetpoint[sel] = false
-				end
-			)
-
-			hooksecurefunc(
-				MABuffBar,
-				"SetPoint",
-				function(sel, ...)
-					if ma_debuffsetpoint[sel] then return end
-					ma_debuffsetpoint[sel] = true
-					if MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs("SetPoint 2")
-					end
-
-					ma_debuffsetpoint[sel] = false
-				end
-			)
+			hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...)
+				if ma_debuffsetpoint[sel] then return end
+				ma_debuffsetpoint[sel] = true
+				if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("SetPoint 2") end
+				ma_debuffsetpoint[sel] = false
+			end)
 
 			local f = CreateFrame("FRAME")
 			MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
-			MoveAny:OnEvent(
-				f,
-				function(sel, event, ...)
-					if event == "UNIT_AURA" and MoveAny.UpdateDebuffs then
-						MoveAny:UpdateDebuffs("event 2")
-					end
-				end, "UNIT_AURA 2"
-			)
-
+			MoveAny:OnEvent(f, function(sel, event, ...) if event == "UNIT_AURA" and MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("event 2") end end, "UNIT_AURA 2")
 			if not InCombatLockdown() then
 				DebuffFrame:ClearAllPoints()
 				DebuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, -128)
 			end
 		end
 
-		hooksecurefunc(
-			BuffFrame,
-			"SetPoint",
-			function(sel, ...)
-				if ma_buffsetpoint[sel] then return end
-				ma_buffsetpoint[sel] = true
-				sel:SetMovable(true)
-				if sel.SetUserPlaced and sel:IsMovable() then
-					sel:SetUserPlaced(false)
-				end
-
-				sel:SetParent(MABuffBar)
-				MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
-				ma_buffsetpoint[sel] = false
-			end
-		)
+		hooksecurefunc(BuffFrame, "SetPoint", function(sel, ...)
+			if ma_buffsetpoint[sel] then return end
+			ma_buffsetpoint[sel] = true
+			sel:SetMovable(true)
+			if sel.SetUserPlaced and sel:IsMovable() then sel:SetUserPlaced(false) end
+			sel:SetParent(MABuffBar)
+			MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
+			ma_buffsetpoint[sel] = false
+		end)
 
 		BuffFrame:ClearAllPoints()
 		BuffFrame:SetPoint("TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
@@ -260,10 +226,7 @@ function MoveAny:InitBuffBar()
 			end
 
 			dirH = "LEFT"
-			if rel == "LEFT" then
-				dirH = "RIGHT"
-			end
-
+			if rel == "LEFT" then dirH = "RIGHT" end
 			dirV = "BOTTOM"
 			if bp3 == "BOTTOMLEFT" then
 				dirV = "TOP"
@@ -276,133 +239,100 @@ function MoveAny:InitBuffBar()
 
 		MoveAny:UpdateBuffDirections()
 		if TempEnchant1 then
-			hooksecurefunc(
-				TempEnchant1,
-				"SetPoint",
-				function(sel, ...)
-					if ma_setpoint_te1[sel] then return end
-					ma_setpoint_te1[sel] = true
-					sel:SetMovable(true)
-					if sel.SetUserPlaced and sel:IsMovable() then
-						sel:SetUserPlaced(false)
-					end
-
-					sel:SetParent(MABuffBar)
-					local p1, _, p3, _, _ = MABuffBar:GetPoint()
-					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
-					local x = 0
-					if GetCVarBool("consolidateBuffs") then
-						if MoveAny:GetWoWBuild() == "CLASSIC" then
-							SetCVar("consolidateBuffs", false)
-							MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
-						else
-							x = x + 1
-						end
-					end
-
-					if dirH == "LEFT" then
-						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
+			hooksecurefunc(TempEnchant1, "SetPoint", function(sel, ...)
+				if ma_setpoint_te1[sel] then return end
+				ma_setpoint_te1[sel] = true
+				sel:SetMovable(true)
+				if sel.SetUserPlaced and sel:IsMovable() then sel:SetUserPlaced(false) end
+				sel:SetParent(MABuffBar)
+				local p1, _, p3, _, _ = MABuffBar:GetPoint()
+				local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
+				local x = 0
+				if GetCVarBool("consolidateBuffs") then
+					if MoveAny:GetWoWBuild() == "CLASSIC" then
+						SetCVar("consolidateBuffs", false)
+						MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
 					else
-						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+						x = x + 1
 					end
-
-					ma_setpoint_te1[sel] = false
 				end
-			)
+
+				if dirH == "LEFT" then
+					MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), 0)
+				else
+					MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+				end
+
+				ma_setpoint_te1[sel] = false
+			end)
 		end
 
 		if TempEnchant2 then
-			hooksecurefunc(
-				TempEnchant2,
-				"SetPoint",
-				function(sel, ...)
-					if ma_setpoint_te2[sel] then return end
-					ma_setpoint_te2[sel] = true
-					sel:SetMovable(true)
-					if sel.SetUserPlaced and sel:IsMovable() then
-						sel:SetUserPlaced(false)
-					end
-
-					sel:SetParent(MABuffBar)
-					local p1, _, p3, _, _ = MABuffBar:GetPoint()
-					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
-					local x = 1
-					if GetCVarBool("consolidateBuffs") then
-						if MoveAny:GetWoWBuild() == "CLASSIC" then
-							SetCVar("consolidateBuffs", false)
-							MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
-						else
-							x = x + 1
-						end
-					end
-
-					local posy = 0
-					if MABUFFLIMIT == 1 then
-						posy = -30 - MABUFFSPACINGY
-					end
-
-					if dirH == "LEFT" then
-						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
+			hooksecurefunc(TempEnchant2, "SetPoint", function(sel, ...)
+				if ma_setpoint_te2[sel] then return end
+				ma_setpoint_te2[sel] = true
+				sel:SetMovable(true)
+				if sel.SetUserPlaced and sel:IsMovable() then sel:SetUserPlaced(false) end
+				sel:SetParent(MABuffBar)
+				local p1, _, p3, _, _ = MABuffBar:GetPoint()
+				local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
+				local x = 1
+				if GetCVarBool("consolidateBuffs") then
+					if MoveAny:GetWoWBuild() == "CLASSIC" then
+						SetCVar("consolidateBuffs", false)
+						MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
 					else
-						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+						x = x + 1
 					end
-
-					ma_setpoint_te2[sel] = false
 				end
-			)
+
+				local posy = 0
+				if MABUFFLIMIT == 1 then posy = -30 - MABUFFSPACINGY end
+				if dirH == "LEFT" then
+					MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * -(30 + MABUFFSPACINGX), posy)
+				else
+					MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+				end
+
+				ma_setpoint_te2[sel] = false
+			end)
 		end
 
 		if TempEnchant3 then
-			hooksecurefunc(
-				TempEnchant3,
-				"SetPoint",
-				function(sel, ...)
-					if ma_setpoint_te3[sel] then return end
-					ma_setpoint_te3[sel] = true
-					sel:SetMovable(true)
-					if sel.SetUserPlaced and sel:IsMovable() then
-						sel:SetUserPlaced(false)
-					end
-
-					sel:SetParent(MABuffBar)
-					local p1, _, p3, _, _ = MABuffBar:GetPoint()
-					local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
-					local x = 2
-					if GetCVarBool("consolidateBuffs") then
-						if MoveAny:GetWoWBuild() == "CLASSIC" then
-							SetCVar("consolidateBuffs", false)
-							MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
-						else
-							x = x + 1
-						end
-					end
-
-					if dirH == "LEFT" then
-						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
+			hooksecurefunc(TempEnchant3, "SetPoint", function(sel, ...)
+				if ma_setpoint_te3[sel] then return end
+				ma_setpoint_te3[sel] = true
+				sel:SetMovable(true)
+				if sel.SetUserPlaced and sel:IsMovable() then sel:SetUserPlaced(false) end
+				sel:SetParent(MABuffBar)
+				local p1, _, p3, _, _ = MABuffBar:GetPoint()
+				local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
+				local x = 2
+				if GetCVarBool("consolidateBuffs") then
+					if MoveAny:GetWoWBuild() == "CLASSIC" then
+						SetCVar("consolidateBuffs", false)
+						MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
 					else
-						MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+						x = x + 1
 					end
-
-					ma_setpoint_te3[sel] = false
 				end
-			)
+
+				if dirH == "LEFT" then
+					MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, -x * (30 + MABUFFSPACINGX), 0)
+				else
+					MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, x * (30 + MABUFFSPACINGX), 0)
+				end
+
+				ma_setpoint_te3[sel] = false
+			end)
 		end
 
 		function MoveAny:GetEnchantCount()
 			local count = 0
 			local e1, _, _, _, e2, _, _, _, e3, _, _, _ = GetWeaponEnchantInfo()
-			if e1 then
-				count = count + 1
-			end
-
-			if e2 then
-				count = count + 1
-			end
-
-			if e3 then
-				count = count + 1
-			end
-
+			if e1 then count = count + 1 end
+			if e2 then count = count + 1 end
+			if e3 then count = count + 1 end
 			return count
 		end
 
@@ -411,50 +341,31 @@ function MoveAny:InitBuffBar()
 			MABUFFSPACINGX = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGX", 4)
 			MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
 			MoveAny:UpdateBuffDirections()
-			if ConsolidatedBuffs then
-				ConsolidatedBuffs:SetParent(MABuffBar)
-			end
-
-			if TempEnchant1 then
-				TempEnchant1:SetPoint("CENTER", 0, 0)
-			end
-
-			if TempEnchant2 then
-				TempEnchant2:SetPoint("CENTER", 0, 0)
-			end
-
-			if TempEnchant3 then
-				TempEnchant3:SetPoint("CENTER", 0, 0)
-			end
-
+			if ConsolidatedBuffs then ConsolidatedBuffs:SetParent(MABuffBar) end
+			if TempEnchant1 then TempEnchant1:SetPoint("CENTER", 0, 0) end
+			if TempEnchant2 then TempEnchant2:SetPoint("CENTER", 0, 0) end
+			if TempEnchant3 then TempEnchant3:SetPoint("CENTER", 0, 0) end
 			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
-				MoveAny:ForeachChildren(
-					BuffFrame.AuraContainer,
-					function(child)
-						if child and child.masetup == nil then
-							child.masetup = true
-							function child:GetMAEle()
-								return MABuffBar
-							end
-
-							MoveAny:RegisterChildAlphaFrame(child, MABuffBar)
-							if MoveAny:GetEleOption("MABuffBar", "ClickThrough", false, "ClickThrough6") then
-								hooksecurefunc(
-									child,
-									"EnableMouse",
-									function(sel, bo)
-										if ma_enablemouse[sel] then return end
-										ma_enablemouse[sel] = true
-										sel:EnableMouse(false)
-										ma_enablemouse[sel] = false
-									end
-								)
-
-								child:EnableMouse(false)
-							end
+				MoveAny:ForeachChildren(BuffFrame.AuraContainer, function(child)
+					if child and child.masetup == nil then
+						child.masetup = true
+						function child:GetMAEle()
+							return MABuffBar
 						end
-					end, "Buffbar"
-				)
+
+						MoveAny:RegisterChildAlphaFrame(child, MABuffBar)
+						if MoveAny:GetEleOption("MABuffBar", "ClickThrough", false, "ClickThrough6") then
+							hooksecurefunc(child, "EnableMouse", function(sel, bo)
+								if ma_enablemouse[sel] then return end
+								ma_enablemouse[sel] = true
+								sel:EnableMouse(false)
+								ma_enablemouse[sel] = false
+							end)
+
+							child:EnableMouse(false)
+						end
+					end
+				end, "Buffbar")
 			else
 				for bid = 1, 32 do
 					local bbtn = _G["BuffButton" .. bid]
@@ -467,93 +378,85 @@ function MoveAny:InitBuffBar()
 
 							MoveAny:RegisterChildAlphaFrame(bbtn, MABuffBar)
 							if MoveAny:GetEleOption("MABuffBar", "ClickThrough", false, "ClickThrough7") then
-								hooksecurefunc(
-									bbtn,
-									"EnableMouse",
-									function(sel, bo)
-										if ma_enablemouse[sel] then return end
-										ma_enablemouse[sel] = true
-										sel:EnableMouse(false)
-										ma_enablemouse[sel] = false
-									end
-								)
+								hooksecurefunc(bbtn, "EnableMouse", function(sel, bo)
+									if ma_enablemouse[sel] then return end
+									ma_enablemouse[sel] = true
+									sel:EnableMouse(false)
+									ma_enablemouse[sel] = false
+								end)
 
 								bbtn:EnableMouse(false)
 							end
 
-							hooksecurefunc(
-								bbtn,
-								"SetPoint",
-								function(sel, ...)
-									if ma_setpoint_bbtn[sel] then return end
-									ma_setpoint_bbtn[sel] = true
-									local p1, _, p3, _, _ = MABuffBar:GetPoint()
-									local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
-									local sw2, sh2 = sel:GetSize()
-									local numBuffs = 1
-									local prevBuff = nil
-									for i = 1, 32 do
-										local btn = _G["BuffButton" .. i]
-										if i == bid then break end
-										if btn and MoveAny:GetParent(btn) == BuffFrame then
-											numBuffs = numBuffs + 1
-											prevBuff = btn
-										end
+							hooksecurefunc(bbtn, "SetPoint", function(sel, ...)
+								if ma_setpoint_bbtn[sel] then return end
+								ma_setpoint_bbtn[sel] = true
+								local p1, _, p3, _, _ = MABuffBar:GetPoint()
+								local bp1, bp3 = MoveAny:GetBuffPosition("MABuffBar", p1, p3)
+								local sw2, sh2 = sel:GetSize()
+								local numBuffs = 1
+								local prevBuff = nil
+								for i = 1, 32 do
+									local btn = _G["BuffButton" .. i]
+									if i == bid then break end
+									if btn and MoveAny:GetParent(btn) == BuffFrame then
+										numBuffs = numBuffs + 1
+										prevBuff = btn
 									end
-
-									local count = MoveAny:GetEnchantCount()
-									if GetCVarBool("consolidateBuffs") then
-										if MoveAny:GetWoWBuild() == "CLASSIC" then
-											SetCVar("consolidateBuffs", false)
-											MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
-										else
-											count = count + 1
-										end
-									end
-
-									local id = numBuffs + count
-									local caly = (id - 0.1) / MABUFFLIMIT
-									local cy = caly - caly % 1
-									if MoveAny:GetParent(bbtn) == BuffFrame then
-										if numBuffs == 1 then
-											local posx = 0
-											if rel == "RIGHT" then
-												posx = -count * (sw2 + MABUFFSPACINGX)
-											else
-												posx = count * (sw2 + MABUFFSPACINGX)
-											end
-
-											local posy = 0
-											if MABUFFLIMIT == 1 then
-												posx = 0
-												if dirV == "BOTTOM" then
-													posy = -30 - MABUFFSPACINGY
-												else
-													posy = 30 + MABUFFSPACINGY
-												end
-											end
-
-											MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, posx, posy)
-										else
-											if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
-												if dirV == "BOTTOM" then
-													MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
-												else
-													MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
-												end
-											elseif prevBuff then
-												if rel == "RIGHT" then
-													MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
-												else
-													MoveAny:SetPoint(sel, rel, prevBuff, dirH, MABUFFSPACINGX, 0)
-												end
-											end
-										end
-									end
-
-									ma_setpoint_bbtn[sel] = false
 								end
-							)
+
+								local count = MoveAny:GetEnchantCount()
+								if GetCVarBool("consolidateBuffs") then
+									if MoveAny:GetWoWBuild() == "CLASSIC" then
+										SetCVar("consolidateBuffs", false)
+										MoveAny:INFO("Consolidate Buffs is 'true', but classic era don't have this. Setting it to 'false'.")
+									else
+										count = count + 1
+									end
+								end
+
+								local id = numBuffs + count
+								local caly = (id - 0.1) / MABUFFLIMIT
+								local cy = caly - caly % 1
+								if MoveAny:GetParent(bbtn) == BuffFrame then
+									if numBuffs == 1 then
+										local posx = 0
+										if rel == "RIGHT" then
+											posx = -count * (sw2 + MABUFFSPACINGX)
+										else
+											posx = count * (sw2 + MABUFFSPACINGX)
+										end
+
+										local posy = 0
+										if MABUFFLIMIT == 1 then
+											posx = 0
+											if dirV == "BOTTOM" then
+												posy = -30 - MABUFFSPACINGY
+											else
+												posy = 30 + MABUFFSPACINGY
+											end
+										end
+
+										MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, posx, posy)
+									else
+										if id % MABUFFLIMIT == 1 or MABUFFLIMIT == 1 then
+											if dirV == "BOTTOM" then
+												MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, 0, -cy * (sh2 + MABUFFSPACINGY))
+											else
+												MoveAny:SetPoint(sel, bp1, MABuffBar, bp3, 0, cy * (sh2 + MABUFFSPACINGY))
+											end
+										elseif prevBuff then
+											if rel == "RIGHT" then
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, -MABUFFSPACINGX, 0)
+											else
+												MoveAny:SetPoint(sel, rel, prevBuff, dirH, MABUFFSPACINGX, 0)
+											end
+										end
+									end
+								end
+
+								ma_setpoint_bbtn[sel] = false
+							end)
 						end
 
 						bbtn:ClearAllPoints()
@@ -609,27 +512,15 @@ function MoveAny:InitBuffBar()
 			end
 		end
 
-		hooksecurefunc(
-			MABuffBar,
-			"SetPoint",
-			function(sel, ...)
-				MoveAny:UpdateBuffs()
-			end
-		)
-
+		hooksecurefunc(MABuffBar, "SetPoint", function(sel, ...) MoveAny:UpdateBuffs() end)
 		local f = CreateFrame("FRAME")
 		MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
-		MoveAny:OnEvent(
-			f,
-			function(sel, event, ...)
-				if event == "UNIT_AURA" then
-					local unit = ...
-					if unit and unit == "player" then
-						MoveAny:UpdateBuffs()
-					end
-				end
-			end, "UNIT_AURA 1"
-		)
+		MoveAny:OnEvent(f, function(sel, event, ...)
+			if event == "UNIT_AURA" then
+				local unit = ...
+				if unit and unit == "player" then MoveAny:UpdateBuffs() end
+			end
+		end, "UNIT_AURA 1")
 
 		MoveAny:After(1, MoveAny.UpdateBuffs, "UpdateBuffs")
 	end

@@ -22,16 +22,10 @@ function MoveAny:UpdatePetBar()
 					local btn = abtns[y]
 					if btn then
 						local btnName = MoveAny:GetName(btn)
-						if _G[btnName .. "FloatingBG"] then
-							_G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden())
-						end
-
+						if _G[btnName .. "FloatingBG"] then _G[btnName .. "FloatingBG"]:SetParent(MoveAny:GetHidden()) end
 						local parent = "MAPetBar"
 						local group = nil
-						if MAMasqueGroups.Groups["MA " .. parent] == nil then
-							MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent)
-						end
-
+						if MAMasqueGroups.Groups["MA " .. parent] == nil then MAMasqueGroups.Groups["MA " .. parent] = MSQ:Group("MA Blizzard Action Bars", "MA " .. parent) end
 						group = MAMasqueGroups.Groups["MA " .. parent]
 						if not btn.MasqueButtonData then
 							btn.MasqueButtonData = {
@@ -57,15 +51,10 @@ local petbarEventFrame = CreateFrame("Frame")
 MoveAny:RegisterEvent(petbarEventFrame, "PET_BAR_UPDATE")
 MoveAny:RegisterEvent(petbarEventFrame, "UNIT_PET")
 MoveAny:RegisterEvent(petbarEventFrame, "UPDATE_BONUS_ACTIONBAR")
-MoveAny:OnEvent(
-	petbarEventFrame,
-	function(sel, event, unit)
-		if event == "UNIT_PET" and unit ~= "player" then return end
-		if petbarReady then
-			MoveAny:UpdatePetBar()
-		end
-	end, "UpdatePetBar"
-)
+MoveAny:OnEvent(petbarEventFrame, function(sel, event, unit)
+	if event == "UNIT_PET" and unit ~= "player" then return end
+	if petbarReady then MoveAny:UpdatePetBar() end
+end, "UpdatePetBar")
 
 function MoveAny:InitPetBar()
 	if MoveAny:IsEnabled("PETBAR", false) then
@@ -73,38 +62,24 @@ function MoveAny:InitPetBar()
 			bar = CreateFrame("Frame", "MAPetBar", MoveAny:GetMainPanel())
 			bar:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 110)
 			MoveAny:ResetAbBtns(bar)
-			if _G["PetActionButton" .. 1] then
-				btnsize = _G["PetActionButton" .. 1]:GetSize()
-			end
-
+			if _G["PetActionButton" .. 1] then btnsize = _G["PetActionButton" .. 1]:GetSize() end
 			for i = 1, 10 do
 				local bb = _G["PetActionButton" .. i]
 				if bb then
 					bb:SetSize(btnsize, btnsize)
-					hooksecurefunc(
-						bb,
-						"SetParent",
-						function(sel, ...)
-							if ma_setparent[sel] then return end
-							ma_setparent[sel] = true
-							bb:SetParent(bar)
-							ma_setparent[sel] = false
-						end
-					)
+					hooksecurefunc(bb, "SetParent", function(sel, ...)
+						if ma_setparent[sel] then return end
+						ma_setparent[sel] = true
+						bb:SetParent(bar)
+						ma_setparent[sel] = false
+					end)
 
-					hooksecurefunc(
-						bar,
-						"SetPoint",
-						function(sel, ...)
-							bb:SetParent(bar)
-							bb:SetMovable(true)
-							if bb.SetUserPlaced and bb:IsMovable() then
-								bb:SetUserPlaced(false)
-							end
-
-							MoveAny:SetPoint(bb, "TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
-						end
-					)
+					hooksecurefunc(bar, "SetPoint", function(sel, ...)
+						bb:SetParent(bar)
+						bb:SetMovable(true)
+						if bb.SetUserPlaced and bb:IsMovable() then bb:SetUserPlaced(false) end
+						MoveAny:SetPoint(bb, "TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
+					end)
 
 					bb:ClearAllPoints()
 					bb:SetPoint("TOPLEFT", bar, "TOPLEFT", (i - 1) * btnsize, 0)
@@ -114,26 +89,20 @@ function MoveAny:InitPetBar()
 
 			bar:SetSize(10 * btnsize, btnsize)
 			if ShowPetActionBar then
-				hooksecurefunc(
-					"ShowPetActionBar",
-					function()
+				hooksecurefunc("ShowPetActionBar", function()
+					bar:SetAlpha(1)
+					MoveAny:SetMAShow(bar, true)
+				end)
+
+				hooksecurefunc("HidePetActionBar", function()
+					if UnitExists("pet") then
 						bar:SetAlpha(1)
 						MoveAny:SetMAShow(bar, true)
+					else
+						bar:SetAlpha(0)
+						MoveAny:SetMAShow(bar, false)
 					end
-				)
-
-				hooksecurefunc(
-					"HidePetActionBar",
-					function()
-						if UnitExists("pet") then
-							bar:SetAlpha(1)
-							MoveAny:SetMAShow(bar, true)
-						else
-							bar:SetAlpha(0)
-							MoveAny:SetMAShow(bar, false)
-						end
-					end
-				)
+				end)
 			else
 				MoveAny:MSG("MISSING ShowPetActionBar")
 			end
@@ -144,9 +113,7 @@ function MoveAny:InitPetBar()
 			MoveAny:ResetAbBtns(PetActionBar)
 			for i = 1, 12 do
 				local btn = _G["PetActionButton" .. i]
-				if btn then
-					MoveAny:AddAbBtns(PetActionBar, btn)
-				end
+				if btn then MoveAny:AddAbBtns(PetActionBar, btn) end
 			end
 
 			bar = PetActionBar
@@ -156,9 +123,7 @@ function MoveAny:InitPetBar()
 			MoveAny:ResetAbBtns(PetActionBarFrame)
 			for i = 1, 12 do
 				local btn = _G["PetActionButton" .. i]
-				if btn then
-					MoveAny:AddAbBtns(PetActionBarFrame, btn)
-				end
+				if btn then MoveAny:AddAbBtns(PetActionBarFrame, btn) end
 			end
 
 			bar = PetActionBar

@@ -45,26 +45,18 @@ function MoveAny:AddAlphaFrame(frame)
     MAAF[#MAAF + 1] = frame
     MAAFS[frame] = true
     if not frame:IsMouseEnabled() then return end
-    frame:HookScript(
-        "OnEnter",
-        function()
-            if not alphasReady then return end
-            frame:SetAlpha(1)
-            MoveAny:SetMouseEleAlpha(frame, frame)
-        end
-    )
+    frame:HookScript("OnEnter", function()
+        if not alphasReady then return end
+        frame:SetAlpha(1)
+        MoveAny:SetMouseEleAlpha(frame, frame)
+    end)
 
-    frame:HookScript(
-        "OnLeave",
-        function()
-            if not alphasReady then return end
-            local prev = lastEle
-            lastEle = nil
-            if prev then
-                MoveAny:UpdateAlpha(prev, nil)
-            end
-        end
-    )
+    frame:HookScript("OnLeave", function()
+        if not alphasReady then return end
+        local prev = lastEle
+        lastEle = nil
+        if prev then MoveAny:UpdateAlpha(prev, nil) end
+    end)
 end
 
 local function makeAlphaEnterLeave(parentAlphaFrame)
@@ -78,11 +70,8 @@ local function makeAlphaEnterLeave(parentAlphaFrame)
         if not alphasReady then return end
         local prev = lastEle
         lastEle = nil
-        if prev then
-            MoveAny:UpdateAlpha(prev, nil)
-        end
+        if prev then MoveAny:UpdateAlpha(prev, nil) end
     end
-
     return onEnter, onLeave
 end
 
@@ -113,16 +102,12 @@ end
 
 function MoveAny:IsPetBattleAvailable()
     if C_PetBattles and C_PetJournal and C_PetJournal.IsPetBattleUnlocked then return C_PetJournal.IsPetBattleUnlocked() == true or C_PetJournal.IsPetBattleUnlocked() == false end
-
     return false
 end
 
 function MoveAny:IsInPetBattle()
     local inPetBattle = false
-    if C_PetBattles then
-        inPetBattle = C_PetBattles.IsInBattle()
-    end
-
+    if C_PetBattles then inPetBattle = C_PetBattles.IsInBattle() end
     return inPetBattle
 end
 
@@ -130,7 +115,6 @@ function MoveAny:IsChatClosed()
     for i = 1, 12 do
         if _G["ChatFrame" .. i .. "EditBox"] and _G["ChatFrame" .. i .. "EditBox"]:HasFocus() then return false end
     end
-
     return true
 end
 
@@ -139,7 +123,6 @@ function MoveAny:CurrentChatTab()
         local ct = _G["ChatFrame" .. i .. "EditBox"]
         if ct and ct:IsShown() then return i end
     end
-
     return 0
 end
 
@@ -159,16 +142,13 @@ function MoveAny:InitAlphaCombat()
     local alphaFrameCombat = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameCombat, "PLAYER_REGEN_DISABLED")
     MoveAny:RegisterEvent(alphaFrameCombat, "PLAYER_REGEN_ENABLED")
-    MoveAny:OnEvent(
-        alphaFrameCombat,
-        function(sel, event, ...)
-            if event == "PLAYER_REGEN_DISABLED" then
-                MoveAny:UpdateAlphaCombat(true)
-            else
-                MoveAny:UpdateAlphaCombat(false)
-            end
-        end, "alphaFrameCombat"
-    )
+    MoveAny:OnEvent(alphaFrameCombat, function(sel, event, ...)
+        if event == "PLAYER_REGEN_DISABLED" then
+            MoveAny:UpdateAlphaCombat(true)
+        else
+            MoveAny:UpdateAlphaCombat(false)
+        end
+    end, "alphaFrameCombat")
 end
 
 function MoveAny:UpdateAlphaResting()
@@ -182,12 +162,7 @@ function MoveAny:InitAlphaResting()
     MoveAny:UpdateAlphaResting()
     local alphaFrameResting = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameResting, "PLAYER_UPDATE_RESTING")
-    MoveAny:OnEvent(
-        alphaFrameResting,
-        function(sel, event, ...)
-            MoveAny:UpdateAlphaResting()
-        end, "alphaFrameResting"
-    )
+    MoveAny:OnEvent(alphaFrameResting, function(sel, event, ...) MoveAny:UpdateAlphaResting() end, "alphaFrameResting")
 end
 
 function MoveAny:UpdateAlphaFullHealth()
@@ -203,12 +178,7 @@ function MoveAny:InitAlphaFullHealth()
     if MoveAny:GetWoWBuildNr() >= 120000 then return end
     local alphaFrameHealth = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameHealth, "UNIT_HEALTH", "player")
-    MoveAny:OnEvent(
-        alphaFrameHealth,
-        function(sel, event, ...)
-            MoveAny:UpdateAlphaFullHealth()
-        end, "alphaFrameHealth"
-    )
+    MoveAny:OnEvent(alphaFrameHealth, function(sel, event, ...) MoveAny:UpdateAlphaFullHealth() end, "alphaFrameHealth")
 end
 
 function MoveAny:UpdateAlphaBonusBar()
@@ -221,21 +191,14 @@ function MoveAny:UpdateAlphaBonusBar()
         end
     end
 
-    if updateAlpha then
-        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().BONUSBAR)
-    end
+    if updateAlpha then MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().BONUSBAR) end
 end
 
 function MoveAny:InitAlphaBonusBar()
     MoveAny:UpdateAlphaBonusBar()
     local alphaFrameBonusBar = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameBonusBar, "UPDATE_BONUS_ACTIONBAR")
-    MoveAny:OnEvent(
-        alphaFrameBonusBar,
-        function(sel, event, ...)
-            MoveAny:UpdateAlphaBonusBar()
-        end, "alphaFrameBonusBar"
-    )
+    MoveAny:OnEvent(alphaFrameBonusBar, function(sel, event, ...) MoveAny:UpdateAlphaBonusBar() end, "alphaFrameBonusBar")
 end
 
 function MoveAny:UpdateAlphaAura()
@@ -256,21 +219,14 @@ function MoveAny:UpdateAlphaAura()
         end
     end
 
-    if updateAlpha then
-        MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().AURA)
-    end
+    if updateAlpha then MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().AURA) end
 end
 
 function MoveAny:InitAlphaAura()
     MoveAny:UpdateAlphaAura()
     local alphaFrameAura = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameAura, "UNIT_AURA", "player")
-    MoveAny:OnEvent(
-        alphaFrameAura,
-        function(sel, event, ...)
-            MoveAny:UpdateAlphaAura()
-        end, "alphaFrameAura"
-    )
+    MoveAny:OnEvent(alphaFrameAura, function(sel, event, ...) MoveAny:UpdateAlphaAura() end, "alphaFrameAura")
 end
 
 function MoveAny:UpdateAlphaVehicle()
@@ -288,12 +244,7 @@ function MoveAny:InitAlphaVehicle()
     local alphaFrameVehicle = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameVehicle, "UNIT_ENTERED_VEHICLE")
     MoveAny:RegisterEvent(alphaFrameVehicle, "UNIT_EXITED_VEHICLE")
-    MoveAny:OnEvent(
-        alphaFrameVehicle,
-        function(sel, event, ...)
-            MoveAny:UpdateAlphaVehicle()
-        end, "alphaFrameVehicle"
-    )
+    MoveAny:OnEvent(alphaFrameVehicle, function(sel, event, ...) MoveAny:UpdateAlphaVehicle() end, "alphaFrameVehicle")
 end
 
 function MoveAny:UpdateAlphaPetBattle()
@@ -311,12 +262,7 @@ function MoveAny:InitAlphaPetBattle()
     MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_CLOSE")
     MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_OPENING_DONE")
     MoveAny:RegisterEvent(alphaFramePetBattle, "PET_BATTLE_OVER")
-    MoveAny:OnEvent(
-        alphaFramePetBattle,
-        function(sel, event, ...)
-            MoveAny:UpdateAlphaPetBattle()
-        end, "alphaFramePetBattle"
-    )
+    MoveAny:OnEvent(alphaFramePetBattle, function(sel, event, ...) MoveAny:UpdateAlphaPetBattle() end, "alphaFramePetBattle")
 end
 
 function MoveAny:InitAlphas()
@@ -333,12 +279,10 @@ function MoveAny:InitAlphas()
 end
 
 function MoveAny:SetMouseEleAlpha(ele, last)
-    pcall(
-        function()
-            MoveAny:UpdateAlphas("SETMOUSEELE", ele, lastEle)
-            lastEle = last
-        end
-    )
+    pcall(function()
+        MoveAny:UpdateAlphas("SETMOUSEELE", ele, lastEle)
+        lastEle = last
+    end)
 end
 
 function MoveAny:UpdateAlpha(ele, mouseEle)
@@ -402,7 +346,6 @@ function MoveAny:GetCachedAlphaOptions(name)
     }
 
     alphaOptionsCache[name] = opts
-
     return opts
 end
 
@@ -412,34 +355,25 @@ local delayAlpha = 0.08
 function MoveAny:SafeUpdateAlphas(from, mouseEle, lastMouseEle)
     if timeStampAlpha >= GetTime() then
         retryAlpha = true
-
         return
     end
 
     retryAlpha = false
     timeStampAlpha = GetTime() + delayAlpha
     MoveAny:UpdateAlphas(from, mouseEle, lastMouseEle)
-    MoveAny:After(
-        delayAlpha + 0.02,
-        function()
-            if retryAlpha then
-                retryAlpha = false
-                MoveAny:SafeUpdateAlphas(from, mouseEle, lastMouseEle)
-            end
-        end, "retryAlpha"
-    )
+    MoveAny:After(delayAlpha + 0.02, function()
+        if retryAlpha then
+            retryAlpha = false
+            MoveAny:SafeUpdateAlphas(from, mouseEle, lastMouseEle)
+        end
+    end, "retryAlpha")
 end
 
 function MoveAny:UpdateAlphas(from, mouseEle, lastMouseEle)
     if not alphasReady then return end
     if mouseEle or lastMouseEle then
-        if mouseEle then
-            MoveAny:UpdateAlpha(mouseEle, mouseEle)
-        end
-
-        if lastMouseEle then
-            MoveAny:UpdateAlpha(lastMouseEle, mouseEle)
-        end
+        if mouseEle then MoveAny:UpdateAlpha(mouseEle, mouseEle) end
+        if lastMouseEle then MoveAny:UpdateAlpha(lastMouseEle, mouseEle) end
     else
         local frames = MoveAny:GetAlphaFrames()
         for i = 1, #frames do

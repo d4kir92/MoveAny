@@ -31,32 +31,24 @@ function MoveAny:UpdateBags()
 	if MoveAny:GetEleOption("BagsBar", "HideSmallBags", false) then
 		for i, v in pairs(SMALLBAGS) do
 			local bag = _G[v]
-			if bag then
-				MoveAny:HideFrame(bag)
-			end
+			if bag then MoveAny:HideFrame(bag) end
 		end
 	else
 		for i, v in pairs(SMALLBAGS) do
 			local bag = _G[v]
-			if bag then
-				MoveAny:ShowFrame(bag)
-			end
+			if bag then MoveAny:ShowFrame(bag) end
 		end
 	end
 
 	if MoveAny:GetEleOption("BagsBar", "HideKeyBag", false) then
 		for i, v in pairs(KEYBAG) do
 			local bag = _G[v]
-			if bag then
-				MoveAny:HideFrame(bag)
-			end
+			if bag then MoveAny:HideFrame(bag) end
 		end
 	else
 		for i, v in pairs(KEYBAG) do
 			local bag = _G[v]
-			if bag then
-				MoveAny:ShowFrame(bag)
-			end
+			if bag then MoveAny:ShowFrame(bag) end
 		end
 	end
 
@@ -71,24 +63,18 @@ function MoveAny:UpdateBags()
 		if bb ~= nil and bb:IsShown() and MoveAny:GetParent(bb):IsShown() and bb:GetAlpha() > 0 then
 			if not tContains(hookedBags, mbname) then
 				tinsert(hookedBags, mbname)
-				hooksecurefunc(
-					bb,
-					"SetParent",
-					function(sel, parent)
-						if run then return end
-						if ma_setparent[sel] then return end
-						ma_setparent[sel] = true
-						MoveAny:UpdateBags()
-						ma_setparent[sel] = false
-					end
-				)
+				hooksecurefunc(bb, "SetParent", function(sel, parent)
+					if run then return end
+					if ma_setparent[sel] then return end
+					ma_setparent[sel] = true
+					MoveAny:UpdateBags()
+					ma_setparent[sel] = false
+				end)
 			end
 
 			local w, h = bb:GetSize()
 			sw = sw + w
-			if h > sh then
-				sh = h
-			end
+			if h > sh then sh = h end
 		end
 	end
 
@@ -98,17 +84,13 @@ function MoveAny:UpdateBags()
 		if BagsBarDrag then
 			if hooksetsize == nil then
 				hooksetsize = true
-				hooksecurefunc(
-					BagsBarDrag,
-					"SetSize",
-					function(sel, w, h)
-						if InCombatLockdown() and sel:IsProtected() then return false end
-						if ma_bags_setsize then return end
-						ma_bags_setsize = true
-						MoveAny:UpdateBags()
-						ma_bags_setsize = false
-					end
-				)
+				hooksecurefunc(BagsBarDrag, "SetSize", function(sel, w, h)
+					if InCombatLockdown() and sel:IsProtected() then return false end
+					if ma_bags_setsize then return end
+					ma_bags_setsize = true
+					MoveAny:UpdateBags()
+					ma_bags_setsize = false
+				end)
 			end
 
 			BagsBarDrag:SetSize(sw, sh)
@@ -119,22 +101,15 @@ function MoveAny:UpdateBags()
 			local bb = _G[mbname]
 			if bb ~= nil and bb:IsShown() and MoveAny:GetParent(bb):IsShown() and bb:GetAlpha() > 0 then
 				local w, h = bb:GetSize()
-				if MainMenuBarArtFrame and MoveAny:GetParent(bb) == MainMenuBarArtFrame then
-					bb:SetParent(BagsBar)
-				end
-
+				if MainMenuBarArtFrame and MoveAny:GetParent(bb) == MainMenuBarArtFrame then bb:SetParent(BagsBar) end
 				if ma_setup[bb] == nil then
 					ma_setup[bb] = true
-					hooksecurefunc(
-						bb,
-						"SetPoint",
-						function(sel, ...)
-							if ma_bags_setpoint[sel] then return end
-							ma_bags_setpoint[sel] = true
-							MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", ma_px[sel], -(ma_psh[sel] / 2 - ma_ph[sel] / 2))
-							ma_bags_setpoint[sel] = false
-						end
-					)
+					hooksecurefunc(bb, "SetPoint", function(sel, ...)
+						if ma_bags_setpoint[sel] then return end
+						ma_bags_setpoint[sel] = true
+						MoveAny:SetPoint(sel, "TOPLEFT", BagsBar, "TOPLEFT", ma_px[sel], -(ma_psh[sel] / 2 - ma_ph[sel] / 2))
+						ma_bags_setpoint[sel] = false
+					end)
 
 					function bb:GetMAEle()
 						return BagsBar
@@ -165,21 +140,14 @@ function MoveAny:InitBags()
 		end
 
 		if BagsBar then
-			if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then
-				MicroButtonAndBagsBar.MicroBagBar:Hide()
-			end
-
-			hooksecurefunc(
-				BagsBar,
-				"SetSize",
-				function(sel, w, h)
-					if InCombatLockdown() and sel:IsProtected() then return false end
-					if ma_bags_setsize_frame[sel] then return end
-					ma_bags_setsize_frame[sel] = true
-					MoveAny:UpdateBags()
-					ma_bags_setsize_frame[sel] = false
-				end
-			)
+			if MicroButtonAndBagsBar and MicroButtonAndBagsBar.MicroBagBar then MicroButtonAndBagsBar.MicroBagBar:Hide() end
+			hooksecurefunc(BagsBar, "SetSize", function(sel, w, h)
+				if InCombatLockdown() and sel:IsProtected() then return false end
+				if ma_bags_setsize_frame[sel] then return end
+				ma_bags_setsize_frame[sel] = true
+				MoveAny:UpdateBags()
+				ma_bags_setsize_frame[sel] = false
+			end)
 
 			if MicroButtonAndBagsBar then
 				BagsBar:SetPoint("BOTTOMRIGHT", MoveAny:GetMainPanel(), "BOTTOMRIGHT", 0, 36)
@@ -192,16 +160,12 @@ function MoveAny:InitBags()
 			for i, mbname in pairs(BAGS) do
 				local bb = _G[mbname]
 				if bb and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC") then
-					hooksecurefunc(
-						bb,
-						"Hide",
-						function(sel)
-							if ma_show_guard[sel] then return end
-							ma_show_guard[sel] = true
-							sel:Show()
-							ma_show_guard[sel] = false
-						end
-					)
+					hooksecurefunc(bb, "Hide", function(sel)
+						if ma_show_guard[sel] then return end
+						ma_show_guard[sel] = true
+						sel:Show()
+						ma_show_guard[sel] = false
+					end)
 
 					bb:Show()
 				end
@@ -211,45 +175,42 @@ function MoveAny:InitBags()
 		end
 	end
 
-	MoveAny:After(
-		1,
-		function()
-			for i, v in pairs(BAGS) do
-				local bagF = _G[v]
-				local NT = _G[v .. "NormalTexture"]
-				if NT and bagF and NT.scalesetup == nil then
-					NT.scalesetup = true
-					if NT:GetTexture() == 130841 then
-						local sw, sh = bagF:GetSize()
-						local scale = 1.66
-						NT:SetSize(sw * scale, sh * scale)
-					end
+	MoveAny:After(1, function()
+		for i, v in pairs(BAGS) do
+			local bagF = _G[v]
+			local NT = _G[v .. "NormalTexture"]
+			if NT and bagF and NT.scalesetup == nil then
+				NT.scalesetup = true
+				if NT:GetTexture() == 130841 then
+					local sw, sh = bagF:GetSize()
+					local scale = 1.66
+					NT:SetSize(sw * scale, sh * scale)
 				end
 			end
+		end
 
-			-- Masque
-			if once then
-				once = false
-				if LibStub then
-					local MSQ = LibStub("Masque", true)
-					if MSQ then
-						local group = MSQ:Group("MA Blizzard Bags")
-						for i, v in pairs(BAGS) do
-							if v ~= "KeyRingButton" and v ~= "BagToggle" then
-								local btn = _G[v]
-								if not btn.MasqueButtonData then
-									btn.MasqueButtonData = {
-										Button = btn,
-										Icon = _G[v .. "IconTexture"],
-									}
+		-- Masque
+		if once then
+			once = false
+			if LibStub then
+				local MSQ = LibStub("Masque", true)
+				if MSQ then
+					local group = MSQ:Group("MA Blizzard Bags")
+					for i, v in pairs(BAGS) do
+						if v ~= "KeyRingButton" and v ~= "BagToggle" then
+							local btn = _G[v]
+							if not btn.MasqueButtonData then
+								btn.MasqueButtonData = {
+									Button = btn,
+									Icon = _G[v .. "IconTexture"],
+								}
 
-									group:AddButton(btn, btn.MasqueButtonData, "Item")
-								end
+								group:AddButton(btn, btn.MasqueButtonData, "Item")
 							end
 						end
 					end
 				end
 			end
-		end, "InitBags"
-	)
+		end
+	end, "InitBags")
 end

@@ -3,10 +3,7 @@ local ma_aef_hide = {}
 local ma_setup = {}
 function MoveAny:InitArenaEnemyFrames()
 	if MoveAny:IsEnabled("ARENAENEMYFRAMES", false) and _G["Arena_LoadUI"] then
-		if _G["ArenaEnemyFrame" .. 1] == nil and _G["Arena_LoadUI"] then
-			_G["Arena_LoadUI"]()
-		end
-
+		if _G["ArenaEnemyFrame" .. 1] == nil and _G["Arena_LoadUI"] then _G["Arena_LoadUI"]() end
 		if ArenaEnemyFrames then
 			local arenaFrames = ArenaEnemyFrames
 			if _G["ArenaEnemyFrame" .. 1] then
@@ -25,83 +22,54 @@ function MoveAny:InitArenaEnemyFrames()
 			function arenaFrames:SetPoint(...)
 			end
 
-			hooksecurefunc(
-				MAArenaEnemyFrames,
-				"SetScale",
-				function(sel, scale)
-					if InCombatLockdown() and sel:IsProtected() then return false end
-					if scale and type(scale) == "number" then
-						arenaFrames:SetScale(scale)
-					end
-				end
-			)
+			hooksecurefunc(MAArenaEnemyFrames, "SetScale", function(sel, scale)
+				if InCombatLockdown() and sel:IsProtected() then return false end
+				if scale and type(scale) == "number" then arenaFrames:SetScale(scale) end
+			end)
 
-			hooksecurefunc(
-				MAArenaEnemyFrames,
-				"SetAlpha",
-				function(sel, alpha)
-					arenaFrames:SetAlpha(alpha)
-				end
-			)
-
+			hooksecurefunc(MAArenaEnemyFrames, "SetAlpha", function(sel, alpha) arenaFrames:SetAlpha(alpha) end)
 			if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide6") then
 				for i = 1, 5 do
 					local bb = _G["ArenaEnemyFrame" .. i]
 					if bb then
 						if ma_setup[bb] == nil then
 							ma_setup[bb] = true
-							hooksecurefunc(
-								bb,
-								"SetAlpha",
-								function()
-									if bb.setalpha then return end
-									bb.setalpha = true
-									if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide7") then
-										bb:SetAlpha(0)
-										if not InCombatLockdown() then
-											bb:EnableMouse(false)
-										end
-									end
-
-									bb.setalpha = false
+							hooksecurefunc(bb, "SetAlpha", function()
+								if bb.setalpha then return end
+								bb.setalpha = true
+								if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide7") then
+									bb:SetAlpha(0)
+									if not InCombatLockdown() then bb:EnableMouse(false) end
 								end
-							)
+
+								bb.setalpha = false
+							end)
 						end
 
 						if MoveAny:GetEleOption("MAArenaEnemyFrames", "Hide", false, "Hide8") then
 							bb:SetAlpha(0)
-							if not InCombatLockdown() then
-								bb:EnableMouse(false)
-							end
+							if not InCombatLockdown() then bb:EnableMouse(false) end
 						end
 					end
 				end
 			end
 
 			if MoveAny:DEBUG() then
-				hooksecurefunc(
-					arenaFrames,
-					"Hide",
-					function(sel)
+				hooksecurefunc(arenaFrames, "Hide", function(sel)
+					if ma_aef_hide[sel] then return end
+					ma_aef_hide[sel] = true
+					sel:Show()
+					ma_aef_hide[sel] = false
+				end)
+
+				arenaFrames:Show()
+				for i = 1, 5 do
+					hooksecurefunc(_G["ArenaEnemyFrame" .. i], "Hide", function(sel)
 						if ma_aef_hide[sel] then return end
 						ma_aef_hide[sel] = true
 						sel:Show()
 						ma_aef_hide[sel] = false
-					end
-				)
-
-				arenaFrames:Show()
-				for i = 1, 5 do
-					hooksecurefunc(
-						_G["ArenaEnemyFrame" .. i],
-						"Hide",
-						function(sel)
-							if ma_aef_hide[sel] then return end
-							ma_aef_hide[sel] = true
-							sel:Show()
-							ma_aef_hide[sel] = false
-						end
-					)
+					end)
 
 					_G["ArenaEnemyFrame" .. i]:Show()
 				end
@@ -112,10 +80,7 @@ end
 
 function MoveAny:InitArenaPrepFrames()
 	if MoveAny:IsEnabled("ARENAPREPFRAMES", false) and _G["Arena_LoadUI"] then
-		if _G["ArenaPrepFrame" .. 1] == nil and _G["Arena_LoadUI"] then
-			_G["Arena_LoadUI"]()
-		end
-
+		if _G["ArenaPrepFrame" .. 1] == nil and _G["Arena_LoadUI"] then _G["Arena_LoadUI"]() end
 		if ArenaPrepFrames then
 			local prepFrames = ArenaPrepFrames
 			if _G["ArenaPrepFrame" .. 1] then
@@ -134,83 +99,54 @@ function MoveAny:InitArenaPrepFrames()
 			function prepFrames:SetPoint(...)
 			end
 
-			hooksecurefunc(
-				MAArenaPrepFrames,
-				"SetScale",
-				function(sel, scale)
-					if InCombatLockdown() and sel:IsProtected() then return false end
-					if scale and type(scale) == "number" then
-						prepFrames:SetScale(scale)
-					end
-				end
-			)
+			hooksecurefunc(MAArenaPrepFrames, "SetScale", function(sel, scale)
+				if InCombatLockdown() and sel:IsProtected() then return false end
+				if scale and type(scale) == "number" then prepFrames:SetScale(scale) end
+			end)
 
-			hooksecurefunc(
-				MAArenaPrepFrames,
-				"SetAlpha",
-				function(sel, alpha)
-					prepFrames:SetAlpha(alpha)
-				end
-			)
-
+			hooksecurefunc(MAArenaPrepFrames, "SetAlpha", function(sel, alpha) prepFrames:SetAlpha(alpha) end)
 			if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide9") then
 				for i = 1, 5 do
 					local bb = _G["ArenaPrepFrame" .. i]
 					if bb then
 						if ma_setup[bb] == nil then
 							ma_setup[bb] = true
-							hooksecurefunc(
-								bb,
-								"SetAlpha",
-								function()
-									if bb.setalpha then return end
-									bb.setalpha = true
-									if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide10") then
-										bb:SetAlpha(0)
-										if not InCombatLockdown() then
-											bb:EnableMouse(false)
-										end
-									end
-
-									bb.setalpha = false
+							hooksecurefunc(bb, "SetAlpha", function()
+								if bb.setalpha then return end
+								bb.setalpha = true
+								if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide10") then
+									bb:SetAlpha(0)
+									if not InCombatLockdown() then bb:EnableMouse(false) end
 								end
-							)
+
+								bb.setalpha = false
+							end)
 						end
 
 						if MoveAny:GetEleOption("MAArenaPrepFrames", "Hide", false, "Hide11") then
 							bb:SetAlpha(0)
-							if not InCombatLockdown() then
-								bb:EnableMouse(false)
-							end
+							if not InCombatLockdown() then bb:EnableMouse(false) end
 						end
 					end
 				end
 			end
 
 			if MoveAny:DEBUG() then
-				hooksecurefunc(
-					prepFrames,
-					"Hide",
-					function(sel)
+				hooksecurefunc(prepFrames, "Hide", function(sel)
+					if ma_aef_hide[sel] then return end
+					ma_aef_hide[sel] = true
+					sel:Show()
+					ma_aef_hide[sel] = false
+				end)
+
+				prepFrames:Show()
+				for i = 1, 5 do
+					hooksecurefunc(_G["ArenaPrepFrame" .. i], "Hide", function(sel)
 						if ma_aef_hide[sel] then return end
 						ma_aef_hide[sel] = true
 						sel:Show()
 						ma_aef_hide[sel] = false
-					end
-				)
-
-				prepFrames:Show()
-				for i = 1, 5 do
-					hooksecurefunc(
-						_G["ArenaPrepFrame" .. i],
-						"Hide",
-						function(sel)
-							if ma_aef_hide[sel] then return end
-							ma_aef_hide[sel] = true
-							sel:Show()
-							ma_aef_hide[sel] = false
-						end
-					)
+					end)
 
 					_G["ArenaPrepFrame" .. i]:Show()
 				end

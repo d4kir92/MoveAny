@@ -16,7 +16,6 @@ end
 function MoveAny:MathR(val, dec)
 	val = val or 0
 	dec = dec or 0
-
 	return tonumber(string.format("%0." .. dec .. "f", val))
 end
 
