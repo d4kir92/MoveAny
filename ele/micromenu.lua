@@ -56,25 +56,25 @@ function MoveAny:UpdateMicroBar(from)
 
 	mibarMoved = true
 	if from and from == "mb" then
-		MoveAny:After(0.14, function()
+		MoveAny:After(0.001, function()
 			mibarMoved = false
 			if retry then MoveAny:UpdateMicroBar("RETRYMB") end
 		end, "UpdateMicroBar mb")
 	elseif from and from == "RETRYMB" then
 		retry = false
-		MoveAny:After(0.2, function()
+		MoveAny:After(0.002, function()
 			MoveAny:DoUpdateMicroBar("RETRYMB")
 			mibarMoved = false
 		end, "UpdateMicroBar RETRYMB")
 	elseif from and from == "RETRYNOR" then
 		retry = false
-		MoveAny:After(0.2, function()
+		MoveAny:After(0.02, function()
 			MoveAny:DoUpdateMicroBar("RETRYNOR")
 			mibarMoved = false
 		end, "UpdateMicroBar RETRYNOR")
 	else
 		MoveAny:DoUpdateMicroBar("NORMAL")
-		MoveAny:After(0.06, function()
+		MoveAny:After(0.006, function()
 			mibarMoved = false
 			if retry then MoveAny:UpdateMicroBar("RETRYNOR") end
 		end, "UpdateMicroBar ELSE")
