@@ -225,13 +225,13 @@ MoveAny:OnEvent(maLockCheck, function(sel, event) MoveAny:UpdateMALock(event) en
 function MoveAny:InitSlash()
 	MoveAny:AddSlash("move", MoveAny.ToggleMALock)
 	MoveAny:AddSlash("moveany", MoveAny.ToggleMALock)
-	if C_UI then
-		MoveAny:AddSlash("rl", C_UI.Reload)
-		MoveAny:AddSlash("rel", C_UI.Reload)
-	else
-		MoveAny:AddSlash("rl", _G["ReloadUI"])
-		MoveAny:AddSlash("rel", _G["ReloadUI"])
-	end
+	MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVE"), MoveAny.ToggleMALock)
+	MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVEANY"), MoveAny.ToggleMALock)
+	local reload = _G["ReloadUI"]
+	if C_UI and C_UI.Reload then reload = C_UI.Reload end
+	MoveAny:AddSlash("rl", reload)
+	MoveAny:AddSlash("rel", reload)
+	MoveAny:AddSlash(MoveAny:Trans("LID_SLASHRELOAD"), reload)
 end
 
 if false then

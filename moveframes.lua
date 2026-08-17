@@ -94,7 +94,7 @@ function MoveAny:FrameDragInfo(frame, c)
 				text = MoveAny:Trans("LID_LOCKEDWINDOWS") .. "."
 			else
 				if MoveAny:IsEnabled("SCALEFRAMES", true) then
-					if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then text = format(MoveAny:Trans("LID_FRAMESKEYSCALE"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "." end
+					if MoveAny:IsEnabled("FRAMESKEYSCALE", false) then text = format(MoveAny:Trans("LID_FRAMESKEYSCALE"), MoveAny:Trans("LID_" .. MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT"))) .. "." end
 				else
 					text = MoveAny:Trans("LID_FRAMESCALEDISABLED")
 				end
@@ -103,13 +103,13 @@ function MoveAny:FrameDragInfo(frame, c)
 			if MoveAny:IsEnabled("LOCKWINDOWS", false) then
 				text = MoveAny:Trans("LID_LOCKEDWINDOWS") .. "."
 			else
-				if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then text = format(MoveAny:Trans("LID_FRAMESKEYDRAG"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "." end
+				if MoveAny:IsEnabled("FRAMESKEYDRAG", false) then text = format(MoveAny:Trans("LID_FRAMESKEYDRAG"), MoveAny:Trans("LID_" .. MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT"))) .. "." end
 			end
 		elseif IsMouseButtonDown("MiddleButton") then
 			if MoveAny:IsEnabled("LOCKWINDOWS", false) then
 				text = MoveAny:Trans("LID_LOCKEDWINDOWS") .. "."
 			else
-				if MoveAny:IsEnabled("FRAMESKEYRESET", false) then text = format(MoveAny:Trans("LID_FRAMESKEYRESET"), MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT")) .. "." end
+				if MoveAny:IsEnabled("FRAMESKEYRESET", false) then text = format(MoveAny:Trans("LID_FRAMESKEYRESET"), MoveAny:Trans("LID_" .. MoveAny:MAGV("KEYBINDWINDOWKEY", "SHIFT"))) .. "." end
 			end
 		end
 
