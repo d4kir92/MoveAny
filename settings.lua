@@ -1888,7 +1888,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.50")
+	MoveAny:SetVersion(135994, "1.9.51")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2165,7 +2165,6 @@ function MoveAny:LoadAddon()
 				C_Timer.After(2, function()
 					if MiniMapTrackingButton then
 						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
-							print("WORKS")
 							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5)
 								if ma_set_parent[sel] then return end
 								ma_set_parent[sel] = true
