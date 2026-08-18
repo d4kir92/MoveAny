@@ -536,6 +536,9 @@ allowedFrameTypes["frame"] = true
 allowedFrameTypes["Frame"] = true
 allowedFrameTypes["FRAME"] = true
 function MoveAny:MoveFrames()
+	local updatePending = false
+	local updateThrottle = 0.1
+	local nextUpdateAt = 0
 	hooksecurefunc("CreateFrame", function(frameType, frameName, parent, template)
 		if allowedFrameTypes[frameType] then
 			if next(MAFS) == nil then return end
@@ -544,7 +547,16 @@ function MoveAny:MoveFrames()
 				return
 			end
 
-			MoveAny:UpdateMoveFrames("CreateFrame", false)
+			if updatePending then return end
+			updatePending = true
+			print("RUN2")
+			local delay = nextUpdateAt - GetTime()
+			if delay < 0 then delay = 0 end
+			MoveAny:After(delay, function()
+				updatePending = false
+				nextUpdateAt = GetTime() + updateThrottle
+				MoveAny:UpdateMoveFrames("CreateFrame", false)
+			end, "CreateFrame UpdateMoveFrames")
 		end
 	end)
 

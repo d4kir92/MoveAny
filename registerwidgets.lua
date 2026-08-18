@@ -19,10 +19,25 @@ function MoveAny:GetMissingWidgets()
 	return missingWidgets
 end
 
+local retryLocked = false
+local retrySnapshot = {}
 function MoveAny:RetryRegisterWidgets()
-	for name, tab in pairs(MoveAny:GetMissingWidgets()) do
-		MoveAny:RegisterWidget(tab)
+	if retryLocked then return end
+	retryLocked = true
+	local count = 0
+	for _, tab in pairs(MoveAny:GetMissingWidgets()) do
+		count = count + 1
+		retrySnapshot[count] = tab
 	end
+
+	for i = 1, count do
+		local tab = retrySnapshot[i]
+		retrySnapshot[i] = nil
+		local ok, err = pcall(MoveAny.RegisterWidget, MoveAny, tab)
+		if not ok then MoveAny:MSG("[RegisterWidget] FAILED", tab and tab.name, err) end
+	end
+
+	retryLocked = false
 end
 
 function MoveAny:SafeRetryRegisterWidgets()
@@ -30,10 +45,26 @@ function MoveAny:SafeRetryRegisterWidgets()
 	MoveAny:RetryRegisterWidgets()
 end
 
+local retryPending = false
+local retryThrottle = 0.1
+local nextRetryAt = 0
 hooksecurefunc("CreateFrame", function(...)
 	if not startRegisterWidget then return end
+	print("2")
+	if retryPending then return end
+	print("3")
+	if retryLocked then return end
+	print("OK")
 	if next(missingWidgets) == nil then return end
-	MoveAny:SafeRetryRegisterWidgets()
+	retryPending = true
+	print("RUN 1")
+	local delay = nextRetryAt - GetTime()
+	if delay < 0 then delay = 0 end
+	MoveAny:After(delay, function()
+		retryPending = false
+		nextRetryAt = GetTime() + retryThrottle
+		MoveAny:SafeRetryRegisterWidgets()
+	end, "CreateFrame RetryRegisterWidgets")
 end)
 
 MoveAny:After(2, function() MoveAny:RetryRegisterWidgets() end, "Init startRegisterWidget 1")
@@ -1159,7 +1190,7 @@ function MoveAny:RegisterWidget(tab)
 			if enab and not forc then lstr = lstr .. " |cFFFFFF00" .. MoveAny:Trans("LID_ISENABLEDINEDITMODE") end
 			dragframe.name:SetText(lstr)
 			local font, _, fontFlags = dragframe.name:GetFont()
-			dragframe.name:SetFont(font, 15, fontFlags)
+			if font then dragframe.name:SetFont(font, 15, fontFlags) end
 			dragframe.name:SetText(lstr)
 			dragframe.name:Hide()
 		end
@@ -1169,7 +1200,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe.desc:SetPoint("CENTER", dragframe, "CENTER", 0, -9)
 			dragframe.desc:SetText(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"))
 			local font2, _, fontFlags2 = dragframe.name:GetFont()
-			dragframe.desc:SetFont(font2, 10, fontFlags2)
+			if font2 then dragframe.desc:SetFont(font2, 10, fontFlags2) end
 			dragframe.desc:SetText(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"))
 			dragframe.desc:Hide()
 		end
