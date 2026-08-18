@@ -1958,20 +1958,76 @@ function MoveAny:InitGLF(glf, x)
 end
 
 local minimapDragOffset = 10
-function MoveAny:UpdateMinimapDrag(frame)
-	if not frame or not Minimap then return end
+local minimapDragFrames = {}
+local minimapDragHooked = false
+local function GetMinimapDragCenter()
+	if not Minimap then return end
 	local mx, my = Minimap:GetCenter()
 	if not mx or not my then return end
 	local ms = Minimap:GetEffectiveScale()
+	if not ms or ms <= 0 then return end
+	return mx * ms, my * ms, ms
+end
+
+local function GetMinimapDragBlock(frame, radius)
+	if not GameTimeFrame or not GameTimeFrame:IsShown() or frame == GameTimeFrame then return end
+	if not radius or radius <= 0 then return end
+	local mx, my = GetMinimapDragCenter()
+	if not mx then return end
+	local gx, gy = GameTimeFrame:GetCenter()
+	local gs = GameTimeFrame:GetEffectiveScale()
+	if not gx or not gy or not gs or gs <= 0 then return end
+	local arc = (GameTimeFrame:GetWidth() * gs + frame:GetWidth() * frame:GetEffectiveScale()) / 2 / radius
+	return math.atan2(gy * gs - my, gx * gs - mx), arc
+end
+
+function MoveAny:SetMinimapDragAngle(frame, angle)
+	if not frame then return end
+	local mx, my, ms = GetMinimapDragCenter()
+	if not mx then return end
 	local fs = frame:GetEffectiveScale()
-	if not ms or ms <= 0 or not fs or fs <= 0 then return end
-	local cx, cy = GetCursorPosition()
-	local angle = math.atan2(cy / ms - my, cx / ms - mx)
-	local radius = Minimap:GetWidth() / 2 + minimapDragOffset
-	local px = (mx + math.cos(angle) * radius) * ms / fs
-	local py = (my + math.sin(angle) * radius) * ms / fs
+	if not fs or fs <= 0 then return end
+	local radius = (Minimap:GetWidth() / 2 + minimapDragOffset) * ms
+	local ba, arc = GetMinimapDragBlock(frame, radius)
+	if ba then
+		local diff = math.atan2(math.sin(angle - ba), math.cos(angle - ba))
+		if math.abs(diff) < arc then
+			if diff < 0 then
+				angle = ba - arc
+			else
+				angle = ba + arc
+			end
+		end
+	end
+
+	local px = (mx + math.cos(angle) * radius) / fs
+	local py = (my + math.sin(angle) * radius) / fs
 	frame:ClearAllPoints()
 	frame:SetPoint("CENTER", MoveAny:GetMainPanel(), "BOTTOMLEFT", px, py)
+end
+
+function MoveAny:UpdateMinimapDrag(frame)
+	if not frame then return end
+	local mx, my = GetMinimapDragCenter()
+	if not mx then return end
+	local cx, cy = GetCursorPosition()
+	MoveAny:SetMinimapDragAngle(frame, math.atan2(cy - my, cx - mx))
+end
+
+function MoveAny:ClampMinimapDrag(frame)
+	if not frame then return end
+	local mx, my = GetMinimapDragCenter()
+	if not mx then return end
+	local fx, fy = frame:GetCenter()
+	local fs = frame:GetEffectiveScale()
+	if not fx or not fy or not fs or fs <= 0 then return end
+	MoveAny:SetMinimapDragAngle(frame, math.atan2(fy * fs - my, fx * fs - mx))
+end
+
+local function UpdateMinimapDragFrames()
+	for frame, key in pairs(minimapDragFrames) do
+		if MoveAny:GetElePoint(key) then MoveAny:ClampMinimapDrag(frame) end
+	end
 end
 
 function MoveAny:InitMinimapDrag(frame, key, func)
@@ -1988,10 +2044,18 @@ function MoveAny:InitMinimapDrag(frame, key, func)
 		if p1 and p3 then MoveAny:SetElePoint(key, p1, MoveAny:GetMainPanel(), p3, p4, p5) end
 	end)
 
+	minimapDragFrames[frame] = key
+	if not minimapDragHooked then
+		minimapDragHooked = true
+		hooksecurefunc(Minimap, "SetPoint", UpdateMinimapDragFrames)
+		Minimap:HookScript("OnSizeChanged", UpdateMinimapDragFrames)
+	end
+
 	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
 	if dbp1 and dbp3 then
 		frame:ClearAllPoints()
 		frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+		MoveAny:ClampMinimapDrag(frame)
 	end
 
 	if func then func() end
@@ -2123,7 +2187,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_MINIMAPLFGFRAME",
 			})
 		else
-			C_Timer.After(2, function() MoveAny:InitMinimapDrag(MiniMapLFGFrame, "MiniMapLFGFrame") end)
+			C_Timer.After(1, function() MoveAny:InitMinimapDrag(MiniMapLFGFrame, "MiniMapLFGFrame") end)
 		end
 
 		if LFGMinimapFrame and MoveAny:IsEnabled("LFGMINIMAPFRAME", false) then
@@ -2142,7 +2206,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_LFGMINIMAPFRAME",
 			})
 		else
-			C_Timer.After(2, function() MoveAny:InitMinimapDrag(LFGMinimapFrame, "LFGMinimapFrame") end)
+			C_Timer.After(1, function() MoveAny:InitMinimapDrag(LFGMinimapFrame, "LFGMinimapFrame") end)
 		end
 
 		if MiniMapTracking then
@@ -2162,7 +2226,7 @@ function MoveAny:LoadAddon()
 					["lstr"] = "LID_MINIMAPTRACKING",
 				})
 			else
-				C_Timer.After(2, function()
+				C_Timer.After(1, function()
 					if MiniMapTrackingButton then
 						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
 							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5)
