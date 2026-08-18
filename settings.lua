@@ -2163,18 +2163,23 @@ function MoveAny:LoadAddon()
 				})
 			else
 				C_Timer.After(2, function()
-					MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
-						hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5)
-							if ma_set_parent[sel] then return end
-							ma_set_parent[sel] = true
-							MiniMapTracking:ClearAllPoints()
-							MiniMapTracking:SetPoint(p1, p2, p3, p4, p5)
-							ma_set_parent[sel] = false
-						end)
+					if MiniMapTrackingButton then
+						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
+							print("WORKS")
+							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5)
+								if ma_set_parent[sel] then return end
+								ma_set_parent[sel] = true
+								MiniMapTracking:ClearAllPoints()
+								MiniMapTracking:SetPoint(p1, p2, p3, p4, p5)
+								ma_set_parent[sel] = false
+							end)
 
-						MiniMapTracking:ClearAllPoints()
-						MiniMapTracking:SetPoint(MiniMapTrackingButton:GetPoint())
-					end)
+							MiniMapTracking:ClearAllPoints()
+							MiniMapTracking:SetPoint(MiniMapTrackingButton:GetPoint())
+						end)
+					else
+						MoveAny:InitMinimapDrag(MiniMapTracking, "MiniMapTracking")
+					end
 				end)
 			end
 		end
