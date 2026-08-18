@@ -1888,7 +1888,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.51")
+	MoveAny:SetVersion(135994, "1.9.52")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2246,16 +2246,17 @@ function MoveAny:LoadAddon()
 				C_Timer.After(1, function()
 					if MiniMapTrackingButton then
 						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
-							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5)
-								if ma_set_parent[sel] then return end
-								ma_set_parent[sel] = true
+							local function SyncMiniMapTracking(p1, p2, p3, p4, p5)
+								if not p1 or not p2 or p2 == MiniMapTracking then return end
+								if ma_set_parent[MiniMapTrackingButton] then return end
+								ma_set_parent[MiniMapTrackingButton] = true
 								MiniMapTracking:ClearAllPoints()
 								MiniMapTracking:SetPoint(p1, p2, p3, p4, p5)
-								ma_set_parent[sel] = false
-							end)
+								ma_set_parent[MiniMapTrackingButton] = false
+							end
 
-							MiniMapTracking:ClearAllPoints()
-							MiniMapTracking:SetPoint(MiniMapTrackingButton:GetPoint())
+							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5) SyncMiniMapTracking(p1, p2, p3, p4, p5) end)
+							SyncMiniMapTracking(MiniMapTrackingButton:GetPoint())
 						end)
 					else
 						MoveAny:InitMinimapDrag(MiniMapTracking, "MiniMapTracking")
