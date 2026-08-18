@@ -813,6 +813,7 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "MINIMAPFLAG", false)
 		if MiniMapLFGFrame then AddCheckBox(4, "MINIMAPLFGFRAME", false) end
 		if LFGMinimapFrame then AddCheckBox(4, "LFGMINIMAPFRAME", false) end
+		if MiniMapTracking then AddCheckBox(4, "MINIMAPTRACKING", false) end
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then AddCheckBox(4, "TOTEMFRAME", false) end
 		if MoveAny:IsValidFrame(MinimapZoneTextButton) then AddCheckBox(4, "MINIMAPZONETEXT", false) end
@@ -2092,6 +2093,23 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "LFGMinimapFrame",
 				["lstr"] = "LID_LFGMINIMAPFRAME",
+			})
+		end
+
+		if MiniMapTracking and MoveAny:IsEnabled("MINIMAPTRACKING", false) then
+			MiniMapTracking:ClearAllPoints()
+			MiniMapTracking:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			hooksecurefunc(MiniMapTracking, "SetParent", function(sel)
+				if ma_set_parent[sel] then return end
+				ma_set_parent[sel] = true
+				sel:SetParent(UIParent)
+				ma_set_parent[sel] = false
+			end)
+
+			MiniMapTracking:SetParent(UIParent)
+			MoveAny:RegisterWidget({
+				["name"] = "MiniMapTracking",
+				["lstr"] = "LID_MINIMAPTRACKING",
 			})
 		end
 
