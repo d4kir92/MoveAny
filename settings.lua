@@ -813,8 +813,12 @@ function MoveAny:InitMALock()
 		AddCheckBox(4, "MINIMAPFLAG", false)
 		if MiniMapLFGFrame then AddCheckBox(4, "MINIMAPLFGFRAME", false) end
 		if LFGMinimapFrame then AddCheckBox(4, "LFGMINIMAPFRAME", false) end
-		if MiniMapTracking then AddCheckBox(4, "MINIMAPTRACKING", false) end
-		if MiniMapTrackingButton then AddCheckBox(4, "MINIMAPTRACKINGBUTTON", false) end
+		if MiniMapTrackingButton then
+			AddCheckBox(4, "MINIMAPTRACKINGBUTTON", false)
+		elseif MiniMapTracking then
+			AddCheckBox(4, "MINIMAPTRACKING", false)
+		end
+
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then AddCheckBox(4, "TOTEMFRAME", false) end
 		if MoveAny:IsValidFrame(MinimapZoneTextButton) then AddCheckBox(4, "MINIMAPZONETEXT", false) end
@@ -1884,7 +1888,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.47")
+	MoveAny:SetVersion(135994, "1.9.48")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
