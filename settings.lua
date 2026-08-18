@@ -1983,8 +1983,8 @@ end
 
 function MoveAny:SetMinimapDragAngle(frame, angle)
 	if not frame then return end
-	local mx, my, ms = GetMinimapDragCenter()
-	if not mx then return end
+	local _, _, ms = GetMinimapDragCenter()
+	if not ms then return end
 	local fs = frame:GetEffectiveScale()
 	if not fs or fs <= 0 then return end
 	local radius = (Minimap:GetWidth() / 2 + minimapDragOffset) * ms
@@ -2000,10 +2000,10 @@ function MoveAny:SetMinimapDragAngle(frame, angle)
 		end
 	end
 
-	local px = (mx + math.cos(angle) * radius) / fs
-	local py = (my + math.sin(angle) * radius) / fs
+	local px = math.cos(angle) * radius / fs
+	local py = math.sin(angle) * radius / fs
 	frame:ClearAllPoints()
-	frame:SetPoint("CENTER", MoveAny:GetMainPanel(), "BOTTOMLEFT", px, py)
+	frame:SetPoint("CENTER", Minimap, "CENTER", px, py)
 end
 
 function MoveAny:UpdateMinimapDrag(frame)
@@ -2024,9 +2024,22 @@ function MoveAny:ClampMinimapDrag(frame)
 	MoveAny:SetMinimapDragAngle(frame, math.atan2(fy * fs - my, fx * fs - mx))
 end
 
+function MoveAny:SaveMinimapDrag(frame, key)
+	if not frame or not key then return end
+	local fx, fy = frame:GetCenter()
+	local fs = frame:GetEffectiveScale()
+	local us = MoveAny:GetMainPanel():GetEffectiveScale()
+	if not fx or not fy or not fs or not us or us <= 0 then return end
+	MoveAny:SetElePoint(key, "CENTER", MoveAny:GetMainPanel(), "BOTTOMLEFT", fx * fs / us, fy * fs / us)
+	MoveAny:ClampMinimapDrag(frame)
+end
+
 local function UpdateMinimapDragFrames()
 	for frame, key in pairs(minimapDragFrames) do
-		if MoveAny:GetElePoint(key) then MoveAny:ClampMinimapDrag(frame) end
+		if MoveAny:GetElePoint(key) then
+			MoveAny:ClampMinimapDrag(frame)
+			MoveAny:SaveMinimapDrag(frame, key)
+		end
 	end
 end
 
@@ -2040,15 +2053,19 @@ function MoveAny:InitMinimapDrag(frame, key, func)
 	frame:SetScript("OnDragStop", function(sel)
 		sel:SetScript("OnUpdate", nil)
 		MoveAny:UpdateMinimapDrag(sel)
-		local p1, _, p3, p4, p5 = sel:GetPoint()
-		if p1 and p3 then MoveAny:SetElePoint(key, p1, MoveAny:GetMainPanel(), p3, p4, p5) end
+		MoveAny:SaveMinimapDrag(sel, key)
 	end)
 
 	minimapDragFrames[frame] = key
 	if not minimapDragHooked then
 		minimapDragHooked = true
 		hooksecurefunc(Minimap, "SetPoint", UpdateMinimapDragFrames)
+		hooksecurefunc(Minimap, "SetScale", UpdateMinimapDragFrames)
 		Minimap:HookScript("OnSizeChanged", UpdateMinimapDragFrames)
+		if MinimapCluster then
+			hooksecurefunc(MinimapCluster, "SetScale", UpdateMinimapDragFrames)
+			MinimapCluster:HookScript("OnSizeChanged", UpdateMinimapDragFrames)
+		end
 	end
 
 	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
