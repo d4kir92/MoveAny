@@ -11,9 +11,44 @@ tinsert(MAFRAMES, "RolePollPopup")
 tinsert(MAFRAMES, "StaticPopup1")
 tinsert(MAFRAMES, "StaticPopup2")
 tinsert(MAFRAMES, "InstanceAbandonPopup")
+local MAFRAMESONLYRETAIL = {}
+for i, v in pairs({"TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "HouseListFrame", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "LFGListInviteDialog", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ScrappingMachineFrame", "InspectRecipeFrame", "SettingsPanel", "QuickKeybindFrame", "ContainerFrameCombinedBags", "ClassTalentFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "WeeklyRewardsFrame", "WardrobeFrame", "AuctionHouseFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CovenantRenownFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame",}) do
+	MAFRAMESONLYRETAIL[v] = true
+end
+
+local MAFRAMESNOTRETAIL = {}
+for i, v in pairs({"WatchFrameAutoQuestPopUp1", "GuildControlUI", "TaxiFrame", "BattlefieldFrame", "ReforgingFrameInvisibleButton", "ReforgingFrame", "ArchaeologyFrame", "InterfaceOptionsFrame", "VideoOptionsFrame", "KeyBindingFrame", "LFGParentFrame", "SpellBookFrame", "PlayerTalentFrame", "CraftFrame", "QuestLogFrame", "ClassTrainerFrame", "AuctionFrame", "WorldStateScoreFrame", "TimeManagerFrame",}) do
+	MAFRAMESNOTRETAIL[v] = true
+end
+
+local function MAIsFrameForBuild(name)
+	local build = MoveAny:GetWoWBuild()
+	if MAFRAMESONLYRETAIL[name] and build ~= "RETAIL" then return false end
+	if MAFRAMESNOTRETAIL[name] and build == "RETAIL" then return false end
+	return true
+end
+
 local MAFS = {}
+local MAFSWrongBuild = {}
 for i, v in pairs(MAFRAMES) do
-	MAFS[v] = v
+	if MAIsFrameForBuild(v) then
+		MAFS[v] = v
+	else
+		MAFSWrongBuild[v] = v
+	end
+end
+
+local function MAFSCheckWrongBuild()
+	local added = false
+	for name in pairs(MAFSWrongBuild) do
+		if MoveAny:GetFrameByName(name) ~= nil then
+			MAFSWrongBuild[name] = nil
+			MAFS[name] = name
+			added = true
+		end
+	end
+
+	return added
 end
 
 if C_Widget.IsWidget(ScriptErrorsFrame) and ScriptErrorsFrame.DragArea then
@@ -126,6 +161,35 @@ local run = false
 local id = 0
 local waitingFrames = {}
 local waitingFramesDone = {}
+local MAFSGiveUp = {}
+local mafsPending = 1
+local giveUpScheduled = false
+local function MAFSRecountPending()
+	local count = 0
+	for name in pairs(MAFS) do
+		if not MAFSGiveUp[name] and not waitingFrames[name] then count = count + 1 end
+	end
+
+	mafsPending = count
+end
+
+local function MAFSGiveUpUnresolved()
+	MAFSCheckWrongBuild()
+	for name in pairs(MAFS) do
+		if MoveAny:GetFrameByName(name) == nil then MAFSGiveUp[name] = true end
+	end
+
+	MAFSRecountPending()
+end
+
+local function MAFSRestoreGiveUp()
+	if next(MAFSGiveUp) == nil then return end
+	for name in pairs(MAFSGiveUp) do
+		MAFSGiveUp[name] = nil
+	end
+
+	MAFSRecountPending()
+end
 local maframesetpoint = {}
 local masetscale_frame = {}
 local ma_ismoving = {}
@@ -264,9 +328,11 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		local count = 0
 		for i, nam in pairs(MAFS) do
 			local ret = MoveAny:TryRun(function(name)
+				if MAFSGiveUp[name] then return end
 				local frame = MoveAny:GetFrameByName(name)
 				if frame ~= nil and frame:IsVisible() and (not InCombatLockdown() or not frame:IsProtected()) then
 					MAFS[name] = nil
+					MAFSGiveUp[name] = nil
 					if (name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame) or (name == "BankFrame" and MoveAny:IsAddOnLoaded("Sorted", "BankFrame")) then
 						frame:SetAlpha(0)
 						local enableMouse = false
@@ -502,7 +568,8 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		end
 	else
 		for i, name in pairs(MAFS) do
-			local frame = MoveAny:GetFrameByName(name)
+			local frame = nil
+			if not MAFSGiveUp[name] then frame = MoveAny:GetFrameByName(name) end
 			if frame ~= nil and C_Widget.IsWidget(frame) and waitingFrames[name] == nil and frame.Show then
 				waitingFrames[name] = true
 				hooksecurefunc(frame, "Show", function()
@@ -515,6 +582,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		end
 	end
 
+	MAFSRecountPending()
 	if ts ~= nil then
 		MoveAny:After(ts, function()
 			run = false
@@ -541,7 +609,7 @@ function MoveAny:MoveFrames()
 	local nextUpdateAt = 0
 	hooksecurefunc("CreateFrame", function(frameType, frameName, parent, template)
 		if allowedFrameTypes[frameType] then
-			if next(MAFS) == nil then return end
+			if mafsPending == 0 then return end
 			if run then
 				id = id + 1
 				return
@@ -549,7 +617,6 @@ function MoveAny:MoveFrames()
 
 			if updatePending then return end
 			updatePending = true
-			print("RUN2")
 			local delay = nextUpdateAt - GetTime()
 			if delay < 0 then delay = 0 end
 			MoveAny:After(delay, function()
@@ -572,9 +639,30 @@ function MoveAny:MoveFrames()
 		MoveAny:MoveParent(MailFrame, SendMailFrame)
 	end
 
+	MAFSCheckWrongBuild()
 	MoveAny:UpdateMoveFrames("Start", true, 1.4)
 	local f = CreateFrame("Frame")
 	MoveAny:RegisterEvent(f, "ADDON_LOADED")
-	MoveAny:OnEvent(f, function(sel, event, ...) MoveAny:UpdateMoveFrames("ADDON_LOADED", true) end, "ADDON_LOADED 123")
+	MoveAny:RegisterEvent(f, "PLAYER_ENTERING_WORLD")
+	MoveAny:OnEvent(f, function(sel, event, ...)
+		if event == "PLAYER_ENTERING_WORLD" then
+			if giveUpScheduled then return end
+			giveUpScheduled = true
+			MoveAny:After(60, function()
+				MAFSGiveUpUnresolved()
+				MoveAny:UpdateMoveFrames("GIVEUP", true)
+			end, "MAFS GiveUp")
+			return
+		end
+
+		MAFSCheckWrongBuild()
+		MAFSRestoreGiveUp()
+		MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
+		if giveUpScheduled then
+			MoveAny:After(5, function()
+				MAFSGiveUpUnresolved()
+			end, "MAFS GiveUp 2")
+		end
+	end, "ADDON_LOADED 123")
 	if BattlefieldFrame then BattlefieldFrame:EnableMouse(false) end
 end

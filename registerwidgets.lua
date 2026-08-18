@@ -13,8 +13,33 @@ local MACurrentEle = nil
 local MAEF = {}
 local startRegisterWidget = false
 local missingWidgets = {}
+local giveUpWidgets = {}
+local giveUpScheduled = false
 local retryFrame = CreateFrame("Frame")
-MoveAny:OnEvent(retryFrame, function(sel, event, ...) MoveAny:SafeRetryRegisterWidgets() end, "retryFrame")
+local function GiveUpMissingWidgets()
+	for name, tab in pairs(missingWidgets) do
+		giveUpWidgets[name] = tab
+		missingWidgets[name] = nil
+	end
+end
+
+MoveAny:OnEvent(retryFrame, function(sel, event, ...)
+	if event == "PLAYER_ENTERING_WORLD" then
+		if giveUpScheduled then return end
+		giveUpScheduled = true
+		MoveAny:After(60, GiveUpMissingWidgets, "Widgets GiveUp")
+		return
+	end
+
+	for name, tab in pairs(giveUpWidgets) do
+		if missingWidgets[name] == nil then missingWidgets[name] = tab end
+		giveUpWidgets[name] = nil
+	end
+
+	MoveAny:SafeRetryRegisterWidgets()
+	if giveUpScheduled then MoveAny:After(5, GiveUpMissingWidgets, "Widgets GiveUp 2") end
+end, "retryFrame")
+MoveAny:RegisterEvent(retryFrame, "PLAYER_ENTERING_WORLD")
 function MoveAny:GetMissingWidgets()
 	return missingWidgets
 end
@@ -50,14 +75,10 @@ local retryThrottle = 0.1
 local nextRetryAt = 0
 hooksecurefunc("CreateFrame", function(...)
 	if not startRegisterWidget then return end
-	print("2")
 	if retryPending then return end
-	print("3")
 	if retryLocked then return end
-	print("OK")
 	if next(missingWidgets) == nil then return end
 	retryPending = true
-	print("RUN 1")
 	local delay = nextRetryAt - GetTime()
 	if delay < 0 then delay = 0 end
 	MoveAny:After(delay, function()
@@ -1294,6 +1315,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	if missingWidgets[name] then missingWidgets[name] = nil end
+	if giveUpWidgets[name] then giveUpWidgets[name] = nil end
 	MoveAny:After(1, function()
 		enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 		enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
