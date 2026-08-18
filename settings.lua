@@ -814,6 +814,7 @@ function MoveAny:InitMALock()
 		if MiniMapLFGFrame then AddCheckBox(4, "MINIMAPLFGFRAME", false) end
 		if LFGMinimapFrame then AddCheckBox(4, "LFGMINIMAPFRAME", false) end
 		if MiniMapTracking then AddCheckBox(4, "MINIMAPTRACKING", false) end
+		if MiniMapTrackingButton then AddCheckBox(4, "MINIMAPTRACKINGBUTTON", false) end
 		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then AddCheckBox(4, "TOTEMFRAME", false) end
 		if MoveAny:IsValidFrame(MinimapZoneTextButton) then AddCheckBox(4, "MINIMAPZONETEXT", false) end
@@ -1952,6 +1953,46 @@ function MoveAny:InitGLF(glf, x)
 	glf:SetAlpha(GroupLootContainer:GetAlpha())
 end
 
+local minimapDragOffset = 10
+function MoveAny:UpdateMinimapDrag(frame)
+	if not frame or not Minimap then return end
+	local mx, my = Minimap:GetCenter()
+	if not mx or not my then return end
+	local ms = Minimap:GetEffectiveScale()
+	local fs = frame:GetEffectiveScale()
+	if not ms or ms <= 0 or not fs or fs <= 0 then return end
+	local cx, cy = GetCursorPosition()
+	local angle = math.atan2(cy / ms - my, cx / ms - mx)
+	local radius = Minimap:GetWidth() / 2 + minimapDragOffset
+	local px = (mx + math.cos(angle) * radius) * ms / fs
+	local py = (my + math.sin(angle) * radius) * ms / fs
+	frame:ClearAllPoints()
+	frame:SetPoint("CENTER", MoveAny:GetMainPanel(), "BOTTOMLEFT", px, py)
+end
+
+function MoveAny:InitMinimapDrag(frame, key, func)
+	if not frame or not key or not Minimap then return end
+	if frame:IsMovable() then return end
+	frame:SetMovable(true)
+	frame:EnableMouse(true)
+	frame:RegisterForDrag("LeftButton")
+	frame:SetScript("OnDragStart", function(sel) sel:SetScript("OnUpdate", function(sel2) MoveAny:UpdateMinimapDrag(sel2) end) end)
+	frame:SetScript("OnDragStop", function(sel)
+		sel:SetScript("OnUpdate", nil)
+		MoveAny:UpdateMinimapDrag(sel)
+		local p1, _, p3, p4, p5 = sel:GetPoint()
+		if p1 and p3 then MoveAny:SetElePoint(key, p1, MoveAny:GetMainPanel(), p3, p4, p5) end
+	end)
+
+	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
+	if dbp1 and dbp3 then
+		frame:ClearAllPoints()
+		frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+	end
+
+	if func then func() end
+end
+
 local msgOnce = {}
 function MoveAny:LoadAddon()
 	MoveAny.init = MoveAny.init or false
@@ -2077,6 +2118,8 @@ function MoveAny:LoadAddon()
 				["name"] = "MiniMapLFGFrame",
 				["lstr"] = "LID_MINIMAPLFGFRAME",
 			})
+		else
+			C_Timer.After(2, function() MoveAny:InitMinimapDrag(MiniMapLFGFrame, "MiniMapLFGFrame") end)
 		end
 
 		if LFGMinimapFrame and MoveAny:IsEnabled("LFGMINIMAPFRAME", false) then
@@ -2094,23 +2137,42 @@ function MoveAny:LoadAddon()
 				["name"] = "LFGMinimapFrame",
 				["lstr"] = "LID_LFGMINIMAPFRAME",
 			})
+		else
+			C_Timer.After(2, function() MoveAny:InitMinimapDrag(LFGMinimapFrame, "LFGMinimapFrame") end)
 		end
 
-		if MiniMapTracking and MoveAny:IsEnabled("MINIMAPTRACKING", false) then
-			MiniMapTracking:ClearAllPoints()
-			MiniMapTracking:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-			hooksecurefunc(MiniMapTracking, "SetParent", function(sel)
-				if ma_set_parent[sel] then return end
-				ma_set_parent[sel] = true
-				sel:SetParent(UIParent)
-				ma_set_parent[sel] = false
-			end)
+		if MiniMapTracking then
+			if MoveAny:IsEnabled("MINIMAPTRACKING", false) then
+				MiniMapTracking:ClearAllPoints()
+				MiniMapTracking:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+				hooksecurefunc(MiniMapTracking, "SetParent", function(sel)
+					if ma_set_parent[sel] then return end
+					ma_set_parent[sel] = true
+					sel:SetParent(UIParent)
+					ma_set_parent[sel] = false
+				end)
 
-			MiniMapTracking:SetParent(UIParent)
-			MoveAny:RegisterWidget({
-				["name"] = "MiniMapTracking",
-				["lstr"] = "LID_MINIMAPTRACKING",
-			})
+				MiniMapTracking:SetParent(UIParent)
+				MoveAny:RegisterWidget({
+					["name"] = "MiniMapTracking",
+					["lstr"] = "LID_MINIMAPTRACKING",
+				})
+			else
+				C_Timer.After(2, function()
+					MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
+						hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5)
+							if ma_set_parent[sel] then return end
+							ma_set_parent[sel] = true
+							MiniMapTracking:ClearAllPoints()
+							MiniMapTracking:SetPoint(p1, p2, p3, p4, p5)
+							ma_set_parent[sel] = false
+						end)
+
+						MiniMapTracking:ClearAllPoints()
+						MiniMapTracking:SetPoint(MiniMapTrackingButton:GetPoint())
+					end)
+				end)
+			end
 		end
 
 		if PlayerCastingBarFrame then
