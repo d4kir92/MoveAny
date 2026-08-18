@@ -94,13 +94,13 @@ end
 local abbtns = {}
 function MoveAny:ResetAbBtns(frame)
 	if frame == nil then
-		print("[ResetAbBtns] frame IS NIL")
+		MoveAny:INFO("[ResetAbBtns] frame IS NIL")
 		return {}
 	end
 
 	local name = MoveAny:GetName(frame)
 	if name == nil then
-		print("[ResetAbBtns] name IS NIL")
+		MoveAny:INFO("[ResetAbBtns] name IS NIL")
 		return
 	end
 
@@ -109,13 +109,13 @@ end
 
 function MoveAny:AddAbBtns(frame, btn)
 	if frame == nil then
-		print("[AddAbBtns] frame IS NIL")
+		MoveAny:INFO("[AddAbBtns] frame IS NIL")
 		return
 	end
 
 	local name = MoveAny:GetName(frame)
 	if name == nil then
-		print("[AddAbBtns] name IS NIL")
+		MoveAny:INFO("[AddAbBtns] name IS NIL")
 		return
 	end
 
@@ -125,13 +125,13 @@ end
 
 function MoveAny:GetAbBtns(frame)
 	if frame == nil then
-		print("[GetAbBtns] frame IS NIL")
+		MoveAny:INFO("[GetAbBtns] frame IS NIL")
 		return {}
 	end
 
 	local name = MoveAny:GetName(frame)
 	if name == nil then
-		print("[GetAbBtns] name IS NIL")
+		MoveAny:INFO("[GetAbBtns] name IS NIL")
 		return
 	end
 

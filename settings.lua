@@ -4323,21 +4323,26 @@ function MoveAny:LoadAddon()
 
 			if GroupLootContainer_Update then
 				hooksecurefunc("GroupLootContainer_Update", function(container)
-					if container == nil then return end
-					if container.maxIndex == nil then return end
-					if container.rollFrames == nil then return end
+					container:SetHeight(glfsh)
+					if not container or not container.maxIndex or not container.rollFrames then return end
+					local reservedSize = 78
+					local shown = 0
 					for i = 1, container.maxIndex do
 						local frame = container.rollFrames[i]
 						if frame then
-							MoveAny:InitGLF(frame, i)
-							local reservedSize = 78
-							MoveAny:SetPoint(frame, "CENTER", container, "BOTTOM", 0, reservedSize * (i - 1 + 0.5))
+							MoveAny:InitGLF(frame, i) -- nur behalten, wenn es NICHT positioniert
+							frame:ClearAllPoints()
+							frame:SetPoint("BOTTOM", GroupLootContainer_MA_DRAG, "BOTTOM", 0, reservedSize * shown)
+							shown = shown + 1
 						end
 					end
 				end)
 			end
 
 			if false then
+				local bg = GroupLootContainer:CreateTexture(nil, "BACKGROUND")
+				bg:SetAllPoints(GroupLootContainer)
+				bg:SetColorTexture(0, 0.5, 1, 0.4)
 				function GetLootRollItemInfo(rollID)
 					local texture = 1
 					local name = "TEST"
@@ -4366,8 +4371,17 @@ function MoveAny:LoadAddon()
 					for x = 1, 10 do
 						local glf = _G["GroupLootFrame" .. x]
 						if glf then
-							GroupLootContainer_AddRoll(rollID, rollTime)
-							rollID = rollID + 1
+							if GroupLootFrame_OpenNewFrame then
+								GroupLootFrame_OpenNewFrame(rollID, rollTime)
+							else
+								MoveAny:ERR("RollOnLoot does not exists")
+								if GroupLootContainer_AddRoll then
+									GroupLootContainer_AddRoll(rollID, rollTime)
+									rollID = rollID + 1
+								else
+									MoveAny:ERR("GroupLootContainer_AddRoll does not exists")
+								end
+							end
 						end
 					end
 
