@@ -232,6 +232,8 @@ MoveAny:AddTrans("esES", "LID_PLEASESWITCHPROFILE2", "MoveAny no funciona con un
 MoveAny:AddTrans("esES", "LID_PLEASESWITCHPROFILE3", "ESC -> Modo de edición -> Diseño: [DISEÑO PERSONALIZADO] (No un diseño predeterminado)")
 MoveAny:AddTrans("esES", "LID_LFGMINIMAPFRAME", "Botón de minimapa LFG")
 MoveAny:AddTrans("esES", "LID_MINIMAPLFGFRAME", "Botón de minimapa LFG")
+MoveAny:AddTrans("esES", "LID_MINIMAPTRACKING", "Botón de rastreo del minimapa")
+MoveAny:AddTrans("esES", "LID_MINIMAPTRACKINGBUTTON", "Botón de rastreo del minimapa")
 MoveAny:AddTrans("esES", "LID_QUESTTIMERFRAME", "Marco de tiempo de misión")
 MoveAny:AddTrans("esES", "LID_BATTLEFIELDMAPFRAME", "Mapa del campo de batalla")
 MoveAny:AddTrans("esES", "LID_ExtraActionBarFrame", "Barra de acción extra (Botón clicable) (ExtraActionButton1, ExtraActionBarFrame)")

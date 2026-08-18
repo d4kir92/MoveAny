@@ -232,6 +232,8 @@ MoveAny:AddTrans("ruRU", "LID_PLEASESWITCHPROFILE2", "MoveAny не работа�
 MoveAny:AddTrans("ruRU", "LID_PLEASESWITCHPROFILE3", "ESC -> Режим редактирования -> Макет: [ПОЛЬЗОВАТЕЛЬСКИЙ МАКЕТ] (нет предустановленного макета)")
 MoveAny:AddTrans("ruRU", "LID_LFGMINIMAPFRAME", "Кнопка LFG на миникарте")
 MoveAny:AddTrans("ruRU", "LID_MINIMAPLFGFRAME", "Кнопка LFG на миникарте")
+MoveAny:AddTrans("ruRU", "LID_MINIMAPTRACKING", "Кнопка слежения на миникарте")
+MoveAny:AddTrans("ruRU", "LID_MINIMAPTRACKINGBUTTON", "Кнопка слежения на миникарте")
 MoveAny:AddTrans("ruRU", "LID_QUESTTIMERFRAME", "Таймер квестов")
 MoveAny:AddTrans("ruRU", "LID_BATTLEFIELDMAPFRAME", "Карта поля боя")
 MoveAny:AddTrans("ruRU", "LID_ExtraActionBarFrame", "Дополнительная панель действий (кликабельная кнопка) (ExtraActionButton1, ExtraActionBarFrame)")

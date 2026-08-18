@@ -232,6 +232,8 @@ MoveAny:AddTrans("itIT", "LID_PLEASESWITCHPROFILE2", "MoveAny non funziona con u
 MoveAny:AddTrans("itIT", "LID_PLEASESWITCHPROFILE3", "ESC -> Modalità di modifica -> Layout: [LAYOUT-PERSONALIZZATO] (nessun layout predefinito)")
 MoveAny:AddTrans("itIT", "LID_LFGMINIMAPFRAME", "Pulsante minimappa LFG")
 MoveAny:AddTrans("itIT", "LID_MINIMAPLFGFRAME", "Pulsante minimappa LFG")
+MoveAny:AddTrans("itIT", "LID_MINIMAPTRACKING", "Pulsante tracciamento minimappa")
+MoveAny:AddTrans("itIT", "LID_MINIMAPTRACKINGBUTTON", "Pulsante tracciamento minimappa")
 MoveAny:AddTrans("itIT", "LID_QUESTTIMERFRAME", "Finestra del tempo della missione")
 MoveAny:AddTrans("itIT", "LID_BATTLEFIELDMAPFRAME", "Mappa del campo di battaglia")
 MoveAny:AddTrans("itIT", "LID_ExtraActionBarFrame", "Barra d'azione extra (pulsante cliccabile) (ExtraActionButton1, ExtraActionBarFrame)")

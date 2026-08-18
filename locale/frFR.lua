@@ -232,6 +232,8 @@ MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE2", "MoveAny ne fonctionne pas 
 MoveAny:AddTrans("frFR", "LID_PLEASESWITCHPROFILE3", "ESC -> Editmode -> Layout : [CUSTOM-LAYOUT] (pas de Preset Layout)")
 MoveAny:AddTrans("frFR", "LID_LFGMINIMAPFRAME", "Bouton Minimap LFG")
 MoveAny:AddTrans("frFR", "LID_MINIMAPLFGFRAME", "Bouton Minimap LFG")
+MoveAny:AddTrans("frFR", "LID_MINIMAPTRACKING", "Bouton de pistage Minimap")
+MoveAny:AddTrans("frFR", "LID_MINIMAPTRACKINGBUTTON", "Bouton de pistage Minimap")
 MoveAny:AddTrans("frFR", "LID_QUESTTIMERFRAME", "Fenêtre de minuterie de quête")
 MoveAny:AddTrans("frFR", "LID_BATTLEFIELDMAPFRAME", "Carte de champ de bataille")
 MoveAny:AddTrans("frFR", "LID_ExtraActionBarFrame", "Barre d'action supplémentaire (Bouton cliquable) (ExtraActionButton1, ExtraActionBarFrame)")

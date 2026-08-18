@@ -232,6 +232,8 @@ MoveAny:AddTrans("zhTW", "LID_PLEASESWITCHPROFILE2", "MoveAny無法在預設配�
 MoveAny:AddTrans("zhTW", "LID_PLEASESWITCHPROFILE3", "ESC -> 編輯模式 -> 佈局: [自定義佈局] (非預設佈局)")
 MoveAny:AddTrans("zhTW", "LID_LFGMINIMAPFRAME", "地下城查找器小地圖按鈕")
 MoveAny:AddTrans("zhTW", "LID_MINIMAPLFGFRAME", "地下城查找器小地圖按鈕")
+MoveAny:AddTrans("zhTW", "LID_MINIMAPTRACKING", "小地圖追蹤按鈕")
+MoveAny:AddTrans("zhTW", "LID_MINIMAPTRACKINGBUTTON", "小地圖追蹤按鈕")
 MoveAny:AddTrans("zhTW", "LID_QUESTTIMERFRAME", "任務計時器框架")
 MoveAny:AddTrans("zhTW", "LID_BATTLEFIELDMAPFRAME", "戰場地圖")
 MoveAny:AddTrans("zhTW", "LID_ExtraActionBarFrame", "額外動作條 (可點擊按鈕)")

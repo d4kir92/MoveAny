@@ -232,6 +232,8 @@ MoveAny:AddTrans("koKR", "LID_PLEASESWITCHPROFILE2", "MoveAny는 프리셋 프�
 MoveAny:AddTrans("koKR", "LID_PLEASESWITCHPROFILE3", "ESC -> 편집모드 -> 레이아웃: [CUSTOM-LAYOUT] (사전 설정 레이아웃 없음)")
 MoveAny:AddTrans("koKR", "LID_LFGMINIMAPFRAME", "LFG 미니맵 버튼")
 MoveAny:AddTrans("koKR", "LID_MINIMAPLFGFRAME", "LFG 미니맵 버튼")
+MoveAny:AddTrans("koKR", "LID_MINIMAPTRACKING", "미니맵 추적 버튼")
+MoveAny:AddTrans("koKR", "LID_MINIMAPTRACKINGBUTTON", "미니맵 추적 버튼")
 MoveAny:AddTrans("koKR", "LID_QUESTTIMERFRAME", "퀘스트 타이머 프레임")
 MoveAny:AddTrans("koKR", "LID_BATTLEFIELDMAPFRAME", "전장 맵")
 MoveAny:AddTrans("koKR", "LID_ExtraActionBarFrame", "추가 행동 바 (클릭 가능한 버튼) (ExtraActionButton1, ExtraActionBarFrame)")

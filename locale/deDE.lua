@@ -232,6 +232,8 @@ MoveAny:AddTrans("deDE", "LID_PLEASESWITCHPROFILE2", "MoveAny funktioniert nicht
 MoveAny:AddTrans("deDE", "LID_PLEASESWITCHPROFILE3", "ESC -> Bearbeitungsmodus -> Layout: [BENUTZERDEFINIERTES-LAYOUT] (Kein Voreingestelltes Layout)")
 MoveAny:AddTrans("deDE", "LID_LFGMINIMAPFRAME", "LFG Minimapknopf")
 MoveAny:AddTrans("deDE", "LID_MINIMAPLFGFRAME", "LFG Minimapknopf")
+MoveAny:AddTrans("deDE", "LID_MINIMAPTRACKING", "Minimap Verfolgungsknopf")
+MoveAny:AddTrans("deDE", "LID_MINIMAPTRACKINGBUTTON", "Minimap Verfolgungsknopf")
 MoveAny:AddTrans("deDE", "LID_QUESTTIMERFRAME", "Questzeit-Fenster")
 MoveAny:AddTrans("deDE", "LID_BATTLEFIELDMAPFRAME", "Schlachtfeld Karte")
 MoveAny:AddTrans("deDE", "LID_ExtraActionBarFrame", "Extra Aktionsleiste (Klickbarer Knopf) (ExtraActionButton1, ExtraActionBarFrame)")
