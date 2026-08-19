@@ -39,6 +39,7 @@ MoveAny:OnEvent(retryFrame, function(sel, event, ...)
 	MoveAny:SafeRetryRegisterWidgets()
 	if giveUpScheduled then MoveAny:After(5, GiveUpMissingWidgets, "Widgets GiveUp 2") end
 end, "retryFrame")
+
 MoveAny:RegisterEvent(retryFrame, "PLAYER_ENTERING_WORLD")
 function MoveAny:GetMissingWidgets()
 	return missingWidgets
