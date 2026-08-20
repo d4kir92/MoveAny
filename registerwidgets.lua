@@ -1193,7 +1193,16 @@ function MoveAny:RegisterWidget(tab)
 		end
 
 		dragframe:ClearAllPoints()
-		dragframe:SetPoint("CENTER", frame or UIParent, "CENTER", 0, 0)
+		local anchor = frame or UIParent
+		if anchor ~= UIParent then
+			if anchor.IsForbidden and anchor:IsForbidden() then anchor = UIParent end
+			if anchor.IsAnchoringRestricted and anchor:IsAnchoringRestricted() then anchor = UIParent end
+		end
+
+		if not pcall(dragframe.SetPoint, dragframe, "CENTER", anchor, "CENTER", 0, 0) then
+			dragframe:ClearAllPoints()
+			dragframe:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+		end
 		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
