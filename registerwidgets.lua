@@ -1146,6 +1146,27 @@ function MoveAny:GetDragFromName(name)
 	return cacheDrags[name]
 end
 
+local reapplyPoints = {}
+local reapplyPending = false
+function MoveAny:ReapplyElePoints(from)
+	for _, applyElePoint in pairs(reapplyPoints) do
+		applyElePoint()
+	end
+end
+
+local reapplyFrame = CreateFrame("Frame")
+MoveAny:OnEvent(reapplyFrame, function(sel, event)
+	if reapplyPending then return end
+	reapplyPending = true
+	MoveAny:After(0.5, function()
+		reapplyPending = false
+		MoveAny:ReapplyElePoints(event)
+	end, "ReapplyElePoints")
+end, "reapplyFrame")
+
+MoveAny:RegisterEvent(reapplyFrame, "PLAYER_ENTERING_WORLD")
+MoveAny:RegisterEvent(reapplyFrame, "UI_SCALE_CHANGED")
+MoveAny:RegisterEvent(reapplyFrame, "DISPLAY_SIZE_CHANGED")
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1203,6 +1224,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe:ClearAllPoints()
 			dragframe:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 		end
+
 		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
@@ -1530,14 +1552,19 @@ function MoveAny:RegisterWidget(tab)
 	end)
 
 	if not ma_secure then
-		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
-		if dbp1 and dbp3 then
-			if noreparent then
-				MoveAny:SetPoint(frame, dbp1, MoveAny:GetParent(frame), dbp3, dbp4, dbp5)
-			else
-				MoveAny:SetPoint(frame, dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+		local function applyElePoint()
+			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+			if dbp1 and dbp3 then
+				if noreparent then
+					MoveAny:SetPoint(frame, dbp1, MoveAny:GetParent(frame), dbp3, dbp4, dbp5)
+				else
+					MoveAny:SetPoint(frame, dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+				end
 			end
 		end
+
+		reapplyPoints[name] = applyElePoint
+		applyElePoint()
 	end
 
 	hooksecurefunc(frame, "SetScale", function(sel, scale)

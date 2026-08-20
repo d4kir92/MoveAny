@@ -1888,7 +1888,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.54")
+	MoveAny:SetVersion(135994, "1.9.55")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -4404,6 +4404,14 @@ function MoveAny:LoadAddon()
 		-- BOTTOM
 		C_Timer.After(0, function()
 			if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
+				local setParent = false
+				hooksecurefunc(ZoneAbilityFrame, "SetParent", function(sel, parent)
+					if setParent then return end
+					setParent = true
+					sel:SetParent(MoveAny:GetMainPanel())
+					setParent = false
+				end)
+
 				ZoneAbilityFrame:SetParent(MoveAny:GetMainPanel())
 				ZoneAbilityFrame:ClearAllPoints()
 				ZoneAbilityFrame:SetPoint("BOTTOM", MoveAny:GetMainPanel(), "BOTTOM", 0, 200)
