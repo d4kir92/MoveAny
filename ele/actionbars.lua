@@ -36,6 +36,14 @@ local function MASetPoint(name, po, pa, re, px, py, rows)
 	abpoints[name]["ROWS"] = rows
 end
 
+local combatPending = {}
+function MoveAny:CanModify(frame)
+	if frame == nil then return false end
+	if not InCombatLockdown() then return true end
+	if frame.IsProtected and frame:IsProtected() then return false end
+	return true
+end
+
 local dSpacing = 2
 local dFlipped = false
 local BarNames = {}
@@ -76,6 +84,8 @@ MoveAny:OnEvent(visiFrame, function(sel, event, cvar)
 			visiPending = false
 			MoveAny:UpdateVisi()
 		end
+
+		if MoveAny.UpdateCombatPending then MoveAny:UpdateCombatPending() end
 	elseif event == "PLAYER_ENTERING_WORLD" or cvar == "enableMultiActionBars" then
 		if InCombatLockdown() then
 			visiPending = true
@@ -165,10 +175,14 @@ function MoveAny:HideBtn(btn)
 	HiddenButtons[btn] = true
 	MoveAny:SetupHide(btn)
 	btn:SetAlpha(0)
-	btn:EnableMouse(false)
-	if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
-		-- On Retail it is only hidden when changed parent
-		btn:SetParent(MoveAny:GetHidden())
+	if MoveAny:CanModify(btn) then
+		btn:EnableMouse(false)
+		if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
+			-- On Retail it is only hidden when changed parent
+			btn:SetParent(MoveAny:GetHidden())
+		end
+	elseif MAMenuBar then
+		combatPending[MAMenuBar] = true
 	end
 end
 
@@ -176,10 +190,14 @@ function MoveAny:ShowBtn(btn)
 	HiddenButtons[btn] = nil
 	MoveAny:SetupHide(btn)
 	btn:SetAlpha(1)
-	btn:EnableMouse(true)
-	if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
-		local parent = MicroMenu or MAMenuBar
-		if parent then btn:SetParent(parent) end
+	if MoveAny:CanModify(btn) then
+		btn:EnableMouse(true)
+		if MoveAny:GetWoWBuild() == "RETAIL" and btn == MainMenuMicroButton then
+			local parent = MicroMenu or MAMenuBar
+			if parent then btn:SetParent(parent) end
+		end
+	elseif MAMenuBar then
+		combatPending[MAMenuBar] = true
 	end
 end
 
@@ -358,7 +376,7 @@ function MoveAny:UpdateActionBar(bar, from)
 			local abtns2 = MoveAny:GetAbBtns(frame)
 			for i = 1, #abtns2 do
 				local abtn = abtns2[i]
-				if not InCombatLockdown() then
+				if MoveAny:CanModify(abtn) then
 					abtn:ClearAllPoints()
 					if flipped then
 						abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
@@ -395,12 +413,14 @@ function MoveAny:UpdateActionBar(bar, from)
 						ma_hide[abtn] = false
 						if not abtn:IsShown() then abtn:Show() end
 					end
-
-					if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then id = id + 1 end
+				else
+					combatPending[frame] = true
 				end
+
+				if MoveAny:GetParent(abtn) ~= MoveAny:GetHidden() and HiddenButtons[abtn] == nil then id = id + 1 end
 			end
 
-			if not InCombatLockdown() then
+			if MoveAny:CanModify(frame) then
 				frame:SetSize(cols * (fSizeW + spacing) - spacing + offset * 2, rows * (fSizeH + spacing) - spacing + offset * 2)
 				if frame ~= StanceBar then
 					local sw, sh = frame:GetSize()
@@ -411,6 +431,8 @@ function MoveAny:UpdateActionBar(bar, from)
 					local mover = MoveAny:GetDragFromName(name)
 					if mover then mover:SetSize(frame:GetSize()) end
 				end
+			else
+				combatPending[frame] = true
 			end
 		end
 
@@ -421,6 +443,23 @@ function MoveAny:UpdateActionBar(bar, from)
 		insideUpdateActionBar[bar] = false
 		MoveAny:ERR("[UpdateActionBar] Error: " .. tostring(err))
 	end, bar)
+end
+
+function MoveAny:UpdateCombatPending()
+	local pending = {}
+	for frame in pairs(combatPending) do
+		tinsert(pending, frame)
+		combatPending[frame] = nil
+	end
+
+	for i = 1, #pending do
+		local frame = pending[i]
+		if frame == MAMenuBar and MoveAny.UpdateMicroBar then
+			MoveAny:UpdateMicroBar("PLAYER_REGEN_ENABLED")
+		else
+			MoveAny:UpdateActionBar(frame, "PLAYER_REGEN_ENABLED")
+		end
+	end
 end
 
 function MoveAny:InitActionBarLayouts()

@@ -380,7 +380,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						if HookedEnableMouseFrames[name] == nil then fm:EnableMouse(false) end
 						hooksecurefunc(frame, "SetScale", function(sel, scale)
 							if MoveAny:IsEnabled("SCALEFRAMES", true) == false then return false end
-							MoveAny:SafeExec(fm, function() if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then fm:SetScale(scale) end end, "frame SetScale MoveFrames")
+							MoveAny:SafeExec(fm, function() if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then fm:SetScale(scale) end end, "frame SetScale MoveFrames " .. tostring(name))
 						end)
 
 						function fm:UpdatePreview()
@@ -526,7 +526,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							end
 
 							masetscale_frame[sel] = false
-						end, "UpdateMoveFrames SetScale")
+						end, "UpdateMoveFrames SetScale " .. tostring(name))
 					end)
 
 					if MoveAny:IsEnabled("SCALEFRAMES", true) then

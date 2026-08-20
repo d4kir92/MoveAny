@@ -52,7 +52,7 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 			SetPoint(window, p1, p2 or "UIParent", p3, p4, p5)
 			sptab[window] = false
 		end
-	end, "MoveAny:SetPoint")
+	end, "MoveAny:SetPoint " .. (MoveAny:GetName(window) or tostring(window)))
 	return true
 end
 
@@ -1888,7 +1888,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.55")
+	MoveAny:SetVersion(135994, "1.9.56")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

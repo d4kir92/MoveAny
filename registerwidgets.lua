@@ -1604,7 +1604,7 @@ function MoveAny:RegisterWidget(tab)
 	MoveAny:SafeExec(frame, function()
 		frame:SetSize(sw, sh)
 		if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then frame:SetScale(MoveAny:GetEleScale(name)) end
-	end, "RegisterWidget SetScale")
+	end, "RegisterWidget SetScale " .. tostring(name))
 
 	local dragframe = MoveAny:GetDragFromName(name)
 	dragframe:SetSize(sw, sh)
