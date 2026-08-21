@@ -33,6 +33,9 @@ local posy = -4
 local cas = {}
 local cbs = {}
 local sls = {}
+local dds = {}
+local gridChoices = {}
+local scaleChoices = {}
 local EMMapForced = {}
 local keybinds = {}
 local sptab = {}
@@ -167,6 +170,14 @@ end
 keybinds[1] = "SHIFT"
 keybinds[2] = "CTRL"
 keybinds[3] = "ALT"
+for _, v in ipairs({1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 75, 100}) do
+	gridChoices[v] = tostring(v)
+end
+
+for _, v in ipairs({0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 3.0, 3.5, 4.0}) do
+	scaleChoices[v] = format("%.1f", v)
+end
+
 function MoveAny:AddToEMMapForced(key)
 	EMMapForced[key] = true
 	EMMapForced[strupper(key)] = true
@@ -437,7 +448,70 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 	end
 end
 
+local function HasDropdown()
+	if DoesTemplateExist == nil then return false end
+	if not DoesTemplateExist("SettingsDropdownWithButtonsTemplate") then return false end
+	return true
+end
+
+local function AddChoiceTrans(choices)
+	MoveAny.trans = MoveAny.trans or {}
+	MoveAny.trans["enUS"] = MoveAny.trans["enUS"] or {}
+	for _, name in pairs(choices) do
+		if MoveAny.trans["enUS"]["LID_" .. name] == nil then MoveAny:AddTrans("enUS", "LID_" .. name, name) end
+	end
+end
+
+local function AddDropdown(x, key, val, func, tab)
+	if dds[key] == nil then
+		local choices = {}
+		for i, name in pairs(tab) do
+			choices[i] = name
+		end
+
+		local cur = MoveAny:MAGV(key, val)
+		if choices[cur] == nil then choices[cur] = tostring(cur) end
+		AddChoiceTrans(choices)
+		local holder = CreateFrame("Frame", nil, MALock.SC)
+		holder:SetSize(280, 52)
+		MoveAny:SetAppendX(0)
+		MoveAny:SetAppendY(0)
+		MoveAny:SetAppendTab(MATAB)
+		local dd = MoveAny:CreateDropdown(key, val, choices, holder, func)
+		if dd == nil then
+			holder:Hide()
+			return
+		end
+
+		local label = holder:GetRegions()
+		if label then
+			MoveAny:SetFontSize(label, 12, "THINOUTLINE")
+			label:SetTextColor(1, 1, 1)
+		end
+
+		local h = dd:GetHeight()
+		if h == nil or h <= 0 then h = 32 end
+		holder:SetSize(dd:GetWidth() + 10, 18 + h)
+		dds[key] = holder
+	end
+
+	dds[key]:ClearAllPoints()
+	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. key)), strlower(searchStr)) then
+		dds[key]:Show()
+		posy = posy - 10
+		dds[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
+		posy = posy - dds[key]:GetHeight() - 4
+	else
+		dds[key]:Hide()
+	end
+end
+
 local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
+	if tab and HasDropdown() then
+		AddDropdown(x, key, val, func, tab)
+		return
+	end
+
 	if sls[key] == nil and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
 		posy = posy - 10
 		local name = "sls[" .. key .. "]"
@@ -654,8 +728,8 @@ function MoveAny:InitMALock()
 		end, nil, nil, false)
 
 		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
-		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1)
-		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1)
+		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1, gridChoices)
+		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1, gridChoices)
 		AddCategory("FRAMES")
 		AddCheckBox(4, "MOVEFRAMES", true)
 		AddCheckBox(24, "CLAMPWINDOWTOSCREEN", true)
@@ -666,7 +740,7 @@ function MoveAny:InitMALock()
 		AddCategory("MOVEFRAMES", 2)
 		AddCheckBox(24, "SAVEFRAMEPOSITION", true)
 		AddCheckBox(24, "FRAMESKEYDRAG", false)
-		AddSlider(40, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1)
+		AddSlider(40, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1, gridChoices)
 		AddCategory("SCALEFRAMES", 2)
 		AddCheckBox(24, "SCALEFRAMES", true)
 		AddCheckBox(36, "SAVEFRAMESCALE", true)
@@ -802,7 +876,7 @@ function MoveAny:InitMALock()
 		if MoveAny:IsValidFrame(PaladinPowerBar) and class == "PALADIN" then AddCheckBox(4, "PALADINPOWERBAR", false) end
 		AddCategory("ADVANCED", 1, true)
 		if SuperTrackedFrame then
-			AddSlider(8, "SUPERTRACKEDFRAME", 1, function(val) SuperTrackedFrame:SetScale(val) end, 0.1, 4.0, 0.1)
+			AddSlider(8, "SUPERTRACKEDFRAME", 1, function(val) SuperTrackedFrame:SetScale(val) end, 0.1, 4.0, 0.1, scaleChoices)
 			if MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0) > 0 and MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0) ~= 1 then SuperTrackedFrame:SetScale(MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0)) end
 		end
 
@@ -1888,7 +1962,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.56")
+	MoveAny:SetVersion(135994, "1.9.57")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

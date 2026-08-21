@@ -742,13 +742,14 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         return
     end
 
-    if TAB[key] == nil then TAB[key] = value end
+    local tab = TAB
+    if tab[key] == nil then tab[key] = value end
     if key and key == "" then
         D4:INFO("[D4][CreateDropdown] has no key")
         return nil
     end
 
-    if choices[TAB[key]] == nil then
+    if choices[tab[key]] == nil then
         D4:INFO("[D4][CreateDropdown] key not exists in TAB")
         return nil
     end
@@ -767,7 +768,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
             if control.Dropdown.SetText then control.Dropdown:SetText(txt) end
         end
 
-        SetLabel(D4:Trans("LID_" .. choices[TAB[key]]))
+        SetLabel(D4:Trans("LID_" .. choices[tab[key]]))
         local order = {}
         for data in pairs(choices) do
             tinsert(order, data)
@@ -793,7 +794,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
 
         local function GetIndex()
             for i, data in ipairs(order) do
-                if data == TAB[key] then return i end
+                if data == tab[key] then return i end
             end
             return 1
         end
@@ -822,7 +823,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         end
 
         local function SetValue(data)
-            TAB[key] = data
+            tab[key] = data
             SetLabel(D4:Trans("LID_" .. choices[data]))
             UpdateSteppersSoon()
             if func then func(data) end
@@ -869,7 +870,7 @@ function D4:CreateDropdown(key, value, choices, parent, func)
 
                     info.text = D4:Trans("LID_" .. name)
                     info.arg1 = data
-                    info.checked = name == choices[TAB[key]]
+                    info.checked = name == choices[tab[key]]
                     info.func = DropDown.SetValue
                     UIDropDownMenu_AddButton(info)
                 end
@@ -877,9 +878,9 @@ function D4:CreateDropdown(key, value, choices, parent, func)
         end
 
         UIDropDownMenu_Initialize(DropDown, WPDropDownDemo_Menu)
-        UIDropDownMenu_SetText(DropDown, D4:Trans("LID_" .. choices[TAB[key]]))
+        UIDropDownMenu_SetText(DropDown, D4:Trans("LID_" .. choices[tab[key]]))
         function DropDown:SetValue(newValue)
-            TAB[key] = newValue
+            tab[key] = newValue
             UIDropDownMenu_SetText(DropDown, newValue)
             CloseDropDownMenus()
             if func then func(newValue) end
