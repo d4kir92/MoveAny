@@ -356,6 +356,7 @@ function MoveAny:MenuOptions(opt, frame)
 
 			local hide = MoveAny:CreateCheckButton("hide", content)
 			hide:SetSize(btnsize, btnsize)
+			hide:SetHitRectInsets(0, 0, 0, 0)
 			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -110)
 			hide:SetChecked(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
 			hide:SetText(HIDE)
@@ -387,6 +388,7 @@ function MoveAny:MenuOptions(opt, frame)
 			hide.text:SetText(_G["HIDE"])
 			local clickthrough = MoveAny:CreateCheckButton("clickthrough", content)
 			clickthrough:SetSize(btnsize, btnsize)
+			clickthrough:SetHitRectInsets(0, 0, 0, 0)
 			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
 			clickthrough:SetChecked(MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"))
 			clickthrough:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
@@ -427,6 +429,32 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
+
+			local lockparent = MoveAny:CreateCheckButton("lockparent", content)
+			lockparent:SetSize(btnsize, btnsize)
+			lockparent:SetHitRectInsets(0, 0, 0, 0)
+			lockparent:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -110)
+			lockparent:SetChecked(MoveAny:GetEleOption(name, "LockParent", false, "LockParent1"))
+			lockparent:SetText(MoveAny:Trans("LID_LOCKPARENT"))
+			lockparent:SetScript("OnClick", function()
+				local checked = lockparent:GetChecked()
+				MoveAny:SetEleOption(name, "LockParent", checked)
+			end)
+
+			lockparent:HookScript("OnEnter", function(sel)
+				GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+				GameTooltip:SetText(MoveAny:Trans("LID_LOCKPARENT"))
+				GameTooltip:AddLine(MoveAny:Trans("LID_LOCKPARENTDESC"), 1, 1, 1, true)
+				GameTooltip:Show()
+			end)
+
+			lockparent:HookScript("OnLeave", function() GameTooltip:Hide() end)
+
+			lockparent.text = lockparent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+			lockparent.text:SetText(MoveAny:Trans("LID_LOCKPARENT"))
+			MoveAny:SetFontSize(lockparent.text, 12, "THINOUTLINE")
+			lockparent.text:SetPoint("LEFT", lockparent, "RIGHT", 0, 0)
+			lockparent.text:SetText(MoveAny:Trans("LID_LOCKPARENT"))
 			if MoveAny:GetWoWBuildNr() < 120000 then
 				local fullhp = MoveAny:CreateCheckButton("FULLHPENABLED", content)
 				fullhp:SetSize(btnsize, btnsize)
@@ -1555,6 +1583,17 @@ function MoveAny:RegisterWidget(tab)
 			if dbp1 and dbp3 then MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5) end
 			if sel == MAMenuBar then MoveAny:UpdateActionBar(sel, "RegisterWidget sel == MAMenuBar") end
 			elesetpoint = false
+		end
+	end)
+
+	hooksecurefunc(frame, "SetParent", function(sel, parent)
+		if not MoveAny:GetEleOption(name, "LockParent", false, "LockParent1") then return end
+		local target = MoveAny:GetMainPanel()
+		if parent ~= target then
+			if InCombatLockdown() and sel:IsProtected() then return end
+			sel:SetParent(target)
+			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
+			if dbp1 and dbp3 then MoveAny:SetPoint(sel, dbp1, target, dbp3, dbp4, dbp5) end
 		end
 	end)
 

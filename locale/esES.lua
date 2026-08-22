@@ -184,6 +184,8 @@ MoveAny:AddTrans("esES", "LID_ROLEPOLLPOPUP", "Ventana emergente de encuesta de 
 MoveAny:AddTrans("esES", "LID_READYCHECKLISTENERFRAME", "Ventana emergente de verificación de preparación")
 MoveAny:AddTrans("esES", "LID_DISABLEMOVEMENT", "Deshabilitar las teclas de movimiento cuando esté en el EditMode de MoveAny")
 MoveAny:AddTrans("esES", "LID_CLICKTHROUGH", "Traspasar clics")
+MoveAny:AddTrans("esES", "LID_LOCKPARENT", "Bloquear Padre")
+MoveAny:AddTrans("esES", "LID_LOCKPARENTDESC", "Obliga a este elemento a volver al panel de MoveAny cada vez que algo más (Blizzard u otro addon) cambie su marco padre. Actívalo si el elemento salta, cambia de tamaño o pierde su posición guardada por sí solo (por ejemplo, al entrar en un vehículo).")
 MoveAny:AddTrans("esES", "LID_MABUFFMODE", "Alineación de buff")
 MoveAny:AddTrans("esES", "LID_MADEBUFFLIMIT", "Límite de debuff")
 MoveAny:AddTrans("esES", "LID_MADEBUFFSPACINGX", "Espacio de debuff horizontal")
