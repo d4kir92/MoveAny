@@ -1167,6 +1167,24 @@ end, "reapplyFrame")
 MoveAny:RegisterEvent(reapplyFrame, "PLAYER_ENTERING_WORLD")
 MoveAny:RegisterEvent(reapplyFrame, "UI_SCALE_CHANGED")
 MoveAny:RegisterEvent(reapplyFrame, "DISPLAY_SIZE_CHANGED")
+function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
+	if not dragframe or not dragframe.SetPoint then return false end
+	posx = posx or 0
+	posy = posy or 0
+	if anchor and anchor ~= UIParent then
+		if anchor.IsForbidden and anchor:IsForbidden() then anchor = UIParent end
+		if anchor.IsAnchoringRestricted and anchor:IsAnchoringRestricted() then anchor = UIParent end
+	end
+
+	if not anchor then anchor = UIParent end
+	dragframe:ClearAllPoints()
+	if pcall(dragframe.SetPoint, dragframe, "CENTER", anchor, "CENTER", posx, posy) then return true end
+	dragframe:ClearAllPoints()
+	pcall(dragframe.SetPoint, dragframe, "CENTER", UIParent, "CENTER", 0, 0)
+
+	return false
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1213,17 +1231,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe:SetSize(100, 100)
 		end
 
-		dragframe:ClearAllPoints()
-		local anchor = frame or UIParent
-		if anchor ~= UIParent then
-			if anchor.IsForbidden and anchor:IsForbidden() then anchor = UIParent end
-			if anchor.IsAnchoringRestricted and anchor:IsAnchoringRestricted() then anchor = UIParent end
-		end
-
-		if not pcall(dragframe.SetPoint, dragframe, "CENTER", anchor, "CENTER", 0, 0) then
-			dragframe:ClearAllPoints()
-			dragframe:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-		end
+		MoveAny:SafeAnchorDrag(dragframe, frame or UIParent, 0, 0)
 
 		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
@@ -1326,8 +1334,7 @@ function MoveAny:RegisterWidget(tab)
 				end
 
 				dragframe:SetMovable(true)
-				dragframe:ClearAllPoints()
-				dragframe:SetPoint("CENTER", fram, "CENTER", posx or 0, posy or 0)
+				MoveAny:SafeAnchorDrag(dragframe, fram, posx, posy)
 			end
 		end)
 
@@ -1608,8 +1615,7 @@ function MoveAny:RegisterWidget(tab)
 
 	local dragframe = MoveAny:GetDragFromName(name)
 	dragframe:SetSize(sw, sh)
-	dragframe:ClearAllPoints()
-	dragframe:SetPoint("CENTER", frame, "CENTER", posx, posy)
+	MoveAny:SafeAnchorDrag(dragframe, frame, posx, posy)
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then
 		MoveAny:HideFrame(frame)
 		MoveAny:After(1, function() MoveAny:HideFrame(frame) end, "HIDE DELAY 1")
