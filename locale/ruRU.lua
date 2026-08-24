@@ -184,6 +184,8 @@ MoveAny:AddTrans("ruRU", "LID_ROLEPOLLPOPUP", "Всплывающий фрейм
 MoveAny:AddTrans("ruRU", "LID_READYCHECKLISTENERFRAME", "Всплывающий фрейм проверки готовности")
 MoveAny:AddTrans("ruRU", "LID_DISABLEMOVEMENT", "Отключить привязку клавиш движения в MoveAny - Режим редактирования")
 MoveAny:AddTrans("ruRU", "LID_CLICKTHROUGH", "Нажмите здесь")
+MoveAny:AddTrans("ruRU", "LID_LOCKPARENT", "Блокировать родителя")
+MoveAny:AddTrans("ruRU", "LID_LOCKPARENTDESC", "Принудительно возвращает этот элемент на панель MoveAny всякий раз, когда что-то другое (Blizzard или другой аддон) меняет его родительский фрейм. Включите это, если элемент случайно прыгает, меняет размер или сам теряет сохранённую позицию (например, после посадки в транспорт).")
 MoveAny:AddTrans("ruRU", "LID_MABUFFMODE", "Выравнивание баффов")
 MoveAny:AddTrans("ruRU", "LID_MADEBUFFLIMIT", "Лимит дебаффов")
 MoveAny:AddTrans("ruRU", "LID_MADEBUFFSPACINGX", "Расстояние между дебаффами по горизонтали")
