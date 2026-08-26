@@ -192,6 +192,16 @@ function D4:OnEvent(frame, callback, from)
     end)
 end
 
+local function ForeachVarArgs(callback, ...)
+    local num = select("#", ...)
+    for x = 1, num do
+        local ele = select(x, ...)
+        if ele == nil then return end
+        local ret = callback(ele, x)
+        if ret then return ret end
+    end
+end
+
 function D4:ForeachChildren(frame, callback, from)
     if frame == nil then
         D4:MSG("[ForeachChildren] frame == nil", from)
@@ -208,15 +218,7 @@ function D4:ForeachChildren(frame, callback, from)
         return
     end
 
-    for x = 1, frame:GetNumChildren() do
-        local child = select(x, frame:GetChildren())
-        if child then
-            local ret = callback(child, x)
-            if ret then return ret end
-        else
-            return
-        end
-    end
+    return ForeachVarArgs(callback, frame:GetChildren())
 end
 
 function D4:ForeachRegions(frame, callback, from)
@@ -235,15 +237,7 @@ function D4:ForeachRegions(frame, callback, from)
         return
     end
 
-    for x = 1, frame:GetNumRegions() do
-        local region = select(x, frame:GetRegions())
-        if region then
-            local ret = callback(region, x)
-            if ret then return ret end
-        else
-            return
-        end
-    end
+    return ForeachVarArgs(callback, frame:GetRegions())
 end
 
 -- QOL 

@@ -13,19 +13,9 @@ function D4:GetName(frame, bStr)
         end
     end
 
-    local ok, name = pcall(function() if type(frame) == "table" and type(frame.GetName) == "function" then return frame:GetName() end end)
-    if ok then
-        if name ~= nil then
-            return name
-        else
-            if frame == nil then
-                if bStr then
-                    return ""
-                else
-                    return nil
-                end
-            end
-        end
+    if type(frame) == "table" and type(frame.GetName) == "function" then
+        local ok, name = pcall(frame.GetName, frame)
+        if ok and name ~= nil then return name end
     end
 
     if bStr then
@@ -37,15 +27,21 @@ end
 
 function D4:GetParent(frame)
     if frame == nil then return nil end
-    local ok, parent = pcall(function() if type(frame) == "table" and type(frame.GetParent) == "function" then return frame:GetParent() end end)
-    if ok then return parent end
+    if type(frame) == "table" and type(frame.GetParent) == "function" then
+        local ok, parent = pcall(frame.GetParent, frame)
+        if ok then return parent end
+    end
+
     return nil
 end
 
 function D4:GetText(frame)
     if frame == nil then return nil end
-    local ok, text = pcall(function() if type(frame) == "table" and type(frame.GetText) == "function" then return frame:GetText() end end)
-    if ok then return text end
+    if type(frame) == "table" and type(frame.GetText) == "function" then
+        local ok, text = pcall(frame.GetText, frame)
+        if ok then return text end
+    end
+
     return nil
 end
 
@@ -75,9 +71,13 @@ function D4:TrySetParent(frame, parent)
     end
 
     if frame:IsProtected() and InCombatLockdown() then return false end
-    local ok = pcall(function() if type(frame) == "table" and type(frame.SetParent) == "function" then frame:SetParent(parent) end end)
-    if ok then return true end
-    return false
+    if type(frame) == "table" and type(frame.SetParent) == "function" then
+        local ok = pcall(frame.SetParent, frame, parent)
+        if ok then return true end
+        return false
+    end
+
+    return true
 end
 
 function D4:TrySetScale(frame, scale)
@@ -92,14 +92,18 @@ function D4:TrySetScale(frame, scale)
     end
 
     if frame:IsProtected() and InCombatLockdown() then return false end
-    local ok = pcall(function() if type(frame) == "table" and type(frame.SetScale) == "function" then frame:SetScale(scale) end end)
-    if ok then return true end
-    return false
+    if type(frame) == "table" and type(frame.SetScale) == "function" then
+        local ok = pcall(frame.SetScale, frame, scale)
+        if ok then return true end
+        return false
+    end
+
+    return true
 end
 
 function D4:TryRun(callback, ...)
     if callback == nil then return end
-    local ok, ret = pcall(function(...) return callback(...) end, ...)
+    local ok, ret = pcall(callback, ...)
     if ok then return ret end
     return nil
 end
@@ -320,7 +324,7 @@ function D4:CreateSlider(tab)
     D4:SetFontSize(slider.High, 10, "THINOUTLINE")
     D4:SetFontSize(slider.Text, 10, "THINOUTLINE")
     slider:SetMinMaxValues(tab.vmin, tab.vmax)
-    if slider.SetObeyStepOnDra then slider:SetObeyStepOnDrag(true) end
+    if slider.SetObeyStepOnDrag then slider:SetObeyStepOnDrag(true) end
     slider:SetValueStep(tab.steps)
     if tab.value then slider:SetValue(tab.value) end
     slider:SetScript("OnValueChanged", function(sel, val)
