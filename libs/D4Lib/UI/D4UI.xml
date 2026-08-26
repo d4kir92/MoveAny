@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<Script file="D4UICore.lua"/>
+<Script file="D4UITranslations.lua"/>
+
+<Script file="D4UIWindow.lua"/>
+<Script file="D4UISearch.lua"/>
+<Script file="D4UICategory.lua"/>
+<Script file="D4UICheckbox.lua"/>
+<Script file="D4UISlider.lua"/>
+<Script file="D4UIDropdown.lua"/>
+
+</Ui>

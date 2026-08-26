@@ -217,7 +217,6 @@ function D4:ForeachChildren(frame, callback, from)
         D4:MSG("[ForeachChildren] Missing Callback", from)
         return
     end
-
     return ForeachVarArgs(callback, frame:GetChildren())
 end
 
@@ -236,7 +235,6 @@ function D4:ForeachRegions(frame, callback, from)
         D4:MSG("[ForeachRegions] Missing Callback", from)
         return
     end
-
     return ForeachVarArgs(callback, frame:GetRegions())
 end
 

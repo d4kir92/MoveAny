@@ -19,6 +19,39 @@ local mmShapes = {
     ["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
 }
 
+local BTNPREFIX = "MinimapButton_D4Lib_LibDBIcon_"
+
+local function CollectD4Buttons(skip)
+    local list = {}
+    D4:ForeachChildren(
+        Minimap,
+        function(child)
+            if child == skip then return end
+            local nam = D4:GetName(child)
+            if nam and string.find(nam, BTNPREFIX, 1, true) == 1 then tinsert(list, child) end
+        end,
+        "[D4] CollectD4Buttons"
+    )
+
+    return list
+end
+
+local function ForceShowD4Buttons(list)
+    if list == nil then return end
+    for _, child in ipairs(list) do
+        if child.fadeOut then child.fadeOut:Stop() end
+        if child.fadeIn then child.fadeIn:Stop() end
+        child:SetAlpha(1)
+    end
+end
+
+local function ReleaseD4Buttons(list)
+    if list == nil then return end
+    for _, child in ipairs(list) do
+        if child.D4Think then child.D4Think(true) end
+    end
+end
+
 local pos = {}
 function D4:UpdatePosition(button, position, parent)
     parent = parent or Minimap
@@ -105,6 +138,9 @@ function D4:CreateMinimapButton(params)
         btn:SetMovable(true)
         btn:SetScript("OnDragStart", function(sel)
             d4_isMouseDown[sel] = true
+            sel.d4Siblings = CollectD4Buttons(sel)
+            ForceShowD4Buttons(sel.d4Siblings)
+            if sel.D4Think then sel.D4Think(true) end
             sel:SetScript("OnUpdate", function(se)
                 local mx, my = Minimap:GetCenter()
                 local px, py = GetCursorPosition()
@@ -120,6 +156,7 @@ function D4:CreateMinimapButton(params)
                 end
 
                 D4:UpdatePosition(se, posi)
+                ForceShowD4Buttons(se.d4Siblings)
             end)
 
             sel.tooltip:Hide()
@@ -128,6 +165,9 @@ function D4:CreateMinimapButton(params)
         btn:SetScript("OnDragStop", function(sel)
             sel:SetScript("OnUpdate", nil)
             d4_isMouseDown[sel] = false
+            ReleaseD4Buttons(sel.d4Siblings)
+            sel.d4Siblings = nil
+            if sel.D4Think then sel.D4Think(true) end
         end)
     end
 
@@ -230,8 +270,9 @@ function D4:CreateMinimapButton(params)
         local insideBtn = false
         local insideMinimap = false
         local oldState = false
-        local function BtnThink()
-            local shouldShow = insideBtn or insideMinimap
+        local function BtnThink(force)
+            local shouldShow = insideBtn or insideMinimap or d4_isMouseDown[btn] == true
+            if force then oldState = nil end
             if oldState ~= shouldShow then
                 oldState = shouldShow
                 if shouldShow then
@@ -257,6 +298,7 @@ function D4:CreateMinimapButton(params)
             end
         end
 
+        btn.D4Think = BtnThink
         btn:HookScript("OnEnter", function()
             insideBtn = true
             BtnThink()
@@ -277,7 +319,7 @@ function D4:CreateMinimapButton(params)
             BtnThink()
         end)
 
-        D4:After(4, function() if D4:GetParent(btn) == Minimap then btn.fadeOut:Play() end end, "[D4] MinimapInit")
+        D4:After(4, function() if D4:GetParent(btn) == Minimap and not d4_isMouseDown[btn] then btn.fadeOut:Play() end end, "[D4] MinimapInit")
     end
 
     if params.dbkey and params.dbkey ~= "" then

@@ -1,0 +1,12 @@
+local _, D4 = ...
+D4:AddTrans("enUS", "LID_SEARCH", "Search")
+D4:AddTrans("deDE", "LID_SEARCH", "Suche")
+D4:AddTrans("esES", "LID_SEARCH", "Buscar")
+D4:AddTrans("esMX", "LID_SEARCH", "Buscar")
+D4:AddTrans("frFR", "LID_SEARCH", "Rechercher")
+D4:AddTrans("itIT", "LID_SEARCH", "Cerca")
+D4:AddTrans("koKR", "LID_SEARCH", "검색")
+D4:AddTrans("ptBR", "LID_SEARCH", "Pesquisar")
+D4:AddTrans("ruRU", "LID_SEARCH", "Поиск")
+D4:AddTrans("zhCN", "LID_SEARCH", "搜索")
+D4:AddTrans("zhTW", "LID_SEARCH", "搜尋")
