@@ -258,6 +258,7 @@ MoveAny:AddTrans("koKR", "LID_UIERRORSFRAME", "Ui 오류 메시지, 퀘스트 �
 MoveAny:AddTrans("koKR", "LID_UIWIDGETBELOWMINIMAP", "미니맵 아래 위젯 (캡처 상태)")
 MoveAny:AddTrans("koKR", "LID_UIWIDGETPOWERBAR", "파워 바 (보스 바, 활력 바, 다크문 페어, ...)")
 MoveAny:AddTrans("koKR", "LID_UIWIDGETTOPCENTER", "위젯 상단 중앙 (전장/던전/레이드 상태/통계)")
+MoveAny:AddTrans("koKR", "LID_UNITFRAMES", "유닛 프레임")
 MoveAny:AddTrans("koKR", "LID_UNLOCKWINDOWS", "창 잠금 해제")
 MoveAny:AddTrans("koKR", "LID_UPLOAD", "업로드")
 MoveAny:AddTrans("koKR", "LID_UtilityCooldownViewer", "전략 재사용 대기시간 뷰어 (쿨다운 매니저)")

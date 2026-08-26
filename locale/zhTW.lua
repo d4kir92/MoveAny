@@ -258,6 +258,7 @@ MoveAny:AddTrans("zhTW", "LID_UIERRORSFRAME", "介面錯誤信息 (任務進度,
 MoveAny:AddTrans("zhTW", "LID_UIWIDGETBELOWMINIMAP", "小地圖下方部件 (占領狀態)")
 MoveAny:AddTrans("zhTW", "LID_UIWIDGETPOWERBAR", "螢幕中能量條 (編輯模式中戰鬥條) (首領條, 活力條, 暗月馬戲團等)")
 MoveAny:AddTrans("zhTW", "LID_UIWIDGETTOPCENTER", "頂部中心部件 (戰場/地下城/團隊中的狀態)")
+MoveAny:AddTrans("zhTW", "LID_UNITFRAMES", "單位框架")
 MoveAny:AddTrans("zhTW", "LID_UNLOCKWINDOWS", "解鎖視窗")
 MoveAny:AddTrans("zhTW", "LID_UPLOAD", "上傳")
 MoveAny:AddTrans("zhTW", "LID_UtilityCooldownViewer", "戰術冷卻監視器 (冷卻管理器)")

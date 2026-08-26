@@ -258,6 +258,7 @@ MoveAny:AddTrans("ruRU", "LID_UIERRORSFRAME", "Сообщения об ошиб�
 MoveAny:AddTrans("ruRU", "LID_UIWIDGETBELOWMINIMAP", "Виджет под миникартой (состояние захвата)")
 MoveAny:AddTrans("ruRU", "LID_UIWIDGETPOWERBAR", "Виджет энергии (в основном показывает проценты) (Боссы, Ярмарка Новолуния и т.д...)")
 MoveAny:AddTrans("ruRU", "LID_UIWIDGETTOPCENTER", "Верхний центр виджета (статус/статистика на полях сражений/подземельях/рейдах)")
+MoveAny:AddTrans("ruRU", "LID_UNITFRAMES", "Рамки персонажей")
 MoveAny:AddTrans("ruRU", "LID_UNLOCKWINDOWS", "Разблокировать окна")
 MoveAny:AddTrans("ruRU", "LID_UPLOAD", "Загрузить")
 MoveAny:AddTrans("ruRU", "LID_UtilityCooldownViewer", "Важные способности и эффекты (Трекер восстановления)")

@@ -258,6 +258,7 @@ MoveAny:AddTrans("deDE", "LID_UIERRORSFRAME", "Ui-Fehler Meldungen (Quest Fortsc
 MoveAny:AddTrans("deDE", "LID_UIWIDGETBELOWMINIMAP", "Widget Unterhalb der Minimap (Einnehmen-Status)")
 MoveAny:AddTrans("deDE", "LID_UIWIDGETPOWERBAR", "Ui Widget Machtleiste (Zeigt meist Prozente an) (Bossleiste, Dunkelmond-Jahrmarkt, ...)")
 MoveAny:AddTrans("deDE", "LID_UIWIDGETTOPCENTER", "Widget Oben-Mittig (Status/Statistik von Schlachtfeldern/Dungeons/Raids)")
+MoveAny:AddTrans("deDE", "LID_UNITFRAMES", "Einheitenfenster")
 MoveAny:AddTrans("deDE", "LID_UNLOCKWINDOWS", "Fenster entsperren")
 MoveAny:AddTrans("deDE", "LID_UPLOAD", "Hochladen")
 MoveAny:AddTrans("deDE", "LID_UtilityCooldownViewer", "Strategische Abklingzeit Betrachter (Abklingzeitmanager)")

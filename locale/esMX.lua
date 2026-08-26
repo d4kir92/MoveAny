@@ -258,6 +258,7 @@ MoveAny:AddTrans("esMX", "LID_UIERRORSFRAME", "Mensajes de error de la interfaz 
 MoveAny:AddTrans("esMX", "LID_UIWIDGETBELOWMINIMAP", "Widget debajo del minimapa (Estado de captura)")
 MoveAny:AddTrans("esMX", "LID_UIWIDGETPOWERBAR", "Barra de poder de widget de interfaz (Muestra mayormente porcentaje) (Barra de jefe, Feria de la Luna Oscura, ...)")
 MoveAny:AddTrans("esMX", "LID_UIWIDGETTOPCENTER", "Widget superior central (Estado/Estadísticas en Campos de batalla/Mazmorras/Bandas)")
+MoveAny:AddTrans("esMX", "LID_UNITFRAMES", "Marcos de unidad")
 MoveAny:AddTrans("esMX", "LID_UNLOCKWINDOWS", "Desbloquear ventanas")
 MoveAny:AddTrans("esMX", "LID_UPLOAD", "Subir")
 MoveAny:AddTrans("esMX", "LID_UtilityCooldownViewer", "Visor de tiempos de reutilización de utilidad (Administrador de tiempos de reutilización)")

@@ -569,45 +569,39 @@ function MoveAny:InitMALock()
 		AddCheckBox("FRAMESKEYRESET", false)
 		MoveAny:UpdateFrameKeybindText()
 		AddCategory("BUILTIN", 1, true)
-		AddCheckBox("PLAYERFRAME", false)
-		if PlayerFrameGroupIndicator then AddCheckBox("PLAYERFRAMEGROUPINDICATOR", false) end
-		AddCheckBox("TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
-		AddCheckBox("TARGETFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-		AddCheckBox("TARGETFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-		if TargetFrameToT then
-			AddCheckBox("TARGETFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox("TARGETFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-		end
-
-		if FocusFrame then
-			AddCheckBox("FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox("FOCUSFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox("FOCUSFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-			if FocusFrameToT then
-				AddCheckBox("FOCUSFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-				AddCheckBox("FOCUSFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-			end
-		end
-
 		AddCheckBox("BUFFS", false, nil, nil, "ShowBuffFrame")
 		AddCheckBox("DEBUFFS", false, nil, nil, "ShowDebuffFrame")
 		AddCheckBox("GAMETOOLTIP", false, nil, nil, "ShowHudTooltip")
-		AddCheckBox("PETBAR", false, nil, nil, "ShowPetActionBar")
-		AddCheckBox("STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
-		if PossessActionBar or PossessBarFrame then AddCheckBox("POSSESSBAR", false, nil, nil, "ShowPossessActionBar") end
-		AddCheckBox("LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
-		if ExtraAbilityContainer then
-			AddCheckBox("EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
-		elseif ExtraActionBarFrame then
-			AddCheckBox("ExtraActionBarFrame", true, nil, nil, "ShowExtraAbilities")
-		elseif ExtraActionButton1 then
-			AddCheckBox("ExtraActionButton1", true, nil, nil, "ShowExtraAbilities")
-		end
-
 		AddCheckBox("CASTINGBAR", false, nil, nil, "ShowCastBar")
 		if PlayerCastingBarFrame then AddCheckBox("CASTINGBARTIMER", false, nil, nil, "ShowCastBar") end
 		if TalkingHeadFrame then AddCheckBox("TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame") end
-		if OverrideActionBar then AddCheckBox("OVERRIDEACTIONBAR", false) end
+		if ActionBarUpButton and ActionBarDownButton then AddCheckBox("MAPAGES", false) end
+		AddCheckBox("MINIMAP", false)
+		if MainStatusTrackingBarContainer then AddCheckBox("MainStatusTrackingBarContainer", false) end
+		if SecondaryStatusTrackingBarContainer then AddCheckBox("SecondaryStatusTrackingBarContainer", false) end
+		if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager then AddCheckBox("STATUSTRACKINGBARMANAGER", false) end
+		if VehicleSeatIndicator then AddCheckBox("VEHICLESEATINDICATOR", false) end
+		if ObjectiveTrackerBonusBannerFrame then AddCheckBox("OBJECTIVETRACKERBONUSBANNERFRAME", false) end
+		if MoveAny:IsValidFrame(QueueStatusFrame) then AddCheckBox("QUEUESTATUSFRAME", false) end
+		if MoveAny:IsValidFrame(MainMenuExpBar) then
+			AddCheckBox("MAINMENUEXPBAR", false)
+			AddCheckBox("REPUTATIONWATCHBAR", false)
+		end
+
+		if MoveAny:IsValidFrame(ZoneAbilityFrame) then AddCheckBox("ZONEABILITYFRAME", false) end
+		if MoveAny:IsValidFrame(EncounterBar) then
+			AddCheckBox("ENCOUNTERBAR", false, nil, nil, "ShowEncounterBar")
+		elseif MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
+			AddCheckBox("UIWIDGETPOWERBAR", false)
+		end
+
+		--AddCheckBox( 4, "BUFFTIMER1", true )
+		if MoveAny:IsValidFrame(ArcheologyDigsiteProgressBar) then AddCheckBox("ARCHEOLOGYDIGSITEPROGRESSBAR", false) end
+		if MoveAny:IsValidFrame(QuickJoinToastButton) then AddCheckBox("CHATQUICKJOIN", false) end
+		if MoveAny:IsValidFrame(SpellActivationOverlayFrame) then AddCheckBox("SPELLACTIVATIONOVERLAYFRAME", false) end
+		if MoveAny:IsValidFrame(LossOfControlFrame) then AddCheckBox("LOSSOFCONTROLFRAME", false) end
+		if MoveAny:IsValidFrame(GhostFrame) then AddCheckBox("GHOSTFRAME", false) end
+		AddCategory("Actionbars", 2, nil, true)
 		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 			AddCheckBox("ACTIONBARS", false)
 			AddCheckBox("ACTIONBAR3", false)
@@ -622,56 +616,85 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		if ActionBarUpButton and ActionBarDownButton then AddCheckBox("MAPAGES", false) end
+		AddCheckBox("PETBAR", false, nil, nil, "ShowPetActionBar")
+		AddCheckBox("STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
+		if PossessActionBar or PossessBarFrame then AddCheckBox("POSSESSBAR", false, nil, nil, "ShowPossessActionBar") end
+		if OverrideActionBar then AddCheckBox("OVERRIDEACTIONBAR", false) end
+		AddCheckBox("LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
+		if ExtraAbilityContainer then
+			AddCheckBox("EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
+		elseif ExtraActionBarFrame then
+			AddCheckBox("ExtraActionBarFrame", true, nil, nil, "ShowExtraAbilities")
+		elseif ExtraActionButton1 then
+			AddCheckBox("ExtraActionButton1", true, nil, nil, "ShowExtraAbilities")
+		end
+
+		AddCheckBox("MICROMENU", false)
+		AddCheckBox("BAGS", false)
+		AddCategory("UNITFRAMES", 2)
+		if BossTargetFrameContainer or Boss1TargetFrame then AddCheckBox("BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames") end
+		AddCategory("PLAYERFRAME", 3)
+		AddCheckBox("PLAYERFRAME", false)
+		if PlayerFrameGroupIndicator then AddCheckBox("PLAYERFRAMEGROUPINDICATOR", false) end
+		if PlayerFrameBackground then AddCheckBox("PLAYERFRAMEBACKGROUND", false) end
+		if PlayerLevelText then AddCheckBox("PLAYERLEVELTEXT", false) end
+		AddCategory("MAPETFRAME", 3)
+		AddCheckBox("MAPETFRAME", false)
+		if PetFrameHappiness then AddCheckBox("PETFRAMEHAPPINESS", false) end
+		AddCategory("TARGETFRAME", 3)
+		AddCheckBox("TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
+		AddCheckBox("TARGETFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox("TARGETFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox("TARGETFRAMESPELLBAR", false, nil, nil, nil, nil, "TARGETFRAME")
+		if TargetFrame and TargetFrameNumericalThreat then AddCheckBox("TargetFrameNumericalThreat", false) end
+		if TargetFrameNameBackground then AddCheckBox("TARGETFRAMENAMEBACKGROUND", false) end
+		if TargetFrameToT then
+			AddCheckBox("TARGETOFTARGETFRAME", false)
+			AddCheckBox("TARGETFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("TARGETFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		end
+
+		if FocusFrame then
+			AddCategory("FOCUSFRAME", 3)
+			AddCheckBox("FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("FOCUSFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("FOCUSFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			if MoveAny:IsValidFrame(FocusFrame) then AddCheckBox("FOCUSFRAMESPELLBAR", false, nil, nil, nil, nil, "FOCUSFRAME") end
+			if FocusFrameToT then
+				AddCheckBox("TARGETOFFOCUSFRAME", false)
+				AddCheckBox("FOCUSFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+				AddCheckBox("FOCUSFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			end
+		end
+
+		AddCategory("Party / Raid", 3, nil, true)
+		if PartyFrame or PartyMemberFrame1 then AddCheckBox("PARTYFRAME", false, nil, nil, "ShowPartyFrames") end
+		if CompactRaidFrameContainer then AddCheckBox("COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames") end
+		AddCategory("Chat", 2, nil, true)
 		for i = 1, 10 do
 			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and MoveAny:GetParent(_G["ChatFrame" .. i .. "Tab"]) ~= GeneralDockManager or i == 1 then AddCheckBox("CHAT", false, nil, i) end
 		end
 
-		AddCheckBox("MINIMAP", false)
+		for i = 1, 10 do
+			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "ButtonFrame"] ~= nil then AddCheckBox("CHATBUTTONFRAME" .. i, false) end
+		end
+
+		AddCheckBox("CHATEDITBOX", false, nil, "")
+		AddCategory("Quest", 2, nil, true)
 		AddCheckBox("QUESTTRACKER", false)
 		AddCheckBox("QUESTITEMSANCHOR", false)
 		if QuestTimerFrame then AddCheckBox("QUESTTIMERFRAME", false) end
-		AddCheckBox("MAPETFRAME", false)
-		if PetFrameHappiness then AddCheckBox("PETFRAMEHAPPINESS", false) end
-		if PartyFrame or PartyMemberFrame1 then AddCheckBox("PARTYFRAME", false, nil, nil, "ShowPartyFrames") end
-		if CompactRaidFrameContainer then AddCheckBox("COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames") end
-		if BossTargetFrameContainer or Boss1TargetFrame then AddCheckBox("BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames") end
-		if MainStatusTrackingBarContainer then AddCheckBox("MainStatusTrackingBarContainer", false) end
-		if SecondaryStatusTrackingBarContainer then AddCheckBox("SecondaryStatusTrackingBarContainer", false) end
-		if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager then AddCheckBox("STATUSTRACKINGBARMANAGER", false) end
-		if VehicleSeatIndicator then AddCheckBox("VEHICLESEATINDICATOR", false) end
-		AddCategory("NORMAL", 1, true)
-		if TargetFrameToT then AddCheckBox("TARGETOFTARGETFRAME", false) end
-		if FocusFrameToT then AddCheckBox("TARGETOFFOCUSFRAME", false) end
-		AddCheckBox("ZONETEXTFRAME", false)
-		if ObjectiveTrackerBonusBannerFrame then AddCheckBox("OBJECTIVETRACKERBONUSBANNERFRAME", false) end
-		if RaidBossEmoteFrame then AddCheckBox("RAIDBOSSEMOTEFRAME", false) end
-		AddCheckBox("DURABILITY", false)
-		AddCheckBox("MICROMENU", false)
-		AddCheckBox("BAGS", false)
-		if MoveAny:IsValidFrame(QueueStatusButton) then AddCheckBox("QUEUESTATUSBUTTON", false) end
-		if MoveAny:IsValidFrame(QueueStatusFrame) then AddCheckBox("QUEUESTATUSFRAME", false) end
-		if MoveAny:IsValidFrame(MainMenuExpBar) then
-			AddCheckBox("MAINMENUEXPBAR", false)
-			AddCheckBox("REPUTATIONWATCHBAR", false)
-		end
-
-		AddCheckBox("MAFPSFrame", false)
-		if MoveAny:IsValidFrame(ZoneAbilityFrame) then AddCheckBox("ZONEABILITYFRAME", false) end
-		if MoveAny:IsValidFrame(EncounterBar) then
-			AddCheckBox("ENCOUNTERBAR", false, nil, nil, "ShowEncounterBar")
-		elseif MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
-			AddCheckBox("UIWIDGETPOWERBAR", false)
-		end
-
+		AddCategory("Widgets", 2, nil, true)
+		AddCheckBox("UIWIDGETTOPCENTER", false)
+		AddCheckBox("UIWIDGETBELOWMINIMAP", false)
 		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then AddCheckBox("POWERBAR", false) end
-		--AddCheckBox( 4, "BUFFTIMER1", true )
-		if MoveAny:IsValidFrame(ArcheologyDigsiteProgressBar) then AddCheckBox("ARCHEOLOGYDIGSITEPROGRESSBAR", false) end
 		AddCheckBox("UIERRORSFRAME", false)
-		if MoveAny:IsValidFrame(QuickJoinToastButton) then AddCheckBox("CHATQUICKJOIN", false) end
-		if MoveAny:IsValidFrame(SpellActivationOverlayFrame) then AddCheckBox("SPELLACTIVATIONOVERLAYFRAME", false) end
-		if MoveAny:IsValidFrame(LossOfControlFrame) then AddCheckBox("LOSSOFCONTROLFRAME", false) end
-		if MoveAny:IsValidFrame(GhostFrame) then AddCheckBox("GHOSTFRAME", false) end
+		AddCheckBox("DURABILITY", false)
+		AddCheckBox("ZONETEXTFRAME", false)
+		if RaidBossEmoteFrame then AddCheckBox("RAIDBOSSEMOTEFRAME", false) end
+		if MoveAny:IsValidFrame(QueueStatusButton) then AddCheckBox("QUEUESTATUSBUTTON", false) end
+		AddCheckBox("MAFPSFrame", false)
+		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
 		AddCategory("CLASSSPECIFIC", 1, true)
 		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then AddCheckBox("RUNEFRAME", false) end
 		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then AddCheckBox("TOTEMBAR", false) end
@@ -715,13 +738,8 @@ function MoveAny:InitMALock()
 		AddCheckBox("ExpansionLandingPageMinimapButton", false)
 		if MoveAny:IsValidFrame(TotemFrame) then AddCheckBox("TOTEMFRAME", false) end
 		if MoveAny:IsValidFrame(MinimapZoneTextButton) then AddCheckBox("MINIMAPZONETEXT", false) end
-		if PlayerLevelText then AddCheckBox("PLAYERLEVELTEXT", false) end
 		AddCheckBox("ENDCAPS", false)
 		if MainMenuBarTexture0 then AddCheckBox("BLIZZARDACTIONBUTTONSART", false) end
-		AddCheckBox("TARGETFRAMESPELLBAR", false, nil, nil, nil, nil, "TARGETFRAME")
-		if MoveAny:IsValidFrame(FocusFrame) then AddCheckBox("FOCUSFRAMESPELLBAR", false, nil, nil, nil, nil, "FOCUSFRAME") end
-		AddCheckBox("UIWIDGETTOPCENTER", false)
-		AddCheckBox("UIWIDGETBELOWMINIMAP", false)
 		AddCheckBox("MIRRORTIMER1", false)
 		if TimerTracker then AddCheckBox("TIMERTRACKER1", false) end
 		if ArenaEnemyFramesContainer then
@@ -748,19 +766,10 @@ function MoveAny:InitMALock()
 
 		if BonusRollFrame then AddCheckBox("BONUSROLLFRAME", false) end
 		AddCheckBox("ALERTFRAME", false)
-		for i = 1, 10 do
-			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "ButtonFrame"] ~= nil then AddCheckBox("CHATBUTTONFRAME" .. i, false) end
-		end
-
-		AddCheckBox("CHATEDITBOX", false, nil, "")
 		AddCheckBox("CHATTAB", false, nil, "")
 		if BNToastFrame then AddCheckBox("BNToastFrame", false) end
 		AddCheckBox("EventToastManagerFrame", false)
-		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
 		if TicketStatusFrame then AddCheckBox("TICKETSTATUSFRAME", false) end
-		if TargetFrame and TargetFrameNumericalThreat then AddCheckBox("TargetFrameNumericalThreat", false) end
-		if PlayerFrameBackground then AddCheckBox("PLAYERFRAMEBACKGROUND", false) end
-		if TargetFrameNameBackground then AddCheckBox("TARGETFRAMENAMEBACKGROUND", false) end
 		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
 			AddCategory("ImproveAny", nil, nil, true)
 			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then AddCheckBox("IASKILLS", true) end

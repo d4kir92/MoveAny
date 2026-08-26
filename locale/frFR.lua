@@ -258,6 +258,7 @@ MoveAny:AddTrans("frFR", "LID_UIERRORSFRAME", "Messages d'erreur de l'interface 
 MoveAny:AddTrans("frFR", "LID_UIWIDGETBELOWMINIMAP", "Widget Below Minimap (État des captures)")
 MoveAny:AddTrans("frFR", "LID_UIWIDGETPOWERBAR", "Barre de puissance")
 MoveAny:AddTrans("frFR", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Statut sur BGs/Dungeons)")
+MoveAny:AddTrans("frFR", "LID_UNITFRAMES", "Cadres d'unité")
 MoveAny:AddTrans("frFR", "LID_UNLOCKWINDOWS", "Déverrouiller les fenêtres")
 MoveAny:AddTrans("frFR", "LID_UPLOAD", "Téléverser")
 MoveAny:AddTrans("frFR", "LID_UtilityCooldownViewer", "Visionneuse de temps de recharge stratégiques (Gestionnaire de temps de recharge)")

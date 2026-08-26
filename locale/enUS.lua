@@ -258,6 +258,7 @@ MoveAny:AddTrans("enUS", "LID_UIERRORSFRAME", "Ui Error Messages (Quest Progress
 MoveAny:AddTrans("enUS", "LID_UIWIDGETBELOWMINIMAP", "Widget Below Minimap (Capture Status)")
 MoveAny:AddTrans("enUS", "LID_UIWIDGETPOWERBAR", "Ui Widget Power Bar (Shows mostly Percentage) (Boss Bar, Darkmoon faire, ...)")
 MoveAny:AddTrans("enUS", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Status/Stats on Battlegrounds/Dungeons/Raids)")
+MoveAny:AddTrans("enUS", "LID_UNITFRAMES", "Unit Frames")
 MoveAny:AddTrans("enUS", "LID_UNLOCKWINDOWS", "Unlock Windows")
 MoveAny:AddTrans("enUS", "LID_UPLOAD", "Upload")
 MoveAny:AddTrans("enUS", "LID_UtilityCooldownViewer", "Utility Cooldown Viewer (Cooldown-Manager)")

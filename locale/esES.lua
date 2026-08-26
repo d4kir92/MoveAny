@@ -258,6 +258,7 @@ MoveAny:AddTrans("esES", "LID_UIERRORSFRAME", "Mensajes de error de la interfaz 
 MoveAny:AddTrans("esES", "LID_UIWIDGETBELOWMINIMAP", "Widget Below Minimap (Estado de captura)")
 MoveAny:AddTrans("esES", "LID_UIWIDGETPOWERBAR", "Barra de poder")
 MoveAny:AddTrans("esES", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Status on BGs/Dungeons)")
+MoveAny:AddTrans("esES", "LID_UNITFRAMES", "Marcos de unidad")
 MoveAny:AddTrans("esES", "LID_UNLOCKWINDOWS", "Desbloquear ventanas")
 MoveAny:AddTrans("esES", "LID_UPLOAD", "Subir")
 MoveAny:AddTrans("esES", "LID_UtilityCooldownViewer", "Visor de tiempo de reutilización de utilidad (Gestor de tiempos de reutilización)")

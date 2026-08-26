@@ -258,6 +258,7 @@ MoveAny:AddTrans("itIT", "LID_UIERRORSFRAME", "Messaggi di errore dell'interfacc
 MoveAny:AddTrans("itIT", "LID_UIWIDGETBELOWMINIMAP", "Widget sotto la minimappa (stato di cattura)")
 MoveAny:AddTrans("itIT", "LID_UIWIDGETPOWERBAR", "Barra del potere")
 MoveAny:AddTrans("itIT", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Stato su BG/Dungeon)")
+MoveAny:AddTrans("itIT", "LID_UNITFRAMES", "Riquadri unità")
 MoveAny:AddTrans("itIT", "LID_UNLOCKWINDOWS", "Sblocca finestre")
 MoveAny:AddTrans("itIT", "LID_UPLOAD", "Carica")
 MoveAny:AddTrans("itIT", "LID_UtilityCooldownViewer", "Visualizzatore tempi di recupero strategici (gestore tempi di recupero)")

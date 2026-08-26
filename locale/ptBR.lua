@@ -258,6 +258,7 @@ MoveAny:AddTrans("ptBR", "LID_UIERRORSFRAME", "Ui Error Messages, Quest Progress
 MoveAny:AddTrans("ptBR", "LID_UIWIDGETBELOWMINIMAP", "Widget Abaixo do Minimapa (Status de Captura)")
 MoveAny:AddTrans("ptBR", "LID_UIWIDGETPOWERBAR", "Barra de alimentação")
 MoveAny:AddTrans("ptBR", "LID_UIWIDGETTOPCENTER", "Widget Top Center (Status on BGs/Dungeons)")
+MoveAny:AddTrans("ptBR", "LID_UNITFRAMES", "Quadros de unidade")
 MoveAny:AddTrans("ptBR", "LID_UNLOCKWINDOWS", "Desbloquear janelas")
 MoveAny:AddTrans("ptBR", "LID_UPLOAD", "Enviar")
 MoveAny:AddTrans("ptBR", "LID_UtilityCooldownViewer", "Visualizador de Recarga de Utilidade (Gerenciador de Recarga)")

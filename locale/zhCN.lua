@@ -258,6 +258,7 @@ MoveAny:AddTrans("zhCN", "LID_UIERRORSFRAME", "界面错误信息 (任务进度,
 MoveAny:AddTrans("zhCN", "LID_UIWIDGETBELOWMINIMAP", "小地图下方部件 (占领状态)")
 MoveAny:AddTrans("zhCN", "LID_UIWIDGETPOWERBAR", "屏幕中能量条 (编辑模式中战斗条) (首领条, 活力条, 暗月马戏团等)")
 MoveAny:AddTrans("zhCN", "LID_UIWIDGETTOPCENTER", "顶部中心部件 (战场/地下城/团队中的状态)")
+MoveAny:AddTrans("zhCN", "LID_UNITFRAMES", "单位框架")
 MoveAny:AddTrans("zhCN", "LID_UNLOCKWINDOWS", "解锁窗口")
 MoveAny:AddTrans("zhCN", "LID_UPLOAD", "上传")
 MoveAny:AddTrans("zhCN", "LID_UtilityCooldownViewer", "战术冷却监视器 (冷却管理器)")
