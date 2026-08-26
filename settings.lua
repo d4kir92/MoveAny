@@ -304,7 +304,6 @@ local function AddCategory(key, layer, hud, noTranslate)
 		["level"] = layer,
 		["search"] = key,
 	})
-
 	return cas[key]
 end
 
@@ -357,7 +356,6 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 			if bRequiresFor == false then lstr = lstr .. " (" .. format(MoveAny:Trans("LID_REQUIRESFOR"), MoveAny:Trans("LID_" .. requiresFor)) .. ")" end
 			if bRequiredFor == true then lstr = lstr .. " (" .. format(MoveAny:Trans("LID_REQUIREDFOR"), MoveAny:Trans("LID_" .. requiredFor)) .. ")" end
 			if bShowReload and checked ~= oldVal then return format("[%s] %s", MoveAny:Trans("LID_NEEDSARELOAD"), lstr) end
-
 			return lstr
 		end,
 		["func"] = function(value, sel)
@@ -403,7 +401,6 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 
 		cb:Think()
 	end
-
 	return cb
 end
 
@@ -419,7 +416,6 @@ local function AddDropdown(key, val, func, tab)
 			if func then func(value) end
 		end,
 	})
-
 	return dds[key]
 end
 
@@ -502,9 +498,7 @@ function MoveAny:InitMALock()
 		["maxWidth"] = sw + 200,
 		["maxHeight"] = GetScreenHeight(),
 		["title"] = format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()),
-		["onMove"] = function(p1, p3, p4, p5)
-			MoveAny:SetElePoint("MALock", p1, nil, p3, MoveAny:Snap(p4), MoveAny:Snap(p5))
-		end,
+		["onMove"] = function(p1, p3, p4, p5) MoveAny:SetElePoint("MALock", p1, nil, p3, MoveAny:Snap(p4), MoveAny:Snap(p5)) end,
 		["onClose"] = function()
 			MoveAny:ToggleMALock()
 			if needReload then
@@ -519,12 +513,15 @@ function MoveAny:InitMALock()
 
 	MALock:SetFrameLevel(999)
 	if MALock.CloseButton then MALock.CloseButton:SetFrameLevel(1000) end
-	MoveAny:After(0, function()
-		if MALock:GetHeight() > GetScreenHeight() then MALock:SetHeight(GetScreenHeight()) end
-	end, "InitMALock")
+	MoveAny:After(0, function() if MALock:GetHeight() > GetScreenHeight() then MALock:SetHeight(GetScreenHeight()) end end, "InitMALock")
+	MALock:AddHeader({
+		["height"] = 24
+	})
 
-	MALock:AddHeader({["height"] = 24})
-	MALock:AddFooter({["height"] = 24})
+	MALock:AddFooter({
+		["height"] = 24
+	})
+
 	function MoveAny:UpdateFrameKeybindText()
 		cbs["FRAMESKEYDRAG"]:UpdateLabel()
 		cbs["FRAMESKEYSCALE"]:UpdateLabel()
@@ -1761,7 +1758,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.9.59")
+	MoveAny:SetVersion(135994, "1.10.0")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -1903,8 +1900,11 @@ function MoveAny:SaveMinimapDrag(frame, key)
 	local fs = frame:GetEffectiveScale()
 	local us = MoveAny:GetMainPanel():GetEffectiveScale()
 	if not fx or not fy or not fs or not us or us <= 0 then return end
+	local mx, my = GetMinimapDragCenter()
+	if not mx then return end
+	local angle = math.atan2(fy * fs - my, fx * fs - mx)
 	MoveAny:SetElePoint(key, "CENTER", MoveAny:GetMainPanel(), "BOTTOMLEFT", fx * fs / us, fy * fs / us)
-	MoveAny:ClampMinimapDrag(frame)
+	MoveAny:SetMinimapDragAngle(frame, angle)
 end
 
 local function UpdateMinimapDragFrames()
@@ -1942,10 +1942,10 @@ function MoveAny:InitMinimapDrag(frame, key, func)
 	end
 
 	local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
-	if dbp1 and dbp3 then
-		frame:ClearAllPoints()
-		frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
-		MoveAny:ClampMinimapDrag(frame)
+	if dbp1 and dbp3 and dbp4 and dbp5 then
+		local mx, my = GetMinimapDragCenter()
+		local us = MoveAny:GetMainPanel():GetEffectiveScale()
+		if mx and us and us > 0 then MoveAny:SetMinimapDragAngle(frame, math.atan2(dbp5 * us - my, dbp4 * us - mx)) end
 	end
 
 	if func then func() end
