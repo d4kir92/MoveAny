@@ -1059,7 +1059,7 @@ function MoveAny:ResetSelectedText()
 	if not runSelectedReset then
 		runSelectedReset = true
 		local cb = MoveAny:GetLastSelected()
-		if cb then cb:UpdateText() end
+		if cb then cb:UpdateLabel() end
 		runSelectedReset = false
 	end
 end

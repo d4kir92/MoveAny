@@ -25,19 +25,17 @@ local WebStatus = 0.0
 local WebProfile = ""
 local WebOwner = ""
 local WebProfileData = {}
-local searchStr = ""
 local br = 8
 local sw = 550
 local sh = MoveAny:MClamp(640, 200, GetScreenHeight())
-local posy = -4
 local cas = {}
 local cbs = {}
-local sls = {}
 local dds = {}
 local gridChoices = {}
 local scaleChoices = {}
 local EMMapForced = {}
 local keybinds = {}
+local keybindChoices = {}
 local sptab = {}
 function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	if window == nil then
@@ -170,6 +168,10 @@ end
 keybinds[1] = "SHIFT"
 keybinds[2] = "CTRL"
 keybinds[3] = "ALT"
+for i, v in ipairs(keybinds) do
+	keybindChoices[i] = "LID_" .. v
+end
+
 for _, v in ipairs({1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 75, 100}) do
 	gridChoices[v] = tostring(v)
 end
@@ -291,35 +293,22 @@ end
 
 local function AddCategory(key, layer, hud, noTranslate)
 	if layer == nil then layer = 1 end
-	if cas[key] == nil then
-		cas[key] = CreateFrame("Frame", key .. "_Category", MALock.SC)
-		local ca = cas[key]
-		ca:SetSize(24, 24)
-		ca.f = ca:CreateFontString(nil, nil, "GameFontNormal")
-		ca.f:SetPoint("LEFT", ca, "LEFT", 0, 0)
-		if noTranslate == nil or noTranslate == false then
-			if hud then
-				ca.f:SetText(MoveAny:Trans("LID_" .. key) .. " (" .. MoveAny:Trans("LID_MOVEANYINFO") .. ")")
-			else
-				ca.f:SetText(MoveAny:Trans("LID_" .. key))
-			end
-		else
-			ca.f:SetText(key)
-		end
+	local label = key
+	if noTranslate == nil or noTranslate == false then
+		label = MoveAny:Trans("LID_" .. key)
+		if hud then label = label .. " (" .. MoveAny:Trans("LID_MOVEANYINFO") .. ")" end
 	end
 
-	cas[key]:ClearAllPoints()
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. key)), strlower(searchStr)) then
-		cas[key]:Show()
-		if posy < -4 then posy = posy - 10 end
-		cas[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", 6 + (layer - 1) * 20, posy)
-		posy = posy - 24
-	else
-		cas[key]:Hide()
-	end
+	cas[key] = MALock:AddCategory({
+		["label"] = label,
+		["level"] = layer,
+		["search"] = key,
+	})
+
+	return cas[key]
 end
 
-local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requiresFor, requiredFor)
+local function AddCheckBox(key, val, func, id, editModeEnum, showReload, requiresFor, requiredFor)
 	local lkey = key
 	if id then key = key .. id end
 	local oldVal = MoveAny:IsEnabled(key, val, true) or false
@@ -328,23 +317,18 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 	local bRequiredFor = nil
 	if requiredFor ~= nil then bRequiredFor = MoveAny:IsEnabled(requiredFor) end
 	local bShowReload = showReload
-	local bGreyed = false
 	if bShowReload == nil then bShowReload = true end
 	if oldVal == nil then
 		MoveAny:ERR("Missing Value For: " .. tostring(key))
 		oldVal = true
 	end
 
-	if cbs[key] == nil then
-		cbs[key] = MoveAny:CreateCheckButton(key .. "_CB", MALock.SC)
-		local cb = cbs[key]
-		cb:SetSize(24, 24)
-		cb:SetChecked(oldVal)
-		cb.func = func or nil
-		cb.f = cb:CreateFontString(nil, nil, "GameFontNormal")
-		cb.f:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-		function cb:UpdateText(checked)
-			checked = checked or false
+	local cb = MALock:AddCheckbox({
+		["value"] = oldVal,
+		["search"] = key,
+		["textFunc"] = function(sel)
+			local checked = false
+			if sel then checked = sel:GetChecked() or false end
 			local lstr = MoveAny:Trans("LID_" .. lkey)
 			if id then lstr = format(lstr, id) end
 			if string.find(lkey, "FRAMESKEY", 1, true) then
@@ -356,7 +340,7 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 			if ele and MoveAny:GetDragFromName(key) and MoveAny:GetCurrentEle() == MoveAny:GetDragFromName(key) then
 				lstr = "|cFFFFFF00" .. lstr .. "|r"
 				MoveAny:ResetSelectedText()
-				lastSelected = cb
+				lastSelected = sel
 			end
 
 			local enabled1, forced1 = MoveAny:IsInEditModeEnabled(key)
@@ -372,220 +356,71 @@ local function AddCheckBox(x, key, val, func, id, editModeEnum, showReload, requ
 			lstr = "|cFFFFFFFF" .. lstr
 			if bRequiresFor == false then lstr = lstr .. " (" .. format(MoveAny:Trans("LID_REQUIRESFOR"), MoveAny:Trans("LID_" .. requiresFor)) .. ")" end
 			if bRequiredFor == true then lstr = lstr .. " (" .. format(MoveAny:Trans("LID_REQUIREDFOR"), MoveAny:Trans("LID_" .. requiredFor)) .. ")" end
-			if bShowReload and checked ~= oldVal then
-				cb.f:SetText(format("[%s] %s", MoveAny:Trans("LID_NEEDSARELOAD"), lstr))
-			else
-				cb.f:SetText(lstr)
-			end
-		end
+			if bShowReload and checked ~= oldVal then return format("[%s] %s", MoveAny:Trans("LID_NEEDSARELOAD"), lstr) end
 
-		cb:SetScript("OnClick", function(sel, btn)
-			MoveAny:SetEnabled(key, sel:GetChecked())
-			if sel.f then cb:UpdateText(sel:GetChecked()) end
-			if cb.func then cb:func(sel:GetChecked()) end
-		end)
-
-		cb.btn = MoveAny:CreateButton("cb.btn", cb, true)
-		cb.btn:SetSize(MALock.SC:GetWidth() - 24, 24)
-		cb.btn:SetPoint("LEFT", cb, "RIGHT", 0, 0)
-		cb.btn:RegisterForClicks("LeftButtonDown", "RightButtonDown")
-		cb.btn:SetScript("OnClick", function(sel, btn)
+			return lstr
+		end,
+		["func"] = function(value, sel)
+			MoveAny:SetEnabled(key, value)
+			if func then func(sel, value) end
+		end,
+		["onClick"] = function(btn, sel)
 			local ele = MoveAny:GetSelectEleName("LID_" .. key)
-			if ele then
-				local f = _G[ele]
-				local df = MoveAny:GetDragFromName(ele)
-				if df then
-					if btn == "LeftButton" then
-						MoveAny:SelectEle(df)
-						cb:UpdateText(cb:GetChecked())
-					elseif btn == "RightButton" then
-						if f then MoveAny:ToggleElementOptions(ele, f, df) end
-					end
-				end
+			if ele == nil then return end
+			local f = _G[ele]
+			local df = MoveAny:GetDragFromName(ele)
+			if df == nil then return end
+			if btn == "LeftButton" then
+				MoveAny:SelectEle(df)
+				sel:UpdateLabel()
+			elseif btn == "RightButton" then
+				if f then MoveAny:ToggleElementOptions(ele, f, df) end
 			end
-		end)
+		end,
+	})
 
-		if requiresFor ~= nil or requiredFor ~= nil then
-			function cb:Think()
-				if requiresFor ~= nil and cb.rf1 ~= bRequiresFor then
-					bRequiresFor = MoveAny:IsEnabled(requiresFor)
-					cb.rf1 = bRequiresFor
-					cb:UpdateText(cb:GetChecked())
-				end
-
-				if requiredFor ~= nil and cb.rf2 ~= bRequiredFor then
-					bRequiredFor = MoveAny:IsEnabled(requiredFor)
-					cb.rf2 = bRequiredFor
-					cb:UpdateText(cb:GetChecked())
-				end
-
-				if MoveAny:IsEnabled("MALOCK", false) then
-					MoveAny:After(0.6, cb.Think, "cb.Think")
-				else
-					MoveAny:After(1.2, cb.Think, "cb.Think")
-				end
+	cbs[key] = cb
+	if requiresFor ~= nil or requiredFor ~= nil then
+		function cb:Think()
+			if requiresFor ~= nil and cb.rf1 ~= bRequiresFor then
+				bRequiresFor = MoveAny:IsEnabled(requiresFor)
+				cb.rf1 = bRequiresFor
+				cb:UpdateLabel()
 			end
 
-			cb:UpdateText(cb:GetChecked())
-			cb:Think()
-		end
-	end
-
-	cbs[key]:UpdateText(cbs[key]:GetChecked())
-	cbs[key]:ClearAllPoints()
-	if bGreyed then
-		cbs[key]:SetEnabled(false)
-	else
-		cbs[key]:SetEnabled(true)
-	end
-
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. lkey)), strlower(searchStr)) then
-		cbs[key]:Show()
-		cbs[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
-		posy = posy - 24
-	else
-		cbs[key]:Hide()
-	end
-end
-
-local function HasDropdown()
-	if DoesTemplateExist == nil then return false end
-	if not DoesTemplateExist("SettingsDropdownWithButtonsTemplate") then return false end
-	return true
-end
-
-local function AddChoiceTrans(choices)
-	MoveAny.trans = MoveAny.trans or {}
-	MoveAny.trans["enUS"] = MoveAny.trans["enUS"] or {}
-	for _, name in pairs(choices) do
-		if MoveAny.trans["enUS"]["LID_" .. name] == nil then MoveAny:AddTrans("enUS", "LID_" .. name, name) end
-	end
-end
-
-local function AddDropdown(x, key, val, func, tab)
-	if dds[key] == nil then
-		local choices = {}
-		for i, name in pairs(tab) do
-			choices[i] = name
-		end
-
-		local cur = MoveAny:MAGV(key, val)
-		if choices[cur] == nil then choices[cur] = tostring(cur) end
-		AddChoiceTrans(choices)
-		local holder = CreateFrame("Frame", nil, MALock.SC)
-		holder:SetSize(280, 52)
-		MoveAny:SetAppendX(0)
-		MoveAny:SetAppendY(0)
-		MoveAny:SetAppendTab(MATAB)
-		local dd = MoveAny:CreateDropdown(key, val, choices, holder, func)
-		if dd == nil then
-			holder:Hide()
-			return
-		end
-
-		local label = holder:GetRegions()
-		if label then
-			MoveAny:SetFontSize(label, 12, "THINOUTLINE")
-			label:SetTextColor(1, 1, 1)
-		end
-
-		local h = dd:GetHeight()
-		if h == nil or h <= 0 then h = 32 end
-		holder:SetSize(dd:GetWidth() + 10, 18 + h)
-		dds[key] = holder
-	end
-
-	dds[key]:ClearAllPoints()
-	if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. key)), strlower(searchStr)) then
-		dds[key]:Show()
-		posy = posy - 10
-		dds[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
-		posy = posy - dds[key]:GetHeight() - 4
-	else
-		dds[key]:Hide()
-	end
-end
-
-local function AddSlider(x, key, val, func, vmin, vmax, steps, tab)
-	if tab and HasDropdown() then
-		AddDropdown(x, key, val, func, tab)
-		return
-	end
-
-	if sls[key] == nil and DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-		posy = posy - 10
-		local name = "sls[" .. key .. "]"
-		if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-			sls[key] = CreateFrame("Slider", name, MALock.SC, "MinimalSliderTemplate")
-		elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-			sls[key] = CreateFrame("Slider", name, MALock.SC, "UISliderTemplate")
-		else
-			sls[key] = CreateFrame("Slider", name, MALock.SC, "OptionsSliderTemplate")
-		end
-
-		sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x + 5, posy)
-		sls[key]:SetSize(MALock.SC:GetWidth() - 30 - x, 16)
-		if sls[key].Low == nil then
-			sls[key].Low = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
-			sls[key].Low:SetPoint("BOTTOMLEFT", sls[key], "BOTTOMLEFT", 0, -12)
-			sls[key].Low:SetTextColor(1, 1, 1)
-		end
-
-		if sls[key].High == nil then
-			sls[key].High = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
-			sls[key].High:SetPoint("BOTTOMRIGHT", sls[key], "BOTTOMRIGHT", 0, -12)
-			sls[key].High:SetTextColor(1, 1, 1)
-		end
-
-		if sls[key].Text == nil then
-			sls[key].Text = sls[key]:CreateFontString(nil, nil, "GameFontNormal")
-			sls[key].Text:SetPoint("TOP", sls[key], "TOP", 0, 16)
-			sls[key].Text:SetTextColor(1, 1, 1)
-		end
-
-		sls[key].Low:SetText(vmin)
-		sls[key].High:SetText(vmax)
-		if tab and tab[MoveAny:MAGV(key, val)] then
-			sls[key].Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:Trans("LID_" .. tab[MoveAny:MAGV(key, val)]))
-		else
-			sls[key].Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:MAGV(key, val))
-		end
-
-		sls[key]:SetMinMaxValues(vmin, vmax)
-		sls[key]:SetObeyStepOnDrag(true)
-		sls[key]:SetValueStep(steps)
-		sls[key]:SetValue(MoveAny:MAGV(key, val))
-		sls[key]:SetScript("OnValueChanged", function(sel, valu)
-			valu = tonumber(string.format("%" .. steps .. "f", valu))
-			if valu and valu ~= MoveAny:MAGV(key) then
-				MoveAny:SV(MATAB, key, valu)
-				if tab and tab[valu] then
-					sls[key].Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:Trans("LID_" .. tab[valu]))
-				else
-					sls[key].Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. valu)
-				end
-
-				if func then func(valu) end
+			if requiredFor ~= nil and cb.rf2 ~= bRequiredFor then
+				bRequiredFor = MoveAny:IsEnabled(requiredFor)
+				cb.rf2 = bRequiredFor
+				cb:UpdateLabel()
 			end
-		end)
 
-		MoveAny:SetFontSize(sls[key].Low, 10, "THINOUTLINE")
-		MoveAny:SetFontSize(sls[key].High, 10, "THINOUTLINE")
-		MoveAny:SetFontSize(sls[key].Text, 12, "THINOUTLINE")
-		posy = posy - 10
-	end
-
-	if sls[key] then
-		sls[key]:ClearAllPoints()
-		if strfind(strlower(key), strlower(searchStr)) or strfind(strlower(MoveAny:Trans("LID_" .. key)), strlower(searchStr)) then
-			sls[key]:Show()
-			posy = posy - 10
-			sls[key]:SetPoint("TOPLEFT", MALock.SC, "TOPLEFT", x, posy)
-			posy = posy - 30
-		else
-			sls[key]:Hide()
+			if MoveAny:IsEnabled("MALOCK", false) then
+				MoveAny:After(0.6, cb.Think, "cb.Think")
+			else
+				MoveAny:After(1.2, cb.Think, "cb.Think")
+			end
 		end
+
+		cb:Think()
 	end
+
+	return cb
+end
+
+local function AddDropdown(key, val, func, tab)
+	local cur = MoveAny:MAGV(key, val)
+	dds[key] = MALock:AddDropdown({
+		["label"] = MoveAny:Trans("LID_" .. key),
+		["search"] = key,
+		["value"] = cur,
+		["choices"] = MoveAny.UI:ChoicesFromMap(tab, cur),
+		["func"] = function(value)
+			MoveAny:SV(MATAB, key, value)
+			if func then func(value) end
+		end,
+	})
+
+	return dds[key]
 end
 
 local needReload = false
@@ -656,56 +491,44 @@ end
 
 function MoveAny:InitMALock()
 	sh = MoveAny:MClamp(640, 200, GetScreenHeight())
-	MALock = CreateFrame("Frame", "MALock", MoveAny:GetMainPanel(), "BasicFrameTemplate")
-	MALock:SetSize(sw, sh)
-	MALock:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
-	MALock:SetFrameStrata("HIGH")
+	MALock = MoveAny:CreateUIWindow({
+		["name"] = "MALock",
+		["parent"] = MoveAny:GetMainPanel(),
+		["pTab"] = {"CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0},
+		["width"] = sw,
+		["height"] = sh,
+		["minWidth"] = sw,
+		["minHeight"] = 200,
+		["maxWidth"] = sw + 200,
+		["maxHeight"] = GetScreenHeight(),
+		["title"] = format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()),
+		["onMove"] = function(p1, p3, p4, p5)
+			MoveAny:SetElePoint("MALock", p1, nil, p3, MoveAny:Snap(p4), MoveAny:Snap(p5))
+		end,
+		["onClose"] = function()
+			MoveAny:ToggleMALock()
+			if needReload then
+				if C_UI then
+					C_UI.Reload()
+				else
+					ReloadUI()
+				end
+			end
+		end,
+	})
+
 	MALock:SetFrameLevel(999)
 	if MALock.CloseButton then MALock.CloseButton:SetFrameLevel(1000) end
-	MoveAny:SetClampedToScreen(MALock, true)
-	MALock:SetMovable(true)
-	MALock:EnableMouse(true)
-	MALock:RegisterForDrag("LeftButton")
-	MALock:SetScript("OnDragStart", MALock.StartMoving)
-	MALock:SetScript("OnDragStop", function()
-		MALock:StopMovingOrSizing()
-		local p1, _, p3, p4, p5 = MALock:GetPoint()
-		p4 = MoveAny:Snap(p4)
-		p5 = MoveAny:Snap(p5)
-		MoveAny:SetElePoint("MALock", p1, _, p3, p4, p5)
-	end)
-
-	MALock:SetResizable(true)
 	MoveAny:After(0, function()
-		MALock:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
 		if MALock:GetHeight() > GetScreenHeight() then MALock:SetHeight(GetScreenHeight()) end
 	end, "InitMALock")
 
-	local rb = MoveAny:CreateButton(nil, MALock, true)
-	rb:EnableMouse("true")
-	rb:SetPoint("BOTTOMRIGHT")
-	rb:SetSize(32, 32)
-	rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-	rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-	rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-	rb:SetScript("OnMouseDown", function(sel) MoveAny:GetParent(sel):StartSizing("BOTTOMRIGHT") end)
-	rb:SetScript("OnMouseUp", function(sel) MoveAny:GetParent(sel):StopMovingOrSizing("BOTTOMRIGHT") end)
-	MALock.TitleText:SetText(format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()))
-	MALock.CloseButton:SetScript("OnClick", function()
-		MoveAny:ToggleMALock()
-		if needReload then
-			if C_UI then
-				C_UI.Reload()
-			else
-				ReloadUI()
-			end
-		end
-	end)
-
+	MALock:AddHeader({["height"] = 24})
+	MALock:AddFooter({["height"] = 24})
 	function MoveAny:UpdateFrameKeybindText()
-		cbs["FRAMESKEYDRAG"]:UpdateText(cbs["FRAMESKEYDRAG"]:GetChecked())
-		cbs["FRAMESKEYSCALE"]:UpdateText(cbs["FRAMESKEYSCALE"]:GetChecked())
-		cbs["FRAMESKEYRESET"]:UpdateText(cbs["FRAMESKEYRESET"]:GetChecked())
+		cbs["FRAMESKEYDRAG"]:UpdateLabel()
+		cbs["FRAMESKEYSCALE"]:UpdateLabel()
+		cbs["FRAMESKEYRESET"]:UpdateLabel()
 	end
 
 	function MoveAny:UpdateFrameKeybind()
@@ -714,12 +537,12 @@ function MoveAny:InitMALock()
 		MoveAny:UpdateFrameKeybindText()
 	end
 
-	function MoveAny:UpdateElementList()
+	local function BuildElementList()
 		local _, class = UnitClass("player")
-		posy = -4
+		MALock:SuspendLayout()
 		AddCategory("GENERAL")
-		AddCheckBox(4, "SHOWTIPS", true)
-		AddCheckBox(4, "SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL", function(sel, value)
+		AddCheckBox("SHOWTIPS", true)
+		AddCheckBox("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL", function(sel, value)
 			if value then
 				MoveAny:ShowMMBtn("MoveAny")
 			else
@@ -727,240 +550,240 @@ function MoveAny:InitMALock()
 			end
 		end, nil, nil, false)
 
-		AddCheckBox(4, "HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
-		AddSlider(8, "SNAPSIZE", 5, nil, 1, 50, 1, gridChoices)
-		AddSlider(8, "GRIDSIZE", 10, MoveAny.UpdateGrid, 1, 100, 1, gridChoices)
+		AddCheckBox("HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
+		AddDropdown("SNAPSIZE", 5, nil, gridChoices)
+		AddDropdown("GRIDSIZE", 10, MoveAny.UpdateGrid, gridChoices)
 		AddCategory("FRAMES")
-		AddCheckBox(4, "MOVEFRAMES", true)
-		AddCheckBox(24, "CLAMPWINDOWTOSCREEN", true)
-		AddCheckBox(24, "MOVESMALLBAGS", false)
-		AddCheckBox(24, "MOVELOOTFRAME", false)
-		AddCheckBox(24, "SCALELOOTFRAME", false)
-		AddSlider(26, "KEYBINDWINDOW", 1, MoveAny.UpdateFrameKeybind, 1, 3, 1, keybinds)
+		AddCheckBox("MOVEFRAMES", true)
+		AddCheckBox("CLAMPWINDOWTOSCREEN", true)
+		AddCheckBox("MOVESMALLBAGS", false)
+		AddCheckBox("MOVELOOTFRAME", false)
+		AddCheckBox("SCALELOOTFRAME", false)
+		AddDropdown("KEYBINDWINDOW", 1, MoveAny.UpdateFrameKeybind, keybindChoices)
 		AddCategory("MOVEFRAMES", 2)
-		AddCheckBox(24, "SAVEFRAMEPOSITION", true)
-		AddCheckBox(24, "FRAMESKEYDRAG", false)
-		AddSlider(40, "SNAPWINDOWSIZE", 1, nil, 1, 50, 1, gridChoices)
+		AddCheckBox("SAVEFRAMEPOSITION", true)
+		AddCheckBox("FRAMESKEYDRAG", false)
+		AddDropdown("SNAPWINDOWSIZE", 1, nil, gridChoices)
 		AddCategory("SCALEFRAMES", 2)
-		AddCheckBox(24, "SCALEFRAMES", true)
-		AddCheckBox(36, "SAVEFRAMESCALE", true)
-		AddCheckBox(36, "FRAMESKEYSCALE", false)
+		AddCheckBox("SCALEFRAMES", true)
+		AddCheckBox("SAVEFRAMESCALE", true)
+		AddCheckBox("FRAMESKEYSCALE", false)
 		AddCategory("RESETFRAMES", 2)
-		AddCheckBox(24, "FRAMESKEYRESET", false)
+		AddCheckBox("FRAMESKEYRESET", false)
 		MoveAny:UpdateFrameKeybindText()
 		AddCategory("BUILTIN", 1, true)
-		local posx = 4
-		AddCheckBox(posx, "PLAYERFRAME", false)
-		if PlayerFrameGroupIndicator then AddCheckBox(posx, "PLAYERFRAMEGROUPINDICATOR", false) end
-		AddCheckBox(posx, "TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
-		AddCheckBox(posx, "TARGETFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-		AddCheckBox(posx, "TARGETFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox("PLAYERFRAME", false)
+		if PlayerFrameGroupIndicator then AddCheckBox("PLAYERFRAMEGROUPINDICATOR", false) end
+		AddCheckBox("TARGETFRAME", false, nil, nil, "ShowTargetAndFocus", nil, nil, "TARGETFRAMESPELLBAR")
+		AddCheckBox("TARGETFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+		AddCheckBox("TARGETFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 		if TargetFrameToT then
-			AddCheckBox(posx, "TARGETFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox(posx, "TARGETFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("TARGETFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("TARGETFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 		end
 
 		if FocusFrame then
-			AddCheckBox(posx, "FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox(posx, "FOCUSFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-			AddCheckBox(posx, "FOCUSFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("FOCUSFRAME", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("FOCUSFRAMEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+			AddCheckBox("FOCUSFRAMEDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 			if FocusFrameToT then
-				AddCheckBox(posx, "FOCUSFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
-				AddCheckBox(posx, "FOCUSFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+				AddCheckBox("FOCUSFRAMETOTBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
+				AddCheckBox("FOCUSFRAMETOTDEBUFFMOVER", false, nil, nil, "ShowTargetAndFocus")
 			end
 		end
 
-		AddCheckBox(posx, "BUFFS", false, nil, nil, "ShowBuffFrame")
-		AddCheckBox(posx, "DEBUFFS", false, nil, nil, "ShowDebuffFrame")
-		AddCheckBox(posx, "GAMETOOLTIP", false, nil, nil, "ShowHudTooltip")
-		AddCheckBox(posx, "PETBAR", false, nil, nil, "ShowPetActionBar")
-		AddCheckBox(posx, "STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
-		if PossessActionBar or PossessBarFrame then AddCheckBox(posx, "POSSESSBAR", false, nil, nil, "ShowPossessActionBar") end
-		AddCheckBox(posx, "LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
+		AddCheckBox("BUFFS", false, nil, nil, "ShowBuffFrame")
+		AddCheckBox("DEBUFFS", false, nil, nil, "ShowDebuffFrame")
+		AddCheckBox("GAMETOOLTIP", false, nil, nil, "ShowHudTooltip")
+		AddCheckBox("PETBAR", false, nil, nil, "ShowPetActionBar")
+		AddCheckBox("STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
+		if PossessActionBar or PossessBarFrame then AddCheckBox("POSSESSBAR", false, nil, nil, "ShowPossessActionBar") end
+		AddCheckBox("LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
 		if ExtraAbilityContainer then
-			AddCheckBox(posx, "EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
+			AddCheckBox("EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
 		elseif ExtraActionBarFrame then
-			AddCheckBox(posx, "ExtraActionBarFrame", true, nil, nil, "ShowExtraAbilities")
+			AddCheckBox("ExtraActionBarFrame", true, nil, nil, "ShowExtraAbilities")
 		elseif ExtraActionButton1 then
-			AddCheckBox(posx, "ExtraActionButton1", true, nil, nil, "ShowExtraAbilities")
+			AddCheckBox("ExtraActionButton1", true, nil, nil, "ShowExtraAbilities")
 		end
 
-		AddCheckBox(posx, "CASTINGBAR", false, nil, nil, "ShowCastBar")
-		if PlayerCastingBarFrame then AddCheckBox(posx, "CASTINGBARTIMER", false, nil, nil, "ShowCastBar") end
-		if TalkingHeadFrame then AddCheckBox(posx, "TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame") end
-		if OverrideActionBar then AddCheckBox(posx, "OVERRIDEACTIONBAR", false) end
+		AddCheckBox("CASTINGBAR", false, nil, nil, "ShowCastBar")
+		if PlayerCastingBarFrame then AddCheckBox("CASTINGBARTIMER", false, nil, nil, "ShowCastBar") end
+		if TalkingHeadFrame then AddCheckBox("TALKINGHEAD", false, nil, nil, "ShowTalkingHeadFrame") end
+		if OverrideActionBar then AddCheckBox("OVERRIDEACTIONBAR", false) end
 		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
-			AddCheckBox(posx, "ACTIONBARS", false)
-			AddCheckBox(4, "ACTIONBAR3", false)
-			AddCheckBox(4, "ACTIONBAR4", false)
-			AddCheckBox(4, "ACTIONBAR7", false)
-			AddCheckBox(4, "ACTIONBAR8", false)
-			AddCheckBox(4, "ACTIONBAR9", false)
-			AddCheckBox(4, "ACTIONBAR10", false)
+			AddCheckBox("ACTIONBARS", false)
+			AddCheckBox("ACTIONBAR3", false)
+			AddCheckBox("ACTIONBAR4", false)
+			AddCheckBox("ACTIONBAR7", false)
+			AddCheckBox("ACTIONBAR8", false)
+			AddCheckBox("ACTIONBAR9", false)
+			AddCheckBox("ACTIONBAR10", false)
 		else
 			for i = 1, 8 do
-				AddCheckBox(posx, "ACTIONBAR" .. i, false)
+				AddCheckBox("ACTIONBAR" .. i, false)
 			end
 		end
 
-		if ActionBarUpButton and ActionBarDownButton then AddCheckBox(4, "MAPAGES", false) end
+		if ActionBarUpButton and ActionBarDownButton then AddCheckBox("MAPAGES", false) end
 		for i = 1, 10 do
-			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and MoveAny:GetParent(_G["ChatFrame" .. i .. "Tab"]) ~= GeneralDockManager or i == 1 then AddCheckBox(posx, "CHAT", false, nil, i) end
+			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and MoveAny:GetParent(_G["ChatFrame" .. i .. "Tab"]) ~= GeneralDockManager or i == 1 then AddCheckBox("CHAT", false, nil, i) end
 		end
 
-		AddCheckBox(posx, "MINIMAP", false)
-		AddCheckBox(posx, "QUESTTRACKER", false)
-		AddCheckBox(posx, "QUESTITEMSANCHOR", false)
-		if QuestTimerFrame then AddCheckBox(posx, "QUESTTIMERFRAME", false) end
-		AddCheckBox(posx, "MAPETFRAME", false)
-		if PetFrameHappiness then AddCheckBox(posx, "PETFRAMEHAPPINESS", false) end
-		if PartyFrame or PartyMemberFrame1 then AddCheckBox(posx, "PARTYFRAME", false, nil, nil, "ShowPartyFrames") end
-		if CompactRaidFrameContainer then AddCheckBox(posx, "COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames") end
-		if BossTargetFrameContainer or Boss1TargetFrame then AddCheckBox(posx, "BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames") end
-		if MainStatusTrackingBarContainer then AddCheckBox(posx, "MainStatusTrackingBarContainer", false) end
-		if SecondaryStatusTrackingBarContainer then AddCheckBox(posx, "SecondaryStatusTrackingBarContainer", false) end
-		if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager then AddCheckBox(posx, "STATUSTRACKINGBARMANAGER", false) end
-		if VehicleSeatIndicator then AddCheckBox(posx, "VEHICLESEATINDICATOR", false) end
+		AddCheckBox("MINIMAP", false)
+		AddCheckBox("QUESTTRACKER", false)
+		AddCheckBox("QUESTITEMSANCHOR", false)
+		if QuestTimerFrame then AddCheckBox("QUESTTIMERFRAME", false) end
+		AddCheckBox("MAPETFRAME", false)
+		if PetFrameHappiness then AddCheckBox("PETFRAMEHAPPINESS", false) end
+		if PartyFrame or PartyMemberFrame1 then AddCheckBox("PARTYFRAME", false, nil, nil, "ShowPartyFrames") end
+		if CompactRaidFrameContainer then AddCheckBox("COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames") end
+		if BossTargetFrameContainer or Boss1TargetFrame then AddCheckBox("BOSSTARGETFRAMECONTAINER", false, nil, nil, "ShowBossFrames") end
+		if MainStatusTrackingBarContainer then AddCheckBox("MainStatusTrackingBarContainer", false) end
+		if SecondaryStatusTrackingBarContainer then AddCheckBox("SecondaryStatusTrackingBarContainer", false) end
+		if MainStatusTrackingBarContainer == nil and SecondaryStatusTrackingBarContainer == nil and StatusTrackingBarManager then AddCheckBox("STATUSTRACKINGBARMANAGER", false) end
+		if VehicleSeatIndicator then AddCheckBox("VEHICLESEATINDICATOR", false) end
 		AddCategory("NORMAL", 1, true)
-		if TargetFrameToT then AddCheckBox(4, "TARGETOFTARGETFRAME", false) end
-		if FocusFrameToT then AddCheckBox(4, "TARGETOFFOCUSFRAME", false) end
-		AddCheckBox(4, "ZONETEXTFRAME", false)
-		if ObjectiveTrackerBonusBannerFrame then AddCheckBox(4, "OBJECTIVETRACKERBONUSBANNERFRAME", false) end
-		if RaidBossEmoteFrame then AddCheckBox(4, "RAIDBOSSEMOTEFRAME", false) end
-		AddCheckBox(4, "DURABILITY", false)
-		AddCheckBox(4, "MICROMENU", false)
-		AddCheckBox(4, "BAGS", false)
-		if MoveAny:IsValidFrame(QueueStatusButton) then AddCheckBox(4, "QUEUESTATUSBUTTON", false) end
-		if MoveAny:IsValidFrame(QueueStatusFrame) then AddCheckBox(4, "QUEUESTATUSFRAME", false) end
+		if TargetFrameToT then AddCheckBox("TARGETOFTARGETFRAME", false) end
+		if FocusFrameToT then AddCheckBox("TARGETOFFOCUSFRAME", false) end
+		AddCheckBox("ZONETEXTFRAME", false)
+		if ObjectiveTrackerBonusBannerFrame then AddCheckBox("OBJECTIVETRACKERBONUSBANNERFRAME", false) end
+		if RaidBossEmoteFrame then AddCheckBox("RAIDBOSSEMOTEFRAME", false) end
+		AddCheckBox("DURABILITY", false)
+		AddCheckBox("MICROMENU", false)
+		AddCheckBox("BAGS", false)
+		if MoveAny:IsValidFrame(QueueStatusButton) then AddCheckBox("QUEUESTATUSBUTTON", false) end
+		if MoveAny:IsValidFrame(QueueStatusFrame) then AddCheckBox("QUEUESTATUSFRAME", false) end
 		if MoveAny:IsValidFrame(MainMenuExpBar) then
-			AddCheckBox(4, "MAINMENUEXPBAR", false)
-			AddCheckBox(4, "REPUTATIONWATCHBAR", false)
+			AddCheckBox("MAINMENUEXPBAR", false)
+			AddCheckBox("REPUTATIONWATCHBAR", false)
 		end
 
-		AddCheckBox(4, "MAFPSFrame", false)
-		if MoveAny:IsValidFrame(ZoneAbilityFrame) then AddCheckBox(4, "ZONEABILITYFRAME", false) end
+		AddCheckBox("MAFPSFrame", false)
+		if MoveAny:IsValidFrame(ZoneAbilityFrame) then AddCheckBox("ZONEABILITYFRAME", false) end
 		if MoveAny:IsValidFrame(EncounterBar) then
-			AddCheckBox(4, "ENCOUNTERBAR", false, nil, nil, "ShowEncounterBar")
+			AddCheckBox("ENCOUNTERBAR", false, nil, nil, "ShowEncounterBar")
 		elseif MoveAny:IsValidFrame(UIWidgetPowerBarContainerFrame) then
-			AddCheckBox(4, "UIWIDGETPOWERBAR", false)
+			AddCheckBox("UIWIDGETPOWERBAR", false)
 		end
 
-		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then AddCheckBox(4, "POWERBAR", false) end
+		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then AddCheckBox("POWERBAR", false) end
 		--AddCheckBox( 4, "BUFFTIMER1", true )
-		if MoveAny:IsValidFrame(ArcheologyDigsiteProgressBar) then AddCheckBox(4, "ARCHEOLOGYDIGSITEPROGRESSBAR", false) end
-		AddCheckBox(4, "UIERRORSFRAME", false)
-		if MoveAny:IsValidFrame(QuickJoinToastButton) then AddCheckBox(4, "CHATQUICKJOIN", false) end
-		if MoveAny:IsValidFrame(SpellActivationOverlayFrame) then AddCheckBox(4, "SPELLACTIVATIONOVERLAYFRAME", false) end
-		if MoveAny:IsValidFrame(LossOfControlFrame) then AddCheckBox(4, "LOSSOFCONTROLFRAME", false) end
-		if MoveAny:IsValidFrame(GhostFrame) then AddCheckBox(4, "GHOSTFRAME", false) end
+		if MoveAny:IsValidFrame(ArcheologyDigsiteProgressBar) then AddCheckBox("ARCHEOLOGYDIGSITEPROGRESSBAR", false) end
+		AddCheckBox("UIERRORSFRAME", false)
+		if MoveAny:IsValidFrame(QuickJoinToastButton) then AddCheckBox("CHATQUICKJOIN", false) end
+		if MoveAny:IsValidFrame(SpellActivationOverlayFrame) then AddCheckBox("SPELLACTIVATIONOVERLAYFRAME", false) end
+		if MoveAny:IsValidFrame(LossOfControlFrame) then AddCheckBox("LOSSOFCONTROLFRAME", false) end
+		if MoveAny:IsValidFrame(GhostFrame) then AddCheckBox("GHOSTFRAME", false) end
 		AddCategory("CLASSSPECIFIC", 1, true)
-		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then AddCheckBox(4, "RUNEFRAME", false) end
-		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then AddCheckBox(4, "TOTEMBAR", false) end
-		if MoveAny:IsValidFrame(WarlockPowerFrame) and class == "WARLOCK" then AddCheckBox(4, "WARLOCKPOWERFRAME", false) end
+		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then AddCheckBox("RUNEFRAME", false) end
+		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then AddCheckBox("TOTEMBAR", false) end
+		if MoveAny:IsValidFrame(WarlockPowerFrame) and class == "WARLOCK" then AddCheckBox("WARLOCKPOWERFRAME", false) end
 		-- CATA
-		if MoveAny:IsValidFrame(ShardBarFrame) and class == "WARLOCK" then AddCheckBox(4, "SHARDBARFRAME", false) end
-		if (MoveAny:IsValidFrame(MonkHarmonyBar) or MoveAny:IsValidFrame(MonkHarmonyBarFrame)) and class == "MONK" then AddCheckBox(4, "MONKHARMONYBARFRAME", false) end
-		if MoveAny:IsValidFrame(MonkStaggerBar) and class == "MONK" then AddCheckBox(4, "MONKSTAGGERBAR", false) end
-		if MoveAny:IsValidFrame(MageArcaneChargesFrame) and class == "MAGE" then AddCheckBox(4, "MAGEARCANECHARGESFRAME", false) end
-		if MoveAny:IsValidFrame(PriestBarFrame) and class == "PRIEST" then AddCheckBox(4, "PRIESTBARFRAME", false) end
+		if MoveAny:IsValidFrame(ShardBarFrame) and class == "WARLOCK" then AddCheckBox("SHARDBARFRAME", false) end
+		if (MoveAny:IsValidFrame(MonkHarmonyBar) or MoveAny:IsValidFrame(MonkHarmonyBarFrame)) and class == "MONK" then AddCheckBox("MONKHARMONYBARFRAME", false) end
+		if MoveAny:IsValidFrame(MonkStaggerBar) and class == "MONK" then AddCheckBox("MONKSTAGGERBAR", false) end
+		if MoveAny:IsValidFrame(MageArcaneChargesFrame) and class == "MAGE" then AddCheckBox("MAGEARCANECHARGESFRAME", false) end
+		if MoveAny:IsValidFrame(PriestBarFrame) and class == "PRIEST" then AddCheckBox("PRIESTBARFRAME", false) end
 		if (MoveAny:IsValidFrame(RogueComboPointBarFrame) or MoveAny:IsValidFrame(DruidComboPointBarFrame)) and (class == "ROGUE" or class == "DRUID") then
-			AddCheckBox(4, "COMBOPOINTPLAYERFRAME", false)
+			AddCheckBox("COMBOPOINTPLAYERFRAME", false)
 		elseif ComboFrame then
-			AddCheckBox(posx, "COMBOFRAME", false)
+			AddCheckBox("COMBOFRAME", false)
 		end
 
-		if class == "DRUID" and MoveAny:IsValidFrame(EclipseBarFrame) then AddCheckBox(4, "EclipseBarFrame", false) end
-		if MoveAny:IsValidFrame(EssencePlayerFrame) and class == "EVOKER" then AddCheckBox(4, "ESSENCEPLAYERFRAME", false) end
-		if MoveAny:IsValidFrame(PaladinPowerBarFrame) and class == "PALADIN" then AddCheckBox(4, "PALADINPOWERBARFRAME", false) end
+		if class == "DRUID" and MoveAny:IsValidFrame(EclipseBarFrame) then AddCheckBox("EclipseBarFrame", false) end
+		if MoveAny:IsValidFrame(EssencePlayerFrame) and class == "EVOKER" then AddCheckBox("ESSENCEPLAYERFRAME", false) end
+		if MoveAny:IsValidFrame(PaladinPowerBarFrame) and class == "PALADIN" then AddCheckBox("PALADINPOWERBARFRAME", false) end
 		-- CATA
-		if MoveAny:IsValidFrame(PaladinPowerBar) and class == "PALADIN" then AddCheckBox(4, "PALADINPOWERBAR", false) end
+		if MoveAny:IsValidFrame(PaladinPowerBar) and class == "PALADIN" then AddCheckBox("PALADINPOWERBAR", false) end
 		AddCategory("ADVANCED", 1, true)
 		if SuperTrackedFrame then
-			AddSlider(8, "SUPERTRACKEDFRAME", 1, function(val) SuperTrackedFrame:SetScale(val) end, 0.1, 4.0, 0.1, scaleChoices)
+			AddDropdown("SUPERTRACKEDFRAME", 1, function(val) SuperTrackedFrame:SetScale(val) end, scaleChoices)
 			if MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0) > 0 and MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0) ~= 1 then SuperTrackedFrame:SetScale(MoveAny:GV(MATAB, "SUPERTRACKEDFRAME", 1.0)) end
 		end
 
-		if MoveAny:IsValidFrame(EssentialCooldownViewer) then AddCheckBox(4, "EssentialCooldownViewer", false) end
-		if MoveAny:IsValidFrame(BuffIconCooldownViewer) then AddCheckBox(4, "BuffIconCooldownViewer", false) end
-		if MoveAny:IsValidFrame(BuffBarCooldownViewer) then AddCheckBox(4, "BuffBarCooldownViewer", false) end
-		if MoveAny:IsValidFrame(UtilityCooldownViewer) then AddCheckBox(4, "UtilityCooldownViewer", false) end
-		AddCheckBox(4, "MINIMAPFLAG", false)
-		if MiniMapLFGFrame then AddCheckBox(4, "MINIMAPLFGFRAME", false) end
-		if LFGMinimapFrame then AddCheckBox(4, "LFGMINIMAPFRAME", false) end
+		if MoveAny:IsValidFrame(EssentialCooldownViewer) then AddCheckBox("EssentialCooldownViewer", false) end
+		if MoveAny:IsValidFrame(BuffIconCooldownViewer) then AddCheckBox("BuffIconCooldownViewer", false) end
+		if MoveAny:IsValidFrame(BuffBarCooldownViewer) then AddCheckBox("BuffBarCooldownViewer", false) end
+		if MoveAny:IsValidFrame(UtilityCooldownViewer) then AddCheckBox("UtilityCooldownViewer", false) end
+		AddCheckBox("MINIMAPFLAG", false)
+		if MiniMapLFGFrame then AddCheckBox("MINIMAPLFGFRAME", false) end
+		if LFGMinimapFrame then AddCheckBox("LFGMINIMAPFRAME", false) end
 		if MiniMapTrackingButton then
-			AddCheckBox(4, "MINIMAPTRACKINGBUTTON", false)
+			AddCheckBox("MINIMAPTRACKINGBUTTON", false)
 		elseif MiniMapTracking then
-			AddCheckBox(4, "MINIMAPTRACKING", false)
+			AddCheckBox("MINIMAPTRACKING", false)
 		end
 
-		AddCheckBox(4, "ExpansionLandingPageMinimapButton", false)
-		if MoveAny:IsValidFrame(TotemFrame) then AddCheckBox(4, "TOTEMFRAME", false) end
-		if MoveAny:IsValidFrame(MinimapZoneTextButton) then AddCheckBox(4, "MINIMAPZONETEXT", false) end
-		if PlayerLevelText then AddCheckBox(4, "PLAYERLEVELTEXT", false) end
-		AddCheckBox(4, "ENDCAPS", false)
-		if MainMenuBarTexture0 then AddCheckBox(4, "BLIZZARDACTIONBUTTONSART", false) end
-		AddCheckBox(24, "TARGETFRAMESPELLBAR", false, nil, nil, nil, nil, "TARGETFRAME")
-		if MoveAny:IsValidFrame(FocusFrame) then AddCheckBox(24, "FOCUSFRAMESPELLBAR", false, nil, nil, nil, nil, "FOCUSFRAME") end
-		AddCheckBox(4, "UIWIDGETTOPCENTER", false)
-		AddCheckBox(4, "UIWIDGETBELOWMINIMAP", false)
-		AddCheckBox(4, "MIRRORTIMER1", false)
-		if TimerTracker then AddCheckBox(4, "TIMERTRACKER1", false) end
+		AddCheckBox("ExpansionLandingPageMinimapButton", false)
+		if MoveAny:IsValidFrame(TotemFrame) then AddCheckBox("TOTEMFRAME", false) end
+		if MoveAny:IsValidFrame(MinimapZoneTextButton) then AddCheckBox("MINIMAPZONETEXT", false) end
+		if PlayerLevelText then AddCheckBox("PLAYERLEVELTEXT", false) end
+		AddCheckBox("ENDCAPS", false)
+		if MainMenuBarTexture0 then AddCheckBox("BLIZZARDACTIONBUTTONSART", false) end
+		AddCheckBox("TARGETFRAMESPELLBAR", false, nil, nil, nil, nil, "TARGETFRAME")
+		if MoveAny:IsValidFrame(FocusFrame) then AddCheckBox("FOCUSFRAMESPELLBAR", false, nil, nil, nil, nil, "FOCUSFRAME") end
+		AddCheckBox("UIWIDGETTOPCENTER", false)
+		AddCheckBox("UIWIDGETBELOWMINIMAP", false)
+		AddCheckBox("MIRRORTIMER1", false)
+		if TimerTracker then AddCheckBox("TIMERTRACKER1", false) end
 		if ArenaEnemyFramesContainer then
-			AddCheckBox(4, "ARENAENEMYFRAMESCONTAINER", false)
+			AddCheckBox("ARENAENEMYFRAMESCONTAINER", false)
 		else
 			if Arena_LoadUI then
-				AddCheckBox(4, "ARENAENEMYFRAMES", false)
-				AddCheckBox(4, "ARENAPREPFRAMES", false)
+				AddCheckBox("ARENAENEMYFRAMES", false)
+				AddCheckBox("ARENAPREPFRAMES", false)
 			end
 		end
 
-		if MoveAny:IsValidFrame(CompactArenaFrame) then AddCheckBox(4, "COMPACTARENAFRAME", false) end
-		if MoveAny:IsValidFrame(BattlefieldMapFrame) then AddCheckBox(4, "BATTLEFIELDMAPFRAME", false) end
-		if RolePollPopup then AddCheckBox(4, "ROLEPOLLPOPUP", false) end
-		if ReadyCheckListenerFrame then AddCheckBox(4, "READYCHECKLISTENERFRAME", false) end
-		AddCheckBox(4, "GAMETOOLTIP_ONCURSOR", false)
-		AddCheckBox(4, "GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false)
-		if BossBanner then AddCheckBox(4, "BOSSBANNER", false) end
+		if MoveAny:IsValidFrame(CompactArenaFrame) then AddCheckBox("COMPACTARENAFRAME", false) end
+		if MoveAny:IsValidFrame(BattlefieldMapFrame) then AddCheckBox("BATTLEFIELDMAPFRAME", false) end
+		if RolePollPopup then AddCheckBox("ROLEPOLLPOPUP", false) end
+		if ReadyCheckListenerFrame then AddCheckBox("READYCHECKLISTENERFRAME", false) end
+		AddCheckBox("GAMETOOLTIP_ONCURSOR", false)
+		AddCheckBox("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false)
+		if BossBanner then AddCheckBox("BOSSBANNER", false) end
 		if GroupLootContainer then
-			AddCheckBox(4, "GROUPLOOTCONTAINER", false)
+			AddCheckBox("GROUPLOOTCONTAINER", false)
 		else
-			AddCheckBox(4, "GROUPLOOTFRAME1", false)
+			AddCheckBox("GROUPLOOTFRAME1", false)
 		end
 
-		if BonusRollFrame then AddCheckBox(4, "BONUSROLLFRAME", false) end
-		AddCheckBox(4, "ALERTFRAME", false)
+		if BonusRollFrame then AddCheckBox("BONUSROLLFRAME", false) end
+		AddCheckBox("ALERTFRAME", false)
 		for i = 1, 10 do
-			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "ButtonFrame"] ~= nil then AddCheckBox(4, "CHATBUTTONFRAME" .. i, false) end
+			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "ButtonFrame"] ~= nil then AddCheckBox("CHATBUTTONFRAME" .. i, false) end
 		end
 
-		AddCheckBox(4, "CHATEDITBOX", false, nil, "")
-		AddCheckBox(4, "CHATTAB", false, nil, "")
-		if BNToastFrame then AddCheckBox(4, "BNToastFrame", false) end
-		AddCheckBox(4, "EventToastManagerFrame", false)
-		AddCheckBox(4, "COMPACTRAIDFRAMEMANAGER", false)
-		if TicketStatusFrame then AddCheckBox(4, "TICKETSTATUSFRAME", false) end
-		if TargetFrame and TargetFrameNumericalThreat then AddCheckBox(4, "TargetFrameNumericalThreat", false) end
-		if PlayerFrameBackground then AddCheckBox(4, "PLAYERFRAMEBACKGROUND", false) end
-		if TargetFrameNameBackground then AddCheckBox(4, "TARGETFRAMENAMEBACKGROUND", false) end
+		AddCheckBox("CHATEDITBOX", false, nil, "")
+		AddCheckBox("CHATTAB", false, nil, "")
+		if BNToastFrame then AddCheckBox("BNToastFrame", false) end
+		AddCheckBox("EventToastManagerFrame", false)
+		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
+		if TicketStatusFrame then AddCheckBox("TICKETSTATUSFRAME", false) end
+		if TargetFrame and TargetFrameNumericalThreat then AddCheckBox("TargetFrameNumericalThreat", false) end
+		if PlayerFrameBackground then AddCheckBox("PLAYERFRAMEBACKGROUND", false) end
+		if TargetFrameNameBackground then AddCheckBox("TARGETFRAMENAMEBACKGROUND", false) end
 		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
 			AddCategory("ImproveAny", nil, nil, true)
-			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then AddCheckBox(4, "IASKILLS", true) end
-			AddCheckBox(4, "MONEYBAR", true)
-			AddCheckBox(4, "TOKENBAR", true)
-			AddCheckBox(4, "IAILVLBAR", true)
-			AddCheckBox(4, "IAPingFrame", true)
-			AddCheckBox(4, "IACoordsFrame", true)
+			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then AddCheckBox("IASKILLS", true) end
+			AddCheckBox("MONEYBAR", true)
+			AddCheckBox("TOKENBAR", true)
+			AddCheckBox("IAILVLBAR", true)
+			AddCheckBox("IAPingFrame", true)
+			AddCheckBox("IACoordsFrame", true)
 		end
 
 		if MoveAny:IsAddOnLoaded("!KalielsTracker") then
 			AddCategory("!KalielsTracker", 1, true)
-			AddCheckBox(4, "!KalielsTrackerButtons", false)
+			AddCheckBox("!KalielsTrackerButtons", false)
 		end
 
-		AddCheckBox(4, "DISABLEMOVEMENT", false)
+		AddCheckBox("DISABLEMOVEMENT", false)
+		MALock:ResumeLayout()
 	end
 
-	MALock.Pipette = MoveAny:CreateButton("MALock_Pipette", MALock)
+	MALock.Pipette = MoveAny:CreateButton("MALock_Pipette", MALock.header)
 	MALock.Pipette:SetSize(24, 24)
 	MALock.Pipette:SetText("")
 	MALock.Pipette.texture = MALock.Pipette:CreateTexture()
@@ -975,23 +798,9 @@ function MoveAny:InitMALock()
 		MoveAny:FinderThink()
 	end)
 
-	MALock.Search = CreateFrame("EditBox", "MALock_Search", MALock, "InputBoxTemplate")
-	MALock.Search:SetAutoFocus(false)
-	MALock.Search.f = MALock.Search:CreateFontString(nil, nil, "GameFontNormal")
-	MALock.Search.f:SetText(MoveAny:Trans("LID_SEARCH") .. ":")
-	local searchLen = MALock.Search.f:GetStringWidth() + 10
-	MALock.Pipette:SetPoint("TOPLEFT", MALock, "TOPLEFT", br, -26)
-	MALock.Search:SetPoint("TOPLEFT", MALock, "TOPLEFT", 12 + searchLen + br + 24 + br, -26)
-	MALock.Search:SetPoint("TOPRIGHT", MALock, "TOPRIGHT", -br - 100 - br, 20)
-	MALock.Search:SetSize(sw - 2 * br - br - 100 - searchLen, 24)
-	MALock.Search.f:SetPoint("RIGHT", MALock.Search, "LEFT", -10, 0)
-	MALock.Search:SetScript("OnTextChanged", function(sel, ...)
-		searchStr = MALock.Search:GetText()
-		MoveAny:UpdateElementList()
-	end)
-
-	MALock.Profiles = MoveAny:CreateButton("MALock_Profiles", MALock)
-	MALock.Profiles:SetPoint("TOPRIGHT", MALock, "TOPRIGHT", -br, -26)
+	MALock.Pipette:SetPoint("LEFT", MALock.header, "LEFT", 0, 0)
+	MALock.Profiles = MoveAny:CreateButton("MALock_Profiles", MALock.header)
+	MALock.Profiles:SetPoint("RIGHT", MALock.header, "RIGHT", 0, 0)
 	MALock.Profiles:SetSize(100, 24)
 	MALock.Profiles:SetText(MoveAny:Trans("LID_PROFILES"))
 	MALock.Profiles:SetScript("OnClick", function()
@@ -1001,25 +810,14 @@ function MoveAny:InitMALock()
 		MoveAny:ShowProfiles()
 	end)
 
-	MALock.Profiles:SetResizable(true)
-	MoveAny:After(0, function()
-		MALock.Profiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
-		if MALock.Profiles:GetHeight() > GetScreenHeight() then MALock.Profiles:SetHeight(GetScreenHeight()) end
-	end, "InitMALock 2")
+	MALock.Search = MALock:AddSearch({
+		["leftInset"] = 24 + br,
+		["rightInset"] = 100 + br,
+	})
 
-	MALock.SF = CreateFrame("ScrollFrame", "MALock_SF", MALock, "UIPanelScrollFrameTemplate")
-	MALock.SF:SetPoint("TOPLEFT", MALock, br, -30 - 24)
-	MALock.SF:SetPoint("BOTTOMRIGHT", MALock, -32, 24 + br)
-	MALock.SC = CreateFrame("Frame", "MALock_SC", MALock.SF)
-	MALock.SC:SetSize(400, 400)
-	MALock.SC:SetPoint("TOPLEFT", MALock.SF, "TOPLEFT", 0, 0)
-	MALock.SF:SetScrollChild(MALock.SC)
-	MALock.SF.bg = MALock.SF:CreateTexture("MALock.SF.bg", "ARTWORK")
-	MALock.SF.bg:SetAllPoints(MALock.SF)
-	MALock.SF.bg:SetColorTexture(0.03, 0.03, 0.03, 0.5)
-	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock)
+	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock.footer)
 	MALock.save:SetSize(120, 24)
-	MALock.save:SetPoint("BOTTOMLEFT", MALock, "BOTTOMLEFT", 4, 4)
+	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 0, 0)
 	MALock.save:SetText(SAVE)
 	MALock.save:SetScript("OnClick", function()
 		--MoveAny:TrySaveEditMode()
@@ -1028,9 +826,9 @@ function MoveAny:InitMALock()
 	end)
 
 	MALock.save:Disable()
-	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock)
+	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock.footer)
 	MALock.reload:SetSize(120, 24)
-	MALock.reload:SetPoint("BOTTOMLEFT", MALock, "BOTTOMLEFT", 4 + 120 + 4, 4)
+	MALock.reload:SetPoint("LEFT", MALock.save, "RIGHT", 4, 0)
 	MALock.reload:SetText(RELOADUI or "RELOADUI")
 	MALock.reload:SetScript("OnClick", function()
 		if C_UI then
@@ -1040,11 +838,12 @@ function MoveAny:InitMALock()
 		end
 	end)
 
-	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock, "InputBoxTemplate")
+	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock.footer, "InputBoxTemplate")
 	MALock.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 	MALock.DISCORD:SetSize(160, 24)
-	MALock.DISCORD:SetPoint("BOTTOMRIGHT", MALock, "BOTTOMRIGHT", -4 - 20, 4)
+	MALock.DISCORD:SetPoint("RIGHT", MALock.footer, "RIGHT", 0, 0)
 	MALock.DISCORD:SetAutoFocus(false)
+	BuildElementList()
 	local finder = CreateFrame("Frame", "MoveAny_finder", UIParent)
 	local hovers = {}
 	for i = 1, 6 do

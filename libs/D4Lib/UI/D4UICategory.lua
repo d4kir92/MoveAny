@@ -20,16 +20,32 @@ function UI.WindowMixin:AddCategory(tab)
     local highlight = header:CreateTexture(nil, "HIGHLIGHT")
     highlight:SetAllPoints(header)
     UI:SetSolidColor(highlight, 1, 1, 1, 0.1)
-    if tab.sub and win.rootCategory then
-        win.category = win.rootCategory
-    else
-        win.category = nil
+    local level = tab.level
+    if level == nil then
+        level = 1
+        if tab.sub then level = 2 end
     end
 
-    local element = UI:Add(win, header, UI.ROW, text, true)
+    if level < 1 then level = 1 end
+    win.categoryStack = win.categoryStack or {}
+    win.category = nil
+    local parentLevel = level - 1
+    while parentLevel >= 1 and win.categoryStack[parentLevel] == nil do
+        parentLevel = parentLevel - 1
+    end
+
+    if parentLevel >= 1 then win.category = win.categoryStack[parentLevel] end
+    local element = UI:Add(win, header, UI.ROW, text, true, tab.search)
     element.isCategory = true
+    element.level = level
     element.collapsed = tab.collapsed == true
-    if element.category == nil then win.rootCategory = element end
+    win.categoryStack[level] = element
+    local deeper = level + 1
+    while win.categoryStack[deeper] do
+        win.categoryStack[deeper] = nil
+        deeper = deeper + 1
+    end
+
     win.category = element
     local function UpdateIcon()
         if element.collapsed then

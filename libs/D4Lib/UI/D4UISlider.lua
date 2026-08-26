@@ -67,7 +67,7 @@ function UI.WindowMixin:AddSlider(tab)
     label:SetText(FormatText(text, value))
     holder.slider = slider
     holder.Label = label
-    UI:Add(win, holder, HEIGHT, text, true)
+    UI:Add(win, holder, HEIGHT, text, true, tab.search)
 
     return holder
 end

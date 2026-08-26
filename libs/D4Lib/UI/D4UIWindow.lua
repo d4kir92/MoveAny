@@ -3,8 +3,12 @@ local UI = D4.UI
 local windows = 0
 local TOP_INSET = 32
 local BOTTOM_INSET = 4
-local SIDE_INSET = 18
+local LEFT_INSET = 4
+local RIGHT_INSET = 18
 local GRIP_INSET = 24
+local HEADER_LIFT = 5
+local HEADER_GROW = 5
+local FOOTER_TRIM = 3
 
 local function FindInset(win)
     if win.InsetBg then return win.InsetBg end
@@ -71,18 +75,19 @@ end
 function UI.WindowMixin:UpdateBodyLayout()
     local topExtra = 0
     local bottomExtra = 0
-    if self.headerHeight > 0 then topExtra = self.headerHeight + UI.SPACING end
-    if self.footerHeight > 0 then bottomExtra = self.footerHeight + UI.SPACING end
+    local headerTop = TOP_INSET - HEADER_LIFT - HEADER_GROW / 2
+    if self.headerHeight > 0 then topExtra = headerTop + self.headerHeight + HEADER_GROW + UI.SPACING - TOP_INSET end
+    if self.footerHeight > 0 then bottomExtra = self.footerHeight + UI.SPACING - FOOTER_TRIM end
     if self.header then
         self.header:ClearAllPoints()
-        self.header:SetPoint("TOPLEFT", self, "TOPLEFT", SIDE_INSET, -TOP_INSET)
-        self.header:SetPoint("TOPRIGHT", self, "TOPRIGHT", -SIDE_INSET, -TOP_INSET)
-        self.header:SetHeight(self.headerHeight)
+        self.header:SetPoint("TOPLEFT", self, "TOPLEFT", LEFT_INSET, -headerTop)
+        self.header:SetPoint("TOPRIGHT", self, "TOPRIGHT", -RIGHT_INSET, -headerTop)
+        self.header:SetHeight(self.headerHeight + HEADER_GROW)
     end
 
     if self.footer then
         self.footer:ClearAllPoints()
-        self.footer:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", SIDE_INSET, BOTTOM_INSET)
+        self.footer:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", LEFT_INSET, BOTTOM_INSET)
         self.footer:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -GRIP_INSET, BOTTOM_INSET)
         self.footer:SetHeight(self.footerHeight)
     end
@@ -127,7 +132,7 @@ local function CreateModernScroll(win, name)
     win.scrollInset = {
         ["left"] = 12,
         ["right"] = -28,
-        ["bottom"] = 22
+        ["bottom"] = 7
     }
 
     win:UpdateBodyLayout()
@@ -150,10 +155,13 @@ local function MakeResizable(win, name, tab)
     win:SetResizable(true)
     local minWidth = tab.minWidth or 300
     local minHeight = tab.minHeight or 200
+    local maxWidth = tab.maxWidth or 0
+    local maxHeight = tab.maxHeight or 0
     if win.SetResizeBounds then
-        win:SetResizeBounds(minWidth, minHeight)
+        win:SetResizeBounds(minWidth, minHeight, maxWidth, maxHeight)
     elseif win.SetMinResize then
         win:SetMinResize(minWidth, minHeight)
+        if maxWidth > 0 and maxHeight > 0 and win.SetMaxResize then win:SetMaxResize(maxWidth, maxHeight) end
     end
 
     local grip = CreateFrame("Button", name .. "Resize", win)
@@ -220,9 +228,19 @@ function D4:CreateUIWindow(tab)
     win:EnableMouse(true)
     win:RegisterForDrag("LeftButton")
     win:SetScript("OnDragStart", win.StartMoving)
-    win:SetScript("OnDragStop", win.StopMovingOrSizing)
+    win:SetScript(
+        "OnDragStop",
+        function(sel)
+            sel:StopMovingOrSizing()
+            if tab.onMove == nil then return end
+            local p1, _, p3, p4, p5 = sel:GetPoint()
+            tab.onMove(p1, p3, p4, p5)
+        end
+    )
+
     D4:SetClampedToScreen(win, true)
     if win.TitleText then win.TitleText:SetText(UI:Text(tab.title)) end
+    if tab.onClose and win.CloseButton then win.CloseButton:SetScript("OnClick", function() tab.onClose(win) end) end
     UI:ApplyWindow(win)
     win.headerHeight = 0
     win.footerHeight = 0
@@ -237,8 +255,9 @@ function D4:CreateUIWindow(tab)
     win.count = 0
     win.search = nil
     win.category = nil
-    win.rootCategory = nil
+    win.categoryStack = {}
     win.searching = false
+    win.layoutSuspended = false
     if tab.resizable ~= false then MakeResizable(win, name, tab) end
     win:HookScript("OnHide", function() UI:CloseDropdowns() end)
     win:Hide()

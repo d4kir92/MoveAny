@@ -65,21 +65,24 @@ win:Show()
 added afterwards belongs to it, is indented, and is hidden while the category is
 collapsed. Clicking the header toggles it. Pass `collapsed = true` to start closed.
 
-Pass `sub = true` for a sub-category: it attaches to the last top-level category
-instead of starting a new one, and its own elements are indented one step further.
-Collapsing the parent hides the sub-category and everything under it.
+Pass `level = n` to nest: `level = 1` is top-level, `level = n` attaches to the most
+recent category at `level = n - 1`, and its own elements are indented one step further.
+Collapsing a category hides everything under it, however deep. Nesting is not capped —
+but every step costs `UI.INDENT` of usable width, so three or four levels is the
+practical limit.
+
+`sub = true` is the shorthand for `level = 2`.
 
 ```lua
 win:AddCategory({label = "LID_FLAG"})
-win:AddCategory({label = "LID_GROUP", sub = true})
+win:AddCategory({label = "LID_GROUP", level = 2})
 win:AddCheckbox({label = "LID_SHOWFLAG", ...})
-win:AddCategory({label = "LID_RAID", sub = true})
+win:AddCategory({label = "LID_RAID", level = 3})
 win:AddCheckbox({label = "LID_SHOWFLAG", ...})
 win:AddCategory({label = "LID_ITEMLEVEL"})
 ```
 
-Nesting is one level deep by design; a `sub` category always hangs off the most
-recent top-level one, never off another sub-category.
+A `level` that skips a step falls back to the nearest existing shallower category.
 
 ## Search
 
@@ -89,9 +92,11 @@ below it scrolls, and it sits outside the inset.
 
 It filters every element that is added **after** it. Elements added before the
 search box are never filtered, which is the place for things that must always stay
-visible. Matching is case-insensitive against the translated label.
+visible. Matching is case-insensitive against the translated label and against the
+element's `search` string, so an internal key stays findable in every locale.
 
-Options: `label` (defaults to `LID_SEARCH`), `maxLetters`.
+Options: `label` (defaults to `LID_SEARCH`), `maxLetters`, `leftInset`, `rightInset`.
+The insets reserve room at either end of the header for buttons of your own.
 
 Search and categories combine: a category is shown when its own label matches or
 any of its children match, a category whose own label matches pulls in all of its
@@ -104,20 +109,43 @@ All `Add*` calls take one options table and return the created frame. Search box
 category header, slider and dropdown stretch to the window width; the checkbox
 does not, because it is a fixed box with a label next to it.
 
-- `AddCheckbox`: `label`, `value`, `func(value)`
+Every `Add*` also takes `search`: an extra string the search box matches against,
+on top of the translated label.
+
+- `AddCheckbox`: `label`, `value`, `func(value, cb)`, `textFunc(cb)`, `onClick(button, cb)`.
+  `textFunc` replaces `label` and is re-evaluated by `cb:UpdateLabel()`, which also
+  refreshes what the search matches — use it for labels that change at runtime.
+  `onClick` adds an invisible click surface spanning the rest of the row next to the
+  box; it receives the mouse button, so left and right click can do different things.
+  `cb:SetEnabled(false)` greys out the box and that surface together.
 - `AddSlider`: `label`, `value`, `min`, `max`, `step`, `decimals`, `func(value)`.
   If the translated label contains a format placeholder (`%s`, `%.2f`), the value is
   inserted there; otherwise it is appended as `label: value`.
-- `AddDropdown`: `label`, `value`, `width`, `choices`, `func(value)`.
-  `choices` is an ordered array of `{value = ..., label = "LID_..."}`.
+- `AddDropdown`: `label`, `value`, `width`, `choices`, `maxVisible`, `func(value)`.
+  `choices` is an ordered array of `{value = ..., label = "LID_..."}`;
+  `UI:ChoicesFromMap(map, current)` builds one from a sparse `value → label` table,
+  sorted, with `current` appended if the map does not contain it.
   The returned frame has `holder:SetValue(value)` to change the selection without
-  firing `func`.
+  firing `func`, and `holder.control` is the widget itself.
+
+  Where the client has `SettingsDropdownWithButtonsTemplate` (retail), the dropdown is
+  Blizzard's own control from the options panel: a menu button flanked by a left and a
+  right stepper that walk `choices` in order and grey out at either end. `width` sizes
+  the menu button; the steppers add 70px next to it.
+
+  Everywhere else it falls back to a self-drawn list — the same values and the same
+  `func`, just a plain list opened by one button. Lists longer than `maxVisible`
+  (12 by default) scroll there instead of growing off-screen.
 
 ## Window
 
 `D4:CreateUIWindow` options: `name`, `title`, `width`, `height`, `parent`, `pTab`,
-`templates`, `resizable`, `minWidth`, `minHeight`, `onResize`. The window is movable,
-scrollable and starts hidden. `win:Toggle()` shows or hides it.
+`templates`, `resizable`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`, `onResize`,
+`onMove(point, relativePoint, x, y)`, `onClose(win)`. The window is movable, scrollable
+and starts hidden. `win:Toggle()` shows or hides it.
+
+Building a long list one `Add*` at a time re-lays out the whole window every time.
+Wrap the build in `win:SuspendLayout()` / `win:ResumeLayout()` to do it once at the end.
 
 ## Resizing
 
@@ -138,6 +166,11 @@ they are plain frames, the module only positions and sizes them.
 
 Both shrink the scroll area and the inset accordingly, so the sunken panel always
 frames only the scrollable part. Calling them again just changes the height.
+
+`height` describes the content row, not the frame: the header is drawn a few pixels
+taller than asked and lifted by half of that, so the extra room is split evenly above
+and below and anything anchored `LEFT`/`RIGHT` (i.e. vertically centred) stays put
+whatever that padding is.
 
 The footer keeps 24px clear on the right so it never sits under the resize grip.
 

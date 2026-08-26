@@ -2,7 +2,7 @@ local _, D4 = ...
 D4.UI = D4.UI or {}
 local UI = D4.UI
 UI.PADDING = 4
-UI.SPACING = 10
+UI.SPACING = 5
 UI.ROW = 24
 UI.INDENT = 16
 UI.WindowMixin = {}
@@ -33,11 +33,12 @@ function UI:ApplyWindow(win)
     end
 end
 
-function UI:Add(win, frame, height, label, stretch)
+function UI:Add(win, frame, height, label, stretch, search)
     local element = {
         ["frame"] = frame,
         ["height"] = height or UI.ROW,
         ["label"] = string.lower(label or ""),
+        ["keywords"] = string.lower(search or ""),
         ["filter"] = win.search ~= nil,
         ["stretch"] = stretch == true,
         ["category"] = win.category,
@@ -55,6 +56,43 @@ function UI:Add(win, frame, height, label, stretch)
     win:Layout()
 
     return element
+end
+
+function UI:SetLabel(element, text)
+    if element == nil then return end
+    element.label = string.lower(text or "")
+end
+
+function UI:ChoicesFromMap(map, current)
+    local values = {}
+    local seen = {}
+    for value in pairs(map or {}) do
+        tinsert(values, value)
+        seen[value] = true
+    end
+
+    if current ~= nil and not seen[current] then tinsert(values, current) end
+    table.sort(
+        values,
+        function(a, b)
+            if type(a) == type(b) then return a < b end
+
+            return tostring(a) < tostring(b)
+        end
+    )
+
+    local choices = {}
+    for _, value in ipairs(values) do
+        tinsert(
+            choices,
+            {
+                ["value"] = value,
+                ["label"] = (map and map[value]) or tostring(value)
+            }
+        )
+    end
+
+    return choices
 end
 
 function UI:CloseDropdowns()
@@ -86,7 +124,17 @@ function UI.WindowMixin:IsElementVisible(element)
     return true
 end
 
+function UI.WindowMixin:SuspendLayout()
+    self.layoutSuspended = true
+end
+
+function UI.WindowMixin:ResumeLayout()
+    self.layoutSuspended = false
+    self:Layout()
+end
+
 function UI.WindowMixin:Layout()
+    if self.layoutSuspended then return end
     local y = -UI.PADDING
     for _, element in ipairs(self.elements) do
         if self:IsElementVisible(element) then
@@ -119,6 +167,7 @@ function UI.WindowMixin:Filter(text)
     for _, element in ipairs(self.elements) do
         if element.filter and self.searching then
             element.selfMatch = string.find(element.label, text, 1, true) ~= nil
+            if not element.selfMatch and element.keywords ~= "" then element.selfMatch = string.find(element.keywords, text, 1, true) ~= nil end
         else
             element.selfMatch = true
         end
