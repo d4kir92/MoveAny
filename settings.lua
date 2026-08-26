@@ -291,17 +291,14 @@ function MoveAny:GetLastSelected()
 	return lastSelected
 end
 
-local function AddCategory(key, layer, hud, noTranslate)
+local function AddCategory(key, layer, hud)
 	if layer == nil then layer = 1 end
-	local label = key
-	if noTranslate == nil or noTranslate == false then
-		label = MoveAny:Trans("LID_" .. key)
-		if hud then label = label .. " (" .. MoveAny:Trans("LID_MOVEANYINFO") .. ")" end
-	end
-
+	local label = MoveAny:Trans("LID_" .. key)
+	if hud then label = label .. " (" .. MoveAny:Trans("LID_MOVEANYINFO") .. ")" end
 	cas[key] = MALock:AddCategory({
 		["label"] = label,
 		["level"] = layer,
+		["key"] = key,
 		["search"] = key,
 	})
 	return cas[key]
@@ -499,6 +496,8 @@ function MoveAny:InitMALock()
 		["maxHeight"] = GetScreenHeight(),
 		["title"] = format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()),
 		["onMove"] = function(p1, p3, p4, p5) MoveAny:SetElePoint("MALock", p1, nil, p3, MoveAny:Snap(p4), MoveAny:Snap(p5)) end,
+		["getCollapsed"] = function(key) return MoveAny:GetCollapsed(key) end,
+		["setCollapsed"] = function(key, collapsed) MoveAny:SetCollapsed(key, collapsed) end,
 		["onClose"] = function()
 			MoveAny:ToggleMALock()
 			if needReload then
@@ -601,7 +600,7 @@ function MoveAny:InitMALock()
 		if MoveAny:IsValidFrame(SpellActivationOverlayFrame) then AddCheckBox("SPELLACTIVATIONOVERLAYFRAME", false) end
 		if MoveAny:IsValidFrame(LossOfControlFrame) then AddCheckBox("LOSSOFCONTROLFRAME", false) end
 		if MoveAny:IsValidFrame(GhostFrame) then AddCheckBox("GHOSTFRAME", false) end
-		AddCategory("Actionbars", 2, nil, true)
+		AddCategory("CATACTIONBARS", 2)
 		if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 			AddCheckBox("ACTIONBARS", false)
 			AddCheckBox("ACTIONBAR3", false)
@@ -667,10 +666,10 @@ function MoveAny:InitMALock()
 			end
 		end
 
-		AddCategory("Party / Raid", 3, nil, true)
+		AddCategory("CATPARTYRAID", 3)
 		if PartyFrame or PartyMemberFrame1 then AddCheckBox("PARTYFRAME", false, nil, nil, "ShowPartyFrames") end
 		if CompactRaidFrameContainer then AddCheckBox("COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames") end
-		AddCategory("Chat", 2, nil, true)
+		AddCategory("CATCHAT", 2)
 		for i = 1, 10 do
 			if _G["ChatFrame" .. i] and _G["ChatFrame" .. i .. "Tab"] and MoveAny:GetParent(_G["ChatFrame" .. i .. "Tab"]) ~= GeneralDockManager or i == 1 then AddCheckBox("CHAT", false, nil, i) end
 		end
@@ -680,11 +679,11 @@ function MoveAny:InitMALock()
 		end
 
 		AddCheckBox("CHATEDITBOX", false, nil, "")
-		AddCategory("Quest", 2, nil, true)
+		AddCategory("CATQUEST", 2)
 		AddCheckBox("QUESTTRACKER", false)
 		AddCheckBox("QUESTITEMSANCHOR", false)
 		if QuestTimerFrame then AddCheckBox("QUESTTIMERFRAME", false) end
-		AddCategory("Widgets", 2, nil, true)
+		AddCategory("CATWIDGETS", 2)
 		AddCheckBox("UIWIDGETTOPCENTER", false)
 		AddCheckBox("UIWIDGETBELOWMINIMAP", false)
 		if MoveAny:IsValidFrame(PlayerPowerBarAlt) or MoveAny:IsValidFrame(PlayerPowerBarAltCounterBar) or MoveAny:IsValidFrame(BuffTimer1) then AddCheckBox("POWERBAR", false) end
@@ -771,7 +770,7 @@ function MoveAny:InitMALock()
 		AddCheckBox("EventToastManagerFrame", false)
 		if TicketStatusFrame then AddCheckBox("TICKETSTATUSFRAME", false) end
 		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
-			AddCategory("ImproveAny", nil, nil, true)
+			AddCategory("ImproveAny")
 			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then AddCheckBox("IASKILLS", true) end
 			AddCheckBox("MONEYBAR", true)
 			AddCheckBox("TOKENBAR", true)
@@ -1767,7 +1766,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.10.0")
+	MoveAny:SetVersion(135994, "1.10.1")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

@@ -84,6 +84,25 @@ win:AddCategory({label = "LID_ITEMLEVEL"})
 
 A `level` that skips a step falls back to the nearest existing shallower category.
 
+### Remembering the collapsed state
+
+The module keeps the open/closed state in memory only. To persist it, give the
+window a pair of callbacks and every category a stable `key`:
+
+```lua
+local win = D4:CreateUIWindow({
+    ["getCollapsed"] = function(key) return MyAddon:GetCollapsed(key) end,
+    ["setCollapsed"] = function(key, collapsed) MyAddon:SetCollapsed(key, collapsed) end,
+})
+```
+
+`getCollapsed` is asked once while the category is being created; anything other
+than `nil` overrides `collapsed`, so a stored value wins over the default while an
+unknown key keeps it. `setCollapsed` is called on every click with the new state.
+
+`key` falls back to `search`, and to the translated label if there is no `search`
+either — pass it explicitly so the stored state survives a language change.
+
 ## Search
 
 `win:AddSearch()` puts a search box into the header, creating the header if there is
@@ -141,7 +160,8 @@ on top of the translated label.
 
 `D4:CreateUIWindow` options: `name`, `title`, `width`, `height`, `parent`, `pTab`,
 `templates`, `resizable`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`, `onResize`,
-`onMove(point, relativePoint, x, y)`, `onClose(win)`. The window is movable, scrollable
+`onMove(point, relativePoint, x, y)`, `onClose(win)`, `getCollapsed(key)`,
+`setCollapsed(key, collapsed)`. The window is movable, scrollable
 and starts hidden. `win:Toggle()` shows or hides it.
 
 Building a long list one `Add*` at a time re-lays out the whole window every time.

@@ -258,6 +258,8 @@ function D4:CreateUIWindow(tab)
     win.categoryStack = {}
     win.searching = false
     win.layoutSuspended = false
+    win.getCollapsed = tab.getCollapsed
+    win.setCollapsed = tab.setCollapsed
     if tab.resizable ~= false then MakeResizable(win, name, tab) end
     win:HookScript("OnHide", function() UI:CloseDropdowns() end)
     win:Hide()

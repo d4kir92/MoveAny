@@ -38,7 +38,13 @@ function UI.WindowMixin:AddCategory(tab)
     local element = UI:Add(win, header, UI.ROW, text, true, tab.search)
     element.isCategory = true
     element.level = level
+    element.key = tab.key or tab.search or text
     element.collapsed = tab.collapsed == true
+    if win.getCollapsed then
+        local stored = win.getCollapsed(element.key)
+        if stored ~= nil then element.collapsed = stored == true end
+    end
+
     win.categoryStack[level] = element
     local deeper = level + 1
     while win.categoryStack[deeper] do
@@ -59,6 +65,7 @@ function UI.WindowMixin:AddCategory(tab)
         "OnClick",
         function()
             element.collapsed = not element.collapsed
+            if win.setCollapsed then win.setCollapsed(element.key, element.collapsed) end
             UpdateIcon()
             win:Layout()
         end

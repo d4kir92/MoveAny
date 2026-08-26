@@ -216,6 +216,28 @@ function MoveAny:GetTab()
 	return MATAB["PROFILES"][MoveAny:GetCP()]
 end
 
+function MoveAny:GetCollapsed(key)
+	if key == nil then return nil end
+	MoveAny:CheckDB("GetCollapsed")
+	local tab = MoveAny:GetTab()
+	if tab == nil then return nil end
+	if tab["COLLAPSED"] == nil then return nil end
+	return tab["COLLAPSED"][key]
+end
+
+function MoveAny:SetCollapsed(key, val)
+	if key == nil then return end
+	MoveAny:CheckDB("SetCollapsed")
+	local tab = MoveAny:GetTab()
+	if tab == nil then return end
+	tab["COLLAPSED"] = tab["COLLAPSED"] or {}
+	if val then
+		tab["COLLAPSED"][key] = true
+	else
+		tab["COLLAPSED"][key] = nil
+	end
+end
+
 function MoveAny:MAGV(key, val)
 	MoveAny:CheckDB("MAGV")
 	if MATAB[key] ~= nil then return MATAB[key] end
