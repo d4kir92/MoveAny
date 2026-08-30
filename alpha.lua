@@ -32,6 +32,7 @@ enumAlpha.AURA = "AURA"
 enumAlpha.VEHICLE = "VEHICLE"
 enumAlpha.PETBATTLE = "PETBATTLE"
 enumAlpha.BONUSBAR = "BONUSBAR"
+enumAlpha.ZONE = "ZONE"
 enumAlpha.OLD = "OLD"
 function MoveAny:GetEnumAlpha()
     return enumAlpha
@@ -97,6 +98,14 @@ function MoveAny:SetEleAlpha(ele, alpha)
     if ele and eleAlphaCache[ele] ~= alpha then
         eleAlphaCache[ele] = alpha
         ele:SetAlpha(alpha)
+    end
+end
+
+function MoveAny:InvalidateEleAlphaCache(ele)
+    if ele then
+        eleAlphaCache[ele] = nil
+    else
+        wipe(eleAlphaCache)
     end
 end
 
@@ -265,6 +274,27 @@ function MoveAny:InitAlphaPetBattle()
     MoveAny:OnEvent(alphaFramePetBattle, function(sel, event, ...) MoveAny:UpdateAlphaPetBattle() end, "alphaFramePetBattle")
 end
 
+function MoveAny:UpdateAlphaZone()
+    MoveAny:InvalidateEleAlphaCache()
+    MoveAny:UpdateAlphaCombat(InCombatLockdown())
+    MoveAny:UpdateAlphaResting()
+    if MoveAny:GetWoWBuildNr() < 120000 then MoveAny:UpdateAlphaFullHealth() end
+    MoveAny:UpdateAlphaBonusBar()
+    MoveAny:UpdateAlphaAura()
+    MoveAny:UpdateAlphaVehicle()
+    MoveAny:UpdateAlphaPetBattle()
+    MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().ZONE)
+end
+
+function MoveAny:InitAlphaZone()
+    local alphaFrameZone = CreateFrame("Frame")
+    MoveAny:RegisterEvent(alphaFrameZone, "PLAYER_ENTERING_WORLD")
+    MoveAny:OnEvent(alphaFrameZone, function(sel, event, ...)
+        MoveAny:UpdateAlphaZone()
+        MoveAny:After(0.5, function() MoveAny:UpdateAlphaZone() end, "alphaFrameZone")
+    end, "alphaFrameZone")
+end
+
 function MoveAny:InitAlphas()
     MoveAny:InitAlphaCombat()
     MoveAny:InitAlphaResting()
@@ -273,6 +303,7 @@ function MoveAny:InitAlphas()
     MoveAny:InitAlphaAura()
     MoveAny:InitAlphaVehicle()
     MoveAny:InitAlphaPetBattle()
+    MoveAny:InitAlphaZone()
     dufloaded = MoveAny:IsAddOnLoaded("DUnitFrames")
     alphasReady = true
     MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().INIT)

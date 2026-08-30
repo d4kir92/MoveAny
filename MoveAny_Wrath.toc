@@ -1,5 +1,5 @@
 ## Interface: 30403
-## Version: 1.10.1
+## Version: 1.10.2
 ## Title: MoveAny |T135994:16:16:0:0|t by |cff55d2ffD4KiR |T132115:16:16:0:0|t
 ## Notes: MoveAny is an add-on that lets you unlock and move user interface elements
 ## Notes-deDE: MoveAny ist ein Add-on, mit dem Sie Elemente der Benutzeroberfläche entsperren und verschieben können
