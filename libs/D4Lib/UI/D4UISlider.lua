@@ -52,6 +52,10 @@ function UI.WindowMixin:AddSlider(tab)
     high:SetText(vmax)
     D4:SetFontSize(low, 10, "THINOUTLINE")
     D4:SetFontSize(high, 10, "THINOUTLINE")
+    slider:SetValue(value)
+    value = tonumber(string.format("%." .. decimals .. "f", slider:GetValue()))
+    holder.value = value
+    label:SetText(FormatText(text, value))
     slider:SetScript(
         "OnValueChanged",
         function(sel, newValue)
@@ -62,9 +66,6 @@ function UI.WindowMixin:AddSlider(tab)
         end
     )
 
-    slider:SetValue(value)
-    holder.value = value
-    label:SetText(FormatText(text, value))
     holder.slider = slider
     holder.Label = label
     UI:Add(win, holder, HEIGHT, text, true, tab.search)

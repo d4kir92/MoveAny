@@ -10,5 +10,7 @@
 <Script file="D4UICheckbox.lua"/>
 <Script file="D4UISlider.lua"/>
 <Script file="D4UIDropdown.lua"/>
+<Script file="D4UIEditbox.lua"/>
+<Script file="D4UIColorPicker.lua"/>
 
 </Ui>

@@ -15,6 +15,8 @@ so any string starting with `LID_` is translated and any other string is used as
 | `D4UICheckbox.lua` | `win:AddCheckbox` |
 | `D4UISlider.lua` | `win:AddSlider` |
 | `D4UIDropdown.lua` | `win:AddDropdown` |
+| `D4UIEditbox.lua` | `win:AddEditbox` |
+| `D4UIColorPicker.lua` | `win:AddColorPicker` |
 
 ## Usage
 
@@ -54,6 +56,18 @@ win:AddDropdown({
         {value = "BOTTOMRIGHT", label = "LID_BOTTOMRIGHT"},
     },
     func = function(value) MyAddonDB.flagPoint = value end,
+})
+
+win:AddEditbox({
+    label = "LID_BLOCKWORDS",
+    value = MyAddonDB.blockWords,
+    func = function(value) MyAddonDB.blockWords = value end,
+})
+
+win:AddColorPicker({
+    label = "LID_BORDERCOLOR",
+    value = {r = 0, g = 0, b = 0, a = 0.4},
+    func = function(r, g, b, a) MyAddon:SetBorderColor(r, g, b, a) end,
 })
 
 win:Show()
@@ -140,6 +154,10 @@ on top of the translated label.
 - `AddSlider`: `label`, `value`, `min`, `max`, `step`, `decimals`, `func(value)`.
   If the translated label contains a format placeholder (`%s`, `%.2f`), the value is
   inserted there; otherwise it is appended as `label: value`.
+  The starting value is set before the change handler is installed, so `func` does not
+  fire while the window is being built — it is safe to call into frames that do not
+  exist yet at that point. `holder.value` holds the value the slider actually took,
+  after clamping to `min`/`max` and rounding to `decimals`.
 - `AddDropdown`: `label`, `value`, `width`, `choices`, `maxVisible`, `func(value)`.
   `choices` is an ordered array of `{value = ..., label = "LID_..."}`;
   `UI:ChoicesFromMap(map, current)` builds one from a sparse `value → label` table,
@@ -155,6 +173,27 @@ on top of the translated label.
   Everywhere else it falls back to a self-drawn list — the same values and the same
   `func`, just a plain list opened by one button. Lists longer than `maxVisible`
   (12 by default) scroll there instead of growing off-screen.
+- `AddEditbox`: `label`, `value`, `func(value, box)`, `maxLetters`, `numeric`.
+  The label sits above the box, the box stretches to the window width.
+  `func` fires on every actual change of the text, not on every keystroke that leaves
+  it unchanged — debounce it yourself if the change is expensive. `maxLetters` defaults
+  to 0 (unlimited), `numeric = true` restricts input to digits.
+  Escape restores the last value and drops focus, Enter just drops focus.
+  The returned frame has `holder:SetValue(value)` to set the text without firing `func`,
+  `holder.value` is the current text and `holder.control` is the edit box itself.
+- `AddColorPicker`: `label`, `value`, `hasOpacity`, `func(r, g, b, a)`.
+  A colour swatch button on the left, the label right next to it — the swatch is built
+  like Blizzard's `ColorSwatchTemplate`: a white outer square, a black inner border and
+  the colour itself in the middle, drawn with its alpha so a translucent colour reads
+  darker than an opaque one.
+  `value` is a table and accepts `r`/`g`/`b`/`a`, `R`/`G`/`B`/`A` or `[1]`..`[4]`;
+  missing channels default to 1. Clicking opens `ColorPickerFrame` through
+  `D4:ShowColorPicker`, and `func` fires on every change the picker reports, already
+  corrected for the inverted opacity slider on non-retail clients.
+  `hasOpacity = false` pins alpha to 1 and ignores whatever the picker returns for it.
+  The returned frame has `holder:SetValue(r, g, b, a)` to change the colour without
+  firing `func`, `holder.r` / `holder.g` / `holder.b` / `holder.a` are the current
+  channels and `holder.control` is the swatch button itself.
 
 ## Window
 
