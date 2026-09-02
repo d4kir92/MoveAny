@@ -4155,17 +4155,6 @@ function MoveAny:LoadAddon()
 				["name"] = "ExpansionLandingPageMinimapButton",
 				["lstr"] = "LID_ExpansionLandingPageMinimapButton",
 			})
-
-			if MoveAny:GetEleOption("ExpansionLandingPageMinimapButton", "Hide", false, "Hide3") then
-				local function HideELPMB(sel)
-					if not MoveAny:CanModify(sel) then return end
-					sel:Hide()
-				end
-
-				HideELPMB(ExpansionLandingPageMinimapButton)
-				hooksecurefunc(ExpansionLandingPageMinimapButton, "Show", HideELPMB)
-				hooksecurefunc(ExpansionLandingPageMinimapButton, "SetShown", HideELPMB)
-			end
 		else
 			C_Timer.After(1, function() if ExpansionLandingPageMinimapButton then MoveAny:InitMinimapDrag(ExpansionLandingPageMinimapButton, "ExpansionLandingPageMinimapButton", -4, true) end end)
 		end

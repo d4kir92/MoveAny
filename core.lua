@@ -30,6 +30,7 @@ local sethidden = {}
 local sethiddenSetup = {}
 local sethiddenParent = {}
 local oldsethiddenparent = {}
+local oldsethiddenshown = {}
 local createFrameHookRegistered = false
 local function onCreateFrameHideCheck(_, _, parent)
 	if parent == nil then return end
@@ -61,6 +62,15 @@ function MoveAny:HideFrame(frame)
 				sel:SetParent(MoveAny:GetHidden())
 				setparent = false
 			end)
+
+			local function HideAgain(sel)
+				if sethidden[sel] == nil then return end
+				if not MoveAny:CanModify(sel) then return end
+				sel:Hide()
+			end
+
+			hooksecurefunc(frame, "Show", HideAgain)
+			if frame.SetShown then hooksecurefunc(frame, "SetShown", HideAgain) end
 		else
 			local setalpha = false
 			hooksecurefunc(frame, "SetAlpha", function(sel, alpha)
@@ -103,6 +113,10 @@ function MoveAny:HideFrame(frame)
 	end
 
 	frame:SetAlpha(0)
+	if sethiddenParent[frame] and MoveAny:CanModify(frame) then
+		if oldsethiddenshown[frame] == nil then oldsethiddenshown[frame] = frame:IsShown() end
+		frame:Hide()
+	end
 end
 
 function MoveAny:ShowFrame(frame)
@@ -113,6 +127,9 @@ function MoveAny:ShowFrame(frame)
 			frame:SetParent(oldsethiddenparent[frame])
 			oldsethiddenparent[frame] = nil
 		end)
+
+		if oldsethiddenshown[frame] and MoveAny:CanModify(frame) then frame:Show() end
+		oldsethiddenshown[frame] = nil
 	else
 		frame:SetAlpha(1)
 		if not InCombatLockdown() then
