@@ -354,6 +354,20 @@ function MoveAny:MenuOptions(opt, frame)
 				end
 			end)
 
+			local clickthrough, lockparent
+			local function UpdateHideDeps(hidden)
+				for _, cb in pairs({clickthrough, lockparent}) do
+					cb:SetEnabled(not hidden)
+					if cb.text then
+						if hidden then
+							cb.text:SetTextColor(0.5, 0.5, 0.5)
+						else
+							cb.text:SetTextColor(1, 0.82, 0)
+						end
+					end
+				end
+			end
+
 			local hide = MoveAny:CreateCheckButton("hide", content)
 			hide:SetSize(btnsize, btnsize)
 			hide:SetHitRectInsets(0, 0, 0, 0)
@@ -380,13 +394,15 @@ function MoveAny:MenuOptions(opt, frame)
 						dragf.t:SetVertexColor(MoveAny:GetColor("el"))
 					end
 				end
+
+				UpdateHideDeps(checked)
 			end)
 
 			hide.text = hide:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
 			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
 			hide.text:SetText(_G["HIDE"])
-			local clickthrough = MoveAny:CreateCheckButton("clickthrough", content)
+			clickthrough = MoveAny:CreateCheckButton("clickthrough", content)
 			clickthrough:SetSize(btnsize, btnsize)
 			clickthrough:SetHitRectInsets(0, 0, 0, 0)
 			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
@@ -430,7 +446,7 @@ function MoveAny:MenuOptions(opt, frame)
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
 
-			local lockparent = MoveAny:CreateCheckButton("lockparent", content)
+			lockparent = MoveAny:CreateCheckButton("lockparent", content)
 			lockparent:SetSize(btnsize, btnsize)
 			lockparent:SetHitRectInsets(0, 0, 0, 0)
 			lockparent:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -110)
@@ -455,6 +471,7 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(lockparent.text, 12, "THINOUTLINE")
 			lockparent.text:SetPoint("LEFT", lockparent, "RIGHT", 0, 0)
 			lockparent.text:SetText(MoveAny:Trans("LID_LOCKPARENT"))
+			UpdateHideDeps(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
 			if MoveAny:GetWoWBuildNr() < 120000 then
 				local fullhp = MoveAny:CreateCheckButton("FULLHPENABLED", content)
 				fullhp:SetSize(btnsize, btnsize)
@@ -1587,6 +1604,7 @@ function MoveAny:RegisterWidget(tab)
 	end)
 
 	hooksecurefunc(frame, "SetParent", function(sel, parent)
+		if MoveAny:GetEleOption(name, "Hide", false, "Hide4") then return end
 		if not MoveAny:GetEleOption(name, "LockParent", false, "LockParent1") then return end
 		local target = MoveAny:GetMainPanel()
 		if parent ~= target then
