@@ -1836,7 +1836,13 @@ function MoveAny:InitGLF(glf, x)
 end
 
 local minimapDragOffset = 10
+local minimapDragRotationBase = math.rad(225)
 local minimapDragFrames = {}
+local minimapDragOffsets = {}
+local minimapDragRotations = {}
+local minimapDragAngles = {}
+local minimapDragTextureHooks = {}
+local minimapDragRotating = false
 local minimapDragHooked = false
 local function GetMinimapDragCenter()
 	if not Minimap then return end
@@ -1848,6 +1854,7 @@ local function GetMinimapDragCenter()
 end
 
 local function GetMinimapDragBlock(frame, radius)
+	if MoveAny:GetWoWBuild() == "RETAIL" then return end
 	if not GameTimeFrame or not GameTimeFrame:IsShown() or frame == GameTimeFrame then return end
 	if not radius or radius <= 0 then return end
 	local mx, my = GetMinimapDragCenter()
@@ -1859,13 +1866,34 @@ local function GetMinimapDragBlock(frame, radius)
 	return math.atan2(gy * gs - my, gx * gs - mx), arc
 end
 
+local function UpdateMinimapDragRotation(frame)
+	if not minimapDragRotations[frame] or minimapDragRotating then return end
+	minimapDragRotating = true
+	local rot = (minimapDragAngles[frame] or minimapDragRotationBase) - minimapDragRotationBase
+	local regions = {frame:GetRegions()}
+	for i = 1, #regions do
+		local reg = regions[i]
+		if reg.GetObjectType and reg:GetObjectType() == "Texture" and reg.SetRotation then
+			if not minimapDragTextureHooks[reg] then
+				minimapDragTextureHooks[reg] = true
+				if reg.SetAtlas then hooksecurefunc(reg, "SetAtlas", function() UpdateMinimapDragRotation(frame) end) end
+				if reg.SetTexture then hooksecurefunc(reg, "SetTexture", function() UpdateMinimapDragRotation(frame) end) end
+			end
+
+			reg:SetRotation(rot)
+		end
+	end
+
+	minimapDragRotating = false
+end
+
 function MoveAny:SetMinimapDragAngle(frame, angle)
 	if not frame then return end
 	local _, _, ms = GetMinimapDragCenter()
 	if not ms then return end
 	local fs = frame:GetEffectiveScale()
 	if not fs or fs <= 0 then return end
-	local radius = (Minimap:GetWidth() / 2 + minimapDragOffset) * ms
+	local radius = (Minimap:GetWidth() / 2 + (minimapDragOffsets[frame] or minimapDragOffset)) * ms
 	local ba, arc = GetMinimapDragBlock(frame, radius)
 	if ba then
 		local diff = math.atan2(math.sin(angle - ba), math.cos(angle - ba))
@@ -1882,6 +1910,8 @@ function MoveAny:SetMinimapDragAngle(frame, angle)
 	local py = math.sin(angle) * radius / fs
 	frame:ClearAllPoints()
 	frame:SetPoint("CENTER", Minimap, "CENTER", px, py)
+	minimapDragAngles[frame] = angle
+	UpdateMinimapDragRotation(frame)
 end
 
 function MoveAny:UpdateMinimapDrag(frame)
@@ -1924,8 +1954,10 @@ local function UpdateMinimapDragFrames()
 	end
 end
 
-function MoveAny:InitMinimapDrag(frame, key, func)
+function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 	if not frame or not key or not Minimap then return end
+	minimapDragOffsets[frame] = offset
+	minimapDragRotations[frame] = rotate
 	if frame:IsMovable() then return end
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
@@ -2126,7 +2158,7 @@ function MoveAny:LoadAddon()
 			else
 				C_Timer.After(1, function()
 					if MiniMapTrackingButton then
-						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
+						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", nil, nil, function()
 							local function SyncExpansionLandingPageMinimapButton(p1, p2, p3, p4, p5)
 								if not p1 or not p2 or p2 == MiniMapTracking then return end
 								if ma_set_parent[MiniMapTrackingButton] then return end
@@ -4115,7 +4147,7 @@ function MoveAny:LoadAddon()
 				["lstr"] = "LID_ExpansionLandingPageMinimapButton",
 			})
 		else
-			C_Timer.After(1, function() if ExpansionLandingPageMinimapButton then MoveAny:InitMinimapDrag(ExpansionLandingPageMinimapButton, "ExpansionLandingPageMinimapButton") end end)
+			C_Timer.After(1, function() if ExpansionLandingPageMinimapButton then MoveAny:InitMinimapDrag(ExpansionLandingPageMinimapButton, "ExpansionLandingPageMinimapButton", -4, true) end end)
 		end
 
 		local gtp4 = nil
