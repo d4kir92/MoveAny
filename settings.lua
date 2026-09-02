@@ -1842,6 +1842,9 @@ local minimapDragOffsets = {}
 local minimapDragRotations = {}
 local minimapDragAngles = {}
 local minimapDragTextureHooks = {}
+local minimapDragRotationPointX = 0.48
+local minimapDragRotationPointY = 0.5
+local minimapDragRotationPoint = nil
 local minimapDragRotating = false
 local minimapDragHooked = false
 local function GetMinimapDragCenter()
@@ -1869,18 +1872,24 @@ end
 local function UpdateMinimapDragRotation(frame)
 	if not minimapDragRotations[frame] or minimapDragRotating then return end
 	minimapDragRotating = true
+	if not minimapDragRotationPoint and CreateVector2D then minimapDragRotationPoint = CreateVector2D(minimapDragRotationPointX, minimapDragRotationPointY) end
 	local rot = (minimapDragAngles[frame] or minimapDragRotationBase) - minimapDragRotationBase
 	local regions = {frame:GetRegions()}
 	for i = 1, #regions do
 		local reg = regions[i]
-		if reg.GetObjectType and reg:GetObjectType() == "Texture" and reg.SetRotation then
+		local rw, rh = reg:GetWidth(), reg:GetHeight()
+		if reg.GetObjectType and reg:GetObjectType() == "Texture" and reg.SetRotation and rw and rh and math.abs(rw - rh) < 1 then
 			if not minimapDragTextureHooks[reg] then
 				minimapDragTextureHooks[reg] = true
 				if reg.SetAtlas then hooksecurefunc(reg, "SetAtlas", function() UpdateMinimapDragRotation(frame) end) end
 				if reg.SetTexture then hooksecurefunc(reg, "SetTexture", function() UpdateMinimapDragRotation(frame) end) end
 			end
 
-			reg:SetRotation(rot)
+			if minimapDragRotationPoint then
+				reg:SetRotation(rot, minimapDragRotationPoint)
+			else
+				reg:SetRotation(rot)
+			end
 		end
 	end
 
@@ -2158,7 +2167,7 @@ function MoveAny:LoadAddon()
 			else
 				C_Timer.After(1, function()
 					if MiniMapTrackingButton then
-						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", nil, nil, function()
+						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", -2, nil, function()
 							local function SyncExpansionLandingPageMinimapButton(p1, p2, p3, p4, p5)
 								if not p1 or not p2 or p2 == MiniMapTracking then return end
 								if ma_set_parent[MiniMapTrackingButton] then return end
