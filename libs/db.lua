@@ -339,7 +339,7 @@ function MoveAny:SetEleOption(element, key, value)
 	end
 
 	local ignoreReload = false
-	if string.find(key, "ALPHA", 1, true) then ignoreReload = true end
+	if string.find(key, "ALPHA", 1, true) or key == "Hide" then ignoreReload = true end
 	MoveAny:CheckDB("SetEleOption")
 	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
