@@ -2127,7 +2127,7 @@ function MoveAny:LoadAddon()
 				C_Timer.After(1, function()
 					if MiniMapTrackingButton then
 						MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", function()
-							local function SyncMiniMapTracking(p1, p2, p3, p4, p5)
+							local function SyncExpansionLandingPageMinimapButton(p1, p2, p3, p4, p5)
 								if not p1 or not p2 or p2 == MiniMapTracking then return end
 								if ma_set_parent[MiniMapTrackingButton] then return end
 								ma_set_parent[MiniMapTrackingButton] = true
@@ -2136,8 +2136,8 @@ function MoveAny:LoadAddon()
 								ma_set_parent[MiniMapTrackingButton] = false
 							end
 
-							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5) SyncMiniMapTracking(p1, p2, p3, p4, p5) end)
-							SyncMiniMapTracking(MiniMapTrackingButton:GetPoint())
+							hooksecurefunc(MiniMapTrackingButton, "SetPoint", function(sel, p1, p2, p3, p4, p5) SyncExpansionLandingPageMinimapButton(p1, p2, p3, p4, p5) end)
+							SyncExpansionLandingPageMinimapButton(MiniMapTrackingButton:GetPoint())
 						end)
 					else
 						MoveAny:InitMinimapDrag(MiniMapTracking, "MiniMapTracking")
@@ -4114,6 +4114,8 @@ function MoveAny:LoadAddon()
 				["name"] = "ExpansionLandingPageMinimapButton",
 				["lstr"] = "LID_ExpansionLandingPageMinimapButton",
 			})
+		else
+			C_Timer.After(1, function() if ExpansionLandingPageMinimapButton then MoveAny:InitMinimapDrag(ExpansionLandingPageMinimapButton, "ExpansionLandingPageMinimapButton") end end)
 		end
 
 		local gtp4 = nil
