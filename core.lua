@@ -29,9 +29,18 @@ MoveAny:GetHidden().auraRows = 0
 local sethidden = {}
 local sethiddenSetup = {}
 local sethiddenParent = {}
+local sethiddenCanParent = {}
 local oldsethiddenparent = {}
 local oldsethiddenshown = {}
 local createFrameHookRegistered = false
+local function TrySetHiddenParent(frame)
+	return pcall(function()
+		local parent = frame:GetParent()
+		if parent ~= MoveAny:GetHidden() then oldsethiddenparent[frame] = parent end
+		frame:SetParent(MoveAny:GetHidden())
+	end)
+end
+
 local function onCreateFrameHideCheck(_, _, parent)
 	if parent == nil then return end
 	if sethidden[parent] then MoveAny:HideFrame(parent) end
@@ -47,12 +56,9 @@ function MoveAny:HideFrame(frame)
 
 	if sethiddenSetup[frame] == nil then
 		sethiddenSetup[frame] = true
-		local ok = pcall(function()
-			oldsethiddenparent[frame] = frame:GetParent()
-			frame:SetParent(MoveAny:GetHidden())
-		end)
-
+		local ok = TrySetHiddenParent(frame)
 		if ok then
+			sethiddenCanParent[frame] = true
 			sethiddenParent[frame] = true
 			local setparent = false
 			hooksecurefunc(frame, "SetParent", function(sel)
@@ -113,9 +119,16 @@ function MoveAny:HideFrame(frame)
 	end
 
 	frame:SetAlpha(0)
-	if sethiddenParent[frame] and MoveAny:CanModify(frame) then
-		if oldsethiddenshown[frame] == nil then oldsethiddenshown[frame] = frame:IsShown() end
-		frame:Hide()
+	if sethiddenCanParent[frame] then
+		if sethiddenParent[frame] == nil then
+			sethiddenParent[frame] = true
+			TrySetHiddenParent(frame)
+		end
+
+		if MoveAny:CanModify(frame) then
+			if oldsethiddenshown[frame] == nil then oldsethiddenshown[frame] = frame:IsShown() end
+			frame:Hide()
+		end
 	end
 end
 
