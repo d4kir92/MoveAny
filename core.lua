@@ -69,9 +69,20 @@ function MoveAny:HideFrame(frame)
 				setparent = false
 			end)
 
+			local hideAgainPending = false
 			local function HideAgain(sel)
 				if sethidden[sel] == nil then return end
-				if not MoveAny:CanModify(sel) then return end
+				if not MoveAny:CanModify(sel) then
+					if hideAgainPending then return end
+					hideAgainPending = true
+					MoveAny:After(0.1, function()
+						hideAgainPending = false
+						HideAgain(sel)
+					end, "HideFrame HideAgain")
+
+					return
+				end
+
 				sel:Hide()
 			end
 
