@@ -127,16 +127,24 @@ function MoveAny:ShowFrame(frame)
 			frame:SetParent(oldsethiddenparent[frame])
 			oldsethiddenparent[frame] = nil
 		end)
+	end
 
-		if oldsethiddenshown[frame] and MoveAny:CanModify(frame) then frame:Show() end
-		oldsethiddenshown[frame] = nil
-	else
-		frame:SetAlpha(1)
-		if not InCombatLockdown() then
-			frame:EnableMouse(true)
-		else
+	if oldsethiddenshown[frame] ~= nil then
+		if not MoveAny:CanModify(frame) then
 			MoveAny:After(0.1, function() MoveAny:ShowFrame(frame) end, "ShowFrame")
+
+			return
 		end
+
+		if oldsethiddenshown[frame] then frame:Show() end
+		oldsethiddenshown[frame] = nil
+	end
+
+	frame:SetAlpha(1)
+	if not InCombatLockdown() then
+		frame:EnableMouse(true)
+	else
+		MoveAny:After(0.1, function() MoveAny:ShowFrame(frame) end, "ShowFrame")
 	end
 end
 
