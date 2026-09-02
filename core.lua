@@ -70,20 +70,26 @@ function MoveAny:HideFrame(frame)
 			end)
 
 			local hideAgainPending = false
-			local function HideAgain(sel)
+			local function HideAgainNow(sel)
 				if sethidden[sel] == nil then return end
 				if not MoveAny:CanModify(sel) then
 					if hideAgainPending then return end
 					hideAgainPending = true
 					MoveAny:After(0.1, function()
 						hideAgainPending = false
-						HideAgain(sel)
+						HideAgainNow(sel)
 					end, "HideFrame HideAgain")
 
 					return
 				end
 
 				sel:Hide()
+			end
+
+			local function HideAgain(sel, shown)
+				if sethidden[sel] == nil then return end
+				oldsethiddenshown[sel] = shown ~= false
+				HideAgainNow(sel)
 			end
 
 			hooksecurefunc(frame, "Show", HideAgain)
@@ -148,7 +154,7 @@ function MoveAny:ShowFrame(frame)
 	if sethiddenParent[frame] then
 		sethiddenParent[frame] = nil
 		pcall(function()
-			frame:SetParent(oldsethiddenparent[frame])
+			frame:SetParent(oldsethiddenparent[frame] or MoveAny:GetMainPanel())
 			oldsethiddenparent[frame] = nil
 		end)
 	end
