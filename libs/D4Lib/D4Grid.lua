@@ -1,5 +1,6 @@
 local _, D4 = ...
 local grid = nil
+local gridSize = 10
 function D4:Grid(n, snap)
     n = n or 0
     snap = snap or 10
@@ -8,11 +9,12 @@ function D4:Grid(n, snap)
 end
 
 function D4:SetGridSize(size)
-    return size
+    gridSize = size or 10
+    return gridSize
 end
 
 function D4:GetGridSize()
-    return 10
+    return gridSize
 end
 
 function D4:UpdateGrid()

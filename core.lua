@@ -30,6 +30,7 @@ local sethidden = {}
 local sethiddenSetup = {}
 local sethiddenParent = {}
 local sethiddenCanParent = {}
+local sethiddenCanHide = {}
 local oldsethiddenparent = {}
 local oldsethiddenshown = {}
 local createFrameHookRegistered = false
@@ -48,6 +49,7 @@ end
 
 function MoveAny:HideFrame(frame)
 	sethidden[frame] = true
+	if sethiddenCanHide[frame] == nil then sethiddenCanHide[frame] = not (frame.IsProtected and frame:IsProtected()) end
 	if InCombatLockdown() and frame:IsProtected() then
 		MoveAny:After(0.1, function() MoveAny:HideFrame(frame) end, "HideFrame After")
 	else
@@ -69,31 +71,33 @@ function MoveAny:HideFrame(frame)
 				setparent = false
 			end)
 
-			local hideAgainPending = false
-			local function HideAgainNow(sel)
-				if sethidden[sel] == nil then return end
-				if not MoveAny:CanModify(sel) then
-					if hideAgainPending then return end
-					hideAgainPending = true
-					MoveAny:After(0.1, function()
-						hideAgainPending = false
-						HideAgainNow(sel)
-					end, "HideFrame HideAgain")
+			if sethiddenCanHide[frame] then
+				local hideAgainPending = false
+				local function HideAgainNow(sel)
+					if sethidden[sel] == nil then return end
+					if not MoveAny:CanModify(sel) then
+						if hideAgainPending then return end
+						hideAgainPending = true
+						MoveAny:After(0.1, function()
+							hideAgainPending = false
+							HideAgainNow(sel)
+						end, "HideFrame HideAgain")
 
-					return
+						return
+					end
+
+					sel:Hide()
 				end
 
-				sel:Hide()
-			end
+				local function HideAgain(sel, shown)
+					if sethidden[sel] == nil then return end
+					oldsethiddenshown[sel] = shown ~= false
+					HideAgainNow(sel)
+				end
 
-			local function HideAgain(sel, shown)
-				if sethidden[sel] == nil then return end
-				oldsethiddenshown[sel] = shown ~= false
-				HideAgainNow(sel)
+				hooksecurefunc(frame, "Show", HideAgain)
+				if frame.SetShown then hooksecurefunc(frame, "SetShown", HideAgain) end
 			end
-
-			hooksecurefunc(frame, "Show", HideAgain)
-			if frame.SetShown then hooksecurefunc(frame, "SetShown", HideAgain) end
 		else
 			local setalpha = false
 			hooksecurefunc(frame, "SetAlpha", function(sel, alpha)
@@ -142,7 +146,7 @@ function MoveAny:HideFrame(frame)
 			TrySetHiddenParent(frame)
 		end
 
-		if MoveAny:CanModify(frame) then
+		if sethiddenCanHide[frame] and MoveAny:CanModify(frame) then
 			if oldsethiddenshown[frame] == nil then oldsethiddenshown[frame] = frame:IsShown() end
 			frame:Hide()
 		end
