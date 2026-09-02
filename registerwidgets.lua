@@ -1172,7 +1172,7 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 		framelevel = framelevel + 1
 		if dragframe.opt.CloseButton then dragframe.opt.CloseButton:SetFrameLevel(framelevel) end
 		framelevel = framelevel + 100
-		dragframe.opt:SetSize(500, 548)
+		dragframe.opt:SetSize(500, 500)
 		dragframe.opt:SetPoint("CENTER")
 		MoveAny:SetClampedToScreen(dragframe.opt, true, "RegisterWidget 2")
 		dragframe.opt:SetMovable(true)
