@@ -483,7 +483,7 @@ function MoveAny:MenuOptions(opt, frame)
 				end)
 			end
 
-			local space = -30
+			local space = -36
 			local Y = -190
 			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
 			Y = Y + space
@@ -595,7 +595,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				end)
 
-				PY = PY - 30
+				PY = PY - 36
 			end
 
 			if #items >= 1 and optionFrame ~= StanceBarAnchor then
@@ -654,7 +654,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				end)
 
-				PY = PY - 30
+				PY = PY - 36
 			end
 
 			if optionFrame ~= StanceBarAnchor then
@@ -707,7 +707,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				end)
 
-				PY = PY - 30
+				PY = PY - 36
 				local flipped = MoveAny:CreateCheckButton("flipped", content)
 				flipped:SetSize(btnsize, btnsize)
 				flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
@@ -778,7 +778,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				end)
 
-				PY = PY - 30
+				PY = PY - 36
 			end
 
 			if frame == MAActionBar1 or frame == MainActionBar then
@@ -1172,7 +1172,7 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 		framelevel = framelevel + 1
 		if dragframe.opt.CloseButton then dragframe.opt.CloseButton:SetFrameLevel(framelevel) end
 		framelevel = framelevel + 100
-		dragframe.opt:SetSize(500, 500)
+		dragframe.opt:SetSize(500, 548)
 		dragframe.opt:SetPoint("CENTER")
 		MoveAny:SetClampedToScreen(dragframe.opt, true, "RegisterWidget 2")
 		dragframe.opt:SetMovable(true)
