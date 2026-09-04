@@ -332,11 +332,15 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 				lstr = format(MoveAny:Trans("LID_" .. lkey), MoveAny:Trans("LID_" .. keybind))
 			end
 
+			local isSelected = false
 			local ele = MoveAny:GetSelectEleName("LID_" .. key)
-			if ele and MoveAny:GetDragFromName(key) and MoveAny:GetCurrentEle() == MoveAny:GetDragFromName(key) then
-				lstr = "|cFFFFFF00" .. lstr .. "|r"
-				MoveAny:ResetSelectedText()
-				lastSelected = sel
+			if ele then
+				local df = MoveAny:GetDragFromName(ele)
+				if df and MoveAny:GetCurrentEle() == df then
+					isSelected = true
+					MoveAny:ResetSelectedText()
+					lastSelected = sel
+				end
 			end
 
 			local enabled1, forced1 = MoveAny:IsInEditModeEnabled(key)
@@ -349,7 +353,12 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 				end
 			end
 
-			lstr = "|cFFFFFFFF" .. lstr
+			if isSelected then
+				lstr = "|cFFFFFF00" .. lstr
+			else
+				lstr = "|cFFFFFFFF" .. lstr
+			end
+
 			if bRequiresFor == false then lstr = lstr .. " (" .. format(MoveAny:Trans("LID_REQUIRESFOR"), MoveAny:Trans("LID_" .. requiresFor)) .. ")" end
 			if bRequiredFor == true then lstr = lstr .. " (" .. format(MoveAny:Trans("LID_REQUIREDFOR"), MoveAny:Trans("LID_" .. requiredFor)) .. ")" end
 			if bShowReload and checked ~= oldVal then return format("[%s] %s", MoveAny:Trans("LID_NEEDSARELOAD"), lstr) end
@@ -373,6 +382,19 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 			end
 		end,
 	})
+
+	if cb.row then
+		cb.row:SetScript("OnEnter", function(sel)
+			if MoveAny:GetSelectEleName("LID_" .. key) == nil then return end
+			GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+			if cb.Label then GameTooltip:AddLine(cb.Label:GetText() or "") end
+			GameTooltip:AddLine(MoveAny:Trans("LID_LEFTCLICKTOSELECT"), 1, 0.82, 0)
+			GameTooltip:AddLine(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"), 1, 0.82, 0)
+			GameTooltip:Show()
+		end)
+
+		cb.row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	end
 
 	cbs[key] = cb
 	if requiresFor ~= nil or requiredFor ~= nil then
@@ -1766,7 +1788,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.10.6")
+	MoveAny:SetVersion(135994, "1.10.7")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

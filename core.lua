@@ -18,11 +18,12 @@ function MoveAny:GetDragFrames()
 end
 
 --[[ HIDEPANEL ]]
-local MAHIDDEN = CreateFrame("Frame", "MAHIDDEN")
+local MAHIDDEN = CreateFrame("Frame", "MAHIDDEN", UIParent)
 function MoveAny:GetHidden()
 	return MAHIDDEN
 end
 
+MoveAny:GetHidden():SetAllPoints(UIParent)
 MoveAny:GetHidden():Hide()
 MoveAny:GetHidden().unit = "player"
 MoveAny:GetHidden().auraRows = 0

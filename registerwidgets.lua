@@ -380,7 +380,7 @@ function MoveAny:MenuOptions(opt, frame)
 				local dragf = MoveAny:GetDragFromName(name)
 				if checked then
 					MoveAny:HideFrame(optionFrame)
-					dragf.t:SetVertexColor(MoveAny:GetColor("hidden"))
+					MoveAny:UpdateEleColor(dragf)
 					if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
 						dragf:Hide()
 					else
@@ -388,11 +388,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				else
 					MoveAny:ShowFrame(optionFrame)
-					if MACurrentEle == optionFrame then
-						dragf.t:SetVertexColor(MoveAny:GetColor("se"))
-					else
-						dragf.t:SetVertexColor(MoveAny:GetColor("el"))
-					end
+					MoveAny:UpdateEleColor(dragf)
 				end
 
 				UpdateHideDeps(checked)
@@ -415,7 +411,7 @@ function MoveAny:MenuOptions(opt, frame)
 				if checked then
 					if optionFrame then
 						dragf:Show()
-						dragf.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
+						MoveAny:UpdateEleColor(dragf)
 						optionFrame:EnableMouse(false)
 						if optionFrame.AuraContainer then
 							MoveAny:ForeachChildren(optionFrame.AuraContainer, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(false) end end, "clickthrough 2")
@@ -427,7 +423,7 @@ function MoveAny:MenuOptions(opt, frame)
 					end
 				else
 					if optionFrame then
-						dragf.t:SetVertexColor(MoveAny:GetColor("el"))
+						MoveAny:UpdateEleColor(dragf)
 						optionFrame:EnableMouse(true)
 						if optionFrame.AuraContainer then
 							MoveAny:ForeachChildren(optionFrame.AuraContainer, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(true) end end, "clickthrough 2")
@@ -1073,6 +1069,7 @@ function MoveAny:MenuOptions(opt, frame)
 end
 
 function MoveAny:ResetSelectedText()
+	if MoveAny.GetLastSelected == nil then return end
 	if not runSelectedReset then
 		runSelectedReset = true
 		local cb = MoveAny:GetLastSelected()
@@ -1081,32 +1078,54 @@ function MoveAny:ResetSelectedText()
 	end
 end
 
-function MoveAny:ClearSelectEle()
-	if MACurrentEle and MACurrentEle.t then
-		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
-		MACurrentEle.name:Hide()
-		MACurrentEle.desc:Hide()
+function MoveAny:UpdateEleColor(dragframe)
+	if dragframe == nil or dragframe.t == nil then return end
+	if dragframe == MACurrentEle then
+		dragframe.t:SetVertexColor(MoveAny:GetColor("se"))
+		return
 	end
 
+	local name = dragframe.maName
+	if name and MoveAny:GetEleOption(name, "Hide", false, "UpdateEleColor Hide") then
+		dragframe.t:SetVertexColor(MoveAny:GetColor("hidden"))
+	elseif name and MoveAny:GetEleOption(name, "ClickThrough", false, "UpdateEleColor ClickThrough") then
+		dragframe.t:SetVertexColor(MoveAny:GetColor("clickthrough"))
+	else
+		dragframe.t:SetVertexColor(MoveAny:GetColor("el"))
+	end
+end
+
+function MoveAny:ClearSelectEle()
+	local old = MACurrentEle
 	MACurrentEle = nil
+	if old and old.t then
+		MoveAny:UpdateEleColor(old)
+		old.name:Hide()
+		old.desc:Hide()
+	end
+
 	if MoveAny.GridFrameThink then MoveAny:GridFrameThink() end
+	MoveAny:ResetSelectedText()
 end
 
 function MoveAny:SelectEle(ele)
 	if ele == nil then return end
-	if MACurrentEle and MACurrentEle.t then
-		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("el"))
-		MACurrentEle.name:Hide()
-		MACurrentEle.desc:Hide()
+	local old = MACurrentEle
+	MACurrentEle = ele
+	if old and old ~= ele and old.t then
+		MoveAny:UpdateEleColor(old)
+		old.name:Hide()
+		old.desc:Hide()
 	end
 
-	MACurrentEle = ele
 	if MoveAny.GridFrameThink then MoveAny:GridFrameThink() end
 	if MACurrentEle and MACurrentEle.t then
-		MACurrentEle.t:SetVertexColor(MoveAny:GetColor("se"))
+		MoveAny:UpdateEleColor(MACurrentEle)
 		MACurrentEle.name:Show()
 		MACurrentEle.desc:Show()
 	end
+
+	MoveAny:ResetSelectedText()
 end
 
 function MoveAny:GetSelectEleName(lstr)
@@ -1266,6 +1285,7 @@ function MoveAny:RegisterWidget(tab)
 	if MoveAny:GetDragFromName(name) == nil then
 		cacheDrags[name] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
 		local dragframe = MoveAny:GetDragFromName(name)
+		dragframe.maName = name
 		MoveAny:SetClampedToScreen(dragframe, true, "RegisterWidget 1")
 		dragframe:SetFrameStrata("MEDIUM")
 		dragframe:SetFrameLevel(99)
