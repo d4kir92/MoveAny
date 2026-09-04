@@ -99,6 +99,9 @@ function MoveAny:UpdateChildBuffs(bb, name)
 			end)
 		end
 
+		local prefix = "MABUFFDURATION"
+		if string.find(name, "Debuff", 1, true) then prefix = "MADEBUFFDURATION" end
+		MoveAny:StyleAuraDuration(bb, name, prefix)
 		if MoveAny:GetEleOption(name, "Hide", false, "Hide5") then
 			bb:SetAlpha(0)
 			if not InCombatLockdown() then bb:EnableMouse(false) end
@@ -4849,6 +4852,7 @@ function MoveAny:LoadAddon()
 	if MoveAny.InitMinimap then MoveAny:InitMinimap() end
 	if MoveAny.InitBuffBar then MoveAny:InitBuffBar() end
 	if MoveAny.InitDebuffBar then MoveAny:InitDebuffBar() end
+	if MoveAny.InitAuraDurations then MoveAny:InitAuraDurations() end
 	if not MoveAny:IsAddOnLoaded("Dominos") then
 		if MoveAny.InitMicroMenu then MoveAny:InitMicroMenu() end
 		if MoveAny.InitBags then MoveAny:InitBags() end

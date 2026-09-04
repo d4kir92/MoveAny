@@ -35,6 +35,7 @@ libs\D4Lib\D4Lib.xml
 
 libs\math.lua
 libs\db.lua
+libs\durationtext.lua
 libs\buffutils.lua
 
 locale\enUS.lua

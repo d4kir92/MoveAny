@@ -121,6 +121,7 @@ function MoveAny:InitBuffBar()
 							MoveAny:RegisterChildAlphaFrame(db, MABuffBar)
 						end
 
+						MoveAny:StyleAuraDuration(db, "MABuffBar", "MABUFFDURATION")
 						if olddb then
 							if left then
 								dbtab[i]["p1"] = "LEFT"
@@ -342,9 +343,21 @@ function MoveAny:InitBuffBar()
 			MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
 			MoveAny:UpdateBuffDirections()
 			if ConsolidatedBuffs then ConsolidatedBuffs:SetParent(MABuffBar) end
-			if TempEnchant1 then TempEnchant1:SetPoint("CENTER", 0, 0) end
-			if TempEnchant2 then TempEnchant2:SetPoint("CENTER", 0, 0) end
-			if TempEnchant3 then TempEnchant3:SetPoint("CENTER", 0, 0) end
+			if TempEnchant1 then
+				TempEnchant1:SetPoint("CENTER", 0, 0)
+				MoveAny:StyleAuraDuration(TempEnchant1, "MABuffBar", "MABUFFDURATION")
+			end
+
+			if TempEnchant2 then
+				TempEnchant2:SetPoint("CENTER", 0, 0)
+				MoveAny:StyleAuraDuration(TempEnchant2, "MABuffBar", "MABUFFDURATION")
+			end
+
+			if TempEnchant3 then
+				TempEnchant3:SetPoint("CENTER", 0, 0)
+				MoveAny:StyleAuraDuration(TempEnchant3, "MABuffBar", "MABUFFDURATION")
+			end
+
 			if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 				MoveAny:ForeachChildren(BuffFrame.AuraContainer, function(child)
 					if child and child.masetup == nil then
@@ -365,6 +378,8 @@ function MoveAny:InitBuffBar()
 							child:EnableMouse(false)
 						end
 					end
+
+					if child then MoveAny:StyleAuraDuration(child, "MABuffBar", "MABUFFDURATION") end
 				end, "Buffbar")
 			else
 				for bid = 1, 32 do
@@ -459,6 +474,7 @@ function MoveAny:InitBuffBar()
 							end)
 						end
 
+						MoveAny:StyleAuraDuration(bbtn, "MABuffBar", "MABUFFDURATION")
 						bbtn:ClearAllPoints()
 						bbtn:SetPoint("CENTER", 0, 0)
 					end

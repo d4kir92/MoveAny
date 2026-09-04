@@ -247,6 +247,60 @@ function MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vm
 	return slider
 end
 
+local function CreateDurationOptions(content, name, prefix, y, refresh)
+	local apply = function()
+		if MoveAny.UpdateAuraDurations then MoveAny:UpdateAuraDurations("MenuOptions") end
+		if refresh then refresh() end
+	end
+
+	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "ANCHOR", 0, 1, 0, 9, apply, MoveAny.DurationAnchors)
+	y = y - 40
+	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "SPACING", 0, 1, -30, 30, apply)
+	y = y - 40
+	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 1, 4, 12, apply)
+	y = y - 40
+	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FONT", 0, 1, 0, 1, apply, MoveAny.DurationFonts)
+	y = y - 40
+	local maxFormat = 2
+	if not MoveAny:CanReadAuraDuration() then maxFormat = 1 end
+	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FORMAT", 0, 1, 0, maxFormat, apply, MoveAny.DurationFormats)
+	y = y - 40
+	local color = MoveAny:CreateButton(prefix .. "COLOR", content)
+	color:SetSize(content:GetWidth() - 30, 25)
+	color:SetPoint("TOPLEFT", content, "TOPLEFT", 10, y)
+	color:SetText(MoveAny:Trans("LID_" .. prefix .. "COLOR"))
+	color:SetScript("OnClick", function()
+		local r = MoveAny:GetEleOption(name, prefix .. "COLOR_R", 1)
+		local g = MoveAny:GetEleOption(name, prefix .. "COLOR_G", 1)
+		local b = MoveAny:GetEleOption(name, prefix .. "COLOR_B", 1)
+		local a = MoveAny:GetEleOption(name, prefix .. "COLOR_A", 1)
+		if MoveAny:GetWoWBuild() ~= "RETAIL" then a = 1 - a end
+		MoveAny:ShowColorPicker(r, g, b, a, function(restore)
+			local newR, newG, newB, newA
+			if restore then
+				newR, newG, newB, newA = unpack(restore)
+			else
+				local alpha = 1
+				if ColorPickerFrame.GetColorAlpha then
+					alpha = ColorPickerFrame:GetColorAlpha()
+				elseif OpacitySliderFrame then
+					alpha = OpacitySliderFrame:GetValue()
+				end
+
+				if MoveAny:GetWoWBuild() ~= "RETAIL" then alpha = 1 - alpha end
+				newA, newR, newG, newB = alpha, ColorPickerFrame:GetColorRGB()
+			end
+
+			MoveAny:SetEleOption(name, prefix .. "COLOR_R", newR or 1)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_G", newG or 1)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_B", newB or 1)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_A", newA or 1)
+			apply()
+		end)
+	end)
+	return y - 40
+end
+
 function MoveAny:MenuOptions(opt, frame)
 	local optionFrame = frame
 	if frame == StanceBarAnchor then frame = StanceBar end
@@ -441,7 +495,6 @@ function MoveAny:MenuOptions(opt, frame)
 			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
 			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
 			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
-
 			lockparent = MoveAny:CreateCheckButton("lockparent", content)
 			lockparent:SetSize(btnsize, btnsize)
 			lockparent:SetHitRectInsets(0, 0, 0, 0)
@@ -461,7 +514,6 @@ function MoveAny:MenuOptions(opt, frame)
 			end)
 
 			lockparent:HookScript("OnLeave", function() GameTooltip:Hide() end)
-
 			lockparent.text = lockparent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 			lockparent.text:SetText(MoveAny:Trans("LID_LOCKPARENT"))
 			MoveAny:SetFontSize(lockparent.text, 12, "THINOUTLINE")
@@ -816,8 +868,16 @@ function MoveAny:MenuOptions(opt, frame)
 		elseif string.find(content.name, MoveAny:Trans("LID_BUFFS")) then
 			--MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func)
 			local y = -20
+			local refreshBuffs = function()
+				if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
+				if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
+				if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
+				if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
+				if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
+			end
+
 			if name == "MABuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and oveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
+				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 					MoveAny:CreateSliderOld(content, 10, y, name, "MABUFFMODE", 0, 1, 0, 5, function()
 						if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
 						if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
@@ -877,8 +937,17 @@ function MoveAny:MenuOptions(opt, frame)
 			end)
 
 			y = y - 40
+			CreateDurationOptions(content, name, "MABUFFDURATION", y, refreshBuffs)
 		elseif string.find(content.name, MoveAny:Trans("LID_DEBUFFS")) then
 			local y = -20
+			local refreshDebuffs = function()
+				if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("CreateDurationOptions") end
+				if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
+				if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
+				if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
+				if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
+			end
+
 			if name == "MADebuffBar" then
 				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
 					MoveAny:CreateSliderOld(content, 10, y, name, "MADEBUFFMODE", 0, 1, 0, 5, function() MoveAny:UpdateDebuffs("MenuOptions") end, {
@@ -933,6 +1002,7 @@ function MoveAny:MenuOptions(opt, frame)
 			end)
 
 			y = y - 40
+			CreateDurationOptions(content, name, "MADEBUFFDURATION", y, refreshDebuffs)
 		elseif string.find(content.name, MoveAny:Trans("LID_MAINMENUEXPBAR")) or string.find(content.name, MoveAny:Trans("LID_REPUTATIONWATCHBAR")) then
 			opts["WIDTH"] = opts["WIDTH"] or 1024
 			local width = opts["WIDTH"]
@@ -1245,7 +1315,6 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 	if pcall(dragframe.SetPoint, dragframe, "CENTER", anchor, "CENTER", posx, posy) then return true end
 	dragframe:ClearAllPoints()
 	pcall(dragframe.SetPoint, dragframe, "CENTER", UIParent, "CENTER", 0, 0)
-
 	return false
 end
 
@@ -1297,7 +1366,6 @@ function MoveAny:RegisterWidget(tab)
 		end
 
 		MoveAny:SafeAnchorDrag(dragframe, frame or UIParent, 0, 0)
-
 		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)

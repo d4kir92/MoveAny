@@ -128,6 +128,8 @@ function MoveAny:InitDebuffBar()
 								child:EnableMouse(false)
 							end
 						end
+
+						MoveAny:StyleAuraDuration(child, "MADebuffBar", "MADEBUFFDURATION")
 					end
 				end, "Debuffbar")
 			else
@@ -215,6 +217,7 @@ function MoveAny:InitDebuffBar()
 							end)
 						end
 
+						MoveAny:StyleAuraDuration(bbtn, "MADebuffBar", "MADEBUFFDURATION")
 						bbtn:ClearAllPoints()
 						bbtn:SetPoint("CENTER", 0, 0)
 					end
