@@ -158,6 +158,8 @@ on top of the translated label.
   fire while the window is being built — it is safe to call into frames that do not
   exist yet at that point. `holder.value` holds the value the slider actually took,
   after clamping to `min`/`max` and rounding to `decimals`.
+  `holder.slider` is the slider itself, `holder.Low` / `holder.High` are the two range
+  labels — set both when you change the range with `SetMinMaxValues` at runtime.
 - `AddDropdown`: `label`, `value`, `width`, `choices`, `maxVisible`, `func(value)`.
   `choices` is an ordered array of `{value = ..., label = "LID_..."}`;
   `UI:ChoicesFromMap(map, current)` builds one from a sparse `value → label` table,

@@ -127,1013 +127,611 @@ function MoveAny:GetFrameName(frame)
 	return fnt[frame]
 end
 
-local function SelectTab(sel)
-	PanelTemplates_SetTab(MoveAny:GetParent(sel), sel:GetID())
-	local content = MoveAny:GetParent(sel).currentcontent
-	if content then content:Hide() end
-	MoveAny:GetParent(sel).currentcontent = sel.content
-	sel.content:Show()
+local function ApplyReload()
+	if C_UI then
+		C_UI.Reload()
+	else
+		ReloadUI()
+	end
 end
 
-local function CreateTabs(frame, args)
-	frame.numTabs = #args
-	frame.tabs = {}
-	local sw, sh = frame:GetSize()
-	for i = 1, frame.numTabs do
-		local template = "CharacterFrameTabButtonTemplate"
-		if MoveAny:GetWoWBuild() == "RETAIL" then template = "PanelTabButtonTemplate" end
-		frame.tabs[i] = MoveAny:CreateButton(MoveAny:GetName(frame) .. "Tab" .. i, frame, false, template)
-		local tab = frame.tabs[i]
-		tab:SetID(i)
-		tab:SetText(args[i])
-		tab:SetScript("OnClick", function(sel) SelectTab(sel) end)
-		tab.content = CreateFrame("Frame", MoveAny:GetName(frame) .. "Tab" .. i .. "Content", frame)
-		tab.content.name = args[i]
-		tab.content:SetSize(sw - 12, sh - 26 - 6)
-		tab.content:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -26)
-		tab.content:Hide()
-		PanelTemplates_TabResize(tab, 0)
-		if i == 1 then
-			tab:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 5, 2)
-		else
-			tab:SetPoint("TOPLEFT", _G[MoveAny:GetName(frame) .. "Tab" .. (i - 1)], "TOPRIGHT", 4, 0)
-		end
+local ARROW_UP = "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up"
+local ARROW_UP_PUSHED = "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down"
+local ARROW_DOWN = "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up"
+local ARROW_DOWN_PUSHED = "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down"
+local ARROW_LEFT = "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up"
+local ARROW_RIGHT = "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up"
+function MoveAny:AddElePosition(win, name)
+	local label = MoveAny:Trans("LID_POSITION")
+	local height = 18 + btnsize * 5
+	local holder = CreateFrame("Frame", nil, win.content)
+	holder:SetSize(math.max(1, win.contentWidth - 8), height)
+	holder.Label = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	holder.Label:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
+	function holder:UpdateText()
+		local _, _, _, p4, p5 = MoveAny:GetElePoint(name)
+		holder.Label:SetText(format("%s X: %d Y: %d", label, p4 or 0, p5 or 0))
 	end
 
-	SelectTab(frame.tabs[1])
-	return frame.tabs
+	local function Arrow(col, row, x, y, texNor, texPus)
+		local btn = MoveAny:CreateButton(nil, holder, true)
+		btn:SetNormalTexture(texNor)
+		btn:SetPushedTexture(texPus)
+		btn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+		btn:SetSize(btnsize, btnsize)
+		btn:SetPoint("TOPLEFT", holder, "TOPLEFT", col * btnsize, -18 - row * btnsize)
+		btn:SetScript("OnClick", function()
+			local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
+			if p1 and p3 and p4 and p5 then MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y) end
+			holder:UpdateText()
+		end)
+
+		return btn
+	end
+
+	Arrow(2, 0, 0, 5, ARROW_UP, ARROW_UP_PUSHED)
+	Arrow(2, 1, 0, 1, ARROW_UP, ARROW_UP_PUSHED)
+	Arrow(0, 2, -5, 0, ARROW_LEFT, ARROW_LEFT)
+	Arrow(1, 2, -1, 0, ARROW_LEFT, ARROW_LEFT)
+	Arrow(3, 2, 1, 0, ARROW_RIGHT, ARROW_RIGHT)
+	Arrow(4, 2, 5, 0, ARROW_RIGHT, ARROW_RIGHT)
+	Arrow(2, 3, 0, -1, ARROW_DOWN, ARROW_DOWN_PUSHED)
+	Arrow(2, 4, 0, -5, ARROW_DOWN, ARROW_DOWN_PUSHED)
+	holder:UpdateText()
+	MoveAny.UI:Add(win, holder, height, label, true, "POSITION")
+
+	return holder
 end
 
-local function MAMoveButton(parent, name, ofsx, ofsy, x, y, texNor, texPus)
-	local btn = MoveAny:CreateButton("MOVE" .. x .. y, parent, true)
-	btn:SetNormalTexture(texNor)
-	btn:SetPushedTexture(texPus)
-	btn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-	btn:SetSize(btnsize, btnsize)
-	btn:SetPoint("TOPLEFT", parent, "TOPLEFT", ofsx, ofsy)
+function MoveAny:AddEleScale(win, name)
+	local label = MoveAny:Trans("LID_SCALE")
+	local height = 18 + btnsize
+	local width = btnsize * 2
+	local holder = CreateFrame("Frame", nil, win.content)
+	holder:SetSize(math.max(1, win.contentWidth - 8), height)
+	holder.Label = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	holder.Label:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
+	function holder:UpdateText()
+		holder.Label:SetText(format("%s: %0.2f", label, MoveAny:GetEleScale(name) or 1))
+	end
+
+	local function Button(index, text, func)
+		local btn = MoveAny:CreateButton(nil, holder)
+		btn:SetSize(width, btnsize)
+		btn:SetPoint("TOPLEFT", holder, "TOPLEFT", index * (width + 3), -18)
+		btn:SetText(text)
+		btn:SetScript("OnClick", function()
+			func()
+			holder:UpdateText()
+		end)
+
+		return btn
+	end
+
+	local function Step(index, step)
+		return Button(index, format("%+0.2f", step), function()
+			local val = tonumber(format("%.2f", (MoveAny:GetEleScale(name) or 1) + step))
+			if val == nil then return end
+			if val < 0.1 then val = 0.1 end
+			MoveAny:SetEleScale(name, val)
+		end)
+	end
+
+	Step(0, -1)
+	Step(1, -0.1)
+	Step(2, -0.01)
+	Button(3, format("%0.2f", 1), function() MoveAny:SetEleScale(name, 1) end)
+	Step(4, 0.01)
+	Step(5, 0.1)
+	Step(6, 1)
+	holder:UpdateText()
+	MoveAny.UI:Add(win, holder, height, label, true, "SCALE")
+
+	return holder
+end
+
+function MoveAny:AddEleReset(win, name)
+	local label = MoveAny:Trans("LID_RESETELEMENT")
+	local holder = CreateFrame("Frame", nil, win.content)
+	holder:SetSize(math.max(1, win.contentWidth - 8), MoveAny.UI.ROW)
+	local btn = MoveAny:CreateButton(nil, holder)
+	btn:SetSize(btnsize * 8, MoveAny.UI.ROW)
+	btn:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
+	btn:SetText(label)
 	btn:SetScript("OnClick", function()
-		local p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-		if p1 and p3 and p4 and p5 then MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y) end
-		p1, _, p3, p4, p5 = MoveAny:GetElePoint(name)
-		parent.pos:SetText(format("%s X: %d Y:%d", MoveAny:Trans("LID_POSITION"), p4, p5))
+		MoveAny:ResetElement(name)
+		ApplyReload()
 	end)
-	return btn
+
+	holder.control = btn
+	MoveAny.UI:Add(win, holder, MoveAny.UI.ROW, label, true, "RESETELEMENT")
+
+	return holder
 end
 
-function MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func, lanArray)
-	local slider = nil
-	if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-		slider = CreateFrame("Slider", nil, parent, "MinimalSliderTemplate")
-	elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-		slider = CreateFrame("Slider", nil, parent, "UISliderTemplate")
-	else
-		slider = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate")
-	end
+local function AddEleCategory(win, key, label, level)
+	return win:AddCategory({
+		["label"] = label or MoveAny:Trans("LID_" .. key),
+		["level"] = level or 1,
+		["key"] = "ELEOPT" .. key,
+		["search"] = key,
+	})
+end
 
-	slider:SetSize(parent:GetWidth() - 20 - x, 16)
-	slider:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
-	if slider.Low == nil then
-		slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
-		slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-		MoveAny:SetFontSize(slider.Low, 10, "THINOUTLINE")
-		slider.Low:SetTextColor(1, 1, 1)
-	end
-
-	if slider.High == nil then
-		slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
-		slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-		MoveAny:SetFontSize(slider.High, 10, "THINOUTLINE")
-		slider.High:SetTextColor(1, 1, 1)
-	end
-
-	if slider.Text == nil then
-		slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
-		slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-		if lanArray then
-			slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
-		else
-			slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
-		end
-
-		MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
-		slider.Text:SetTextColor(1, 1, 1)
-	end
-
-	slider.Low:SetText(vmin)
-	slider.High:SetText(vmax)
-	if lanArray then
-		slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[MoveAny:GetEleOption(name, key, value)])
-	else
-		slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. MoveAny:GetEleOption(name, key, value))
-	end
-
-	slider:SetMinMaxValues(vmin, vmax)
-	slider:SetObeyStepOnDrag(true)
-	slider:SetValueStep(steps)
-	slider:SetValue(MoveAny:GetEleOption(name, key, value, "Slider1"))
-	slider:SetScript("OnValueChanged", function(sel, val)
-		val = tonumber(string.format("%" .. steps .. "f", val))
-		if val then
+local function AddEleSlider(win, name, key, value, vmin, vmax, step, decimals, func, label)
+	return win:AddSlider({
+		["label"] = label or ("LID_" .. key),
+		["search"] = key,
+		["value"] = MoveAny:GetEleOption(name, key, value, "MenuOptions " .. key),
+		["min"] = vmin,
+		["max"] = vmax,
+		["step"] = step,
+		["decimals"] = decimals,
+		["func"] = function(val)
 			MoveAny:SetEleOption(name, key, val)
-			if lanArray then
-				slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. lanArray[val])
-			else
-				slider.Text:SetText(MoveAny:Trans("LID_" .. key) .. ": " .. val)
-			end
-
-			if func then func() end
-		end
-	end)
-	return slider
+			if func then func(val) end
+		end,
+	})
 end
 
-local function CreateDurationOptions(content, name, prefix, y, refresh)
+local function AuraChoices(map, cur)
+	local values = {}
+	local found = false
+	for value in pairs(map) do
+		tinsert(values, value)
+		if value == cur then found = true end
+	end
+
+	table.sort(values)
+	local choices = {}
+	for _, value in ipairs(values) do
+		tinsert(
+			choices,
+			{
+				["value"] = value,
+				["label"] = "LID_" .. map[value]
+			}
+		)
+	end
+
+	if cur ~= nil and not found then
+		tinsert(
+			choices,
+			{
+				["value"] = cur,
+				["label"] = tostring(cur)
+			}
+		)
+	end
+
+	return choices
+end
+
+local function AddEleDropdown(win, name, key, value, map, func, label)
+	local cur = MoveAny:GetEleOption(name, key, value, "MenuOptions " .. key)
+
+	return win:AddDropdown({
+		["label"] = label or ("LID_" .. key),
+		["search"] = key,
+		["value"] = cur,
+		["choices"] = AuraChoices(map, cur),
+		["func"] = function(val)
+			MoveAny:SetEleOption(name, key, val)
+			if func then func(val) end
+		end,
+	})
+end
+
+local function AddDurationOptions(win, name, prefix, refresh)
 	local apply = function()
 		if MoveAny.UpdateAuraDurations then MoveAny:UpdateAuraDurations("MenuOptions") end
 		if refresh then refresh() end
 	end
 
-	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "ANCHOR", 0, 1, 0, 9, apply, MoveAny.DurationAnchors)
-	y = y - 40
-	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "SPACING", 0, 1, -30, 30, apply)
-	y = y - 40
-	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 1, 4, 12, apply)
-	y = y - 40
-	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FONT", 0, 1, 0, 1, apply, MoveAny.DurationFonts)
-	y = y - 40
-	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FORMAT", 0, 1, 0, 2, apply, MoveAny.DurationFormats)
-	y = y - 40
-	local color = MoveAny:CreateButton(prefix .. "COLOR", content)
-	color:SetSize(content:GetWidth() - 30, 25)
-	color:SetPoint("TOPLEFT", content, "TOPLEFT", 10, y)
-	color:SetText(MoveAny:Trans("LID_" .. prefix .. "COLOR"))
-	color:SetScript("OnClick", function()
-		local r = MoveAny:GetEleOption(name, prefix .. "COLOR_R", 1)
-		local g = MoveAny:GetEleOption(name, prefix .. "COLOR_G", 1)
-		local b = MoveAny:GetEleOption(name, prefix .. "COLOR_B", 1)
-		local a = MoveAny:GetEleOption(name, prefix .. "COLOR_A", 1)
-		if MoveAny:GetWoWBuild() ~= "RETAIL" then a = 1 - a end
-		MoveAny:ShowColorPicker(r, g, b, a, function(restore)
-			local newR, newG, newB, newA
-			if restore then
-				newR, newG, newB, newA = unpack(restore)
-			else
-				local alpha = 1
-				if ColorPickerFrame.GetColorAlpha then
-					alpha = ColorPickerFrame:GetColorAlpha()
-				elseif OpacitySliderFrame then
-					alpha = OpacitySliderFrame:GetValue()
-				end
-
-				if MoveAny:GetWoWBuild() ~= "RETAIL" then alpha = 1 - alpha end
-				newA, newR, newG, newB = alpha, ColorPickerFrame:GetColorRGB()
-			end
-
-			MoveAny:SetEleOption(name, prefix .. "COLOR_R", newR or 1)
-			MoveAny:SetEleOption(name, prefix .. "COLOR_G", newG or 1)
-			MoveAny:SetEleOption(name, prefix .. "COLOR_B", newB or 1)
-			MoveAny:SetEleOption(name, prefix .. "COLOR_A", newA or 1)
+	AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny.DurationAnchors, apply, "LID_ANCHOR")
+	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
+	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 4, 12, 1, 0, apply, "LID_TEXTSIZE")
+	AddEleDropdown(win, name, prefix .. "FONT", 0, MoveAny.DurationFonts, apply, "LID_FONT")
+	AddEleDropdown(win, name, prefix .. "FORMAT", 0, MoveAny.DurationFormats, apply, "LID_FORMAT")
+	win:AddColorPicker({
+		["label"] = "LID_COLOR",
+		["search"] = prefix .. "COLOR",
+		["value"] = {
+			["r"] = MoveAny:GetEleOption(name, prefix .. "COLOR_R", 1),
+			["g"] = MoveAny:GetEleOption(name, prefix .. "COLOR_G", 1),
+			["b"] = MoveAny:GetEleOption(name, prefix .. "COLOR_B", 1),
+			["a"] = MoveAny:GetEleOption(name, prefix .. "COLOR_A", 1),
+		},
+		["func"] = function(r, g, b, a)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_R", r)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_G", g)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_B", b)
+			MoveAny:SetEleOption(name, prefix .. "COLOR_A", a)
 			apply()
-		end)
-	end)
-	return y - 40
+		end,
+	})
 end
 
-function MoveAny:MenuOptions(opt, frame)
+local function AddGeneralOptions(win, name, optionFrame)
+	AddEleCategory(win, "GENERAL")
+	win.elePos = MoveAny:AddElePosition(win, name)
+	win.eleScale = MoveAny:AddEleScale(win, name)
+	local clickthrough, lockparent
+	local function UpdateHideDeps(hidden)
+		for _, cb in pairs({clickthrough, lockparent}) do
+			cb:SetEnabled(not hidden)
+			if cb.Label then
+				if hidden then
+					cb.Label:SetTextColor(0.5, 0.5, 0.5)
+				else
+					cb.Label:SetTextColor(1, 0.82, 0)
+				end
+			end
+		end
+	end
+
+	win:AddCheckbox({
+		["label"] = HIDE,
+		["search"] = "HIDE",
+		["value"] = MoveAny:GetEleOption(name, "Hide", false, "Hide1"),
+		["func"] = function(value)
+			MoveAny:SetEleOption(name, "Hide", value)
+			local dragf = MoveAny:GetDragFromName(name)
+			if value then
+				MoveAny:HideFrame(optionFrame)
+				MoveAny:UpdateEleColor(dragf)
+				if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
+					dragf:Hide()
+				else
+					dragf:Show()
+				end
+			else
+				MoveAny:ShowFrame(optionFrame)
+				MoveAny:UpdateEleColor(dragf)
+			end
+
+			UpdateHideDeps(value)
+		end,
+	})
+
+	clickthrough = win:AddCheckbox({
+		["label"] = "LID_CLICKTHROUGH",
+		["search"] = "CLICKTHROUGH",
+		["value"] = MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"),
+		["func"] = function(value)
+			MoveAny:SetEleOption(name, "ClickThrough", value)
+			local dragf = MoveAny:GetDragFromName(name)
+			if optionFrame == nil then
+				if dragf then dragf:Hide() end
+
+				return
+			end
+
+			if value and dragf then dragf:Show() end
+			MoveAny:UpdateEleColor(dragf)
+			optionFrame:EnableMouse(not value)
+			local target = optionFrame.AuraContainer or optionFrame
+			MoveAny:ForeachChildren(target, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(not value) end end, "clickthrough")
+		end,
+	})
+
+	lockparent = win:AddCheckbox({
+		["label"] = "LID_LOCKPARENT",
+		["search"] = "LOCKPARENT",
+		["value"] = MoveAny:GetEleOption(name, "LockParent", false, "LockParent1"),
+		["func"] = function(value) MoveAny:SetEleOption(name, "LockParent", value) end,
+	})
+
+	lockparent:HookScript("OnEnter", function(sel)
+		GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+		GameTooltip:SetText(MoveAny:Trans("LID_LOCKPARENT"))
+		GameTooltip:AddLine(MoveAny:Trans("LID_LOCKPARENTDESC"), 1, 1, 1, true)
+		GameTooltip:Show()
+	end)
+
+	lockparent:HookScript("OnLeave", function() GameTooltip:Hide() end)
+	UpdateHideDeps(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
+	MoveAny:AddEleReset(win, name)
+end
+
+local function AddActionBarOptions(win, name, opts, frame, optionFrame)
+	AddEleCategory(win, "ACTIONBARS", ACTIONBARS_LABEL)
+	local btns = MoveAny:GetAbBtns(frame)
+	local maxBtns = 1
+	if btns then maxBtns = getn(btns) end
+	local rowsMax = maxBtns
+	if frame ~= MAMenuBar and frame ~= StanceBar and opts["COUNT"] and opts["COUNT"] > 0 then rowsMax = opts["COUNT"] end
+	local vmin = 1
+	if frame == MAActionBar1 or frame == MainActionBar or frame == MainMenuBar then vmin = 6 end
+	local sliderRows = nil
+	if frame ~= MAMenuBar and optionFrame ~= StanceBarAnchor then
+		win:AddSlider({
+			["label"] = MoveAny:Trans("LID_COUNT"),
+			["search"] = "COUNT",
+			["value"] = opts["COUNT"] or maxBtns,
+			["min"] = vmin,
+			["max"] = maxBtns,
+			["step"] = 1,
+			["decimals"] = 0,
+			["func"] = function(value)
+				if value == opts["COUNT"] then return end
+				opts["COUNT"] = value
+				if sliderRows then
+					sliderRows.slider:SetMinMaxValues(1, value)
+					if sliderRows.High then sliderRows.High:SetText(value) end
+					if sliderRows.value > value then sliderRows.slider:SetValue(value) end
+				end
+
+				if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions") end
+			end,
+		})
+	end
+
+	if btns and rowsMax >= 1 and optionFrame ~= StanceBarAnchor then
+		sliderRows = win:AddSlider({
+			["label"] = MoveAny:Trans("LID_ROWS"),
+			["search"] = "ROWS",
+			["value"] = opts["ROWS"] or 1,
+			["min"] = 1,
+			["max"] = rowsMax,
+			["step"] = 1,
+			["decimals"] = 0,
+			["func"] = function(value)
+				if value == opts["ROWS"] then return end
+				opts["ROWS"] = value
+				if frame.UpdateSystemSettingNumRows then
+					frame.numRows = value
+					frame:UpdateSystemSettingNumRows()
+				end
+
+				if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions2") end
+			end,
+		})
+	end
+
+	if optionFrame ~= StanceBarAnchor then
+		win:AddSlider({
+			["label"] = MoveAny:Trans("LID_OFFSET"),
+			["search"] = "OFFSET",
+			["value"] = opts["OFFSET"] or 0,
+			["min"] = -4,
+			["max"] = 8,
+			["step"] = 1,
+			["decimals"] = 0,
+			["func"] = function(value)
+				if value == opts["OFFSET"] then return end
+				opts["OFFSET"] = value
+				if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions3") end
+			end,
+		})
+
+		win:AddCheckbox({
+			["label"] = "LID_FLIPPED",
+			["search"] = "FLIPPED",
+			["value"] = MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"),
+			["func"] = function(value)
+				MoveAny:SetEleOption(name, "FLIPPED", value)
+				if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions4") end
+			end,
+		})
+	end
+
+	opts["SPACING"] = opts["SPACING"] or 2
+	win:AddSlider({
+		["label"] = MoveAny:Trans("LID_SPACING"),
+		["search"] = "SPACING",
+		["value"] = opts["SPACING"],
+		["min"] = 0,
+		["max"] = 16,
+		["step"] = 1,
+		["decimals"] = 0,
+		["func"] = function(value)
+			if value == opts["SPACING"] then return end
+			opts["SPACING"] = value
+			if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions5") end
+		end,
+	})
+
+	if frame == MAActionBar1 or frame == MainActionBar then
+		win:AddCheckbox({
+			["label"] = "LID_CHANGEONCATSTEALTH",
+			["search"] = "CHANGEONCATSTEALTH",
+			["value"] = MoveAny:IsEnabled("CHANGEONCATSTEALTH", true),
+			["func"] = function(value)
+				MoveAny:SetEnabled("CHANGEONCATSTEALTH", value)
+				ApplyReload()
+			end,
+		})
+	end
+
+	if optionFrame == StanceBarAnchor then
+		opts["ORIENTATION"] = opts["ORIENTATION"] or "CENTERED"
+		win:AddDropdown({
+			["label"] = MoveAny:Trans("LID_ORIENTATION"),
+			["search"] = "ORIENTATION",
+			["value"] = opts["ORIENTATION"],
+			["choices"] = {
+				{
+					["value"] = "LEFTALIGNED",
+					["label"] = "LID_LEFTALIGNED"
+				},
+				{
+					["value"] = "CENTERED",
+					["label"] = "LID_CENTERED"
+				},
+				{
+					["value"] = "RIGHTALIGNED",
+					["label"] = "LID_RIGHTALIGNED"
+				},
+			},
+			["func"] = function(value)
+				opts["ORIENTATION"] = value
+				MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0)
+			end,
+		})
+	end
+end
+
+local function RefreshBuffs()
+	if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
+	if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
+	if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
+	if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
+	if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
+end
+
+local function RefreshDebuffs()
+	if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("MenuOptions") end
+	if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
+	if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
+	if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
+	if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
+end
+
+local MODES_FULL = {
+	[0] = "AUTO",
+	[1] = "TOPRIGHT",
+	[2] = "TOPLEFT",
+	[3] = "BOTTOMRIGHT",
+	[4] = "BOTTOMLEFT",
+	[5] = "CENTER",
+}
+
+local MODES_SIMPLE = {
+	[0] = "BOTTOM",
+	[1] = "TOP",
+}
+
+local function HasFullAuraModes()
+	local build = MoveAny:GetWoWBuild()
+
+	return build ~= "RETAIL" and build ~= "CLASSIC" and build ~= "TBC" and build ~= "MISTS"
+end
+
+local function AddAuraOptions(win, name, cat, prefix, ownBar, refresh)
+	AddEleCategory(win, cat)
+	if name == ownBar then
+		if HasFullAuraModes() then AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_FULL, refresh) end
+	else
+		AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_SIMPLE, refresh)
+	end
+
+	AddEleSlider(win, name, prefix .. "LIMIT", 10, 2, 20, 1, 0, refresh)
+	AddEleSlider(win, name, prefix .. "SPACINGX", 4, 0, 30, 1, 0, refresh)
+	AddEleSlider(win, name, prefix .. "SPACINGY", 10, 0, 30, 1, 0, refresh)
+	AddEleCategory(win, cat .. "DURATION", MoveAny:Trans("LID_DURATION"), 2)
+	AddDurationOptions(win, name, prefix .. "DURATION", refresh)
+end
+
+local function AddStatusBarOptions(win, opts, frame, label)
+	AddEleCategory(win, "STATUSBAR", label)
+	opts["WIDTH"] = opts["WIDTH"] or 1024
+	opts["HEIGHT"] = opts["HEIGHT"] or 15
+	win:AddSlider({
+		["label"] = MoveAny:Trans("LID_WIDTH"),
+		["search"] = "WIDTH",
+		["value"] = opts["WIDTH"],
+		["min"] = 100,
+		["max"] = 1024,
+		["step"] = 2,
+		["decimals"] = 0,
+		["func"] = function(value)
+			if value == opts["WIDTH"] then return end
+			opts["WIDTH"] = value
+			if frame and frame.UpdateSize then frame:UpdateSize() end
+		end,
+	})
+
+	win:AddSlider({
+		["label"] = MoveAny:Trans("LID_HEIGHT"),
+		["search"] = "HEIGHT",
+		["value"] = opts["HEIGHT"],
+		["min"] = 2,
+		["max"] = 64,
+		["step"] = 1,
+		["decimals"] = 0,
+		["func"] = function(value)
+			if value == opts["HEIGHT"] then return end
+			opts["HEIGHT"] = value
+			if frame and frame.UpdateSize then frame:UpdateSize() end
+		end,
+	})
+end
+
+local function AddBagOptions(win, name)
+	AddEleCategory(win, "BAGEXTRAS")
+	win:AddCheckbox({
+		["label"] = HIDE .. " (" .. MoveAny:Trans("LID_HIDESMALLBAGS") .. ")",
+		["search"] = "HIDESMALLBAGS",
+		["value"] = MoveAny:GetEleOption(name, "HideSmallBags", false, "HideSmallBags1"),
+		["func"] = function(value)
+			MoveAny:SetEleOption(name, "HideSmallBags", value)
+			MoveAny:UpdateBags()
+		end,
+	})
+
+	if KeyRingButton then
+		win:AddCheckbox({
+			["label"] = HIDE .. " (" .. MoveAny:Trans("LID_HIDEKEYBAG") .. ")",
+			["search"] = "HIDEKEYBAG",
+			["value"] = MoveAny:GetEleOption(name, "HideKeyBag", false, "HideKeyBag1"),
+			["func"] = function(value)
+				MoveAny:SetEleOption(name, "HideKeyBag", value)
+				MoveAny:UpdateBags()
+			end,
+		})
+	end
+end
+
+local function AddAlphaOptions(win, name)
+	AddEleCategory(win, "ALPHA")
+	local apply = function() MoveAny:SafeUpdateAlphas("MenuOptions") end
+	AddEleSlider(win, name, "ALPHAINCOMBAT", 1, 0, 1, 0.1, 1, apply)
+	if MoveAny:GetWoWBuildNr() < 120000 then
+		win:AddCheckbox({
+			["label"] = "LID_FULLHPENABLED",
+			["search"] = "FULLHPENABLED",
+			["value"] = MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp1"),
+			["func"] = function(value) MoveAny:SetEleOption(name, "FULLHPENABLED", value) end,
+		})
+
+		AddEleSlider(win, name, "ALPHAISFULLHEALTH", 1, 0, 1, 0.1, 1, apply)
+	end
+
+	AddEleSlider(win, name, "ALPHAINVEHICLE", 1, 0, 1, 0.1, 1, apply)
+	AddEleSlider(win, name, "ALPHAISMOUNTED", 1, 0, 1, 0.1, 1, apply)
+	AddEleSlider(win, name, "ALPHAINRESTEDAREA", 1, 0, 1, 0.1, 1, apply)
+	AddEleSlider(win, name, "ALPHAISSTEALTHED", 1, 0, 1, 0.1, 1, apply)
+	if MoveAny:IsPetBattleAvailable() then AddEleSlider(win, name, "ALPHAISINPETBATTLE", 1, 0, 1, 0.1, 1, apply) end
+	if DragonridingUtil then AddEleSlider(win, name, "ALPHAISSKYRIDING", 1, 0, 1, 0.1, 1, apply) end
+	AddEleSlider(win, name, "ALPHANOTINCOMBAT", 1, 0, 1, 0.1, 1, apply)
+end
+
+function MoveAny:MenuOptions(win, frame)
 	local optionFrame = frame
 	if frame == StanceBarAnchor then frame = StanceBar end
 	if frame == nil then
 		MoveAny:MSG("FRAME NOT FOUND")
+
 		return
 	end
 
 	local name = MoveAny:GetFrameName(optionFrame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
-	local tabs = {GENERAL}
-	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainActionBar" or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then table.insert(tabs, ACTIONBARS_LABEL) end
-	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") then table.insert(tabs, MoveAny:Trans("LID_BUFFS")) end
-	if string.find(name, "MADebuffBar") or string.find(name, "DebuffFrame") then table.insert(tabs, MoveAny:Trans("LID_DEBUFFS")) end
-	if string.find(name, "TargetFrameBuffMover") then table.insert(tabs, MoveAny:Trans("LID_BUFFS")) end
-	if string.find(name, "TargetFrameDebuffMover") then table.insert(tabs, MoveAny:Trans("LID_DEBUFFS")) end
-	if string.find(name, "FocusFrameBuffMover") then table.insert(tabs, MoveAny:Trans("LID_BUFFS")) end
-	if string.find(name, "FocusFrameDebuffMover") then table.insert(tabs, MoveAny:Trans("LID_DEBUFFS")) end
-	if string.find(name, "MainMenuExpBar") then table.insert(tabs, MoveAny:Trans("LID_MAINMENUEXPBAR")) end
-	if string.find(name, "ReputationWatchBar") then table.insert(tabs, MoveAny:Trans("LID_REPUTATIONWATCHBAR")) end
-	if string.find(name, "BagsBar") then table.insert(tabs, MoveAny:Trans("LID_BAGEXTRAS")) end
-	CreateTabs(opt, tabs)
-	for i, tab in pairs(opt.tabs) do
-		local content = tab.content
-		if string.find(content.name, GENERAL) then
-			content.pos = content:CreateFontString(nil, nil, "GameFontNormal")
-			content.pos:SetPoint("TOPLEFT", content, "TOPLEFT", 4, -4)
-			local _, _, _, p4, p5 = MoveAny:GetElePoint(name)
-			content.pos:SetText(format("%s X: %d Y:%d", MoveAny:Trans("LID_POSITION"), p4, p5))
-			MAMoveButton(content, name, btnsize * 2, -btnsize * 1, 0, 5, "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
-			MAMoveButton(content, name, btnsize * 2, -btnsize * 2, 0, 1, "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
-			MAMoveButton(content, name, btnsize * 2, -btnsize * 4, 0, -1, "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
-			MAMoveButton(content, name, btnsize * 2, -btnsize * 5, 0, -5, "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
-			MAMoveButton(content, name, 0, -btnsize * 3, -5, 0, "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
-			MAMoveButton(content, name, btnsize * 1, -btnsize * 3, -1, 0, "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
-			MAMoveButton(content, name, btnsize * 3, -btnsize * 3, 1, 0, "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-			MAMoveButton(content, name, btnsize * 4, -btnsize * 3, 5, 0, "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", "Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-			content.scale = content:CreateFontString(nil, nil, "GameFontNormal")
-			content.scale:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -4)
-			local scale = MoveAny:GetEleScale(name) or 1
-			content.scale:SetText(format("%s: %0.1f", MoveAny:Trans("LID_SCALE"), scale))
-			local sup = MoveAny:CreateButton("sup", content, true)
-			sup:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
-			sup:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
-			sup:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-			sup:SetSize(btnsize, btnsize)
-			sup:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -24)
-			sup:SetScript("OnClick", function()
-				local val = tonumber(string.format("%.1f", optionFrame:GetScale() + 0.1))
-				MoveAny:SetEleScale(name, val)
-				content.scale:SetText(format("%s: %0.1f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
-			end)
-
-			local sup2 = MoveAny:CreateButton("sup2", content, true)
-			sup2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up")
-			sup2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Down")
-			sup2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-			sup2:SetSize(btnsize, btnsize)
-			sup2:SetPoint("TOPLEFT", content, "TOPLEFT", 220, -24)
-			sup2:SetScript("OnClick", function()
-				local val = tonumber(string.format("%.2f", optionFrame:GetScale() + 0.01))
-				MoveAny:SetEleScale(name, val)
-				content.scale:SetText(format("%s: %0.2f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
-			end)
-
-			local sdn = MoveAny:CreateButton("sdn", content, true)
-			sdn:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
-			sdn:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
-			sdn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-			sdn:SetSize(btnsize, btnsize)
-			sdn:SetPoint("TOPLEFT", content, "TOPLEFT", 200, -48)
-			sdn:SetScript("OnClick", function()
-				if frame:GetScale() > 0.2 then
-					local val = tonumber(string.format("%.1f", optionFrame:GetScale() - 0.1))
-					MoveAny:SetEleScale(name, val)
-					content.scale:SetText(format("%s: %0.1f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
-				end
-			end)
-
-			local sdn2 = MoveAny:CreateButton("sdn2", content, true)
-			sdn2:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
-			sdn2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
-			sdn2:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-			sdn2:SetSize(btnsize, btnsize)
-			sdn2:SetPoint("TOPLEFT", content, "TOPLEFT", 220, -48)
-			sdn2:SetScript("OnClick", function()
-				if frame:GetScale() > 0.2 then
-					local val = tonumber(string.format("%.2f", optionFrame:GetScale() - 0.01))
-					MoveAny:SetEleScale(name, val)
-					content.scale:SetText(format("%s: %0.2f", MoveAny:Trans("LID_SCALE"), MoveAny:GetEleScale(name)))
-				end
-			end)
-
-			local resetDB = MoveAny:CreateButton("resetdb", content)
-			resetDB:SetText(MoveAny:Trans("LID_RESETELEMENT"))
-			resetDB:SetSize(btnsize * 6, btnsize)
-			resetDB:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -8)
-			resetDB:SetScript("OnClick", function()
-				MoveAny:ResetElement(name)
-				--MoveAny:TrySaveEditMode()
-				if C_UI then
-					C_UI.Reload()
-				else
-					ReloadUI()
-				end
-			end)
-
-			local clickthrough, lockparent
-			local function UpdateHideDeps(hidden)
-				for _, cb in pairs({clickthrough, lockparent}) do
-					cb:SetEnabled(not hidden)
-					if cb.text then
-						if hidden then
-							cb.text:SetTextColor(0.5, 0.5, 0.5)
-						else
-							cb.text:SetTextColor(1, 0.82, 0)
-						end
-					end
-				end
-			end
-
-			local hide = MoveAny:CreateCheckButton("hide", content)
-			hide:SetSize(btnsize, btnsize)
-			hide:SetHitRectInsets(0, 0, 0, 0)
-			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -110)
-			hide:SetChecked(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
-			hide:SetText(HIDE)
-			hide:SetScript("OnClick", function()
-				local checked = hide:GetChecked()
-				MoveAny:SetEleOption(name, "Hide", checked)
-				local dragf = MoveAny:GetDragFromName(name)
-				if checked then
-					MoveAny:HideFrame(optionFrame)
-					MoveAny:UpdateEleColor(dragf)
-					if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
-						dragf:Hide()
-					else
-						dragf:Show()
-					end
-				else
-					MoveAny:ShowFrame(optionFrame)
-					MoveAny:UpdateEleColor(dragf)
-				end
-
-				UpdateHideDeps(checked)
-			end)
-
-			hide.text = hide:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
-			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
-			hide.text:SetText(_G["HIDE"])
-			clickthrough = MoveAny:CreateCheckButton("clickthrough", content)
-			clickthrough:SetSize(btnsize, btnsize)
-			clickthrough:SetHitRectInsets(0, 0, 0, 0)
-			clickthrough:SetPoint("TOPLEFT", content, "TOPLEFT", 150, -140)
-			clickthrough:SetChecked(MoveAny:GetEleOption(name, "ClickThrough", false, "ClickThrough1"))
-			clickthrough:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
-			clickthrough:SetScript("OnClick", function()
-				local checked = clickthrough:GetChecked()
-				MoveAny:SetEleOption(name, "ClickThrough", checked)
-				local dragf = MoveAny:GetDragFromName(name)
-				if checked then
-					if optionFrame then
-						dragf:Show()
-						MoveAny:UpdateEleColor(dragf)
-						optionFrame:EnableMouse(false)
-						if optionFrame.AuraContainer then
-							MoveAny:ForeachChildren(optionFrame.AuraContainer, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(false) end end, "clickthrough 2")
-						else
-							MoveAny:ForeachChildren(optionFrame, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(false) end end, "clickthrough 1")
-						end
-					else
-						dragf:Hide()
-					end
-				else
-					if optionFrame then
-						MoveAny:UpdateEleColor(dragf)
-						optionFrame:EnableMouse(true)
-						if optionFrame.AuraContainer then
-							MoveAny:ForeachChildren(optionFrame.AuraContainer, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(true) end end, "clickthrough 2")
-						else
-							MoveAny:ForeachChildren(optionFrame, function(child) if C_Widget.IsWidget(child) then child:EnableMouse(true) end end, "clickthrough 1")
-						end
-					else
-						dragf:Hide()
-					end
-				end
-			end)
-
-			clickthrough.text = clickthrough:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
-			MoveAny:SetFontSize(clickthrough.text, 12, "THINOUTLINE")
-			clickthrough.text:SetPoint("LEFT", clickthrough, "RIGHT", 0, 0)
-			clickthrough.text:SetText(MoveAny:Trans("LID_CLICKTHROUGH"))
-			lockparent = MoveAny:CreateCheckButton("lockparent", content)
-			lockparent:SetSize(btnsize, btnsize)
-			lockparent:SetHitRectInsets(0, 0, 0, 0)
-			lockparent:SetPoint("TOPLEFT", content, "TOPLEFT", 300, -110)
-			lockparent:SetChecked(MoveAny:GetEleOption(name, "LockParent", false, "LockParent1"))
-			lockparent:SetText(MoveAny:Trans("LID_LOCKPARENT"))
-			lockparent:SetScript("OnClick", function()
-				local checked = lockparent:GetChecked()
-				MoveAny:SetEleOption(name, "LockParent", checked)
-			end)
-
-			lockparent:HookScript("OnEnter", function(sel)
-				GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
-				GameTooltip:SetText(MoveAny:Trans("LID_LOCKPARENT"))
-				GameTooltip:AddLine(MoveAny:Trans("LID_LOCKPARENTDESC"), 1, 1, 1, true)
-				GameTooltip:Show()
-			end)
-
-			lockparent:HookScript("OnLeave", function() GameTooltip:Hide() end)
-			lockparent.text = lockparent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-			lockparent.text:SetText(MoveAny:Trans("LID_LOCKPARENT"))
-			MoveAny:SetFontSize(lockparent.text, 12, "THINOUTLINE")
-			lockparent.text:SetPoint("LEFT", lockparent, "RIGHT", 0, 0)
-			lockparent.text:SetText(MoveAny:Trans("LID_LOCKPARENT"))
-			UpdateHideDeps(MoveAny:GetEleOption(name, "Hide", false, "Hide1"))
-			if MoveAny:GetWoWBuildNr() < 120000 then
-				local fullhp = MoveAny:CreateCheckButton("FULLHPENABLED", content)
-				fullhp:SetSize(btnsize, btnsize)
-				fullhp:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -220)
-				fullhp:SetChecked(MoveAny:GetEleOption(name, "FULLHPENABLED", false, "fullhp1"))
-				fullhp:SetScript("OnClick", function()
-					local checked = fullhp:GetChecked()
-					MoveAny:SetEleOption(name, "FULLHPENABLED", checked)
-				end)
-			end
-
-			local space = -36
-			local Y = -190
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINCOMBAT", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-			Y = Y + space
-			if MoveAny:GetWoWBuildNr() < 120000 then
-				MoveAny:CreateSliderOld(content, 30, Y, name, "ALPHAISFULLHEALTH", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-				Y = Y + space
-			end
-
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINVEHICLE", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISMOUNTED", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAINRESTEDAREA", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-			Y = Y + space
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSTEALTHED", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-			Y = Y + space
-			if MoveAny:IsPetBattleAvailable() then
-				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISINPETBATTLE", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-				Y = Y + space
-			end
-
-			if DragonridingUtil then
-				MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHAISSKYRIDING", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-				Y = Y + space
-			end
-
-			MoveAny:CreateSliderOld(content, 10, Y, name, "ALPHANOTINCOMBAT", 1, 0.1, 0, 1, MoveAny.SafeUpdateAlphas)
-		elseif string.find(content.name, ACTIONBARS_LABEL) then
-			local slides = {}
-			local items = {}
-			local function UpdateRowItems()
-				if MoveAny:GetAbBtns(frame) then
-					local maxBtns = getn(MoveAny:GetAbBtns(frame))
-					if frame ~= MAMenuBar and frame ~= StanceBar and opts["COUNT"] and opts["COUNT"] > 0 then maxBtns = opts["COUNT"] end
-					items = {}
-					for id = 1, maxBtns do
-						tinsert(items, id)
-					end
-				end
-			end
-
-			UpdateRowItems()
-			local vmin = 1
-			if frame == MAActionBar1 or frame == MainActionBar or frame == MainMenuBar then vmin = 6 end
-			local max = 1
-			if MoveAny:GetAbBtns(frame) then
-				max = getn(MoveAny:GetAbBtns(frame))
-			else
-				max = 1
-			end
-
-			local count = opts["COUNT"] or max
-			local rows = opts["ROWS"] or 1
-			local offset = opts["OFFSET"] or 0
-			local PY = -20
-			if frame ~= MAMenuBar and optionFrame ~= StanceBarAnchor then
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-					slides.sliderCount = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
-				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-					slides.sliderCount = CreateFrame("Slider", nil, content, "UISliderTemplate")
-				else
-					slides.sliderCount = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-				end
-
-				local sliderCount = slides.sliderCount
-				sliderCount:SetSize(content:GetWidth() - 110, 16)
-				sliderCount:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
-				if sliderCount.Low == nil then
-					sliderCount.Low = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
-					sliderCount.Low:SetPoint("BOTTOMLEFT", sliderCount, "BOTTOMLEFT", 0, -12)
-					MoveAny:SetFontSize(sliderCount.Low, 10, "THINOUTLINE")
-					sliderCount.Low:SetTextColor(1, 1, 1)
-				end
-
-				if sliderCount.High == nil then
-					sliderCount.High = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
-					sliderCount.High:SetPoint("BOTTOMRIGHT", sliderCount, "BOTTOMRIGHT", 0, -12)
-					MoveAny:SetFontSize(sliderCount.High, 10, "THINOUTLINE")
-					sliderCount.High:SetTextColor(1, 1, 1)
-				end
-
-				if sliderCount.Text == nil then
-					sliderCount.Text = sliderCount:CreateFontString(nil, nil, "GameFontNormal")
-					sliderCount.Text:SetText(MoveAny:Trans("LID_COUNT") .. ": " .. count)
-					sliderCount.Text:SetPoint("TOP", sliderCount, "TOP", 0, 16)
-					MoveAny:SetFontSize(sliderCount.Text, 12, "THINOUTLINE")
-					sliderCount.Text:SetTextColor(1, 1, 1)
-				end
-
-				sliderCount.Low:SetText("")
-				sliderCount.High:SetText("")
-				sliderCount.Text:SetText(MoveAny:Trans("LID_COUNT") .. ": " .. count)
-				sliderCount:SetMinMaxValues(vmin, max)
-				sliderCount:SetObeyStepOnDrag(true)
-				sliderCount:SetValueStep(1)
-				sliderCount:SetValue(count)
-				sliderCount:SetScript("OnValueChanged", function(sel, val)
-					val = tonumber(string.format("%" .. 0 .. "f", val))
-					if val and val ~= opts["ROWS"] then
-						opts["COUNT"] = val
-						sel.Text:SetText(MoveAny:Trans("LID_COUNT") .. ": " .. val)
-						UpdateRowItems()
-						if slides.sliderRows then
-							slides.sliderRows:SetMinMaxValues(1, #items)
-							slides.sliderRows:SetValue(slides.sliderRows:GetValue())
-						end
-
-						if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions") end
-					end
-				end)
-
-				PY = PY - 36
-			end
-
-			if #items >= 1 and optionFrame ~= StanceBarAnchor then
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-					slides.sliderRows = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
-				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-					slides.sliderRows = CreateFrame("Slider", nil, content, "UISliderTemplate")
-				else
-					slides.sliderRows = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-				end
-
-				local sliderRows = slides.sliderRows
-				sliderRows:SetSize(content:GetWidth() - 110, 16)
-				sliderRows:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
-				if sliderRows.Low == nil then
-					sliderRows.Low = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
-					sliderRows.Low:SetPoint("BOTTOMLEFT", sliderRows, "BOTTOMLEFT", 0, -12)
-					MoveAny:SetFontSize(sliderRows.Low, 10, "THINOUTLINE")
-					sliderRows.Low:SetTextColor(1, 1, 1)
-				end
-
-				if sliderRows.High == nil then
-					sliderRows.High = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
-					sliderRows.High:SetPoint("BOTTOMRIGHT", sliderRows, "BOTTOMRIGHT", 0, -12)
-					MoveAny:SetFontSize(sliderRows.High, 10, "THINOUTLINE")
-					sliderRows.High:SetTextColor(1, 1, 1)
-				end
-
-				if sliderRows.Text == nil then
-					sliderRows.Text = sliderRows:CreateFontString(nil, nil, "GameFontNormal")
-					sliderRows.Text:SetPoint("TOP", sliderRows, "TOP", 0, 16)
-					sliderRows.Text:SetText(MoveAny:Trans("LID_ROWS") .. ": " .. rows)
-					MoveAny:SetFontSize(sliderRows.Text, 12, "THINOUTLINE")
-					sliderRows.Text:SetTextColor(1, 1, 1)
-				end
-
-				sliderRows.Low:SetText("")
-				sliderRows.High:SetText("")
-				sliderRows.Text:SetText(MoveAny:Trans("LID_ROWS") .. ": " .. rows)
-				sliderRows:SetMinMaxValues(1, getn(items))
-				sliderRows:SetObeyStepOnDrag(true)
-				sliderRows:SetValueStep(1)
-				sliderRows:SetValue(rows)
-				sliderRows:SetScript("OnValueChanged", function(sel, val)
-					val = tonumber(string.format("%" .. 0 .. "f", val))
-					local value = items[val]
-					if value and value ~= opts["ROWS"] then
-						opts["ROWS"] = value
-						sel.Text:SetText(MoveAny:Trans("LID_ROWS") .. ": " .. value)
-						if frame.UpdateSystemSettingNumRows then
-							frame.numRows = value
-							frame:UpdateSystemSettingNumRows()
-						end
-
-						if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions2") end
-					end
-				end)
-
-				PY = PY - 36
-			end
-
-			if optionFrame ~= StanceBarAnchor then
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-					slides.offset = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
-				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-					slides.offset = CreateFrame("Slider", nil, content, "UISliderTemplate")
-				else
-					slides.offset = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-				end
-
-				local sliderOffset = slides.offset
-				sliderOffset:SetSize(content:GetWidth() - 110, 16)
-				sliderOffset:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
-				if sliderOffset.Low == nil then
-					sliderOffset.Low = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
-					sliderOffset.Low:SetPoint("BOTTOMLEFT", sliderOffset, "BOTTOMLEFT", 0, -12)
-					MoveAny:SetFontSize(sliderOffset.Low, 10, "THINOUTLINE")
-					sliderOffset.Low:SetTextColor(1, 1, 1)
-				end
-
-				if sliderOffset.High == nil then
-					sliderOffset.High = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
-					sliderOffset.High:SetPoint("BOTTOMRIGHT", sliderOffset, "BOTTOMRIGHT", 0, -12)
-					MoveAny:SetFontSize(sliderOffset.High, 10, "THINOUTLINE")
-					sliderOffset.High:SetTextColor(1, 1, 1)
-				end
-
-				if sliderOffset.Text == nil then
-					sliderOffset.Text = sliderOffset:CreateFontString(nil, nil, "GameFontNormal")
-					sliderOffset.Text:SetPoint("TOP", sliderOffset, "TOP", 0, 16)
-					sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
-					MoveAny:SetFontSize(sliderOffset.Text, 12, "THINOUTLINE")
-					sliderOffset.Text:SetTextColor(1, 1, 1)
-				end
-
-				sliderOffset.Low:SetText("-4")
-				sliderOffset.High:SetText("8")
-				sliderOffset.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. offset)
-				sliderOffset:SetMinMaxValues(-4, 8)
-				sliderOffset:SetObeyStepOnDrag(true)
-				sliderOffset:SetValueStep(1)
-				sliderOffset:SetValue(offset)
-				sliderOffset:SetScript("OnValueChanged", function(sel, value)
-					value = tonumber(string.format("%" .. 0 .. "f", value))
-					if value and value ~= opts["OFFSET"] then
-						opts["OFFSET"] = value
-						sel.Text:SetText(MoveAny:Trans("LID_OFFSET") .. ": " .. value)
-						if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions3") end
-					end
-				end)
-
-				PY = PY - 36
-				local flipped = MoveAny:CreateCheckButton("flipped", content)
-				flipped:SetSize(btnsize, btnsize)
-				flipped:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
-				flipped:SetChecked(MoveAny:GetEleOption(name, "FLIPPED", false, "Flipped1"))
-				flipped:SetText(MoveAny:Trans("LID_FLIPPED"))
-				flipped:SetScript("OnClick", function()
-					local checked = flipped:GetChecked()
-					MoveAny:SetEleOption(name, "FLIPPED", checked)
-					if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions4") end
-				end)
-
-				flipped.text = flipped:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-				flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
-				MoveAny:SetFontSize(flipped.text, 12, "THINOUTLINE")
-				flipped.text:SetPoint("LEFT", flipped, "RIGHT", 0, 0)
-				flipped.text:SetText(MoveAny:Trans("LID_FLIPPED"))
-				PY = PY - 40
-			end
-
-			opts["SPACING"] = opts["SPACING"] or 2
-			if true then
-				local slider = nil
-				if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-					slider = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
-				elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-					slider = CreateFrame("Slider", nil, content, "UISliderTemplate")
-				else
-					slider = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-				end
-
-				slider:SetSize(content:GetWidth() - 110, 16)
-				slider:SetPoint("TOPLEFT", content, "TOPLEFT", 10, PY)
-				if slider.Low == nil then
-					slider.Low = slider:CreateFontString(nil, nil, "GameFontNormal")
-					slider.Low:SetPoint("BOTTOMLEFT", slider, "BOTTOMLEFT", 0, -12)
-					MoveAny:SetFontSize(slider.Low, 10, "THINOUTLINE")
-					slider.Low:SetTextColor(1, 1, 1)
-				end
-
-				if slider.High == nil then
-					slider.High = slider:CreateFontString(nil, nil, "GameFontNormal")
-					slider.High:SetPoint("BOTTOMRIGHT", slider, "BOTTOMRIGHT", 0, -12)
-					MoveAny:SetFontSize(slider.High, 10, "THINOUTLINE")
-					slider.High:SetTextColor(1, 1, 1)
-				end
-
-				if slider.Text == nil then
-					slider.Text = slider:CreateFontString(nil, nil, "GameFontNormal")
-					slider.Text:SetPoint("TOP", slider, "TOP", 0, 16)
-					slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. opts["SPACING"])
-					MoveAny:SetFontSize(slider.Text, 12, "THINOUTLINE")
-					slider.Text:SetTextColor(1, 1, 1)
-				end
-
-				slider.Low:SetText(0)
-				slider.High:SetText(16)
-				slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. opts["SPACING"])
-				slider:SetMinMaxValues(0, 16)
-				slider:SetObeyStepOnDrag(true)
-				slider:SetValueStep(1)
-				slider:SetValue(opts["SPACING"])
-				slider:SetScript("OnValueChanged", function(sel, valu)
-					valu = tonumber(string.format("%" .. 0 .. "f", valu))
-					if valu and valu ~= opts["SPACING"] then
-						opts["SPACING"] = valu
-						slider.Text:SetText(MoveAny:Trans("LID_SPACING") .. ": " .. valu)
-						if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(frame, "MenuOptions5") end
-					end
-				end)
-
-				PY = PY - 36
-			end
-
-			if frame == MAActionBar1 or frame == MainActionBar then
-				local catstealth = MoveAny:CreateCheckButton("catstealth", content)
-				catstealth:SetSize(btnsize, btnsize)
-				catstealth:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
-				catstealth:SetChecked(MoveAny:IsEnabled("CHANGEONCATSTEALTH", true))
-				catstealth:SetScript("OnClick", function()
-					local checked = catstealth:GetChecked()
-					MoveAny:SetEnabled("CHANGEONCATSTEALTH", checked)
-					if C_UI then
-						C_UI.Reload()
-					else
-						ReloadUI()
-					end
-				end)
-
-				catstealth.text = catstealth:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-				catstealth.text:SetText(MoveAny:Trans("LID_CHANGEONCATSTEALTH"))
-				MoveAny:SetFontSize(catstealth.text, 12, "THINOUTLINE")
-				catstealth.text:SetPoint("LEFT", catstealth, "RIGHT", 0, 0)
-				catstealth.text:SetText(MoveAny:Trans("LID_CHANGEONCATSTEALTH"))
-				PY = PY - 30
-			end
-
-			if optionFrame == StanceBarAnchor then
-				PY = PY - 30
-				opts["ORIENTATION"] = opts["ORIENTATION"] or "CENTERED"
-				MoveAny:SetAppendTab(opts)
-				local dropdown = MoveAny:CreateDropdown("ORIENTATION", "CENTERED", {
-					["LEFTALIGNED"] = "LEFTALIGNED",
-					["CENTERED"] = "CENTERED",
-					["RIGHTALIGNED"] = "RIGHTALIGNED"
-				}, content, function(valu) MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0) end)
-
-				dropdown:SetPoint("TOPLEFT", content, "TOPLEFT", 4, PY)
-				PY = PY - 30
-			end
-		elseif string.find(content.name, MoveAny:Trans("LID_BUFFS")) then
-			--MoveAny:CreateSliderOld(parent, x, y, name, key, value, steps, vmin, vmax, func)
-			local y = -20
-			local refreshBuffs = function()
-				if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
-				if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
-				if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
-				if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
-				if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
-			end
-
-			if name == "MABuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
-					MoveAny:CreateSliderOld(content, 10, y, name, "MABUFFMODE", 0, 1, 0, 5, function()
-						if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
-						if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
-						if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
-						if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
-						if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
-					end, {
-						[0] = "AUTO",
-						[1] = "TOPRIGHT",
-						[2] = "TOPLEFT",
-						[3] = "BOTTOMRIGHT",
-						[4] = "BOTTOMLEFT",
-						[5] = "CENTER",
-					})
-
-					y = y - 40
-				end
-			else
-				MoveAny:CreateSliderOld(content, 10, y, name, "MABUFFMODE", 0, 1, 0, 1, function()
-					if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
-					if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
-					if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
-					if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
-					if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
-				end, {
-					[0] = "DOWN",
-					[1] = "TOP",
-				})
-
-				y = y - 40
-			end
-
-			MoveAny:CreateSliderOld(content, 10, y, name, "MABUFFLIMIT", 10, 1, 2, 20, function()
-				if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
-				if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
-				if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
-				if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
-				if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
-			end)
-
-			y = y - 40
-			MoveAny:CreateSliderOld(content, 10, y, name, "MABUFFSPACINGX", 4, 1, 0, 30, function()
-				if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
-				if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
-				if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
-				if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
-				if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
-			end)
-
-			y = y - 40
-			MoveAny:CreateSliderOld(content, 10, y, name, "MABUFFSPACINGY", 10, 1, 0, 30, function()
-				if MoveAny.UpdateBuffs then MoveAny:UpdateBuffs() end
-				if MoveAny.UpdateTargetBuffs then MoveAny:UpdateTargetBuffs() end
-				if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
-				if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
-				if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
-			end)
-
-			y = y - 40
-			CreateDurationOptions(content, name, "MABUFFDURATION", y, refreshBuffs)
-		elseif string.find(content.name, MoveAny:Trans("LID_DEBUFFS")) then
-			local y = -20
-			local refreshDebuffs = function()
-				if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("CreateDurationOptions") end
-				if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
-				if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
-				if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
-				if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
-			end
-
-			if name == "MADebuffBar" then
-				if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then
-					MoveAny:CreateSliderOld(content, 10, y, name, "MADEBUFFMODE", 0, 1, 0, 5, function() MoveAny:UpdateDebuffs("MenuOptions") end, {
-						[0] = "AUTO",
-						[1] = "TOPRIGHT",
-						[2] = "TOPLEFT",
-						[3] = "BOTTOMRIGHT",
-						[4] = "BOTTOMLEFT",
-						[5] = "CENTER",
-					})
-
-					y = y - 40
-				end
-			else
-				MoveAny:CreateSliderOld(content, 10, y, name, "MADEBUFFMODE", 0, 1, 0, 1, function()
-					if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
-					if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
-					if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
-					if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
-				end, {
-					[0] = "DOWN",
-					[1] = "TOP",
-				})
-
-				y = y - 40
-			end
-
-			MoveAny:CreateSliderOld(content, 10, y, name, "MADEBUFFLIMIT", 10, 1, 2, 20, function()
-				if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("CreateSlider1") end
-				if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
-				if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
-				if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
-				if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
-			end)
-
-			y = y - 40
-			MoveAny:CreateSliderOld(content, 10, y, name, "MADEBUFFSPACINGX", 4, 1, 0, 30, function()
-				if MoveAny.UpdateDebuffs then MoveAny:UpdateDebuffs("CreateSlider2") end
-				if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
-				if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
-				if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
-				if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
-			end)
-
-			y = y - 40
-			MoveAny:CreateSliderOld(content, 10, y, name, "MADEBUFFSPACINGY", 10, 1, 0, 30, function()
-				MoveAny:UpdateDebuffs("CreateSlider3")
-				if MoveAny.UpdateTargetDebuffs then MoveAny:UpdateTargetDebuffs() end
-				if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
-				if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
-				if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
-			end)
-
-			y = y - 40
-			CreateDurationOptions(content, name, "MADEBUFFDURATION", y, refreshDebuffs)
-		elseif string.find(content.name, MoveAny:Trans("LID_MAINMENUEXPBAR")) or string.find(content.name, MoveAny:Trans("LID_REPUTATIONWATCHBAR")) then
-			opts["WIDTH"] = opts["WIDTH"] or 1024
-			local width = opts["WIDTH"]
-			opts["HEIGHT"] = opts["HEIGHT"] or 15
-			local height = opts["HEIGHT"]
-			local sliderW = nil
-			if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-				sliderW = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
-			elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				sliderW = CreateFrame("Slider", nil, content, "UISliderTemplate")
-			else
-				sliderW = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-			end
-
-			sliderW:SetSize(content:GetWidth() - 30, 16)
-			sliderW:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -30)
-			if sliderW.Low == nil then
-				sliderW.Low = sliderW:CreateFontString(nil, nil, "GameFontNormal")
-				sliderW.Low:SetPoint("BOTTOMLEFT", sliderW, "BOTTOMLEFT", 0, -12)
-				MoveAny:SetFontSize(sliderW.Low, 10, "THINOUTLINE")
-				sliderW.Low:SetTextColor(1, 1, 1)
-			end
-
-			if sliderW.High == nil then
-				sliderW.High = sliderW:CreateFontString(nil, nil, "GameFontNormal")
-				sliderW.High:SetPoint("BOTTOMRIGHT", sliderW, "BOTTOMRIGHT", 0, -12)
-				MoveAny:SetFontSize(sliderW.High, 10, "THINOUTLINE")
-				sliderW.High:SetTextColor(1, 1, 1)
-			end
-
-			if sliderW.Text == nil then
-				sliderW.Text = sliderW:CreateFontString(nil, nil, "GameFontNormal")
-				sliderW.Text:SetPoint("TOP", sliderW, "TOP", 0, 16)
-				MoveAny:SetFontSize(sliderW.Text, 12, "THINOUTLINE")
-				sliderW.Text:SetTextColor(1, 1, 1)
-			end
-
-			sliderW.Low:SetText(100)
-			sliderW.High:SetText(1024)
-			sliderW.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. width)
-			sliderW:SetMinMaxValues(100, 1024)
-			sliderW:SetObeyStepOnDrag(true)
-			sliderW:SetValueStep(2)
-			sliderW:SetValue(width)
-			sliderW:SetScript("OnValueChanged", function(sel, valu)
-				valu = tonumber(string.format("%" .. 0 .. "f", valu))
-				if valu and valu ~= opts["WIDTH"] then
-					opts["WIDTH"] = valu
-					sel.Text:SetText(MoveAny:Trans("LID_WIDTH") .. ": " .. valu)
-					if frame and frame.UpdateSize then frame:UpdateSize() end
-				end
-			end)
-
-			local sliderH = nil
-			if DoesTemplateExist and DoesTemplateExist("MinimalSliderTemplate") then
-				sliderH = CreateFrame("Slider", nil, content, "MinimalSliderTemplate")
-			elseif DoesTemplateExist and DoesTemplateExist("UISliderTemplate") then
-				sliderH = CreateFrame("Slider", nil, content, "UISliderTemplate")
-			else
-				sliderH = CreateFrame("Slider", nil, content, "OptionsSliderTemplate")
-			end
-
-			sliderH:SetSize(content:GetWidth() - 30, 16)
-			sliderH:SetPoint("TOPLEFT", content, "TOPLEFT", 10, -60)
-			if sliderH.Low == nil then
-				sliderH.Low = sliderH:CreateFontString(nil, nil, "GameFontNormal")
-				sliderH.Low:SetPoint("BOTTOMLEFT", sliderH, "BOTTOMLEFT", 0, -12)
-				MoveAny:SetFontSize(sliderH.Low, 10, "THINOUTLINE")
-				sliderH.Low:SetTextColor(1, 1, 1)
-			end
-
-			if sliderH.High == nil then
-				sliderH.High = sliderH:CreateFontString(nil, nil, "GameFontNormal")
-				sliderH.High:SetPoint("BOTTOMRIGHT", sliderH, "BOTTOMRIGHT", 0, -12)
-				MoveAny:SetFontSize(sliderH.High, 10, "THINOUTLINE")
-				sliderH.High:SetTextColor(1, 1, 1)
-			end
-
-			if sliderH.Text == nil then
-				sliderH.Text = sliderH:CreateFontString(nil, nil, "GameFontNormal")
-				sliderH.Text:SetPoint("TOP", sliderH, "TOP", 0, 16)
-				MoveAny:SetFontSize(sliderH.Text, 12, "THINOUTLINE")
-				sliderH.Text:SetTextColor(1, 1, 1)
-			end
-
-			sliderH.Low:SetText(2)
-			sliderH.High:SetText(64)
-			sliderH.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. height)
-			sliderH:SetMinMaxValues(2, 64)
-			sliderH:SetObeyStepOnDrag(true)
-			sliderH:SetValueStep(1)
-			sliderH:SetValue(height)
-			sliderH:SetScript("OnValueChanged", function(sel, valu)
-				valu = tonumber(string.format("%" .. 0 .. "f", valu))
-				if valu and valu ~= opts["HEIGHT"] then
-					opts["HEIGHT"] = valu
-					sel.Text:SetText(MoveAny:Trans("LID_HEIGHT") .. ": " .. valu)
-					if frame and frame.UpdateSize then frame:UpdateSize() end
-				end
-			end)
-		elseif string.find(content.name, MoveAny:Trans("LID_BAGEXTRAS")) then
-			local hide = MoveAny:CreateCheckButton("HideSmallBags", content)
-			hide:SetSize(btnsize, btnsize)
-			hide:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
-			hide:SetChecked(MoveAny:GetEleOption(name, "HideSmallBags", false, "Hide1"))
-			hide:SetScript("OnClick", function()
-				local checked = hide:GetChecked()
-				MoveAny:SetEleOption(name, "HideSmallBags", checked)
-				MoveAny:UpdateBags()
-			end)
-
-			hide.text = hide:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-			MoveAny:SetFontSize(hide.text, 12, "THINOUTLINE")
-			hide.text:SetPoint("LEFT", hide, "RIGHT", 0, 0)
-			hide.text:SetText(HIDE .. " (" .. MoveAny:Trans("LID_HIDESMALLBAGS") .. ")")
-			if KeyRingButton then
-				local hide2 = MoveAny:CreateCheckButton("HideKeyBag", content)
-				hide2:SetSize(btnsize, btnsize)
-				hide2:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -20)
-				hide2:SetChecked(MoveAny:GetEleOption(name, "HideKeyBag", false, "Hide1"))
-				hide2:SetScript("OnClick", function()
-					local checked = hide2:GetChecked()
-					MoveAny:SetEleOption(name, "HideKeyBag", checked)
-					MoveAny:UpdateBags()
-				end)
-
-				hide2.text = hide2:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-				MoveAny:SetFontSize(hide2.text, 12, "THINOUTLINE")
-				hide2.text:SetPoint("LEFT", hide2, "RIGHT", 0, 0)
-				hide2.text:SetText(HIDE .. " (" .. MoveAny:Trans("LID_HIDEKEYBAG") .. ")")
-			end
-		end
+	win:SuspendLayout()
+	AddGeneralOptions(win, name, optionFrame)
+	AddAlphaOptions(win, name)
+	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainActionBar" or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then AddActionBarOptions(win, name, opts, frame, optionFrame) end
+	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") or string.find(name, "TargetFrameBuffMover") or string.find(name, "FocusFrameBuffMover") then AddAuraOptions(win, name, "BUFFS", "MABUFF", "MABuffBar", RefreshBuffs) end
+	if string.find(name, "MADebuffBar") or string.find(name, "DebuffFrame") or string.find(name, "TargetFrameDebuffMover") or string.find(name, "FocusFrameDebuffMover") then AddAuraOptions(win, name, "DEBUFFS", "MADEBUFF", "MADebuffBar", RefreshDebuffs) end
+	if string.find(name, "MainMenuExpBar") then
+		AddStatusBarOptions(win, opts, frame, MoveAny:Trans("LID_MAINMENUEXPBAR"))
+	elseif string.find(name, "ReputationWatchBar") then
+		AddStatusBarOptions(win, opts, frame, MoveAny:Trans("LID_REPUTATIONWATCHBAR"))
 	end
+
+	if string.find(name, "BagsBar") then AddBagOptions(win, name) end
+	win:ResumeLayout()
 end
 
 function MoveAny:ResetSelectedText()
@@ -1252,25 +850,33 @@ end
 
 function MoveAny:ToggleElementOptions(name, fram, dragframe)
 	if dragframe.opt == nil then
-		dragframe.opt = MoveAny:CreateFrame(name .. ".opt", MoveAny:GetMainPanel())
-		dragframe.opt.TitleText:SetText(name)
-		dragframe.opt:SetFrameStrata("HIGH")
+		dragframe.opt = MoveAny:CreateUIWindow({
+			["name"] = name .. "MAOptions",
+			["parent"] = MoveAny:GetMainPanel(),
+			["pTab"] = {"CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0},
+			["title"] = name,
+			["width"] = 500,
+			["height"] = MoveAny:MClamp(500, 200, GetScreenHeight()),
+			["minWidth"] = 400,
+			["minHeight"] = 200,
+			["maxWidth"] = 800,
+			["maxHeight"] = GetScreenHeight(),
+			["getCollapsed"] = function(key) return MoveAny:GetCollapsed(key) end,
+			["setCollapsed"] = function(key, collapsed) MoveAny:SetCollapsed(key, collapsed) end,
+		})
+
 		dragframe.opt:SetFrameLevel(framelevel)
 		framelevel = framelevel + 1
 		if dragframe.opt.CloseButton then dragframe.opt.CloseButton:SetFrameLevel(framelevel) end
 		framelevel = framelevel + 100
-		dragframe.opt:SetSize(500, 500)
-		dragframe.opt:SetPoint("CENTER")
-		MoveAny:SetClampedToScreen(dragframe.opt, true, "RegisterWidget 2")
-		dragframe.opt:SetMovable(true)
-		dragframe.opt:EnableMouse(true)
-		dragframe.opt:RegisterForDrag("LeftButton")
-		dragframe.opt:SetScript("OnDragStart", dragframe.opt.StartMoving)
-		dragframe.opt:SetScript("OnDragStop", dragframe.opt.StopMovingOrSizing)
 		MoveAny:MenuOptions(dragframe.opt, fram)
-	elseif dragframe.opt then
-		dragframe.opt:Show()
+		dragframe.opt:HookScript("OnShow", function(sel)
+			if sel.elePos then sel.elePos:UpdateText() end
+			if sel.eleScale then sel.eleScale:UpdateText() end
+		end)
 	end
+
+	dragframe.opt:Show()
 end
 
 local cacheDrags = {}
@@ -1459,10 +1065,7 @@ function MoveAny:RegisterWidget(tab)
 				local np4 = MoveAny:Snap(p4)
 				local np5 = MoveAny:Snap(p5)
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5) end
-				if dragframe.opt and dragframe.opt.tabs and dragframe.opt.tabs[1] then
-					local tab1 = dragframe.opt.tabs[1]
-					tab1.content.pos:SetText(format("%s X: %d Y:%d", MoveAny:Trans("LID_POSITION"), p4, p5))
-				end
+				if dragframe.opt and dragframe.opt.elePos then dragframe.opt.elePos:UpdateText() end
 
 				dragframe:SetMovable(true)
 				MoveAny:SafeAnchorDrag(dragframe, fram, posx, posy)
