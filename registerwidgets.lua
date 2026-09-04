@@ -261,9 +261,7 @@ local function CreateDurationOptions(content, name, prefix, y, refresh)
 	y = y - 40
 	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FONT", 0, 1, 0, 1, apply, MoveAny.DurationFonts)
 	y = y - 40
-	local maxFormat = 2
-	if not MoveAny:CanReadAuraDuration() then maxFormat = 1 end
-	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FORMAT", 0, 1, 0, maxFormat, apply, MoveAny.DurationFormats)
+	MoveAny:CreateSliderOld(content, 10, y, name, prefix .. "FORMAT", 0, 1, 0, 2, apply, MoveAny.DurationFormats)
 	y = y - 40
 	local color = MoveAny:CreateButton(prefix .. "COLOR", content)
 	color:SetSize(content:GetWidth() - 30, 25)
