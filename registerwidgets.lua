@@ -611,14 +611,14 @@ end
 local function AddAuraOptions(win, name, cat, prefix, ownBar, refresh)
 	AddEleCategory(win, cat)
 	if name == ownBar then
-		if HasFullAuraModes() then AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_FULL, refresh) end
+		if HasFullAuraModes() then AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_FULL, refresh, "LID_ALIGNMENT") end
 	else
-		AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_SIMPLE, refresh)
+		AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_SIMPLE, refresh, "LID_ALIGNMENT")
 	end
 
-	AddEleSlider(win, name, prefix .. "LIMIT", 10, 2, 20, 1, 0, refresh)
-	AddEleSlider(win, name, prefix .. "SPACINGX", 4, 0, 30, 1, 0, refresh)
-	AddEleSlider(win, name, prefix .. "SPACINGY", 10, 0, 30, 1, 0, refresh)
+	AddEleSlider(win, name, prefix .. "LIMIT", 10, 2, 20, 1, 0, refresh, "LID_LIMIT")
+	AddEleSlider(win, name, prefix .. "SPACINGX", 4, 0, 30, 1, 0, refresh, "LID_SPACINGX")
+	AddEleSlider(win, name, prefix .. "SPACINGY", 10, 0, 30, 1, 0, refresh, "LID_SPACINGY")
 	AddEleCategory(win, cat .. "DURATION", MoveAny:Trans("LID_DURATION"), 2)
 	AddDurationOptions(win, name, prefix .. "DURATION", refresh)
 end
