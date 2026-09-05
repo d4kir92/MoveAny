@@ -40,6 +40,9 @@ MoveAny.DurationFormats = {
 	[0] = "DEFAULT",
 	[1] = "COMPACT",
 	[2] = "DIGITAL",
+	[3] = "SHORT",
+	[4] = "SECONDS",
+	[5] = "SECONDSPLAIN",
 }
 
 local durationHooked = false
@@ -216,6 +219,80 @@ local function GetUnitFactor(fmt)
 	return unitFactors[fmt]
 end
 
+local function FirstChar(str)
+	local b = string.byte(str, 1)
+	if b == nil then return str end
+	local len = 1
+	if b >= 240 then
+		len = 4
+	elseif b >= 224 then
+		len = 3
+	elseif b >= 192 then
+		len = 2
+	end
+
+	return string.sub(str, 1, len)
+end
+
+local function ShortenSpaced(str)
+	if type(str) ~= "string" then return nil end
+	local head, tail = string.match(str, "^(.-)%s+(.+)$")
+	if head == nil or tail == nil then return nil end
+	if string.find(tail, "|", 1, true) then return nil end
+	return head .. FirstChar(tail)
+end
+
+local secondSuffix = nil
+local function GetSecondSuffix()
+	if secondSuffix ~= nil then return secondSuffix end
+	secondSuffix = ""
+	if type(SECOND_ONELETTER_ABBR) == "string" then
+		local tail = string.match(SECOND_ONELETTER_ABBR, "%%[%-%+ #0-9%.]*[a-zA-Z](.*)$")
+		if type(tail) == "string" and not string.find(tail, "|", 1, true) then secondSuffix = (string.gsub(tail, "%s+", "")) end
+	end
+
+	return secondSuffix
+end
+
+local function IsTimeMode(mode)
+	return mode == 2 or mode == 4 or mode == 5
+end
+
+local function RenderTime(mode, seconds)
+	if type(seconds) ~= "number" then return nil end
+	if mode == 2 then return MoveAny:GetDigitalDuration(seconds) end
+	if not IsTimeMode(mode) then return nil end
+	if seconds < 0 then seconds = 0 end
+	if mode == 4 then return format("%d%s", math.floor(seconds + 0.5), GetSecondSuffix()) end
+	return format("%d", math.floor(seconds + 0.5))
+end
+
+local EXAMPLESECONDS = 53 * 60
+local function GetExampleFormat()
+	if type(SecondsToTimeAbbrev) == "function" then
+		local ok, fmt, value = pcall(SecondsToTimeAbbrev, EXAMPLESECONDS)
+		if ok and type(fmt) == "string" and type(value) == "number" then return fmt, value end
+	end
+
+	if type(MINUTE_ONELETTER_ABBR) == "string" then return MINUTE_ONELETTER_ABBR, 53 end
+	return "%d m", 53
+end
+
+function MoveAny:GetDurationFormatExample(mode)
+	local ok, res = pcall(function()
+		if IsTimeMode(mode) then return RenderTime(mode, EXAMPLESECONDS) end
+		local fmt, value = GetExampleFormat()
+		if mode == 0 then return format(fmt, value) end
+		local new = nil
+		if mode == 3 then new = ShortenSpaced(fmt) end
+		if new == nil then new = (string.gsub(fmt, "%s+", "")) end
+		return format(new, value)
+	end)
+
+	if ok and type(res) == "string" then return res end
+	return nil
+end
+
 local function TrackDigital(btn, fmt, value)
 	local factor = GetUnitFactor(fmt)
 	if factor == nil then
@@ -268,13 +345,13 @@ local function ApplyLook(fs)
 	ApplyColor(fs)
 end
 
-local function TryDigitalFromBase(fs)
+local function TryTimeFromBase(fs, mode)
 	local btn = fs.maDurationBtn
 	if btn == nil then return false end
 	local ok, text = pcall(function()
 		local left = GetTimeLeft(btn)
 		if left == nil then return nil end
-		return MoveAny:GetDigitalDuration(left)
+		return RenderTime(mode, left)
 	end)
 
 	if not ok or type(text) ~= "string" then return false end
@@ -284,8 +361,19 @@ local function TryDigitalFromBase(fs)
 	return true
 end
 
-local function WriteDigitalFromFormat(fs, fmt, value)
+local function WriteTimeFromFormat(fs, fmt, value, mode)
 	local factor = GetUnitFactor(fmt)
+	if factor == nil then return false end
+	if mode ~= 2 then
+		if type(value) ~= "number" then return false end
+		local text = RenderTime(mode, value * factor)
+		if text == nil then return false end
+		applying[fs] = true
+		fs:SetText(text)
+		applying[fs] = false
+		return true
+	end
+
 	local pattern = nil
 	if factor == 1 then
 		pattern = "0:%02d"
@@ -306,8 +394,8 @@ end
 local function ApplyFormat(fs)
 	local mode = GetFormat(fs)
 	if mode == 0 then return end
-	if mode == 2 then
-		if TryDigitalFromBase(fs) then
+	if IsTimeMode(mode) then
+		if TryTimeFromBase(fs, mode) then
 			stats.digitalWrites = stats.digitalWrites + 1
 			if InCombatLockdown() then stats.cDigitalWrites = stats.cDigitalWrites + 1 end
 		else
@@ -320,7 +408,9 @@ local function ApplyFormat(fs)
 	if not MoveAny:CanReadAuraDuration() then return end
 	local txt = fs:GetText()
 	if txt == nil or txt == "" then return end
-	local new = string.gsub(txt, "%s+", "")
+	local new = nil
+	if mode == 3 then new = ShortenSpaced(txt) end
+	if new == nil then new = (string.gsub(txt, "%s+", "")) end
 	if new == "" or new == txt then return end
 	applying[fs] = true
 	fs:SetText(new)
@@ -341,6 +431,25 @@ local function WriteCompactFormat(fs, fmt, value)
 	end
 
 	local new = string.gsub(fmt, "%s+", "")
+	if new == fmt then
+		stats.skipSame = stats.skipSame + 1
+		return
+	end
+
+	applying[fs] = true
+	fs:SetFormattedText(new, value)
+	applying[fs] = false
+	stats.writes = stats.writes + 1
+end
+
+local function WriteShortFormat(fs, fmt, value)
+	if type(fmt) ~= "string" then
+		stats.skipType = stats.skipType + 1
+		return
+	end
+
+	local new = ShortenSpaced(fmt)
+	if new == nil then new = (string.gsub(fmt, "%s+", "")) end
 	if new == fmt then
 		stats.skipSame = stats.skipSame + 1
 		return
@@ -379,10 +488,12 @@ local function OnDurationFormatted(fs, fmt, value)
 	stats.lastMode = mode
 	if mode == 1 then
 		if not pcall(WriteCompactFormat, fs, fmt, value) then applying[fs] = false end
-	elseif mode == 2 then
-		if not TryDigitalFromBase(fs) then
+	elseif mode == 3 then
+		if not pcall(WriteShortFormat, fs, fmt, value) then applying[fs] = false end
+	elseif IsTimeMode(mode) then
+		if not TryTimeFromBase(fs, mode) then
 			applying[fs] = false
-			local ok, written = pcall(WriteDigitalFromFormat, fs, fmt, value)
+			local ok, written = pcall(WriteTimeFromFormat, fs, fmt, value, mode)
 			if not ok then
 				applying[fs] = false
 				NoteError(written)
@@ -420,7 +531,7 @@ local function OnUpdateDuration(btn, elapsed)
 	if btn.maDurationElapsed < 0.2 then return end
 	btn.maDurationElapsed = 0
 	if type(btn.maDurationSeen) ~= "number" or GetTime() - btn.maDurationSeen > 3 then return end
-	if GetFormat(fs) ~= 2 then return end
+	if not IsTimeMode(GetFormat(fs)) then return end
 	if InCombatLockdown() then stats.cTicks = stats.cTicks + 1 end
 	SafeApplyFormat(fs)
 end
@@ -526,7 +637,7 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 		pcall(RestoreOriginals, fs)
 	end
 
-	if GetFormat(fs) == 2 and not btn.maDurationOnUpdate and btn.HookScript then
+	if IsTimeMode(GetFormat(fs)) and not btn.maDurationOnUpdate and btn.HookScript then
 		btn.maDurationOnUpdate = true
 		pcall(btn.HookScript, btn, "OnUpdate", OnUpdateDuration)
 	end
@@ -600,11 +711,16 @@ local function OnAuraButtonUpdateDuration(btn, timeLeft)
 	if ele == nil then return end
 	local mode = MoveAny:GetEleOption(ele, prefix .. "FORMAT", 0)
 	if mode == 0 then return end
-	if mode == 1 then
+	if mode == 1 or mode == 3 then
 		local formatString, value = SecondsToTimeAbbrev(timeLeft)
-		if type(formatString) == "string" then fs:SetFormattedText(string.gsub(formatString, "%s+", ""), value) end
+		if type(formatString) == "string" then
+			local new = nil
+			if mode == 3 then new = ShortenSpaced(formatString) end
+			if new == nil then new = (string.gsub(formatString, "%s+", "")) end
+			fs:SetFormattedText(new, value)
+		end
 	else
-		local new = MoveAny:GetDigitalDuration(timeLeft)
+		local new = RenderTime(mode, timeLeft)
 		if new then fs:SetText(new) end
 	end
 end

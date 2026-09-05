@@ -269,7 +269,7 @@ local function AddEleSlider(win, name, key, value, vmin, vmax, step, decimals, f
 	})
 end
 
-local function AuraChoices(map, cur)
+local function AuraChoices(map, cur, example)
 	local values = {}
 	local found = false
 	for value in pairs(map) do
@@ -280,9 +280,15 @@ local function AuraChoices(map, cur)
 	table.sort(values)
 	local choices = {}
 	for _, value in ipairs(values) do
+		local label = "LID_" .. map[value]
+		if example then
+			local sample = example(value)
+			if sample then label = MoveAny:Trans(label) .. " |cff9d9d9d(" .. sample .. ")|r" end
+		end
+
 		tinsert(choices, {
 			["value"] = value,
-			["label"] = "LID_" .. map[value]
+			["label"] = label
 		})
 	end
 
@@ -295,18 +301,28 @@ local function AuraChoices(map, cur)
 	return choices
 end
 
-local function AddEleDropdown(win, name, key, value, map, func, label)
+local function AddEleDropdown(win, name, key, value, map, func, label, example)
 	local cur = MoveAny:GetEleOption(name, key, value, "MenuOptions " .. key)
 	return win:AddDropdown({
 		["label"] = label or ("LID_" .. key),
 		["search"] = key,
 		["value"] = cur,
-		["choices"] = AuraChoices(map, cur),
+		["choices"] = AuraChoices(map, cur, example),
 		["func"] = function(val)
 			MoveAny:SetEleOption(name, key, val)
 			if func then func(val) end
 		end,
 	})
+end
+
+local function DurationFormatExample(value)
+	if MoveAny.GetDurationFormatExample == nil then return nil end
+	local res = MoveAny:GetDurationFormatExample(value)
+	if res == nil then return nil end
+	if value == 0 then return res end
+	local base = MoveAny:GetDurationFormatExample(0)
+	if base == nil then return res end
+	return base .. " => " .. res
 end
 
 local function AddDurationOptions(win, name, prefix, refresh)
@@ -319,7 +335,7 @@ local function AddDurationOptions(win, name, prefix, refresh)
 	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
 	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 4, 12, 1, 0, apply, "LID_TEXTSIZE")
 	AddEleDropdown(win, name, prefix .. "FONT", 0, MoveAny.DurationFonts, apply, "LID_FONT")
-	AddEleDropdown(win, name, prefix .. "FORMAT", 0, MoveAny.DurationFormats, apply, "LID_FORMAT")
+	AddEleDropdown(win, name, prefix .. "FORMAT", 0, MoveAny.DurationFormats, apply, "LID_FORMAT", DurationFormatExample)
 	win:AddColorPicker({
 		["label"] = "LID_COLOR",
 		["search"] = prefix .. "COLOR",
