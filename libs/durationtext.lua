@@ -77,6 +77,11 @@ local stats = {
 	staleDrop = 0,
 	bumpHits = 0,
 	upJumps = 0,
+	texSeen = 0,
+	texHits = 0,
+	texMiss = 0,
+	texNoIcon = 0,
+	texNoRead = 0,
 }
 
 local function NoteError(err)
@@ -307,6 +312,53 @@ function MoveAny:GetDurationFormatExample(mode)
 	return nil
 end
 
+local refreshTex = {}
+local refreshStamp = 0
+local function NoteRefreshTex(aura)
+	if type(aura) ~= "table" then return end
+	local ok, tex = pcall(function()
+		local id = aura.icon
+		if type(id) ~= "number" then return nil end
+
+		return id
+	end)
+
+	if not ok or type(tex) ~= "number" then
+		stats.texMiss = stats.texMiss + 1
+
+		return
+	end
+
+	refreshStamp = GetTime()
+	refreshTex[tex] = refreshStamp
+	stats.texSeen = stats.texSeen + 1
+end
+
+local function TakeRefresh(btn, now)
+	if now - refreshStamp > 2 then return false end
+	if type(btn.maDurationRefresh) == "number" and btn.maDurationRefresh >= refreshStamp then return false end
+	if MoveAny.GetAuraIconTexture == nil then return false end
+	local tex = MoveAny:GetAuraIconTexture(btn)
+	if tex == nil then
+		stats.texNoIcon = stats.texNoIcon + 1
+
+		return false
+	end
+
+	if tex == false then
+		stats.texNoRead = stats.texNoRead + 1
+
+		return false
+	end
+
+	local stamp = refreshTex[tex]
+	if type(stamp) ~= "number" then return false end
+	if type(btn.maDurationRefresh) == "number" and btn.maDurationRefresh >= stamp then return false end
+	btn.maDurationRefresh = stamp
+
+	return true
+end
+
 local function TrackDigital(btn, fmt, value)
 	local factor = GetUnitFactor(fmt)
 	if factor == nil then
@@ -339,7 +391,9 @@ local function TrackDigital(btn, fmt, value)
 			stats.staleDrop = stats.staleDrop + 1
 		end
 	elseif type(btn.maDurationLeft) == "number" and type(btn.maDurationStamp) == "number" then
+		local fresh = TakeRefresh(btn, now)
 		local okBump, higher = pcall(function()
+			if fresh then return value * factor end
 			local lower = (value - 1) * factor
 			if btn.maDurationLeft - (now - btn.maDurationStamp) < lower - 1 then return value * factor end
 
@@ -349,7 +403,11 @@ local function TrackDigital(btn, fmt, value)
 		if okBump and type(higher) == "number" then
 			btn.maDurationLeft = higher
 			btn.maDurationStamp = now
-			stats.bumpHits = stats.bumpHits + 1
+			if fresh then
+				stats.texHits = stats.texHits + 1
+			else
+				stats.bumpHits = stats.bumpHits + 1
+			end
 		end
 	end
 
@@ -648,6 +706,7 @@ local function NoteAuraUpdate(unit, updateInfo)
 		if type(added) == "table" then
 			for i = 1, #added do
 				local aura = added[i]
+				NoteRefreshTex(aura)
 				local id = type(aura) == "table" and aura.auraInstanceID or nil
 				if type(id) == "number" then
 					refreshIDs[id] = true
@@ -659,8 +718,10 @@ local function NoteAuraUpdate(unit, updateInfo)
 		local updated = updateInfo.updatedAuraInstanceIDs
 		if type(updated) == "table" then
 			for i = 1, #updated do
-				if type(updated[i]) == "number" then
-					refreshIDs[updated[i]] = true
+				local id = updated[i]
+				if type(id) == "number" then
+					if C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID then NoteRefreshTex(C_UnitAuras.GetAuraDataByAuraInstanceID("player", id)) end
+					refreshIDs[id] = true
 					refreshDirty = true
 				end
 			end
@@ -997,6 +1058,7 @@ function MoveAny:InitAuraDurations()
 
 		MoveAny:MSG("[MoveAny] button fields:", tostring(stats.auraFields))
 		MoveAny:MSG("[MoveAny] stale drops:", stats.staleDrop, "resyncs:", stats.bumpHits, "up jumps:", stats.upJumps)
+		MoveAny:MSG("[MoveAny] aura tex:", stats.texSeen, "refresh hits:", stats.texHits, "no tex:", stats.texMiss, "no icon:", stats.texNoIcon, "no read:", stats.texNoRead)
 		local dumped = 0
 		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
 			if dumped >= 2 then return end

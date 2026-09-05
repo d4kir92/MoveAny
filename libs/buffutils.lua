@@ -91,6 +91,27 @@ local function AuraIconRegion(btn)
     return nil
 end
 
+function MoveAny:GetAuraIconTexture(btn)
+    if btn == nil then return nil end
+    local icon = btn.Icon or btn.icon
+    if icon == nil then
+        local name = MoveAny:GetName(btn)
+        if name and name ~= "" then icon = _G[name .. "Icon"] end
+    end
+
+    if icon == nil or icon.GetTexture == nil then return nil end
+    local ok, tex = pcall(function()
+        local id = icon:GetTexture()
+        if type(id) ~= "number" then return nil end
+
+        return id
+    end)
+
+    if ok and type(tex) == "number" then return tex end
+
+    return false
+end
+
 local function AuraIconInsets(btn)
     local icon = AuraIconRegion(btn)
     if icon == nil then return 0, 0, 0, 0 end

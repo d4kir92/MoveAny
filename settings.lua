@@ -1791,7 +1791,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.10.8")
+	MoveAny:SetVersion(135994, "1.10.9")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2778,7 +2778,6 @@ function MoveAny:LoadAddon()
 									parentPending = false
 									ReparentExtraAbilityContainer()
 								end, "ExtraAbilityContainer SetParent")
-
 								return
 							end
 
