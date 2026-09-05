@@ -2768,14 +2768,27 @@ function MoveAny:LoadAddon()
 						MoveAny:WARN("Bartender4 is enabled and you enabled ExtraAbilityContainer, only 1 addon should move the ExtraAbilityContainer!")
 					else
 						local setParent = false
-						hooksecurefunc(ExtraAbilityContainer, "SetParent", function(sel, parent)
+						local parentPending = false
+						local function ReparentExtraAbilityContainer()
 							if setParent then return end
-							setParent = true
-							sel:SetParent(MoveAny:GetMainPanel())
-							setParent = false
-						end)
+							if InCombatLockdown() and ExtraAbilityContainer:IsProtected() then
+								if parentPending then return end
+								parentPending = true
+								MoveAny:After(0.1, function()
+									parentPending = false
+									ReparentExtraAbilityContainer()
+								end, "ExtraAbilityContainer SetParent")
 
-						ExtraAbilityContainer:SetParent(MoveAny:GetMainPanel())
+								return
+							end
+
+							setParent = true
+							ExtraAbilityContainer:SetParent(MoveAny:GetMainPanel())
+							setParent = false
+						end
+
+						hooksecurefunc(ExtraAbilityContainer, "SetParent", ReparentExtraAbilityContainer)
+						ReparentExtraAbilityContainer()
 						MoveAny:RegisterWidget({
 							["name"] = "ExtraAbilityContainer",
 							["lstr"] = "LID_EXTRAABILITYCONTAINER",
