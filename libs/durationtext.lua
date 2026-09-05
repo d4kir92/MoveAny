@@ -645,6 +645,11 @@ function MoveAny:UpdateAuraDurations(from, onlyNew)
 		end)
 	end
 
+	if MoveAny.LayoutAuraGrid then
+		if buffEle == "BuffFrame" and BuffFrame then MoveAny:LayoutAuraGrid(BuffFrame, buffEle, "MABUFF", "BuffButton") end
+		if debuffEle == "DebuffFrame" and DebuffFrame then MoveAny:LayoutAuraGrid(DebuffFrame, debuffEle, "MADEBUFF", "DebuffButton") end
+	end
+
 	if MoveAny:DEBUG() and from ~= "tick" then MoveAny:MSG("[UpdateAuraDurations]", tostring(from), "styled", styled, "of", total) end
 	return styled, total
 end
@@ -687,6 +692,12 @@ function MoveAny:InitAuraDurations()
 		MoveAny:MSG("[MoveAny] IN COMBAT fmtCalls:", stats.cFmtCalls, "ticks:", stats.cTicks, "writes:", stats.cDigitalWrites, "noTime:", stats.cNoTime)
 		MoveAny:MSG("[MoveAny] errors:", stats.errors, "in combat:", stats.cErrors)
 		MoveAny:MSG("[MoveAny] first error:", tostring(stats.lastError))
+		if MoveAny.GetAuraGridStats then
+			local grid = MoveAny:GetAuraGridStats()
+			MoveAny:MSG("[MoveAny] aura grid placed:", grid.placed, "skipped:", grid.skipped, "errors:", grid.errors)
+			MoveAny:MSG("[MoveAny] aura grid anchor:", tostring(grid.lastAnchor), "on", tostring(grid.lastRoot), tostring(grid.lastRootSize))
+			if grid.errors > 0 then MoveAny:MSG("[MoveAny] aura grid error:", tostring(grid.lastError)) end
+		end
 		local probed = false
 		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
 			if probed then return end

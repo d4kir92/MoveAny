@@ -578,6 +578,7 @@ local function RefreshBuffs()
 	if MoveAny.UpdateTargetToTBuffs then MoveAny:UpdateTargetToTBuffs() end
 	if MoveAny.UpdateFocusBuffs then MoveAny:UpdateFocusBuffs() end
 	if MoveAny.UpdateFocusToTBuffs then MoveAny:UpdateFocusToTBuffs() end
+	if MoveAny.UpdateAuraDurations then MoveAny:UpdateAuraDurations("MenuOptions") end
 end
 
 local function RefreshDebuffs()
@@ -586,6 +587,7 @@ local function RefreshDebuffs()
 	if MoveAny.UpdateTargetToTDebuffs then MoveAny:UpdateTargetToTDebuffs() end
 	if MoveAny.UpdateFocusDebuffs then MoveAny:UpdateFocusDebuffs() end
 	if MoveAny.UpdateFocusToTDebuffs then MoveAny:UpdateFocusToTDebuffs() end
+	if MoveAny.UpdateAuraDurations then MoveAny:UpdateAuraDurations("MenuOptions") end
 end
 
 local MODES_FULL = {
@@ -610,10 +612,12 @@ end
 
 local function AddAuraOptions(win, name, cat, prefix, ownBar, refresh)
 	AddEleCategory(win, cat)
-	if name == ownBar then
-		if HasFullAuraModes() then AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_FULL, refresh, "LID_ALIGNMENT") end
+	if MoveAny.HasAuraGrid and MoveAny:HasAuraGrid(name) then
+		AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny:GetAuraGridAnchors(), refresh, "LID_ANCHOR")
+	elseif name == ownBar then
+		if HasFullAuraModes() then AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_FULL, refresh, "LID_GROWTH") end
 	else
-		AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_SIMPLE, refresh, "LID_ALIGNMENT")
+		AddEleDropdown(win, name, prefix .. "MODE", 0, MODES_SIMPLE, refresh, "LID_GROWTH")
 	end
 
 	AddEleSlider(win, name, prefix .. "LIMIT", 10, 2, 20, 1, 0, refresh, "LID_LIMIT")
@@ -722,8 +726,8 @@ function MoveAny:MenuOptions(win, frame)
 	AddGeneralOptions(win, name, optionFrame)
 	AddAlphaOptions(win, name)
 	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainActionBar" or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then AddActionBarOptions(win, name, opts, frame, optionFrame) end
-	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") or string.find(name, "TargetFrameBuffMover") or string.find(name, "FocusFrameBuffMover") then AddAuraOptions(win, name, "BUFFS", "MABUFF", "MABuffBar", RefreshBuffs) end
-	if string.find(name, "MADebuffBar") or string.find(name, "DebuffFrame") or string.find(name, "TargetFrameDebuffMover") or string.find(name, "FocusFrameDebuffMover") then AddAuraOptions(win, name, "DEBUFFS", "MADEBUFF", "MADebuffBar", RefreshDebuffs) end
+	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") or string.find(name, "BuffMover") then AddAuraOptions(win, name, "BUFFS", "MABUFF", "MABuffBar", RefreshBuffs) end
+	if string.find(name, "MADebuffBar") or string.find(name, "DebuffFrame") or string.find(name, "DebuffMover") then AddAuraOptions(win, name, "DEBUFFS", "MADEBUFF", "MADebuffBar", RefreshDebuffs) end
 	if string.find(name, "MainMenuExpBar") then
 		AddStatusBarOptions(win, opts, frame, MoveAny:Trans("LID_MAINMENUEXPBAR"))
 	elseif string.find(name, "ReputationWatchBar") then
