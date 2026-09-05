@@ -696,6 +696,9 @@ function MoveAny:InitAuraDurations()
 			local grid = MoveAny:GetAuraGridStats()
 			MoveAny:MSG("[MoveAny] aura grid placed:", grid.placed, "skipped:", grid.skipped, "errors:", grid.errors)
 			MoveAny:MSG("[MoveAny] aura grid anchor:", tostring(grid.lastAnchor), "on", tostring(grid.lastRoot), tostring(grid.lastRootSize))
+			MoveAny:MSG("[MoveAny] collapse button:", tostring(grid.collapse), "on", tostring(grid.collapseOn), "exists:", tostring(BuffFrame ~= nil and BuffFrame.CollapseAndExpandButton ~= nil))
+			MoveAny:MSG("[MoveAny] collapse heights:", tostring(grid.collapseSizes))
+			MoveAny:MSG("[MoveAny] icon insets:", tostring(grid.insets))
 			if grid.errors > 0 then MoveAny:MSG("[MoveAny] aura grid error:", tostring(grid.lastError)) end
 		end
 		local probed = false

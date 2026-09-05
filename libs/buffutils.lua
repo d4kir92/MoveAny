@@ -12,6 +12,10 @@ local gridStats = {
     ["lastAnchor"] = "?",
     ["lastRoot"] = "?",
     ["lastRootSize"] = "?",
+    ["collapse"] = "none",
+    ["collapseOn"] = "?",
+    ["collapseSizes"] = "?",
+    ["insets"] = "?",
 }
 
 local GRID_ANCHORS = {
@@ -55,6 +59,37 @@ local function GridOrder(btn, walkIndex)
     return walkIndex
 end
 
+local function AuraIconRegion(btn)
+    if btn == nil then return nil end
+    local icon = btn.Icon or btn.icon
+    if icon == nil then
+        local name = MoveAny:GetName(btn)
+        if name and name ~= "" then icon = _G[name .. "Icon"] end
+    end
+
+    if icon and icon.GetObjectType and icon.GetHeight and icon:GetObjectType() == "Texture" then
+        local h = icon:GetHeight()
+        if type(h) == "number" and h > 1 then return icon end
+    end
+
+    return nil
+end
+
+local function AuraIconInsets(btn)
+    local icon = AuraIconRegion(btn)
+    if icon == nil then return 0, 0, 0, 0 end
+    local bl, br, bt, bb = btn:GetLeft(), btn:GetRight(), btn:GetTop(), btn:GetBottom()
+    local il, ir, it, ib = icon:GetLeft(), icon:GetRight(), icon:GetTop(), icon:GetBottom()
+    if bl == nil or br == nil or bt == nil or bb == nil then return 0, 0, 0, 0 end
+    if il == nil or ir == nil or it == nil or ib == nil then return 0, 0, 0, 0 end
+    local left = math.max(0, il - bl)
+    local right = math.max(0, br - ir)
+    local top = math.max(0, bt - it)
+    local bottom = math.max(0, ib - bb)
+
+    return left, right, top, bottom
+end
+
 local function ApplyAuraGrid(btn)
     if btn == nil or gridBusy[btn] then return false end
     local info = gridInfo[btn]
@@ -88,6 +123,24 @@ local function ApplyAuraGrid(btn)
     local y = row * (sh + spacingY)
     if string.find(anchor, "RIGHT", 1, true) then x = -x end
     if not string.find(anchor, "BOTTOM", 1, true) then y = -y end
+    local inLeft, inRight, inTop, inBottom = AuraIconInsets(btn)
+    if string.find(anchor, "LEFT", 1, true) then
+        x = x - inLeft
+    elseif string.find(anchor, "RIGHT", 1, true) then
+        x = x + inRight
+    else
+        x = x + (inRight - inLeft) / 2
+    end
+
+    if string.find(anchor, "TOP", 1, true) then
+        y = y + inTop
+    elseif string.find(anchor, "BOTTOM", 1, true) then
+        y = y - inBottom
+    else
+        y = y - (inBottom - inTop) / 2
+    end
+
+    if info.index == 1 then gridStats.insets = string.format("l %.0f r %.0f t %.0f b %.0f", inLeft, inRight, inTop, inBottom) end
     local cp1, cp2, cp3, cp4, cp5 = btn:GetPoint()
     if cp1 == anchor and cp2 == info.root and cp3 == anchor and cp4 == x and cp5 == y then return true end
     gridBusy[btn] = true
@@ -113,6 +166,42 @@ local function UsableAuraButton(btn)
     if btn.SetPoint == nil or btn.GetSize == nil then return false end
 
     return true
+end
+
+local COLLAPSE_GAP = 2
+local collapseBusy = {}
+local collapseHooked = {}
+local collapseInfo = {}
+local function ApplyCollapseButton(cb)
+    if cb == nil or collapseBusy[cb] then return false end
+    local info = collapseInfo[cb]
+    if info == nil or info.first == nil then return false end
+    if cb.IsProtected and InCombatLockdown() and cb:IsProtected() then return false end
+    local target = AuraIconRegion(info.first) or info.first
+    gridStats.collapseSizes = string.format("btn %.0f target %.0f arrow %.0f", info.first:GetHeight() or 0, target:GetHeight() or 0, cb:GetHeight() or 0)
+    local p1, p3, p4 = "RIGHT", "LEFT", -COLLAPSE_GAP
+    if string.find(info.anchor, "RIGHT", 1, true) then p1, p3, p4 = "LEFT", "RIGHT", COLLAPSE_GAP end
+    local cp1, cp2, cp3, cp4, cp5 = cb:GetPoint()
+    if cp1 == p1 and cp2 == target and cp3 == p3 and cp4 == p4 and cp5 == 0 then return true end
+    collapseBusy[cb] = true
+    local ok = pcall(function()
+        cb:ClearAllPoints()
+        cb:SetPoint(p1, target, p3, p4, 0)
+    end)
+
+    collapseBusy[cb] = false
+    if ok then
+        gridStats.collapse = p1
+        if target == info.first then
+            gridStats.collapseOn = "button"
+        else
+            gridStats.collapseOn = "icon"
+        end
+    else
+        gridStats.collapse = "failed"
+    end
+
+    return ok
 end
 
 function MoveAny:LayoutAuraGrid(root, ele, prefix, globalPrefix)
@@ -167,6 +256,21 @@ function MoveAny:LayoutAuraGrid(root, ele, prefix, globalPrefix)
         end
 
         ApplyAuraGrid(btn)
+    end
+
+    local cb = root.CollapseAndExpandButton
+    if cb and cb.SetPoint and list[1] then
+        collapseInfo[cb] = {
+            ["first"] = list[1].btn,
+            ["anchor"] = ResolveGridAnchor(ele, root, MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0))
+        }
+
+        if collapseHooked[cb] == nil then
+            collapseHooked[cb] = true
+            hooksecurefunc(cb, "SetPoint", function(sel) ApplyCollapseButton(sel) end)
+        end
+
+        ApplyCollapseButton(cb)
     end
 
     return #list
