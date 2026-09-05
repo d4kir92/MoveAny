@@ -59,6 +59,22 @@ local function GridOrder(btn, walkIndex)
     return walkIndex
 end
 
+local function SafeSize(frame)
+    if frame == nil or frame.GetSize == nil then return nil end
+    local ok, w, h = pcall(function()
+        local a, b = frame:GetSize()
+        if type(a) ~= "number" or type(b) ~= "number" then return nil end
+        if a < 1 then return nil end
+        if b < 1 then b = a end
+
+        return a, b
+    end)
+
+    if ok and type(w) == "number" then return w, h end
+
+    return nil
+end
+
 local function AuraIconRegion(btn)
     if btn == nil then return nil end
     local icon = btn.Icon or btn.icon
@@ -67,9 +83,9 @@ local function AuraIconRegion(btn)
         if name and name ~= "" then icon = _G[name .. "Icon"] end
     end
 
-    if icon and icon.GetObjectType and icon.GetHeight and icon:GetObjectType() == "Texture" then
-        local h = icon:GetHeight()
-        if type(h) == "number" and h > 1 then return icon end
+    if icon and icon.GetObjectType and icon.GetHeight then
+        local ok, tall = pcall(function() return icon:GetObjectType() == "Texture" and icon:GetHeight() > 1 end)
+        if ok and tall == true then return icon end
     end
 
     return nil
@@ -78,16 +94,18 @@ end
 local function AuraIconInsets(btn)
     local icon = AuraIconRegion(btn)
     if icon == nil then return 0, 0, 0, 0 end
-    local bl, br, bt, bb = btn:GetLeft(), btn:GetRight(), btn:GetTop(), btn:GetBottom()
-    local il, ir, it, ib = icon:GetLeft(), icon:GetRight(), icon:GetTop(), icon:GetBottom()
-    if bl == nil or br == nil or bt == nil or bb == nil then return 0, 0, 0, 0 end
-    if il == nil or ir == nil or it == nil or ib == nil then return 0, 0, 0, 0 end
-    local left = math.max(0, il - bl)
-    local right = math.max(0, br - ir)
-    local top = math.max(0, bt - it)
-    local bottom = math.max(0, ib - bb)
+    local ok, left, right, top, bottom = pcall(function()
+        local bl, br, bt, bb = btn:GetLeft(), btn:GetRight(), btn:GetTop(), btn:GetBottom()
+        local il, ir, it, ib = icon:GetLeft(), icon:GetRight(), icon:GetTop(), icon:GetBottom()
+        if type(bl) ~= "number" or type(br) ~= "number" or type(bt) ~= "number" or type(bb) ~= "number" then return nil end
+        if type(il) ~= "number" or type(ir) ~= "number" or type(it) ~= "number" or type(ib) ~= "number" then return nil end
 
-    return left, right, top, bottom
+        return math.max(0, il - bl), math.max(0, br - ir), math.max(0, bt - it), math.max(0, ib - bb)
+    end)
+
+    if ok and type(left) == "number" then return left, right, top, bottom end
+
+    return 0, 0, 0, 0
 end
 
 local function ApplyAuraGrid(btn)
@@ -106,14 +124,13 @@ local function ApplyAuraGrid(btn)
     local spacingY = MoveAny:GetEleOption(info.ele, info.prefix .. "SPACINGY", 10)
     if type(spacingX) ~= "number" then spacingX = 4 end
     if type(spacingY) ~= "number" then spacingY = 10 end
-    local sw, sh = btn:GetSize()
-    if type(sw) ~= "number" or sw < 1 then return false end
-    if type(sh) ~= "number" or sh < 1 then sh = sw end
+    local sw, sh = SafeSize(btn)
+    if sw == nil then return false end
     local anchor = ResolveGridAnchor(info.ele, info.root, MoveAny:GetEleOption(info.ele, info.prefix .. "ANCHOR", 0))
     if info.index == 1 then
         gridStats.lastAnchor = anchor
         gridStats.lastRoot = tostring(MoveAny:GetName(info.root))
-        local rw, rh = info.root:GetSize()
+        local rw, rh = SafeSize(info.root)
         gridStats.lastRootSize = string.format("%.0fx%.0f", rw or 0, rh or 0)
     end
 
@@ -141,8 +158,13 @@ local function ApplyAuraGrid(btn)
     end
 
     if info.index == 1 then gridStats.insets = string.format("l %.0f r %.0f t %.0f b %.0f", inLeft, inRight, inTop, inBottom) end
-    local cp1, cp2, cp3, cp4, cp5 = btn:GetPoint()
-    if cp1 == anchor and cp2 == info.root and cp3 == anchor and cp4 == x and cp5 == y then return true end
+    local same = false
+    pcall(function()
+        local cp1, cp2, cp3, cp4, cp5 = btn:GetPoint()
+        same = cp1 == anchor and cp2 == info.root and cp3 == anchor and cp4 == x and cp5 == y
+    end)
+
+    if same then return true end
     gridBusy[btn] = true
     local ok, err = pcall(function()
         btn:ClearAllPoints()
@@ -178,11 +200,19 @@ local function ApplyCollapseButton(cb)
     if info == nil or info.first == nil then return false end
     if cb.IsProtected and InCombatLockdown() and cb:IsProtected() then return false end
     local target = AuraIconRegion(info.first) or info.first
-    gridStats.collapseSizes = string.format("btn %.0f target %.0f arrow %.0f", info.first:GetHeight() or 0, target:GetHeight() or 0, cb:GetHeight() or 0)
+    local _, bh = SafeSize(info.first)
+    local _, th = SafeSize(target)
+    local _, ah = SafeSize(cb)
+    gridStats.collapseSizes = string.format("btn %.0f target %.0f arrow %.0f", bh or 0, th or 0, ah or 0)
     local p1, p3, p4 = "RIGHT", "LEFT", -COLLAPSE_GAP
     if string.find(info.anchor, "RIGHT", 1, true) then p1, p3, p4 = "LEFT", "RIGHT", COLLAPSE_GAP end
-    local cp1, cp2, cp3, cp4, cp5 = cb:GetPoint()
-    if cp1 == p1 and cp2 == target and cp3 == p3 and cp4 == p4 and cp5 == 0 then return true end
+    local same = false
+    pcall(function()
+        local cp1, cp2, cp3, cp4, cp5 = cb:GetPoint()
+        same = cp1 == p1 and cp2 == target and cp3 == p3 and cp4 == p4 and cp5 == 0
+    end)
+
+    if same then return true end
     collapseBusy[cb] = true
     local ok = pcall(function()
         cb:ClearAllPoints()

@@ -302,12 +302,15 @@ local function TrackDigital(btn, fmt, value)
 	end
 
 	if type(value) ~= "number" then return end
+	local now = GetTime()
+	local gap = type(btn.maDurationTick) ~= "number" or now - btn.maDurationTick > 2
+	btn.maDurationTick = now
 	if factor == 1 then
 		btn.maDurationLeft = value
-		btn.maDurationStamp = GetTime()
-	elseif btn.maDurationUnit ~= factor or type(btn.maDurationRaw) ~= "number" or value ~= btn.maDurationRaw then
+		btn.maDurationStamp = now
+	elseif gap or btn.maDurationUnit ~= factor or type(btn.maDurationRaw) ~= "number" or value ~= btn.maDurationRaw then
 		btn.maDurationLeft = value * factor
-		btn.maDurationStamp = GetTime()
+		btn.maDurationStamp = now
 	end
 
 	btn.maDurationUnit = factor
