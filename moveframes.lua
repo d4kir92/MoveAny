@@ -1,5 +1,5 @@
 local _, MoveAny = ...
-local MAFRAMES = {"TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "PVPParentFrame", "HouseListFrame", "WatchFrameAutoQuestPopUp1", "GuildControlUI", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
+local MAFRAMES = {"HouseEditorFrame.StoragePanel", "TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "PVPParentFrame", "HouseListFrame", "WatchFrameAutoQuestPopUp1", "GuildControlUI", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 local MAFRAMESIGNORECLAMP = {}
 MAFRAMESIGNORECLAMP["TEST"] = true
 if not MoveAny:IsAddOnLoaded("Leatrix_Maps") then tinsert(MAFRAMES, "WorldMapFrame") end
@@ -12,7 +12,7 @@ tinsert(MAFRAMES, "StaticPopup1")
 tinsert(MAFRAMES, "StaticPopup2")
 tinsert(MAFRAMES, "InstanceAbandonPopup")
 local MAFRAMESONLYRETAIL = {}
-for i, v in pairs({"TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "HouseListFrame", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "LFGListInviteDialog", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ScrappingMachineFrame", "InspectRecipeFrame", "SettingsPanel", "QuickKeybindFrame", "ContainerFrameCombinedBags", "ClassTalentFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "WeeklyRewardsFrame", "WardrobeFrame", "AuctionHouseFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CovenantRenownFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame",}) do
+for i, v in pairs({"HouseEditorFrame.StoragePanel", "TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "HouseListFrame", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "LFGListInviteDialog", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ScrappingMachineFrame", "InspectRecipeFrame", "SettingsPanel", "QuickKeybindFrame", "ContainerFrameCombinedBags", "ClassTalentFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "WeeklyRewardsFrame", "WardrobeFrame", "AuctionHouseFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CovenantRenownFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame",}) do
 	MAFRAMESONLYRETAIL[v] = true
 end
 
@@ -47,7 +47,6 @@ local function MAFSCheckWrongBuild()
 			added = true
 		end
 	end
-
 	return added
 end
 
@@ -190,6 +189,7 @@ local function MAFSRestoreGiveUp()
 
 	MAFSRecountPending()
 end
+
 local maframesetpoint = {}
 local masetscale_frame = {}
 local ma_ismoving = {}
@@ -199,7 +199,22 @@ function MoveAny:MAFrameStopMoving(frameObj, name)
 	if name2 then
 		local fM = _G[name2 .. "Move"]
 		if fM == nil then
-			MoveAny:INFO("FAILED TO STOP MOVING", name)
+			MoveAny:INFO("#1 FAILED TO STOP MOVING", name)
+			return
+		end
+
+		if fM and ma_ismoving[fM] then
+			ma_ismoving[fM] = false
+			fM:StopMovingOrSizing()
+			fM:SetUserPlaced(false)
+		end
+
+		local scale = frameObj:GetScale()
+		if scale and scale > 0 then fM:SetScale(scale) end
+	elseif name then
+		local fM = _G[name .. "Move"]
+		if fM == nil then
+			MoveAny:INFO("#2 FAILED TO STOP MOVING", name)
 			return
 		end
 
@@ -333,6 +348,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 				if frame ~= nil and frame:IsVisible() and (not InCombatLockdown() or not frame:IsProtected()) then
 					MAFS[name] = nil
 					MAFSGiveUp[name] = nil
+					if name == "HouseEditorFrame.StoragePanel" and HouseEditorFrame and HouseEditorFrame.StoragePanel and HouseEditorFrame.StoragePanel.InputBlocker then HouseEditorFrame.StoragePanel.InputBlocker:Hide() end
 					if (name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame) or (name == "BankFrame" and MoveAny:IsAddOnLoaded("Sorted", "BankFrame")) then
 						frame:SetAlpha(0)
 						local enableMouse = false
@@ -658,11 +674,8 @@ function MoveAny:MoveFrames()
 		MAFSCheckWrongBuild()
 		MAFSRestoreGiveUp()
 		MoveAny:UpdateMoveFrames("ADDON_LOADED", true)
-		if giveUpScheduled then
-			MoveAny:After(5, function()
-				MAFSGiveUpUnresolved()
-			end, "MAFS GiveUp 2")
-		end
+		if giveUpScheduled then MoveAny:After(5, function() MAFSGiveUpUnresolved() end, "MAFS GiveUp 2") end
 	end, "ADDON_LOADED 123")
+
 	if BattlefieldFrame then BattlefieldFrame:EnableMouse(false) end
 end
