@@ -46,52 +46,6 @@ MoveAny.DurationFormats = {
 }
 
 local durationHooked = false
-local stats = {
-	hookOK = 0,
-	hookFail = 0,
-	fmtCalls = 0,
-	txtCalls = 0,
-	writes = 0,
-	skipType = 0,
-	skipSame = 0,
-	digitalBase = 0,
-	digitalWrites = 0,
-	noFactor = 0,
-	noTime = 0,
-	lastMode = -1,
-	lastFmtType = "?",
-	lastValueType = "?",
-	lastUnknownFmt = "-",
-	cFmtCalls = 0,
-	cDigitalWrites = 0,
-	cNoTime = 0,
-	cTicks = 0,
-	errors = 0,
-	cErrors = 0,
-	lastError = "-",
-	auraIDs = 0,
-	refreshHits = 0,
-	refreshFail = 0,
-	noMath = 0,
-	auraFields = "-",
-	staleDrop = 0,
-	bumpHits = 0,
-	upJumps = 0,
-	texSeen = 0,
-	texHits = 0,
-	texMiss = 0,
-	texNoIcon = 0,
-	texNoRead = 0,
-}
-
-local function NoteError(err)
-	stats.errors = stats.errors + 1
-	if InCombatLockdown() then stats.cErrors = stats.cErrors + 1 end
-	if stats.lastError ~= "-" then return end
-	local ok, msg = pcall(function() return string.sub(tostring(err), 1, 90) end)
-	if ok and type(msg) == "string" then stats.lastError = msg end
-end
-
 function MoveAny:CanReadAuraDuration()
 	return MoveAny:GetWoWBuild() ~= "RETAIL"
 end
@@ -323,15 +277,10 @@ local function NoteRefreshTex(aura)
 		return id
 	end)
 
-	if not ok or type(tex) ~= "number" then
-		stats.texMiss = stats.texMiss + 1
-
-		return
-	end
+	if not ok or type(tex) ~= "number" then return end
 
 	refreshStamp = GetTime()
 	refreshTex[tex] = refreshStamp
-	stats.texSeen = stats.texSeen + 1
 end
 
 local function TakeRefresh(btn, now)
@@ -339,20 +288,11 @@ local function TakeRefresh(btn, now)
 	if type(btn.maDurationRefresh) == "number" and btn.maDurationRefresh >= refreshStamp then return false end
 	if MoveAny.GetAuraIconTexture == nil then return false end
 	local tex = MoveAny:GetAuraIconTexture(btn)
-	if tex == nil then
-		stats.texNoIcon = stats.texNoIcon + 1
-
-		return false
-	end
-
-	if tex == false then
-		stats.texNoRead = stats.texNoRead + 1
-
-		return false
-	end
+	if tex == nil or tex == false then return false end
 
 	local stamp = refreshTex[tex]
 	if type(stamp) ~= "number" then return false end
+	if now - stamp > 2 then return false end
 	if type(btn.maDurationRefresh) == "number" and btn.maDurationRefresh >= stamp then return false end
 	btn.maDurationRefresh = stamp
 
@@ -361,11 +301,7 @@ end
 
 local function TrackDigital(btn, fmt, value)
 	local factor = GetUnitFactor(fmt)
-	if factor == nil then
-		stats.noFactor = stats.noFactor + 1
-		if type(fmt) == "string" then stats.lastUnknownFmt = fmt end
-		return
-	end
+	if factor == nil then return end
 
 	if type(value) ~= "number" then return end
 	local now = GetTime()
@@ -378,17 +314,12 @@ local function TrackDigital(btn, fmt, value)
 	elseif gap or btn.maDurationUnit ~= factor or type(btn.maDurationRaw) ~= "number" or value ~= btn.maDurationRaw then
 		local okMath, left = pcall(function() return value * factor end)
 		if okMath and type(left) == "number" then
-			pcall(function()
-				if btn.maDurationUnit == factor and type(btn.maDurationRaw) == "number" and value > btn.maDurationRaw then stats.upJumps = stats.upJumps + 1 end
-			end)
-
 			btn.maDurationLeft = left
 			btn.maDurationStamp = now
 		else
 			btn.maDurationLeft = nil
 			btn.maDurationStamp = nil
 			btn.maDurationNoMath = true
-			stats.staleDrop = stats.staleDrop + 1
 		end
 	elseif type(btn.maDurationLeft) == "number" and type(btn.maDurationStamp) == "number" then
 		local fresh = TakeRefresh(btn, now)
@@ -403,17 +334,11 @@ local function TrackDigital(btn, fmt, value)
 		if okBump and type(higher) == "number" then
 			btn.maDurationLeft = higher
 			btn.maDurationStamp = now
-			if fresh then
-				stats.texHits = stats.texHits + 1
-			else
-				stats.bumpHits = stats.bumpHits + 1
-			end
 		end
 	end
 
 	btn.maDurationUnit = factor
 	btn.maDurationRaw = value
-	stats.digitalBase = stats.digitalBase + 1
 end
 
 local function GetColor(fs)
@@ -472,8 +397,6 @@ local function WriteTimeFromFormat(fs, fmt, value, mode)
 		local okMath, seconds = pcall(function() return value * factor end)
 		if not okMath then
 			if btn then btn.maDurationNoMath = true end
-			stats.noMath = stats.noMath + 1
-
 			return false
 		end
 
@@ -506,13 +429,8 @@ local function ApplyFormat(fs)
 	local mode = GetFormat(fs)
 	if mode == 0 then return end
 	if IsTimeMode(mode) then
-		if TryTimeFromBase(fs, mode) then
-			stats.digitalWrites = stats.digitalWrites + 1
-			if InCombatLockdown() then stats.cDigitalWrites = stats.cDigitalWrites + 1 end
-		else
-			stats.noTime = stats.noTime + 1
-			if InCombatLockdown() then stats.cNoTime = stats.cNoTime + 1 end
-		end
+		TryTimeFromBase(fs, mode)
+
 		return
 	end
 
@@ -529,53 +447,36 @@ local function ApplyFormat(fs)
 end
 
 local function SafeApplyFormat(fs)
-	local ok, err = pcall(ApplyFormat, fs)
-	if ok then return end
+	if pcall(ApplyFormat, fs) then return end
 	applying[fs] = false
-	NoteError(err)
 end
 
 local function WriteCompactFormat(fs, fmt, value)
-	if type(fmt) ~= "string" then
-		stats.skipType = stats.skipType + 1
-		return
-	end
+	if type(fmt) ~= "string" then return end
 
 	local new = string.gsub(fmt, "%s+", "")
-	if new == fmt then
-		stats.skipSame = stats.skipSame + 1
-		return
-	end
+	if new == fmt then return end
 
 	applying[fs] = true
 	fs:SetFormattedText(new, value)
 	applying[fs] = false
-	stats.writes = stats.writes + 1
 end
 
 local function WriteShortFormat(fs, fmt, value)
-	if type(fmt) ~= "string" then
-		stats.skipType = stats.skipType + 1
-		return
-	end
+	if type(fmt) ~= "string" then return end
 
 	local new = ShortenSpaced(fmt)
 	if new == nil then new = (string.gsub(fmt, "%s+", "")) end
-	if new == fmt then
-		stats.skipSame = stats.skipSame + 1
-		return
-	end
+	if new == fmt then return end
 
 	applying[fs] = true
 	fs:SetFormattedText(new, value)
 	applying[fs] = false
-	stats.writes = stats.writes + 1
 end
 
 local function OnDurationText(fs)
 	if applying[fs] then return end
 	if fs.maDurationBtn == nil then return end
-	stats.txtCalls = stats.txtCalls + 1
 	if not pcall(ApplyColor, fs) then coloring[fs] = false end
 	SafeApplyFormat(fs)
 end
@@ -583,20 +484,10 @@ end
 local function OnDurationFormatted(fs, fmt, value)
 	if applying[fs] then return end
 	if fs.maDurationBtn == nil then return end
-	stats.fmtCalls = stats.fmtCalls + 1
-	if InCombatLockdown() then stats.cFmtCalls = stats.cFmtCalls + 1 end
-	if stats.lastFmtType == "?" then
-		local okType, fmtType = pcall(type, fmt)
-		stats.lastFmtType = okType and fmtType or "secret"
-		local okValue, valueType = pcall(type, value)
-		stats.lastValueType = okValue and valueType or "secret"
-	end
-
 	fs.maDurationBtn.maDurationSeen = GetTime()
 	pcall(TrackDigital, fs.maDurationBtn, fmt, value)
 	if not pcall(ApplyColor, fs) then coloring[fs] = false end
 	local mode = GetFormat(fs)
-	stats.lastMode = mode
 	if mode == 1 then
 		if not pcall(WriteCompactFormat, fs, fmt, value) then applying[fs] = false end
 	elseif mode == 3 then
@@ -604,20 +495,7 @@ local function OnDurationFormatted(fs, fmt, value)
 	elseif IsTimeMode(mode) then
 		if not TryTimeFromBase(fs, mode) then
 			applying[fs] = false
-			local ok, written = pcall(WriteTimeFromFormat, fs, fmt, value, mode)
-			if not ok then
-				applying[fs] = false
-				NoteError(written)
-			elseif written then
-				stats.digitalWrites = stats.digitalWrites + 1
-				if InCombatLockdown() then stats.cDigitalWrites = stats.cDigitalWrites + 1 end
-			else
-				stats.noTime = stats.noTime + 1
-				if InCombatLockdown() then stats.cNoTime = stats.cNoTime + 1 end
-			end
-		else
-			stats.digitalWrites = stats.digitalWrites + 1
-			if InCombatLockdown() then stats.cDigitalWrites = stats.cDigitalWrites + 1 end
+			if not pcall(WriteTimeFromFormat, fs, fmt, value, mode) then applying[fs] = false end
 		end
 	end
 end
@@ -643,7 +521,6 @@ local function OnUpdateDuration(btn, elapsed)
 	btn.maDurationElapsed = 0
 	if type(btn.maDurationSeen) ~= "number" or GetTime() - btn.maDurationSeen > 3 then return end
 	if not IsTimeMode(GetFormat(fs)) then return end
-	if InCombatLockdown() then stats.cTicks = stats.cTicks + 1 end
 	SafeApplyFormat(fs)
 end
 
@@ -696,133 +573,38 @@ function MoveAny:GetDurationDefaultSize(ele)
 	return 10
 end
 
-local refreshIDs = {}
-local refreshDirty = false
+local function SafeLen(tab)
+	if type(tab) ~= "table" then return 0 end
+	local n = 0
+	if pcall(function() n = #tab end) and type(n) == "number" then return n end
+
+	return 0
+end
+
 local function NoteAuraUpdate(unit, updateInfo)
 	if unit ~= "player" then return end
-	local ok = pcall(function()
-		if type(updateInfo) ~= "table" then return end
-		local added = updateInfo.addedAuras
-		if type(added) == "table" then
-			for i = 1, #added do
-				local aura = added[i]
-				NoteRefreshTex(aura)
-				local id = type(aura) == "table" and aura.auraInstanceID or nil
-				if type(id) == "number" then
-					refreshIDs[id] = true
-					refreshDirty = true
-				end
-			end
+	if type(updateInfo) ~= "table" then return end
+	local added = nil
+	local updated = nil
+	pcall(function() added = updateInfo.addedAuras end)
+	pcall(function() updated = updateInfo.updatedAuraInstanceIDs end)
+	for i = 1, SafeLen(added) do
+		NoteRefreshTex(added[i])
+	end
+
+	if C_UnitAuras == nil or C_UnitAuras.GetAuraDataByAuraInstanceID == nil then return end
+	for i = 1, SafeLen(updated) do
+		local id = updated[i]
+		if type(id) == "number" then
+			local data = nil
+			pcall(function() data = C_UnitAuras.GetAuraDataByAuraInstanceID("player", id) end)
+			NoteRefreshTex(data)
 		end
-
-		local updated = updateInfo.updatedAuraInstanceIDs
-		if type(updated) == "table" then
-			for i = 1, #updated do
-				local id = updated[i]
-				if type(id) == "number" then
-					if C_UnitAuras and C_UnitAuras.GetAuraDataByAuraInstanceID then NoteRefreshTex(C_UnitAuras.GetAuraDataByAuraInstanceID("player", id)) end
-					refreshIDs[id] = true
-					refreshDirty = true
-				end
-			end
-		end
-	end)
-
-	if not ok then stats.refreshFail = stats.refreshFail + 1 end
-end
-
-local function ProbeAuraFields(btn)
-	local ok, res = pcall(function()
-		local names = {}
-		for key in pairs(btn) do
-			if type(key) == "string" and strfind(strlower(key), "aura", 1, true) then tinsert(names, key) end
-			if type(key) == "string" and strfind(strlower(key), "instance", 1, true) then tinsert(names, key) end
-			if type(key) == "string" and strfind(strlower(key), "spell", 1, true) then tinsert(names, key) end
-		end
-
-		table.sort(names)
-		local txt = table.concat(names, " ")
-		if txt == "" then txt = "none" end
-		local methods = {}
-		local seen = {}
-		local idx = btn
-		for depth = 1, 4 do
-			local mt = getmetatable(idx)
-			idx = type(mt) == "table" and mt.__index or nil
-			if type(idx) ~= "table" then break end
-			for key, val in pairs(idx) do
-				if type(key) == "string" and type(val) == "function" and not seen[key] then
-					local low = strlower(key)
-					if strfind(low, "aura", 1, true) or strfind(low, "cool", 1, true) or strfind(low, "durat", 1, true) or strfind(low, "expir", 1, true) then
-						seen[key] = true
-						tinsert(methods, key)
-					end
-				end
-			end
-		end
-
-		table.sort(methods)
-		if #methods > 0 then txt = txt .. " |m:" .. table.concat(methods, ",") end
-
-		return string.sub(txt, 1, 400)
-	end)
-
-	if ok and type(res) == "string" then return res end
-
-	return "probe failed"
-end
-
-local function SafeNum(value)
-	if value == nil then return "nil" end
-	if type(value) ~= "number" then return "?" end
-	local ok, res = pcall(function() return string.format("%.1f", value + 0) end)
-	if ok and type(res) == "string" then return res end
-
-	return "SECRET"
-end
-
-function MoveAny:DumpAuraButton(btn)
-	local ok, res = pcall(function()
-		local now = GetTime()
-		local age = "nil"
-		if type(btn.maDurationStamp) == "number" then age = SafeNum(now - btn.maDurationStamp) end
-		local left = "nil"
-		local okLeft, res2 = pcall(GetTimeLeft, btn)
-		if okLeft then
-			left = SafeNum(res2)
-		else
-			left = "THROW"
-		end
-
-		return string.format("unit=%s raw=%s base=%s age=%s left=%s nomath=%s", SafeNum(btn.maDurationUnit), SafeNum(btn.maDurationRaw), SafeNum(btn.maDurationLeft), age, left, tostring(btn.maDurationNoMath == true))
-	end)
-
-	if ok and type(res) == "string" then return res end
-
-	return "dump failed"
-end
-
-local function SyncAuraIdentity(btn)
-	local ok = pcall(function()
-		local id = btn.auraInstanceID
-		if type(id) ~= "number" then return end
-		stats.auraIDs = stats.auraIDs + 1
-		local drop = false
-		if type(btn.maDurationAura) == "number" and btn.maDurationAura ~= id then drop = true end
-		if not drop and refreshDirty and refreshIDs[id] then drop = true end
-		btn.maDurationAura = id
-		if not drop then return end
-		btn.maDurationRaw = nil
-		btn.maDurationUnit = nil
-		stats.refreshHits = stats.refreshHits + 1
-	end)
-
-	if not ok then stats.refreshFail = stats.refreshFail + 1 end
+	end
 end
 
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
-	SyncAuraIdentity(btn)
 	local fs = GetDurationFontString(btn)
 	if fs == nil then return false end
 	if onlyNew and fs.maDurationHooked then return true end
@@ -843,12 +625,7 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if not fs.maDurationHooked then
 		fs.maDurationHooked = true
 		pcall(hooksecurefunc, fs, "SetText", OnDurationText)
-		if pcall(hooksecurefunc, fs, "SetFormattedText", OnDurationFormatted) then
-			stats.hookOK = stats.hookOK + 1
-		else
-			stats.hookFail = stats.hookFail + 1
-		end
-
+		pcall(hooksecurefunc, fs, "SetFormattedText", OnDurationFormatted)
 		pcall(hooksecurefunc, fs, "SetTextColor", OnDurationColor)
 		pcall(hooksecurefunc, fs, "SetVertexColor", OnDurationColor)
 		pcall(hooksecurefunc, fs, "SetFontObject", OnDurationFontObject)
@@ -1001,11 +778,6 @@ function MoveAny:UpdateAuraDurations(from, onlyNew)
 		if debuffEle == "DebuffFrame" and DebuffFrame then MoveAny:LayoutAuraGrid(DebuffFrame, debuffEle, "MADEBUFF", "DebuffButton") end
 	end
 
-	if refreshDirty and not onlyNew then
-		refreshDirty = false
-		wipe(refreshIDs)
-	end
-
 	if MoveAny:DEBUG() and from ~= "tick" then MoveAny:MSG("[UpdateAuraDurations]", tostring(from), "styled", styled, "of", total) end
 	return styled, total
 end
@@ -1038,63 +810,4 @@ function MoveAny:InitAuraDurations()
 		MoveAny:After(delay, function() MoveAny:UpdateAuraDurations("init " .. delay) end, "InitAuraDurations")
 	end
 
-	MoveAny:AddSlash("madur", function()
-		local styled, total = MoveAny:UpdateAuraDurations("slash")
-		MoveAny:MSG("[MoveAny] Aura duration text:", styled, "of", total, "buttons")
-		MoveAny:MSG("[MoveAny] Buff element:", tostring(GetBuffEle()), "Debuff element:", tostring(GetDebuffEle()))
-		MoveAny:MSG("[MoveAny] AuraButton_UpdateDuration hooked:", tostring(durationHooked))
-		MoveAny:MSG("[MoveAny] SetFormattedText hooks ok/fail:", stats.hookOK, "/", stats.hookFail)
-		MoveAny:MSG("[MoveAny] hook calls fmt/txt:", stats.fmtCalls, "/", stats.txtCalls, "lastMode:", tostring(stats.lastMode), "fmtType:", tostring(stats.lastFmtType), "valueType:", tostring(stats.lastValueType))
-		MoveAny:MSG("[MoveAny] compact writes:", stats.writes, "skipType:", stats.skipType, "skipSame:", stats.skipSame)
-		MoveAny:MSG("[MoveAny] digital bases:", stats.digitalBase, "writes:", stats.digitalWrites, "noTime:", stats.noTime, "noFactor:", stats.noFactor)
-		MoveAny:MSG("[MoveAny] unknown format string:", tostring(stats.lastUnknownFmt))
-		MoveAny:MSG("[MoveAny] aura ids seen:", stats.auraIDs, "refresh resyncs:", stats.refreshHits, "failed reads:", stats.refreshFail, "no-math buttons:", stats.noMath)
-		local fieldsShown = false
-		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
-			if fieldsShown then return end
-			fieldsShown = true
-			stats.auraFields = ProbeAuraFields(btn)
-		end)
-
-		MoveAny:MSG("[MoveAny] button fields:", tostring(stats.auraFields))
-		MoveAny:MSG("[MoveAny] stale drops:", stats.staleDrop, "resyncs:", stats.bumpHits, "up jumps:", stats.upJumps)
-		MoveAny:MSG("[MoveAny] aura tex:", stats.texSeen, "refresh hits:", stats.texHits, "no tex:", stats.texMiss, "no icon:", stats.texNoIcon, "no read:", stats.texNoRead)
-		local dumped = 0
-		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
-			if dumped >= 2 then return end
-			dumped = dumped + 1
-			MoveAny:MSG("[MoveAny] btn" .. dumped, MoveAny:DumpAuraButton(btn))
-		end)
-		MoveAny:MSG("[MoveAny] IN COMBAT fmtCalls:", stats.cFmtCalls, "ticks:", stats.cTicks, "writes:", stats.cDigitalWrites, "noTime:", stats.cNoTime)
-		MoveAny:MSG("[MoveAny] errors:", stats.errors, "in combat:", stats.cErrors)
-		MoveAny:MSG("[MoveAny] first error:", tostring(stats.lastError))
-		if MoveAny.GetAuraGridStats then
-			local grid = MoveAny:GetAuraGridStats()
-			MoveAny:MSG("[MoveAny] aura grid placed:", grid.placed, "skipped:", grid.skipped, "errors:", grid.errors)
-			MoveAny:MSG("[MoveAny] aura grid anchor:", tostring(grid.lastAnchor), "on", tostring(grid.lastRoot), tostring(grid.lastRootSize))
-			MoveAny:MSG("[MoveAny] collapse button:", tostring(grid.collapse), "on", tostring(grid.collapseOn), "exists:", tostring(BuffFrame ~= nil and BuffFrame.CollapseAndExpandButton ~= nil))
-			MoveAny:MSG("[MoveAny] collapse heights:", tostring(grid.collapseSizes))
-			MoveAny:MSG("[MoveAny] icon insets:", tostring(grid.insets))
-			if grid.errors > 0 then MoveAny:MSG("[MoveAny] aura grid error:", tostring(grid.lastError)) end
-		end
-
-		local probed = false
-		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
-			if probed then return end
-			probed = true
-			local ok, isNum = pcall(function() return type(GetTimeLeft(btn)) == "number" end)
-			MoveAny:MSG("[MoveAny] DIGITAL possible:", tostring(ok and isNum == true))
-		end)
-
-		if not MoveAny:CanReadAuraDuration() then return end
-		local shown = 0
-		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
-			if shown < 3 then
-				shown = shown + 1
-				local fs = GetDurationFontString(btn)
-				local icon = GetIconRegion(btn)
-				MoveAny:MSG("[MoveAny]", tostring(MoveAny:GetName(btn)), "duration:", tostring(fs and MoveAny:GetName(fs) or fs), "text:", tostring(fs and fs:GetText()), "icon:", tostring(icon and MoveAny:GetName(icon) or icon))
-			end
-		end)
-	end)
 end
