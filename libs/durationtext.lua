@@ -228,7 +228,7 @@ local function TrackDigital(btn, fmt, value)
 	if factor == 1 then
 		btn.maDurationLeft = value
 		btn.maDurationStamp = GetTime()
-	elseif btn.maDurationUnit ~= factor or type(btn.maDurationRaw) ~= "number" or value < btn.maDurationRaw then
+	elseif btn.maDurationUnit ~= factor or type(btn.maDurationRaw) ~= "number" or value ~= btn.maDurationRaw then
 		btn.maDurationLeft = value * factor
 		btn.maDurationStamp = GetTime()
 	end
@@ -314,7 +314,6 @@ local function ApplyFormat(fs)
 			stats.noTime = stats.noTime + 1
 			if InCombatLockdown() then stats.cNoTime = stats.cNoTime + 1 end
 		end
-
 		return
 	end
 
@@ -701,6 +700,7 @@ function MoveAny:InitAuraDurations()
 			MoveAny:MSG("[MoveAny] icon insets:", tostring(grid.insets))
 			if grid.errors > 0 then MoveAny:MSG("[MoveAny] aura grid error:", tostring(grid.lastError)) end
 		end
+
 		local probed = false
 		ForeachAuraButton(BuffFrame, "BuffButton", function(btn)
 			if probed then return end

@@ -165,7 +165,6 @@ function MoveAny:AddElePosition(win, name)
 			if p1 and p3 and p4 and p5 then MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, p4 + x, p5 + y) end
 			holder:UpdateText()
 		end)
-
 		return btn
 	end
 
@@ -179,7 +178,6 @@ function MoveAny:AddElePosition(win, name)
 	Arrow(2, 4, 0, -5, ARROW_DOWN, ARROW_DOWN_PUSHED)
 	holder:UpdateText()
 	MoveAny.UI:Add(win, holder, height, label, true, "POSITION")
-
 	return holder
 end
 
@@ -204,7 +202,6 @@ function MoveAny:AddEleScale(win, name)
 			func()
 			holder:UpdateText()
 		end)
-
 		return btn
 	end
 
@@ -226,7 +223,6 @@ function MoveAny:AddEleScale(win, name)
 	Step(6, 1)
 	holder:UpdateText()
 	MoveAny.UI:Add(win, holder, height, label, true, "SCALE")
-
 	return holder
 end
 
@@ -245,7 +241,6 @@ function MoveAny:AddEleReset(win, name)
 
 	holder.control = btn
 	MoveAny.UI:Add(win, holder, MoveAny.UI.ROW, label, true, "RESETELEMENT")
-
 	return holder
 end
 
@@ -285,31 +280,23 @@ local function AuraChoices(map, cur)
 	table.sort(values)
 	local choices = {}
 	for _, value in ipairs(values) do
-		tinsert(
-			choices,
-			{
-				["value"] = value,
-				["label"] = "LID_" .. map[value]
-			}
-		)
+		tinsert(choices, {
+			["value"] = value,
+			["label"] = "LID_" .. map[value]
+		})
 	end
 
 	if cur ~= nil and not found then
-		tinsert(
-			choices,
-			{
-				["value"] = cur,
-				["label"] = tostring(cur)
-			}
-		)
+		tinsert(choices, {
+			["value"] = cur,
+			["label"] = tostring(cur)
+		})
 	end
-
 	return choices
 end
 
 local function AddEleDropdown(win, name, key, value, map, func, label)
 	local cur = MoveAny:GetEleOption(name, key, value, "MenuOptions " .. key)
-
 	return win:AddDropdown({
 		["label"] = label or ("LID_" .. key),
 		["search"] = key,
@@ -403,7 +390,6 @@ local function AddGeneralOptions(win, name, optionFrame)
 			local dragf = MoveAny:GetDragFromName(name)
 			if optionFrame == nil then
 				if dragf then dragf:Hide() end
-
 				return
 			end
 
@@ -606,7 +592,6 @@ local MODES_SIMPLE = {
 
 local function HasFullAuraModes()
 	local build = MoveAny:GetWoWBuild()
-
 	return build ~= "RETAIL" and build ~= "CLASSIC" and build ~= "TBC" and build ~= "MISTS"
 end
 
@@ -621,8 +606,8 @@ local function AddAuraOptions(win, name, cat, prefix, ownBar, refresh)
 	end
 
 	AddEleSlider(win, name, prefix .. "LIMIT", 10, 2, 20, 1, 0, refresh, "LID_LIMIT")
-	AddEleSlider(win, name, prefix .. "SPACINGX", 4, 0, 30, 1, 0, refresh, "LID_SPACINGX")
-	AddEleSlider(win, name, prefix .. "SPACINGY", 10, 0, 30, 1, 0, refresh, "LID_SPACINGY")
+	AddEleSlider(win, name, prefix .. "SPACINGX", 2, 0, 30, 1, 0, refresh, "LID_SPACINGX")
+	AddEleSlider(win, name, prefix .. "SPACINGY", 4, 0, 30, 1, 0, refresh, "LID_SPACINGY")
 	AddEleCategory(win, cat .. "DURATION", MoveAny:Trans("LID_DURATION"), 2)
 	AddDurationOptions(win, name, prefix .. "DURATION", refresh)
 end
@@ -716,7 +701,6 @@ function MoveAny:MenuOptions(win, frame)
 	if frame == StanceBarAnchor then frame = StanceBar end
 	if frame == nil then
 		MoveAny:MSG("FRAME NOT FOUND")
-
 		return
 	end
 
@@ -1070,7 +1054,6 @@ function MoveAny:RegisterWidget(tab)
 				local np5 = MoveAny:Snap(p5)
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5) end
 				if dragframe.opt and dragframe.opt.elePos then dragframe.opt.elePos:UpdateText() end
-
 				dragframe:SetMovable(true)
 				MoveAny:SafeAnchorDrag(dragframe, fram, posx, posy)
 			end
