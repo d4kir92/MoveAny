@@ -7147,6 +7147,7 @@ local function InitRealms()
 end
 
 function D4:GetRealmLang(realmName)
+    if D4:IsSecret(realmName) then return "" end
     if initRealms == false then
         initRealms = true
         InitRealms()
@@ -7276,6 +7277,7 @@ local function InitRealmLangs()
 end
 
 function D4:GetRealmFlag(realmName)
+    if D4:IsSecret(realmName) then return "" end
     if initRealmLangs == false then
         initRealmLangs = true
         InitRealmLangs()

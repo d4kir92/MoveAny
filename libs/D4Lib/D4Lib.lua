@@ -32,6 +32,13 @@ function D4:GetWoWBuild()
     return buildName
 end
 
+function D4:IsSecret(value)
+    local isSecret = _G["issecretvalue"]
+    if isSecret == nil then return false end
+
+    return isSecret(value) == true
+end
+
 D4.oldWow = D4.oldWow or false
 if _G["C_Timer"] == nil then
     D4:MSG("[D4] ADD MISSING: C_Timer")
@@ -1085,6 +1092,7 @@ function D4:GetRoleByGuid(guid)
 end
 
 function D4:GetRoleIcon(role)
+    if D4:IsSecret(role) then return "" end
     if role == "" then return "" end
     if role == "NONE" then return "" end
     if role == "DAMAGER" then
