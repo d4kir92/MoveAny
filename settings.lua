@@ -1791,7 +1791,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.10.11")
+	MoveAny:SetVersion(135994, "1.10.12")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -1897,6 +1897,7 @@ local minimapDragShapes = {
 	["TRICORNER-BOTTOMLEFT"] = {true, true, false, true},
 	["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
 }
+
 local function GetMinimapDragShape()
 	if type(GetMinimapShape) ~= "function" then return minimapDragShapes["ROUND"] end
 	local ok, shape = pcall(GetMinimapShape)
@@ -2032,11 +2033,19 @@ local function UpdateMinimapDragFrames()
 	end
 end
 
+local function HasMinimapDragScripts(frame)
+	if not frame or not frame.GetScript then return false end
+	if frame:GetScript("OnDragStart") or frame:GetScript("OnDragStop") then return true end
+	return false
+end
+
 function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 	if not frame or not key or not Minimap then return end
+	if frame:IsMovable() or HasMinimapDragScripts(frame) then return end
+	local parent = frame:GetParent()
+	if parent and parent ~= Minimap and parent ~= MinimapCluster and parent ~= UIParent and HasMinimapDragScripts(parent) then return end
 	minimapDragOffsets[frame] = offset
 	minimapDragRotations[frame] = rotate
-	if frame:IsMovable() then return end
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
 	frame:RegisterForDrag("LeftButton")
