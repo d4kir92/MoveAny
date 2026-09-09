@@ -1881,6 +1881,47 @@ local function GetMinimapDragCenter()
 	return mx * ms, my * ms, ms
 end
 
+local minimapDragShapes = {
+	["ROUND"] = {true, true, true, true},
+	["SQUARE"] = {false, false, false, false},
+	["CORNER-TOPLEFT"] = {false, false, false, true},
+	["CORNER-TOPRIGHT"] = {false, false, true, false},
+	["CORNER-BOTTOMLEFT"] = {false, true, false, false},
+	["CORNER-BOTTOMRIGHT"] = {true, false, false, false},
+	["SIDE-LEFT"] = {false, true, false, true},
+	["SIDE-RIGHT"] = {true, false, true, false},
+	["SIDE-TOP"] = {false, false, true, true},
+	["SIDE-BOTTOM"] = {true, true, false, false},
+	["TRICORNER-TOPLEFT"] = {false, true, true, true},
+	["TRICORNER-TOPRIGHT"] = {true, false, true, true},
+	["TRICORNER-BOTTOMLEFT"] = {true, true, false, true},
+	["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
+}
+local function GetMinimapDragShape()
+	if type(GetMinimapShape) ~= "function" then return minimapDragShapes["ROUND"] end
+	local ok, shape = pcall(GetMinimapShape)
+	if not ok then return minimapDragShapes["ROUND"] end
+	return minimapDragShapes[shape] or minimapDragShapes["ROUND"]
+end
+
+local function GetMinimapDragPos(angle, w, h)
+	local cx, cy = math.cos(angle), math.sin(angle)
+	local q = 1
+	if cx < 0 then q = q + 1 end
+	if cy > 0 then q = q + 2 end
+	if GetMinimapDragShape()[q] then return cx * w, cy * h end
+	local ax, ay = math.abs(cx), math.abs(cy)
+	local s = nil
+	if ax > 0.0001 then s = w / ax end
+	if ay > 0.0001 then
+		local sy = h / ay
+		if not s or sy < s then s = sy end
+	end
+
+	if not s then return cx * w, cy * h end
+	return cx * s, cy * s
+end
+
 local function GetMinimapDragBlock(frame, radius)
 	if MoveAny:GetWoWBuild() == "RETAIL" then return end
 	if not GameTimeFrame or not GameTimeFrame:IsShown() or frame == GameTimeFrame then return end
@@ -1927,8 +1968,10 @@ function MoveAny:SetMinimapDragAngle(frame, angle)
 	if not ms then return end
 	local fs = frame:GetEffectiveScale()
 	if not fs or fs <= 0 then return end
-	local radius = (Minimap:GetWidth() / 2 + (minimapDragOffsets[frame] or minimapDragOffset)) * ms
-	local ba, arc = GetMinimapDragBlock(frame, radius)
+	local off = minimapDragOffsets[frame] or minimapDragOffset
+	local w = (Minimap:GetWidth() / 2 + off) * ms
+	local h = (Minimap:GetHeight() / 2 + off) * ms
+	local ba, arc = GetMinimapDragBlock(frame, w)
 	if ba then
 		local diff = math.atan2(math.sin(angle - ba), math.cos(angle - ba))
 		if math.abs(diff) < arc then
@@ -1940,8 +1983,9 @@ function MoveAny:SetMinimapDragAngle(frame, angle)
 		end
 	end
 
-	local px = math.cos(angle) * radius / fs
-	local py = math.sin(angle) * radius / fs
+	local px, py = GetMinimapDragPos(angle, w, h)
+	px = px / fs
+	py = py / fs
 	frame:ClearAllPoints()
 	frame:SetPoint("CENTER", Minimap, "CENTER", px, py)
 	minimapDragAngles[frame] = angle
@@ -1963,7 +2007,7 @@ function MoveAny:ClampMinimapDrag(frame)
 	local fx, fy = frame:GetCenter()
 	local fs = frame:GetEffectiveScale()
 	if not fx or not fy or not fs or fs <= 0 then return end
-	MoveAny:SetMinimapDragAngle(frame, math.atan2(fy * fs - my, fx * fs - mx))
+	MoveAny:SetMinimapDragAngle(frame, minimapDragAngles[frame] or math.atan2(fy * fs - my, fx * fs - mx))
 end
 
 function MoveAny:SaveMinimapDrag(frame, key)
@@ -1974,7 +2018,7 @@ function MoveAny:SaveMinimapDrag(frame, key)
 	if not fx or not fy or not fs or not us or us <= 0 then return end
 	local mx, my = GetMinimapDragCenter()
 	if not mx then return end
-	local angle = math.atan2(fy * fs - my, fx * fs - mx)
+	local angle = minimapDragAngles[frame] or math.atan2(fy * fs - my, fx * fs - mx)
 	MoveAny:SetElePoint(key, "CENTER", MoveAny:GetMainPanel(), "BOTTOMLEFT", fx * fs / us, fy * fs / us)
 	MoveAny:SetMinimapDragAngle(frame, angle)
 end
@@ -2008,6 +2052,7 @@ function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 		minimapDragHooked = true
 		hooksecurefunc(Minimap, "SetPoint", UpdateMinimapDragFrames)
 		hooksecurefunc(Minimap, "SetScale", UpdateMinimapDragFrames)
+		if Minimap.SetMaskTexture then hooksecurefunc(Minimap, "SetMaskTexture", UpdateMinimapDragFrames) end
 		Minimap:HookScript("OnSizeChanged", UpdateMinimapDragFrames)
 		if MinimapCluster then
 			hooksecurefunc(MinimapCluster, "SetScale", UpdateMinimapDragFrames)
