@@ -6,6 +6,12 @@ local applying = {}
 local coloring = {}
 local styling = {}
 local pending = false
+local hookedAuraFrames = {}
+local auraGlobalsHooked = false
+local inAuraFrameHook = false
+local auraHookFires = 0
+local reanchored = 0
+local AURA_FRAME_METHODS = {"UpdateAuras", "UpdateAuraButtons", "UpdateGridLayout"}
 local anchors = {
 	["CENTER"] = {"CENTER", 0, 0},
 	["TOP"] = {"BOTTOM", 0, 1},
@@ -603,12 +609,42 @@ local function NoteAuraUpdate(unit, updateInfo)
 	end
 end
 
+local function ApplyAnchor(fs, btn, ele, prefix)
+	local point = MoveAny.DurationAnchors[MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0)]
+	local anchor = anchors[point]
+	if anchor == nil then
+		pcall(RestoreOriginals, fs)
+
+		return false
+	end
+
+	local spacing = MoveAny:GetEleOption(ele, prefix .. "SPACING", 0)
+	local rel = GetIconRegion(btn) or btn
+	local x = anchor[2] * spacing
+	local y = anchor[3] * spacing
+	pcall(function()
+		fs:SetJustifyH("CENTER")
+		fs:SetJustifyV("MIDDLE")
+		fs:ClearAllPoints()
+		fs:SetPoint(anchor[1], rel, point, x, y)
+	end)
+
+	reanchored = reanchored + 1
+
+	return true
+end
+
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
 	local fs = GetDurationFontString(btn)
 	if fs == nil then return false end
-	if onlyNew and fs.maDurationHooked then return true end
 	prefix = prefix or "MABUFFDURATION"
+	if onlyNew and fs.maDurationHooked then
+		ApplyAnchor(fs, btn, ele, prefix)
+
+		return true
+	end
+
 	if not fs.maDurationCaptured then
 		fs.maDurationCaptured = true
 		if not pcall(CaptureOriginals, fs) then FallbackOriginals(fs, btn) end
@@ -636,20 +672,7 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 		coloring[fs] = false
 	end
 
-	local point = MoveAny.DurationAnchors[MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0)]
-	local anchor = anchors[point]
-	if anchor then
-		local spacing = MoveAny:GetEleOption(ele, prefix .. "SPACING", 0)
-		pcall(function()
-			fs:SetJustifyH("CENTER")
-			fs:SetJustifyV("MIDDLE")
-			fs:ClearAllPoints()
-			fs:SetPoint(anchor[1], GetIconRegion(btn) or btn, point, anchor[2] * spacing, anchor[3] * spacing)
-		end)
-	else
-		pcall(RestoreOriginals, fs)
-	end
-
+	ApplyAnchor(fs, btn, ele, prefix)
 	if IsTimeMode(GetFormat(fs)) and not btn.maDurationOnUpdate and btn.HookScript then
 		btn.maDurationOnUpdate = true
 		pcall(btn.HookScript, btn, "OnUpdate", OnUpdateDuration)
@@ -778,8 +801,57 @@ function MoveAny:UpdateAuraDurations(from, onlyNew)
 		if debuffEle == "DebuffFrame" and DebuffFrame then MoveAny:LayoutAuraGrid(DebuffFrame, debuffEle, "MADEBUFF", "DebuffButton") end
 	end
 
-	if MoveAny:DEBUG() and from ~= "tick" then MoveAny:MSG("[UpdateAuraDurations]", tostring(from), "styled", styled, "of", total) end
+	if MoveAny:DEBUG() and from ~= "tick" then MoveAny:MSG("[UpdateAuraDurations]", tostring(from), "styled", styled, "of", total, "hookfires", auraHookFires, "reanchored", reanchored) end
 	return styled, total
+end
+
+local function StyleAuraButtonNow(btn)
+	if type(btn) ~= "table" then return end
+	local ele, prefix = GetFormatTarget(btn)
+	if ele == nil then return end
+	MoveAny:StyleAuraDuration(btn, ele, prefix, true)
+end
+
+local function RunAuraFrameHook(from)
+	if inAuraFrameHook then return end
+	inAuraFrameHook = true
+	auraHookFires = auraHookFires + 1
+	if auraHookFires == 1 and MoveAny:DEBUG() then MoveAny:MSG("[HookAuraFrames] first fire", tostring(from)) end
+	pcall(MoveAny.UpdateAuraDurations, MoveAny, from, true)
+	inAuraFrameHook = false
+end
+
+local function HookAuraFrame(frame, from)
+	if type(frame) ~= "table" or hookedAuraFrames[frame] then return false end
+	local hooked = false
+	for i = 1, #AURA_FRAME_METHODS do
+		local method = AURA_FRAME_METHODS[i]
+		if type(frame[method]) == "function" and pcall(hooksecurefunc, frame, method, function() RunAuraFrameHook(from .. ":" .. method) end) then hooked = true end
+	end
+
+	if hooked then hookedAuraFrames[frame] = true end
+	return hooked
+end
+
+local function HookAuraGlobals()
+	if auraGlobalsHooked then return false end
+	if type(_G["AuraButton_Update"]) ~= "function" then return false end
+	auraGlobalsHooked = true
+	pcall(hooksecurefunc, "AuraButton_Update", function(buttonName, index)
+		if type(buttonName) ~= "string" then return end
+		pcall(StyleAuraButtonNow, _G[buttonName .. tostring(index or "")])
+	end)
+
+	return true
+end
+
+function MoveAny:HookAuraFrames()
+	local hooked = false
+	if HookAuraFrame(BuffFrame, "BuffFrame") then hooked = true end
+	if HookAuraFrame(DebuffFrame, "DebuffFrame") then hooked = true end
+	if HookAuraGlobals() then hooked = true end
+	if hooked and MoveAny:DEBUG() then MoveAny:MSG("[HookAuraFrames] installed") end
+	return hooked
 end
 
 local function ScheduleAuraDurations(from)
@@ -798,12 +870,14 @@ end
 
 function MoveAny:InitAuraDurations()
 	MoveAny:TryHookAuraDuration()
+	MoveAny:HookAuraFrames()
 	MoveAny:After(0.25, TickAuraDurations, "TickAuraDurations")
 	local f = CreateFrame("FRAME")
 	MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
 	MoveAny:RegisterEvent(f, "PLAYER_ENTERING_WORLD")
 	MoveAny:OnEvent(f, function(sel, event, ...)
 		if event == "UNIT_AURA" then pcall(NoteAuraUpdate, ...) end
+		if event == "PLAYER_ENTERING_WORLD" then MoveAny:HookAuraFrames() end
 		ScheduleAuraDurations(event)
 	end, "InitAuraDurations")
 	for i, delay in ipairs({0.5, 1, 2, 4, 8}) do
