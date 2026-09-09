@@ -196,7 +196,8 @@ function MoveAny:InitBuffBar()
 			sel:SetMovable(true)
 			if sel.SetUserPlaced and sel:IsMovable() then sel:SetUserPlaced(false) end
 			sel:SetParent(MABuffBar)
-			MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", 0, 0)
+			local ax, ay = MoveAny:GetPixelAlignOffset(sel, MABuffBar, "TOPRIGHT")
+			MoveAny:SetPoint(sel, "TOPRIGHT", MABuffBar, "TOPRIGHT", ax, ay)
 			ma_buffsetpoint[sel] = false
 		end)
 
@@ -343,6 +344,8 @@ function MoveAny:InitBuffBar()
 			MABUFFSPACINGY = MoveAny:GetEleOption("MABuffBar", "MABUFFSPACINGY", 10)
 			MoveAny:UpdateBuffDirections()
 			if ConsolidatedBuffs then ConsolidatedBuffs:SetParent(MABuffBar) end
+			local bax, bay = MoveAny:GetPixelAlignOffset(BuffFrame, MABuffBar, "TOPRIGHT")
+			MoveAny:SetPoint(BuffFrame, "TOPRIGHT", MABuffBar, "TOPRIGHT", bax, bay)
 			if TempEnchant1 then
 				TempEnchant1:SetPoint("CENTER", 0, 0)
 				MoveAny:StyleAuraDuration(TempEnchant1, "MABuffBar", "MABUFFDURATION")

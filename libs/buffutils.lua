@@ -131,10 +131,11 @@ local function ApplyAuraGrid(btn)
     local sw, sh = SafeSize(btn)
     if sw == nil then return false end
     local anchor = ResolveGridAnchor(info.ele, info.root, MoveAny:GetEleOption(info.ele, info.prefix .. "ANCHOR", 0))
+    local unit = MoveAny:GetPixelUnit(btn)
     local row = math.floor((info.index - 1) / limit)
     local col = (info.index - 1) % limit
-    local x = col * (sw + spacingX)
-    local y = row * (sh + spacingY)
+    local x = col * MoveAny:PixelSnap(sw + spacingX, unit)
+    local y = row * MoveAny:PixelSnap(sh + spacingY, unit)
     if string.find(anchor, "RIGHT", 1, true) then x = -x end
     if not string.find(anchor, "BOTTOM", 1, true) then y = -y end
     local inLeft, inRight, inTop, inBottom = AuraIconInsets(btn)
@@ -154,6 +155,12 @@ local function ApplyAuraGrid(btn)
         y = y - (inBottom - inTop) / 2
     end
 
+    x = MoveAny:PixelSnap(x, unit)
+    y = MoveAny:PixelSnap(y, unit)
+    local alignX, alignY = MoveAny:GetPixelAlignOffset(btn, info.root, anchor)
+    x = x + alignX
+    y = y + alignY
+
     if info.index == 1 then
         local place = firstPlace[btn]
         if place == nil then
@@ -166,10 +173,13 @@ local function ApplyAuraGrid(btn)
         place.l, place.r, place.t, place.b = inLeft, inRight, inTop, inBottom
     end
 
+    local tol = (unit or 1) * 0.05
     local same = false
     pcall(function()
         local cp1, cp2, cp3, cp4, cp5 = btn:GetPoint()
-        same = cp1 == anchor and cp2 == info.root and cp3 == anchor and cp4 == x and cp5 == y
+        if cp1 ~= anchor or cp2 ~= info.root or cp3 ~= anchor then return end
+        if type(cp4) ~= "number" or type(cp5) ~= "number" then return end
+        same = math.abs(cp4 - x) <= tol and math.abs(cp5 - y) <= tol
     end)
 
     if same then return true end
