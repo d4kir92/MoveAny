@@ -83,7 +83,6 @@ function MoveAny:HideFrame(frame)
 							hideAgainPending = false
 							HideAgainNow(sel)
 						end, "HideFrame HideAgain")
-
 						return
 					end
 
@@ -167,7 +166,6 @@ function MoveAny:ShowFrame(frame)
 	if oldsethiddenshown[frame] ~= nil then
 		if not MoveAny:CanModify(frame) then
 			MoveAny:After(0.1, function() MoveAny:ShowFrame(frame) end, "ShowFrame")
-
 			return
 		end
 
@@ -285,8 +283,8 @@ MoveAny:OnEvent(maLockCheck, function(sel, event) MoveAny:UpdateMALock(event) en
 function MoveAny:InitSlash()
 	MoveAny:AddSlash("move", MoveAny.ToggleMALock)
 	MoveAny:AddSlash("moveany", MoveAny.ToggleMALock)
-	MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVE"), MoveAny.ToggleMALock)
-	MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVEANY"), MoveAny.ToggleMALock)
+	if string.lower(MoveAny:Trans("LID_SLASHMOVE")) ~= "move" then MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVE"), MoveAny.ToggleMALock) end
+	if string.lower(MoveAny:Trans("LID_SLASHMOVEANY")) ~= "moveany" then MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVEANY"), MoveAny.ToggleMALock) end
 	local reload = _G["ReloadUI"]
 	if C_UI and C_UI.Reload then reload = C_UI.Reload end
 	MoveAny:AddSlash("rl", reload)
