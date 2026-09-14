@@ -35,6 +35,11 @@ local sethiddenCanHide = {}
 local oldsethiddenparent = {}
 local oldsethiddenshown = {}
 local createFrameHookRegistered = false
+local noHiddenParent = {
+	["TargetFrameToT"] = true,
+	["FocusFrameToT"] = true,
+}
+
 local function TrySetHiddenParent(frame)
 	return pcall(function()
 		local parent = frame:GetParent()
@@ -59,7 +64,7 @@ function MoveAny:HideFrame(frame)
 
 	if sethiddenSetup[frame] == nil then
 		sethiddenSetup[frame] = true
-		local ok = TrySetHiddenParent(frame)
+		local ok = not noHiddenParent[frame:GetName() or ""] and TrySetHiddenParent(frame)
 		if ok then
 			sethiddenCanParent[frame] = true
 			sethiddenParent[frame] = true
