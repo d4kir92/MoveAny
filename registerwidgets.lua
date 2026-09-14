@@ -352,11 +352,25 @@ local function AddEleColorPicker(win, name, prefix, apply)
 	})
 end
 
+local function AddEleOutline(win, name, prefix, default, apply)
+	win:AddCheckbox({
+		["label"] = "LID_OUTLINE",
+		["search"] = prefix .. "OUTLINE",
+		["value"] = MoveAny:GetEleOption(name, prefix .. "OUTLINE", default, "MenuOptions OUTLINE"),
+		["func"] = function(value)
+			MoveAny:SetEleOption(name, prefix .. "OUTLINE", value)
+			apply()
+		end,
+	})
+end
+
 local function AddCountOptions(win, name, prefix, refresh)
 	local apply = AuraTextApply(refresh)
 	AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny.DurationAnchors, apply, "LID_ANCHOR")
 	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
 	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetCountDefaultSize(name), 4, 16, 1, 0, apply, "LID_TEXTSIZE")
+	AddEleOutline(win, name, prefix, MoveAny:GetCountDefaultOutline(name), apply)
+	AddEleDropdown(win, name, prefix .. "FONT", 0, MoveAny.DurationFonts, apply, "LID_FONT")
 	AddEleColorPicker(win, name, prefix, apply)
 end
 
@@ -365,6 +379,7 @@ local function AddDurationOptions(win, name, prefix, refresh)
 	AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny.DurationAnchors, apply, "LID_ANCHOR")
 	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
 	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 4, 16, 1, 0, apply, "LID_TEXTSIZE")
+	AddEleOutline(win, name, prefix, MoveAny:GetDurationDefaultOutline(name), apply)
 	AddEleDropdown(win, name, prefix .. "FONT", 0, MoveAny.DurationFonts, apply, "LID_FONT")
 	AddEleDropdown(win, name, prefix .. "FORMAT", 0, MoveAny.DurationFormats, apply, "LID_FORMAT", DurationFormatExample)
 	AddEleColorPicker(win, name, prefix, apply)

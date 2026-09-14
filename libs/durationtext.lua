@@ -363,6 +363,44 @@ local function ApplyColor(fs)
 	coloring[fs] = false
 end
 
+local origOutline = {}
+local function HasOutline(flags)
+	local ok, res = pcall(strfind, flags, "OUTLINE", 1, true)
+	return ok and res ~= nil
+end
+
+local function GetOutlineFlags(origFlags, outline)
+	if outline == nil then return origFlags end
+	local parts = {}
+	local ok = pcall(function()
+		if strfind(origFlags, "MONOCHROME", 1, true) then tinsert(parts, "MONOCHROME") end
+		if strfind(origFlags, "SLUG", 1, true) then tinsert(parts, "SLUG") end
+		if outline then
+			if strfind(origFlags, "THICKOUTLINE", 1, true) then
+				tinsert(parts, "THICKOUTLINE")
+			else
+				tinsert(parts, "OUTLINE")
+			end
+		end
+	end)
+
+	if not ok then
+		if outline then return "OUTLINE" end
+		return ""
+	end
+	return table.concat(parts, ",")
+end
+
+local function ApplyShadow(fs, flags)
+	if HasOutline(flags) then
+		fs:SetShadowColor(0, 0, 0, 0)
+		fs:SetShadowOffset(0, 0)
+	else
+		fs:SetShadowColor(0, 0, 0, 1)
+		fs:SetShadowOffset(1, -1)
+	end
+end
+
 local function ApplyLook(fs)
 	if not fs.maDurationCaptured then return end
 	if styling[fs] then return end
@@ -370,9 +408,9 @@ local function ApplyLook(fs)
 	local path = fs.maDurationOrigFont
 	if MoveAny.DurationFonts[MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "FONT", 0)] == "PROTOTYPE" then path = PROTOTYPEFONT end
 	local size = MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "SIZE", fs.maDurationOrigSize)
-	if fs:SetFont(path, size, fs.maDurationOrigFlags) == false then fs:SetFont(fs.maDurationOrigFont, size, fs.maDurationOrigFlags) end
-	fs:SetShadowColor(0, 0, 0, 1)
-	fs:SetShadowOffset(1, -1)
+	local flags = GetOutlineFlags(fs.maDurationOrigFlags, MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "OUTLINE", nil, "ApplyLook"))
+	if fs:SetFont(path, size, flags) == false then fs:SetFont(fs.maDurationOrigFont, size, flags) end
+	ApplyShadow(fs, flags)
 	styling[fs] = false
 	ApplyColor(fs)
 end
@@ -589,6 +627,15 @@ function MoveAny:GetCountDefaultSize(ele)
 	return ClampDefaultSize(countOrigSize[ele], 12)
 end
 
+local countOrigOutline = {}
+function MoveAny:GetDurationDefaultOutline(ele)
+	return origOutline[ele] == true
+end
+
+function MoveAny:GetCountDefaultOutline(ele)
+	return countOrigOutline[ele] == true
+end
+
 local function CaptureCountOriginals(fs)
 	local font, size, flags = fs:GetFont()
 	local p1, p2, p3, p4, p5 = fs:GetPoint()
@@ -615,10 +662,16 @@ end
 
 local function ApplyCountLook(fs, ele, prefix)
 	local size = MoveAny:GetEleOption(ele, prefix .. "SIZE", nil, "ApplyCountLook")
-	if size == nil and not fs.maCountResized then return end
+	local outline = MoveAny:GetEleOption(ele, prefix .. "OUTLINE", nil, "ApplyCountLook")
+	local font = MoveAny:GetEleOption(ele, prefix .. "FONT", nil, "ApplyCountLook")
+	if size == nil and outline == nil and font == nil and not fs.maCountResized then return end
 	if size == nil then size = fs.maCountOrigSize end
+	local path = fs.maCountOrigFont
+	if MoveAny.DurationFonts[font] == "PROTOTYPE" then path = PROTOTYPEFONT end
+	local flags = GetOutlineFlags(fs.maCountOrigFlags, outline)
 	fs.maCountResized = true
-	fs:SetFont(fs.maCountOrigFont, size, fs.maCountOrigFlags)
+	if fs:SetFont(path, size, flags) == false then fs:SetFont(fs.maCountOrigFont, size, flags) end
+	ApplyShadow(fs, flags)
 end
 
 local function ApplyCountAnchor(fs, btn, ele, prefix)
@@ -653,7 +706,7 @@ local function OnCountColor(fs)
 	if not pcall(ApplyCountColor, fs) then countColoring[fs] = false end
 end
 
-local COUNT_SIG_KEYS = {"ANCHOR", "SPACING", "SIZE", "COLOR_R", "COLOR_G", "COLOR_B", "COLOR_A"}
+local COUNT_SIG_KEYS = {"ANCHOR", "SPACING", "SIZE", "OUTLINE", "FONT", "COLOR_R", "COLOR_G", "COLOR_B", "COLOR_A"}
 local function GetCountSignature(ele, prefix)
 	local sig = ele
 	for _, key in ipairs(COUNT_SIG_KEYS) do
@@ -684,6 +737,7 @@ local function StyleAuraCount(btn, ele, prefix)
 	if countOrigSizeSet[ele] == nil then
 		countOrigSizeSet[ele] = true
 		countOrigSize[ele] = fs.maCountOrigSize
+		countOrigOutline[ele] = HasOutline(fs.maCountOrigFlags)
 	end
 
 	pcall(ApplyCountLook, fs, ele, countPrefix)
@@ -766,6 +820,7 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if origSizeSet[ele] == nil then
 		origSizeSet[ele] = true
 		origSize[ele] = fs.maDurationOrigSize
+		origOutline[ele] = HasOutline(fs.maDurationOrigFlags)
 	end
 
 	fs.maDurationBtn = btn
