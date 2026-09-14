@@ -93,6 +93,45 @@ function MoveAny:ImportProfile(name, eleTab)
 	end
 end
 
+local PROFILE_STRING_PREFIX = "!MA1!"
+function MoveAny:CanEncodeProfiles()
+	return C_EncodingUtil ~= nil and C_EncodingUtil.SerializeCBOR ~= nil and C_EncodingUtil.DeserializeCBOR ~= nil and C_EncodingUtil.CompressString ~= nil and C_EncodingUtil.DecompressString ~= nil and C_EncodingUtil.EncodeBase64 ~= nil and C_EncodingUtil.DecodeBase64 ~= nil
+end
+
+function MoveAny:EncodeProfileString(name)
+	MoveAny:CheckDB("EncodeProfileString")
+	local profile = MATAB["PROFILES"][name]
+	if profile == nil or not MoveAny:CanEncodeProfiles() then return nil end
+	local ok, result = pcall(function()
+		local data = C_EncodingUtil.SerializeCBOR(profile["ELES"] or {})
+		return PROFILE_STRING_PREFIX .. C_EncodingUtil.EncodeBase64(C_EncodingUtil.CompressString(data))
+	end)
+
+	if ok and type(result) == "string" then return result end
+	MoveAny:ERR("[EncodeProfileString] " .. tostring(result))
+	return nil
+end
+
+function MoveAny:DecodeProfileString(text)
+	if type(text) ~= "string" or not MoveAny:CanEncodeProfiles() then return nil end
+	text = string.gsub(text, "%s", "")
+	if string.sub(text, 1, #PROFILE_STRING_PREFIX) ~= PROFILE_STRING_PREFIX then return nil end
+	local ok, result = pcall(function()
+		local data = C_EncodingUtil.DecompressString(C_EncodingUtil.DecodeBase64(string.sub(text, #PROFILE_STRING_PREFIX + 1)))
+		return C_EncodingUtil.DeserializeCBOR(data)
+	end)
+
+	if not ok or type(result) ~= "table" then return nil end
+	local found = false
+	for i, v in pairs(result) do
+		if type(i) ~= "string" or type(v) ~= "table" then return nil end
+		if i == "POINTS" or i == "SIZES" or i == "OPTIONS" then found = true end
+	end
+
+	if not found then return nil end
+	return result
+end
+
 function MoveAny:RenameProfile(oldname, newname)
 	MoveAny:CheckDB("RenameProfile")
 	if MATAB["PROFILES"][newname] ~= nil then

@@ -27,6 +27,7 @@ local WebOwner = ""
 local WebProfileData = {}
 local br = 8
 local sw = 550
+local psw = sw + 70
 local sh = MoveAny:MClamp(640, 200, GetScreenHeight())
 local cas = {}
 local cbs = {}
@@ -1219,10 +1220,114 @@ function MoveAny:AddUploadProfileLine(source, profile)
 	end
 end
 
+local function CreateProfileTextWindow(frameName, height)
+	local frame = CreateFrame("Frame", frameName, MoveAny:GetMainPanel(), "BasicFrameTemplate")
+	frame:SetSize(psw - 100, height)
+	frame:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
+	frame:SetFrameStrata("HIGH")
+	frame:SetFrameLevel(1010)
+	MoveAny:SetClampedToScreen(frame, true)
+	frame:SetMovable(true)
+	frame:EnableMouse(true)
+	frame:RegisterForDrag("LeftButton")
+	frame:SetScript("OnDragStart", frame.StartMoving)
+	frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+	frame.CloseButton:SetScript("OnClick", function() frame:Hide() end)
+	frame.SF = CreateFrame("ScrollFrame", frameName .. "_SF", frame, "UIPanelScrollFrameTemplate")
+	frame.SF.bg = frame.SF:CreateTexture()
+	frame.SF.bg:SetAllPoints(frame.SF)
+	frame.SF.bg:SetColorTexture(0.03, 0.03, 0.03, 0.5)
+	frame.EditBox = CreateFrame("EditBox", frameName .. "_EditBox", frame.SF)
+	frame.EditBox:SetMultiLine(true)
+	frame.EditBox:SetAutoFocus(false)
+	frame.EditBox:SetMaxLetters(0)
+	frame.EditBox:SetFontObject(ChatFontNormal)
+	frame.EditBox:SetSize(psw - 100 - br - 32, height)
+	frame.EditBox:SetScript("OnEscapePressed", function(sel) sel:ClearFocus() end)
+	frame.SF:SetScrollChild(frame.EditBox)
+	frame.SF:SetScript("OnMouseDown", function() frame.EditBox:SetFocus() end)
+
+	return frame
+end
+
+local function ShowExportProfile(name)
+	local text = MoveAny:EncodeProfileString(name)
+	if text == nil then return end
+	if MAExportProfile == nil then
+		MAExportProfile = CreateProfileTextWindow("MAExportProfile", 300)
+		MAExportProfile.SF:SetPoint("TOPLEFT", MAExportProfile, "TOPLEFT", br, -30)
+		MAExportProfile.SF:SetPoint("BOTTOMRIGHT", MAExportProfile, "BOTTOMRIGHT", -32, br)
+		MAExportProfile.EditBox:SetScript("OnTextChanged", function(sel, userInput)
+			if userInput then
+				sel:SetText(MAExportProfile.exportText)
+				sel:HighlightText()
+			end
+		end)
+	end
+
+	MAExportProfile.exportText = text
+	MAExportProfile.TitleText:SetText(MoveAny:Trans("LID_EXPORT") .. ": " .. name)
+	MAExportProfile.EditBox:SetText(text)
+	MAExportProfile:Show()
+	MAExportProfile.EditBox:SetFocus()
+	MAExportProfile.EditBox:HighlightText()
+end
+
+local function ShowImportProfile()
+	if MAImportProfile == nil then
+		MAImportProfile = CreateProfileTextWindow("MAImportProfile", 330)
+		MAImportProfile.TitleText:SetText(MoveAny:Trans("LID_IMPORT"))
+		MAImportProfile.Name = CreateFrame("EditBox", "MAImportProfile_Name", MAImportProfile, "InputBoxTemplate")
+		MAImportProfile.Name:SetPoint("TOPLEFT", MAImportProfile, "TOPLEFT", 12, -26)
+		MAImportProfile.Name:SetSize(psw - 100 - 24, 24)
+		MAImportProfile.Name:SetAutoFocus(false)
+		MAImportProfile.SF:SetPoint("TOPLEFT", MAImportProfile, "TOPLEFT", br, -26 - 24 - br)
+		MAImportProfile.SF:SetPoint("BOTTOMRIGHT", MAImportProfile, "BOTTOMRIGHT", -32, 24 + br + br)
+		MAImportProfile.btn = MoveAny:CreateButton("MAImportProfile_Import", MAImportProfile)
+		MAImportProfile.btn:SetPoint("BOTTOMLEFT", MAImportProfile, "BOTTOMLEFT", br, br)
+		MAImportProfile.btn:SetSize(160, 24)
+		MAImportProfile.btn:SetText(MoveAny:Trans("LID_IMPORT"))
+		MAImportProfile.btn:SetScript("OnClick", function()
+			local profileName = strtrim(MAImportProfile.Name:GetText() or "")
+			if profileName == "" then
+				MoveAny:ERR("[ImportProfile] can't add, Name is empty.")
+
+				return
+			end
+
+			MoveAny:CheckDB("PROFILES")
+			if MATAB["PROFILES"][profileName] ~= nil then
+				MoveAny:ERR("[ImportProfile] can't add, Name already exists.")
+
+				return
+			end
+
+			local eleTab = MoveAny:DecodeProfileString(MAImportProfile.EditBox:GetText())
+			if eleTab == nil then
+				MoveAny:ERR("[ImportProfile] can't add, invalid import string.")
+
+				return
+			end
+
+			MoveAny:ImportProfile(profileName, eleTab)
+			if C_UI then
+				C_UI.Reload()
+			else
+				ReloadUI()
+			end
+		end)
+	end
+
+	MAImportProfile.Name:SetText(MoveAny:GetValidProfileName("IMPORT"))
+	MAImportProfile.EditBox:SetText("")
+	MAImportProfile:Show()
+	MAImportProfile.EditBox:SetFocus()
+end
+
 function MoveAny:ShowProfiles()
 	if MAProfiles == nil then
 		MAProfiles = CreateFrame("Frame", "MAProfiles", MoveAny:GetMainPanel(), "BasicFrameTemplate")
-		MAProfiles:SetSize(sw, sh)
+		MAProfiles:SetSize(psw, sh)
 		MAProfiles:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		MAProfiles:SetFrameStrata("HIGH")
 		MAProfiles:SetFrameLevel(999)
@@ -1249,7 +1354,7 @@ function MoveAny:ShowProfiles()
 
 		MAProfiles:SetResizable(true)
 		MoveAny:After(0, function()
-			MAProfiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
+			MAProfiles:SetResizeBounds(psw, 200, psw + 200, GetScreenHeight())
 			if MAProfiles:GetHeight() > GetScreenHeight() then MAProfiles:SetHeight(GetScreenHeight()) end
 		end, "ShowProfiles")
 
@@ -1522,6 +1627,14 @@ function MoveAny:ShowProfiles()
 			GetProfiles()
 		end)
 
+		if MoveAny:CanEncodeProfiles() then
+			MAProfiles.ImportProfile = MoveAny:CreateButton("MAProfiles_ImportProfile", MAProfiles)
+			MAProfiles.ImportProfile:SetPoint("TOPLEFT", MAProfiles, "TOPLEFT", br + 160 + br + 160 + br, -26)
+			MAProfiles.ImportProfile:SetSize(160, 24)
+			MAProfiles.ImportProfile:SetText(MoveAny:Trans("LID_IMPORT"))
+			MAProfiles.ImportProfile:SetScript("OnClick", function() ShowImportProfile() end)
+		end
+
 		MAProfiles.back = MoveAny:CreateButton("MAProfiles_Back", MAProfiles)
 		MAProfiles.back:SetSize(120, 24)
 		MAProfiles.back:SetPoint("BOTTOMLEFT", MAProfiles, "BOTTOMLEFT", 4, 4)
@@ -1649,9 +1762,17 @@ function MoveAny:ShowProfiles()
 				ShareProfile()
 			end)
 
+			if MoveAny:CanEncodeProfiles() then
+				local btnExport = MoveAny:CreateButton(name, MAProfiles.SC)
+				btnExport:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 40 - br)
+				btnExport:SetSize(100, 24)
+				btnExport:SetText(MoveAny:Trans("LID_EXPORT"))
+				btnExport:SetScript("OnClick", function() ShowExportProfile(name) end)
+			end
+
 			if name ~= "DEFAULT" then
 				local btnRen = MoveAny:CreateButton(name, MAProfiles.SC)
-				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br, -index * 40 - br)
+				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br)
 				btnRen:SetSize(100, 24)
 				btnRen:SetText(MoveAny:Trans("LID_RENAME"))
 				btnRen:SetScript("OnClick", function()
@@ -1696,7 +1817,7 @@ function MoveAny:ShowProfiles()
 			end
 
 			local btnRem = MoveAny:CreateButton(name, MAProfiles.SC)
-			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br, -index * 40 - br)
+			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 80 + br + 100 + br + 100 + br, -index * 40 - br)
 			btnRem:SetSize(100, 24)
 			btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
 			btnRem:SetScript("OnClick", function()
