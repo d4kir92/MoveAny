@@ -325,17 +325,14 @@ local function DurationFormatExample(value)
 	return base .. " => " .. res
 end
 
-local function AddDurationOptions(win, name, prefix, refresh)
-	local apply = function()
+local function AuraTextApply(refresh)
+	return function()
 		if MoveAny.UpdateAuraDurations then MoveAny:UpdateAuraDurations("MenuOptions") end
 		if refresh then refresh() end
 	end
+end
 
-	AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny.DurationAnchors, apply, "LID_ANCHOR")
-	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
-	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 4, 12, 1, 0, apply, "LID_TEXTSIZE")
-	AddEleDropdown(win, name, prefix .. "FONT", 0, MoveAny.DurationFonts, apply, "LID_FONT")
-	AddEleDropdown(win, name, prefix .. "FORMAT", 0, MoveAny.DurationFormats, apply, "LID_FORMAT", DurationFormatExample)
+local function AddEleColorPicker(win, name, prefix, apply)
 	win:AddColorPicker({
 		["label"] = "LID_COLOR",
 		["search"] = prefix .. "COLOR",
@@ -353,6 +350,24 @@ local function AddDurationOptions(win, name, prefix, refresh)
 			apply()
 		end,
 	})
+end
+
+local function AddCountOptions(win, name, prefix, refresh)
+	local apply = AuraTextApply(refresh)
+	AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny.DurationAnchors, apply, "LID_ANCHOR")
+	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
+	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetCountDefaultSize(name), 4, 16, 1, 0, apply, "LID_TEXTSIZE")
+	AddEleColorPicker(win, name, prefix, apply)
+end
+
+local function AddDurationOptions(win, name, prefix, refresh)
+	local apply = AuraTextApply(refresh)
+	AddEleDropdown(win, name, prefix .. "ANCHOR", 0, MoveAny.DurationAnchors, apply, "LID_ANCHOR")
+	AddEleSlider(win, name, prefix .. "SPACING", 0, -30, 30, 1, 0, apply, "LID_SPACING")
+	AddEleSlider(win, name, prefix .. "SIZE", MoveAny:GetDurationDefaultSize(name), 4, 16, 1, 0, apply, "LID_TEXTSIZE")
+	AddEleDropdown(win, name, prefix .. "FONT", 0, MoveAny.DurationFonts, apply, "LID_FONT")
+	AddEleDropdown(win, name, prefix .. "FORMAT", 0, MoveAny.DurationFormats, apply, "LID_FORMAT", DurationFormatExample)
+	AddEleColorPicker(win, name, prefix, apply)
 end
 
 local function AddGeneralOptions(win, name, optionFrame)
@@ -626,6 +641,8 @@ local function AddAuraOptions(win, name, cat, prefix, ownBar, refresh)
 	AddEleSlider(win, name, prefix .. "SPACINGY", 4, 0, 30, 1, 0, refresh, "LID_SPACINGY")
 	AddEleCategory(win, cat .. "DURATION", MoveAny:Trans("LID_DURATION"), 2)
 	AddDurationOptions(win, name, prefix .. "DURATION", refresh)
+	AddEleCategory(win, cat .. "COUNT", MoveAny:Trans("LID_STACKTEXT"), 2)
+	AddCountOptions(win, name, prefix .. "COUNT", refresh)
 end
 
 local function AddStatusBarOptions(win, opts, frame, label)

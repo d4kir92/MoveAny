@@ -567,16 +567,128 @@ local function RestoreOriginals(fs)
 	fs:SetPoint(fs.maDurationOrigP1, fs.maDurationOrigP2, fs.maDurationOrigP3, fs.maDurationOrigP4, fs.maDurationOrigP5)
 end
 
-function MoveAny:GetDurationDefaultSize(ele)
+local countOrigSize = {}
+local countOrigSizeSet = {}
+local function ClampDefaultSize(size, fallback)
 	local ok, res = pcall(function()
-		local size = origSize[ele] or 10
-		if size < 4 then size = 4 end
-		if size > 12 then size = 12 end
-		return math.floor(size + 0.5)
+		local val = size or fallback
+		if val < 4 then val = 4 end
+		if val > 16 then val = 16 end
+		return math.floor(val + 0.5)
 	end)
 
 	if ok and type(res) == "number" then return res end
-	return 10
+	return fallback
+end
+
+function MoveAny:GetDurationDefaultSize(ele)
+	return ClampDefaultSize(origSize[ele], 10)
+end
+
+function MoveAny:GetCountDefaultSize(ele)
+	return ClampDefaultSize(countOrigSize[ele], 12)
+end
+
+local function CaptureCountOriginals(fs)
+	local font, size, flags = fs:GetFont()
+	local p1, p2, p3, p4, p5 = fs:GetPoint()
+	fs.maCountOrigFont = font
+	fs.maCountOrigSize = size
+	fs.maCountOrigFlags = flags
+	fs.maCountOrigP1 = p1
+	fs.maCountOrigP2 = p2
+	fs.maCountOrigP3 = p3
+	fs.maCountOrigP4 = p4
+	fs.maCountOrigP5 = p5
+end
+
+local function FallbackCountOriginals(fs, btn)
+	fs.maCountOrigFont = STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF"
+	fs.maCountOrigSize = 12
+	fs.maCountOrigFlags = "OUTLINE"
+	fs.maCountOrigP1 = "BOTTOMRIGHT"
+	fs.maCountOrigP2 = btn
+	fs.maCountOrigP3 = "BOTTOMRIGHT"
+	fs.maCountOrigP4 = 0
+	fs.maCountOrigP5 = 0
+end
+
+local function ApplyCountLook(fs, ele, prefix)
+	local size = MoveAny:GetEleOption(ele, prefix .. "SIZE", nil, "ApplyCountLook")
+	if size == nil and not fs.maCountResized then return end
+	if size == nil then size = fs.maCountOrigSize end
+	fs.maCountResized = true
+	fs:SetFont(fs.maCountOrigFont, size, fs.maCountOrigFlags)
+end
+
+local function ApplyCountAnchor(fs, btn, ele, prefix)
+	local point = MoveAny.DurationAnchors[MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0)]
+	if anchors[point] == nil then
+		if not fs.maCountMoved then return end
+		fs.maCountMoved = false
+		fs:ClearAllPoints()
+		fs:SetPoint(fs.maCountOrigP1, fs.maCountOrigP2, fs.maCountOrigP3, fs.maCountOrigP4, fs.maCountOrigP5)
+
+		return
+	end
+
+	local spacing = MoveAny:GetEleOption(ele, prefix .. "SPACING", 0)
+	fs.maCountMoved = true
+	fs:ClearAllPoints()
+	fs:SetPoint(point, GetIconRegion(btn) or btn, point, -anchors[point][2] * spacing, -anchors[point][3] * spacing)
+end
+
+local countColoring = {}
+local function ApplyCountColor(fs)
+	if countColoring[fs] then return end
+	if fs.maCountEle == nil or fs.maCountKey == nil then return end
+	local r = MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_R", nil, "ApplyCountColor")
+	if r == nil then return end
+	countColoring[fs] = true
+	fs:SetTextColor(r, MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_G", 1), MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_B", 1), MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_A", 1))
+	countColoring[fs] = false
+end
+
+local function OnCountColor(fs)
+	if not pcall(ApplyCountColor, fs) then countColoring[fs] = false end
+end
+
+local COUNT_SIG_KEYS = {"ANCHOR", "SPACING", "SIZE", "COLOR_R", "COLOR_G", "COLOR_B", "COLOR_A"}
+local function GetCountSignature(ele, prefix)
+	local sig = ele
+	for _, key in ipairs(COUNT_SIG_KEYS) do
+		sig = sig .. ":" .. tostring(MoveAny:GetEleOption(ele, prefix .. key, nil, "GetCountSignature"))
+	end
+	return sig
+end
+
+local function StyleAuraCount(btn, ele, prefix)
+	local fs = FindCountFontString(btn)
+	if fs == nil then return end
+	local countPrefix = string.gsub(prefix, "DURATION$", "COUNT")
+	fs.maCountEle = ele
+	fs.maCountKey = countPrefix
+	if not fs.maCountHooked then
+		fs.maCountHooked = true
+		pcall(hooksecurefunc, fs, "SetTextColor", OnCountColor)
+	end
+
+	local sig = GetCountSignature(ele, countPrefix)
+	if fs.maCountSig == sig then return end
+	fs.maCountSig = sig
+	if not fs.maCountCaptured then
+		fs.maCountCaptured = true
+		if not pcall(CaptureCountOriginals, fs) then FallbackCountOriginals(fs, btn) end
+	end
+
+	if countOrigSizeSet[ele] == nil then
+		countOrigSizeSet[ele] = true
+		countOrigSize[ele] = fs.maCountOrigSize
+	end
+
+	pcall(ApplyCountLook, fs, ele, countPrefix)
+	pcall(ApplyCountAnchor, fs, btn, ele, countPrefix)
+	OnCountColor(fs)
 end
 
 local function SafeLen(tab)
@@ -636,9 +748,10 @@ end
 
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
+	prefix = prefix or "MABUFFDURATION"
+	pcall(StyleAuraCount, btn, ele, prefix)
 	local fs = GetDurationFontString(btn)
 	if fs == nil then return false end
-	prefix = prefix or "MABUFFDURATION"
 	if onlyNew and fs.maDurationHooked then
 		ApplyAnchor(fs, btn, ele, prefix)
 
