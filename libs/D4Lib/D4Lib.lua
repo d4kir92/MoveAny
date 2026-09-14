@@ -34,8 +34,7 @@ end
 
 function D4:IsSecret(value)
     local isSecret = _G["issecretvalue"]
-    if isSecret == nil then return false end
-
+    if type(isSecret) ~= "function" then return false end
     return isSecret(value) == true
 end
 
@@ -725,8 +724,10 @@ function D4:GetClassAtlas(class)
     return ("classicon-%s"):format(class)
 end
 
-function D4:GetClassIcon(class)
-    return "|A:" .. D4:GetClassAtlas(class) .. ":16:16:0:0|a"
+function D4:GetClassIcon(class, size)
+    size = tonumber(size) or 16
+    if size < 0 then size = 0 end
+    return "|A:" .. D4:GetClassAtlas(class) .. ":" .. size .. ":" .. size .. ":0:0|a"
 end
 
 function D4:GetRaceAtlas(race, gender)

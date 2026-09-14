@@ -21,4 +21,10 @@
 
 <Script file="D4Realms.lua"/>
 
+<Script file="Realms\D4Realms_RETAIL.lua"/>
+<Script file="Realms\D4Realms_MISTS.lua"/>
+<Script file="Realms\D4Realms_CATA.lua"/>
+<Script file="Realms\D4Realms_CLASSIC.lua"/>
+<Script file="Realms\D4Realms_TBC.lua"/>
+
 </Ui>
