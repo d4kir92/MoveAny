@@ -1080,7 +1080,6 @@ local function CreateProfileTextWindow(frameName, height)
 	frame.EditBox:SetScript("OnEscapePressed", function(sel) sel:ClearFocus() end)
 	frame.SF:SetScrollChild(frame.EditBox)
 	frame.SF:SetScript("OnMouseDown", function() frame.EditBox:SetFocus() end)
-
 	return frame
 end
 
@@ -1125,21 +1124,18 @@ local function ShowImportProfile()
 			local profileName = strtrim(MAImportProfile.Name:GetText() or "")
 			if profileName == "" then
 				MoveAny:ERR("[ImportProfile] can't add, Name is empty.")
-
 				return
 			end
 
 			MoveAny:CheckDB("PROFILES")
 			if MATAB["PROFILES"][profileName] ~= nil then
 				MoveAny:ERR("[ImportProfile] can't add, Name already exists.")
-
 				return
 			end
 
 			local eleTab = MoveAny:DecodeProfileString(MAImportProfile.EditBox:GetText())
 			if eleTab == nil then
 				MoveAny:ERR("[ImportProfile] can't add, invalid import string.")
-
 				return
 			end
 
@@ -1443,7 +1439,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.10.14")
+	MoveAny:SetVersion(135994, "1.11.0")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
