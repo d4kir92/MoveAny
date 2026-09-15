@@ -958,6 +958,137 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 	return false
 end
 
+local SNAP_RANGE = 8
+local snapPreview = nil
+local issecretvalue = _G["issecretvalue"]
+local function GetSnapRect(f)
+	if f == nil or f.GetLeft == nil then return nil end
+	local l, r, b, t = f:GetLeft(), f:GetRight(), f:GetBottom(), f:GetTop()
+	if l == nil or r == nil or b == nil or t == nil then return nil end
+	if issecretvalue and (issecretvalue(l) or issecretvalue(r) or issecretvalue(b) or issecretvalue(t)) then return nil end
+	local s = f:GetEffectiveScale()
+	l, r, b, t = l * s, r * s, b * s, t * s
+
+	return {
+		l = l,
+		r = r,
+		b = b,
+		t = t,
+		cx = (l + r) / 2,
+		cy = (b + t) / 2
+	}
+end
+
+local function GetSnapGap(aMin, aMax, bMin, bMax)
+	if bMin > aMax then return bMin - aMax end
+	if aMin > bMax then return aMin - bMax end
+	return 0
+end
+
+local function PickSnap(best, delta, line, range)
+	local d = math.abs(delta)
+	if d <= range and (best.d == nil or d < best.d) then
+		best.d = d
+		best.delta = delta
+		best.line = line
+	end
+end
+
+local function FindEleSnap(dragframe)
+	local m = GetSnapRect(dragframe)
+	if m == nil then return nil end
+	local us = UIParent:GetEffectiveScale()
+	local range = SNAP_RANGE * us
+	local bx, by = {}, {}
+	local ucx, ucy = UIParent:GetCenter()
+	if ucx and ucy then
+		ucx, ucy = ucx * us, ucy * us
+		PickSnap(bx, ucx - m.cx, ucx, range)
+		PickSnap(bx, ucx - m.l, ucx, range)
+		PickSnap(bx, ucx - m.r, ucx, range)
+		PickSnap(by, ucy - m.cy, ucy, range)
+		PickSnap(by, ucy - m.b, ucy, range)
+		PickSnap(by, ucy - m.t, ucy, range)
+	end
+
+	for _, df in pairs(MoveAny:GetDragFrames()) do
+		if df ~= dragframe and df:IsVisible() then
+			local o = GetSnapRect(df)
+			if o then
+				if GetSnapGap(m.b, m.t, o.b, o.t) <= range then
+					PickSnap(bx, o.l - m.r, o.l, range)
+					PickSnap(bx, o.r - m.l, o.r, range)
+					PickSnap(bx, o.l - m.l, o.l, range)
+					PickSnap(bx, o.r - m.r, o.r, range)
+					PickSnap(bx, o.cx - m.cx, o.cx, range)
+				end
+
+				if GetSnapGap(m.l, m.r, o.l, o.r) <= range then
+					PickSnap(by, o.b - m.t, o.b, range)
+					PickSnap(by, o.t - m.b, o.t, range)
+					PickSnap(by, o.b - m.b, o.b, range)
+					PickSnap(by, o.t - m.t, o.t, range)
+					PickSnap(by, o.cy - m.cy, o.cy, range)
+				end
+			end
+		end
+	end
+
+	return bx.delta, by.delta, bx.line, by.line
+end
+
+local function GetSnapPreview()
+	if snapPreview == nil then
+		snapPreview = CreateFrame("Frame", nil, UIParent)
+		snapPreview:SetAllPoints(UIParent)
+		snapPreview:SetFrameStrata("HIGH")
+		snapPreview:EnableMouse(false)
+		snapPreview.ver = snapPreview:CreateTexture(nil, "OVERLAY")
+		snapPreview.hor = snapPreview:CreateTexture(nil, "OVERLAY")
+		for _, line in pairs({snapPreview.ver, snapPreview.hor}) do
+			if line.SetColorTexture then
+				line:SetColorTexture(1, 1, 1, 1)
+			else
+				line:SetTexture(1, 1, 1, 1)
+			end
+
+			line:SetVertexColor(MoveAny:GetColor("se"))
+			line:Hide()
+		end
+	end
+
+	return snapPreview
+end
+
+local function HideSnapPreview()
+	if snapPreview == nil then return end
+	snapPreview.ver:Hide()
+	snapPreview.hor:Hide()
+end
+
+local function UpdateSnapPreview(dragframe)
+	local preview = GetSnapPreview()
+	local _, _, lineX, lineY = FindEleSnap(dragframe)
+	local us = UIParent:GetEffectiveScale()
+	if lineX then
+		preview.ver:ClearAllPoints()
+		preview.ver:SetPoint("BOTTOM", UIParent, "BOTTOMLEFT", lineX / us, 0)
+		preview.ver:SetSize(1, UIParent:GetHeight())
+		preview.ver:Show()
+	else
+		preview.ver:Hide()
+	end
+
+	if lineY then
+		preview.hor:ClearAllPoints()
+		preview.hor:SetPoint("LEFT", UIParent, "BOTTOMLEFT", 0, lineY / us)
+		preview.hor:SetSize(UIParent:GetWidth(), 1)
+		preview.hor:Show()
+	else
+		preview.hor:Hide()
+	end
+end
+
 function MoveAny:RegisterWidget(tab)
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1085,6 +1216,7 @@ function MoveAny:RegisterWidget(tab)
 				dragframe:SetMovable(true)
 				dragframe:StartMoving()
 				ma_ismoving[dragframe] = true
+				if MoveAny:IsEnabled("SNAPTOELEMENTS", true) then dragframe:SetScript("OnUpdate", UpdateSnapPreview) end
 			elseif btn == "RightButton" then
 				MoveAny:ToggleElementOptions(name, fram, dragframe)
 			end
@@ -1094,12 +1226,17 @@ function MoveAny:RegisterWidget(tab)
 			local fram = _G[name]
 			if ma_ismoving[dragframe] then
 				ma_ismoving[dragframe] = false
+				dragframe:SetScript("OnUpdate", nil)
+				HideSnapPreview()
+				local dx, dy = nil, nil
+				if MoveAny:IsEnabled("SNAPTOELEMENTS", true) then dx, dy = FindEleSnap(dragframe) end
 				dragframe:StopMovingOrSizing()
 				dragframe:SetMovable(false)
 				local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
 				local np1, _, np3, p4, p5 = dragframe:GetPoint()
-				local np4 = MoveAny:Snap(p4)
-				local np5 = MoveAny:Snap(p5)
+				local eff = dragframe:GetEffectiveScale()
+				local np4 = dx and p4 + dx / eff or MoveAny:Snap(p4)
+				local np5 = dy and p5 + dy / eff or MoveAny:Snap(p5)
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5) end
 				if dragframe.opt and dragframe.opt.elePos then dragframe.opt.elePos:UpdateText() end
 				dragframe:SetMovable(true)

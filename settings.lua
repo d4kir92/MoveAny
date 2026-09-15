@@ -578,6 +578,7 @@ function MoveAny:InitMALock()
 		end, nil, nil, false)
 
 		AddCheckBox("HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
+		AddCheckBox("SNAPTOELEMENTS", true, nil, nil, nil, false)
 		AddDropdown("SNAPSIZE", 5, nil, gridChoices)
 		AddDropdown("GRIDSIZE", 10, MoveAny.UpdateGrid, gridChoices)
 		AddCategory("FRAMES")
@@ -1680,7 +1681,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.11.2")
+	MoveAny:SetVersion(135994, "1.12.0")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
