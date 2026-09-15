@@ -212,6 +212,7 @@ MoveAny:AddTrans("ruRU", "LID_QUESTTRACKER", "Отслеживание зада�
 MoveAny:AddTrans("ruRU", "LID_QUEUESTATUSBUTTON", "Статус LFG")
 MoveAny:AddTrans("ruRU", "LID_QUEUESTATUSFRAME", "Подсказка о статусе LFG")
 MoveAny:AddTrans("ruRU", "LID_RAIDBOSSEMOTEFRAME", "Эмоция рейдового босса")
+MoveAny:AddTrans("ruRU", "LID_RAIDFRAMESEDITMODEHINT", "Рейдовые рамки, перемещённые в режиме редактирования, больше не освобождают место для менеджера рейда и могут перекрывать его при открытии. Решение: режим редактирования -> %s -> \"%s\" -> Сохранить.")
 MoveAny:AddTrans("ruRU", "LID_READYCHECKLISTENERFRAME", "Всплывающий фрейм проверки готовности")
 MoveAny:AddTrans("ruRU", "LID_REMOVE", "Удалить")
 MoveAny:AddTrans("ruRU", "LID_RENAME", "Переименовать")

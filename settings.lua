@@ -301,6 +301,12 @@ local function AddCategory(key, layer, hud)
 	return cas[key]
 end
 
+local function GetRaidFramesHint(key)
+	if key ~= "COMPACTRAIDFRAMECONTAINER" and key ~= "COMPACTRAIDFRAMEMANAGER" then return nil end
+	if CompactRaidFrameContainer == nil or CompactRaidFrameContainer.system == nil then return nil end
+	return format(MoveAny:Trans("LID_RAIDFRAMESEDITMODEHINT"), HUD_EDIT_MODE_RAID_FRAMES_LABEL or MoveAny:Trans("LID_COMPACTRAIDFRAMECONTAINER"), HUD_EDIT_MODE_RESET_POSITION or "Reset To Default Position")
+end
+
 local function AddCheckBox(key, val, func, id, editModeEnum, showReload, requiresFor, requiredFor)
 	local lkey = key
 	if id then key = key .. id end
@@ -382,11 +388,17 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 
 	if cb.row then
 		cb.row:SetScript("OnEnter", function(sel)
-			if MoveAny:GetSelectEleName("LID_" .. key) == nil then return end
+			local hasEle = MoveAny:GetSelectEleName("LID_" .. key) ~= nil
+			local hint = GetRaidFramesHint(lkey)
+			if not hasEle and hint == nil then return end
 			GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
 			if cb.Label then GameTooltip:AddLine(cb.Label:GetText() or "") end
-			GameTooltip:AddLine(MoveAny:Trans("LID_LEFTCLICKTOSELECT"), 1, 0.82, 0)
-			GameTooltip:AddLine(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"), 1, 0.82, 0)
+			if hint then GameTooltip:AddLine(hint, 1, 1, 1, true) end
+			if hasEle then
+				GameTooltip:AddLine(MoveAny:Trans("LID_LEFTCLICKTOSELECT"), 1, 0.82, 0)
+				GameTooltip:AddLine(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"), 1, 0.82, 0)
+			end
+
 			GameTooltip:Show()
 		end)
 
