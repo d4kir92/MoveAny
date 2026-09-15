@@ -1331,7 +1331,7 @@ local function OnShareMessage(prefix, message, channel, sender)
 		MoveAny:ERR("[ShareProfile] \"" .. request.name .. "\" is not shared by " .. sender .. " anymore.")
 	elseif cmd == "V" then
 		shareRequests[sender] = nil
-		MoveAny:ERR(MoveAny:GetProfileVersionError("VERSION", rest ~= "" and rest or nil))
+		MoveAny:ERR(MoveAny:GetProfileVersionError("VERSION", string.match(rest, "^[%d%.]+$")))
 	elseif cmd == "H" then
 		local total = tonumber(rest)
 		if total == nil or total < 1 or total > 1000 then
@@ -1692,7 +1692,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.1")
+	MoveAny:SetVersion(135994, "1.12.2")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

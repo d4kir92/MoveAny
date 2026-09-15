@@ -93,8 +93,9 @@ function MoveAny:ImportProfile(name, eleTab)
 	end
 end
 
-local PROFILE_STRING_PREFIX = "!MA2!"
-local PROFILE_STRING_PREFIX_OLD = "!MA1!"
+local PROFILE_STRING_PREFIX = "!MA3!"
+local PROFILE_STRING_PREFIX_V2 = "!MA2!"
+local PROFILE_STRING_PREFIX_V1 = "!MA1!"
 function MoveAny:CanEncodeProfiles()
 	return C_EncodingUtil ~= nil and C_EncodingUtil.SerializeCBOR ~= nil and C_EncodingUtil.DeserializeCBOR ~= nil and C_EncodingUtil.CompressString ~= nil and C_EncodingUtil.DecompressString ~= nil and C_EncodingUtil.EncodeBase64 ~= nil and C_EncodingUtil.DecodeBase64 ~= nil
 end
@@ -111,8 +112,12 @@ function MoveAny:EncodeProfileString(name)
 	local version = MoveAny:GetVersion()
 	if profile == nil or type(version) ~= "string" or not MoveAny:CanEncodeProfiles() then return nil end
 	local ok, result = pcall(function()
-		local data = C_EncodingUtil.SerializeCBOR(profile["ELES"] or {})
-		return PROFILE_STRING_PREFIX .. version .. "!" .. C_EncodingUtil.EncodeBase64(C_EncodingUtil.CompressString(data))
+		local data = C_EncodingUtil.SerializeCBOR({
+			["VERSION"] = version,
+			["ELES"] = profile["ELES"] or {}
+		})
+
+		return PROFILE_STRING_PREFIX .. C_EncodingUtil.EncodeBase64(C_EncodingUtil.CompressString(data))
 	end)
 
 	if ok and type(result) == "string" then return result end
@@ -123,25 +128,27 @@ end
 function MoveAny:DecodeProfileString(text)
 	if type(text) ~= "string" or not MoveAny:CanEncodeProfiles() then return nil end
 	text = string.gsub(text, "%s", "")
-	if string.sub(text, 1, #PROFILE_STRING_PREFIX_OLD) == PROFILE_STRING_PREFIX_OLD then return nil, "VERSION" end
+	if string.sub(text, 1, #PROFILE_STRING_PREFIX_V1) == PROFILE_STRING_PREFIX_V1 then return nil, "VERSION" end
+	if string.sub(text, 1, #PROFILE_STRING_PREFIX_V2) == PROFILE_STRING_PREFIX_V2 then return nil, "VERSION", string.match(string.sub(text, #PROFILE_STRING_PREFIX_V2 + 1), "^([%d%.]+)!") end
 	if string.sub(text, 1, #PROFILE_STRING_PREFIX) ~= PROFILE_STRING_PREFIX then return nil end
-	local version, payload = string.match(string.sub(text, #PROFILE_STRING_PREFIX + 1), "^([^!]+)!(.+)$")
-	if version == nil then return nil end
-	if version ~= MoveAny:GetVersion() then return nil, "VERSION", version end
 	local ok, result = pcall(function()
-		local data = C_EncodingUtil.DecompressString(C_EncodingUtil.DecodeBase64(payload))
+		local data = C_EncodingUtil.DecompressString(C_EncodingUtil.DecodeBase64(string.sub(text, #PROFILE_STRING_PREFIX + 1)))
 		return C_EncodingUtil.DeserializeCBOR(data)
 	end)
 
 	if not ok or type(result) ~= "table" then return nil end
+	local version = result["VERSION"]
+	local eles = result["ELES"]
+	if type(version) ~= "string" or not string.match(version, "^[%d%.]+$") or type(eles) ~= "table" then return nil end
+	if version ~= MoveAny:GetVersion() then return nil, "VERSION", version end
 	local found = false
-	for i, v in pairs(result) do
+	for i, v in pairs(eles) do
 		if type(i) ~= "string" or type(v) ~= "table" then return nil end
 		if i == "POINTS" or i == "SIZES" or i == "OPTIONS" then found = true end
 	end
 
 	if not found then return nil end
-	return result
+	return eles
 end
 
 function MoveAny:RenameProfile(oldname, newname)
