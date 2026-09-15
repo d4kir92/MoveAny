@@ -205,6 +205,8 @@ MoveAny:AddTrans("deDE", "LID_POWERBARCOUNTERBAR", "Begegnungsleiste Gegenleiste
 MoveAny:AddTrans("deDE", "LID_PRESSESCTOLEAVE", "Drück ESC um diese Ansicht zu verlassen")
 MoveAny:AddTrans("deDE", "LID_PRIESTBARFRAME", "Priester Schatten Kugeln Fenster")
 MoveAny:AddTrans("deDE", "LID_PROFILES", "Profile")
+MoveAny:AddTrans("deDE", "LID_PROFILEVERSIONMISMATCH", "Profil kann nicht übernommen werden: Die MoveAny-Versionen sind unterschiedlich (andere: v%s, deine: v%s). Beide brauchen dieselbe Version.")
+MoveAny:AddTrans("deDE", "LID_PROFILEVERSIONOLD", "Profil kann nicht übernommen werden: Es stammt aus einer älteren MoveAny-Version (deine: v%s). Beide brauchen dieselbe Version.")
 MoveAny:AddTrans("deDE", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("deDE", "LID_QUESTITEMSANCHOR", "Quest Gegenstände-Anker")
 MoveAny:AddTrans("deDE", "LID_QUESTTIMERFRAME", "Questzeit-Fenster")

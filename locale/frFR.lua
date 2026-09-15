@@ -205,6 +205,8 @@ MoveAny:AddTrans("frFR", "LID_POWERBARCOUNTERBAR", "Barre de rencontre - contre-
 MoveAny:AddTrans("frFR", "LID_PRESSESCTOLEAVE", "Appuyez sur ESC pour quitter cette vue")
 MoveAny:AddTrans("frFR", "LID_PRIESTBARFRAME", "Prêtre - Fenêtre des Orbes d'ombre")
 MoveAny:AddTrans("frFR", "LID_PROFILES", "Profils")
+MoveAny:AddTrans("frFR", "LID_PROFILEVERSIONMISMATCH", "Impossible d'importer le profil : les versions de MoveAny sont différentes (autre : v%s, la vôtre : v%s). Les deux doivent avoir la même version.")
+MoveAny:AddTrans("frFR", "LID_PROFILEVERSIONOLD", "Impossible d'importer le profil : il provient d'une ancienne version de MoveAny (la vôtre : v%s). Les deux doivent avoir la même version.")
 MoveAny:AddTrans("frFR", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("frFR", "LID_QUESTITEMSANCHOR", "Ancre des objets de quête")
 MoveAny:AddTrans("frFR", "LID_QUESTTIMERFRAME", "Fenêtre de minuterie de quête")

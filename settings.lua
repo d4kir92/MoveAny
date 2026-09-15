@@ -1149,7 +1149,7 @@ local function ShowImportProfile(name, text)
 
 			local eleTab, reason, version = MoveAny:DecodeProfileString(MAImportProfile.EditBox:GetText())
 			if eleTab == nil then
-				MoveAny:ERR("[ImportProfile] can't add, " .. MoveAny:GetProfileStringError(reason, version))
+				MoveAny:ERR(MoveAny:GetProfileVersionError(reason, version) or "[ImportProfile] can't add, invalid import string.")
 				return
 			end
 
@@ -1331,7 +1331,7 @@ local function OnShareMessage(prefix, message, channel, sender)
 		MoveAny:ERR("[ShareProfile] \"" .. request.name .. "\" is not shared by " .. sender .. " anymore.")
 	elseif cmd == "V" then
 		shareRequests[sender] = nil
-		MoveAny:ERR("[ShareProfile] can't get \"" .. request.name .. "\" from " .. sender .. ", " .. MoveAny:GetProfileStringError("VERSION", rest ~= "" and rest or nil))
+		MoveAny:ERR(MoveAny:GetProfileVersionError("VERSION", rest ~= "" and rest or nil))
 	elseif cmd == "H" then
 		local total = tonumber(rest)
 		if total == nil or total < 1 or total > 1000 then
@@ -1355,7 +1355,7 @@ local function OnShareMessage(prefix, message, channel, sender)
 		local text = table.concat(request.parts)
 		local eleTab, reason, version = MoveAny:DecodeProfileString(text)
 		if eleTab == nil then
-			MoveAny:ERR("[ShareProfile] can't use the profile from " .. sender .. ", " .. MoveAny:GetProfileStringError(reason, version))
+			MoveAny:ERR(MoveAny:GetProfileVersionError(reason, version) or ("[ShareProfile] received an invalid profile from " .. sender .. "."))
 			return
 		end
 

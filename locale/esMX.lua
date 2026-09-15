@@ -205,6 +205,8 @@ MoveAny:AddTrans("esMX", "LID_POWERBARCOUNTERBAR", "Contra-barra de poder (Encue
 MoveAny:AddTrans("esMX", "LID_PRESSESCTOLEAVE", "Presiona ESC para salir del selector")
 MoveAny:AddTrans("esMX", "LID_PRIESTBARFRAME", "Marco de Orbes de las Sombras del Sacerdote")
 MoveAny:AddTrans("esMX", "LID_PROFILES", "Perfiles")
+MoveAny:AddTrans("esMX", "LID_PROFILEVERSIONMISMATCH", "No se puede importar el perfil: las versiones de MoveAny no coinciden (otra: v%s, la tuya: v%s). Ambos necesitan la misma versión.")
+MoveAny:AddTrans("esMX", "LID_PROFILEVERSIONOLD", "No se puede importar el perfil: proviene de una versión anterior de MoveAny (la tuya: v%s). Ambos necesitan la misma versión.")
 MoveAny:AddTrans("esMX", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("esMX", "LID_QUESTITEMSANCHOR", "Ancla de objetos de misión")
 MoveAny:AddTrans("esMX", "LID_QUESTTIMERFRAME", "Marco de temporizador de misión")

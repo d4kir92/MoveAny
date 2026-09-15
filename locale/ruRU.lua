@@ -205,6 +205,8 @@ MoveAny:AddTrans("ruRU", "LID_POWERBARCOUNTERBAR", "Энергия энкаун�
 MoveAny:AddTrans("ruRU", "LID_PRESSESCTOLEAVE", "Нажмите ESC, чтобы выйти из режима выбора")
 MoveAny:AddTrans("ruRU", "LID_PRIESTBARFRAME", "Жрец - Сферы Тьмы")
 MoveAny:AddTrans("ruRU", "LID_PROFILES", "Профили")
+MoveAny:AddTrans("ruRU", "LID_PROFILEVERSIONMISMATCH", "Невозможно импортировать профиль: версии MoveAny различаются (другая: v%s, ваша: v%s). У обоих должна быть одинаковая версия.")
+MoveAny:AddTrans("ruRU", "LID_PROFILEVERSIONOLD", "Невозможно импортировать профиль: он создан в более старой версии MoveAny (ваша: v%s). У обоих должна быть одинаковая версия.")
 MoveAny:AddTrans("ruRU", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("ruRU", "LID_QUESTITEMSANCHOR", "Крепление предметов заданий")
 MoveAny:AddTrans("ruRU", "LID_QUESTTIMERFRAME", "Таймер квестов")

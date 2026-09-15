@@ -205,6 +205,8 @@ MoveAny:AddTrans("enUS", "LID_POWERBARCOUNTERBAR", "Power Bar Counter Bar (Boss 
 MoveAny:AddTrans("enUS", "LID_PRESSESCTOLEAVE", "Press ESC to leave the Picker")
 MoveAny:AddTrans("enUS", "LID_PRIESTBARFRAME", "Priester Shadow Orbs Frame")
 MoveAny:AddTrans("enUS", "LID_PROFILES", "Profiles")
+MoveAny:AddTrans("enUS", "LID_PROFILEVERSIONMISMATCH", "Profile can't be imported: the MoveAny versions differ (theirs: v%s, yours: v%s). Both need the same version.")
+MoveAny:AddTrans("enUS", "LID_PROFILEVERSIONOLD", "Profile can't be imported: it comes from an older MoveAny version (yours: v%s). Both need the same version.")
 MoveAny:AddTrans("enUS", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("enUS", "LID_QUESTITEMSANCHOR", "Quest Items Anchor")
 MoveAny:AddTrans("enUS", "LID_QUESTTIMERFRAME", "Quest Timer Frame")

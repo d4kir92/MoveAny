@@ -205,6 +205,8 @@ MoveAny:AddTrans("zhCN", "LID_POWERBARCOUNTERBAR", "能量条计数条 (首领�
 MoveAny:AddTrans("zhCN", "LID_PRESSESCTOLEAVE", "按ESC退出选择模式")
 MoveAny:AddTrans("zhCN", "LID_PRIESTBARFRAME", "牧师暗影灵球条")
 MoveAny:AddTrans("zhCN", "LID_PROFILES", "配置文件")
+MoveAny:AddTrans("zhCN", "LID_PROFILEVERSIONMISMATCH", "无法导入配置文件：MoveAny 版本不一致 (对方: v%s, 你的: v%s)。双方需要相同的版本。")
+MoveAny:AddTrans("zhCN", "LID_PROFILEVERSIONOLD", "无法导入配置文件：它来自旧版本的 MoveAny (你的: v%s)。双方需要相同的版本。")
 MoveAny:AddTrans("zhCN", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("zhCN", "LID_QUESTITEMSANCHOR", "任务物品锚点")
 MoveAny:AddTrans("zhCN", "LID_QUESTTIMERFRAME", "任务计时器框架")

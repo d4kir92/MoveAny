@@ -205,6 +205,8 @@ MoveAny:AddTrans("itIT", "LID_POWERBARCOUNTERBAR", "Barra contatore dello scontr
 MoveAny:AddTrans("itIT", "LID_PRESSESCTOLEAVE", "Premi ESC per lasciare questa visualizzazione")
 MoveAny:AddTrans("itIT", "LID_PRIESTBARFRAME", "Cornice delle sfere ombra del sacerdote")
 MoveAny:AddTrans("itIT", "LID_PROFILES", "Profili")
+MoveAny:AddTrans("itIT", "LID_PROFILEVERSIONMISMATCH", "Impossibile importare il profilo: le versioni di MoveAny sono diverse (altra: v%s, tua: v%s). Entrambi devono avere la stessa versione.")
+MoveAny:AddTrans("itIT", "LID_PROFILEVERSIONOLD", "Impossibile importare il profilo: proviene da una versione precedente di MoveAny (tua: v%s). Entrambi devono avere la stessa versione.")
 MoveAny:AddTrans("itIT", "LID_PROTOTYPE", "Prototype")
 MoveAny:AddTrans("itIT", "LID_QUESTITEMSANCHOR", "Ancora oggetti missione")
 MoveAny:AddTrans("itIT", "LID_QUESTTIMERFRAME", "Finestra del tempo della missione")

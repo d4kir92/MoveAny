@@ -99,15 +99,10 @@ function MoveAny:CanEncodeProfiles()
 	return C_EncodingUtil ~= nil and C_EncodingUtil.SerializeCBOR ~= nil and C_EncodingUtil.DeserializeCBOR ~= nil and C_EncodingUtil.CompressString ~= nil and C_EncodingUtil.DecompressString ~= nil and C_EncodingUtil.EncodeBase64 ~= nil and C_EncodingUtil.DecodeBase64 ~= nil
 end
 
-function MoveAny:GetProfileStringError(reason, version)
-	if reason == "VERSION" then
-		local theirs = "older version"
-		if version then theirs = "v" .. version end
-
-		return string.format("MoveAny version mismatch (theirs: %s, yours: v%s), both need the same version.", theirs, tostring(MoveAny:GetVersion()))
-	end
-
-	return "invalid import string."
+function MoveAny:GetProfileVersionError(reason, version)
+	if reason ~= "VERSION" then return nil end
+	if version then return string.format(MoveAny:Trans("LID_PROFILEVERSIONMISMATCH"), version, tostring(MoveAny:GetVersion())) end
+	return string.format(MoveAny:Trans("LID_PROFILEVERSIONOLD"), tostring(MoveAny:GetVersion()))
 end
 
 function MoveAny:EncodeProfileString(name)
