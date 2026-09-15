@@ -20,6 +20,7 @@ local ma_cbfsetpoint = {}
 local ma_cebsetpoint = {}
 local br = 8
 local sw = 550
+local psw = sw + 90
 local sh = MoveAny:MClamp(640, 200, GetScreenHeight())
 local cas = {}
 local cbs = {}
@@ -769,7 +770,7 @@ function MoveAny:InitMALock()
 		end
 
 		if MoveAny:IsValidFrame(CompactArenaFrame) then AddCheckBox("COMPACTARENAFRAME", false) end
-		if MoveAny:IsValidFrame(BattlefieldMapFrame) then AddCheckBox("BATTLEFIELDMAPFRAME", false) end
+		AddCheckBox("BATTLEFIELDMAPFRAME", false)
 		if RolePollPopup then AddCheckBox("ROLEPOLLPOPUP", false) end
 		if ReadyCheckListenerFrame then AddCheckBox("READYCHECKLISTENERFRAME", false) end
 		AddCheckBox("GAMETOOLTIP_ONCURSOR", false)
@@ -1106,7 +1107,7 @@ local function ShowExportProfile(name)
 	MAExportProfile.EditBox:HighlightText()
 end
 
-local function ShowImportProfile()
+local function ShowImportProfile(name, text)
 	if MAImportProfile == nil then
 		MAImportProfile = CreateProfileTextWindow("MAImportProfile", 330)
 		MAImportProfile.TitleText:SetText(MoveAny:Trans("LID_IMPORT"))
@@ -1148,16 +1149,239 @@ local function ShowImportProfile()
 		end)
 	end
 
-	MAImportProfile.Name:SetText(MoveAny:GetValidProfileName("IMPORT"))
-	MAImportProfile.EditBox:SetText("")
+	MAImportProfile.Name:SetText(MoveAny:GetValidProfileName(name or "IMPORT"))
+	MAImportProfile.EditBox:SetText(text or "")
 	MAImportProfile:Show()
 	MAImportProfile.EditBox:SetFocus()
+end
+
+local SHARE_PREFIX = "MoveAnyShare"
+local SHARE_CHUNK = 240
+local SHARE_OFFER_TIME = 300
+local SHARE_TIMEOUT = 60
+local SHARE_LINK = "garrmission:moveany"
+local SHARE_PATTERN = "%[MoveAny: ([^%s%]|]+) %- ([^%]|]+)%]"
+local shareOffers = {}
+local shareRequests = {}
+local shareSending = {}
+local shareInit = false
+local shareChatEvents = {"CHAT_MSG_SAY", "CHAT_MSG_YELL", "CHAT_MSG_GUILD", "CHAT_MSG_OFFICER", "CHAT_MSG_PARTY", "CHAT_MSG_PARTY_LEADER", "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER", "CHAT_MSG_INSTANCE_CHAT", "CHAT_MSG_INSTANCE_CHAT_LEADER", "CHAT_MSG_WHISPER", "CHAT_MSG_WHISPER_INFORM", "CHAT_MSG_CHANNEL"}
+local function NormalizeShareName(name)
+	if type(name) ~= "string" or name == "" then return nil end
+	if string.find(name, "-", 1, true) then return name end
+	local realm = GetNormalizedRealmName()
+	if realm == nil or realm == "" then return name end
+	return name .. "-" .. realm
+end
+
+local function GetSharePlayerName()
+	local name, realm = UnitFullName("player")
+	if name ~= nil and realm ~= nil and realm ~= "" then return name .. "-" .. realm end
+	return NormalizeShareName(name)
+end
+
+local function SendShareMessage(message, target)
+	local result = C_ChatInfo.SendAddonMessage(SHARE_PREFIX, message, "WHISPER", target)
+	return result == nil or result == true or result == 0
+end
+
+local function ShareProfile(name)
+	if string.find(name, "[%[%]|]") then
+		MoveAny:ERR("[ShareProfile] can't share, the name must not contain [ ] or |.")
+		return
+	end
+
+	local player = GetSharePlayerName()
+	if player == nil then return end
+	local text = "[MoveAny: " .. player .. " - " .. name .. "]"
+	if #text > 255 then
+		MoveAny:ERR("[ShareProfile] can't share, the name is too long.")
+		return
+	end
+
+	shareOffers[name] = GetTime()
+	local insertLink = (ChatFrameUtil and ChatFrameUtil.InsertLink) or ChatEdit_InsertLink
+	if type(insertLink) == "function" and insertLink(text) then return end
+	local openChat = (ChatFrameUtil and ChatFrameUtil.OpenChat) or ChatFrame_OpenChat
+	if type(openChat) == "function" then openChat(text) end
+end
+
+local function SendShareProfile(target, name)
+	if shareSending[target] then return end
+	local offer = shareOffers[name]
+	local text = nil
+	if offer ~= nil and GetTime() - offer <= SHARE_OFFER_TIME then text = MoveAny:EncodeProfileString(name) end
+	if text == nil then
+		SendShareMessage("N\t", target)
+		return
+	end
+
+	local total = math.ceil(#text / SHARE_CHUNK)
+	local queue = {"H\t" .. total}
+	for i = 1, total do
+		tinsert(queue, "D\t" .. i .. "\t" .. string.sub(text, (i - 1) * SHARE_CHUNK + 1, i * SHARE_CHUNK))
+	end
+
+	shareSending[target] = true
+	local index = 1
+	local fails = 0
+	local function SendNext()
+		if index > #queue then
+			shareSending[target] = nil
+			return
+		end
+
+		local delay = 0.2
+		if IsInInstance() then delay = 1.1 end
+		if SendShareMessage(queue[index], target) then
+			index = index + 1
+			fails = 0
+		else
+			fails = fails + 1
+			delay = 1.1
+			if fails > 10 then
+				shareSending[target] = nil
+				MoveAny:ERR("[ShareProfile] sending to " .. target .. " failed.")
+				return
+			end
+		end
+
+		MoveAny:After(delay, SendNext, "SendShareProfile")
+	end
+
+	SendNext()
+end
+
+local function WatchShareRequest(sender, request)
+	MoveAny:After(SHARE_TIMEOUT, function()
+		if shareRequests[sender] ~= request then return end
+		if GetTime() - request.time < SHARE_TIMEOUT then
+			WatchShareRequest(sender, request)
+			return
+		end
+
+		shareRequests[sender] = nil
+		MoveAny:ERR("[ShareProfile] no answer from " .. sender .. ".")
+	end, "WatchShareRequest")
+end
+
+local function RequestSharedProfile(player, name)
+	if player == GetSharePlayerName() then
+		local text = MoveAny:EncodeProfileString(name)
+		if text then ShowImportProfile(name, text) end
+		return
+	end
+
+	if shareRequests[player] then
+		MoveAny:MSG("[ShareProfile] already waiting for " .. player .. ".")
+		return
+	end
+
+	local request = {
+		name = name,
+		time = GetTime()
+	}
+
+	shareRequests[player] = request
+	if not SendShareMessage("R\t" .. name, player) then
+		shareRequests[player] = nil
+		MoveAny:ERR("[ShareProfile] can't reach " .. player .. ".")
+		return
+	end
+
+	MoveAny:MSG("[ShareProfile] requesting \"" .. name .. "\" from " .. player .. " ...")
+	WatchShareRequest(player, request)
+end
+
+local function OnShareMessage(prefix, message, channel, sender)
+	if MoveAny:IsSecret(prefix) or MoveAny:IsSecret(message) or MoveAny:IsSecret(channel) or MoveAny:IsSecret(sender) then return end
+	if prefix ~= SHARE_PREFIX or channel ~= "WHISPER" or type(message) ~= "string" then return end
+	sender = NormalizeShareName(sender)
+	if sender == nil then return end
+	local cmd, rest = string.match(message, "^(%a)\t(.*)$")
+	if cmd == "R" then
+		SendShareProfile(sender, rest)
+		return
+	end
+
+	local request = shareRequests[sender]
+	if request == nil then return end
+	if cmd == "N" then
+		shareRequests[sender] = nil
+		MoveAny:ERR("[ShareProfile] \"" .. request.name .. "\" is not shared by " .. sender .. " anymore.")
+	elseif cmd == "H" then
+		local total = tonumber(rest)
+		if total == nil or total < 1 or total > 1000 then
+			shareRequests[sender] = nil
+			return
+		end
+
+		request.total = total
+		request.parts = {}
+		request.count = 0
+		request.time = GetTime()
+	elseif cmd == "D" and request.total then
+		local index, data = string.match(rest, "^(%d+)\t(.+)$")
+		index = tonumber(index)
+		if index == nil or index < 1 or index > request.total then return end
+		if request.parts[index] == nil then request.count = request.count + 1 end
+		request.parts[index] = data
+		request.time = GetTime()
+		if request.count < request.total then return end
+		shareRequests[sender] = nil
+		local text = table.concat(request.parts)
+		if MoveAny:DecodeProfileString(text) == nil then
+			MoveAny:ERR("[ShareProfile] received an invalid profile from " .. sender .. ".")
+			return
+		end
+
+		ShowImportProfile(request.name, text)
+	end
+end
+
+local function ShareChatFilter(chatFrame, event, msg, ...)
+	if MoveAny:IsSecret(msg) or type(msg) ~= "string" then return false end
+	if not string.find(msg, "[MoveAny: ", 1, true) then return false end
+	local newMsg = string.gsub(msg, SHARE_PATTERN, function(player, name) return "|H" .. SHARE_LINK .. "|h|cFF3FC7EB[MoveAny: " .. player .. " - " .. name .. "]|r|h" end)
+	if newMsg == msg then return false end
+	return false, newMsg, ...
+end
+
+local function OnShareLink(link, text)
+	if MoveAny:IsSecret(link) or MoveAny:IsSecret(text) then return end
+	if link ~= SHARE_LINK or type(text) ~= "string" then return end
+	local player, name = string.match(text, SHARE_PATTERN)
+	if player == nil then return end
+	if IsShiftKeyDown() then
+		local editBox = GetCurrentKeyBoardFocus()
+		if editBox then editBox:Insert("[MoveAny: " .. player .. " - " .. name .. "]") end
+		return
+	end
+
+	RequestSharedProfile(player, name)
+end
+
+function MoveAny:InitProfileShare()
+	if shareInit or not MoveAny:CanEncodeProfiles() or C_ChatInfo == nil or C_ChatInfo.SendAddonMessage == nil or C_ChatInfo.RegisterAddonMessagePrefix == nil then return end
+	shareInit = true
+	C_ChatInfo.RegisterAddonMessagePrefix(SHARE_PREFIX)
+	local addFilter = (ChatFrameUtil and ChatFrameUtil.AddMessageEventFilter) or ChatFrame_AddMessageEventFilter
+	if type(addFilter) == "function" then
+		for _, event in ipairs(shareChatEvents) do
+			addFilter(event, ShareChatFilter)
+		end
+	end
+
+	hooksecurefunc("SetItemRef", OnShareLink)
+	local frame = CreateFrame("Frame")
+	MoveAny:RegisterEvent(frame, "CHAT_MSG_ADDON")
+	MoveAny:OnEvent(frame, function(sel, event, ...) OnShareMessage(...) end, "InitProfileShare")
 end
 
 function MoveAny:ShowProfiles()
 	if MAProfiles == nil then
 		MAProfiles = CreateFrame("Frame", "MAProfiles", MoveAny:GetMainPanel(), "BasicFrameTemplate")
-		MAProfiles:SetSize(sw, sh)
+		MAProfiles:SetSize(psw, sh)
 		MAProfiles:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		MAProfiles:SetFrameStrata("HIGH")
 		MAProfiles:SetFrameLevel(999)
@@ -1184,7 +1408,7 @@ function MoveAny:ShowProfiles()
 
 		MAProfiles:SetResizable(true)
 		MoveAny:After(0, function()
-			MAProfiles:SetResizeBounds(sw, 200, sw + 200, GetScreenHeight())
+			MAProfiles:SetResizeBounds(psw, 200, psw + 200, GetScreenHeight())
 			if MAProfiles:GetHeight() > GetScreenHeight() then MAProfiles:SetHeight(GetScreenHeight()) end
 		end, "ShowProfiles")
 
@@ -1357,11 +1581,16 @@ function MoveAny:ShowProfiles()
 				btnExport:SetSize(100, 24)
 				btnExport:SetText(MoveAny:Trans("LID_EXPORT"))
 				btnExport:SetScript("OnClick", function() ShowExportProfile(name) end)
+				local btnShare = MoveAny:CreateButton(name, MAProfiles.SC)
+				btnShare:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br, -index * 40 - br)
+				btnShare:SetSize(100, 24)
+				btnShare:SetText(MoveAny:Trans("LID_SHARE"))
+				btnShare:SetScript("OnClick", function() ShareProfile(name) end)
 			end
 
 			if name ~= "DEFAULT" then
 				local btnRen = MoveAny:CreateButton(name, MAProfiles.SC)
-				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br, -index * 40 - br)
+				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br + 100 + br, -index * 40 - br)
 				btnRen:SetSize(100, 24)
 				btnRen:SetText(MoveAny:Trans("LID_RENAME"))
 				btnRen:SetScript("OnClick", function()
@@ -1406,7 +1635,7 @@ function MoveAny:ShowProfiles()
 			end
 
 			local btnRem = MoveAny:CreateButton(name, MAProfiles.SC)
-			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br + 100 + br, -index * 40 - br)
+			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br + 100 + br + 100 + br, -index * 40 - br)
 			btnRem:SetSize(100, 24)
 			btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
 			btnRem:SetScript("OnClick", function()
@@ -1741,6 +1970,7 @@ function MoveAny:LoadAddon()
 	if MoveAny:IsAddOnLoaded("D4KiR MoveAndImprove") then MoveAny:INFO("DON'T use MoveAndImprove, when you use MoveAny") end
 	if MoveAny.InitSlash then MoveAny:InitSlash() end
 	if MoveAny.InitDB then MoveAny:InitDB() end
+	MoveAny:InitProfileShare()
 	if MoveAny:IsEnabled("SHOWTIPS", true) then
 		MoveAny:MSG(MoveAny:Trans("LID_STARTHELP"))
 		MoveAny:MSG(MoveAny:Trans("LID_STARTHELP2"))
@@ -1811,7 +2041,7 @@ function MoveAny:LoadAddon()
 		if MoveAny:IsEnabled("BATTLEFIELDMAPFRAME", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "BattlefieldMapFrame",
-				["lstr"] = "LID_BATTLEFIELDMAPFRAME"
+				["lstr"] = "LID_BATTLEFIELDMAPFRAME",
 			})
 		end
 
