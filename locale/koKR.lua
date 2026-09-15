@@ -255,7 +255,7 @@ MoveAny:AddTrans("koKR", "LID_STARTHELP", "미니맵 이동 버튼을 클릭하�
 MoveAny:AddTrans("koKR", "LID_STARTHELP2", "또는 채팅에서 /이동 또는 /무브어니를 입력하여 설정을 엽니 다.")
 MoveAny:AddTrans("koKR", "LID_STARTHELP3", "이 메시지를 숨기려면 MoveAny 메뉴에서 팁을 비활성화하세요.")
 MoveAny:AddTrans("koKR", "LID_STATUSTRACKINGBARMANAGER", "상태 추적 바 관리자(경험치, 평판)")
-MoveAny:AddTrans("koKR", "LID_SUPERTRACKEDFRAME", "웨이포인트 아이콘")
+MoveAny:AddTrans("koKR", "LID_SUPERTRACKEDFRAME", "웨이포인트 아이콘 크기")
 MoveAny:AddTrans("koKR", "LID_SecondaryStatusTrackingBarContainer", "평판바")
 MoveAny:AddTrans("koKR", "LID_TALKINGHEAD", "말하는 헤드 다이얼로그")
 MoveAny:AddTrans("koKR", "LID_TARGETFRAME", "목표 프레임")

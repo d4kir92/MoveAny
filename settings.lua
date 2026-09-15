@@ -1668,7 +1668,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.11.1")
+	MoveAny:SetVersion(135994, "1.11.2")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2039,6 +2039,7 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("BATTLEFIELDMAPFRAME", false) then
+			if BattlefieldMapFrame == nil then MoveAny:LoadAddOn("Blizzard_BattlefieldMap") end
 			MoveAny:RegisterWidget({
 				["name"] = "BattlefieldMapFrame",
 				["lstr"] = "LID_BATTLEFIELDMAPFRAME",

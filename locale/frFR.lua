@@ -255,7 +255,7 @@ MoveAny:AddTrans("frFR", "LID_STARTHELP", "Cliquez sur le bouton MoveAny de la M
 MoveAny:AddTrans("frFR", "LID_STARTHELP2", "Ou tapez /move ou /moveany dans le chat pour ouvrir les paramètres.")
 MoveAny:AddTrans("frFR", "LID_STARTHELP3", "Pour masquer ces messages, désactivez les astuces dans le menu MoveAny.")
 MoveAny:AddTrans("frFR", "LID_STATUSTRACKINGBARMANAGER", "Gestionnaire de barre de suivi de statut (XP, Réputation)")
-MoveAny:AddTrans("frFR", "LID_SUPERTRACKEDFRAME", "Icône du point de repère")
+MoveAny:AddTrans("frFR", "LID_SUPERTRACKEDFRAME", "Échelle de l'icône du point de repère")
 MoveAny:AddTrans("frFR", "LID_SecondaryStatusTrackingBarContainer", "StatusBar2 (Barre de réputation)")
 MoveAny:AddTrans("frFR", "LID_TALKINGHEAD", "Dialogue de la tête parlante")
 MoveAny:AddTrans("frFR", "LID_TARGETFRAME", "Cadre de la cible")

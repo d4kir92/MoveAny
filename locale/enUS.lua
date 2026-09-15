@@ -255,7 +255,7 @@ MoveAny:AddTrans("enUS", "LID_STARTHELP", "Click the MoveAny Minimap Button to o
 MoveAny:AddTrans("enUS", "LID_STARTHELP2", "Or type /move or /moveany in chat to open the settings.")
 MoveAny:AddTrans("enUS", "LID_STARTHELP3", "To hide these messages deactivate tips in the MoveAny menu.")
 MoveAny:AddTrans("enUS", "LID_STATUSTRACKINGBARMANAGER", "Status Tracking Bar Manager (XP, Reputation)")
-MoveAny:AddTrans("enUS", "LID_SUPERTRACKEDFRAME", "Waypoint Icon")
+MoveAny:AddTrans("enUS", "LID_SUPERTRACKEDFRAME", "Waypoint Icon Scale")
 MoveAny:AddTrans("enUS", "LID_SecondaryStatusTrackingBarContainer", "StatusBar2 (Reputation Bar)")
 MoveAny:AddTrans("enUS", "LID_TALKINGHEAD", "Talking Head Dialog")
 MoveAny:AddTrans("enUS", "LID_TARGETFRAME", "Target Frame")

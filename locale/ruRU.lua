@@ -255,7 +255,7 @@ MoveAny:AddTrans("ruRU", "LID_STARTHELP", "Нажмите кнопку на ми
 MoveAny:AddTrans("ruRU", "LID_STARTHELP2", "Или введите /move или /moveany в чате, чтобы открыть настройки.")
 MoveAny:AddTrans("ruRU", "LID_STARTHELP3", "Чтобы скрыть эти сообщения, отключите подсказки в меню MoveAny.")
 MoveAny:AddTrans("ruRU", "LID_STATUSTRACKINGBARMANAGER", "Менеджер панели отслеживания статуса (опыт, репутация и т.д...)")
-MoveAny:AddTrans("ruRU", "LID_SUPERTRACKEDFRAME", "Значок точки маршрута")
+MoveAny:AddTrans("ruRU", "LID_SUPERTRACKEDFRAME", "Масштаб значка точки маршрута")
 MoveAny:AddTrans("ruRU", "LID_SecondaryStatusTrackingBarContainer", "Статус 2 (репутация)")
 MoveAny:AddTrans("ruRU", "LID_TALKINGHEAD", "Говорящая голова")
 MoveAny:AddTrans("ruRU", "LID_TARGETFRAME", "Цель")

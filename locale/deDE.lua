@@ -255,7 +255,7 @@ MoveAny:AddTrans("deDE", "LID_STARTHELP", "Klicken Sie auf die MoveAny Minimap-S
 MoveAny:AddTrans("deDE", "LID_STARTHELP2", "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.")
 MoveAny:AddTrans("deDE", "LID_STARTHELP3", "Um diese Nachrichten zu verstecken deaktiviere Tipps im MoveAny Menü.")
 MoveAny:AddTrans("deDE", "LID_STATUSTRACKINGBARMANAGER", "Statusverfolgungsleiste Manager (EP, Ruf)")
-MoveAny:AddTrans("deDE", "LID_SUPERTRACKEDFRAME", "Wegpunkt-Symbol")
+MoveAny:AddTrans("deDE", "LID_SUPERTRACKEDFRAME", "Skalierung des Wegpunkt-Symbols")
 MoveAny:AddTrans("deDE", "LID_SecondaryStatusTrackingBarContainer", "StatusBar2 (Rufleiste)")
 MoveAny:AddTrans("deDE", "LID_TALKINGHEAD", "Weltquestfenster (\"Redekopf\")")
 MoveAny:AddTrans("deDE", "LID_TARGETFRAME", "Zielfenster")

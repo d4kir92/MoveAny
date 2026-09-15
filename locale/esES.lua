@@ -255,7 +255,7 @@ MoveAny:AddTrans("esES", "LID_STARTHELP", "Haz clic en el botón del minimapa de
 MoveAny:AddTrans("esES", "LID_STARTHELP2", "O escribe /move o /moveany en el chat para abrir los ajustes.")
 MoveAny:AddTrans("esES", "LID_STARTHELP3", "Para ocultar estos mensajes, desactiva los consejos en el menú de MoveAny.")
 MoveAny:AddTrans("esES", "LID_STATUSTRACKINGBARMANAGER", "Gestor de la barra de seguimiento de estado (XP, reputación)")
-MoveAny:AddTrans("esES", "LID_SUPERTRACKEDFRAME", "Icono del punto de referencia")
+MoveAny:AddTrans("esES", "LID_SUPERTRACKEDFRAME", "Escala del icono del punto de referencia")
 MoveAny:AddTrans("esES", "LID_SecondaryStatusTrackingBarContainer", "Barra de estado 2 (Barra de reputación)")
 MoveAny:AddTrans("esES", "LID_TALKINGHEAD", "Diálogo de la cabeza parlante")
 MoveAny:AddTrans("esES", "LID_TARGETFRAME", "Marco del objetivo")
