@@ -1113,7 +1113,7 @@ local function ShowExportProfile(name)
 	end
 
 	MAExportProfile.exportText = text
-	MAExportProfile.TitleText:SetText(MoveAny:Trans("LID_EXPORT") .. ": " .. name)
+	MAExportProfile.TitleText:SetText(MoveAny:Trans("LID_EXPORT") .. ": " .. name .. " (v" .. tostring(MoveAny:GetVersion()) .. ")")
 	MAExportProfile.EditBox:SetText(text)
 	MAExportProfile:Show()
 	MAExportProfile.EditBox:SetFocus()
@@ -1147,9 +1147,9 @@ local function ShowImportProfile(name, text)
 				return
 			end
 
-			local eleTab = MoveAny:DecodeProfileString(MAImportProfile.EditBox:GetText())
+			local eleTab, reason, version = MoveAny:DecodeProfileString(MAImportProfile.EditBox:GetText())
 			if eleTab == nil then
-				MoveAny:ERR("[ImportProfile] can't add, invalid import string.")
+				MoveAny:ERR("[ImportProfile] can't add, " .. MoveAny:GetProfileStringError(reason, version))
 				return
 			end
 
@@ -1296,7 +1296,7 @@ local function RequestSharedProfile(player, name)
 	}
 
 	shareRequests[player] = request
-	if not SendShareMessage("R\t" .. name, player) then
+	if not SendShareMessage("R\t" .. name .. "\t" .. tostring(MoveAny:GetVersion()), player) then
 		shareRequests[player] = nil
 		MoveAny:ERR("[ShareProfile] can't reach " .. player .. ".")
 		return
@@ -1313,7 +1313,14 @@ local function OnShareMessage(prefix, message, channel, sender)
 	if sender == nil then return end
 	local cmd, rest = string.match(message, "^(%a)\t(.*)$")
 	if cmd == "R" then
-		SendShareProfile(sender, rest)
+		local name, version = string.match(rest, "^(.*)\t([^\t]*)$")
+		if name == nil then name = rest end
+		if version ~= MoveAny:GetVersion() then
+			SendShareMessage("V\t" .. tostring(MoveAny:GetVersion()), sender)
+			return
+		end
+
+		SendShareProfile(sender, name)
 		return
 	end
 
@@ -1322,6 +1329,9 @@ local function OnShareMessage(prefix, message, channel, sender)
 	if cmd == "N" then
 		shareRequests[sender] = nil
 		MoveAny:ERR("[ShareProfile] \"" .. request.name .. "\" is not shared by " .. sender .. " anymore.")
+	elseif cmd == "V" then
+		shareRequests[sender] = nil
+		MoveAny:ERR("[ShareProfile] can't get \"" .. request.name .. "\" from " .. sender .. ", " .. MoveAny:GetProfileStringError("VERSION", rest ~= "" and rest or nil))
 	elseif cmd == "H" then
 		local total = tonumber(rest)
 		if total == nil or total < 1 or total > 1000 then
@@ -1343,8 +1353,9 @@ local function OnShareMessage(prefix, message, channel, sender)
 		if request.count < request.total then return end
 		shareRequests[sender] = nil
 		local text = table.concat(request.parts)
-		if MoveAny:DecodeProfileString(text) == nil then
-			MoveAny:ERR("[ShareProfile] received an invalid profile from " .. sender .. ".")
+		local eleTab, reason, version = MoveAny:DecodeProfileString(text)
+		if eleTab == nil then
+			MoveAny:ERR("[ShareProfile] can't use the profile from " .. sender .. ", " .. MoveAny:GetProfileStringError(reason, version))
 			return
 		end
 
@@ -1681,7 +1692,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.0")
+	MoveAny:SetVersion(135994, "1.12.1")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

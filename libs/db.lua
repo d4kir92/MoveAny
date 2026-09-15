@@ -93,18 +93,31 @@ function MoveAny:ImportProfile(name, eleTab)
 	end
 end
 
-local PROFILE_STRING_PREFIX = "!MA1!"
+local PROFILE_STRING_PREFIX = "!MA2!"
+local PROFILE_STRING_PREFIX_OLD = "!MA1!"
 function MoveAny:CanEncodeProfiles()
 	return C_EncodingUtil ~= nil and C_EncodingUtil.SerializeCBOR ~= nil and C_EncodingUtil.DeserializeCBOR ~= nil and C_EncodingUtil.CompressString ~= nil and C_EncodingUtil.DecompressString ~= nil and C_EncodingUtil.EncodeBase64 ~= nil and C_EncodingUtil.DecodeBase64 ~= nil
+end
+
+function MoveAny:GetProfileStringError(reason, version)
+	if reason == "VERSION" then
+		local theirs = "older version"
+		if version then theirs = "v" .. version end
+
+		return string.format("MoveAny version mismatch (theirs: %s, yours: v%s), both need the same version.", theirs, tostring(MoveAny:GetVersion()))
+	end
+
+	return "invalid import string."
 end
 
 function MoveAny:EncodeProfileString(name)
 	MoveAny:CheckDB("EncodeProfileString")
 	local profile = MATAB["PROFILES"][name]
-	if profile == nil or not MoveAny:CanEncodeProfiles() then return nil end
+	local version = MoveAny:GetVersion()
+	if profile == nil or type(version) ~= "string" or not MoveAny:CanEncodeProfiles() then return nil end
 	local ok, result = pcall(function()
 		local data = C_EncodingUtil.SerializeCBOR(profile["ELES"] or {})
-		return PROFILE_STRING_PREFIX .. C_EncodingUtil.EncodeBase64(C_EncodingUtil.CompressString(data))
+		return PROFILE_STRING_PREFIX .. version .. "!" .. C_EncodingUtil.EncodeBase64(C_EncodingUtil.CompressString(data))
 	end)
 
 	if ok and type(result) == "string" then return result end
@@ -115,9 +128,13 @@ end
 function MoveAny:DecodeProfileString(text)
 	if type(text) ~= "string" or not MoveAny:CanEncodeProfiles() then return nil end
 	text = string.gsub(text, "%s", "")
+	if string.sub(text, 1, #PROFILE_STRING_PREFIX_OLD) == PROFILE_STRING_PREFIX_OLD then return nil, "VERSION" end
 	if string.sub(text, 1, #PROFILE_STRING_PREFIX) ~= PROFILE_STRING_PREFIX then return nil end
+	local version, payload = string.match(string.sub(text, #PROFILE_STRING_PREFIX + 1), "^([^!]+)!(.+)$")
+	if version == nil then return nil end
+	if version ~= MoveAny:GetVersion() then return nil, "VERSION", version end
 	local ok, result = pcall(function()
-		local data = C_EncodingUtil.DecompressString(C_EncodingUtil.DecodeBase64(string.sub(text, #PROFILE_STRING_PREFIX + 1)))
+		local data = C_EncodingUtil.DecompressString(C_EncodingUtil.DecodeBase64(payload))
 		return C_EncodingUtil.DeserializeCBOR(data)
 	end)
 
