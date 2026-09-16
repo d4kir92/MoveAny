@@ -13,5 +13,7 @@
 <Script file="D4UIEditbox.lua"/>
 <Script file="D4UIColorPicker.lua"/>
 <Script file="D4UIKeybind.lua"/>
+<Script file="D4UIList.lua"/>
+<Script file="D4UIOrderList.lua"/>
 
 </Ui>

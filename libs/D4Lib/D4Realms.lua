@@ -7,10 +7,10 @@ local realms = {}
 local realmsSupported = false
 local missingRealmLangs = {}
 local region = GetCurrentRegion and GetCurrentRegion() or 1
-local withoutSpaces = {}
 local realmLangs = {}
 local missingRegionOnce = true
 local missingWoWBuildOnce = true
+local fallbackRealmsLoaded = false
 local realmData = {}
 local regions = {
     ["US"] = 1,
@@ -18,6 +18,8 @@ local regions = {
     ["EU"] = 3,
     ["TW"] = 4,
 }
+
+local realmLocales = {"enUS", "deDE", "esES", "esMX", "frFR", "itIT", "koKR", "ptBR", "ruRU", "zhCN", "zhTW"}
 
 local function IsUkrainianLetters(str)
     return str:match("[\192-\199]") ~= nil
@@ -47,40 +49,64 @@ function D4:MissingRealmRegion(reg)
     D4:MSG("[D4] Missing REGION", reg)
 end
 
-local function InitRealms()
-    if #realmData == 0 and missingWoWBuildOnce then
-        missingWoWBuildOnce = false
-        D4:MSG("[D4] Missing WoW-Build", D4:GetWoWBuildNr())
-    end
+local function NormalizeRealmName(name)
+    return string.lower(string.gsub(name, "[%s%-]", ""))
+end
 
+local function LoadRealmLocale(locale)
+    local loaded = {}
     for i = 1, #realmData do
-        realmData[i](realms, region, regions)
+        realmData[i](loaded, region, regions, locale)
     end
 
-    for name, val in pairs(realms) do
-        if string.find(name, "-", 1, true) ~= nil then
-            withoutSpaces[name:gsub("-", "")] = val
-        end
-
-        if string.find(name, " ", 1, true) ~= nil then
-            withoutSpaces[name:gsub(" ", "")] = val
+    for name, val in pairs(loaded) do
+        local key = NormalizeRealmName(name)
+        if realms[key] == nil then
+            realms[key] = val
         end
     end
+end
 
-    for name, val in pairs(withoutSpaces) do
-        realms[name] = val
+local function LoadFallbackRealms()
+    if fallbackRealmsLoaded then return end
+    fallbackRealmsLoaded = true
+    local clientLocale = GetLocale()
+    for i = 1, #realmLocales do
+        if realmLocales[i] ~= clientLocale then
+            LoadRealmLocale(realmLocales[i])
+        end
     end
 
     realmsSupported = next(realms) ~= nil
 end
 
-function D4:GetRealmLang(realmName)
-    if D4:IsSecret(realmName) then return "" end
-    if initRealms == false then
-        initRealms = true
-        InitRealms()
+local function InitRealms()
+    if initRealms then return end
+    initRealms = true
+    if #realmData == 0 and missingWoWBuildOnce then
+        missingWoWBuildOnce = false
+        D4:MSG("[D4] Missing WoW-Build", D4:GetWoWBuildNr())
     end
 
+    LoadRealmLocale(GetLocale())
+    realmsSupported = next(realms) ~= nil
+    if realmsSupported == false then
+        LoadFallbackRealms()
+    end
+end
+
+local function FindRealmLang(realmName)
+    local key = NormalizeRealmName(realmName)
+    if realms[key] == nil then
+        LoadFallbackRealms()
+    end
+
+    return realms[key]
+end
+
+function D4:GetRealmLang(realmName)
+    if D4:IsSecret(realmName) then return "" end
+    InitRealms()
     if realmsSupported == false then return "" end
     if realmName == nil then
         if missingRealmNameOnce then
@@ -95,7 +121,8 @@ function D4:GetRealmLang(realmName)
         realmName = GetRealmName()
     end
 
-    if realms[realmName] == nil then
+    local realmLang = FindRealmLang(realmName)
+    if realmLang == nil then
         if IsUkrainianLetters(realmName) then
             return "ukUA"
         elseif IsRussianLetters(realmName) then
@@ -114,7 +141,7 @@ function D4:GetRealmLang(realmName)
         end
     end
 
-    return realms[realmName]
+    return realmLang
 end
 
 local function AddRealmLangs(lang, names)

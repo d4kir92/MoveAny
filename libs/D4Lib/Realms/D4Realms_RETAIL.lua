@@ -3,9 +3,9 @@
 local _, D4 = ...
 if D4:GetWoWBuild() ~= "RETAIL" then return end
 D4:AddRealmData(
-    function(realms, region, regions)
+    function(realms, region, regions, locale)
         if region == regions["US"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Aegwynn"] = "United States"
                 realms["Aerie Peak"] = "United States"
                 realms["Agamaggan"] = "United States"
@@ -252,7 +252,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "United States"
                 realms["Zul'jin"] = "United States"
                 realms["Zuluhed"] = "United States"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Aegwynn"] = "Vereinigte Staaten"
                 realms["Aerie Peak"] = "Vereinigte Staaten"
                 realms["Agamaggan"] = "Vereinigte Staaten"
@@ -499,7 +499,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "Vereinigte Staaten"
                 realms["Zul'jin"] = "Vereinigte Staaten"
                 realms["Zuluhed"] = "Vereinigte Staaten"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Aegwynn"] = "Estados Unidos"
                 realms["Aerie Peak"] = "Estados Unidos"
                 realms["Agamaggan"] = "Estados Unidos"
@@ -746,7 +746,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "Estados Unidos"
                 realms["Zul'jin"] = "Estados Unidos"
                 realms["Zuluhed"] = "Estados Unidos"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Aegwynn"] = "États-Unis"
                 realms["Aerie Peak"] = "États-Unis"
                 realms["Agamaggan"] = "États-Unis"
@@ -993,7 +993,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "États-Unis"
                 realms["Zul'jin"] = "États-Unis"
                 realms["Zuluhed"] = "États-Unis"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Aegwynn"] = "Stati Uniti"
                 realms["Aerie Peak"] = "Stati Uniti"
                 realms["Agamaggan"] = "Stati Uniti"
@@ -1240,7 +1240,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "Stati Uniti"
                 realms["Zul'jin"] = "Stati Uniti"
                 realms["Zuluhed"] = "Stati Uniti"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["Aegwynn"] = "미국"
                 realms["Aerie Peak"] = "미국"
                 realms["Agamaggan"] = "미국"
@@ -1487,7 +1487,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "미국"
                 realms["Zul'jin"] = "미국"
                 realms["Zuluhed"] = "미국"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Aegwynn"] = "Estados Unidos"
                 realms["Aerie Peak"] = "Estados Unidos"
                 realms["Agamaggan"] = "Estados Unidos"
@@ -1734,7 +1734,7 @@ D4:AddRealmData(
                 realms["Zangarmarsh"] = "Estados Unidos"
                 realms["Zul'jin"] = "Estados Unidos"
                 realms["Zuluhed"] = "Estados Unidos"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Aegwynn"] = "США"
                 realms["Aerie Peak"] = "США"
                 realms["Agamaggan"] = "США"
@@ -1981,7 +1981,7 @@ D4:AddRealmData(
                 realms["Смертокрыл"] = "США"
                 realms["Странники"] = "США"
                 realms["Теренас"] = "США"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["Area 52"] = "美国"
                 realms["Dethecus"] = "美国"
                 realms["Drak'thul"] = "美国"
@@ -2228,7 +2228,7 @@ D4:AddRealmData(
                 realms["黑铁"] = "美国"
                 realms["黑龙军团"] = "美国"
                 realms["龙骨平原"] = "美国"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["52區"] = "美國"
                 realms["Azralon"] = "巴西"
                 realms["丘加利"] = "美國"
@@ -2477,7 +2477,7 @@ D4:AddRealmData(
                 realms["龍骨荒野"] = "美國"
             end
         elseif region == regions["EU"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Aegwynn"] = "German"
                 realms["Aerie Peak"] = "English"
                 realms["Agamaggan"] = "English"
@@ -2745,7 +2745,7 @@ D4:AddRealmData(
                 realms["Zirkel des Cenarius"] = "German"
                 realms["Zul'jin"] = "Spanish"
                 realms["Zuluhed"] = "German"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Aegwynn"] = "Deutsch"
                 realms["Aerie Peak"] = "Englisch"
                 realms["Agamaggan"] = "Englisch"
@@ -3013,7 +3013,7 @@ D4:AddRealmData(
                 realms["Zirkel des Cenarius"] = "Deutsch"
                 realms["Zul'jin"] = "Spanisch"
                 realms["Zuluhed"] = "Deutsch"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Aegwynn"] = "Alemán"
                 realms["Aerie Peak"] = "Inglés"
                 realms["Agamaggan"] = "Inglés"
@@ -3281,7 +3281,7 @@ D4:AddRealmData(
                 realms["Zirkel des Cenarius"] = "Alemán"
                 realms["Zul'jin"] = "Español"
                 realms["Zuluhed"] = "Alemán"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Aegwynn"] = "Allemand"
                 realms["Aerie Peak"] = "Anglais"
                 realms["Agamaggan"] = "Anglais"
@@ -3549,7 +3549,7 @@ D4:AddRealmData(
                 realms["Zirkel des Cenarius"] = "Allemand"
                 realms["Zul'jin"] = "Espagnol"
                 realms["Zuluhed"] = "Allemand"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Aegwynn"] = "Tedesco"
                 realms["Aerie Peak"] = "Inglese"
                 realms["Agamaggan"] = "Inglese"
@@ -3817,7 +3817,7 @@ D4:AddRealmData(
                 realms["Ткач Смерти"] = "Russo"
                 realms["Черный Шрам"] = "Russo"
                 realms["Ясеневый лес"] = "Russo"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["Aegwynn"] = "독일어"
                 realms["Aerie Peak"] = "영어"
                 realms["Agamaggan"] = "영어"
@@ -4085,7 +4085,7 @@ D4:AddRealmData(
                 realms["Zirkel des Cenarius"] = "독일어"
                 realms["Zul'jin"] = "스페인어"
                 realms["Zuluhed"] = "독일어"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Aegwynn"] = "Alemão"
                 realms["Aerie Peak"] = "Inglês"
                 realms["Agamaggan"] = "Inglês"
@@ -4353,7 +4353,7 @@ D4:AddRealmData(
                 realms["Ткач Смерти"] = "Russo"
                 realms["Черный Шрам"] = "Russo"
                 realms["Ясеневый лес"] = "Russo"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Aegwynn"] = "Нем."
                 realms["Aerie Peak"] = "Англ."
                 realms["Agamaggan"] = "Англ."
@@ -4621,7 +4621,7 @@ D4:AddRealmData(
                 realms["Ткач Смерти"] = "Русский"
                 realms["Черный Шрам"] = "Русский"
                 realms["Ясеневый лес"] = "Русский"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["Aggra (Português)"] = "英语"
                 realms["Ambossar"] = "德语"
                 realms["Area 52"] = "德语"
@@ -4889,7 +4889,7 @@ D4:AddRealmData(
                 realms["黑石尖塔"] = "德语"
                 realms["龙神之厅"] = "英语"
                 realms["龙骨平原"] = "英语"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["52區"] = "德國"
                 realms["Ashenvale"] = "俄羅斯"
                 realms["Blackscar"] = "俄羅斯"
@@ -5158,7 +5158,7 @@ D4:AddRealmData(
                 realms["龍骨荒野"] = "英國"
             end
         elseif region == regions["KR"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Alexstrasza"] = "Korea"
                 realms["Azshara"] = "Korea"
                 realms["Burning Legion"] = "Korea"
@@ -5177,7 +5177,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Korea"
                 realms["Windrunner"] = "Korea"
                 realms["Zul'jin"] = "Korea"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Alexstrasza"] = "Korea"
                 realms["Azshara"] = "Korea"
                 realms["Burning Legion"] = "Korea"
@@ -5196,7 +5196,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Korea"
                 realms["Windrunner"] = "Korea"
                 realms["Zul'jin"] = "Korea"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Alexstrasza"] = "Corea"
                 realms["Azshara"] = "Corea"
                 realms["Burning Legion"] = "Corea"
@@ -5215,7 +5215,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Corea"
                 realms["Windrunner"] = "Corea"
                 realms["Zul'jin"] = "Corea"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Alexstrasza"] = "Corée"
                 realms["Azshara"] = "Corée"
                 realms["Burning Legion"] = "Corée"
@@ -5234,7 +5234,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Corée"
                 realms["Windrunner"] = "Corée"
                 realms["Zul'jin"] = "Corée"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Alexstrasza"] = "Corea"
                 realms["Azshara"] = "Corea"
                 realms["Burning Legion"] = "Corea"
@@ -5253,7 +5253,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Corea"
                 realms["Windrunner"] = "Corea"
                 realms["Zul'jin"] = "Corea"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["가로나"] = "한국"
                 realms["굴단"] = "한국"
                 realms["노르간논"] = "한국"
@@ -5272,7 +5272,7 @@ D4:AddRealmData(
                 realms["줄진"] = "한국"
                 realms["하이잘"] = "한국"
                 realms["헬스크림"] = "한국"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Alexstrasza"] = "Coreia"
                 realms["Azshara"] = "Coreia"
                 realms["Burning Legion"] = "Coreia"
@@ -5291,7 +5291,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Coreia"
                 realms["Windrunner"] = "Coreia"
                 realms["Zul'jin"] = "Coreia"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Alexstrasza"] = "Корея"
                 realms["Azshara"] = "Корея"
                 realms["Burning Legion"] = "Корея"
@@ -5310,7 +5310,7 @@ D4:AddRealmData(
                 realms["Wildhammer"] = "Корея"
                 realms["Zul'jin"] = "Корея"
                 realms["Ветрокрылая"] = "Корея"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["古尔丹"] = "韩国"
                 realms["地狱咆哮"] = "韩国"
                 realms["塞纳留斯"] = "韩国"
@@ -5329,7 +5329,7 @@ D4:AddRealmData(
                 realms["雷克萨"] = "韩国"
                 realms["风暴之怒"] = "韩国"
                 realms["风行者"] = "韩国"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["古爾丹"] = "韓國"
                 realms["地獄吼"] = "韓國"
                 realms["塞納留斯"] = "韓國"
@@ -5350,7 +5350,7 @@ D4:AddRealmData(
                 realms["風行者"] = "韓國"
             end
         elseif region == regions["TW"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Arthas"] = "Taiwan"
                 realms["Arygos"] = "Taiwan"
                 realms["Bleeding Hollow"] = "Taiwan"
@@ -5378,7 +5378,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "Taiwan"
                 realms["Wrathbringer"] = "Taiwan"
                 realms["Zealot Blade"] = "Taiwan"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Arthas"] = "Taiwan"
                 realms["Arygos"] = "Taiwan"
                 realms["Bleeding Hollow"] = "Taiwan"
@@ -5406,7 +5406,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "Taiwan"
                 realms["Wrathbringer"] = "Taiwan"
                 realms["Zealot Blade"] = "Taiwan"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Arthas"] = "Taiwán"
                 realms["Arygos"] = "Taiwán"
                 realms["Bleeding Hollow"] = "Taiwán"
@@ -5434,7 +5434,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "Taiwán"
                 realms["Wrathbringer"] = "Taiwán"
                 realms["Zealot Blade"] = "Taiwán"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Arthas"] = "Taïwan"
                 realms["Arygos"] = "Taïwan"
                 realms["Bleeding Hollow"] = "Taïwan"
@@ -5462,7 +5462,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "Taïwan"
                 realms["Wrathbringer"] = "Taïwan"
                 realms["Zealot Blade"] = "Taïwan"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Arthas"] = "Taiwan"
                 realms["Arygos"] = "Taiwan"
                 realms["Bleeding Hollow"] = "Taiwan"
@@ -5490,7 +5490,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "Taiwan"
                 realms["Wrathbringer"] = "Taiwan"
                 realms["Zealot Blade"] = "Taiwan"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["Arthas"] = "대만"
                 realms["Arygos"] = "대만"
                 realms["Bleeding Hollow"] = "대만"
@@ -5518,7 +5518,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "대만"
                 realms["Wrathbringer"] = "대만"
                 realms["Zealot Blade"] = "대만"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Arthas"] = "Taiwan"
                 realms["Arygos"] = "Taiwan"
                 realms["Bleeding Hollow"] = "Taiwan"
@@ -5546,7 +5546,7 @@ D4:AddRealmData(
                 realms["World Tree"] = "Taiwan"
                 realms["Wrathbringer"] = "Taiwan"
                 realms["Zealot Blade"] = "Taiwan"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Arthas"] = "Тайвань"
                 realms["Arygos"] = "Тайвань"
                 realms["Bleeding Hollow"] = "Тайвань"
@@ -5574,7 +5574,7 @@ D4:AddRealmData(
                 realms["Wrathbringer"] = "Тайвань"
                 realms["Zealot Blade"] = "Тайвань"
                 realms["Берег Промозглого Ветра"] = "Тайвань"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["世界之树"] = "中国台湾"
                 realms["云端翔龙骑士团"] = "中国台湾"
                 realms["亚雷戈斯"] = "中国台湾"
@@ -5602,7 +5602,7 @@ D4:AddRealmData(
                 realms["银翼要塞"] = "中国台湾"
                 realms["阿尔萨斯"] = "中国台湾"
                 realms["风暴之鳞"] = "中国台湾"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["世界之樹"] = "台灣"
                 realms["亞雷戈斯"] = "台灣"
                 realms["克羅之刃"] = "全球"

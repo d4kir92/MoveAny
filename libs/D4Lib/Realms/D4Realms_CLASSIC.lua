@@ -3,9 +3,9 @@
 local _, D4 = ...
 if D4:GetWoWBuild() ~= "CLASSIC" then return end
 D4:AddRealmData(
-    function(realms, region, regions)
+    function(realms, region, regions, locale)
         if region == regions["US"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Anathema"] = "Classic Era"
                 realms["Arcanite Reaper"] = "Classic Era"
                 realms["Arugal"] = "Classic Era"
@@ -58,7 +58,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Seasonal"
                 realms["Windseeker"] = "Classic Era"
                 realms["Yojamba"] = "Classic Era"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Anathema"] = "Classic-Ära"
                 realms["Arcanite Reaper"] = "Classic-Ära"
                 realms["Arugal"] = "Classic-Ära"
@@ -111,7 +111,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Saisonbedingt"
                 realms["Windseeker"] = "Classic-Ära"
                 realms["Yojamba"] = "Classic-Ära"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Anathema"] = "Classic Era"
                 realms["Arcanite Reaper"] = "Classic Era"
                 realms["Arugal"] = "Classic Era"
@@ -164,7 +164,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "De temporada"
                 realms["Windseeker"] = "Classic Era"
                 realms["Yojamba"] = "Classic Era"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Anathema"] = "Ère classique"
                 realms["Arcanite Reaper"] = "Ère classique"
                 realms["Arugal"] = "Ère classique"
@@ -217,7 +217,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Saisonnier"
                 realms["Windseeker"] = "Ère classique"
                 realms["Yojamba"] = "Ère classique"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Anathema"] = "Classic Era"
                 realms["Arcanite Reaper"] = "Classic Era"
                 realms["Arugal"] = "Classic Era"
@@ -270,7 +270,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Stagionale"
                 realms["Windseeker"] = "Classic Era"
                 realms["Yojamba"] = "Classic Era"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["Anathema"] = "클래식 시대"
                 realms["Arcanite Reaper"] = "클래식 시대"
                 realms["Arugal"] = "클래식 시대"
@@ -323,7 +323,7 @@ D4:AddRealmData(
                 realms["해골 바위굴"] = "클래식 시대"
                 realms["혼돈의 화살"] = "시즌"
                 realms["회개 (AU)"] = "시즌"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Anathema"] = "Era Classic"
                 realms["Arcanite Reaper"] = "Era Classic"
                 realms["Arugal"] = "Era Classic"
@@ -376,7 +376,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Sazonal"
                 realms["Windseeker"] = "Era Classic"
                 realms["Yojamba"] = "Era Classic"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Anathema"] = "Classic Era"
                 realms["Arcanite Reaper"] = "Classic Era"
                 realms["Arugal"] = "Classic Era"
@@ -429,7 +429,7 @@ D4:AddRealmData(
                 realms["Одинокий волк"] = "Сезонные"
                 realms["Стрела Хаоса"] = "Сезонные"
                 realms["Удар воина Света"] = "Сезонные"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["伊森迪奥斯"] = "旧世经典服务器（60级）"
                 realms["克罗卡斯"] = "旧世经典服务器（60级）"
                 realms["十字军打击"] = "赛季"
@@ -482,7 +482,7 @@ D4:AddRealmData(
                 realms["雷姆洛斯"] = "旧世经典服务器（60级）"
                 realms["雷霆之怒"] = "旧世经典服务器（60级）"
                 realms["骷髅石"] = "旧世经典服务器（60级）"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["伊森迪奧斯"] = "經典時期"
                 realms["克羅卡斯"] = "經典時期"
                 realms["十字軍聖擊"] = "賽季"
@@ -537,7 +537,7 @@ D4:AddRealmData(
                 realms["骷髏石"] = "經典時期"
             end
         elseif region == regions["EU"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Amnennar"] = "Classic Era"
                 realms["Ashbringer"] = "Classic Era"
                 realms["Auberdine"] = "Classic Era"
@@ -592,7 +592,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Seasonal"
                 realms["Wyrmthalak (RU)"] = "Russian"
                 realms["Zandalar Tribe"] = "Classic Era"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Amnennar"] = "Classic-Ära"
                 realms["Ashbringer"] = "Classic-Ära"
                 realms["Auberdine"] = "Classic-Ära"
@@ -647,7 +647,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Saisonbedingt"
                 realms["Wyrmthalak (RU)"] = "Russisch"
                 realms["Zandalar Tribe"] = "Classic-Ära"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Amnennar"] = "Classic Era"
                 realms["Ashbringer"] = "Classic Era"
                 realms["Auberdine"] = "Classic Era"
@@ -702,7 +702,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "De temporada"
                 realms["Wyrmthalak (RU)"] = "Ruso"
                 realms["Zandalar Tribe"] = "Classic Era"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Amnennar"] = "Ère classique"
                 realms["Ashbringer"] = "Ère classique"
                 realms["Auberdine"] = "Ère classique"
@@ -757,7 +757,7 @@ D4:AddRealmData(
                 realms["Пламегор (RU)"] = "Russe"
                 realms["Рок-Делар (RU)"] = "Russe"
                 realms["Хроми (RU)"] = "Russe"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Amnennar"] = "Classic Era"
                 realms["Ashbringer"] = "Classic Era"
                 realms["Auberdine"] = "Classic Era"
@@ -812,7 +812,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Stagionale"
                 realms["Wyrmthalak (RU)"] = "Russo"
                 realms["Zandalar Tribe"] = "Classic Era"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["Amnennar"] = "클래식 시대"
                 realms["Ashbringer"] = "클래식 시대"
                 realms["Auberdine"] = "클래식 시대"
@@ -867,7 +867,7 @@ D4:AddRealmData(
                 realms["용암 채찍"] = "시즌"
                 realms["혼돈의 화살"] = "시즌"
                 realms["회개 (시즌)"] = "러시아어"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Amnennar"] = "Era Classic"
                 realms["Ashbringer"] = "Era Classic"
                 realms["Auberdine"] = "Era Classic"
@@ -922,7 +922,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Sazonal"
                 realms["Wyrmthalak (RU)"] = "Russo"
                 realms["Zandalar Tribe"] = "Era Classic"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Amnennar"] = "Classic Era"
                 realms["Ashbringer"] = "Classic Era"
                 realms["Auberdine"] = "Classic Era"
@@ -977,7 +977,7 @@ D4:AddRealmData(
                 realms["Удар Тьмы (сезонный)"] = "Русский"
                 realms["Удар воина Света"] = "Сезонные"
                 realms["Хроми (RU)"] = "Русский"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["亚门纳尔"] = "旧世经典服务器（60级）"
                 realms["伦鲁迪洛尔(RU)"] = "俄语"
                 realms["克罗米(RU)"] = "俄语"
@@ -1032,7 +1032,7 @@ D4:AddRealmData(
                 realms["鲁西弗隆"] = "旧世经典服务器（60级）"
                 realms["龙之召唤"] = "旧世经典服务器（60级）"
                 realms["龙牙"] = "旧世经典服务器（60级）"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["亞門納爾"] = "經典時期"
                 realms["克羅米（RU）"] = "俄羅斯"
                 realms["剃刀高地"] = "經典時期"
@@ -1089,7 +1089,7 @@ D4:AddRealmData(
                 realms["龍牙"] = "經典時期"
             end
         elseif region == regions["KR"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Hillsbrad"] = "Classic Era"
                 realms["Iceblood"] = "Classic Era"
                 realms["Lokholar"] = "Classic Era"
@@ -1099,7 +1099,7 @@ D4:AddRealmData(
                 realms["Shimmering Flats"] = "Classic Era"
                 realms["Slip'kik's Savvy"] = "Classic Era"
                 realms["Wild Growth"] = "Seasonal"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Hillsbrad"] = "Classic-Ära"
                 realms["Iceblood"] = "Classic-Ära"
                 realms["Lokholar"] = "Classic-Ära"
@@ -1109,7 +1109,7 @@ D4:AddRealmData(
                 realms["Shimmering Flats"] = "Classic-Ära"
                 realms["Slip'kik's Savvy"] = "Classic-Ära"
                 realms["Wild Growth"] = "Saisonbedingt"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Hillsbrad"] = "Classic Era"
                 realms["Iceblood"] = "Classic Era"
                 realms["Lokholar"] = "Classic Era"
@@ -1119,7 +1119,7 @@ D4:AddRealmData(
                 realms["Shimmering Flats"] = "Classic Era"
                 realms["Slip'kik's Savvy"] = "Classic Era"
                 realms["Wild Growth"] = "De temporada"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Iceblood"] = "Ère classique"
                 realms["Jugeote de Slip’kik"] = "Ère classique"
                 realms["Lokholar"] = "Ère classique"
@@ -1129,7 +1129,7 @@ D4:AddRealmData(
                 realms["Shimmering Flats"] = "Ère classique"
                 realms["Wild Growth"] = "Saisonnier"
                 realms["힐스브래드"] = "Ère classique"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Hillsbrad"] = "Classic Era"
                 realms["Iceblood"] = "Classic Era"
                 realms["Lokholar"] = "Classic Era"
@@ -1139,7 +1139,7 @@ D4:AddRealmData(
                 realms["Shimmering Flats"] = "Classic Era"
                 realms["Slip'kik's Savvy"] = "Classic Era"
                 realms["Wild Growth"] = "Stagionale"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["고독한 늑대"] = "시즌"
                 realms["급속 성장"] = "시즌"
                 realms["라그나로스"] = "클래식 시대"
@@ -1149,7 +1149,7 @@ D4:AddRealmData(
                 realms["슬립킥의 손재주"] = "클래식 시대"
                 realms["얼음피"] = "클래식 시대"
                 realms["힐스브래드"] = "클래식 시대"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Hillsbrad"] = "Era Classic"
                 realms["Iceblood"] = "Era Classic"
                 realms["Lokholar"] = "Era Classic"
@@ -1159,7 +1159,7 @@ D4:AddRealmData(
                 realms["Ragnaros"] = "Era Classic"
                 realms["Shimmering Flats"] = "Era Classic"
                 realms["Wild Growth"] = "Sazonal"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Hillsbrad"] = "Classic Era"
                 realms["Iceblood"] = "Classic Era"
                 realms["Lokholar"] = "Classic Era"
@@ -1169,7 +1169,7 @@ D4:AddRealmData(
                 realms["Slip'kik's Savvy"] = "Classic Era"
                 realms["Буйный рост"] = "Сезонные"
                 realms["Одинокий волк"] = "Сезонные"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["冰血"] = "旧世经典服务器（60级）"
                 realms["希尔斯布莱德"] = "旧世经典服务器（60级）"
                 realms["拉格纳罗斯"] = "旧世经典服务器（60级）"
@@ -1179,7 +1179,7 @@ D4:AddRealmData(
                 realms["荣耀决斗"] = "专家模式"
                 realms["野性成长"] = "赛季"
                 realms["闪光平原"] = "旧世经典服务器（60级）"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["冰血"] = "經典時期"
                 realms["孤狼"] = "賽季"
                 realms["希爾斯布萊德"] = "經典時期"
@@ -1191,7 +1191,7 @@ D4:AddRealmData(
                 realms["閃光平原"] = "經典時期"
             end
         elseif region == regions["TW"] then
-            if GetLocale() == "enUS" then
+            if locale == "enUS" then
                 realms["Crusader Strike"] = "Seasonal"
                 realms["Ivus"] = "Classic Era"
                 realms["Living Flame"] = "Seasonal"
@@ -1201,7 +1201,7 @@ D4:AddRealmData(
                 realms["Teremus"] = "Hardcore"
                 realms["Voidwalker"] = "Hardcore"
                 realms["Wild Growth"] = "Seasonal"
-            elseif GetLocale() == "deDE" then
+            elseif locale == "deDE" then
                 realms["Crusader Strike"] = "Saisonbedingt"
                 realms["Living Flame"] = "Saisonbedingt"
                 realms["Lone Wolf"] = "Saisonbedingt"
@@ -1211,7 +1211,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Saisonbedingt"
                 realms["伊弗斯"] = "Classic-Ära"
                 realms["瑪拉頓"] = "Classic-Ära"
-            elseif GetLocale() == "esES" then
+            elseif locale == "esES" then
                 realms["Crusader Strike"] = "De temporada"
                 realms["Ivus"] = "Classic Era"
                 realms["Living Flame"] = "De temporada"
@@ -1221,7 +1221,7 @@ D4:AddRealmData(
                 realms["Teremus"] = "Hardcore"
                 realms["Voidwalker"] = "Hardcore"
                 realms["Wild Growth"] = "De temporada"
-            elseif GetLocale() == "frFR" then
+            elseif locale == "frFR" then
                 realms["Crusader Strike"] = "Saisonnier"
                 realms["Jugeote de Slip’kik"] = "Ère classique"
                 realms["Living Flame"] = "Saisonnier"
@@ -1231,7 +1231,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Saisonnier"
                 realms["伊弗斯"] = "Ère classique"
                 realms["瑪拉頓"] = "Ère classique"
-            elseif GetLocale() == "itIT" then
+            elseif locale == "itIT" then
                 realms["Crusader Strike"] = "Stagionale"
                 realms["Living Flame"] = "Stagionale"
                 realms["Lone Wolf"] = "Stagionale"
@@ -1241,7 +1241,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Stagionale"
                 realms["伊弗斯"] = "Classic Era"
                 realms["瑪拉頓"] = "Classic Era"
-            elseif GetLocale() == "koKR" then
+            elseif locale == "koKR" then
                 realms["Ivus"] = "클래식 시대"
                 realms["Maraudon"] = "클래식 시대"
                 realms["고독한 늑대"] = "시즌"
@@ -1251,7 +1251,7 @@ D4:AddRealmData(
                 realms["성전사의 일격"] = "시즌"
                 realms["슬립킥의 손재주"] = "클래식 시대"
                 realms["테레무스"] = "하드코어"
-            elseif GetLocale() == "ptBR" then
+            elseif locale == "ptBR" then
                 realms["Crusader Strike"] = "Sazonal"
                 realms["Ivus"] = "Era Classic"
                 realms["Living Flame"] = "Sazonal"
@@ -1261,7 +1261,7 @@ D4:AddRealmData(
                 realms["Teremus"] = "Hardcore"
                 realms["Voidwalker"] = "Hardcore"
                 realms["Wild Growth"] = "Sazonal"
-            elseif GetLocale() == "ruRU" then
+            elseif locale == "ruRU" then
                 realms["Crusader Strike"] = "Сезонные"
                 realms["Living Flame"] = "Сезонные"
                 realms["Lone Wolf"] = "Сезонные"
@@ -1271,7 +1271,7 @@ D4:AddRealmData(
                 realms["Wild Growth"] = "Сезонные"
                 realms["伊弗斯"] = "Classic Era"
                 realms["瑪拉頓"] = "Classic Era"
-            elseif GetLocale() == "zhCN" then
+            elseif locale == "zhCN" then
                 realms["伊弗斯"] = "旧世经典服务器（60级）"
                 realms["十字军打击"] = "赛季"
                 realms["斯里基克的机智"] = "旧世经典服务器（60级）"
@@ -1281,7 +1281,7 @@ D4:AddRealmData(
                 realms["玛拉顿"] = "旧世经典服务器（60级）"
                 realms["虚空行者"] = "专家模式"
                 realms["野性成长"] = "赛季"
-            elseif GetLocale() == "zhTW" then
+            elseif locale == "zhTW" then
                 realms["伊弗斯"] = "經典時期"
                 realms["十字軍聖擊"] = "賽季"
                 realms["孤狼"] = "賽季"

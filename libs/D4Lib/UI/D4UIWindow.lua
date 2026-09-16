@@ -100,6 +100,13 @@ function UI.WindowMixin:UpdateBodyLayout()
     self.scrollFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", self.scrollInset.right, self.scrollInset.bottom + bottomExtra)
 end
 
+function UI.WindowMixin:GetContentOffset()
+    local left = 0
+    if self.scrollInset then left = self.scrollInset.left end
+
+    return left - LEFT_INSET
+end
+
 function UI.WindowMixin:AddHeader(tab)
     tab = tab or {}
     if self.header == nil then self.header = CreateFrame("Frame", D4:GetName(self, true) .. "Header", self) end
@@ -170,12 +177,29 @@ local function MakeResizable(win, name, tab)
     grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
     grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
     grip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-    grip:SetScript("OnMouseDown", function() win:StartSizing("BOTTOMRIGHT") end)
+    grip:SetScript(
+        "OnMouseDown",
+        function()
+            local left = win:GetLeft()
+            local top = win:GetTop()
+            if left and top then
+                win:ClearAllPoints()
+                win:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
+            end
+
+            win:StartSizing("BOTTOMRIGHT")
+        end
+    )
+
     grip:SetScript(
         "OnMouseUp",
         function()
             win:StopMovingOrSizing()
             if tab.onResize then tab.onResize(math.floor(win:GetWidth() + 0.5), math.floor(win:GetHeight() + 0.5)) end
+            if tab.onMove then
+                local p1, _, p3, p4, p5 = win:GetPoint()
+                tab.onMove(p1, p3, p4, p5)
+            end
         end
     )
 
@@ -224,6 +248,8 @@ function D4:CreateUIWindow(tab)
     win:SetSize(width, height)
     win:SetPoint(unpack(tab.pTab or {"CENTER"}))
     win:SetFrameStrata("HIGH")
+    win:SetToplevel(true)
+    win:HookScript("OnShow", function(sel) sel:Raise() end)
     win:SetMovable(true)
     win:EnableMouse(true)
     win:RegisterForDrag("LeftButton")
