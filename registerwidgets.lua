@@ -724,7 +724,7 @@ local function AddAlphaOptions(win, name)
 	AddEleCategory(win, "ALPHA")
 	local apply = function() MoveAny:SafeUpdateAlphas("MenuOptions") end
 	AddEleSlider(win, name, "ALPHAINCOMBAT", 1, 0, 1, 0.1, 1, apply)
-	if MoveAny:GetWoWBuildNr() < 120000 then
+	if MoveAny:IsFullHealthAlphaSupported() then
 		win:AddCheckbox({
 			["label"] = "LID_FULLHPENABLED",
 			["search"] = "FULLHPENABLED",

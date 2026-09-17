@@ -174,9 +174,20 @@ function MoveAny:InitAlphaResting()
     MoveAny:OnEvent(alphaFrameResting, function(sel, event, ...) MoveAny:UpdateAlphaResting() end, "alphaFrameResting")
 end
 
+function MoveAny:IsFullHealthAlphaSupported()
+    if MoveAny:GetWoWBuildNr() >= 120000 then return false end
+    if MoveAny:IsCamelot() then return false end
+    return true
+end
+
 function MoveAny:UpdateAlphaFullHealth()
     if incombat then return end
-    local newFullHP = UnitHealth("player") >= UnitHealthMax("player")
+    if not MoveAny:IsFullHealthAlphaSupported() then return end
+    local hp = UnitHealth("player")
+    local hpMax = UnitHealthMax("player")
+    if hp == nil or hpMax == nil then return end
+    if MoveAny:IsSecret(hp) or MoveAny:IsSecret(hpMax) then return end
+    local newFullHP = hp >= hpMax
     if fullHP ~= newFullHP then
         fullHP = newFullHP
         MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().FULLHEALTH)
@@ -184,7 +195,7 @@ function MoveAny:UpdateAlphaFullHealth()
 end
 
 function MoveAny:InitAlphaFullHealth()
-    if MoveAny:GetWoWBuildNr() >= 120000 then return end
+    if not MoveAny:IsFullHealthAlphaSupported() then return end
     local alphaFrameHealth = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameHealth, "UNIT_HEALTH", "player")
     MoveAny:OnEvent(alphaFrameHealth, function(sel, event, ...) MoveAny:UpdateAlphaFullHealth() end, "alphaFrameHealth")
@@ -278,7 +289,7 @@ function MoveAny:UpdateAlphaZone()
     MoveAny:InvalidateEleAlphaCache()
     MoveAny:UpdateAlphaCombat(InCombatLockdown())
     MoveAny:UpdateAlphaResting()
-    if MoveAny:GetWoWBuildNr() < 120000 then MoveAny:UpdateAlphaFullHealth() end
+    if MoveAny:IsFullHealthAlphaSupported() then MoveAny:UpdateAlphaFullHealth() end
     MoveAny:UpdateAlphaBonusBar()
     MoveAny:UpdateAlphaAura()
     MoveAny:UpdateAlphaVehicle()
