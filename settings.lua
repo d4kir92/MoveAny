@@ -728,7 +728,7 @@ function MoveAny:InitMALock()
 		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
 		AddCategory("CLASSSPECIFIC", 1, true)
 		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then AddCheckBox("RUNEFRAME", false) end
-		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then AddCheckBox("TOTEMBAR", false) end
+		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA" or MoveAny:IsCamelot()) and class == "SHAMAN" then AddCheckBox("TOTEMBAR", false) end
 		if MoveAny:IsValidFrame(WarlockPowerFrame) and class == "WARLOCK" then AddCheckBox("WARLOCKPOWERFRAME", false) end
 		-- CATA
 		if MoveAny:IsValidFrame(ShardBarFrame) and class == "WARLOCK" then AddCheckBox("SHARDBARFRAME", false) end
@@ -1692,7 +1692,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.3")
+	MoveAny:SetVersion(135994, "1.12.4")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2924,10 +2924,12 @@ function MoveAny:LoadAddon()
 			MA_RightEndCap.tex:SetAllPoints(MA_RightEndCap)
 			local factionGroup = UnitFactionGroup("player")
 			if MainActionBar and MainActionBar.EndCaps then
-				MA_LeftEndCap:SetSize(MainActionBar.EndCaps.LeftEndCap:GetSize())
-				MA_LeftEndCap.tex:SetTexCoord(MainActionBar.EndCaps.LeftEndCap:GetTexCoord())
-				MA_RightEndCap:SetSize(MainActionBar.EndCaps.RightEndCap:GetSize())
-				MA_RightEndCap.tex:SetTexCoord(MainActionBar.EndCaps.RightEndCap:GetTexCoord())
+				local leftCap = MainActionBar.EndCaps.LeftEndCap
+				local rightCap = MainActionBar.EndCaps.RightEndCap
+				MA_LeftEndCap:SetSize(leftCap:GetSize())
+				MA_LeftEndCap.tex:SetTexCoord((leftCap.Texture or leftCap):GetTexCoord())
+				MA_RightEndCap:SetSize(rightCap:GetSize())
+				MA_RightEndCap.tex:SetTexCoord((rightCap.Texture or rightCap):GetTexCoord())
 				if factionGroup and factionGroup ~= "Neutral" then
 					if factionGroup == "Alliance" then
 						MA_LeftEndCap.tex:SetAtlas("ui-hud-actionbar-gryphon-left")
@@ -4686,7 +4688,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA") and class == "SHAMAN" then
+	if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA" or MoveAny:IsCamelot()) and class == "SHAMAN" then
 		if MultiCastActionBarFrame then MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel()) end
 		if MoveAny:IsEnabled("TOTEMBAR", false) then
 			MoveAny:RegisterWidget({
