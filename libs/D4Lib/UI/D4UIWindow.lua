@@ -288,6 +288,9 @@ function D4:CreateUIWindow(tab)
     win.setCollapsed = tab.setCollapsed
     if tab.resizable ~= false then MakeResizable(win, name, tab) end
     win:HookScript("OnHide", function() UI:CloseDropdowns() end)
+    local escClose = tab.escClose
+    if escClose == nil then escClose = tab.onClose == nil end
+    if escClose and UISpecialFrames and not tContains(UISpecialFrames, name) then tinsert(UISpecialFrames, name) end
     win:Hide()
 
     return win

@@ -1,5 +1,5 @@
 -- By D4KiR
--- REALMS FROM: 11.09.2026
+-- REALMS FROM: 17.09.2026
 local _, D4 = ...
 if D4:GetWoWBuild() ~= "MISTS" then return end
 D4:AddRealmData(

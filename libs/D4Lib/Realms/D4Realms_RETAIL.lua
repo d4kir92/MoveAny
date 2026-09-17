@@ -1,5 +1,5 @@
 -- By D4KiR
--- REALMS FROM: 11.09.2026
+-- REALMS FROM: 17.09.2026
 local _, D4 = ...
 if D4:GetWoWBuild() ~= "RETAIL" then return end
 D4:AddRealmData(
@@ -337,12 +337,12 @@ D4:AddRealmData(
                 realms["Duskwood"] = "Vereinigte Staaten"
                 realms["Earthen Ring"] = "Vereinigte Staaten"
                 realms["Echo Isles"] = "Vereinigte Staaten"
-                realms["Eitrigg"] = "Vereinigte Staaten"
                 realms["Eldre'Thalas"] = "Vereinigte Staaten"
                 realms["Elune"] = "Vereinigte Staaten"
                 realms["Emerald Dream"] = "Vereinigte Staaten"
                 realms["Eonar"] = "Vereinigte Staaten"
                 realms["Eredar"] = "Vereinigte Staaten"
+                realms["Etrigg"] = "Vereinigte Staaten"
                 realms["Executus"] = "Vereinigte Staaten"
                 realms["Exodar"] = "Vereinigte Staaten"
                 realms["Farstriders"] = "Vereinigte Staaten"
@@ -2844,13 +2844,13 @@ D4:AddRealmData(
                 realms["Durotan"] = "Deutsch"
                 realms["Earthen Ring"] = "Englisch"
                 realms["Echsenkessel"] = "Deutsch"
-                realms["Eitrigg"] = "Französisch"
                 realms["Eldre'Thalas"] = "Französisch"
                 realms["Elune"] = "Französisch"
                 realms["Emerald Dream"] = "Englisch"
                 realms["Emeriss"] = "Englisch"
                 realms["Eonar"] = "Englisch"
                 realms["Eredar"] = "Deutsch"
+                realms["Etrigg"] = "Französisch"
                 realms["Eversong"] = "Russisch"
                 realms["Executus"] = "Englisch"
                 realms["Exodar"] = "Spanisch"

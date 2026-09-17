@@ -305,9 +305,12 @@ win:AddOrderList({
 
 `D4:CreateUIWindow` options: `name`, `title`, `width`, `height`, `parent`, `pTab`,
 `templates`, `resizable`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`, `onResize`,
-`onMove(point, relativePoint, x, y)`, `onClose(win)`, `getCollapsed(key)`,
+`onMove(point, relativePoint, x, y)`, `onClose(win)`, `escClose`, `getCollapsed(key)`,
 `setCollapsed(key, collapsed)`. The window is movable, scrollable
 and starts hidden. `win:Toggle()` shows or hides it.
+
+ESC closes the window (it is added to `UISpecialFrames`). ESC only calls `Hide()`, so
+windows with `onClose` are left out by default; pass `escClose = true` or `false` to override.
 
 Building a long list one `Add*` at a time re-lays out the whole window every time.
 Wrap the build in `win:SuspendLayout()` / `win:ResumeLayout()` to do it once at the end.
