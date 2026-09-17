@@ -19,6 +19,12 @@ local regions = {
     ["TW"] = 4,
 }
 
+local regionsWithoutRealms = {
+    [5] = true,
+    [72] = true,
+    [90] = true,
+}
+
 local realmLocales = {"enUS", "deDE", "esES", "esMX", "frFR", "itIT", "koKR", "ptBR", "ruRU", "zhCN", "zhTW"}
 
 local function IsUkrainianLetters(str)
@@ -42,10 +48,10 @@ function D4:AddRealmData(func)
 end
 
 function D4:MissingRealmRegion(reg)
-    if reg == 5 then return end
+    if regionsWithoutRealms[reg] then return end
+    if D4:IsCamelot() then return end
     if missingRegionOnce == false then return end
     missingRegionOnce = false
-    if reg == 72 then return end
     D4:MSG("[D4] Missing REGION", reg)
 end
 
