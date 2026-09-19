@@ -4,6 +4,7 @@ local ma_setup = {}
 local ma_enablemouse = {}
 local ma_scri = {}
 local ma_setscale_ele = {}
+local ma_setlayer_ele = {}
 local framelevel = 1100
 local btnsize = 24
 local ses = {}
@@ -133,6 +134,53 @@ local function ApplyReload()
 	else
 		ReloadUI()
 	end
+end
+
+local eleBaseLayer = {}
+function MoveAny:StoreEleBaseLayer(name, frame)
+	if frame == nil or frame.GetFrameStrata == nil then return end
+	if eleBaseLayer[name] ~= nil then return end
+	local strata = frame:GetFrameStrata()
+	local level = frame:GetFrameLevel()
+	if MoveAny:IsSecret(strata) or MoveAny:IsSecret(level) then return end
+	if type(strata) ~= "string" or type(level) ~= "number" then return end
+	eleBaseLayer[name] = {strata, level}
+end
+
+function MoveAny:ApplyEleLayer(name, frame, restore)
+	frame = frame or MoveAny:GetFrameByName(name)
+	if frame == nil or frame.SetFrameStrata == nil then return end
+	if ma_setlayer_ele[frame] then return end
+	local strata, level = MoveAny:GetEleLayer(name)
+	if strata == "" and level <= 0 and not restore then return end
+	MoveAny:SafeExec(frame, function()
+		ma_setlayer_ele[frame] = true
+		local st, lvl = MoveAny:GetEleLayer(name)
+		local base = eleBaseLayer[name]
+		if not restore then base = nil end
+		if st == "" then
+			st = nil
+			if base then st = base[1] end
+		end
+
+		if lvl <= 0 then
+			lvl = nil
+			if base then lvl = base[2] end
+		end
+
+		local dragframe = MoveAny:GetDragFromName(name)
+		if st then
+			frame:SetFrameStrata(st)
+			if dragframe then dragframe:SetFrameStrata(st) end
+		end
+
+		if lvl then
+			frame:SetFrameLevel(lvl)
+			if dragframe then dragframe:SetFrameLevel(math.max(99, lvl + 1)) end
+		end
+
+		ma_setlayer_ele[frame] = false
+	end, "ApplyEleLayer " .. tostring(name))
 end
 
 local ARROW_UP = "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up"
@@ -385,10 +433,53 @@ local function AddDurationOptions(win, name, prefix, refresh)
 	AddEleColorPicker(win, name, prefix, apply)
 end
 
+local function AddEleLayer(win, name, frame)
+	local strata, level = MoveAny:GetEleLayer(name)
+	local choices = {
+		{
+			["value"] = "",
+			["label"] = "LID_DEFAULT"
+		},
+	}
+
+	for _, v in ipairs(MoveAny.EleStratas) do
+		tinsert(choices, {
+			["value"] = v,
+			["label"] = v
+		})
+	end
+
+	win:AddDropdown({
+		["label"] = "LID_STRATA",
+		["search"] = "STRATA",
+		["value"] = strata,
+		["choices"] = choices,
+		["func"] = function(value)
+			MoveAny:SetEleLayer(name, value, nil)
+			MoveAny:ApplyEleLayer(name, frame, true)
+		end,
+	})
+
+	win:AddSlider({
+		["label"] = MoveAny:Trans("LID_FRAMELEVEL"),
+		["search"] = "FRAMELEVEL",
+		["value"] = level,
+		["min"] = 0,
+		["max"] = MoveAny.EleFrameLevelMax,
+		["step"] = 1,
+		["decimals"] = 0,
+		["func"] = function(value)
+			MoveAny:SetEleLayer(name, nil, value)
+			MoveAny:ApplyEleLayer(name, frame, true)
+		end,
+	})
+end
+
 local function AddGeneralOptions(win, name, optionFrame)
 	AddEleCategory(win, "GENERAL")
 	win.elePos = MoveAny:AddElePosition(win, name)
 	win.eleScale = MoveAny:AddEleScale(win, name)
+	AddEleLayer(win, name, optionFrame)
 	local clickthrough, lockparent
 	local function UpdateHideDeps(hidden)
 		for _, cb in pairs({clickthrough, lockparent}) do
@@ -1505,6 +1596,12 @@ function MoveAny:RegisterWidget(tab)
 		ma_setscale_ele[sel] = false
 	end)
 
+	if frame.SetFrameStrata then
+		MoveAny:StoreEleBaseLayer(name, frame)
+		hooksecurefunc(frame, "SetFrameStrata", function(sel) MoveAny:ApplyEleLayer(name, sel) end)
+		hooksecurefunc(frame, "SetFrameLevel", function(sel) MoveAny:ApplyEleLayer(name, sel) end)
+	end
+
 	hooksecurefunc(frame, "SetSize", function(sel, w, h)
 		if InCombatLockdown() and sel:IsProtected() then return false end
 		local isToSmall = false
@@ -1531,6 +1628,7 @@ function MoveAny:RegisterWidget(tab)
 		if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then frame:SetScale(MoveAny:GetEleScale(name)) end
 	end, "RegisterWidget SetScale " .. tostring(name))
 
+	MoveAny:ApplyEleLayer(name, frame)
 	local dragframe = MoveAny:GetDragFromName(name)
 	dragframe:SetSize(sw, sh)
 	MoveAny:SafeAnchorDrag(dragframe, frame, posx, posy)

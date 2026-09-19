@@ -5,6 +5,7 @@ local framePointCache = {}
 local frameScaleCache = {}
 local elePointCache = {}
 local eleScaleCache = {}
+local eleLayerCache = {}
 function MoveAny:DEBUG()
 	return MADEBUG
 end
@@ -50,6 +51,7 @@ function MoveAny:SetCP(name)
 	frameScaleCache = {}
 	elePointCache = {}
 	eleScaleCache = {}
+	eleLayerCache = {}
 end
 
 function MoveAny:GetValidProfileName(name)
@@ -397,7 +399,7 @@ function MoveAny:SetEleOption(element, key, value)
 	end
 
 	local ignoreReload = false
-	if string.find(key, "ALPHA", 1, true) or string.find(key, "DURATION", 1, true) or string.find(key, "BUFFCOUNT", 1, true) or key == "Hide" then ignoreReload = true end
+	if string.find(key, "ALPHA", 1, true) or string.find(key, "DURATION", 1, true) or string.find(key, "BUFFCOUNT", 1, true) or key == "Hide" or key == "STRATA" or key == "FRAMELEVEL" then ignoreReload = true end
 	MoveAny:CheckDB("SetEleOption")
 	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
@@ -495,6 +497,7 @@ end
 function MoveAny:ResetElement(name)
 	elePointCache[name] = nil
 	eleScaleCache[name] = nil
+	eleLayerCache[name] = nil
 	MoveAny:CheckDB("ResetElement")
 	if MoveAny:GetTab() and MoveAny:GetTab()["ELES"] then
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
@@ -566,6 +569,32 @@ function MoveAny:SetEleScale(key, scale)
 	end
 
 	if key ~= "MALock" then MoveAny:EnableSave("SetEleScale", key, true, false, true) end
+end
+
+MoveAny.EleStratas = {"BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG"}
+MoveAny.EleFrameLevelMax = 100
+local validStrata = {}
+for _, v in ipairs(MoveAny.EleStratas) do
+	validStrata[v] = true
+end
+
+function MoveAny:GetEleLayer(key)
+	local c = eleLayerCache[key]
+	if c ~= nil then return c[1], c[2] end
+	local strata = MoveAny:GetEleOption(key, "STRATA", "", "GetEleLayer")
+	if type(strata) ~= "string" or not validStrata[strata] then strata = "" end
+	local level = tonumber(MoveAny:GetEleOption(key, "FRAMELEVEL", 0, "GetEleLayer")) or 0
+	level = math.floor(level)
+	if level < 0 then level = 0 end
+	if level > MoveAny.EleFrameLevelMax then level = MoveAny.EleFrameLevelMax end
+	eleLayerCache[key] = {strata, level}
+	return strata, level
+end
+
+function MoveAny:SetEleLayer(key, strata, level)
+	eleLayerCache[key] = nil
+	if strata ~= nil then MoveAny:SetEleOption(key, "STRATA", strata) end
+	if level ~= nil then MoveAny:SetEleOption(key, "FRAMELEVEL", level) end
 end
 
 function MoveAny:GetFramePoint(key)
