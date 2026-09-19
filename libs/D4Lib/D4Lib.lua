@@ -1026,8 +1026,54 @@ function D4:GetTalentIcons()
     return icons
 end
 
+local function GetCamelotTalentInfo()
+    local specInfo = _G["C_SpecializationInfo"]
+    if specInfo == nil or specInfo.GetSpecializationInfo == nil then return nil, nil end
+    local num = nil
+    if specInfo.GetNumSpecializations then
+        num = specInfo.GetNumSpecializations()
+    elseif _G["GetNumSpecializations"] then
+        num = _G["GetNumSpecializations"]()
+    end
+
+    num = num or 3
+    local specid, icon, best = nil, nil, 0
+    for i = 1, num do
+        local ok, _, _, _, tex, _, _, points = pcall(specInfo.GetSpecializationInfo, {["specializationIndex"] = i})
+        if ok and points and points > best then
+            best = points
+            specid = i
+            icon = tex
+        end
+    end
+
+    if specid then return specid, icon end
+    if specInfo.GetSpecialization then
+        local ok, active = pcall(specInfo.GetSpecialization)
+        if ok and active then
+            local ok2, _, _, _, tex = pcall(specInfo.GetSpecializationInfo, {["specializationIndex"] = active})
+            if ok2 then return active, tex end
+            return active, nil
+        end
+    end
+
+    return nil, nil
+end
+
 function D4:GetTalentInfo()
     local specid, icon
+    if isCamelot then
+        specid, icon = GetCamelotTalentInfo()
+        if specid then
+            if icon == nil then
+                local _, class = UnitClass("PLAYER")
+                icon = D4:GetSpecIcon(class, specid)
+            end
+
+            return specid, icon
+        end
+    end
+
     if GetSpecialization and GetSpecialization() then
         specid = GetSpecialization()
         if GetSpecializationInfo then _, _, _, icon = GetSpecializationInfo(specid) end
