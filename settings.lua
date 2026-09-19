@@ -1692,7 +1692,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.7")
+	MoveAny:SetVersion(135994, "1.12.8")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -4834,7 +4834,7 @@ function MoveAny:LoadAddon()
 	if MoveAny.InitPartyFrame then MoveAny:InitPartyFrame() end
 	if MoveAny.MoveFrames then MoveAny:MoveFrames() end
 	if MoveAny.InitMAVehicleSeatIndicator then MoveAny:InitMAVehicleSeatIndicator() end
-	if WorldMapFrame and not MoveAny:IsAddOnLoaded("Leatrix_Maps") then
+	if WorldMapFrame then
 		if WorldMapFrame.Minimize then
 			hooksecurefunc(WorldMapFrame, "Minimize", function(sel) sel:SetScale(1) end)
 			hooksecurefunc(WorldMapFrame, "Maximize", function(sel) sel:SetScale(1) end)

@@ -2,7 +2,7 @@ local _, MoveAny = ...
 local MAFRAMES = {"HouseEditorFrame.StoragePanel", "TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "PVPParentFrame", "HouseListFrame", "WatchFrameAutoQuestPopUp1", "GuildControlUI", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "DragonflightUIProfessionFrame", "LFGListInviteDialog", "LFDRoleCheckPopup", "TaxiFrame", "BattlefieldFrame", "ChatConfigFrame", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ItemRefTooltip", "ReforgingFrameInvisibleButton", "ReforgingFrame", "WeakAurasOptions", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ModelPreviewFrame", "ScrappingMachineFrame", "TabardFrame", "ArchaeologyFrame", "QuestLogDetailFrame", "InspectRecipeFrame", "SettingsPanel", "SplashFrame", "InterfaceOptionsFrame", "QuickKeybindFrame", "VideoOptionsFrame", "KeyBindingFrame", "MacroFrame", "AddonList", "ContainerFrameCombinedBags", "LFGParentFrame", "CharacterFrame", "InspectFrame", "SpellBookFrame", "PlayerTalentFrame", "ClassTalentFrame", "FriendsFrame", "HelpFrame", "TradeFrame", "TradeSkillFrame", "CraftFrame", "QuestLogFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "GossipFrame", "MerchantFrame", "PetStableFrame", "QuestFrame", "ClassTrainerFrame", "AchievementFrame", "PVEFrame", "EncounterJournal", "WeeklyRewardsFrame", "BankFrame", "WardrobeFrame", "DressUpFrame", "OpenMailFrame", "AuctionHouseFrame", "AuctionFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "WorldStateScoreFrame", "ItemTextFrame", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CollectionsJournal", "CovenantRenownFrame", "ChallengesKeystoneFrame", "ScriptErrorsFrame", "CalendarFrame", "TimeManagerFrame", "GuildBankFrame", "ItemSocketingFrame", "BlackMarketFrame", "QuestLogPopupDetailFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame", "ChannelFrame",}
 local MAFRAMESIGNORECLAMP = {}
 MAFRAMESIGNORECLAMP["TEST"] = true
-if not MoveAny:IsAddOnLoaded("Leatrix_Maps") then tinsert(MAFRAMES, "WorldMapFrame") end
+tinsert(MAFRAMES, "WorldMapFrame")
 if MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then tinsert(MAFRAMES, "PVPFrame") end
 tinsert(MAFRAMES, "GameMenuFrame")
 tinsert(MAFRAMES, "PVPReadyDialog")
@@ -258,7 +258,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	if MoveAny:Loaded("UpdateMoveFrames") and MoveAny:IsEnabled("MOVEFRAMES", true) then
 		if once then
 			once = false
-			if WorldMapFrame and not MoveAny:IsAddOnLoaded("Leatrix_Maps") then
+			if WorldMapFrame then
 				MoveAny:SetClampedToScreen(WorldMapFrame, true, "UpdateMoveFrames 3")
 				local hookedWorldMap = false
 				local hookedWorldMapTitle = false
