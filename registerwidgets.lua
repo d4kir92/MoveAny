@@ -136,6 +136,17 @@ local function ApplyReload()
 	end
 end
 
+local DRAG_LEVEL_MIN = 120
+local DRAG_LEVEL_MAX = 220
+function MoveAny:UpdateDragLevel(dragframe)
+	if dragframe == nil or dragframe.SetFrameLevel == nil then return end
+	local w = dragframe:GetWidth() or 1
+	local h = dragframe:GetHeight() or 1
+	local area = w * h
+	if area < 1 then area = 1 end
+	dragframe:SetFrameLevel(MoveAny:MClamp(DRAG_LEVEL_MAX - math.floor(math.sqrt(area) / 4), DRAG_LEVEL_MIN, DRAG_LEVEL_MAX))
+end
+
 local eleBaseLayer = {}
 function MoveAny:StoreEleBaseLayer(name, frame)
 	if frame == nil or frame.GetFrameStrata == nil then return end
@@ -174,10 +185,7 @@ function MoveAny:ApplyEleLayer(name, frame, restore)
 			if dragframe then dragframe:SetFrameStrata(st) end
 		end
 
-		if lvl then
-			frame:SetFrameLevel(lvl)
-			if dragframe then dragframe:SetFrameLevel(math.max(99, lvl + 1)) end
-		end
+		if lvl then frame:SetFrameLevel(lvl) end
 
 		ma_setlayer_ele[frame] = false
 	end, "ApplyEleLayer " .. tostring(name))
@@ -1220,7 +1228,6 @@ function MoveAny:RegisterWidget(tab)
 		dragframe.maName = name
 		MoveAny:SetClampedToScreen(dragframe, true, "RegisterWidget 1")
 		dragframe:SetFrameStrata("MEDIUM")
-		dragframe:SetFrameLevel(99)
 		dragframe:Hide()
 		if MoveAny:GetEleSize(name) then
 			dragframe:SetSize(MoveAny:GetEleSize(name))
@@ -1228,8 +1235,9 @@ function MoveAny:RegisterWidget(tab)
 			dragframe:SetSize(100, 100)
 		end
 
+		hooksecurefunc(dragframe, "SetSize", function(sel) MoveAny:UpdateDragLevel(sel) end)
+		MoveAny:UpdateDragLevel(dragframe)
 		MoveAny:SafeAnchorDrag(dragframe, frame or UIParent, 0, 0)
-		dragframe:SetToplevel(true)
 		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
 		dragframe.t:SetAllPoints(dragframe)
 		if dragframe.t.SetColorTexture then
