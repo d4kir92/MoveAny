@@ -43,10 +43,10 @@ jobs:
         with:
           args: -g retail -w 0
 
-      #- name: Package and release for Forever
-      #  uses: BigWigsMods/packager@master
-      #  with:
-      #    args: -g camelot -w 0
+      - name: Package and release for Forever
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g camelot -w 0
 
       - name: Package and release for Mists Classic
         uses: BigWigsMods/packager@master
