@@ -433,7 +433,8 @@ local function AddDurationOptions(win, name, prefix, refresh)
 	AddEleColorPicker(win, name, prefix, apply)
 end
 
-local function AddEleLayer(win, name, frame)
+local function AddLayerOptions(win, name, frame)
+	AddEleCategory(win, "LAYER")
 	local strata, level = MoveAny:GetEleLayer(name)
 	local choices = {
 		{
@@ -479,7 +480,6 @@ local function AddGeneralOptions(win, name, optionFrame)
 	AddEleCategory(win, "GENERAL")
 	win.elePos = MoveAny:AddElePosition(win, name)
 	win.eleScale = MoveAny:AddEleScale(win, name)
-	AddEleLayer(win, name, optionFrame)
 	local clickthrough, lockparent
 	local function UpdateHideDeps(hidden)
 		for _, cb in pairs({clickthrough, lockparent}) do
@@ -847,6 +847,7 @@ function MoveAny:MenuOptions(win, frame)
 	local opts = MoveAny:GetEleOptions(name, "MenuOptions")
 	win:SuspendLayout()
 	AddGeneralOptions(win, name, optionFrame)
+	AddLayerOptions(win, name, optionFrame)
 	AddAlphaOptions(win, name)
 	if string.find(name, "MAActionBar") or string.find(name, "MultiBar") or name == "MainActionBar" or name == "MainMenuBar" or name == "MAMenuBar" or name == "PetActionBar" or name == "MAPetBar" or name == "StanceBarAnchor" then AddActionBarOptions(win, name, opts, frame, optionFrame) end
 	if string.find(name, "MABuffBar") or string.find(name, "BuffFrame") or string.find(name, "BuffMover") then AddAuraOptions(win, name, "BUFFS", "MABUFF", "MABuffBar", RefreshBuffs) end
