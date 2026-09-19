@@ -138,13 +138,19 @@ end
 
 local DRAG_LEVEL_MIN = 120
 local DRAG_LEVEL_MAX = 220
+local DRAG_LEVEL_SELECTED = 240
 function MoveAny:UpdateDragLevel(dragframe)
 	if dragframe == nil or dragframe.SetFrameLevel == nil then return end
+	if dragframe == MACurrentEle then
+		dragframe:SetFrameLevel(DRAG_LEVEL_SELECTED)
+		return
+	end
+
 	local w = dragframe:GetWidth() or 1
 	local h = dragframe:GetHeight() or 1
 	local area = w * h
 	if area < 1 then area = 1 end
-	dragframe:SetFrameLevel(MoveAny:MClamp(DRAG_LEVEL_MAX - math.floor(math.sqrt(area) / 4), DRAG_LEVEL_MIN, DRAG_LEVEL_MAX))
+	dragframe:SetFrameLevel(MoveAny:MClamp(DRAG_LEVEL_MAX - math.floor(math.sqrt(area) / 6), DRAG_LEVEL_MIN, DRAG_LEVEL_MAX))
 end
 
 local eleBaseLayer = {}
@@ -882,6 +888,7 @@ end
 
 function MoveAny:UpdateEleColor(dragframe)
 	if dragframe == nil or dragframe.t == nil then return end
+	MoveAny:UpdateDragLevel(dragframe)
 	if dragframe == MACurrentEle then
 		dragframe.t:SetVertexColor(MoveAny:GetColor("se"))
 		return
