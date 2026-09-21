@@ -1692,7 +1692,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.12")
+	MoveAny:SetVersion(135994, "1.12.13")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -4836,13 +4836,21 @@ function MoveAny:LoadAddon()
 	if MoveAny.InitMAVehicleSeatIndicator then MoveAny:InitMAVehicleSeatIndicator() end
 	if WorldMapFrame then
 		if WorldMapFrame.Minimize then
-			hooksecurefunc(WorldMapFrame, "Minimize", function(sel) sel:SetScale(1) end)
-			hooksecurefunc(WorldMapFrame, "Maximize", function(sel) sel:SetScale(1) end)
+			hooksecurefunc(WorldMapFrame, "Minimize", function(sel)
+				if MoveAny:HasExternalWorldMapDrag() then return end
+				sel:SetScale(1)
+			end)
+
+			hooksecurefunc(WorldMapFrame, "Maximize", function(sel)
+				if MoveAny:HasExternalWorldMapDrag() then return end
+				sel:SetScale(1)
+			end)
 		end
 
 		if WorldMapFrame and (MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC") and WorldMapFrame.ScrollContainer then
 			WorldMapFrame.ScrollContainer.GetCursorPosition = function(fr)
 				local x, y = MapCanvasScrollControllerMixin.GetCursorPosition(fr)
+				if MoveAny:HasExternalWorldMapDrag() then return x, y end
 				local scale = WorldMapFrame:GetScale()
 				if not MoveAny:IsAddOnLoaded("Mapster") and not MoveAny:IsAddOnLoaded("GW2_UI") then
 					return x / scale, y / scale

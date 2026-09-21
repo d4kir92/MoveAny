@@ -62,6 +62,29 @@ if C_Widget.IsWidget(ScriptErrorsFrame) and ScriptErrorsFrame.DragArea then
 	MoveAny:TrySetParent(ScriptErrorsFrame.DragArea, MoveAny:GetHidden())
 end
 
+local maWorldMapOwned = false
+local maWorldMapExternalDrag = false
+local function MAHasDragScript(frame, blizzStart, blizzStop)
+	if not C_Widget.IsWidget(frame) or not frame.GetScript then return false end
+	local onDragStart = frame:GetScript("OnDragStart")
+	if onDragStart ~= nil and onDragStart ~= blizzStart then return true end
+	local onDragStop = frame:GetScript("OnDragStop")
+	if onDragStop ~= nil and onDragStop ~= blizzStop then return true end
+	return false
+end
+
+function MoveAny:HasExternalWorldMapDrag()
+	if maWorldMapExternalDrag then return true end
+	if maWorldMapOwned then return false end
+	if not C_Widget.IsWidget(WorldMapFrame) then return false end
+	local external = false
+	if MoveAny:GetWoWBuild() == "RETAIL" and WorldMapFrame:IsMovable() then external = true end
+	if not external and MAHasDragScript(WorldMapFrame, nil, nil) then external = true end
+	if not external and MAHasDragScript(WorldMapTitleButton, WorldMapTitleButton_OnDragStart, WorldMapTitleButton_OnDragStop) then external = true end
+	if external then maWorldMapExternalDrag = true end
+	return maWorldMapExternalDrag
+end
+
 local currentWindowName = nil
 local prevMouseX = nil
 local prevMouseY = nil
@@ -259,7 +282,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 		if once then
 			once = false
 			if WorldMapFrame then
-				MoveAny:SetClampedToScreen(WorldMapFrame, true, "UpdateMoveFrames 3")
+				if not MoveAny:HasExternalWorldMapDrag() then MoveAny:SetClampedToScreen(WorldMapFrame, true, "UpdateMoveFrames 3") end
 				local hookedWorldMap = false
 				local hookedWorldMapTitle = false
 				local hookedWorldMapMiniBorder = false
@@ -267,6 +290,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 				local enableMouseWorldMapTitle = false
 				local enableMouseWorldMapMiniBorder = false
 				WorldMapFrame:HookScript("OnShow", function()
+					if MoveAny:HasExternalWorldMapDrag() then return end
 					if not hookedWorldMap then
 						hookedWorldMap = true
 						hooksecurefunc(WorldMapFrame, "EnableMouse", function(sel)
@@ -348,6 +372,11 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 				if frame ~= nil and frame:IsVisible() and (not InCombatLockdown() or not frame:IsProtected()) then
 					MAFS[name] = nil
 					MAFSGiveUp[name] = nil
+					if name == "WorldMapFrame" then
+						if MoveAny:HasExternalWorldMapDrag() then return 1 end
+						maWorldMapOwned = true
+					end
+
 					if name == "HouseEditorFrame.StoragePanel" and HouseEditorFrame and HouseEditorFrame.StoragePanel and HouseEditorFrame.StoragePanel.InputBlocker then HouseEditorFrame.StoragePanel.InputBlocker:Hide() end
 					if (name == "TradeSkillFrame" and MoveAny:IsAddOnLoaded("DragonflightUI", "TradeSkillFrame") and DragonflightUIProfessionFrame) or (name == "BankFrame" and MoveAny:IsAddOnLoaded("Sorted", "BankFrame")) then
 						frame:SetAlpha(0)
