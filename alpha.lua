@@ -176,7 +176,7 @@ end
 
 function MoveAny:IsFullHealthAlphaSupported()
     if MoveAny:GetWoWBuildNr() >= 120000 then return false end
-    if MoveAny:IsCamelot() then return false end
+    if MoveAny:IsForever() then return false end
     return true
 end
 

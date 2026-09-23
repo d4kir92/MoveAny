@@ -728,7 +728,7 @@ function MoveAny:InitMALock()
 		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
 		AddCategory("CLASSSPECIFIC", 1, true)
 		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then AddCheckBox("RUNEFRAME", false) end
-		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA" or MoveAny:IsCamelot()) and class == "SHAMAN" then AddCheckBox("TOTEMBAR", false) end
+		if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA" or MoveAny:IsForever()) and class == "SHAMAN" then AddCheckBox("TOTEMBAR", false) end
 		if MoveAny:IsValidFrame(WarlockPowerFrame) and class == "WARLOCK" then AddCheckBox("WARLOCKPOWERFRAME", false) end
 		-- CATA
 		if MoveAny:IsValidFrame(ShardBarFrame) and class == "WARLOCK" then AddCheckBox("SHARDBARFRAME", false) end
@@ -4688,7 +4688,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA" or MoveAny:IsCamelot()) and class == "SHAMAN" then
+	if (MoveAny:GetWoWBuild() == "WRATH" or MoveAny:GetWoWBuild() == "CATA" or MoveAny:IsForever()) and class == "SHAMAN" then
 		if MultiCastActionBarFrame then MultiCastActionBarFrame:SetParent(MoveAny:GetMainPanel()) end
 		if MoveAny:IsEnabled("TOTEMBAR", false) then
 			MoveAny:RegisterWidget({

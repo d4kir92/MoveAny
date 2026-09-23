@@ -26,7 +26,6 @@ local regionsWithoutRealms = {
 }
 
 local realmLocales = {"enUS", "deDE", "esES", "esMX", "frFR", "itIT", "koKR", "ptBR", "ruRU", "zhCN", "zhTW"}
-
 local function IsUkrainianLetters(str)
     return str:match("[\192-\199]") ~= nil
 end
@@ -49,7 +48,7 @@ end
 
 function D4:MissingRealmRegion(reg)
     if regionsWithoutRealms[reg] then return end
-    if D4:IsCamelot() then return end
+    if D4:IsForever() then return end
     if missingRegionOnce == false then return end
     missingRegionOnce = false
     D4:MSG("[D4] Missing REGION", reg)
@@ -67,9 +66,7 @@ local function LoadRealmLocale(locale)
 
     for name, val in pairs(loaded) do
         local key = NormalizeRealmName(name)
-        if realms[key] == nil then
-            realms[key] = val
-        end
+        if realms[key] == nil then realms[key] = val end
     end
 end
 
@@ -78,9 +75,7 @@ local function LoadFallbackRealms()
     fallbackRealmsLoaded = true
     local clientLocale = GetLocale()
     for i = 1, #realmLocales do
-        if realmLocales[i] ~= clientLocale then
-            LoadRealmLocale(realmLocales[i])
-        end
+        if realmLocales[i] ~= clientLocale then LoadRealmLocale(realmLocales[i]) end
     end
 
     realmsSupported = next(realms) ~= nil
@@ -96,17 +91,12 @@ local function InitRealms()
 
     LoadRealmLocale(GetLocale())
     realmsSupported = next(realms) ~= nil
-    if realmsSupported == false then
-        LoadFallbackRealms()
-    end
+    if realmsSupported == false then LoadFallbackRealms() end
 end
 
 local function FindRealmLang(realmName)
     local key = NormalizeRealmName(realmName)
-    if realms[key] == nil then
-        LoadFallbackRealms()
-    end
-
+    if realms[key] == nil then LoadFallbackRealms() end
     return realms[key]
 end
 
@@ -119,14 +109,10 @@ function D4:GetRealmLang(realmName)
             missingRealmNameOnce = false
             D4:MSG("[D4] Realmname is nil!")
         end
-
         return ""
     end
 
-    if realmName == "" then
-        realmName = GetRealmName()
-    end
-
+    if realmName == "" then realmName = GetRealmName() end
     local realmLang = FindRealmLang(realmName)
     if realmLang == nil then
         if IsUkrainianLetters(realmName) then
@@ -142,11 +128,9 @@ function D4:GetRealmLang(realmName)
                 missingRealms[realmName] = true
                 D4:MSG("[D4][GetRealmLang] Missing Realm-Language", realmName)
             end
-
             return ""
         end
     end
-
     return realmLang
 end
 
@@ -158,30 +142,7 @@ end
 
 local function InitRealmLangs()
     AddRealmLangs("deDE", {"Deutsch", "German", "Allemand", "Alemán", "Alemão", "Tedesco", "Нем.", "독일어", "德國", "德语",})
-    AddRealmLangs(
-        "esES",
-        {
-            "Spanish",
-            "Spanisch",
-            "Español",
-            "Espagnol",
-            "Espanhol",
-            "Spagnolo",
-            "Исп.",
-            "스페인어",
-            "西班牙",
-            "西班牙语",
-            "Latin America",
-            "Lateinamerika",
-            "América Latina",
-            "America Latina",
-            "Amérique latine",
-            "Латинская Америка",
-            "拉丁美洲",
-            "라틴 아메리카",
-        }
-    )
-
+    AddRealmLangs("esES", {"Spanish", "Spanisch", "Español", "Espagnol", "Espanhol", "Spagnolo", "Исп.", "스페인어", "西班牙", "西班牙语", "Latin America", "Lateinamerika", "América Latina", "America Latina", "Amérique latine", "Латинская Америка", "拉丁美洲", "라틴 아메리카",})
     AddRealmLangs("frFR", {"French", "Französisch", "Français", "Francés", "Francês", "Francese", "Франц.", "프랑스어", "法國", "法语",})
     AddRealmLangs("itIT", {"Italian", "Italienisch", "Italiano", "Italien", "Итальянск.", "이탈리아어", "義大利", "意大利语",})
     AddRealmLangs("koKR", {"Korea", "Corea", "Coreia", "Corée", "Корея", "한국", "韓國", "韩国",})
@@ -190,98 +151,8 @@ local function InitRealmLangs()
     AddRealmLangs("chTW", {"Taiwan", "Taiwán", "Taïwan", "Тайвань", "대만", "台灣", "中国台湾",})
     AddRealmLangs("enGB", {"Oceanic", "Oceania", "Oceánico", "Océanique", "Ozeanisch", "Океания", "오세아니아", "大洋洲", "英國",})
     local enLang = "enUS"
-    if region == regions["EU"] then
-        enLang = "enGB"
-    end
-
-    AddRealmLangs(
-        enLang,
-        {
-            "English",
-            "Englisch",
-            "Anglais",
-            "Inglés",
-            "Inglês",
-            "Inglese",
-            "Англ.",
-            "영어",
-            "英语",
-            "United States",
-            "Vereinigte Staaten",
-            "Estados Unidos",
-            "États-Unis",
-            "Stati Uniti",
-            "США",
-            "미국",
-            "美国",
-            "美國",
-            "US East",
-            "USA Ost",
-            "미국 동부",
-            "美東",
-            "US West",
-            "USA West",
-            "미국 서부",
-            "美西",
-            "Global",
-            "Globale",
-            "Mondial",
-            "Глобальный",
-            "글로벌",
-            "全球",
-            "Seasonal",
-            "Saisonbedingt",
-            "Saisonnier",
-            "Sazonal",
-            "De temporada",
-            "Stagionale",
-            "Сезонные",
-            "시즌",
-            "赛季",
-            "賽季",
-            "Classic Era",
-            "Classic-Ära",
-            "Klassisch",
-            "Era Classic",
-            "Ère classique",
-            "Clásicos",
-            "Классические",
-            "클래식 시대",
-            "經典時期",
-            "旧世经典服务器（60级）",
-            "Hardcore",
-            "Extrême",
-            "Серьезный",
-            "하드코어",
-            "专家模式",
-            "專家模式",
-            "Anniversary",
-            "Anniversaire",
-            "Aniversario",
-            "Aniversário",
-            "Jubiläum",
-            "Годовщина",
-            "기념일",
-            "周年纪念版",
-            "週年慶",
-            "Legacy",
-            "Legado",
-            "Héritage",
-            "낭만",
-            "旧版",
-            "懷舊",
-            "Active",
-            "Aktiv",
-            "Actif",
-            "Activos",
-            "Ativo",
-            "Активные",
-            "활성화",
-            "激活",
-            "現行",
-        }
-    )
-
+    if region == regions["EU"] then enLang = "enGB" end
+    AddRealmLangs(enLang, {"English", "Englisch", "Anglais", "Inglés", "Inglês", "Inglese", "Англ.", "영어", "英语", "United States", "Vereinigte Staaten", "Estados Unidos", "États-Unis", "Stati Uniti", "США", "미국", "美国", "美國", "US East", "USA Ost", "미국 동부", "美東", "US West", "USA West", "미국 서부", "美西", "Global", "Globale", "Mondial", "Глобальный", "글로벌", "全球", "Seasonal", "Saisonbedingt", "Saisonnier", "Sazonal", "De temporada", "Stagionale", "Сезонные", "시즌", "赛季", "賽季", "Classic Era", "Classic-Ära", "Klassisch", "Era Classic", "Ère classique", "Clásicos", "Классические", "클래식 시대", "經典時期", "旧世经典服务器（60级）", "Hardcore", "Extrême", "Серьезный", "하드코어", "专家模式", "專家模式", "Anniversary", "Anniversaire", "Aniversario", "Aniversário", "Jubiläum", "Годовщина", "기념일", "周年纪念版", "週年慶", "Legacy", "Legado", "Héritage", "낭만", "旧版", "懷舊", "Active", "Aktiv", "Actif", "Activos", "Ativo", "Активные", "활성화", "激活", "現行",})
     AddRealmLangs("koKR", {"koKR",})
     AddRealmLangs("ruRU", {"ruRU",})
     AddRealmLangs("ukUA", {"ukUA",})
@@ -295,10 +166,7 @@ function D4:GetRealmFlag(realmName)
         InitRealmLangs()
     end
 
-    if realmName == "" then
-        realmName = GetRealmName()
-    end
-
+    if realmName == "" then realmName = GetRealmName() end
     local realmLang = D4:GetRealmLang(realmName)
     if realmLang == nil or realmLang == "" then return "" end
     if realmLangs[realmLang] == nil then
@@ -306,10 +174,8 @@ function D4:GetRealmFlag(realmName)
             missingRealmLangs[realmLang] = true
             D4:MSG("[D4] Missing realmsLangs", realmName, realmLang)
         end
-
         return ""
     end
-
     return realmLangs[realmLang]
 end
 
