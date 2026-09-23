@@ -58,12 +58,25 @@ local function IsSameGroup(a, b, level)
     return true
 end
 
-local function GetCellText(column, data)
+local function GetCellText(column, data, span)
+    if span and span > 1 and column.spanText then return column.spanText(data) or "" end
     if column.text then return column.text(data) or "" end
     local value = data[column.key]
     if value == nil then return "" end
 
     return tostring(value)
+end
+
+local function GetCellSpan(list, index, data)
+    local column = list.columns[index]
+    if column == nil or column.span == nil or data == nil then return 1 end
+    local span = column.span(data)
+    if type(span) ~= "number" or span < 1 then return 1 end
+    span = math.floor(span)
+    local count = #list.columns
+    if index + span - 1 > count then span = count - index + 1 end
+
+    return span
 end
 
 local function GetSortValue(column, data)
@@ -249,6 +262,7 @@ function UI.ListMixin:SetColumns(columns)
     self.columns = {}
     self.columnsByKey = {}
     self.groupDepth = 0
+    self.hasSpans = false
     for _, source in ipairs(columns or {}) do
         local column = {}
         for key, value in pairs(source) do
@@ -259,6 +273,7 @@ function UI.ListMixin:SetColumns(columns)
         column.align = column.align or "LEFT"
         column.groupPath = GetGroupPath(column)
         self.groupDepth = math.max(self.groupDepth, #column.groupPath)
+        if column.span ~= nil then self.hasSpans = true end
         if column.key ~= nil then self.columnsByKey[column.key] = column end
         tinsert(self.columns, column)
     end
@@ -389,9 +404,35 @@ function UI.ListMixin:UpdateArrows()
     end
 end
 
+function UI.ListMixin:PlaceRowCells(row)
+    local count = #self.columns
+    local index = 1
+    while index <= count do
+        local column = self.columns[index]
+        local span = GetCellSpan(self, index, row.data)
+        local last = self.columns[index + span - 1]
+        local cell = row.cells[index]
+        cell:ClearAllPoints()
+        cell:SetPoint("LEFT", row, "LEFT", column.x + CELL_INSET, 0)
+        cell:SetSize(math.max(1, last.x + last.actualWidth - column.x - CELL_INSET * 2), self.rowHeight)
+        if span > 1 then
+            cell:SetJustifyH(column.spanAlign or column.align)
+        else
+            cell:SetJustifyH(column.align)
+        end
+
+        cell:Show()
+        for hidden = index + 1, index + span - 1 do
+            row.cells[hidden]:Hide()
+        end
+
+        index = index + span
+    end
+end
+
 function UI.ListMixin:LayoutRow(row)
     row:SetSize(math.max(1, self.totalWidth), self.rowHeight)
-    for index, column in ipairs(self.columns) do
+    for index in ipairs(self.columns) do
         local cell = row.cells[index]
         if cell == nil then
             cell = row:CreateFontString(nil, "OVERLAY", self.font)
@@ -400,16 +441,13 @@ function UI.ListMixin:LayoutRow(row)
         end
 
         self:ApplyFont(cell, self.font)
-        cell:ClearAllPoints()
-        cell:SetPoint("LEFT", row, "LEFT", column.x + CELL_INSET, 0)
-        cell:SetSize(math.max(1, column.actualWidth - CELL_INSET * 2), self.rowHeight)
-        cell:SetJustifyH(column.align)
-        cell:Show()
     end
 
     for index = #self.columns + 1, #row.cells do
         row.cells[index]:Hide()
     end
+
+    self:PlaceRowCells(row)
 end
 
 function UI.ListMixin:SortRows()
@@ -515,8 +553,24 @@ function UI.ListMixin:GetColumnAt(frame)
     return nil
 end
 
+function UI.ListMixin:GetSpanColumn(row, column)
+    if not self.hasSpans or column == nil or row.data == nil then return column end
+    local count = #self.columns
+    local index = 1
+    while index <= count do
+        local span = GetCellSpan(self, index, row.data)
+        for offset = 0, span - 1 do
+            if self.columns[index + offset] == column then return self.columns[index] end
+        end
+
+        index = index + span
+    end
+
+    return column
+end
+
 function UI.ListMixin:UpdateRowTooltip(row)
-    local column = self:GetColumnAt(row)
+    local column = self:GetSpanColumn(row, self:GetColumnAt(row))
     if column == row.hoverColumn then return end
     row.hoverColumn = column
     if column == nil or column.tooltip == nil or row.data == nil then
@@ -544,8 +598,14 @@ function UI.ListMixin:Refresh()
         row.hoverColumn = nil
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -(top + (index - 1) * self.rowHeight))
-        for columnIndex, column in ipairs(self.columns) do
-            row.cells[columnIndex]:SetText(GetCellText(column, data))
+        if self.hasSpans then self:PlaceRowCells(row) end
+        local columnIndex = 1
+        local columnCount = #self.columns
+        while columnIndex <= columnCount do
+            local column = self.columns[columnIndex]
+            local span = GetCellSpan(self, columnIndex, data)
+            row.cells[columnIndex]:SetText(GetCellText(column, data, span))
+            columnIndex = columnIndex + span
         end
 
         row:Show()
