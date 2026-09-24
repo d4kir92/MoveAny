@@ -515,6 +515,17 @@ end
 
 function MoveAny:InitMALock()
 	sh = MoveAny:MClamp(640, 200, GetScreenHeight())
+	local function CloseMALock()
+		MoveAny:ToggleMALock()
+		if needReload then
+			if C_UI then
+				C_UI.Reload()
+			else
+				ReloadUI()
+			end
+		end
+	end
+
 	MALock = MoveAny:CreateUIWindow({
 		["name"] = "MALock",
 		["parent"] = MoveAny:GetMainPanel(),
@@ -529,16 +540,7 @@ function MoveAny:InitMALock()
 		["onMove"] = function(p1, p3, p4, p5) MoveAny:SetElePoint("MALock", p1, nil, p3, MoveAny:Snap(p4), MoveAny:Snap(p5)) end,
 		["getCollapsed"] = function(key) return MoveAny:GetCollapsed(key) end,
 		["setCollapsed"] = function(key, collapsed) MoveAny:SetCollapsed(key, collapsed) end,
-		["onClose"] = function()
-			MoveAny:ToggleMALock()
-			if needReload then
-				if C_UI then
-					C_UI.Reload()
-				else
-					ReloadUI()
-				end
-			end
-		end,
+		["onClose"] = CloseMALock,
 	})
 
 	MALock:SetFrameLevel(999)
@@ -855,18 +857,21 @@ function MoveAny:InitMALock()
 	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock.footer)
 	MALock.save:SetSize(120, 24)
 	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 0, 0)
-	MALock.save:SetText(SAVE)
+	MALock.save:SetText(MoveAny:Trans("LID_SAVEANDCLOSE"))
+	MALock.save:SetWidth(math.max(120, MALock.save:GetTextWidth() + 24))
 	MALock.save:SetScript("OnClick", function()
 		--MoveAny:TrySaveEditMode()
 		if MALock.save then MALock.save:Disable() end
 		if MALock.CloseButton then MALock.CloseButton:Enable() end
+		CloseMALock()
 	end)
 
 	MALock.save:Disable()
 	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock.footer)
 	MALock.reload:SetSize(120, 24)
 	MALock.reload:SetPoint("LEFT", MALock.save, "RIGHT", 4, 0)
-	MALock.reload:SetText(RELOADUI or "RELOADUI")
+	MALock.reload:SetText(MoveAny:Trans("LID_RELOADANDREOPEN"))
+	MALock.reload:SetWidth(math.max(120, MALock.reload:GetTextWidth() + 24))
 	MALock.reload:SetScript("OnClick", function()
 		if C_UI then
 			C_UI.Reload()
@@ -1692,7 +1697,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.13")
+	MoveAny:SetVersion(135994, "1.12.14")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
