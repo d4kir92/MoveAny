@@ -27,8 +27,8 @@ function MoveAny:PetBattleChat(frame)
 end
 
 local microCount = 0
-local mibarMoved = false
-local retry = false
+local microBarQueued = false
+local microBarDirty = false
 local updateBar = false
 function MoveAny:DoUpdateMicroBar(from)
 	if MoveAny:DEBUG() then
@@ -37,6 +37,7 @@ function MoveAny:DoUpdateMicroBar(from)
 		MoveAny:DEB("UpdateMicroBar", microCount)
 	end
 
+	microBarDirty = false
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then MoveAny:PetBattleChat(ChatFrame1) end
 	if MoveAny.IsPetBattleAvailable and (MoveAny:IsPetBattleAvailable() and MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() or PetBattleFrame and PetBattleFrame:IsShown()) then ChatFrame1:SetShown(true) end
 	MoveAny:SetPoint(MAMenuBar, MAMenuBar:GetPoint())
@@ -49,36 +50,14 @@ end
 
 function MoveAny:UpdateMicroBar(from)
 	if updateBar then return end
-	if mibarMoved then
-		retry = true
-		return
-	end
-
-	mibarMoved = true
-	if from and from == "mb" then
-		MoveAny:After(0.001, function()
-			mibarMoved = false
-			if retry then MoveAny:UpdateMicroBar("RETRYMB") end
-		end, "UpdateMicroBar mb")
-	elseif from and from == "RETRYMB" then
-		retry = false
-		MoveAny:After(0.002, function()
-			MoveAny:DoUpdateMicroBar("RETRYMB")
-			mibarMoved = false
-		end, "UpdateMicroBar RETRYMB")
-	elseif from and from == "RETRYNOR" then
-		retry = false
-		MoveAny:After(0.02, function()
-			MoveAny:DoUpdateMicroBar("RETRYNOR")
-			mibarMoved = false
-		end, "UpdateMicroBar RETRYNOR")
-	else
-		MoveAny:DoUpdateMicroBar("NORMAL")
-		MoveAny:After(0.006, function()
-			mibarMoved = false
-			if retry then MoveAny:UpdateMicroBar("RETRYNOR") end
-		end, "UpdateMicroBar ELSE")
-	end
+	microBarDirty = true
+	if microBarQueued then return end
+	microBarQueued = true
+	if from ~= "mb" then MoveAny:DoUpdateMicroBar(from) end
+	MoveAny:After(0, function()
+		microBarQueued = false
+		if microBarDirty then MoveAny:DoUpdateMicroBar("QUEUED") end
+	end, "UpdateMicroBar")
 end
 
 local mmcMoved = false
@@ -99,6 +78,13 @@ function MoveAny:InitMicroMenu()
 				mmcScaled = true
 				if MoveAny.UpdateMicroBar then MoveAny:UpdateMicroBar("MMC SetScale") end
 				mmcScaled = false
+			end)
+		end
+
+		if MicroMenu and MicroMenu.Layout then
+			hooksecurefunc(MicroMenu, "Layout", function()
+				if updateBar or MAMenuBar == nil then return end
+				MoveAny:DoUpdateMicroBar("MM Layout")
 			end)
 		end
 
