@@ -35,6 +35,7 @@ local function CreateStepper(holder, name, tab, choices, width, Pick)
     control:SetWidth(width + STEPPERPAD)
     if control.Dropdown then control.Dropdown:SetWidth(width) end
     local index = 1
+    local enabled = true
     local function SetLabel(text)
         local dropdown = control.Dropdown
         if dropdown == nil then return end
@@ -57,8 +58,8 @@ local function CreateStepper(holder, name, tab, choices, width, Pick)
     Lock(dec)
     Lock(inc)
     local function UpdateSteppers()
-        if dec then setEnabled[dec](dec, index > 1) end
-        if inc then setEnabled[inc](inc, index < #choices) end
+        if dec then setEnabled[dec](dec, enabled and index > 1) end
+        if inc then setEnabled[inc](inc, enabled and index < #choices) end
     end
 
     local function UpdateSteppersSoon()
@@ -104,7 +105,13 @@ local function CreateStepper(holder, name, tab, choices, width, Pick)
         UpdateSteppersSoon()
     end
 
-    return control, SetIndex
+    local function SetEnabled(value)
+        enabled = value
+        if control.Dropdown then control.Dropdown:SetEnabled(value) end
+        UpdateSteppers()
+    end
+
+    return control, SetIndex, SetEnabled
 end
 
 local function CreateList(name, button, width, count, maxVisible)
@@ -193,7 +200,12 @@ local function CreateFallback(holder, name, tab, choices, width, Pick)
         if choice then button:SetText(UI:Text(choice.label)) end
     end
 
-    return button, SetIndex
+    local function SetEnabled(value)
+        if not value and UI.openList == list then UI:CloseDropdowns() end
+        button:SetEnabled(value)
+    end
+
+    return button, SetIndex, SetEnabled
 end
 
 function UI.WindowMixin:AddDropdown(tab)
@@ -206,6 +218,7 @@ function UI.WindowMixin:AddDropdown(tab)
     local holder = CreateFrame("Frame", name, win.content)
     holder:SetSize(math.max(1, win.contentWidth - 8), UI.ROW)
     local SetIndex = nil
+    local SetControlEnabled = nil
     local function Pick(index)
         local choice = choices[index]
         if choice == nil then return end
@@ -217,11 +230,11 @@ function UI.WindowMixin:AddDropdown(tab)
     local anchor = nil
     local height = UI.ROW
     if D4:CheckTemplates("SettingsDropdownWithButtonsTemplate") then
-        anchor, SetIndex = CreateStepper(holder, name, tab, choices, width, Pick)
+        anchor, SetIndex, SetControlEnabled = CreateStepper(holder, name, tab, choices, width, Pick)
         height = anchor:GetHeight()
         if height == nil or height <= 0 then height = STEPPERHEIGHT end
     else
-        anchor, SetIndex = CreateFallback(holder, name, tab, choices, width, Pick)
+        anchor, SetIndex, SetControlEnabled = CreateFallback(holder, name, tab, choices, width, Pick)
     end
 
     holder:SetHeight(height)
@@ -234,6 +247,16 @@ function UI.WindowMixin:AddDropdown(tab)
         if index == nil then return end
         holder.value = newValue
         SetIndex(index)
+    end
+
+    function holder:SetEnabled(value)
+        value = value ~= false
+        SetControlEnabled(value)
+        if value then
+            holder.Label:SetFontObject("GameFontNormal")
+        else
+            holder.Label:SetFontObject("GameFontDisable")
+        end
     end
 
     local start = IndexOf(choices, tab.value)

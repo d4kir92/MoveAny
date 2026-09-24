@@ -4,6 +4,10 @@ local windows = 0
 local TOP_INSET = 32
 local BOTTOM_INSET = 4
 local LEFT_INSET = 4
+local MODERN_LEFT_INSET = 9
+local MODERN_TEMPLATE = "ButtonFrameTemplate"
+local CONTENT_TRIM = 56
+local SCROLL_LEFT = 8
 local RIGHT_INSET = 18
 local GRIP_INSET = 24
 local HEADER_LIFT = 5
@@ -80,14 +84,14 @@ function UI.WindowMixin:UpdateBodyLayout()
     if self.footerHeight > 0 then bottomExtra = self.footerHeight + UI.SPACING - FOOTER_TRIM end
     if self.header then
         self.header:ClearAllPoints()
-        self.header:SetPoint("TOPLEFT", self, "TOPLEFT", LEFT_INSET, -headerTop)
+        self.header:SetPoint("TOPLEFT", self, "TOPLEFT", self.leftInset, -headerTop)
         self.header:SetPoint("TOPRIGHT", self, "TOPRIGHT", -RIGHT_INSET, -headerTop)
         self.header:SetHeight(self.headerHeight + HEADER_GROW)
     end
 
     if self.footer then
         self.footer:ClearAllPoints()
-        self.footer:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", LEFT_INSET, BOTTOM_INSET)
+        self.footer:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", self.leftInset, BOTTOM_INSET)
         self.footer:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -GRIP_INSET, BOTTOM_INSET)
         self.footer:SetHeight(self.footerHeight)
     end
@@ -104,7 +108,7 @@ function UI.WindowMixin:GetContentOffset()
     local left = 0
     if self.scrollInset then left = self.scrollInset.left end
 
-    return left - LEFT_INSET
+    return left - self.leftInset
 end
 
 function UI.WindowMixin:AddHeader(tab)
@@ -137,7 +141,7 @@ local function CreateModernScroll(win, name)
     local scrollBox = CreateFrame("Frame", name .. "ScrollBox", win, "WowScrollBox")
     win.scrollFrame = scrollBox
     win.scrollInset = {
-        ["left"] = 12,
+        ["left"] = win.leftInset + SCROLL_LEFT,
         ["right"] = -28,
         ["bottom"] = 7
     }
@@ -206,7 +210,7 @@ local function MakeResizable(win, name, tab)
     win:SetScript(
         "OnSizeChanged",
         function(sel, width)
-            sel.contentWidth = width - 56
+            sel.contentWidth = width - sel.contentTrim
             sel:Layout()
         end
     )
@@ -224,7 +228,7 @@ local function CreateLegacyScroll(win, name)
 
     win.scrollFrame = scroll
     win.scrollInset = {
-        ["left"] = 12,
+        ["left"] = win.leftInset + SCROLL_LEFT,
         ["right"] = -32,
         ["bottom"] = 22
     }
@@ -238,13 +242,35 @@ local function CreateLegacyScroll(win, name)
     return content
 end
 
+local function UseModernTemplate(tab)
+    if tab.templates then return false end
+    if D4:GetWoWBuild() ~= "RETAIL" then return false end
+    if ButtonFrameTemplate_HidePortrait == nil or ButtonFrameTemplate_HideAttic == nil or ButtonFrameTemplate_HideButtonBar == nil then return false end
+
+    return D4:CheckTemplates(MODERN_TEMPLATE)
+end
+
+local function ApplyModernTemplate(win)
+    ButtonFrameTemplate_HideAttic(win)
+    ButtonFrameTemplate_HideButtonBar(win)
+    ButtonFrameTemplate_HidePortrait(win)
+    if win.TitleText == nil and win.TitleContainer then win.TitleText = win.TitleContainer.TitleText end
+    win.leftInset = MODERN_LEFT_INSET
+end
+
 function D4:CreateUIWindow(tab)
     tab = tab or {}
     windows = windows + 1
     local name = tab.name or ("D4UIWindow" .. windows)
     local width = tab.width or 420
     local height = tab.height or 520
-    local win = D4:CreateFrame(name, tab.parent or UIParent, tab.templates)
+    local modern = UseModernTemplate(tab)
+    local templates = tab.templates
+    if modern then templates = MODERN_TEMPLATE end
+    local win = D4:CreateFrame(name, tab.parent or UIParent, templates)
+    win.leftInset = LEFT_INSET
+    if modern then ApplyModernTemplate(win) end
+    win.contentTrim = CONTENT_TRIM + win.leftInset - LEFT_INSET
     win:SetSize(width, height)
     win:SetPoint(unpack(tab.pTab or {"CENTER"}))
     win:SetFrameStrata("HIGH")
@@ -272,7 +298,7 @@ function D4:CreateUIWindow(tab)
     UI:ApplyWindow(win)
     win.headerHeight = 0
     win.footerHeight = 0
-    win.contentWidth = width - 56
+    win.contentWidth = width - win.contentTrim
     if HasModernScroll() then
         win.content = CreateModernScroll(win, name)
     else

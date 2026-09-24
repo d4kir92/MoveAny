@@ -167,7 +167,9 @@ on top of the translated label.
   `UI:ChoicesFromMap(map, current)` builds one from a sparse `value → label` table,
   sorted, with `current` appended if the map does not contain it.
   The returned frame has `holder:SetValue(value)` to change the selection without
-  firing `func`, and `holder.control` is the widget itself.
+  firing `func`, `holder:SetEnabled(enabled)` to grey out the control (menu button and
+  steppers, or the fallback button) together with its label, and `holder.control` is
+  the widget itself.
 
   Where the client has `SettingsDropdownWithButtonsTemplate` (retail), the dropdown is
   Blizzard's own control from the options panel: a menu button flanked by a left and a
@@ -309,6 +311,12 @@ win:AddOrderList({
 `setCollapsed(key, collapsed)`. The window is movable (pass `movable = false` to pin it,
 e.g. when it is docked to another frame), scrollable and starts hidden. `win:Toggle()`
 shows or hides it.
+
+Without `templates`, retail and WoW Forever build the window from Blizzard's
+`ButtonFrameTemplate` (portrait, attic and button bar hidden), so it gets the same
+nine-slice border as Blizzard's own panels, including Forever's own frame art. All
+other flavors keep `BasicFrameTemplateWithInset`. `win.TitleText` points to the
+title in both cases.
 
 ESC closes the window (it is added to `UISpecialFrames`). ESC only calls `Hide()`, so
 windows with `onClose` are left out by default; pass `escClose = true` or `false` to override.
