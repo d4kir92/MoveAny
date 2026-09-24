@@ -243,7 +243,7 @@ local function CreateLegacyScroll(win, name)
 end
 
 local function UseModernTemplate(tab)
-    if tab.templates then return false end
+    if tab.modern ~= true or tab.templates then return false end
     if D4:GetWoWBuild() ~= "RETAIL" then return false end
     if ButtonFrameTemplate_HidePortrait == nil or ButtonFrameTemplate_HideAttic == nil or ButtonFrameTemplate_HideButtonBar == nil then return false end
 

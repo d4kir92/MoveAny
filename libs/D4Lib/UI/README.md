@@ -306,17 +306,17 @@ win:AddOrderList({
 ## Window
 
 `D4:CreateUIWindow` options: `name`, `title`, `width`, `height`, `parent`, `pTab`,
-`templates`, `resizable`, `movable`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`, `onResize`,
+`templates`, `modern`, `resizable`, `movable`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`, `onResize`,
 `onMove(point, relativePoint, x, y)`, `onClose(win)`, `escClose`, `getCollapsed(key)`,
 `setCollapsed(key, collapsed)`. The window is movable (pass `movable = false` to pin it,
 e.g. when it is docked to another frame), scrollable and starts hidden. `win:Toggle()`
 shows or hides it.
 
-Without `templates`, retail and WoW Forever build the window from Blizzard's
-`ButtonFrameTemplate` (portrait, attic and button bar hidden), so it gets the same
-nine-slice border as Blizzard's own panels, including Forever's own frame art. All
-other flavors keep `BasicFrameTemplateWithInset`. `win.TitleText` points to the
-title in both cases.
+By default the window uses `BasicFrameTemplateWithInset`. With `modern = true` (and no
+`templates`), retail and WoW Forever build it from Blizzard's `ButtonFrameTemplate`
+(portrait, attic and button bar hidden) instead, so it gets the same nine-slice border
+as Blizzard's own panels, including Forever's own frame art; other flavors ignore the
+option. `win.TitleText` points to the title in both cases.
 
 ESC closes the window (it is added to `UISpecialFrames`). ESC only calls `Hide()`, so
 windows with `onClose` are left out by default; pass `escClose = true` or `false` to override.
