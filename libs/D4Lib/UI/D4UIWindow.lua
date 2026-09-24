@@ -250,19 +250,21 @@ function D4:CreateUIWindow(tab)
     win:SetFrameStrata("HIGH")
     win:SetToplevel(true)
     win:HookScript("OnShow", function(sel) sel:Raise() end)
-    win:SetMovable(true)
     win:EnableMouse(true)
-    win:RegisterForDrag("LeftButton")
-    win:SetScript("OnDragStart", win.StartMoving)
-    win:SetScript(
-        "OnDragStop",
-        function(sel)
-            sel:StopMovingOrSizing()
-            if tab.onMove == nil then return end
-            local p1, _, p3, p4, p5 = sel:GetPoint()
-            tab.onMove(p1, p3, p4, p5)
-        end
-    )
+    if tab.movable ~= false then
+        win:SetMovable(true)
+        win:RegisterForDrag("LeftButton")
+        win:SetScript("OnDragStart", win.StartMoving)
+        win:SetScript(
+            "OnDragStop",
+            function(sel)
+                sel:StopMovingOrSizing()
+                if tab.onMove == nil then return end
+                local p1, _, p3, p4, p5 = sel:GetPoint()
+                tab.onMove(p1, p3, p4, p5)
+            end
+        )
+    end
 
     D4:SetClampedToScreen(win, true)
     if win.TitleText then win.TitleText:SetText(UI:Text(tab.title)) end
