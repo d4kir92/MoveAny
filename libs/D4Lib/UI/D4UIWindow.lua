@@ -162,7 +162,64 @@ local function CreateModernScroll(win, name)
     return content
 end
 
+local function CreateGrip(win, name)
+    local grip = CreateFrame("Button", name .. "Resize", win)
+    grip:SetSize(16, 16)
+    grip:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -4, 4)
+    grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+    grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    grip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    win:SetScript(
+        "OnSizeChanged",
+        function(sel, width)
+            sel.contentWidth = width - sel.contentTrim
+            sel:Layout()
+        end
+    )
+
+    win.grip = grip
+
+    return grip
+end
+
+local function MakeWidthResizable(win, name, tab)
+    local grip = CreateGrip(win, name)
+    local minWidth = tab.minWidth or 300
+    local maxWidth = tab.maxWidth or 0
+    local function StopSizing()
+        if grip:GetScript("OnUpdate") == nil then return end
+        grip:SetScript("OnUpdate", nil)
+        if tab.onResize then tab.onResize(math.floor(win:GetWidth() + 0.5), math.floor(win:GetHeight() + 0.5)) end
+    end
+
+    grip:SetScript(
+        "OnMouseDown",
+        function()
+            local scale = win:GetEffectiveScale()
+            local startX = GetCursorPosition() / scale
+            local startWidth = win:GetWidth()
+            grip:SetScript(
+                "OnUpdate",
+                function()
+                    local width = math.max(minWidth, startWidth + GetCursorPosition() / scale - startX)
+                    if maxWidth > 0 then width = math.min(maxWidth, width) end
+                    win:SetWidth(width)
+                end
+            )
+        end
+    )
+
+    grip:SetScript("OnMouseUp", StopSizing)
+    grip:SetScript("OnHide", StopSizing)
+end
+
 local function MakeResizable(win, name, tab)
+    if tab.resizable == "width" then
+        MakeWidthResizable(win, name, tab)
+
+        return
+    end
+
     win:SetResizable(true)
     local minWidth = tab.minWidth or 300
     local minHeight = tab.minHeight or 200
@@ -175,12 +232,7 @@ local function MakeResizable(win, name, tab)
         if maxWidth > 0 and maxHeight > 0 and win.SetMaxResize then win:SetMaxResize(maxWidth, maxHeight) end
     end
 
-    local grip = CreateFrame("Button", name .. "Resize", win)
-    grip:SetSize(16, 16)
-    grip:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -4, 4)
-    grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-    grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-    grip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    local grip = CreateGrip(win, name)
     grip:SetScript(
         "OnMouseDown",
         function()
@@ -206,16 +258,6 @@ local function MakeResizable(win, name, tab)
             end
         end
     )
-
-    win:SetScript(
-        "OnSizeChanged",
-        function(sel, width)
-            sel.contentWidth = width - sel.contentTrim
-            sel:Layout()
-        end
-    )
-
-    win.grip = grip
 end
 
 local function CreateLegacyScroll(win, name)

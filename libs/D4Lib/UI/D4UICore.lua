@@ -113,15 +113,65 @@ function UI:HasAncestor(element, category)
 end
 
 function UI.WindowMixin:IsElementVisible(element)
-    if not element.match then return false end
-    if self.searching then return true end
+    if not element.match or element.hidden then return false end
     local parent = element.category
     while parent do
-        if parent.collapsed then return false end
+        if parent.hidden then return false end
+        if parent.collapsed and not self.searching then return false end
         parent = parent.category
     end
 
     return true
+end
+
+function UI.WindowMixin:SetElementShown(frame, shown)
+    local element = frame and (frame.uiElement or frame.element)
+    if element == nil then return end
+    local hidden = not shown
+    if (element.hidden == true) == hidden then return end
+    element.hidden = hidden
+    self:Layout()
+end
+
+function UI.WindowMixin:SetCategoryOrder(keys)
+    local elements = {}
+    local blocks = {}
+    local blocksByKey = {}
+    local block = nil
+    for _, element in ipairs(self.elements) do
+        if element.isCategory and element.level == 1 then
+            block = {element}
+            tinsert(blocks, block)
+            if blocksByKey[element.key] == nil then blocksByKey[element.key] = block end
+        elseif block then
+            tinsert(block, element)
+        else
+            tinsert(elements, element)
+        end
+    end
+
+    local used = {}
+    local ordered = {}
+    for _, key in ipairs(keys or {}) do
+        local found = blocksByKey[key]
+        if found and not used[found] then
+            used[found] = true
+            tinsert(ordered, found)
+        end
+    end
+
+    for _, remaining in ipairs(blocks) do
+        if not used[remaining] then tinsert(ordered, remaining) end
+    end
+
+    for _, entry in ipairs(ordered) do
+        for _, element in ipairs(entry) do
+            tinsert(elements, element)
+        end
+    end
+
+    self.elements = elements
+    self:Layout()
 end
 
 function UI.WindowMixin:SuspendLayout()
@@ -187,7 +237,7 @@ function UI.WindowMixin:Filter(text)
         for _, category in ipairs(self.elements) do
             if category.isCategory and not category.match then
                 for _, child in ipairs(self.elements) do
-                    if child.match and UI:HasAncestor(child, category) then
+                    if child.match and not child.hidden and UI:HasAncestor(child, category) then
                         category.match = true
                         break
                     end
