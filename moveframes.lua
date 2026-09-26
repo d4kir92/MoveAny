@@ -50,6 +50,16 @@ local function MAFSCheckWrongBuild()
 	return added
 end
 
+local function MAIsGamepadUI()
+	return InputUtil ~= nil and InputUtil.IsGamepadUIEnabled ~= nil and InputUtil.IsGamepadUIEnabled() == true
+end
+
+local function MAHookScript(frame, script, func)
+	if frame.GetScript and frame:GetScript(script) == nil and MAIsGamepadUI() then return false end
+	frame:HookScript(script, func)
+	return true
+end
+
 if C_Widget.IsWidget(ScriptErrorsFrame) and ScriptErrorsFrame.DragArea then
 	local setParent = false
 	hooksecurefunc(ScriptErrorsFrame.DragArea, "SetParent", function(sel)
@@ -458,19 +468,27 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 					if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPWINDOWTOSCREEN", true) then MoveAny:SetClampedToScreen(frame, true, "UpdateMoveFrames 2") end
 					MoveAny:CheckSave(frame, name)
-					frame:HookScript("OnHide", function()
+					local function OnMAFrameHidden()
 						MoveAny:MAFrameStopMoving(frame, name)
 						if MoveAny.CheckSave then MoveAny:CheckSave(frame, name) end
-					end)
+					end
+
+					if not MAHookScript(frame, "OnHide", OnMAFrameHidden) then
+						hooksecurefunc(frame, "Hide", OnMAFrameHidden)
+						hooksecurefunc(frame, "SetShown", function(sel, shown) if not shown then OnMAFrameHidden() end end)
+					end
 
 					function MoveAny:IsResetButtonDown(btn)
 						return btn == "MiddleButton"
 					end
 
 					frame:RegisterForDrag("LeftClick")
+					local gamepadUI = MAIsGamepadUI()
 					if frame:IsMovable() then
-						if frame:HasScript("OnMouseDown") then frame:SetScript("OnMouseDown", function() end) end
-						if frame:HasScript("OnMouseUp") then frame:SetScript("OnMouseUp", function() end) end
+						if not gamepadUI then
+							if frame:HasScript("OnMouseDown") then frame:SetScript("OnMouseDown", function() end) end
+							if frame:HasScript("OnMouseUp") then frame:SetScript("OnMouseUp", function() end) end
+						end
 					else
 						frame:SetMovable(true)
 					end
@@ -533,23 +551,23 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						MoveAny:MAFrameStopMoving(sel, name)
 					end
 
-					if frame.Header then
+					if frame.Header and not gamepadUI then
 						if frame.Header:HasScript("OnMouseDown") then frame.Header:SetScript("OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(frame, btn) end) end
 						if frame.Header:HasScript("OnMouseUp") then frame.Header:SetScript("OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(frame, btn) end) end
 					end
 
-					if frame == CharacterFrame and frame.TitleContainer then
+					if frame == CharacterFrame and frame.TitleContainer and not gamepadUI then
 						if frame.TitleContainer:HasScript("OnMouseDown") then frame.TitleContainer:SetScript("OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(frame, btn) end) end
 						if frame.TitleContainer:HasScript("OnMouseUp") then frame.TitleContainer:SetScript("OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(frame, btn) end) end
 					end
 
 					if CharacterNameText and frame == CharacterFrame and PaperDollItemsFrame then
-						CharacterNameText:HookScript("OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(frame, btn) end)
-						CharacterNameText:HookScript("OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(frame, btn) end)
+						MAHookScript(CharacterNameText, "OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(frame, btn) end)
+						MAHookScript(CharacterNameText, "OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(frame, btn) end)
 					end
 
-					frame:HookScript("OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(sel, btn) end)
-					frame:HookScript("OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(sel, btn) end)
+					MAHookScript(frame, "OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(sel, btn) end)
+					MAHookScript(frame, "OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(sel, btn) end)
 					hooksecurefunc(frame, "SetPoint", function(sel, p1, p2, p3, p4, p5)
 						if maframesetpoint[sel] then return end
 						maframesetpoint[sel] = true
