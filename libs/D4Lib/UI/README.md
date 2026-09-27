@@ -155,7 +155,9 @@ Every `Add*` also takes `search`: an extra string the search box matches against
 on top of the translated label. Pass `added = "YYYY-MM-DD"` (or a Unix timestamp)
 for every newly introduced setting. D4UI shows a localized `[NEW]` badge for the
 first 14 days, including the added date, in light blue before the label. Existing settings without `added` remain
-unmarked; invalid and future dates are also ignored.
+unmarked; invalid dates are also ignored. Date strings are compared with the realm date
+(`C_DateAndTime.GetCurrentCalendarTime`), which can lag the local date around midnight,
+so a date one day in the future still counts as new; later dates are ignored.
 
 - `AddCheckbox`: `label`, `value`, `func(value, cb)`, `textFunc(cb)`, `onClick(button, cb)`.
   `textFunc` replaces `label` and is re-evaluated by `cb:UpdateLabel()`, which also
