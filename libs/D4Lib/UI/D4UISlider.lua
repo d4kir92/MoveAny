@@ -70,7 +70,7 @@ function UI.WindowMixin:AddSlider(tab)
     holder.Label = label
     holder.Low = low
     holder.High = high
-    UI:Add(win, holder, HEIGHT, text, true, tab.search)
+    UI:Add(win, holder, HEIGHT, text, true, tab.search, tab.added)
 
     return holder
 end

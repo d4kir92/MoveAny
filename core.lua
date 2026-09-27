@@ -290,11 +290,9 @@ function MoveAny:InitSlash()
 	MoveAny:AddSlash("moveany", MoveAny.ToggleMALock)
 	if string.lower(MoveAny:Trans("LID_SLASHMOVE")) ~= "move" then MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVE"), MoveAny.ToggleMALock) end
 	if string.lower(MoveAny:Trans("LID_SLASHMOVEANY")) ~= "moveany" then MoveAny:AddSlash(MoveAny:Trans("LID_SLASHMOVEANY"), MoveAny.ToggleMALock) end
-	local reload = _G["ReloadUI"]
-	if C_UI and C_UI.Reload then reload = C_UI.Reload end
-	MoveAny:AddSlash("rl", reload)
-	MoveAny:AddSlash("rel", reload)
-	MoveAny:AddSlash(MoveAny:Trans("LID_SLASHRELOAD"), reload)
+	MoveAny:AddSlashAlias("rl", "reload")
+	MoveAny:AddSlashAlias("rel", "reload")
+	MoveAny:AddSlashAlias(MoveAny:Trans("LID_SLASHRELOAD"), "reload")
 end
 
 if false then

@@ -128,14 +128,6 @@ function MoveAny:GetFrameName(frame)
 	return fnt[frame]
 end
 
-local function ApplyReload()
-	if C_UI then
-		C_UI.Reload()
-	else
-		ReloadUI()
-	end
-end
-
 local DRAG_LEVEL_MIN = 120
 local DRAG_LEVEL_MAX = 220
 local DRAG_LEVEL_SELECTED = 240
@@ -292,14 +284,11 @@ function MoveAny:AddEleReset(win, name)
 	local label = MoveAny:Trans("LID_RESETELEMENT")
 	local holder = CreateFrame("Frame", nil, win.content)
 	holder:SetSize(math.max(1, win.contentWidth - 8), MoveAny.UI.ROW)
-	local btn = MoveAny:CreateButton(nil, holder)
+	local btn = MoveAny:CreateReloadButton(nil, holder)
 	btn:SetSize(btnsize * 8, MoveAny.UI.ROW)
 	btn:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
 	btn:SetText(label)
-	btn:SetScript("OnClick", function()
-		MoveAny:ResetElement(name)
-		ApplyReload()
-	end)
+	btn:SetScript("PreClick", function() MoveAny:ResetElement(name) end)
 
 	holder.control = btn
 	MoveAny.UI:Add(win, holder, MoveAny.UI.ROW, label, true, "RESETELEMENT")
@@ -676,7 +665,10 @@ local function AddActionBarOptions(win, name, opts, frame, optionFrame)
 			["value"] = MoveAny:IsEnabled("CHANGEONCATSTEALTH", true),
 			["func"] = function(value)
 				MoveAny:SetEnabled("CHANGEONCATSTEALTH", value)
-				ApplyReload()
+				if not InCombatLockdown() then
+					UnregisterStateDriver(frame, "page")
+					MoveAny:UpdateActionBar(frame, "CHANGEONCATSTEALTH")
+				end
 			end,
 		})
 	end
@@ -1067,12 +1059,11 @@ end
 
 local SNAP_RANGE = 8
 local snapPreview = nil
-local issecretvalue = _G["issecretvalue"]
 local function GetSnapRect(f)
 	if f == nil or f.GetLeft == nil then return nil end
 	local l, r, b, t = f:GetLeft(), f:GetRight(), f:GetBottom(), f:GetTop()
 	if l == nil or r == nil or b == nil or t == nil then return nil end
-	if issecretvalue and (issecretvalue(l) or issecretvalue(r) or issecretvalue(b) or issecretvalue(t)) then return nil end
+	if not MoveAny:CanAccessValues(l, r, b, t) then return nil end
 	local s = f:GetEffectiveScale()
 	l, r, b, t = l * s, r * s, b * s, t * s
 

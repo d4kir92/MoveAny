@@ -52,7 +52,7 @@ function UI.WindowMixin:AddEditbox(tab)
         box:SetText(value)
     end
 
-    UI:Add(win, holder, HEIGHT, text, true, tab.search)
+    UI:Add(win, holder, HEIGHT, text, true, tab.search, tab.added)
 
     return holder
 end

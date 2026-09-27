@@ -171,7 +171,7 @@ function UI.WindowMixin:AddOrderList(tab)
     list.rowFrames = {}
     list:SetSize(math.max(1, win.contentWidth - 8), UI.ROW)
     list:Refresh()
-    list.uiElement = UI:Add(win, list, list:GetHeight(), UI:Text(tab.label), true, tab.search)
+    list.uiElement = UI:Add(win, list, list:GetHeight(), UI:Text(tab.label), true, tab.search, tab.added)
     list:SetItems(list.items)
 
     return list

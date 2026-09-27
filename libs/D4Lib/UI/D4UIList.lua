@@ -674,7 +674,7 @@ function UI.WindowMixin:AddList(tab)
     list:SetColumns(tab.columns)
     list:SetRows(tab.rows)
     list:SetSort(tab.sortKey, tab.ascending)
-    list.uiElement = UI:Add(win, list, list:GetHeight(), tab.label, true, tab.search)
+    list.uiElement = UI:Add(win, list, list:GetHeight(), tab.label, true, tab.search, tab.added)
     list:UpdateHeaderPosition()
     list.lastWidth = list:GetWidth()
     list:SetScript(

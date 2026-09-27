@@ -169,11 +169,6 @@ function MoveAny:RenameProfile(oldname, newname)
 	MoveAny:AddProfile(newname, oldname)
 	MoveAny:RemoveProfile(oldname)
 	if isCurrent then MoveAny:SetCP(newname) end
-	if C_UI then
-		C_UI.Reload()
-	else
-		ReloadUI()
-	end
 	return true
 end
 

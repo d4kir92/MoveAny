@@ -505,6 +505,28 @@ function D4:CreateButton(name, parent, noDefaultTemplate, templates)
     end
 end
 
+function D4:SetReloadAction(button, enabled)
+    if not button or InCombatLockdown() then return false end
+    local actionType = nil
+    local macrotext = nil
+    if enabled ~= false then
+        actionType = "macro"
+        macrotext = "/reload"
+    end
+
+    button:RegisterForClicks("LeftButtonUp")
+    button:SetAttribute("useOnKeyDown", false)
+    button:SetAttribute("type", actionType)
+    button:SetAttribute("macrotext", macrotext)
+    return true
+end
+
+function D4:CreateReloadButton(name, parent, enabled)
+    local button = D4:CreateButton(name, parent, false, "UIPanelButtonTemplate,SecureActionButtonTemplate")
+    D4:SetReloadAction(button, enabled)
+    return button
+end
+
 function D4:CreateCheckButton(name, parent, templates)
     if templates and D4:CheckTemplates(templates) then
         return CreateFrame("CheckButton", name, parent, templates)

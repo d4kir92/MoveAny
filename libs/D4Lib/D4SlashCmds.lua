@@ -3,21 +3,12 @@ local cmds = {}
 local hooked = {}
 local lastText = {}
 
-local function CanTouch(v)
-    if type(issecretvalue) == "function" then
-        local ok, secret = pcall(issecretvalue, v)
-        if ok and secret then return false end
-    end
-
-    return true
-end
-
 local function GetEditBoxText(editBox)
     if type(editBox) ~= "table" then return nil end
     if type(editBox.GetText) ~= "function" then return nil end
     local ok, text = pcall(editBox.GetText, editBox)
     if not ok then return nil end
-    if not CanTouch(text) then return nil end
+    if not D4:CanAccessValue(text) then return nil end
     if type(text) ~= "string" then return nil end
 
     return text
@@ -36,11 +27,17 @@ end
 
 local function OnKeyDown(editBox, key)
     if key ~= "ENTER" and key ~= "NUMPADENTER" then return end
-    local func, args = FindCmd(GetEditBoxText(editBox))
-    if not func then return end
+    local action, args = FindCmd(GetEditBoxText(editBox))
+    if not action then return end
+    if type(action) == "string" then
+        lastText[editBox] = nil
+        editBox:SetText("/" .. action .. (args ~= "" and " " .. args or ""))
+        return
+    end
+
     lastText[editBox] = nil
     editBox:SetText("")
-    func(args)
+    action(args)
 end
 
 local function OnTextChanged(editBox)
@@ -51,9 +48,9 @@ end
 local function OnEnterPressed(editBox)
     local text = lastText[editBox]
     lastText[editBox] = nil
-    local func, args = FindCmd(text)
-    if not func then return end
-    func(args)
+    local action, args = FindCmd(text)
+    if type(action) ~= "function" then return end
+    action(args)
 end
 
 local function HookEditBox(editBox)
@@ -99,5 +96,16 @@ function D4:AddSlash(name, func)
     local key = "/" .. string.lower(name)
     if cmds[key] then return end
     cmds[key] = func
+    HookChatEditBoxes()
+end
+
+function D4:AddSlashAlias(name, target)
+    if type(name) ~= "string" then return end
+    if type(target) ~= "string" then return end
+    target = string.match(target, "^/?([^%s]+)$")
+    if not target then return end
+    local key = "/" .. string.lower(name)
+    if cmds[key] then return end
+    cmds[key] = string.lower(target)
     HookChatEditBoxes()
 end

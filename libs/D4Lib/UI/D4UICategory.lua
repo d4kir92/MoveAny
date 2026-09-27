@@ -35,7 +35,7 @@ function UI.WindowMixin:AddCategory(tab)
     end
 
     if parentLevel >= 1 then win.category = win.categoryStack[parentLevel] end
-    local element = UI:Add(win, header, UI.ROW, text, true, tab.search)
+    local element = UI:Add(win, header, UI.ROW, text, true, tab.search, tab.added)
     element.isCategory = true
     element.level = level
     element.key = tab.key or tab.search or text

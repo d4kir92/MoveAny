@@ -32,6 +32,7 @@ local win = D4:CreateUIWindow({
 
 win:AddCheckbox({
     label = "LID_ALWAYSVISIBLE",
+    added = "2026-09-28",
     value = MyAddonDB.alwaysVisible,
     func = function(value) MyAddonDB.alwaysVisible = value end,
 })
@@ -151,7 +152,10 @@ category header, slider and dropdown stretch to the window width; the checkbox
 does not, because it is a fixed box with a label next to it.
 
 Every `Add*` also takes `search`: an extra string the search box matches against,
-on top of the translated label.
+on top of the translated label. Pass `added = "YYYY-MM-DD"` (or a Unix timestamp)
+for every newly introduced setting. D4UI shows a localized `[NEW]` badge for the
+first 14 days, including the added date, in light blue before the label. Existing settings without `added` remain
+unmarked; invalid and future dates are also ignored.
 
 - `AddCheckbox`: `label`, `value`, `func(value, cb)`, `textFunc(cb)`, `onClick(button, cb)`.
   `textFunc` replaces `label` and is re-evaluated by `cb:UpdateLabel()`, which also

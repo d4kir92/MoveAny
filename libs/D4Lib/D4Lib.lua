@@ -45,7 +45,26 @@ end
 function D4:IsSecret(value)
     local isSecret = _G["issecretvalue"]
     if type(isSecret) ~= "function" then return false end
-    return isSecret(value) == true
+    local ok, secret = pcall(isSecret, value)
+    if not ok then return true end
+    return secret == true
+end
+
+function D4:CanAccessValue(value)
+    if not D4:IsSecret(value) then return true end
+
+    local canAccess = _G["canaccessvalue"]
+    if type(canAccess) ~= "function" then return false end
+    local ok, accessible = pcall(canAccess, value)
+    return ok and accessible == true
+end
+
+function D4:CanAccessValues(...)
+    for i = 1, select("#", ...) do
+        if not D4:CanAccessValue(select(i, ...)) then return false end
+    end
+
+    return true
 end
 
 D4.oldWow = D4.oldWow or false

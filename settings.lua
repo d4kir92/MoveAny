@@ -449,14 +449,6 @@ end
 
 local needReload = false
 local est = {}
-local function SetReloadAction(button, enabled)
-	if not button or InCombatLockdown() then return end
-	button:RegisterForClicks("LeftButtonUp")
-	button:SetAttribute("useOnKeyDown", false)
-	button:SetAttribute("type", enabled and "macro" or nil)
-	button:SetAttribute("macrotext", enabled and "/reload" or nil)
-end
-
 function MoveAny:EnableSave(from, key, val, oldVal, ignoreReload)
 	ignoreReload = ignoreReload or false
 	if MALock == nil then return end
@@ -485,7 +477,8 @@ function MoveAny:EnableSave(from, key, val, oldVal, ignoreReload)
 	else
 		if MALock.save then MALock.save:Enable() end
 	end
-	SetReloadAction(MALock.save, needReload)
+
+	MoveAny:SetReloadAction(MALock.save, needReload)
 end
 
 function MoveAny:IsFrameKeyDown()
@@ -807,7 +800,7 @@ function MoveAny:InitMALock()
 		if TicketStatusFrame then AddCheckBox("TICKETSTATUSFRAME", false) end
 		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
 			AddCategory("ImproveAny")
-			if IASkills and MoveAny:GetWoWBuild() ~= "RETAIL" then AddCheckBox("IASKILLS", true) end
+			if IASkills then AddCheckBox("IASKILLS", true) end
 			AddCheckBox("MONEYBAR", true)
 			AddCheckBox("TOKENBAR", true)
 			AddCheckBox("IAILVLBAR", true)
@@ -856,14 +849,12 @@ function MoveAny:InitMALock()
 		["rightInset"] = 100 + br,
 	})
 
-	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock.footer, false, "UIPanelButtonTemplate,SecureActionButtonTemplate")
+	MALock.save = MoveAny:CreateReloadButton("MALock" .. ".save", MALock.footer, false)
 	MALock.save:SetSize(120, 24)
 	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 0, 0)
 	MALock.save:SetText(MoveAny:Trans("LID_SAVEANDCLOSE"))
 	MALock.save:SetWidth(math.max(120, MALock.save:GetTextWidth() + 24))
-	MALock.save:SetScript("PreClick", function()
-		if needReload and not InCombatLockdown() then MoveAny:Lock() end
-	end)
+	MALock.save:SetScript("PreClick", function() if needReload and not InCombatLockdown() then MoveAny:Lock() end end)
 	MALock.save:SetScript("PostClick", function()
 		--MoveAny:TrySaveEditMode()
 		if not needReload then
@@ -874,13 +865,11 @@ function MoveAny:InitMALock()
 	end)
 
 	MALock.save:Disable()
-	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock.footer, false, "UIPanelButtonTemplate,SecureActionButtonTemplate")
+	MALock.reload = MoveAny:CreateReloadButton("MALock" .. ".reload", MALock.footer)
 	MALock.reload:SetSize(120, 24)
 	MALock.reload:SetPoint("LEFT", MALock.save, "RIGHT", 4, 0)
 	MALock.reload:SetText(MoveAny:Trans("LID_RELOADANDREOPEN"))
 	MALock.reload:SetWidth(math.max(120, MALock.reload:GetTextWidth() + 24))
-	SetReloadAction(MALock.reload, true)
-
 	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock.footer, "InputBoxTemplate")
 	MALock.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 	MALock.DISCORD:SetSize(160, 24)
@@ -1136,11 +1125,12 @@ local function ShowImportProfile(name, text)
 		MAImportProfile.Name:SetAutoFocus(false)
 		MAImportProfile.SF:SetPoint("TOPLEFT", MAImportProfile, "TOPLEFT", br, -26 - 24 - br)
 		MAImportProfile.SF:SetPoint("BOTTOMRIGHT", MAImportProfile, "BOTTOMRIGHT", -32, 24 + br + br)
-		MAImportProfile.btn = MoveAny:CreateButton("MAImportProfile_Import", MAImportProfile)
+		MAImportProfile.btn = MoveAny:CreateReloadButton("MAImportProfile_Import", MAImportProfile)
 		MAImportProfile.btn:SetPoint("BOTTOMLEFT", MAImportProfile, "BOTTOMLEFT", br, br)
 		MAImportProfile.btn:SetSize(160, 24)
 		MAImportProfile.btn:SetText(MoveAny:Trans("LID_IMPORT"))
-		MAImportProfile.btn:SetScript("OnClick", function()
+		MAImportProfile.btn:SetScript("PreClick", function(sel)
+			MoveAny:SetReloadAction(sel, false)
 			local profileName = strtrim(MAImportProfile.Name:GetText() or "")
 			if profileName == "" then
 				MoveAny:ERR("[ImportProfile] can't add, Name is empty.")
@@ -1160,11 +1150,7 @@ local function ShowImportProfile(name, text)
 			end
 
 			MoveAny:ImportProfile(profileName, eleTab)
-			if C_UI then
-				C_UI.Reload()
-			else
-				ReloadUI()
-			end
+			MoveAny:SetReloadAction(sel, true)
 		end)
 	end
 
@@ -1549,18 +1535,11 @@ function MoveAny:ShowProfiles()
 					end)
 				end
 
-				MAAddProfile.AddProfile = MoveAny:CreateButton("MAAddProfile_Profiles", MAAddProfile)
+				MAAddProfile.AddProfile = MoveAny:CreateReloadButton("MAAddProfile_Profiles", MAAddProfile)
 				MAAddProfile.AddProfile:SetPoint("TOPLEFT", MAAddProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br)
 				MAAddProfile.AddProfile:SetSize(160, 24)
 				MAAddProfile.AddProfile:SetText(MoveAny:Trans("LID_ADD"))
-				MAAddProfile.AddProfile:SetScript("OnClick", function()
-					MoveAny:AddProfile(MAAddProfile.name, MAAddProfile.inheritFrom)
-					if C_UI then
-						C_UI.Reload()
-					else
-						ReloadUI()
-					end
-				end)
+				MAAddProfile.AddProfile:SetScript("PreClick", function() MoveAny:AddProfile(MAAddProfile.name, MAAddProfile.inheritFrom) end)
 			else
 				MAAddProfile:Show()
 			end
@@ -1587,7 +1566,7 @@ function MoveAny:ShowProfiles()
 
 		local index = 0
 		for name, tab in pairs(MoveAny:GetProfiles()) do
-			local btn = MoveAny:CreateButton(name, MAProfiles.SC)
+			local btn = MoveAny:CreateReloadButton(name, MAProfiles.SC)
 			btn:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 40 - br)
 			btn:SetSize(160, 24)
 			if name == MoveAny:GetCP() then
@@ -1596,15 +1575,7 @@ function MoveAny:ShowProfiles()
 				btn:SetText(name)
 			end
 
-			btn:SetScript("OnClick", function()
-				MoveAny:SetCP(name)
-				if C_UI then
-					C_UI.Reload()
-				else
-					ReloadUI()
-				end
-			end)
-
+			btn:SetScript("PreClick", function() MoveAny:SetCP(name) end)
 			if MoveAny:CanEncodeProfiles() then
 				local btnExport = MoveAny:CreateButton(name, MAProfiles.SC)
 				btnExport:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br, -index * 40 - br)
@@ -1642,12 +1613,18 @@ function MoveAny:ShowProfiles()
 						MARenameProfile.Name:SetPoint("TOPLEFT", MARenameProfile, "TOPLEFT", 12, -26)
 						MARenameProfile.Name:SetSize(300 - 24, 24)
 						MARenameProfile.Name:SetAutoFocus(false)
-						MARenameProfile.Name:SetScript("OnTextChanged", function(sel, text) MARenameProfile.name = MARenameProfile.Name:GetText() end)
-						MARenameProfile.RenameProfile = MoveAny:CreateButton("MARenameProfile_Profiles", MARenameProfile)
+						MARenameProfile.Name:SetScript("OnTextChanged", function()
+							MARenameProfile.name = MARenameProfile.Name:GetText()
+							local profiles = MoveAny:GetProfiles()
+							local valid = MARenameProfile.oldname ~= MARenameProfile.name and profiles[MARenameProfile.name] == nil and profiles[MARenameProfile.oldname] ~= nil
+							MoveAny:SetReloadAction(MARenameProfile.RenameProfile, valid)
+						end)
+
+						MARenameProfile.RenameProfile = MoveAny:CreateReloadButton("MARenameProfile_Profiles", MARenameProfile, false)
 						MARenameProfile.RenameProfile:SetPoint("TOPLEFT", MARenameProfile, "TOPLEFT", br, -26 - 24 - br - 30 - br)
 						MARenameProfile.RenameProfile:SetSize(160, 24)
 						MARenameProfile.RenameProfile:SetText(MoveAny:Trans("LID_RENAME"))
-						MARenameProfile.RenameProfile:SetScript("OnClick", function()
+						MARenameProfile.RenameProfile:SetScript("PreClick", function()
 							if MARenameProfile.oldname ~= MARenameProfile.name then
 								MoveAny:RenameProfile(MARenameProfile.oldname, MARenameProfile.name)
 							else
@@ -1664,19 +1641,11 @@ function MoveAny:ShowProfiles()
 				end)
 			end
 
-			local btnRem = MoveAny:CreateButton(name, MAProfiles.SC)
+			local btnRem = MoveAny:CreateReloadButton(name, MAProfiles.SC)
 			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br + 100 + br + 100 + br, -index * 40 - br)
 			btnRem:SetSize(100, 24)
 			btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
-			btnRem:SetScript("OnClick", function()
-				MoveAny:RemoveProfile(name)
-				if C_UI then
-					C_UI.Reload()
-				else
-					ReloadUI()
-				end
-			end)
-
+			btnRem:SetScript("PreClick", function() MoveAny:RemoveProfile(name) end)
 			index = index + 1
 		end
 
@@ -1698,7 +1667,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.15")
+	MoveAny:SetVersion(135994, "1.12.16")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -3864,7 +3833,7 @@ function MoveAny:LoadAddon()
 				})
 			end
 
-			if IASkills and MoveAny:IsEnabled("IASKILLS", true) and (MoveAny:GetWoWBuild() ~= "RETAIL") then
+			if IASkills and MoveAny:IsEnabled("IASKILLS", true) then
 				MoveAny:RegisterWidget({
 					["name"] = "IASkills",
 					["lstr"] = "LID_IASKILLS"

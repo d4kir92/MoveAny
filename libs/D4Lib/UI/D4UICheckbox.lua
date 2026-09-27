@@ -15,6 +15,7 @@ function UI.WindowMixin:AddCheckbox(tab)
     cb.Label = cb:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     cb.Label:SetPoint("LEFT", cb, "RIGHT", 4, 0)
     cb.holder = holder
+    holder.Label = cb.Label
     local text = UI:Text(tab.label)
     if tab.textFunc then text = tab.textFunc(cb) or text end
     cb.Label:SetText(text)
@@ -28,7 +29,7 @@ function UI.WindowMixin:AddCheckbox(tab)
         cb.row = row
     end
 
-    local element = UI:Add(win, holder, UI.ROW, text, true, tab.search)
+    local element = UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added)
     cb.uiElement = element
     function cb:UpdateLabel()
         if tab.textFunc == nil then return end

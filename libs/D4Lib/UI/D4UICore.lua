@@ -6,10 +6,80 @@ UI.SPACING = 5
 UI.ROW = 24
 UI.INDENT = 16
 UI.WindowMixin = {}
+local NEW_DAYS = 14
+local NEW_SECONDS = NEW_DAYS * 24 * 60 * 60
 
 function UI:Text(key, ...)
     if key == nil then return "" end
     return D4:TryTrans(key, nil, ...)
+end
+
+local function DateToDays(year, month, day)
+    if month <= 2 then
+        year = year - 1
+        month = month + 12
+    end
+
+    return 365 * year + math.floor(year / 4) - math.floor(year / 100) + math.floor(year / 400) + math.floor((153 * (month - 3) + 2) / 5) + day
+end
+
+local function DaysInMonth(year, month)
+    if month == 2 then
+        if year % 400 == 0 or year % 4 == 0 and year % 100 ~= 0 then return 29 end
+        return 28
+    end
+
+    if month == 4 or month == 6 or month == 9 or month == 11 then return 30 end
+    return 31
+end
+
+local function CurrentDate()
+    local dateAndTime = _G["C_DateAndTime"]
+    if type(dateAndTime) == "table" and type(dateAndTime.GetCurrentCalendarTime) == "function" then
+        local ok, current = pcall(dateAndTime.GetCurrentCalendarTime)
+        if ok and type(current) == "table" and current.year and current.month and current.monthDay then return current.year, current.month, current.monthDay end
+    end
+
+    local getDate = _G["date"]
+    if type(getDate) ~= "function" then return nil end
+    local ok, current = pcall(getDate, "*t")
+    if not ok or type(current) ~= "table" then return nil end
+    return current.year, current.month, current.day
+end
+
+function UI:IsNew(added)
+    if type(added) == "number" then
+        local getTime = _G["time"]
+        if type(getTime) ~= "function" then return false end
+        local ok, now = pcall(getTime)
+        if not ok or type(now) ~= "number" then return false end
+        local age = now - added
+        return age >= 0 and age <= NEW_SECONDS
+    end
+
+    if type(added) ~= "string" then return false end
+    local year, month, day = string.match(added, "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+    year, month, day = tonumber(year), tonumber(month), tonumber(day)
+    if not year or not month or not day or month < 1 or month > 12 or day < 1 or day > DaysInMonth(year, month) then return false end
+    local currentYear, currentMonth, currentDay = CurrentDate()
+    if not currentYear or not currentMonth or not currentDay then return false end
+    local age = DateToDays(currentYear, currentMonth, currentDay) - DateToDays(year, month, day)
+    return age >= -1 and age <= NEW_DAYS
+end
+
+function UI:AddNewBadge(frame, added)
+    if not UI:IsNew(added) then return nil end
+    if frame == nil or frame.Label == nil or type(frame.CreateFontString) ~= "function" or type(frame.Label.GetPoint) ~= "function" then return nil end
+    local point, relativeTo, relativePoint, xOffset, yOffset = frame.Label:GetPoint(1)
+    if point == nil then return nil end
+    local badge = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    frame.Label:ClearAllPoints()
+    badge:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset)
+    frame.Label:SetPoint("LEFT", badge, "RIGHT", 4, 0)
+    badge:SetWordWrap(false)
+    badge:SetText("|cff66ccff[" .. tostring(_G["NEW_CAPS"] or UI:Text("LID_NEW")) .. "]|r")
+    frame.NewBadge = badge
+    return badge
 end
 
 function UI:NextName(win, kind)
@@ -33,7 +103,7 @@ function UI:ApplyWindow(win)
     end
 end
 
-function UI:Add(win, frame, height, label, stretch, search)
+function UI:Add(win, frame, height, label, stretch, search, added)
     local element = {
         ["frame"] = frame,
         ["height"] = height or UI.ROW,
@@ -47,12 +117,14 @@ function UI:Add(win, frame, height, label, stretch, search)
         ["collapsed"] = false,
         ["match"] = true,
         ["selfMatch"] = true,
+        ["added"] = added,
     }
 
     if win.category then element.depth = win.category.depth + 1 end
 
     tinsert(win.elements, element)
     frame.uiElement = element
+    UI:AddNewBadge(frame, added)
     win:Layout()
 
     return element
