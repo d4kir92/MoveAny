@@ -449,6 +449,14 @@ end
 
 local needReload = false
 local est = {}
+local function SetReloadAction(button, enabled)
+	if not button or InCombatLockdown() then return end
+	button:RegisterForClicks("LeftButtonUp")
+	button:SetAttribute("useOnKeyDown", false)
+	button:SetAttribute("type", enabled and "macro" or nil)
+	button:SetAttribute("macrotext", enabled and "/reload" or nil)
+end
+
 function MoveAny:EnableSave(from, key, val, oldVal, ignoreReload)
 	ignoreReload = ignoreReload or false
 	if MALock == nil then return end
@@ -477,6 +485,7 @@ function MoveAny:EnableSave(from, key, val, oldVal, ignoreReload)
 	else
 		if MALock.save then MALock.save:Enable() end
 	end
+	SetReloadAction(MALock.save, needReload)
 end
 
 function MoveAny:IsFrameKeyDown()
@@ -517,13 +526,6 @@ function MoveAny:InitMALock()
 	sh = MoveAny:MClamp(640, 200, GetScreenHeight())
 	local function CloseMALock()
 		MoveAny:ToggleMALock()
-		if needReload then
-			if C_UI then
-				C_UI.Reload()
-			else
-				ReloadUI()
-			end
-		end
 	end
 
 	MALock = MoveAny:CreateUIWindow({
@@ -854,31 +856,30 @@ function MoveAny:InitMALock()
 		["rightInset"] = 100 + br,
 	})
 
-	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock.footer)
+	MALock.save = MoveAny:CreateButton("MALock" .. ".save", MALock.footer, false, "UIPanelButtonTemplate,SecureActionButtonTemplate")
 	MALock.save:SetSize(120, 24)
 	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 0, 0)
 	MALock.save:SetText(MoveAny:Trans("LID_SAVEANDCLOSE"))
 	MALock.save:SetWidth(math.max(120, MALock.save:GetTextWidth() + 24))
-	MALock.save:SetScript("OnClick", function()
+	MALock.save:SetScript("PreClick", function()
+		if needReload and not InCombatLockdown() then MoveAny:Lock() end
+	end)
+	MALock.save:SetScript("PostClick", function()
 		--MoveAny:TrySaveEditMode()
-		if MALock.save then MALock.save:Disable() end
-		if MALock.CloseButton then MALock.CloseButton:Enable() end
-		CloseMALock()
+		if not needReload then
+			if MALock.save then MALock.save:Disable() end
+			if MALock.CloseButton then MALock.CloseButton:Enable() end
+			CloseMALock()
+		end
 	end)
 
 	MALock.save:Disable()
-	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock.footer)
+	MALock.reload = MoveAny:CreateButton("MALock" .. ".reload", MALock.footer, false, "UIPanelButtonTemplate,SecureActionButtonTemplate")
 	MALock.reload:SetSize(120, 24)
 	MALock.reload:SetPoint("LEFT", MALock.save, "RIGHT", 4, 0)
 	MALock.reload:SetText(MoveAny:Trans("LID_RELOADANDREOPEN"))
 	MALock.reload:SetWidth(math.max(120, MALock.reload:GetTextWidth() + 24))
-	MALock.reload:SetScript("OnClick", function()
-		if C_UI then
-			C_UI.Reload()
-		else
-			ReloadUI()
-		end
-	end)
+	SetReloadAction(MALock.reload, true)
 
 	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock.footer, "InputBoxTemplate")
 	MALock.DISCORD:SetText("discord.gg/qxpK6PKYAD")
