@@ -2,6 +2,7 @@ local _, D4 = ...
 local d4_isMouseDown = {}
 local deg, atan2 = math.deg, math.atan2
 local rad, cos, sin, sqrt, max, min = math.rad, math.cos, math.sin, math.sqrt, math.max, math.min
+local floor, ceil = math.floor, math.ceil
 local mmShapes = {
     ["ROUND"] = {true, true, true, true},
     ["SQUARE"] = {false, false, false, false},
@@ -59,8 +60,103 @@ local function ReleaseD4Buttons(list)
     end
 end
 
+local BAGNAME = "LeaPlusGlobalMinimapCombinedButtonFrame"
+local BAGCELL = 30
+local function GetButtonBag()
+    return _G[BAGNAME]
+end
+
+local function IsExcludedFromButtonBag(btn)
+    local db = _G["LeaPlusDB"]
+    if type(db) ~= "table" or type(db["MiniExcludeList"]) ~= "string" then return false end
+    local nam = D4:GetName(btn)
+    if nam == nil then return false end
+    local short = strlower(string.sub(nam, #BTNPREFIX + 1))
+
+    return short ~= "" and string.find(strlower(db["MiniExcludeList"]), short, 1, true) ~= nil
+end
+
+local function LayoutButtonBag()
+    local bag = GetButtonBag()
+    if bag == nil or not bag:IsShown() then return end
+    local own = {}
+    local other = 0
+    local otherPerRow = 1
+    D4:ForeachChildren(
+        bag,
+        function(child)
+            local nam = D4:GetName(child)
+            if nam and string.find(nam, BTNPREFIX, 1, true) == 1 then
+                if child:IsShown() then tinsert(own, child) end
+            elseif child:IsShown() then
+                other = other + 1
+                for i = 1, child:GetNumPoints() do
+                    local point, relativeTo, _, x = child:GetPoint(i)
+                    if point == "TOPLEFT" and relativeTo == bag and type(x) == "number" then otherPerRow = max(otherPerRow, floor(x / BAGCELL + 0.5) + 1) end
+                end
+            end
+        end,
+        "[D4] LayoutButtonBag"
+    )
+
+    if #own == 0 then return end
+    table.sort(own, function(a, b) return strlower(D4:GetName(a)) < strlower(D4:GetName(b)) end)
+    local perRow = max(otherPerRow, min(10, ceil((other + #own) / 4)))
+    local cols = min(other, otherPerRow)
+    local rows = ceil(other / otherPerRow)
+    local slot = 0
+    for _, child in ipairs(own) do
+        local row, col
+        repeat
+            row, col = floor(slot / perRow), slot % perRow
+            slot = slot + 1
+        until col >= otherPerRow or row * otherPerRow + col >= other
+        child:SetScale(1)
+        child:ClearAllPoints()
+        child:SetPoint("TOPLEFT", bag, "TOPLEFT", col * BAGCELL, -row * BAGCELL)
+        cols = max(cols, col + 1)
+        rows = max(rows, row + 1)
+    end
+
+    bag:SetSize(cols * BAGCELL, rows * BAGCELL)
+end
+
+local function MoveToButtonBag(btn)
+    local bag = GetButtonBag()
+    if bag == nil or btn.d4NoBag or D4:GetParent(btn) == bag or IsExcludedFromButtonBag(btn) then return end
+    if not bag.d4Hooked then
+        bag.d4Hooked = true
+        bag:HookScript("OnShow", function() D4:After(0, LayoutButtonBag, "[D4] ButtonBagLayout") end)
+    end
+
+    btn:SetParent(bag)
+    if btn.d4BagBg == nil then
+        btn.d4BagBg = btn:CreateTexture(nil, "BACKGROUND")
+        btn.d4BagBg:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+        btn.d4BagBg:SetPoint("CENTER")
+        btn.d4BagBg:SetSize(BAGCELL, BAGCELL)
+        btn.d4BagBg:SetVertexColor(0, 0, 0, 0.5)
+    end
+
+    LayoutButtonBag()
+end
+
+local function IgnoreInButtonBags(btn)
+    local ignore = _G["MBB_Ignore"]
+    local nam = D4:GetName(btn)
+    if not btn.d4NoBag or btn.d4MBBIgnored or type(ignore) ~= "table" or nam == nil then return end
+    btn.d4MBBIgnored = true
+    tinsert(ignore, "^" .. (string.gsub(nam, "%p", "%%%0")) .. "$")
+end
+
+local function UpdateButtonBags(btn)
+    IgnoreInButtonBags(btn)
+    MoveToButtonBag(btn)
+end
+
 local pos = {}
 function D4:UpdatePosition(button, position, parent)
+    if parent == nil and GetButtonBag() ~= nil and D4:GetParent(button) == GetButtonBag() then return false end
     parent = parent or Minimap
     pos[button] = position or 225
     local angle = rad(pos[button])
@@ -120,6 +216,7 @@ function D4:CreateMinimapButton(params)
     local btn = _G["MinimapButton_D4Lib_LibDBIcon_" .. params.name]
     btn:SetFrameLevel(501)
     btn.d4border = params.border
+    btn.d4NoBag = params.nobag == true or params.addoncomp == false
     btn.db = params.dbtab
     btn.db.minimapPos = btn.db.minimapPos or 0
     btn.minimapPos = btn.minimapPos or 0
@@ -137,6 +234,7 @@ function D4:CreateMinimapButton(params)
 
     btn:SetSize(params.sw, params.sh)
     if params.point ~= nil and params.parent ~= nil then
+        btn.d4NoBag = true
         btn:SetPoint(unpack(params.point))
     else
         D4:UpdatePosition(btn, btn.db.minimapPos)
@@ -144,6 +242,7 @@ function D4:CreateMinimapButton(params)
         btn:RegisterForDrag("LeftButton")
         btn:SetMovable(true)
         btn:SetScript("OnDragStart", function(sel)
+            if not IsOnMinimap(sel) then return end
             d4_isMouseDown[sel] = true
             sel.d4Siblings = CollectD4Buttons(sel)
             ForceShowD4Buttons(sel.d4Siblings)
@@ -341,6 +440,8 @@ function D4:CreateMinimapButton(params)
     elseif params.dbkey == nil then
         D4:MSG("Missing dbkey in CreateMinimapButton", params.name, params.dbkey)
     end
+
+    UpdateButtonBags(btn)
     return btn
 end
 
@@ -353,6 +454,7 @@ function D4:ShowMMBtn(name)
     local btn = D4:GetMMBtn("MinimapButton_D4Lib_LibDBIcon_" .. name)
     if btn then
         btn:Show()
+        LayoutButtonBag()
     else
         D4:MSG("[ShowMMBtn] Missing Button", name)
     end
@@ -367,6 +469,7 @@ function D4:HideMMBtn(name)
     local btn = D4:GetMMBtn("MinimapButton_D4Lib_LibDBIcon_" .. name)
     if btn then
         btn:Hide()
+        LayoutButtonBag()
     else
         D4:MSG("[HideMMBtn] Missing Button", name)
     end
@@ -375,9 +478,7 @@ end
 function D4:UpdateLTP()
     local MinimapModder = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
     if MinimapModder then
-        local CombineAddonButtons = LeaPlusDB["CombineAddonButtons"] == "On"
         --local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
-        local btnParent = _G["LeaPlusGlobalMinimapCombinedButtonFrame"]
         D4:ForeachChildren(Minimap, function(child)
             local name = D4:GetName(child)
             if name then
@@ -386,7 +487,6 @@ function D4:UpdateLTP()
                     child.ltp = true
                     child:SetScale(0.75)
                     D4:UpdatePosition(child, pos[child])
-                    if CombineAddonButtons and btnParent then child:SetParent(btnParent) end
                 end
             end
         end, "MMBtns")
@@ -394,3 +494,12 @@ function D4:UpdateLTP()
 end
 
 D4:After(4, function() D4:UpdateLTP() end, "UpdateLTP")
+local bagEvents = CreateFrame("Frame")
+bagEvents:RegisterEvent("PLAYER_LOGIN")
+bagEvents:RegisterEvent("PLAYER_ENTERING_WORLD")
+bagEvents:SetScript("OnEvent", function(sel, event)
+    sel:UnregisterEvent(event)
+    for _, child in ipairs(CollectD4Buttons()) do
+        UpdateButtonBags(child)
+    end
+end)
