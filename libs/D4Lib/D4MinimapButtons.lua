@@ -45,6 +45,13 @@ local function ForceShowD4Buttons(list)
     end
 end
 
+local function IsOnMinimap(btn)
+    if D4:GetParent(btn) ~= Minimap then return false end
+    local _, relativeTo = btn:GetPoint(1)
+
+    return relativeTo == nil or relativeTo == Minimap
+end
+
 local function ReleaseD4Buttons(list)
     if list == nil then return end
     for _, child in ipairs(list) do
@@ -271,34 +278,29 @@ function D4:CreateMinimapButton(params)
         local insideMinimap = false
         local oldState = false
         local function BtnThink(force)
-            local shouldShow = insideBtn or insideMinimap or d4_isMouseDown[btn] == true
+            local onMinimap = IsOnMinimap(btn)
+            local shouldShow = not onMinimap or insideBtn or insideMinimap or d4_isMouseDown[btn] == true
             if force then oldState = nil end
             if oldState ~= shouldShow then
                 oldState = shouldShow
-                if shouldShow then
-                    if D4:GetParent(btn) == Minimap then
-                        btn.fadeOut:Stop()
-                        btn.fadeIn:Play()
-                        btn:SetAlpha(1)
-                    else
-                        btn.fadeOut:Stop()
-                        btn.fadeIn:Stop()
-                        btn:SetAlpha(1)
-                    end
+                if not shouldShow then
+                    btn.fadeIn:Stop()
+                    btn.fadeOut:Play()
+                elseif onMinimap then
+                    btn.fadeOut:Stop()
+                    btn.fadeIn:Play()
+                    btn:SetAlpha(1)
                 else
-                    if D4:GetParent(btn) == Minimap then
-                        btn.fadeIn:Stop()
-                        btn.fadeOut:Play()
-                    else
-                        btn.fadeOut:Stop()
-                        btn.fadeIn:Stop()
-                        btn:SetAlpha(1)
-                    end
+                    btn.fadeOut:Stop()
+                    btn.fadeIn:Stop()
+                    btn:SetAlpha(1)
                 end
             end
         end
 
         btn.D4Think = BtnThink
+        hooksecurefunc(btn, "SetParent", function() BtnThink() end)
+        hooksecurefunc(btn, "SetPoint", function() BtnThink() end)
         btn:HookScript("OnEnter", function()
             insideBtn = true
             BtnThink()
@@ -319,7 +321,7 @@ function D4:CreateMinimapButton(params)
             BtnThink()
         end)
 
-        D4:After(4, function() if D4:GetParent(btn) == Minimap and not d4_isMouseDown[btn] then btn.fadeOut:Play() end end, "[D4] MinimapInit")
+        D4:After(4, function() BtnThink(true) end, "[D4] MinimapInit")
     end
 
     if params.dbkey and params.dbkey ~= "" then

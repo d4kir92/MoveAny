@@ -6,7 +6,7 @@ UI.SPACING = 5
 UI.ROW = 24
 UI.INDENT = 16
 UI.WindowMixin = {}
-local NEW_DAYS = 14
+local NEW_DAYS = 7
 local NEW_SECONDS = NEW_DAYS * 24 * 60 * 60
 
 function UI:Text(key, ...)

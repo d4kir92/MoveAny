@@ -154,7 +154,7 @@ does not, because it is a fixed box with a label next to it.
 Every `Add*` also takes `search`: an extra string the search box matches against,
 on top of the translated label. Pass `added = "YYYY-MM-DD"` (or a Unix timestamp)
 for every newly introduced setting. D4UI shows a localized `[NEW]` badge for the
-first 14 days, including the added date, in light blue before the label. Existing settings without `added` remain
+first 7 days, including the added date, in light blue before the label. Existing settings without `added` remain
 unmarked; invalid dates are also ignored. Date strings are compared with the realm date
 (`C_DateAndTime.GetCurrentCalendarTime`), which can lag the local date around midnight,
 so a date one day in the future still counts as new; later dates are ignored.
