@@ -145,6 +145,11 @@ any of its children match, a category whose own label matches pulls in all of it
 children, and while a search is active collapsed categories are shown anyway so a
 hit is never hidden behind a closed group.
 
+`win:AddRequirement(frame, requiredFrame)` marks `requiredFrame` (e.g. the checkbox that
+enables an option) as required by `frame`. Both are frames an `Add*` call returned. While
+a search is active, every shown hit also shows the elements it requires, transitively,
+so a dependent option is never found without the switch that turns it on.
+
 ## Elements
 
 All `Add*` calls take one options table and return the created frame. Search box,
