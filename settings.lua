@@ -2013,6 +2013,102 @@ local function SliceStatusBarTexture(tex, fallbackAtlas)
 	tex:Hide()
 end
 
+local statusBarFills = {}
+local function SetStatusBarFillSlice(slice, anchor, x, width, left, right, top, bottom)
+	if width <= 0 then
+		slice:Hide()
+		return
+	end
+
+	slice:ClearAllPoints()
+	slice:SetPoint("TOPLEFT", anchor, "TOPLEFT", x, 0)
+	slice:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", x, 0)
+	slice:SetWidth(width)
+	slice:SetTexCoord(left, right, top, bottom)
+	slice:Show()
+end
+
+local function UpdateStatusBarFill(tex)
+	local data = statusBarFills[tex]
+	if data == nil then return end
+	local atlas = tex:GetAtlas()
+	local info = atlas and C_Texture.GetAtlasInfo(atlas)
+	local file = info and (info.file or info.filename)
+	local fillWidth, barWidth = data.getWidths(tex)
+	local active = file ~= nil and info.width ~= nil and info.width > STATUSBAR_FRAME_CAP * 2 and barWidth > STATUSBAR_FRAME_CAP * 2
+	data.muting = true
+	tex:SetAlpha(active and 0 or data.alpha)
+	data.muting = false
+	if not active then
+		for _, slice in ipairs(data.slices) do
+			slice:Hide()
+		end
+
+		return
+	end
+
+	local r, g, b, a = tex:GetVertexColor()
+	for _, slice in ipairs(data.slices) do
+		if data.file ~= file then slice:SetTexture(file) end
+		slice:SetVertexColor(r, g, b, a)
+		slice:SetAlpha(data.alpha)
+	end
+
+	data.file = file
+	local left, right, top, bottom = info.leftTexCoord, info.rightTexCoord, info.topTexCoord, info.bottomTexCoord
+	local capCoord = (right - left) * STATUSBAR_FRAME_CAP / info.width
+	local midEnd = barWidth - STATUSBAR_FRAME_CAP
+	local leftWidth = math.min(fillWidth, STATUSBAR_FRAME_CAP)
+	local midWidth = math.min(fillWidth, midEnd) - STATUSBAR_FRAME_CAP
+	local rightWidth = fillWidth - midEnd
+	SetStatusBarFillSlice(data.slices[1], data.anchor, 0, leftWidth, left, left + capCoord * leftWidth / STATUSBAR_FRAME_CAP, top, bottom)
+	SetStatusBarFillSlice(data.slices[2], data.anchor, STATUSBAR_FRAME_CAP, midWidth, left + capCoord, left + capCoord + (right - left - capCoord * 2) * midWidth / (midEnd - STATUSBAR_FRAME_CAP), top, bottom)
+	SetStatusBarFillSlice(data.slices[3], data.anchor, midEnd, rightWidth, right - capCoord, right - capCoord + capCoord * rightWidth / STATUSBAR_FRAME_CAP, top, bottom)
+end
+
+local function SliceStatusBarFill(tex, anchor, getWidths, installHooks)
+	if tex == nil or C_Texture == nil or C_Texture.GetAtlasInfo == nil then return end
+	if statusBarFills[tex] == nil then
+		local layer, subLevel = tex:GetDrawLayer()
+		local slices = {}
+		for i = 1, 3 do
+			slices[i] = tex:GetParent():CreateTexture(nil, layer, nil, subLevel)
+		end
+
+		statusBarFills[tex] = {
+			slices = slices,
+			anchor = anchor,
+			getWidths = getWidths,
+			alpha = tex:GetAlpha(),
+		}
+
+		hooksecurefunc(tex, "SetAlpha", function(sel, alpha)
+			local data = statusBarFills[sel]
+			if data.muting then return end
+			data.alpha = alpha
+			UpdateStatusBarFill(sel)
+		end)
+
+		hooksecurefunc(tex, "SetVertexColor", UpdateStatusBarFill)
+		installHooks(function() UpdateStatusBarFill(tex) end)
+	end
+
+	UpdateStatusBarFill(tex)
+end
+
+local function GetStatusBarFillWidths(tex)
+	local statusBar = tex:GetParent()
+	local barWidth = statusBar:GetWidth()
+	local minValue, maxValue = statusBar:GetMinMaxValues()
+	if maxValue <= minValue then return 0, barWidth end
+
+	return barWidth * math.min(math.max((statusBar:GetValue() - minValue) / (maxValue - minValue), 0), 1), barWidth
+end
+
+local function GetExhaustionFillWidths(tex)
+	return tex:IsShown() and tex:GetWidth() or 0, tex:GetParent():GetWidth()
+end
+
 function MoveAny:UpdateStatusTrackingBarWidth(name)
 	local frame = _G[name]
 	if frame == nil then return end
@@ -2036,7 +2132,38 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 
 	if frame.bars then
 		for _, bar in pairs(frame.bars) do
-			if bar.StatusBar and bar.StatusBar.Background then SliceStatusBarTexture(bar.StatusBar.Background, "UI-HUD-ExperienceBar-Background") end
+			local statusBar = bar.StatusBar
+			if statusBar then
+				if statusBar.Background then SliceStatusBarTexture(statusBar.Background, "UI-HUD-ExperienceBar-Background") end
+				SliceStatusBarFill(
+					statusBar:GetStatusBarTexture(),
+					statusBar,
+					GetStatusBarFillWidths,
+					function(update)
+						hooksecurefunc(statusBar, "SetValue", update)
+						hooksecurefunc(statusBar, "SetMinMaxValues", update)
+						hooksecurefunc(statusBar, "SetStatusBarTexture", update)
+						hooksecurefunc(statusBar, "SetStatusBarColor", update)
+						statusBar:HookScript("OnSizeChanged", update)
+					end
+				)
+			end
+
+			local exhaustion = bar.ExhaustionLevelFillBar
+			if exhaustion then
+				SliceStatusBarFill(
+					exhaustion,
+					exhaustion,
+					GetExhaustionFillWidths,
+					function(update)
+						hooksecurefunc(exhaustion, "SetWidth", update)
+						hooksecurefunc(exhaustion, "Show", update)
+						hooksecurefunc(exhaustion, "Hide", update)
+					end
+				)
+			end
+
+			if bar.ExhaustionTick and bar.ExhaustionTick.UpdateTickPosition then bar.ExhaustionTick:UpdateTickPosition() end
 		end
 	end
 end
