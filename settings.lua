@@ -1955,6 +1955,24 @@ function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 	if func then func() end
 end
 
+function MoveAny:UpdateStatusTrackingBarWidth(name)
+	local frame = _G[name]
+	if frame == nil then return end
+	local width = MoveAny:GetEleOptions(name, "UpdateStatusTrackingBarWidth")["WIDTH"]
+	if width == nil then return end
+	frame:SetSize(width, frame:GetHeight())
+	if frame.BarFrameTexture then frame.BarFrameTexture:SetWidth(width) end
+	if frame.ResizeContainerBars then
+		frame:ResizeContainerBars()
+		if frame.UpdateDividers and frame.GetExpectedSegments then frame:UpdateDividers(frame:GetExpectedSegments()) end
+	elseif frame.bars then
+		for _, bar in pairs(frame.bars) do
+			bar:SetWidth(width - 6)
+			if bar.StatusBar then bar.StatusBar:SetWidth(width - 6) end
+		end
+	end
+end
+
 local msgOnce = {}
 function MoveAny:LoadAddon()
 	MoveAny.init = MoveAny.init or false
@@ -4517,18 +4535,22 @@ function MoveAny:LoadAddon()
 
 	if MainStatusTrackingBarContainer and MoveAny:IsEnabled("MainStatusTrackingBarContainer", false) then
 		MoveAny:After(1, function()
+			MoveAny:UpdateStatusTrackingBarWidth("MainStatusTrackingBarContainer")
 			MoveAny:RegisterWidget({
 				["name"] = "MainStatusTrackingBarContainer",
 				["lstr"] = "LID_MainStatusTrackingBarContainer",
+				["sw"] = MoveAny:GetEleOptions("MainStatusTrackingBarContainer", "RegisterWidget: MainStatusTrackingBarContainer")["WIDTH"],
 			})
 		end, "MainStatusTrackingBarContainer")
 	end
 
 	if SecondaryStatusTrackingBarContainer and MoveAny:IsEnabled("SecondaryStatusTrackingBarContainer", false) then
 		MoveAny:After(1, function()
+			MoveAny:UpdateStatusTrackingBarWidth("SecondaryStatusTrackingBarContainer")
 			MoveAny:RegisterWidget({
 				["name"] = "SecondaryStatusTrackingBarContainer",
 				["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
+				["sw"] = MoveAny:GetEleOptions("SecondaryStatusTrackingBarContainer", "RegisterWidget: SecondaryStatusTrackingBarContainer")["WIDTH"],
 			})
 		end, "SecondaryStatusTrackingBarContainer")
 	end

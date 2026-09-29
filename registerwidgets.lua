@@ -792,6 +792,24 @@ local function AddStatusBarOptions(win, opts, frame, label)
 	})
 end
 
+local function AddStatusTrackingBarOptions(win, name, opts, frame, label)
+	AddEleCategory(win, "STATUSBAR", label)
+	win:AddSlider({
+		["label"] = MoveAny:Trans("LID_WIDTH"),
+		["search"] = "WIDTH",
+		["value"] = opts["WIDTH"] or MoveAny:MathR(frame:GetWidth()),
+		["min"] = 100,
+		["max"] = 1000,
+		["step"] = 5,
+		["decimals"] = 0,
+		["func"] = function(value)
+			if value == opts["WIDTH"] then return end
+			opts["WIDTH"] = value
+			MoveAny:UpdateStatusTrackingBarWidth(name)
+		end,
+	})
+end
+
 local function AddBagOptions(win, name)
 	AddEleCategory(win, "BAGEXTRAS")
 	win:AddCheckbox({
@@ -862,6 +880,8 @@ function MoveAny:MenuOptions(win, frame)
 		AddStatusBarOptions(win, opts, frame, MoveAny:Trans("LID_MAINMENUEXPBAR"))
 	elseif string.find(name, "ReputationWatchBar") then
 		AddStatusBarOptions(win, opts, frame, MoveAny:Trans("LID_REPUTATIONWATCHBAR"))
+	elseif name == "MainStatusTrackingBarContainer" or name == "SecondaryStatusTrackingBarContainer" then
+		AddStatusTrackingBarOptions(win, name, opts, frame, MoveAny:Trans("LID_" .. name))
 	end
 
 	if string.find(name, "BagsBar") then AddBagOptions(win, name) end
