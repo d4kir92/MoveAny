@@ -179,6 +179,11 @@ so a date one day in the future still counts as new; later dates are ignored.
   after clamping to `min`/`max` and rounding to `decimals`.
   `holder.slider` is the slider itself, `holder.Low` / `holder.High` are the two range
   labels — set both when you change the range with `SetMinMaxValues` at runtime.
+  A small edit box right of the slider (`holder.Box`) shows the current value and takes
+  typed input: on Enter or focus loss the number (comma or dot as decimal separator) is
+  clamped to the slider's current range, snapped to the nearest `step` counted from `min`,
+  rounded to `decimals` and set on the slider, which fires `func` as a drag would.
+  Invalid input and Escape restore the current value.
 - `AddDropdown`: `label`, `value`, `width`, `choices`, `maxVisible`, `func(value)`.
   `choices` is an ordered array of `{value = ..., label = "LID_..."}`;
   `UI:ChoicesFromMap(map, current)` builds one from a sparse `value → label` table,
