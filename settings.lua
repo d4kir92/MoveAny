@@ -1667,7 +1667,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.18")
+	MoveAny:SetVersion(135994, "1.12.19")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2003,6 +2003,7 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 		frame.BarFrameTexture:SetWidth(width)
 		SliceStatusBarFrameTexture(frame, frame.BarFrameTexture)
 	end
+
 	if frame.ResizeContainerBars then
 		frame:ResizeContainerBars()
 		if frame.UpdateDividers and frame.GetExpectedSegments then frame:UpdateDividers(frame:GetExpectedSegments()) end
