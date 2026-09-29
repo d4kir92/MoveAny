@@ -1667,7 +1667,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.20")
+	MoveAny:SetVersion(135994, "1.12.21")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2036,22 +2036,29 @@ local function UpdateStatusBarFill(tex)
 	local file = info and (info.file or info.filename)
 	local fillWidth, barWidth = data.getWidths(tex)
 	local active = file ~= nil and info.width ~= nil and info.width > STATUSBAR_FRAME_CAP * 2 and barWidth > STATUSBAR_FRAME_CAP * 2
-	data.muting = true
-	tex:SetAlpha(active and 0 or data.alpha)
-	data.muting = false
+	if active ~= data.masked then
+		if active then
+			tex:AddMaskTexture(data.mask)
+		else
+			tex:RemoveMaskTexture(data.mask)
+		end
+
+		data.masked = active
+	end
+
 	if not active then
 		for _, slice in ipairs(data.slices) do
 			slice:Hide()
 		end
-
 		return
 	end
 
 	local r, g, b, a = tex:GetVertexColor()
+	local alpha = tex:GetAlpha()
 	for _, slice in ipairs(data.slices) do
 		if data.file ~= file then slice:SetTexture(file) end
 		slice:SetVertexColor(r, g, b, a)
-		slice:SetAlpha(data.alpha)
+		slice:SetAlpha(alpha)
 	end
 
 	data.file = file
@@ -2067,28 +2074,28 @@ local function UpdateStatusBarFill(tex)
 end
 
 local function SliceStatusBarFill(tex, anchor, getWidths, installHooks)
-	if tex == nil or C_Texture == nil or C_Texture.GetAtlasInfo == nil then return end
+	if tex == nil or tex.AddMaskTexture == nil or C_Texture == nil or C_Texture.GetAtlasInfo == nil then return end
 	if statusBarFills[tex] == nil then
+		local parent = tex:GetParent()
 		local layer, subLevel = tex:GetDrawLayer()
 		local slices = {}
 		for i = 1, 3 do
-			slices[i] = tex:GetParent():CreateTexture(nil, layer, nil, subLevel)
+			slices[i] = parent:CreateTexture(nil, layer, nil, subLevel)
 		end
 
+		local mask = parent:CreateMaskTexture()
+		mask:SetTexture("Interface\\Buttons\\WHITE8X8", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+		mask:SetSize(1, 1)
+		mask:SetPoint("BOTTOMRIGHT", parent, "TOPLEFT", -8, 8)
 		statusBarFills[tex] = {
 			slices = slices,
+			mask = mask,
+			masked = false,
 			anchor = anchor,
 			getWidths = getWidths,
-			alpha = tex:GetAlpha(),
 		}
 
-		hooksecurefunc(tex, "SetAlpha", function(sel, alpha)
-			local data = statusBarFills[sel]
-			if data.muting then return end
-			data.alpha = alpha
-			UpdateStatusBarFill(sel)
-		end)
-
+		hooksecurefunc(tex, "SetAlpha", UpdateStatusBarFill)
 		hooksecurefunc(tex, "SetVertexColor", UpdateStatusBarFill)
 		installHooks(function() UpdateStatusBarFill(tex) end)
 	end
@@ -2101,7 +2108,6 @@ local function GetStatusBarFillWidths(tex)
 	local barWidth = statusBar:GetWidth()
 	local minValue, maxValue = statusBar:GetMinMaxValues()
 	if maxValue <= minValue then return 0, barWidth end
-
 	return barWidth * math.min(math.max((statusBar:GetValue() - minValue) / (maxValue - minValue), 0), 1), barWidth
 end
 
@@ -2135,32 +2141,22 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 			local statusBar = bar.StatusBar
 			if statusBar then
 				if statusBar.Background then SliceStatusBarTexture(statusBar.Background, "UI-HUD-ExperienceBar-Background") end
-				SliceStatusBarFill(
-					statusBar:GetStatusBarTexture(),
-					statusBar,
-					GetStatusBarFillWidths,
-					function(update)
-						hooksecurefunc(statusBar, "SetValue", update)
-						hooksecurefunc(statusBar, "SetMinMaxValues", update)
-						hooksecurefunc(statusBar, "SetStatusBarTexture", update)
-						hooksecurefunc(statusBar, "SetStatusBarColor", update)
-						statusBar:HookScript("OnSizeChanged", update)
-					end
-				)
+				SliceStatusBarFill(statusBar:GetStatusBarTexture(), statusBar, GetStatusBarFillWidths, function(update)
+					hooksecurefunc(statusBar, "SetValue", update)
+					hooksecurefunc(statusBar, "SetMinMaxValues", update)
+					hooksecurefunc(statusBar, "SetStatusBarTexture", update)
+					hooksecurefunc(statusBar, "SetStatusBarColor", update)
+					statusBar:HookScript("OnSizeChanged", update)
+				end)
 			end
 
 			local exhaustion = bar.ExhaustionLevelFillBar
 			if exhaustion then
-				SliceStatusBarFill(
-					exhaustion,
-					exhaustion,
-					GetExhaustionFillWidths,
-					function(update)
-						hooksecurefunc(exhaustion, "SetWidth", update)
-						hooksecurefunc(exhaustion, "Show", update)
-						hooksecurefunc(exhaustion, "Hide", update)
-					end
-				)
+				SliceStatusBarFill(exhaustion, exhaustion, GetExhaustionFillWidths, function(update)
+					hooksecurefunc(exhaustion, "SetWidth", update)
+					hooksecurefunc(exhaustion, "Show", update)
+					hooksecurefunc(exhaustion, "Hide", update)
+				end)
 			end
 
 			if bar.ExhaustionTick and bar.ExhaustionTick.UpdateTickPosition then bar.ExhaustionTick:UpdateTickPosition() end
