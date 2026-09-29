@@ -800,7 +800,7 @@ local function AddStatusTrackingBarOptions(win, name, opts, frame, label)
 		["value"] = opts["WIDTH"] or MoveAny:MathR(frame:GetWidth()),
 		["min"] = 100,
 		["max"] = 1000,
-		["step"] = 5,
+		["step"] = 1,
 		["decimals"] = 0,
 		["func"] = function(value)
 			if value == opts["WIDTH"] then return end
