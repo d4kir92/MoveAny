@@ -1955,13 +1955,54 @@ function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 	if func then func() end
 end
 
+local STATUSBAR_FRAME_CAP = 16
+local statusBarFrameSlices = {}
+local function SliceStatusBarFrameTexture(frame, tex)
+	if C_Texture == nil or C_Texture.GetAtlasInfo == nil then return end
+	local info = C_Texture.GetAtlasInfo(tex:GetAtlas() or "UI-HUD-ExperienceBar-Frame")
+	if info == nil or info.width == nil or info.width <= STATUSBAR_FRAME_CAP * 2 then return end
+	local file = info.file or info.filename
+	if file == nil then return end
+	local slices = statusBarFrameSlices[frame]
+	if slices == nil then
+		slices = {}
+		for i = 1, 3 do
+			local t = frame:CreateTexture(nil, "OVERLAY")
+			t:SetTexture(file)
+			slices[i] = t
+		end
+
+		statusBarFrameSlices[frame] = slices
+	end
+
+	local height = tex:GetHeight()
+	local capCoord = (info.rightTexCoord - info.leftTexCoord) * STATUSBAR_FRAME_CAP / info.width
+	local left, mid, right = slices[1], slices[2], slices[3]
+	left:ClearAllPoints()
+	left:SetPoint("LEFT", tex, "LEFT", 0, 0)
+	left:SetSize(STATUSBAR_FRAME_CAP, height)
+	left:SetTexCoord(info.leftTexCoord, info.leftTexCoord + capCoord, info.topTexCoord, info.bottomTexCoord)
+	right:ClearAllPoints()
+	right:SetPoint("RIGHT", tex, "RIGHT", 0, 0)
+	right:SetSize(STATUSBAR_FRAME_CAP, height)
+	right:SetTexCoord(info.rightTexCoord - capCoord, info.rightTexCoord, info.topTexCoord, info.bottomTexCoord)
+	mid:ClearAllPoints()
+	mid:SetPoint("TOPLEFT", left, "TOPRIGHT", 0, 0)
+	mid:SetPoint("BOTTOMRIGHT", right, "BOTTOMLEFT", 0, 0)
+	mid:SetTexCoord(info.leftTexCoord + capCoord, info.rightTexCoord - capCoord, info.topTexCoord, info.bottomTexCoord)
+	tex:SetAlpha(0)
+end
+
 function MoveAny:UpdateStatusTrackingBarWidth(name)
 	local frame = _G[name]
 	if frame == nil then return end
 	local width = MoveAny:GetEleOptions(name, "UpdateStatusTrackingBarWidth")["WIDTH"]
 	if width == nil then return end
 	frame:SetSize(width, frame:GetHeight())
-	if frame.BarFrameTexture then frame.BarFrameTexture:SetWidth(width) end
+	if frame.BarFrameTexture then
+		frame.BarFrameTexture:SetWidth(width)
+		SliceStatusBarFrameTexture(frame, frame.BarFrameTexture)
+	end
 	if frame.ResizeContainerBars then
 		frame:ResizeContainerBars()
 		if frame.UpdateDividers and frame.GetExpectedSegments then frame:UpdateDividers(frame:GetExpectedSegments()) end
