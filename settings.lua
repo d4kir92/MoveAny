@@ -1956,41 +1956,61 @@ function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 end
 
 local STATUSBAR_FRAME_CAP = 16
-local statusBarFrameSlices = {}
-local function SliceStatusBarFrameTexture(frame, tex)
+local statusBarTextureSlices = {}
+local function SyncStatusBarTextureSlices(tex)
+	local slices = statusBarTextureSlices[tex]
+	if slices == nil then return end
+	local r, g, b, a = tex:GetVertexColor()
+	local alpha = tex:GetAlpha()
+	local desaturated = tex.IsDesaturated and tex:IsDesaturated() or false
+	for _, slice in ipairs(slices) do
+		slice:SetVertexColor(r, g, b, a)
+		slice:SetAlpha(alpha)
+		if slice.SetDesaturated then slice:SetDesaturated(desaturated) end
+	end
+end
+
+local function SliceStatusBarTexture(tex, fallbackAtlas)
 	if C_Texture == nil or C_Texture.GetAtlasInfo == nil then return end
-	local info = C_Texture.GetAtlasInfo(tex:GetAtlas() or "UI-HUD-ExperienceBar-Frame")
+	local info = C_Texture.GetAtlasInfo(tex:GetAtlas() or fallbackAtlas)
 	if info == nil or info.width == nil or info.width <= STATUSBAR_FRAME_CAP * 2 then return end
 	local file = info.file or info.filename
 	if file == nil then return end
-	local slices = statusBarFrameSlices[frame]
+	local slices = statusBarTextureSlices[tex]
 	if slices == nil then
+		local parent = tex:GetParent()
+		local layer, subLevel = tex:GetDrawLayer()
 		slices = {}
 		for i = 1, 3 do
-			local t = frame:CreateTexture(nil, "OVERLAY")
+			local t = parent:CreateTexture(nil, layer, nil, subLevel)
 			t:SetTexture(file)
 			slices[i] = t
 		end
 
-		statusBarFrameSlices[frame] = slices
+		statusBarTextureSlices[tex] = slices
+		hooksecurefunc(tex, "SetAlpha", SyncStatusBarTextureSlices)
+		hooksecurefunc(tex, "SetVertexColor", SyncStatusBarTextureSlices)
+		if tex.SetDesaturated then hooksecurefunc(tex, "SetDesaturated", SyncStatusBarTextureSlices) end
 	end
 
-	local height = tex:GetHeight()
 	local capCoord = (info.rightTexCoord - info.leftTexCoord) * STATUSBAR_FRAME_CAP / info.width
 	local left, mid, right = slices[1], slices[2], slices[3]
 	left:ClearAllPoints()
-	left:SetPoint("LEFT", tex, "LEFT", 0, 0)
-	left:SetSize(STATUSBAR_FRAME_CAP, height)
+	left:SetPoint("TOPLEFT", tex, "TOPLEFT", 0, 0)
+	left:SetPoint("BOTTOMLEFT", tex, "BOTTOMLEFT", 0, 0)
+	left:SetWidth(STATUSBAR_FRAME_CAP)
 	left:SetTexCoord(info.leftTexCoord, info.leftTexCoord + capCoord, info.topTexCoord, info.bottomTexCoord)
 	right:ClearAllPoints()
-	right:SetPoint("RIGHT", tex, "RIGHT", 0, 0)
-	right:SetSize(STATUSBAR_FRAME_CAP, height)
+	right:SetPoint("TOPRIGHT", tex, "TOPRIGHT", 0, 0)
+	right:SetPoint("BOTTOMRIGHT", tex, "BOTTOMRIGHT", 0, 0)
+	right:SetWidth(STATUSBAR_FRAME_CAP)
 	right:SetTexCoord(info.rightTexCoord - capCoord, info.rightTexCoord, info.topTexCoord, info.bottomTexCoord)
 	mid:ClearAllPoints()
 	mid:SetPoint("TOPLEFT", left, "TOPRIGHT", 0, 0)
 	mid:SetPoint("BOTTOMRIGHT", right, "BOTTOMLEFT", 0, 0)
 	mid:SetTexCoord(info.leftTexCoord + capCoord, info.rightTexCoord - capCoord, info.topTexCoord, info.bottomTexCoord)
-	tex:SetAlpha(0)
+	SyncStatusBarTextureSlices(tex)
+	tex:Hide()
 end
 
 function MoveAny:UpdateStatusTrackingBarWidth(name)
@@ -2001,7 +2021,7 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 	frame:SetSize(width, frame:GetHeight())
 	if frame.BarFrameTexture then
 		frame.BarFrameTexture:SetWidth(width)
-		SliceStatusBarFrameTexture(frame, frame.BarFrameTexture)
+		SliceStatusBarTexture(frame.BarFrameTexture, "UI-HUD-ExperienceBar-Frame")
 	end
 
 	if frame.ResizeContainerBars then
@@ -2011,6 +2031,12 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 		for _, bar in pairs(frame.bars) do
 			bar:SetWidth(width - 6)
 			if bar.StatusBar then bar.StatusBar:SetWidth(width - 6) end
+		end
+	end
+
+	if frame.bars then
+		for _, bar in pairs(frame.bars) do
+			if bar.StatusBar and bar.StatusBar.Background then SliceStatusBarTexture(bar.StatusBar.Background, "UI-HUD-ExperienceBar-Background") end
 		end
 	end
 end
