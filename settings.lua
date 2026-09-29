@@ -4734,7 +4734,6 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "MainStatusTrackingBarContainer",
 				["lstr"] = "LID_MainStatusTrackingBarContainer",
-				["sw"] = MoveAny:GetEleOptions("MainStatusTrackingBarContainer", "RegisterWidget: MainStatusTrackingBarContainer")["WIDTH"],
 			})
 		end, "MainStatusTrackingBarContainer")
 	end
@@ -4745,7 +4744,6 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "SecondaryStatusTrackingBarContainer",
 				["lstr"] = "LID_SecondaryStatusTrackingBarContainer",
-				["sw"] = MoveAny:GetEleOptions("SecondaryStatusTrackingBarContainer", "RegisterWidget: SecondaryStatusTrackingBarContainer")["WIDTH"],
 			})
 		end, "SecondaryStatusTrackingBarContainer")
 	end
