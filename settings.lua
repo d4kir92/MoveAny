@@ -988,13 +988,22 @@ function MoveAny:InitMALock()
 		MAGridFrame.ver:SetSize(1, MoveAny:GetMainPanel():GetHeight())
 		MAGridFrame.ver:SetColorTexture(1, 1, 1, 1)
 		MoveAny:UpdateGrid()
-		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint("MALock")
-		if dbp1 and dbp3 then
-			MALock:ClearAllPoints()
-			MALock:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+		local function RestoreMALock()
+			if InCombatLockdown() then
+				MoveAny:After(0.5, RestoreMALock, "InitMALock 3 Combat")
+				return
+			end
+
+			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint("MALock")
+			if dbp1 and dbp3 then
+				MALock:ClearAllPoints()
+				MALock:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+			end
+
+			if MoveAny.HideMALock then MoveAny:HideMALock(true) end
 		end
 
-		if MoveAny.HideMALock then MoveAny:HideMALock(true) end
+		RestoreMALock()
 	end, "InitMALock 3")
 end
 
@@ -1667,7 +1676,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.21")
+	MoveAny:SetVersion(135994, "1.12.22")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
