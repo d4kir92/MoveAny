@@ -241,7 +241,7 @@ end
 function MoveAny:HideMALock(onlyHide)
 	if MoveAny:IsMALockNotReady() then return end
 	if not onlyHide then MoveAny:Lock() end
-	if not MoveAny:IsEnabled("MALOCK", false) then
+	if onlyHide or not MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:Hide()
 			if df.opt then df.opt:Hide() end
@@ -274,7 +274,7 @@ local inCombat = false
 function MoveAny:UpdateMALock(event)
 	if MoveAny:IsEnabled("MALOCK", false) and InCombatLockdown() then
 		inCombat = true
-		MoveAny:HideMALock()
+		MoveAny:HideMALock(true)
 	elseif inCombat and not InCombatLockdown() then
 		inCombat = false
 		MoveAny:ShowMALock()

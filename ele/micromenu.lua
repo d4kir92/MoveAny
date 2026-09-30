@@ -62,7 +62,36 @@ end
 
 local mmcMoved = false
 local mmcScaled = false
+local mmcAlpha = false
+local mmcAlphaHooked = false
+local hideMicroMenuBeforeInit = false
 local mbMovedOrScaled = false
+local function UpdateMicroMenuContainerVisibility()
+	if MicroMenuContainer == nil then return end
+	local alpha
+	if MAMenuBar then
+		alpha = MAMenuBar:GetAlpha() == 0 and 0 or 1
+	elseif hideMicroMenuBeforeInit then
+		alpha = 0
+	else
+		return
+	end
+
+	if MicroMenuContainer:GetAlpha() == alpha then return end
+	mmcAlpha = true
+	MicroMenuContainer:SetAlpha(alpha)
+	mmcAlpha = false
+end
+
+local function HookMicroMenuContainerAlpha()
+	if MicroMenuContainer == nil or mmcAlphaHooked then return end
+	mmcAlphaHooked = true
+	hooksecurefunc(MicroMenuContainer, "SetAlpha", function()
+		if mmcAlpha then return end
+		UpdateMicroMenuContainerVisibility()
+	end)
+end
+
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled("MICROMENU", false) then
 		if MicroMenuContainer then
@@ -79,6 +108,8 @@ function MoveAny:InitMicroMenu()
 				if MoveAny.UpdateMicroBar then MoveAny:UpdateMicroBar("MMC SetScale") end
 				mmcScaled = false
 			end)
+
+			HookMicroMenuContainerAlpha()
 		end
 
 		if MicroMenu and MicroMenu.Layout then
@@ -125,6 +156,7 @@ function MoveAny:InitMicroMenu()
 					if mb then MoveAny:ShowBtn(mb) end
 				end
 			end
+			UpdateMicroMenuContainerVisibility()
 		end)
 
 		if MBTNS then
@@ -183,7 +215,10 @@ function MoveAny:InitMicroMenu()
 
 					mb:ClearAllPoints()
 					mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
-					hooksecurefunc(MAMenuBar, "SetAlpha", function(sel, alpha) mb:SetAlpha(alpha) end)
+					hooksecurefunc(MAMenuBar, "SetAlpha", function(sel, alpha)
+						mb:SetAlpha(alpha)
+						UpdateMicroMenuContainerVisibility()
+					end)
 					if MoveAny:GetWoWBuild() == "RETAIL" then
 						hooksecurefunc(MAMenuBar, "SetScale", function(sel, scale)
 							if InCombatLockdown() and sel:IsProtected() then return false end
@@ -201,7 +236,9 @@ function MoveAny:InitMicroMenu()
 						mb:SetScale(MAMenuBar:GetScale())
 					end
 
-					hooksecurefunc(MAMenuBar, "Hide", function(sel) mb:Show() end)
+					hooksecurefunc(MAMenuBar, "Hide", function(sel)
+						if MoveAny:GetParent(sel) ~= MoveAny:GetHidden() then mb:Show() end
+					end)
 					if MicroMenu and MicroMenu.SetScaleAdjustment then
 						hooksecurefunc(MicroMenu, "SetScaleAdjustment", function(sel)
 							if ma_SetScaleAdjustment[sel] then return end
@@ -217,6 +254,7 @@ function MoveAny:InitMicroMenu()
 					MoveAny:AddAbBtns(MAMenuBar, mb)
 				end
 			end
+			UpdateMicroMenuContainerVisibility()
 
 			if GuildMicroButton and SocialsMicroButton then
 				SocialsMicroButton:SetScale(0.5)
@@ -276,5 +314,17 @@ function MoveAny:InitMicroMenu()
 				end
 			end, "InitMicroMenu")
 		end
+	end
+end
+
+do
+	local profileName = MATABPC and MATABPC["CURRENTPROFILE"] or "DEFAULT"
+	local profile = MATAB and MATAB["PROFILES"] and MATAB["PROFILES"][profileName]
+	local options = profile and profile["ELES"] and profile["ELES"]["OPTIONS"]
+	local microMenuOptions = options and options["MICROMENU"]
+	if microMenuOptions and microMenuOptions["ENABLED"] and microMenuOptions["Hide"] then
+		hideMicroMenuBeforeInit = true
+		HookMicroMenuContainerAlpha()
+		UpdateMicroMenuContainerVisibility()
 	end
 end

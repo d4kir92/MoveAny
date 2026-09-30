@@ -965,6 +965,7 @@ function MoveAny:InitMALock()
 
 	MoveAny:After(0.1, function()
 		MAGridFrame = CreateFrame("Frame", "MAGridFrame", MoveAny:GetMainPanel())
+		MAGridFrame:Hide()
 		function MoveAny:GridFrameThink()
 			if MACurrentEle then
 				MAGridFrame:EnableMouse(true)
@@ -1000,7 +1001,11 @@ function MoveAny:InitMALock()
 				MALock:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 			end
 
-			if MoveAny.HideMALock then MoveAny:HideMALock(true) end
+			if MoveAny:IsEnabled("MALOCK", false) then
+				MoveAny:ShowMALock()
+			elseif MoveAny.HideMALock then
+				MoveAny:HideMALock(true)
+			end
 		end
 
 		RestoreMALock()
@@ -1676,7 +1681,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.22")
+	MoveAny:SetVersion(135994, "1.12.23")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -5057,7 +5062,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
-	if MoveAny:IsEnabled("MALOCK", false) then MoveAny:ShowMALock() end
+	if MoveAny:IsEnabled("MALOCK", false) and not InCombatLockdown() then MoveAny:ShowMALock() end
 	if MoveAny:IsEnabled("MAPROFILES", false) then MoveAny:ShowProfiles() end
 	MoveAny:After(1, function() if MoveAny.InitAlphas then MoveAny:InitAlphas() end end, "Init CheckAlphas")
 	if MoveAny.UpdateMALock then MoveAny:UpdateMALock() end
