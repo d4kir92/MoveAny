@@ -214,6 +214,15 @@ function MoveAny:UpdateActionBar(bar, from)
 		local name = MoveAny:GetName(frame) or BarNames[frame]
 		if name == "StanceBar" then name = "StanceBarAnchor" end
 		local opts = MoveAny:GetEleOptions(name, "UpdateActionBar")
+		if frame == MAMenuBar and (opts["Hide"] or MoveAny:GetParent(frame) == MoveAny:GetHidden()) then
+			local abtns = MoveAny:GetAbBtns(frame)
+			for i = 1, #abtns do
+				MoveAny:HideBtn(abtns[i])
+			end
+			ma_setpoint_ab = false
+			insideUpdateActionBar[frame] = false
+			return
+		end
 		opts["ROWS"] = opts["ROWS"] or nil
 		opts["SPACING"] = opts["SPACING"] or dSpacing
 		opts["FLIPPED"] = opts["FLIPPED"] or dFlipped

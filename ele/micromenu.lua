@@ -70,7 +70,12 @@ local function UpdateMicroMenuContainerVisibility()
 	if MicroMenuContainer == nil then return end
 	local alpha
 	if MAMenuBar then
-		alpha = MAMenuBar:GetAlpha() == 0 and 0 or 1
+		local hidden = MoveAny:GetEleOption("MICROMENU", "Hide", false, "UpdateMicroMenuContainerVisibility") or MoveAny:GetParent(MAMenuBar) == MoveAny:GetHidden()
+		if hidden or MAMenuBar:GetAlpha() == 0 then
+			alpha = 0
+		else
+			alpha = 1
+		end
 	elseif hideMicroMenuBeforeInit then
 		alpha = 0
 	else
@@ -216,7 +221,11 @@ function MoveAny:InitMicroMenu()
 					mb:ClearAllPoints()
 					mb:SetPoint("BOTTOM", MAMenuBar, "BOTTOM", 0, MoveAny:GetMicroButtonYOffset())
 					hooksecurefunc(MAMenuBar, "SetAlpha", function(sel, alpha)
-						mb:SetAlpha(alpha)
+						if MoveAny:GetParent(sel) == MoveAny:GetHidden() then
+							MoveAny:HideBtn(mb)
+						else
+							mb:SetAlpha(alpha)
+						end
 						UpdateMicroMenuContainerVisibility()
 					end)
 					if MoveAny:GetWoWBuild() == "RETAIL" then
@@ -326,5 +335,14 @@ do
 		hideMicroMenuBeforeInit = true
 		HookMicroMenuContainerAlpha()
 		UpdateMicroMenuContainerVisibility()
+		if MicroMenuContainer == nil then
+			local waitForMicroMenu = CreateFrame("Frame")
+			waitForMicroMenu:SetScript("OnUpdate", function(sel)
+				if MicroMenuContainer == nil then return end
+				sel:SetScript("OnUpdate", nil)
+				HookMicroMenuContainerAlpha()
+				UpdateMicroMenuContainerVisibility()
+			end)
+		end
 	end
 end

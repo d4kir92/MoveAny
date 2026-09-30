@@ -63,6 +63,7 @@ end
 local function makeAlphaEnterLeave(parentAlphaFrame)
     local onEnter = function()
         if not alphasReady then return end
+        if MoveAny:GetParent(parentAlphaFrame) == MoveAny:GetHidden() then return end
         parentAlphaFrame:SetAlpha(1)
         MoveAny:SetMouseEleAlpha(parentAlphaFrame, parentAlphaFrame)
     end
