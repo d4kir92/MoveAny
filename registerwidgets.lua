@@ -1077,6 +1077,19 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 	return false
 end
 
+function MoveAny:DetachDrag(dragframe)
+	if not dragframe then return false end
+	local root = MoveAny:GetMainPanel()
+	local x, y = dragframe:GetCenter()
+	local rootX, rootY = root:GetCenter()
+	local scale = dragframe:GetEffectiveScale()
+	local rootScale = root:GetEffectiveScale()
+	if not MoveAny:CanAccessValues(x, y, rootX, rootY, scale, rootScale) then return false end
+	if type(x) ~= "number" or type(y) ~= "number" or type(rootX) ~= "number" or type(rootY) ~= "number" or type(scale) ~= "number" or type(rootScale) ~= "number" then return false end
+	if scale <= 0 or rootScale <= 0 then return false end
+	return MoveAny:SafeAnchorDrag(dragframe, root, (x * scale - rootX * rootScale) / scale, (y * scale - rootY * rootScale) / scale)
+end
+
 local SNAP_RANGE = 8
 local snapPreview = nil
 local function GetSnapRect(f)
@@ -1331,6 +1344,7 @@ function MoveAny:RegisterWidget(tab)
 			local fram = _G[name]
 			if btn == "LeftButton" then MoveAny:SelectEle(sel) end
 			if btn == "LeftButton" then
+				MoveAny:DetachDrag(dragframe)
 				dragframe:SetMovable(true)
 				dragframe:StartMoving()
 				ma_ismoving[dragframe] = true
