@@ -55,6 +55,7 @@ function MoveAny:CheckBuffType(id, child, tab, isDebuff)
 	if child == nil then return 0 end
 	if child:IsShown() == false then return 0 end
 	local csw, csh = child:GetSize()
+	if issecretvalue and (issecretvalue(csw) or issecretvalue(csh)) then return 0 end
 	if csw < 16 or csw > 22 or csh < 16 or csh > 22 then return 0 end
 	local debuff = false
 	local childName = MoveAny:GetName(child)
@@ -1681,7 +1682,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.26")
+	MoveAny:SetVersion(135994, "1.12.27")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
