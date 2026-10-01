@@ -1681,7 +1681,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.24")
+	MoveAny:SetVersion(135994, "1.12.25")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -3497,7 +3497,7 @@ function MoveAny:LoadAddon()
 				b:SetScript("OnEvent", function(sel, event)
 					local itemName = sel:GetAttribute("item")
 					if itemName == nil then return end
-					local itemID = GetItemInfoInstant(itemName)
+					local itemID = MoveAny:GetItemInfoInstant(itemName)
 					if itemID then
 						local start, duration, enable = C_Container.GetItemCooldown(itemID)
 						if enable == 1 and duration > 0 then
@@ -3568,7 +3568,7 @@ function MoveAny:LoadAddon()
 			end
 
 			local function IsQuestItem(itemInfo)
-				local _, _, _, _, _, itemType = C_Item.GetItemInfo(itemInfo)
+				local _, _, _, _, _, itemType = MoveAny:GetItemInfo(itemInfo)
 				if itemType == "Quest" then return true end
 				return false
 			end
@@ -3585,13 +3585,20 @@ function MoveAny:LoadAddon()
 								scanTT:SetBagItem(bag, slot)
 								if TooltipHasQuestToken() or IsQuestItem(link) then
 									local key = string.format("%d:%d", bag, slot)
-									local _, count = MoveAny:GetContainerItemInfo(bag, slot)
+									local containerInfo, count = MoveAny:GetContainerItemInfo(bag, slot)
+									local icon = containerInfo
+									if type(containerInfo) == "table" then
+										count = containerInfo.stackCount
+										icon = containerInfo.iconFileID
+									end
+
 									local itemID = GetItemIDFromLink(link)
 									found[key] = {
 										link = link,
 										bag = bag,
 										slot = slot,
 										count = count or 1,
+										icon = icon,
 										itemID = itemID,
 									}
 								end
@@ -3613,7 +3620,7 @@ function MoveAny:LoadAddon()
 				for key, info in pairs(found) do
 					if i > #buttons then break end
 					local b = buttons[i]
-					if b.icon then b.icon:SetTexture(select(10, GetItemInfo(info.link)) or GetItemIcon(info.link)) end
+					if b.icon then b.icon:SetTexture(info.icon or select(10, MoveAny:GetItemInfo(info.link)) or select(5, MoveAny:GetItemInfoInstant(info.link))) end
 					if b.count then b.count:SetText(info.count > 1 and tostring(info.count) or "") end
 					ma_link[b] = info.link
 					b:SetAttribute("item", info.link)
