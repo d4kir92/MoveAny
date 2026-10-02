@@ -1,6 +1,15 @@
 local _, MoveAny = ...
 local ma_set_s = {}
 local ma_SetScaleAdjustment = {}
+function MoveAny:UpdateMicroButtonScale(button)
+	if ma_set_s[button] then return end
+	MoveAny:SafeExec(button, function()
+		if ma_set_s[button] then return end
+		ma_set_s[button] = true
+		button:SetScale(MAMenuBar:GetScale())
+		ma_set_s[button] = false
+	end, "UpdateMicroButtonScale:" .. button:GetName())
+end
 function MoveAny:GetMicroButtonSize()
 	if MoveAny:GetWoWBuild() == "RETAIL" then return 24, 32 end
 	return 24, 33
@@ -236,20 +245,15 @@ function MoveAny:InitMicroMenu()
 						UpdateMicroMenuContainerVisibility()
 					end)
 					if MoveAny:GetWoWBuild() == "RETAIL" then
-						hooksecurefunc(MAMenuBar, "SetScale", function(sel, scale)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if scale and type(scale) == "number" then mb:SetScale(scale) end
+						hooksecurefunc(MAMenuBar, "SetScale", function()
+							MoveAny:UpdateMicroButtonScale(mb)
 						end)
 
-						hooksecurefunc(mb, "SetScale", function(sel, scale)
-							if InCombatLockdown() and sel:IsProtected() then return false end
-							if ma_set_s[sel] then return end
-							ma_set_s[sel] = true
-							mb:SetScale(MAMenuBar:GetScale())
-							ma_set_s[sel] = false
+						hooksecurefunc(mb, "SetScale", function()
+							MoveAny:UpdateMicroButtonScale(mb)
 						end)
 
-						mb:SetScale(MAMenuBar:GetScale())
+						MoveAny:UpdateMicroButtonScale(mb)
 					end
 
 					hooksecurefunc(MAMenuBar, "Hide", function(sel)
