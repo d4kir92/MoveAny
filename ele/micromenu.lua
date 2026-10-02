@@ -97,8 +97,15 @@ local function HookMicroMenuContainerAlpha()
 	end)
 end
 
+local function HideMicroMenuArt()
+	if MicroMenu == nil then return end
+	if MicroMenu.BorderArt then MicroMenu.BorderArt:Hide() end
+	if MicroMenu.BackgroundArt then MicroMenu.BackgroundArt:Hide() end
+end
+
 function MoveAny:InitMicroMenu()
 	if MoveAny:IsEnabled("MICROMENU", false) then
+		HideMicroMenuArt()
 		if MicroMenuContainer then
 			hooksecurefunc(MicroMenuContainer, "SetPoint", function(sel, ...)
 				if mmcMoved then return end
@@ -331,6 +338,7 @@ do
 	local profile = MATAB and MATAB["PROFILES"] and MATAB["PROFILES"][profileName]
 	local options = profile and profile["ELES"] and profile["ELES"]["OPTIONS"]
 	local microMenuOptions = options and options["MICROMENU"]
+	if microMenuOptions and microMenuOptions["ENABLED"] then HideMicroMenuArt() end
 	if microMenuOptions and microMenuOptions["ENABLED"] and microMenuOptions["Hide"] then
 		hideMicroMenuBeforeInit = true
 		HookMicroMenuContainerAlpha()
