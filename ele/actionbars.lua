@@ -232,8 +232,10 @@ function MoveAny:UpdateActionBar(bar, from)
 		local spacing = tonumber(opts["SPACING"])
 		local offset = opts["OFFSET"] or 0
 		if frame == MAMenuBar then
+			local canModify = MoveAny:CanModify(frame)
+			if not canModify then combatPending[frame] = true end
 			if MoveAny:CheckIfMicroMenuInVehicle(frame) then
-				frame:SetScale(1)
+				if canModify then frame:SetScale(1) end
 				rows = 2
 				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then
 					spacing = 15
@@ -250,9 +252,11 @@ function MoveAny:UpdateActionBar(bar, from)
 					end
 				end
 
-				frame:SetFrameLevel(1003)
-				frame:SetFrameStrata("DIALOG")
-			elseif frame == MAMenuBar then
+				if canModify then
+					frame:SetFrameLevel(1003)
+					frame:SetFrameStrata("DIALOG")
+				end
+			elseif canModify then
 				frame:SetScale(frame:GetScale() or 1)
 				frame:SetFrameLevel(1)
 				frame:SetFrameStrata("MEDIUM")
