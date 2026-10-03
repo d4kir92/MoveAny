@@ -785,8 +785,17 @@ function MoveAny:InitMALock()
 		AddCheckBox("BATTLEFIELDMAPFRAME", false)
 		if RolePollPopup then AddCheckBox("ROLEPOLLPOPUP", false) end
 		if ReadyCheckListenerFrame then AddCheckBox("READYCHECKLISTENERFRAME", false) end
-		AddCheckBox("GAMETOOLTIP_ONCURSOR", false)
-		AddCheckBox("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false)
+		local ttOnCursor = AddCheckBox("GAMETOOLTIP_ONCURSOR", false, function() MALock:UpdateDependencies() end)
+		local ttNotInCombat = AddCheckBox("GAMETOOLTIP_ONCURSOR_NOTINCOMBAT", false)
+		MALock:AddDependency(ttNotInCombat, function() return MoveAny:IsEnabled("GAMETOOLTIP_ONCURSOR", false) end)
+		local ttGroup = {cbs["GAMETOOLTIP"], ttOnCursor, ttNotInCombat}
+		for _, ttA in ipairs(ttGroup) do
+			for _, ttB in ipairs(ttGroup) do
+				MALock:AddRequirement(ttA, ttB)
+			end
+		end
+
+		MALock:UpdateDependencies()
 		if BossBanner then AddCheckBox("BOSSBANNER", false) end
 		if GroupLootContainer then
 			AddCheckBox("GROUPLOOTCONTAINER", false)
