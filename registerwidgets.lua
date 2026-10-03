@@ -1196,6 +1196,11 @@ local function HideSnapPreview()
 end
 
 local function UpdateSnapPreview(dragframe)
+	if not MoveAny:IsEnabled("SNAPTOELEMENTS", true) then
+		HideSnapPreview()
+		return
+	end
+
 	local preview = GetSnapPreview()
 	local _, _, lineX, lineY = FindEleSnap(dragframe)
 	local us = UIParent:GetEffectiveScale()
@@ -1215,6 +1220,15 @@ local function UpdateSnapPreview(dragframe)
 		preview.hor:Show()
 	else
 		preview.hor:Hide()
+	end
+end
+
+function MoveAny:UpdateSnapVisibility()
+	HideSnapPreview()
+	for dragframe, moving in pairs(ma_ismoving) do
+		if moving then
+			if MoveAny:IsEnabled("SNAPTOELEMENTS", true) then dragframe:SetScript("OnUpdate", UpdateSnapPreview) else dragframe:SetScript("OnUpdate", nil) end
+		end
 	end
 end
 

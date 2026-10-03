@@ -575,9 +575,6 @@ function MoveAny:InitMALock()
 			end
 		end, nil, nil, false)
 
-		AddCheckBox("HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
-		MALock.HiddenFramesCheckbox = cbs["HIDEHIDDENFRAMES"]
-		AddCheckBox("SNAPTOELEMENTS", true, nil, nil, nil, false)
 		AddDropdown("SNAPSIZE", 5, nil, gridChoices)
 		AddDropdown("GRIDSIZE", 10, MoveAny.UpdateGrid, gridChoices)
 		AddCategory("FRAMES")
@@ -836,7 +833,7 @@ function MoveAny:InitMALock()
 
 	MALock.Pipette:SetPoint("LEFT", MALock.header, "LEFT", 0, 0)
 	MALock.VisibilityButtons = {}
-	local visibilityLabels = {"LID_EDITORVISIBILITYALL", "LID_EDITORVISIBILITYGRID", "LID_EDITORVISIBILITYMOVERS", "LID_EDITORVISIBILITYHIDDEN"}
+	local visibilityLabels = {"LID_EDITORVISIBILITYALL", "LID_EDITORVISIBILITYGRID", "LID_EDITORVISIBILITYMOVERS", "LID_EDITORVISIBILITYHIDDEN", "LID_SNAPTOELEMENTS"}
 	local previousButton = MALock.Pipette
 	for i, label in ipairs(visibilityLabels) do
 		local kind = i
@@ -867,8 +864,12 @@ function MoveAny:InitMALock()
 			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", 8, 8, 0, -5)
 			Icon("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", 8, 8, -5, 0)
 			Icon("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", 8, 8, 5, 0)
-		else
+		elseif i == 4 then
 			Icon("Interface\\Icons\\Ability_Hunter_EagleEye", 16, 16, 0, 0)
+		else
+			Icon(nil, 1, 16, 0, 0)
+			Icon(nil, 5, 5, -3, 4)
+			Icon(nil, 5, 5, 3, -4)
 		end
 
 		button:SetScript("OnClick", function() MoveAny:ToggleEditorVisibility(kind) end)
@@ -895,7 +896,7 @@ function MoveAny:InitMALock()
 	end)
 
 	MALock.Search = MALock:AddSearch({
-		["leftInset"] = 24 * 5 + 4 * 4 + br,
+		["leftInset"] = 24 * 6 + 4 * 5 + br,
 		["rightInset"] = 100 + br,
 	})
 

@@ -237,13 +237,16 @@ function MoveAny:UpdateEditorVisibility()
 		if MoveAny:IsEditorMoverVisible(df.maName) then df:Show() else df:Hide() end
 	end
 
-	if MALock and MALock.HiddenFramesCheckbox then MALock.HiddenFramesCheckbox:SetChecked(MoveAny:IsEnabled("HIDEHIDDENFRAMES", false)) end
 	if MALock and MALock.VisibilityButtons then
 		local hidden = not MoveAny:IsEnabled("HIDEHIDDENFRAMES", false)
-		local states = {MoveAny.editorVisibility.grid and MoveAny.editorVisibility.movers and hidden, MoveAny.editorVisibility.grid, MoveAny.editorVisibility.movers and hidden, hidden}
+		local states = {MoveAny.editorVisibility.grid and MoveAny.editorVisibility.movers and hidden, MoveAny.editorVisibility.grid, MoveAny.editorVisibility.movers and hidden, hidden, MoveAny:IsEnabled("SNAPTOELEMENTS", true)}
 		for i, button in ipairs(MALock.VisibilityButtons) do
 			for _, texture in ipairs(button.icons) do
-				if states[i] then texture:SetVertexColor(1, 0.82, 0) else texture:SetVertexColor(0.45, 0.45, 0.45) end
+				if states[i] then
+					if i == 5 then texture:SetVertexColor(1, 0, 0) else texture:SetVertexColor(1, 0.82, 0) end
+				else
+					texture:SetVertexColor(0.45, 0.45, 0.45)
+				end
 			end
 		end
 	end
@@ -265,6 +268,9 @@ function MoveAny:ToggleEditorVisibility(kind)
 		MoveAny:SetEnabled("HIDEHIDDENFRAMES", not show)
 	elseif kind == 4 then
 		MoveAny:SetEnabled("HIDEHIDDENFRAMES", hidden)
+	elseif kind == 5 then
+		MoveAny:SetEnabled("SNAPTOELEMENTS", not MoveAny:IsEnabled("SNAPTOELEMENTS", true))
+		MoveAny:UpdateSnapVisibility()
 	end
 
 	MoveAny:ClearSelectEle()
