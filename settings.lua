@@ -271,9 +271,12 @@ function MoveAny:IsInEditModeEnabled(val)
 		if EMMap[val] and editModeEnum == nil then MoveAny:ERR("MISSING ENUM FOR val: " .. tostring(val)) end
 	end
 
-	if EditModeManagerFrame.accountSettings == nil then EditModeManagerFrame:InitializeAccountSettings() end
-	if C_Widget.IsWidget(GameMenuButtonEditMode) and not GameMenuButtonEditMode:IsEnabled() then GameMenuButtonEditMode:SetEnabled(true) end
-	if editModeEnum and C_Widget.IsWidget(EditModeManagerFrame) and tContains(Enum.EditModeAccountSetting, editModeEnum) and EditModeManagerFrame:GetAccountSettingValueBool(editModeEnum) then return true, false end
+	if editModeEnum and C_EditMode and C_EditMode.GetAccountSettings then
+		for _, setting in ipairs(C_EditMode.GetAccountSettings() or {}) do
+			if setting.setting == editModeEnum then return setting.value == 1, false end
+		end
+	end
+
 	-- DEBUG EDITMODE
 	if false and onceDebug then
 		onceDebug = false
@@ -1784,7 +1787,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.1")
+	MoveAny:SetVersion(135994, "1.13.2")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
