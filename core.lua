@@ -220,18 +220,68 @@ function MoveAny:IsMALockNotReady()
 	return false
 end
 
+MoveAny.editorVisibility = {grid = true, movers = true}
+function MoveAny:IsEditorMoverVisible(name)
+	if not MoveAny:IsEnabled("MALOCK", false) or InCombatLockdown() then return false end
+	if MoveAny:GetEleOption(name, "Hide", false, "EditorVisibility") then return not MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) end
+	return MoveAny.editorVisibility.movers
+end
+
+function MoveAny:UpdateEditorVisibility()
+	local open = MoveAny:IsEnabled("MALOCK", false) and not InCombatLockdown()
+	if MAGridFrame then
+		if open and MoveAny.editorVisibility.grid then MAGridFrame:Show() else MAGridFrame:Hide() end
+	end
+
+	for _, df in pairs(MoveAny:GetDragFrames()) do
+		if MoveAny:IsEditorMoverVisible(df.maName) then df:Show() else df:Hide() end
+	end
+
+	if MALock and MALock.HiddenFramesCheckbox then MALock.HiddenFramesCheckbox:SetChecked(MoveAny:IsEnabled("HIDEHIDDENFRAMES", false)) end
+	if MALock and MALock.VisibilityButtons then
+		local hidden = not MoveAny:IsEnabled("HIDEHIDDENFRAMES", false)
+		local states = {MoveAny.editorVisibility.grid and MoveAny.editorVisibility.movers and hidden, MoveAny.editorVisibility.grid, MoveAny.editorVisibility.movers and hidden, hidden}
+		for i, button in ipairs(MALock.VisibilityButtons) do
+			for _, texture in ipairs(button.icons) do
+				if states[i] then texture:SetVertexColor(1, 0.82, 0) else texture:SetVertexColor(0.45, 0.45, 0.45) end
+			end
+		end
+	end
+end
+
+function MoveAny:ToggleEditorVisibility(kind)
+	if InCombatLockdown() then return end
+	local state = MoveAny.editorVisibility
+	local hidden = not MoveAny:IsEnabled("HIDEHIDDENFRAMES", false)
+	if kind == 1 then
+		local show = not (state.grid or state.movers or hidden)
+		state.grid, state.movers = show, show
+		MoveAny:SetEnabled("HIDEHIDDENFRAMES", not show)
+	elseif kind == 2 then
+		state.grid = not state.grid
+	elseif kind == 3 then
+		local show = not (state.movers or hidden)
+		state.movers = show
+		MoveAny:SetEnabled("HIDEHIDDENFRAMES", not show)
+	elseif kind == 4 then
+		MoveAny:SetEnabled("HIDEHIDDENFRAMES", hidden)
+	end
+
+	MoveAny:ClearSelectEle()
+	MoveAny:UpdateEditorVisibility()
+end
+
 function MoveAny:ShowMALock()
 	if MoveAny:IsMALockNotReady() then return end
 	MoveAny:Unlock()
 	if MoveAny:IsEnabled("MALOCK", false) then
 		for i, df in pairs(MoveAny:GetDragFrames()) do
-			df:Show()
 			if df.opt then df.opt:Show() end
 		end
 
 		if MALock then
 			MALock:Show()
-			if MAGridFrame then MAGridFrame:Show() end
+			MoveAny:UpdateEditorVisibility()
 		else
 			MoveAny:MSG("[ShowMALock] Settings Frame couldn't be created, please tell dev.")
 		end

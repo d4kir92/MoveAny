@@ -507,16 +507,12 @@ local function AddGeneralOptions(win, name, optionFrame)
 			if value then
 				MoveAny:HideFrame(optionFrame)
 				MoveAny:UpdateEleColor(dragf)
-				if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
-					dragf:Hide()
-				else
-					dragf:Show()
-				end
 			else
 				MoveAny:ShowFrame(optionFrame)
 				MoveAny:UpdateEleColor(dragf)
 			end
 
+			MoveAny:UpdateEditorVisibility()
 			UpdateHideDeps(value)
 		end,
 	})
@@ -533,7 +529,7 @@ local function AddGeneralOptions(win, name, optionFrame)
 				return
 			end
 
-			if value and dragf then dragf:Show() end
+			MoveAny:UpdateEditorVisibility()
 			MoveAny:UpdateEleColor(dragf)
 			optionFrame:EnableMouse(not value)
 			local target = optionFrame.AuraContainer or optionFrame
@@ -958,15 +954,7 @@ function MoveAny:RegisterSelectEle(lstr, name)
 end
 
 function MoveAny:UpdateHiddenFrames()
-	for i, v in pairs(MoveAny:GetDragFrames()) do
-		if v.t:GetVertexColor() == MoveAny:GetColor("hidden") then
-			if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
-				v:Hide()
-			else
-				v:Show()
-			end
-		end
-	end
+	MoveAny:UpdateEditorVisibility()
 end
 
 function MoveAny:IsPresetProfileActive()
@@ -1390,7 +1378,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	local dragf = MoveAny:GetDragFromName(name)
-	if frame then
+	if frame and MoveAny:IsEditorMoverVisible(name) then
 		dragf:Show()
 	else
 		dragf:Hide()
@@ -1688,22 +1676,9 @@ function MoveAny:RegisterWidget(tab)
 		MoveAny:After(1, function() MoveAny:HideFrame(frame) end, "HIDE DELAY 1")
 		MoveAny:After(4, function() MoveAny:HideFrame(frame) end, "HIDE DELAY 2")
 		dragframe.t:SetVertexColor(MoveAny:GetColor("hidden"))
-		if MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) then
-			dragframe:Hide()
-		else
-			if MoveAny:IsEnabled("MALOCK", false) then
-				dragframe:Show()
-			else
-				dragframe:Hide()
-			end
-		end
-	else
-		if MoveAny:IsEnabled("MALOCK", false) then
-			dragframe:Show()
-		else
-			dragframe:Hide()
-		end
 	end
+
+	if MoveAny:IsEditorMoverVisible(name) then dragframe:Show() else dragframe:Hide() end
 
 	if setup then setup() end
 end

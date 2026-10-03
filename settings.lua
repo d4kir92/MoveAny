@@ -576,6 +576,7 @@ function MoveAny:InitMALock()
 		end, nil, nil, false)
 
 		AddCheckBox("HIDEHIDDENFRAMES", false, MoveAny.UpdateHiddenFrames, nil, nil, false)
+		MALock.HiddenFramesCheckbox = cbs["HIDEHIDDENFRAMES"]
 		AddCheckBox("SNAPTOELEMENTS", true, nil, nil, nil, false)
 		AddDropdown("SNAPSIZE", 5, nil, gridChoices)
 		AddDropdown("GRIDSIZE", 10, MoveAny.UpdateGrid, gridChoices)
@@ -834,6 +835,54 @@ function MoveAny:InitMALock()
 	end)
 
 	MALock.Pipette:SetPoint("LEFT", MALock.header, "LEFT", 0, 0)
+	MALock.VisibilityButtons = {}
+	local visibilityLabels = {"LID_EDITORVISIBILITYALL", "LID_EDITORVISIBILITYGRID", "LID_EDITORVISIBILITYMOVERS", "LID_EDITORVISIBILITYHIDDEN"}
+	local previousButton = MALock.Pipette
+	for i, label in ipairs(visibilityLabels) do
+		local kind = i
+		local button = MoveAny:CreateButton("MALock_Visibility" .. i, MALock.header)
+		button:SetSize(24, 24)
+		button:SetText("")
+		button:SetPoint("LEFT", previousButton, "RIGHT", 4, 0)
+		button.icons = {}
+		local function Icon(texture, width, height, x, y)
+			local icon = button:CreateTexture(nil, "OVERLAY")
+			if texture then icon:SetTexture(texture) else icon:SetColorTexture(1, 1, 1, 1) end
+			icon:SetSize(width, height)
+			icon:SetPoint("CENTER", button, "CENTER", x, y)
+			table.insert(button.icons, icon)
+		end
+
+		if i == 1 then
+			for _, x in ipairs({-4, 4}) do
+				for _, y in ipairs({-4, 4}) do Icon(nil, 5, 5, x, y) end
+			end
+		elseif i == 2 then
+			for _, offset in ipairs({-6, 0, 6}) do
+				Icon(nil, 1, 13, offset, 0)
+				Icon(nil, 13, 1, 0, offset)
+			end
+		elseif i == 3 then
+			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", 8, 8, 0, 5)
+			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", 8, 8, 0, -5)
+			Icon("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", 8, 8, -5, 0)
+			Icon("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", 8, 8, 5, 0)
+		else
+			Icon("Interface\\Icons\\Ability_Hunter_EagleEye", 16, 16, 0, 0)
+		end
+
+		button:SetScript("OnClick", function() MoveAny:ToggleEditorVisibility(kind) end)
+		button:SetScript("OnEnter", function(sel)
+			GameTooltip:SetOwner(sel, "ANCHOR_BOTTOM")
+			GameTooltip:SetText(MoveAny:Trans(label))
+			GameTooltip:Show()
+		end)
+		button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+		MALock.VisibilityButtons[i] = button
+		previousButton = button
+	end
+
+	MoveAny:UpdateEditorVisibility()
 	MALock.Profiles = MoveAny:CreateButton("MALock_Profiles", MALock.header)
 	MALock.Profiles:SetPoint("RIGHT", MALock.header, "RIGHT", 0, 0)
 	MALock.Profiles:SetSize(100, 24)
@@ -846,7 +895,7 @@ function MoveAny:InitMALock()
 	end)
 
 	MALock.Search = MALock:AddSearch({
-		["leftInset"] = 24 + br,
+		["leftInset"] = 24 * 5 + 4 * 4 + br,
 		["rightInset"] = 100 + br,
 	})
 
