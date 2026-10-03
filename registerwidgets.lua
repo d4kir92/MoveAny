@@ -1148,26 +1148,28 @@ local function FindEleSnap(dragframe)
 		if df ~= dragframe and df:IsVisible() then
 			local o = GetSnapRect(df)
 			if o then
-				if GetSnapGap(m.b, m.t, o.b, o.t) <= range then
+				if GetSnapGap(m.b, m.t, o.b, o.t) <= alignmentGap then
 					PickSnap(bx, o.l - m.r, o.l, range)
 					PickSnap(bx, o.r - m.l, o.r, range)
-				end
-
-				if GetSnapGap(m.b, m.t, o.b, o.t) <= alignmentGap then
 					PickSnap(bx, o.l - m.l, o.l, range)
 					PickSnap(bx, o.r - m.r, o.r, range)
 					PickSnap(bx, o.cx - m.cx, o.cx, range)
-				end
-
-				if GetSnapGap(m.l, m.r, o.l, o.r) <= range then
-					PickSnap(by, o.b - m.t, o.b, range)
-					PickSnap(by, o.t - m.b, o.t, range)
+					PickSnap(bx, o.cx - m.l, o.cx, range)
+					PickSnap(bx, o.cx - m.r, o.cx, range)
+					PickSnap(bx, o.l - m.cx, o.l, range)
+					PickSnap(bx, o.r - m.cx, o.r, range)
 				end
 
 				if GetSnapGap(m.l, m.r, o.l, o.r) <= alignmentGap then
+					PickSnap(by, o.b - m.t, o.b, range)
+					PickSnap(by, o.t - m.b, o.t, range)
 					PickSnap(by, o.b - m.b, o.b, range)
 					PickSnap(by, o.t - m.t, o.t, range)
 					PickSnap(by, o.cy - m.cy, o.cy, range)
+					PickSnap(by, o.cy - m.b, o.cy, range)
+					PickSnap(by, o.cy - m.t, o.cy, range)
+					PickSnap(by, o.b - m.cy, o.b, range)
+					PickSnap(by, o.t - m.cy, o.t, range)
 				end
 			end
 		end
