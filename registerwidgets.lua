@@ -1091,6 +1091,7 @@ function MoveAny:DetachDrag(dragframe)
 end
 
 local SNAP_RANGE = 8
+local SNAP_ALIGNMENT_GAP = 64
 local snapPreview = nil
 local function GetSnapRect(f)
 	if f == nil or f.GetLeft == nil then return nil end
@@ -1130,6 +1131,7 @@ local function FindEleSnap(dragframe)
 	if m == nil then return nil end
 	local us = UIParent:GetEffectiveScale()
 	local range = SNAP_RANGE * us
+	local alignmentGap = SNAP_ALIGNMENT_GAP * us
 	local bx, by = {}, {}
 	local ucx, ucy = UIParent:GetCenter()
 	if ucx and ucy then
@@ -1149,6 +1151,9 @@ local function FindEleSnap(dragframe)
 				if GetSnapGap(m.b, m.t, o.b, o.t) <= range then
 					PickSnap(bx, o.l - m.r, o.l, range)
 					PickSnap(bx, o.r - m.l, o.r, range)
+				end
+
+				if GetSnapGap(m.b, m.t, o.b, o.t) <= alignmentGap then
 					PickSnap(bx, o.l - m.l, o.l, range)
 					PickSnap(bx, o.r - m.r, o.r, range)
 					PickSnap(bx, o.cx - m.cx, o.cx, range)
@@ -1157,6 +1162,9 @@ local function FindEleSnap(dragframe)
 				if GetSnapGap(m.l, m.r, o.l, o.r) <= range then
 					PickSnap(by, o.b - m.t, o.b, range)
 					PickSnap(by, o.t - m.b, o.t, range)
+				end
+
+				if GetSnapGap(m.l, m.r, o.l, o.r) <= alignmentGap then
 					PickSnap(by, o.b - m.b, o.b, range)
 					PickSnap(by, o.t - m.t, o.t, range)
 					PickSnap(by, o.cy - m.cy, o.cy, range)
@@ -1183,7 +1191,7 @@ local function GetSnapPreview()
 				line:SetTexture(1, 1, 1, 1)
 			end
 
-			line:SetVertexColor(MoveAny:GetColor("se"))
+			line:SetVertexColor(1, 0, 0, 1)
 			line:Hide()
 		end
 	end
