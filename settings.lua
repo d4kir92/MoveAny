@@ -797,16 +797,6 @@ function MoveAny:InitMALock()
 		if BNToastFrame then AddCheckBox("BNToastFrame", false) end
 		AddCheckBox("EventToastManagerFrame", false)
 		if TicketStatusFrame then AddCheckBox("TICKETSTATUSFRAME", false) end
-		if MoveAny:IsAddOnLoaded("ImproveAny", 1, true) then
-			AddCategory("ImproveAny")
-			if IASkills then AddCheckBox("IASKILLS", true) end
-			AddCheckBox("MONEYBAR", true)
-			AddCheckBox("TOKENBAR", true)
-			AddCheckBox("IAILVLBAR", true)
-			AddCheckBox("IAPingFrame", true)
-			AddCheckBox("IACoordsFrame", true)
-		end
-
 		if MoveAny:IsAddOnLoaded("!KalielsTracker") then
 			AddCategory("!KalielsTracker", 1, true)
 			AddCheckBox("!KalielsTrackerButtons", false)
@@ -823,7 +813,18 @@ function MoveAny:InitMALock()
 	MALock.Pipette.texture:SetTexture("Interface\\Addons\\MoveAny\\media\\pipette")
 	MALock.Pipette.texture:SetSize(16, 16)
 	MALock.Pipette.texture:SetPoint("CENTER", MALock.Pipette, "CENTER", 0, 0)
+	MALock.Pipette:SetScript("OnEnter", function(sel)
+		GameTooltip:SetOwner(sel, "ANCHOR_NONE")
+		GameTooltip:ClearAllPoints()
+		GameTooltip:SetPoint("BOTTOMLEFT", sel, "TOPRIGHT", 4, 4)
+		GameTooltip:SetText(MoveAny:Trans("LID_PICKER"))
+		GameTooltip:AddLine(MoveAny:Trans("LID_PICKERHELP"), 1, 1, 1, true)
+		GameTooltip:Show()
+	end)
+
+	MALock.Pipette:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	MALock.Pipette:SetScript("OnClick", function()
+		GameTooltip:Hide()
 		if MoveAny.Lock then MoveAny:Lock() end
 		if MoveAny.HideMALock then MoveAny:HideMALock() end
 		MoveAny:SetFinder(true)
@@ -3378,7 +3379,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
-		if MoveAny:IsEnabled("CHATQUICKJOIN", false) then
+		if QuickJoinToastButton and MoveAny:IsEnabled("CHATQUICKJOIN", false) then
 			QuickJoinToastButton:SetFrameLevel(10)
 			MoveAny:RegisterWidget({
 				["name"] = "QuickJoinToastButton",
@@ -3396,10 +3397,26 @@ function MoveAny:LoadAddon()
 				if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS" then cright = 16 end
 				if MoveAny:IsEnabled("CHATBUTTONFRAME" .. x, false) then cleft = -2 end
 				if MoveAny:IsEnabled("CHATEDITBOX", false) then cbottom = -4 end
+				if x == 1 and QuickJoinToastButton and not MoveAny:IsEnabled("CHATQUICKJOIN", false) and not MoveAny:IsEnabled("CHATBUTTONFRAME1", false) then
+					local buttonLeft, buttonRight = QuickJoinToastButton:GetLeft(), QuickJoinToastButton:GetRight()
+					local buttonTop, buttonBottom = QuickJoinToastButton:GetTop(), QuickJoinToastButton:GetBottom()
+					local chatLeft, chatRight = cf:GetLeft(), cf:GetRight()
+					local chatTop, chatBottom = cf:GetTop(), cf:GetBottom()
+					local buttonScale, chatScale = QuickJoinToastButton:GetEffectiveScale(), cf:GetEffectiveScale()
+					if buttonLeft and buttonRight and buttonTop and buttonBottom and chatLeft and chatRight and chatTop and chatBottom and MoveAny:CanAccessValues(buttonLeft, buttonRight, buttonTop, buttonBottom, chatLeft, chatRight, chatTop, chatBottom, buttonScale, chatScale) then
+						local ratio = buttonScale / chatScale
+						cleft = math.min(cleft, buttonLeft * ratio - chatLeft)
+						cright = math.max(cright, buttonRight * ratio - chatRight)
+						ctop = math.max(ctop, buttonTop * ratio - chatTop)
+						cbottom = math.min(cbottom, buttonBottom * ratio - chatBottom)
+					end
+				end
+
 				local cfTab = {}
 				if MoveAny:IsEnabled("CHAT" .. x, false) then
 					MoveAny:RegisterWidget({
 						["name"] = "ChatFrame" .. x,
+						["resizable"] = true,
 						["lstr"] = "LID_CHAT",
 						["lstri"] = x,
 						["cleft"] = cleft,
@@ -4128,46 +4145,30 @@ function MoveAny:LoadAddon()
 			})
 		end
 
-		if MoveAny:IsAddOnLoaded("MoveAny") then
-			if MoveAny:IsEnabled("MONEYBAR", true) then
-				MoveAny:RegisterWidget({
-					["name"] = "IAMoneyBar",
-					["lstr"] = "LID_MONEYBAR"
-				})
+		if MoveAny:IsAddOnLoaded("ImproveAny") then
+			for name, label in pairs({IAMoneyBar = "LID_MONEYBAR", IATokenBar = "LID_TOKENBAR", IAILVLBar = "LID_IAILVLBAR", IAPingFrame = "LID_IAPingFrame", IACoordsFrame = "LID_IACoordsFrame", IASkills = "LID_IASKILLS"}) do
+				MoveAny:RegisterWidget({name = name, lstr = label})
 			end
+		end
 
-			if MoveAny:IsEnabled("TOKENBAR", true) then
+		if MoveAny:IsAddOnLoaded("TankHelper") then
+			for _, name in ipairs({"THCockpit", "THWorldMarkers", "THTargetMarkers", "THExtras"}) do
+				local frameName = name
 				MoveAny:RegisterWidget({
-					["name"] = "IATokenBar",
-					["lstr"] = "LID_TOKENBAR"
-				})
-			end
-
-			if MoveAny:IsEnabled("IAILVLBAR", true) then
-				MoveAny:RegisterWidget({
-					["name"] = "IAILVLBar",
-					["lstr"] = "LID_IAILVLBAR"
-				})
-			end
-
-			if MoveAny:IsEnabled("IAPingFrame", true) then
-				MoveAny:RegisterWidget({
-					["name"] = "IAPingFrame",
-					["lstr"] = "LID_IAPingFrame"
-				})
-			end
-
-			if MoveAny:IsEnabled("IACoordsFrame", true) then
-				MoveAny:RegisterWidget({
-					["name"] = "IACoordsFrame",
-					["lstr"] = "LID_IACoordsFrame"
-				})
-			end
-
-			if IASkills and MoveAny:IsEnabled("IASKILLS", true) then
-				MoveAny:RegisterWidget({
-					["name"] = "IASkills",
-					["lstr"] = "LID_IASKILLS"
+					name = frameName,
+					lstr = "LID_" .. frameName,
+					active = function() return (THTAB and THTAB.combineall == true) == (frameName == "THCockpit") end,
+					onPositionChanged = function(frame)
+						if not THTAB then return end
+						local x, y = frame:GetCenter()
+						if not x or not y then return end
+						local ratio = UIParent:GetEffectiveScale() / frame:GetEffectiveScale()
+						THTAB[frameName .. "point"] = "CENTER"
+						THTAB[frameName .. "parent"] = nil
+						THTAB[frameName .. "relativePoint"] = "BOTTOMLEFT"
+						THTAB[frameName .. "ofsx"] = x - UIParent:GetLeft() * ratio
+						THTAB[frameName .. "ofsy"] = y - UIParent:GetBottom() * ratio
+					end,
 				})
 			end
 		end

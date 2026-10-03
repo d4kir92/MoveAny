@@ -222,6 +222,8 @@ end
 
 MoveAny.editorVisibility = {grid = true, movers = true}
 function MoveAny:IsEditorMoverVisible(name)
+	local dragframe = MoveAny:GetDragFromName(name)
+	if dragframe and dragframe.maActive and not dragframe.maActive() then return false end
 	if not MoveAny:IsEnabled("MALOCK", false) or InCombatLockdown() then return false end
 	if MoveAny:GetEleOption(name, "Hide", false, "EditorVisibility") then return not MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) end
 	return MoveAny.editorVisibility.movers

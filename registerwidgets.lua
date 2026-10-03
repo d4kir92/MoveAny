@@ -1254,6 +1254,11 @@ function MoveAny:RegisterWidget(tab)
 	local cbottom = tab.cbottom
 	local posx = tab.posx
 	local posy = tab.posy
+	if tab.resizable then
+		posx = ((cleft or 0) + (cright or 0)) / 2
+		posy = ((ctop or 0) + (cbottom or 0)) / 2
+	end
+
 	local setup = tab.setup
 	tab.delay = tab.delay or 0.2
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
@@ -1269,6 +1274,7 @@ function MoveAny:RegisterWidget(tab)
 		cacheDrags[name] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
 		local dragframe = MoveAny:GetDragFromName(name)
 		dragframe.maName = name
+		dragframe.maActive = tab.active
 		MoveAny:SetClampedToScreen(dragframe, true, "RegisterWidget 1")
 		dragframe:SetFrameStrata("MEDIUM")
 		dragframe:Hide()
@@ -1381,6 +1387,14 @@ function MoveAny:RegisterWidget(tab)
 				local eff = dragframe:GetEffectiveScale()
 				local np4 = dx and p4 + dx / eff or MoveAny:Snap(p4)
 				local np5 = dy and p5 + dy / eff or MoveAny:Snap(p5)
+				if tab.resizable then
+					local x, y = dragframe:GetCenter()
+					local root = MoveAny:GetMainPanel()
+					local rootScale = root:GetEffectiveScale()
+					np1, np3 = "CENTER", "BOTTOMLEFT"
+					np4 = (x * eff + (dx or 0) - root:GetLeft() * rootScale) / eff - posx
+					np5 = (y * eff + (dy or 0) - root:GetBottom() * rootScale) / eff - posy
+				end
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5) end
 				if dragframe.opt and dragframe.opt.elePos then dragframe.opt.elePos:UpdateText() end
 				dragframe:SetMovable(true)
@@ -1426,7 +1440,7 @@ function MoveAny:RegisterWidget(tab)
 				ma_scri[sel] = true
 				sel:SetClampRectInsets(l, r, t, b)
 				local df = MoveAny:GetDragFromName(name)
-				if df then df:SetClampRectInsets(l, r, t, b) end
+				if df then if tab.resizable then df:SetClampRectInsets(0, 0, 0, 0) else df:SetClampRectInsets(l, r, t, b) end end
 				ma_scri[sel] = false
 			end)
 
@@ -1568,7 +1582,7 @@ function MoveAny:RegisterWidget(tab)
 	sh = sh or frame:GetHeight()
 	sw = MoveAny:MathR(sw)
 	sh = MoveAny:MathR(sh)
-	if MoveAny:GetElePoint(name) == nil then
+	if (not tab.active or tab.active()) and MoveAny:GetElePoint(name) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
 		if parent == nil or parent == UIParent or parent == MoveAny:GetMainPanel() and an ~= nil and re ~= nil then
 			MoveAny:SetElePoint(name, an, MoveAny:GetMainPanel(), re, MoveAny:Snap(px), MoveAny:Snap(py))
@@ -1586,11 +1600,17 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	local osw, osh = MoveAny:GetEleSize(name)
-	if osw ~= sw or osh ~= sh then MoveAny:SetEleSize(name, sw, sh) end
+	if tab.resizable and osw and osh then
+		sw, sh = osw, osh
+	elseif osw ~= sw or osh ~= sh then
+		MoveAny:SetEleSize(name, sw, sh)
+	end
 	local pointFunc = "SetPoint"
 	if frame.SetPointBase then pointFunc = "SetPointBase" end
 	hooksecurefunc(frame, pointFunc, function(sel, p1, p2, p3, p4, p5)
-		if elesetpoint then return end
+		if tab.active then MoveAny:UpdateEditorVisibility() end
+
+		if elesetpoint or tab.active and not tab.active() then return end
 		if not ma_secure then
 			if not movableSetup then
 				movableSetup = true
@@ -1605,6 +1625,7 @@ function MoveAny:RegisterWidget(tab)
 			if dbp1 and dbp3 then MoveAny:SetPoint(sel, dbp1, nil, dbp3, dbp4, dbp5) end
 			if sel == MAMenuBar then MoveAny:UpdateActionBar(sel, "RegisterWidget sel == MAMenuBar") end
 			elesetpoint = false
+			if tab.onPositionChanged then tab.onPositionChanged(sel) end
 		end
 	end)
 
@@ -1622,6 +1643,7 @@ function MoveAny:RegisterWidget(tab)
 
 	if not ma_secure then
 		local function applyElePoint()
+			if tab.active and not tab.active() then return end
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(name)
 			if dbp1 and dbp3 then
 				if noreparent then
@@ -1693,6 +1715,72 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	if MoveAny:IsEditorMoverVisible(name) then dragframe:Show() else dragframe:Hide() end
+
+	if tab.resizable then
+		local updatingSize = false
+		local function UpdateMoverSize(width, height)
+			if updatingSize then return end
+			updatingSize = true
+			dragframe:SetSize(width + (cright or 0) - (cleft or 0), height + (ctop or 0) - (cbottom or 0))
+			updatingSize = false
+		end
+
+		hooksecurefunc(dragframe, "SetSize", function(_, width, height) UpdateMoverSize(width, height) end)
+		UpdateMoverSize(frame:GetSize())
+		local grip = MoveAny:CreateSizeGrip(dragframe, 24)
+		local function StopResize()
+			if not grip.resizing then return end
+			grip.resizing = false
+			grip:SetScript("OnUpdate", nil)
+			MoveAny:SetEleSize(name, frame:GetSize())
+			MoveAny:EnableSave("ResizeChat", name, true, false, true)
+		end
+
+		grip:SetScript("OnMouseDown", function(sel, button)
+			if button ~= "LeftButton" or InCombatLockdown() then return end
+			sel.cursorX, sel.cursorY = GetCursorPosition()
+			sel.width, sel.height = frame:GetSize()
+			local scale = frame:GetEffectiveScale()
+			local root = MoveAny:GetMainPanel()
+			local rootScale = root:GetEffectiveScale()
+			sel.left, sel.top = frame:GetLeft(), frame:GetTop()
+			if not sel.left or not sel.top then return end
+			MoveAny:SetElePoint(name, "TOPLEFT", root, "BOTTOMLEFT", sel.left - root:GetLeft() * rootScale / scale, sel.top - root:GetBottom() * rootScale / scale)
+			sel.resizing = true
+			sel:SetScript("OnUpdate", function()
+				if InCombatLockdown() then
+					StopResize()
+					return
+				end
+
+				local x, y = GetCursorPosition()
+				local scale = frame:GetEffectiveScale()
+				local minWidth, minHeight, maxWidth, maxHeight
+				if frame.GetResizeBounds then
+					minWidth, minHeight, maxWidth, maxHeight = frame:GetResizeBounds()
+				elseif frame.GetMinResize then
+					minWidth, minHeight = frame:GetMinResize()
+					maxWidth, maxHeight = frame:GetMaxResize()
+				end
+
+				minWidth = math.max(minWidth or 0, CHAT_FRAME_MIN_WIDTH or 100)
+				minHeight = math.max(minHeight or 0, CHAT_FRAME_NORMAL_MIN_HEIGHT or 50)
+				local screenRight = UIParent:GetRight() * UIParent:GetEffectiveScale() / scale
+				local screenBottom = UIParent:GetBottom() * UIParent:GetEffectiveScale() / scale
+				local limitWidth = math.max(1, screenRight - sel.left - (cright or 0))
+				local limitHeight = math.max(1, sel.top - screenBottom + (cbottom or 0))
+				if maxWidth and maxWidth > 0 then limitWidth = math.min(limitWidth, maxWidth) end
+				if maxHeight and maxHeight > 0 then limitHeight = math.min(limitHeight, maxHeight) end
+				local width = math.min(limitWidth, math.max(minWidth, sel.width + (x - sel.cursorX) / scale))
+				local height = math.min(limitHeight, math.max(minHeight, sel.height - (y - sel.cursorY) / scale))
+				frame:SetSize(width, height)
+			end)
+		end)
+		grip:SetScript("OnMouseUp", StopResize)
+		grip:SetScript("OnHide", StopResize)
+		frame:HookScript("OnSizeChanged", function(_, width, height) UpdateMoverSize(width, height) end)
+		grip:Show()
+	end
 
 	if setup then setup() end
 end
