@@ -478,14 +478,26 @@ function D4:CreateFrame(name, parent, templates)
     end
 end
 
+function D4:GetUIButtonTemplate()
+    if DoesTemplateExist then
+        for _, template in ipairs({"BigRedThreeSliceButtonTemplate", "GameMenuButtonTemplate", "UIPanelButtonTemplate"}) do
+            if DoesTemplateExist(template) then return template end
+        end
+    end
+end
+
 function D4:CreateButton(name, parent, noDefaultTemplate, templates)
     noDefaultTemplate = noDefaultTemplate or false
     if noDefaultTemplate then
         return CreateFrame("Button", name, parent, templates)
     elseif templates and D4:CheckTemplates(templates) then
         return CreateFrame("Button", name, parent, templates)
-    elseif DoesTemplateExist and DoesTemplateExist("UIPanelButtonTemplate") then
-        return CreateFrame("Button", name, parent, "UIPanelButtonTemplate")
+    elseif D4:GetUIButtonTemplate() then
+        local button = CreateFrame("Button", name, parent, D4:GetUIButtonTemplate())
+        button:SetNormalFontObject(GameFontNormal)
+        button:SetHighlightFontObject(GameFontHighlight)
+        button:SetDisabledFontObject(GameFontDisable)
+        return button
     else
         local btn = CreateFrame("Button", name, parent)
         btn.bg = btn:CreateTexture(name .. ".bg", "ARTWORK")
@@ -522,7 +534,13 @@ function D4:SetReloadAction(button, enabled)
 end
 
 function D4:CreateReloadButton(name, parent, enabled)
-    local button = D4:CreateButton(name, parent, false, "UIPanelButtonTemplate,SecureActionButtonTemplate")
+    local template = D4:GetUIButtonTemplate()
+    local templates = "SecureActionButtonTemplate"
+    if template then templates = template .. "," .. templates end
+    local button = D4:CreateButton(name, parent, false, templates)
+    button:SetNormalFontObject(GameFontNormal)
+    button:SetHighlightFontObject(GameFontHighlight)
+    button:SetDisabledFontObject(GameFontDisable)
     D4:SetReloadAction(button, enabled)
     return button
 end

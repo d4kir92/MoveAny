@@ -82,6 +82,7 @@ function MoveAny:AddProfile(newname, other, noChange)
 end
 
 function MoveAny:RemoveProfile(name)
+	if name == "DEFAULT" then return false end
 	MoveAny:CheckDB("RemoveProfile")
 	MATAB["PROFILES"][name] = nil
 	MoveAny:SetCP("DEFAULT")
@@ -334,7 +335,7 @@ function MoveAny:SetEnabled(element, value)
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	local oldVal = MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"]
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value
-	if element ~= "MALOCK" then MoveAny:EnableSave("SetEnabled", element, value, oldVal, false) end
+	if element ~= "MALOCK" and element ~= "HIDEHIDDENFRAMES" and element ~= "SNAPTOELEMENTS" then MoveAny:EnableSave("SetEnabled", element, value, oldVal, false) end
 	if element == "SAVEFRAMEPOSITION" then framePointCache = {} end
 	if element == "SAVEFRAMESCALE" then frameScaleCache = {} end
 end

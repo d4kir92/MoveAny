@@ -9,7 +9,7 @@ local MODERN_TEMPLATE = "ButtonFrameTemplate"
 local CONTENT_TRIM = 56
 local SCROLL_LEFT = 8
 local RIGHT_INSET = 18
-local GRIP_INSET = 24
+local GRIP_INSET = 32
 local HEADER_LIFT = 5
 local HEADER_GROW = 5
 local FOOTER_TRIM = 3
@@ -164,7 +164,7 @@ end
 
 local function CreateGrip(win, name)
     local grip = CreateFrame("Button", name .. "Resize", win)
-    grip:SetSize(16, 16)
+    grip:SetSize(24, 24)
     grip:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -4, 4)
     grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
     grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
@@ -284,8 +284,14 @@ local function CreateLegacyScroll(win, name)
     return content
 end
 
+function D4:CreateUIWindowScroll(win, name)
+    win.contentWidth = win:GetWidth() - (win.contentTrim or 56)
+    if HasModernScroll() then return CreateModernScroll(win, name) end
+    return CreateLegacyScroll(win, name)
+end
+
 local function UseModernTemplate(tab)
-    if tab.modern ~= true or tab.templates then return false end
+    if tab.modern == false or tab.templates then return false end
     if D4:GetWoWBuild() ~= "RETAIL" then return false end
     if ButtonFrameTemplate_HidePortrait == nil or ButtonFrameTemplate_HideAttic == nil or ButtonFrameTemplate_HideButtonBar == nil then return false end
 
@@ -298,6 +304,53 @@ local function ApplyModernTemplate(win)
     ButtonFrameTemplate_HidePortrait(win)
     if win.TitleText == nil and win.TitleContainer then win.TitleText = win.TitleContainer.TitleText end
     win.leftInset = MODERN_LEFT_INSET
+end
+
+function D4:CreateUIWindowFrame(name, parent, templates)
+    local modern = UseModernTemplate({templates = templates})
+    if modern then templates = MODERN_TEMPLATE end
+    local win = D4:CreateFrame(name, parent or UIParent, templates)
+    if modern then ApplyModernTemplate(win) end
+    return win
+end
+
+local function ApplyWindowTitle(win, tab)
+    local title = UI:Text(tab.title) or ""
+    local name, version = title:match("^(.-)%s+(v%d[%w%.%-%_+]*)%s*$")
+    if name then
+        title = name:match("^(.-)%s+by%s+") or name
+    end
+
+    if win.TitleText then win.TitleText:Hide() end
+    local bar = CreateFrame("Frame", nil, win)
+    bar:SetPoint("TOPLEFT", win, "TOPLEFT", 0, 0)
+    bar:SetPoint("TOPRIGHT", win, "TOPRIGHT", 0, 0)
+    bar:SetHeight(28)
+    bar:SetFrameLevel(win:GetFrameLevel() + 510)
+    bar:EnableMouse(false)
+    win.titleBar = bar
+    bar.Title = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    bar.Title:SetPoint("CENTER", bar, "TOP", 0, -12)
+    bar.Title:SetJustifyH("CENTER")
+    bar.Title:SetText(title)
+    bar.Version = bar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    bar.Version:SetTextColor(0.6, 0.6, 0.6)
+    bar.Version:SetJustifyH("RIGHT")
+    bar.Version:SetText(version or "")
+    if win.CloseButton then
+        bar.Version:SetPoint("RIGHT", win.CloseButton, "LEFT", -4, 0)
+    else
+        bar.Version:SetPoint("RIGHT", bar, "RIGHT", -8, 0)
+    end
+
+    local function UpdateTitleWidth()
+        local reserve = bar.Version:GetStringWidth() + 12
+        if win.CloseButton then reserve = reserve + win.CloseButton:GetWidth() end
+        bar.Title:SetWidth(math.max(1, win:GetWidth() - reserve * 2))
+    end
+
+    win:HookScript("OnSizeChanged", UpdateTitleWidth)
+    UpdateTitleWidth()
 end
 
 function D4:CreateUIWindow(tab)
@@ -335,7 +388,7 @@ function D4:CreateUIWindow(tab)
     end
 
     D4:SetClampedToScreen(win, true)
-    if win.TitleText then win.TitleText:SetText(UI:Text(tab.title)) end
+    ApplyWindowTitle(win, tab)
     if tab.onClose and win.CloseButton then win.CloseButton:SetScript("OnClick", function() tab.onClose(win) end) end
     UI:ApplyWindow(win)
     win.headerHeight = 0

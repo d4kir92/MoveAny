@@ -517,7 +517,7 @@ function MoveAny:GetAllParents(hoverFrame)
 end
 
 function MoveAny:InitMALock()
-	sh = MoveAny:MClamp(640, 200, GetScreenHeight())
+	sh = MoveAny:MClamp(656, 200, GetScreenHeight())
 	local function CloseMALock()
 		MoveAny:ToggleMALock()
 	end
@@ -540,10 +540,10 @@ function MoveAny:InitMALock()
 	})
 
 	MALock:SetFrameLevel(999)
-	if MALock.CloseButton then MALock.CloseButton:SetFrameLevel(1000) end
+	if MALock.CloseButton then MALock.CloseButton:SetFrameLevel(MALock:GetFrameLevel() + 510) end
 	MoveAny:After(0, function() if MALock:GetHeight() > GetScreenHeight() then MALock:SetHeight(GetScreenHeight()) end end, "InitMALock")
 	MALock:AddHeader({
-		["height"] = 24
+		["height"] = 32
 	})
 
 	MALock:AddFooter({
@@ -817,11 +817,11 @@ function MoveAny:InitMALock()
 	end
 
 	MALock.Pipette = MoveAny:CreateButton("MALock_Pipette", MALock.header)
-	MALock.Pipette:SetSize(24, 24)
+	MALock.Pipette:SetSize(32, 32)
 	MALock.Pipette:SetText("")
 	MALock.Pipette.texture = MALock.Pipette:CreateTexture()
 	MALock.Pipette.texture:SetTexture("Interface\\Addons\\MoveAny\\media\\pipette")
-	MALock.Pipette.texture:SetSize(12, 12)
+	MALock.Pipette.texture:SetSize(16, 16)
 	MALock.Pipette.texture:SetPoint("CENTER", MALock.Pipette, "CENTER", 0, 0)
 	MALock.Pipette:SetScript("OnClick", function()
 		if MoveAny.Lock then MoveAny:Lock() end
@@ -831,53 +831,63 @@ function MoveAny:InitMALock()
 		MoveAny:FinderThink()
 	end)
 
-	MALock.Pipette:SetPoint("LEFT", MALock.header, "LEFT", 0, 0)
+	MALock.Pipette:SetPoint("LEFT", MALock.header, "LEFT", 2, 1)
 	MALock.VisibilityButtons = {}
 	local visibilityLabels = {"LID_EDITORVISIBILITYALL", "LID_EDITORVISIBILITYGRID", "LID_EDITORVISIBILITYMOVERS", "LID_EDITORVISIBILITYHIDDEN", "LID_SNAPTOELEMENTS"}
 	local previousButton = MALock.Pipette
 	for i, label in ipairs(visibilityLabels) do
 		local kind = i
 		local button = MoveAny:CreateButton("MALock_Visibility" .. i, MALock.header)
-		button:SetSize(24, 24)
+		button:SetSize(32, 32)
 		button:SetText("")
-		button:SetPoint("LEFT", previousButton, "RIGHT", 4, 0)
+		button:SetPoint("LEFT", previousButton, "RIGHT", i == 1 and 3 or 1, 0)
 		button.icons = {}
 		local function Icon(texture, width, height, x, y)
 			local icon = button:CreateTexture(nil, "OVERLAY")
-			if texture then icon:SetTexture(texture) else icon:SetColorTexture(1, 1, 1, 1) end
-			icon:SetSize(width, height)
-			icon:SetPoint("CENTER", button, "CENTER", x, y)
+			if texture then
+				icon:SetTexture(texture)
+			else
+				icon:SetColorTexture(1, 1, 1, 1)
+			end
+
+			icon:SetSize(math.max(1, math.floor(width * 0.8 + 0.5)), math.max(1, math.floor(height * 0.8 + 0.5)))
+			icon:SetPoint("CENTER", button, "CENTER", math.floor(x * 0.8 + 0.5), math.floor(y * 0.8 + 0.5))
 			table.insert(button.icons, icon)
 		end
 
 		if i == 1 then
-			for _, x in ipairs({-4, 4}) do
-				for _, y in ipairs({-4, 4}) do Icon(nil, 5, 5, x, y) end
+			for _, x in ipairs({-6, 6}) do
+				for _, y in ipairs({-6, 6}) do
+					Icon(nil, 8, 8, x, y)
+				end
 			end
 		elseif i == 2 then
-			for _, offset in ipairs({-6, 0, 6}) do
-				Icon(nil, 1, 13, offset, 0)
-				Icon(nil, 13, 1, 0, offset)
+			for _, offset in ipairs({-9, 0, 9}) do
+				Icon(nil, 1, 19, offset, 0)
+				Icon(nil, 19, 1, 0, offset)
 			end
 		elseif i == 3 then
-			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", 8, 8, 0, 5)
-			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", 8, 8, 0, -5)
-			Icon("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", 8, 8, -5, 0)
-			Icon("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", 8, 8, 5, 0)
+			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", 10, 10, 0, 7)
+			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", 10, 10, 0, -7)
+			Icon("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", 10, 10, -7, 0)
+			Icon("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", 10, 10, 7, 0)
 		elseif i == 4 then
-			Icon("Interface\\Icons\\Ability_Hunter_EagleEye", 16, 16, 0, 0)
+			Icon("Interface\\Icons\\Ability_Hunter_EagleEye", 20, 20, 0, 0)
 		else
-			Icon(nil, 1, 16, 0, 0)
-			Icon(nil, 5, 5, -3, 4)
-			Icon(nil, 5, 5, 3, -4)
+			Icon(nil, 1, 24, 0, 0)
+			Icon(nil, 8, 8, -5, 6)
+			Icon(nil, 8, 8, 5, -6)
 		end
 
 		button:SetScript("OnClick", function() MoveAny:ToggleEditorVisibility(kind) end)
 		button:SetScript("OnEnter", function(sel)
-			GameTooltip:SetOwner(sel, "ANCHOR_BOTTOM")
+			GameTooltip:SetOwner(sel, "ANCHOR_NONE")
+			GameTooltip:ClearAllPoints()
+			GameTooltip:SetPoint("BOTTOMLEFT", sel, "TOPRIGHT", 4, 4)
 			GameTooltip:SetText(MoveAny:Trans(label))
 			GameTooltip:Show()
 		end)
+
 		button:SetScript("OnLeave", function() GameTooltip:Hide() end)
 		MALock.VisibilityButtons[i] = button
 		previousButton = button
@@ -885,8 +895,8 @@ function MoveAny:InitMALock()
 
 	MoveAny:UpdateEditorVisibility()
 	MALock.Profiles = MoveAny:CreateButton("MALock_Profiles", MALock.header)
-	MALock.Profiles:SetPoint("RIGHT", MALock.header, "RIGHT", 0, 0)
-	MALock.Profiles:SetSize(100, 24)
+	MALock.Profiles:SetPoint("RIGHT", MALock.header, "RIGHT", 12, 1)
+	MALock.Profiles:SetSize(100, 32)
 	MALock.Profiles:SetText(MoveAny:Trans("LID_PROFILES"))
 	MALock.Profiles:SetScript("OnClick", function()
 		if MoveAny.Lock then MoveAny:Lock() end
@@ -895,14 +905,18 @@ function MoveAny:InitMALock()
 		MoveAny:ShowProfiles()
 	end)
 
-	MALock.Search = MALock:AddSearch({
-		["leftInset"] = 24 * 6 + 4 * 5 + br,
-		["rightInset"] = 100 + br,
-	})
+	MALock.Search = MALock:AddSearch()
+	MALock.Search:SetHeight(28)
+	for _, region in pairs({MALock.Search:GetRegions()}) do
+		if region:IsObjectType("Texture") then region:SetHeight(28) end
+	end
 
+	MALock.Search:ClearAllPoints()
+	MALock.Search:SetPoint("LEFT", previousButton, "RIGHT", 9, 0)
+	MALock.Search:SetPoint("RIGHT", MALock.Profiles, "LEFT", -3, 0)
 	MALock.save = MoveAny:CreateReloadButton("MALock" .. ".save", MALock.footer, false)
 	MALock.save:SetSize(120, 24)
-	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 0, 0)
+	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 4, 0)
 	MALock.save:SetText(MoveAny:Trans("LID_SAVEANDCLOSE"))
 	MALock.save:SetWidth(math.max(120, MALock.save:GetTextWidth() + 24))
 	MALock.save:SetScript("PreClick", function() if needReload and not InCombatLockdown() then MoveAny:Lock() end end)
@@ -924,7 +938,8 @@ function MoveAny:InitMALock()
 	MALock.DISCORD = CreateFrame("EditBox", "MALock" .. ".DISCORD", MALock.footer, "InputBoxTemplate")
 	MALock.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 	MALock.DISCORD:SetSize(160, 24)
-	MALock.DISCORD:SetPoint("RIGHT", MALock.footer, "RIGHT", 0, 0)
+	MALock.DISCORD:SetPoint("LEFT", MALock.reload, "RIGHT", 10, 0)
+	MALock.DISCORD:SetPoint("RIGHT", MALock.footer, "RIGHT", -4, 0)
 	MALock.DISCORD:SetAutoFocus(false)
 	BuildElementList()
 	local finder = CreateFrame("Frame", "MoveAny_finder", UIParent)
@@ -1129,7 +1144,7 @@ function MoveAny:UpdateGrid()
 end
 
 local function CreateProfileTextWindow(frameName, height)
-	local frame = CreateFrame("Frame", frameName, MoveAny:GetMainPanel(), "BasicFrameTemplate")
+	local frame = MoveAny:CreateUIWindowFrame(frameName, MoveAny:GetMainPanel())
 	frame:SetSize(sw - 30, height)
 	frame:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 	frame:SetFrameStrata("HIGH")
@@ -1461,11 +1476,23 @@ end
 
 function MoveAny:ShowProfiles()
 	if MAProfiles == nil then
-		MAProfiles = CreateFrame("Frame", "MAProfiles", MoveAny:GetMainPanel(), "BasicFrameTemplate")
+		MAProfiles = MoveAny:CreateUIWindowFrame("MAProfiles", MoveAny:GetMainPanel())
 		MAProfiles:SetSize(psw, sh)
 		MAProfiles:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 		MAProfiles:SetFrameStrata("HIGH")
 		MAProfiles:SetFrameLevel(999)
+		MoveAny.UI:ApplyWindow(MAProfiles)
+		MAProfiles.leftInset = MAProfiles.leftInset or 4
+		MAProfiles.headerHeight = 0
+		MAProfiles.footerHeight = 0
+		MAProfiles:AddHeader({
+			["height"] = 24
+		})
+
+		MAProfiles:AddFooter({
+			["height"] = 24
+		})
+
 		MoveAny:SetClampedToScreen(MAProfiles, true)
 		MAProfiles:SetMovable(true)
 		MAProfiles:EnableMouse(true)
@@ -1493,10 +1520,10 @@ function MoveAny:ShowProfiles()
 			if MAProfiles:GetHeight() > GetScreenHeight() then MAProfiles:SetHeight(GetScreenHeight()) end
 		end, "ShowProfiles")
 
-		MAProfiles.DISCORD = CreateFrame("EditBox", "MAProfiles" .. ".DISCORD", MAProfiles, "InputBoxTemplate")
+		MAProfiles.DISCORD = CreateFrame("EditBox", "MAProfiles" .. ".DISCORD", MAProfiles.footer, "InputBoxTemplate")
 		MAProfiles.DISCORD:SetText("discord.gg/qxpK6PKYAD")
 		MAProfiles.DISCORD:SetSize(160, 24)
-		MAProfiles.DISCORD:SetPoint("BOTTOMRIGHT", MAProfiles, "BOTTOMRIGHT", -4 - 20, 4)
+		MAProfiles.DISCORD:SetPoint("RIGHT", MAProfiles.footer, "RIGHT", 0, 0)
 		MAProfiles.DISCORD:SetAutoFocus(false)
 		local rb2 = MoveAny:CreateButton(nil, MAProfiles, true)
 		rb2:EnableMouse("true")
@@ -1507,23 +1534,17 @@ function MoveAny:ShowProfiles()
 		rb2:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
 		rb2:SetScript("OnMouseDown", function(sel) MoveAny:GetParent(sel):StartSizing("BOTTOMRIGHT") end)
 		rb2:SetScript("OnMouseUp", function(sel) MoveAny:GetParent(sel):StopMovingOrSizing("BOTTOMRIGHT") end)
-		MAProfiles.SF = CreateFrame("ScrollFrame", "MAProfiles_SF", MAProfiles, "UIPanelScrollFrameTemplate")
-		MAProfiles.SF:SetPoint("TOPLEFT", MAProfiles, br, -30 - 24)
-		MAProfiles.SF:SetPoint("BOTTOMRIGHT", MAProfiles, -32, 24 + br)
-		MAProfiles.SC = CreateFrame("Frame", "MAProfiles_SC", MAProfiles.SF)
-		MAProfiles.SC:SetSize(400, 400)
-		MAProfiles.SC:SetPoint("TOPLEFT", MAProfiles.SF, "TOPLEFT", 0, 0)
-		MAProfiles.SF:SetScrollChild(MAProfiles.SC)
-		MAProfiles.SF.bg = MAProfiles.SF:CreateTexture()
-		MAProfiles.SF.bg:SetAllPoints(MAProfiles.SF)
-		MAProfiles.SF.bg:SetColorTexture(0.03, 0.03, 0.03, 0.5)
-		MAProfiles.AddProfile = MoveAny:CreateButton("MAProfiles_AddProfile", MAProfiles)
-		MAProfiles.AddProfile:SetPoint("TOPLEFT", MAProfiles, "TOPLEFT", br, -26)
+		MAProfiles.SC = MoveAny:CreateUIWindowScroll(MAProfiles, "MAProfiles")
+		MAProfiles.SF = MAProfiles.scrollFrame
+		MAProfiles.SC:SetWidth(math.max(1, MAProfiles.SF:GetWidth()))
+		MAProfiles.SF:HookScript("OnSizeChanged", function(sel) MAProfiles.SC:SetWidth(math.max(1, sel:GetWidth())) end)
+		MAProfiles.AddProfile = MoveAny:CreateButton("MAProfiles_AddProfile", MAProfiles.header)
+		MAProfiles.AddProfile:SetPoint("LEFT", MAProfiles.header, "LEFT", 0, 0)
 		MAProfiles.AddProfile:SetSize(160, 24)
 		MAProfiles.AddProfile:SetText(MoveAny:Trans("LID_ADDPROFILE"))
 		MAProfiles.AddProfile:SetScript("OnClick", function()
 			if MAAddProfile == nil then
-				MAAddProfile = CreateFrame("Frame", "MAAddProfile", MoveAny:GetMainPanel(), "BasicFrameTemplate")
+				MAAddProfile = MoveAny:CreateUIWindowFrame("MAAddProfile", MoveAny:GetMainPanel())
 				MAAddProfile:SetSize(300, 130)
 				MAAddProfile:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 				MAAddProfile:SetFrameStrata("HIGH")
@@ -1611,16 +1632,16 @@ function MoveAny:ShowProfiles()
 		end)
 
 		if MoveAny:CanEncodeProfiles() then
-			MAProfiles.ImportProfile = MoveAny:CreateButton("MAProfiles_ImportProfile", MAProfiles)
-			MAProfiles.ImportProfile:SetPoint("TOPLEFT", MAProfiles, "TOPLEFT", br + 160 + br, -26)
+			MAProfiles.ImportProfile = MoveAny:CreateButton("MAProfiles_ImportProfile", MAProfiles.header)
+			MAProfiles.ImportProfile:SetPoint("LEFT", MAProfiles.AddProfile, "RIGHT", br, 0)
 			MAProfiles.ImportProfile:SetSize(160, 24)
 			MAProfiles.ImportProfile:SetText(MoveAny:Trans("LID_IMPORT"))
 			MAProfiles.ImportProfile:SetScript("OnClick", function() ShowImportProfile() end)
 		end
 
-		MAProfiles.back = MoveAny:CreateButton("MAProfiles_Back", MAProfiles)
+		MAProfiles.back = MoveAny:CreateButton("MAProfiles_Back", MAProfiles.footer)
 		MAProfiles.back:SetSize(120, 24)
-		MAProfiles.back:SetPoint("BOTTOMLEFT", MAProfiles, "BOTTOMLEFT", 4, 4)
+		MAProfiles.back:SetPoint("LEFT", MAProfiles.footer, "LEFT", 0, 0)
 		MAProfiles.back:SetText(BACK)
 		MAProfiles.back:SetScript("OnClick", function()
 			MoveAny:SetEnabled("MAPROFILES", false)
@@ -1631,37 +1652,47 @@ function MoveAny:ShowProfiles()
 
 		local index = 0
 		for name, tab in pairs(MoveAny:GetProfiles()) do
-			local btn = MoveAny:CreateReloadButton(name, MAProfiles.SC)
-			btn:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br, -index * 40 - br)
-			btn:SetSize(160, 24)
+			local row = CreateFrame("Frame", nil, MAProfiles.SC)
+			row:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", 0, -index * 40)
+			row:SetPoint("TOPRIGHT", MAProfiles.SC, "TOPRIGHT", -4, -index * 40)
+			row:SetHeight(40)
+			row.buttons = {}
+			row.columnCount = MoveAny:CanEncodeProfiles() and 5 or 3
+			local background = row:CreateTexture(nil, "BACKGROUND")
+			background:SetAllPoints(row)
+			local shade = index % 2 == 0 and 0.12 or 0.19
 			if name == MoveAny:GetCP() then
-				btn:SetText("(" .. MoveAny:Trans("LID_CURRENT") .. ") " .. name)
+				background:SetColorTexture(0.08, 0.3, 0.12, 0.85)
 			else
-				btn:SetText(name)
+				background:SetColorTexture(shade, shade, shade, 0.85)
 			end
+			local btn = MoveAny:CreateReloadButton(name, row)
+			row.buttons[1] = btn
+			btn:SetSize(160, 24)
+			btn:SetText(name)
 
 			btn:SetScript("PreClick", function() MoveAny:SetCP(name) end)
 			if MoveAny:CanEncodeProfiles() then
-				local btnExport = MoveAny:CreateButton(name, MAProfiles.SC)
-				btnExport:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br, -index * 40 - br)
+				local btnExport = MoveAny:CreateButton(name, row)
+				row.buttons[2] = btnExport
 				btnExport:SetSize(100, 24)
 				btnExport:SetText(MoveAny:Trans("LID_EXPORT"))
 				btnExport:SetScript("OnClick", function() ShowExportProfile(name) end)
-				local btnShare = MoveAny:CreateButton(name, MAProfiles.SC)
-				btnShare:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br, -index * 40 - br)
+				local btnShare = MoveAny:CreateButton(name, row)
+				row.buttons[3] = btnShare
 				btnShare:SetSize(100, 24)
 				btnShare:SetText(MoveAny:Trans("LID_SHARE"))
 				btnShare:SetScript("OnClick", function() ShareProfile(name) end)
 			end
 
 			if name ~= "DEFAULT" then
-				local btnRen = MoveAny:CreateButton(name, MAProfiles.SC)
-				btnRen:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br + 100 + br, -index * 40 - br)
+				local btnRen = MoveAny:CreateButton(name, row)
+				row.buttons[row.columnCount - 1] = btnRen
 				btnRen:SetSize(100, 24)
 				btnRen:SetText(MoveAny:Trans("LID_RENAME"))
 				btnRen:SetScript("OnClick", function()
 					if MARenameProfile == nil then
-						MARenameProfile = CreateFrame("Frame", "MARenameProfile", MoveAny:GetMainPanel(), "BasicFrameTemplate")
+						MARenameProfile = MoveAny:CreateUIWindowFrame("MARenameProfile", MoveAny:GetMainPanel())
 						MARenameProfile:SetSize(300, 130)
 						MARenameProfile:SetPoint("CENTER", MoveAny:GetMainPanel(), "CENTER", 0, 0)
 						MARenameProfile:SetFrameStrata("HIGH")
@@ -1706,14 +1737,33 @@ function MoveAny:ShowProfiles()
 				end)
 			end
 
-			local btnRem = MoveAny:CreateReloadButton(name, MAProfiles.SC)
-			btnRem:SetPoint("TOPLEFT", MAProfiles.SC, "TOPLEFT", br + 160 + br + 100 + br + 100 + br + 100 + br, -index * 40 - br)
-			btnRem:SetSize(100, 24)
-			btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
-			btnRem:SetScript("PreClick", function() MoveAny:RemoveProfile(name) end)
+			if name ~= "DEFAULT" then
+				local btnRem = MoveAny:CreateReloadButton(name, row)
+				row.buttons[row.columnCount] = btnRem
+				btnRem:SetSize(100, 24)
+				btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
+				btnRem:SetScript("PreClick", function() MoveAny:RemoveProfile(name) end)
+			end
+			local function LayoutProfileRow()
+				local count = row.columnCount
+				local width = math.max(1, (row:GetWidth() - 160 - (count + 1) * 6) / math.max(1, count - 1))
+				for i, button in pairs(row.buttons) do
+					local buttonWidth = i == 1 and 160 or width
+					button:ClearAllPoints()
+					local x = i == 1 and 6 or 172 + (i - 2) * (width + 6)
+					button:SetPoint("LEFT", row, "LEFT", x, 0)
+					button:SetSize(buttonWidth, 24)
+				end
+			end
+
+			row:HookScript("OnSizeChanged", LayoutProfileRow)
+			LayoutProfileRow()
 			index = index + 1
 		end
 
+		MAProfiles.SC:SetHeight(math.max(1, index * 40))
+		if MAProfiles.scrollBox then MAProfiles.scrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately) end
+		MAProfiles:HookScript("OnSizeChanged", function(sel) sel:UpdateBodyLayout() end)
 		local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint("MALock")
 		if dbp1 and dbp3 then
 			MAProfiles:ClearAllPoints()
@@ -1732,7 +1782,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.12.28")
+	MoveAny:SetVersion(135994, "1.13.0")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",

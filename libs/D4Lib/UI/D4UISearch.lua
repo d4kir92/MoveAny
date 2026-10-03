@@ -5,11 +5,15 @@ function UI.WindowMixin:AddSearch(tab)
     tab = tab or {}
     local win = self
     local name = UI:NextName(win, "Search")
-    local header = win.header or win:AddHeader({["height"] = UI.ROW})
+    local header = win.header or win:AddHeader({["height"] = 32})
     local box = CreateFrame("EditBox", name, header, "InputBoxTemplate")
-    box:SetPoint("LEFT", header, "LEFT", 6 + (tab.leftInset or 0), 0)
-    box:SetPoint("RIGHT", header, "RIGHT", -(tab.rightInset or 0), 0)
-    box:SetHeight(UI.ROW)
+    box:SetPoint("LEFT", header, "LEFT", 9 + (tab.leftInset or 0), 1)
+    box:SetPoint("RIGHT", header, "RIGHT", -(3 + (tab.rightInset or 0)), 1)
+    local height = tab.height or UI.ROW
+    box:SetHeight(height)
+    for _, region in pairs({box:GetRegions()}) do
+        if region:IsObjectType("Texture") then region:SetHeight(height) end
+    end
     box:SetAutoFocus(false)
     box:SetMaxLetters(tab.maxLetters or 50)
     box.Hint = box:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
