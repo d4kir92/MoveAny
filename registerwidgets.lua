@@ -128,21 +128,29 @@ function MoveAny:GetFrameName(frame)
 	return fnt[frame]
 end
 
-local DRAG_LEVEL_MIN = 120
-local DRAG_LEVEL_MAX = 220
-local DRAG_LEVEL_SELECTED = 240
 function MoveAny:UpdateDragLevel(dragframe)
 	if dragframe == nil or dragframe.SetFrameLevel == nil then return end
-	if dragframe == MACurrentEle then
-		dragframe:SetFrameLevel(DRAG_LEVEL_SELECTED)
-		return
+	local scale = dragframe:GetEffectiveScale() or 1
+	local area = math.max(1, (dragframe:GetWidth() or 1) * (dragframe:GetHeight() or 1) * scale * scale)
+	if dragframe.maDragArea == area then return end
+	dragframe.maDragArea = area
+	local frames = {}
+	local found = false
+	for _, frame in pairs(MoveAny:GetDragFrames()) do
+		tinsert(frames, frame)
+		if frame == dragframe then found = true end
 	end
 
-	local w = dragframe:GetWidth() or 1
-	local h = dragframe:GetHeight() or 1
-	local area = w * h
-	if area < 1 then area = 1 end
-	dragframe:SetFrameLevel(MoveAny:MClamp(DRAG_LEVEL_MAX - math.floor(math.sqrt(area) / 6), DRAG_LEVEL_MIN, DRAG_LEVEL_MAX))
+	if not found then tinsert(frames, dragframe) end
+	table.sort(frames, function(a, b)
+		local aArea = a.maDragArea or 1
+		local bArea = b.maDragArea or 1
+		if aArea == bArea then return (a.maName or "") < (b.maName or "") end
+		return aArea > bArea
+	end)
+	for index, frame in ipairs(frames) do
+		frame:SetFrameLevel(120 + index * 3)
+	end
 end
 
 local eleBaseLayer = {}
@@ -177,11 +185,7 @@ function MoveAny:ApplyEleLayer(name, frame, restore)
 			if base then lvl = base[2] end
 		end
 
-		local dragframe = MoveAny:GetDragFromName(name)
-		if st then
-			frame:SetFrameStrata(st)
-			if dragframe then dragframe:SetFrameStrata(st) end
-		end
+		if st then frame:SetFrameStrata(st) end
 
 		if lvl then frame:SetFrameLevel(lvl) end
 
@@ -1284,7 +1288,9 @@ function MoveAny:RegisterWidget(tab)
 			dragframe:SetSize(100, 100)
 		end
 
-		hooksecurefunc(dragframe, "SetSize", function(sel) MoveAny:UpdateDragLevel(sel) end)
+		dragframe:HookScript("OnSizeChanged", function(sel) MoveAny:UpdateDragLevel(sel) end)
+		dragframe:HookScript("OnShow", function(sel) MoveAny:UpdateDragLevel(sel) end)
+		hooksecurefunc(dragframe, "SetScale", function(sel) MoveAny:UpdateDragLevel(sel) end)
 		MoveAny:UpdateDragLevel(dragframe)
 		MoveAny:SafeAnchorDrag(dragframe, frame or UIParent, 0, 0)
 		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
