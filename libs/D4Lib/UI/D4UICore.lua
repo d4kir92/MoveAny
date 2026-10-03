@@ -213,6 +213,36 @@ function UI.WindowMixin:AddRequirement(frame, requiredFrame)
     tinsert(element.requires, required)
 end
 
+function UI.WindowMixin:AddDependency(frame, isEnabled, depth)
+    if frame == nil then return nil end
+    local element = frame.uiElement or frame.element
+    if element ~= nil then element.depth = (element.depth or 0) + (depth or 1) end
+    self.dependencies = self.dependencies or {}
+    tinsert(self.dependencies, {
+        ["frame"] = frame,
+        ["isEnabled"] = isEnabled,
+    })
+
+    return frame
+end
+
+function UI.WindowMixin:UpdateDependencies()
+    for _, dependency in ipairs(self.dependencies or {}) do
+        local frame = dependency.frame
+        local enabled = dependency.isEnabled == nil or dependency.isEnabled() == true
+        if frame.slider and enabled then
+            frame.slider:Enable()
+        elseif frame.slider then
+            frame.slider:Disable()
+        else
+            frame:SetEnabled(enabled)
+        end
+
+        local holder = frame.holder or frame
+        holder:SetAlpha(enabled and 1 or 0.5)
+    end
+end
+
 function UI:MatchRequirements(element)
     if element.requires == nil then return end
     for _, required in ipairs(element.requires) do

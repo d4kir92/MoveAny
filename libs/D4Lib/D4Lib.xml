@@ -12,6 +12,12 @@
 <Script file="D4Frames.lua"/>
 <Script file="D4Grid.lua"/>
 <Script file="D4MinimapButtons.lua"/>
+<Script file="D4Colors.lua"/>
+<Script file="D4Icons.lua"/>
+<Script file="D4InstancePins.lua"/>
+<Script file="D4Menus.lua"/>
+<Script file="D4Waypoints.lua"/>
+<Script file="D4FrameTools.lua"/>
 <Script file="D4SlashCmds.lua"/>
 <Script file="D4Translations.lua"/>
 

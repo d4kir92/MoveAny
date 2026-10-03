@@ -150,6 +150,12 @@ enables an option) as required by `frame`. Both are frames an `Add*` call return
 a search is active, every shown hit also shows the elements it requires, transitively,
 so a dependent option is never found without the switch that turns it on.
 
+`win:AddDependency(frame, isEnabled, depth)` makes `frame` depend on other settings: it is
+indented by `depth` steps (default 1) and returned, so the call can wrap an `Add*` call.
+`win:UpdateDependencies()` then enables or disables every registered frame from its
+`isEnabled()` callback and dims disabled ones to 50 % alpha. Call it after a setting
+changes and once before `ResumeLayout`.
+
 ## Elements
 
 All `Add*` calls take one options table and return the created frame. Search box,
