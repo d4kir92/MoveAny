@@ -1667,11 +1667,11 @@ function MoveAny:ShowProfiles()
 			else
 				background:SetColorTexture(shade, shade, shade, 0.85)
 			end
+
 			local btn = MoveAny:CreateReloadButton(name, row)
 			row.buttons[1] = btn
 			btn:SetSize(160, 24)
 			btn:SetText(name)
-
 			btn:SetScript("PreClick", function() MoveAny:SetCP(name) end)
 			if MoveAny:CanEncodeProfiles() then
 				local btnExport = MoveAny:CreateButton(name, row)
@@ -1745,6 +1745,7 @@ function MoveAny:ShowProfiles()
 				btnRem:SetText(MoveAny:Trans("LID_REMOVE"))
 				btnRem:SetScript("PreClick", function() MoveAny:RemoveProfile(name) end)
 			end
+
 			local function LayoutProfileRow()
 				local count = row.columnCount
 				local width = math.max(1, (row:GetWidth() - 160 - (count + 1) * 6) / math.max(1, count - 1))
@@ -1783,7 +1784,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.0")
+	MoveAny:SetVersion(135994, "1.13.1")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -4146,8 +4147,18 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsAddOnLoaded("ImproveAny") then
-			for name, label in pairs({IAMoneyBar = "LID_MONEYBAR", IATokenBar = "LID_TOKENBAR", IAILVLBar = "LID_IAILVLBAR", IAPingFrame = "LID_IAPingFrame", IACoordsFrame = "LID_IACoordsFrame", IASkills = "LID_IASKILLS"}) do
-				MoveAny:RegisterWidget({name = name, lstr = label})
+			for name, label in pairs({
+				IAMoneyBar = "LID_MONEYBAR",
+				IATokenBar = "LID_TOKENBAR",
+				IAILVLBar = "LID_IAILVLBAR",
+				IAPingFrame = "LID_IAPingFrame",
+				IACoordsFrame = "LID_IACoordsFrame",
+				IASkills = "LID_IASKILLS"
+			}) do
+				MoveAny:RegisterWidget({
+					name = name,
+					lstr = label
+				})
 			end
 		end
 

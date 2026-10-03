@@ -1293,12 +1293,56 @@ function MoveAny:RegisterWidget(tab)
 		hooksecurefunc(dragframe, "SetScale", function(sel) MoveAny:UpdateDragLevel(sel) end)
 		MoveAny:UpdateDragLevel(dragframe)
 		MoveAny:SafeAnchorDrag(dragframe, frame or UIParent, 0, 0)
-		dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
-		dragframe.t:SetAllPoints(dragframe)
-		if dragframe.t.SetColorTexture then
-			dragframe.t:SetColorTexture(1, 1, 1, 1)
+		if NineSliceUtil and C_Texture and C_Texture.GetAtlasInfo and C_Texture.GetAtlasInfo("editmode-actionbar-highlight-NineSlice-Corner") and C_Texture.GetAtlasInfo("editmode-actionbar-selected-NineSlice-Corner") then
+			dragframe.t = CreateFrame("Frame", nil, dragframe, "NineSliceCodeTemplate")
+			dragframe.t:SetAllPoints(dragframe)
+			dragframe.t:EnableMouse(false)
+			dragframe.t:SetFrameLevel(dragframe:GetFrameLevel())
+			dragframe.t.layout = {
+				TopRightCorner = {atlas = "%s-NineSlice-Corner", mirrorLayout = true, x = 8, y = 8},
+				TopLeftCorner = {atlas = "%s-NineSlice-Corner", mirrorLayout = true, x = -8, y = 8},
+				BottomLeftCorner = {atlas = "%s-NineSlice-Corner", mirrorLayout = true, x = -8, y = -8},
+				BottomRightCorner = {atlas = "%s-NineSlice-Corner", mirrorLayout = true, x = 8, y = -8},
+				TopEdge = {atlas = "_%s-NineSlice-EdgeTop"},
+				BottomEdge = {atlas = "_%s-NineSlice-EdgeBottom"},
+				LeftEdge = {atlas = "!%s-NineSlice-EdgeLeft"},
+				RightEdge = {atlas = "!%s-NineSlice-EdgeRight"},
+				Center = {atlas = "%s-NineSlice-Center", x = -8, y = 8, x1 = 8, y1 = -8},
+			}
+			dragframe.t.highlight = CreateFrame("Frame", nil, dragframe.t, "NineSliceCodeTemplate")
+			dragframe.t.highlight:SetAllPoints(dragframe.t)
+			dragframe.t.highlight:EnableMouse(false)
+			dragframe.t.highlight:SetFrameLevel(dragframe:GetFrameLevel())
+			NineSliceUtil.ApplyLayout(dragframe.t.highlight, dragframe.t.layout, "editmode-actionbar-highlight")
+			dragframe.t.highlight:SetBlendMode("ADD")
+			dragframe.t.highlight:SetAlpha(0.4)
+			dragframe.t.highlight:Hide()
+			function dragframe.t:SetVertexColor(r, g, b, a)
+				local kit = dragframe == MACurrentEle and "editmode-actionbar-selected" or "editmode-actionbar-highlight"
+				if self.textureKit ~= kit then
+					NineSliceUtil.ApplyLayout(self, self.layout, kit)
+					self.textureKit = kit
+				end
+
+				for piece in pairs(self.layout) do
+					self[piece]:SetDesaturated(true)
+					self[piece]:SetVertexColor(r, g, b, a or 1)
+					self.highlight[piece]:SetDesaturated(true)
+					self.highlight[piece]:SetVertexColor(r, g, b, a or 1)
+				end
+			end
+
+			function dragframe.t:SetAlpha(alpha)
+				self.highlight:SetShown(alpha > 0.4)
+			end
 		else
-			dragframe.t:SetTexture(1, 1, 1, 1)
+			dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
+			dragframe.t:SetAllPoints(dragframe)
+			if dragframe.t.SetColorTexture then
+				dragframe.t:SetColorTexture(1, 1, 1, 1)
+			else
+				dragframe.t:SetTexture(1, 1, 1, 1)
+			end
 		end
 
 		dragframe.t:SetVertexColor(MoveAny:GetColor("el"))
