@@ -1796,7 +1796,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.4")
+	MoveAny:SetVersion(135994, "1.13.5")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2293,6 +2293,32 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 	end
 end
 
+function MoveAny:UpdateComboFrameLayout()
+	if ComboFrame == nil then return end
+	MoveAny:SafeExec(ComboFrame, function()
+		local start = ComboFrame.startComboPointIndex or 1
+		local count = ComboFrame.maxComboPoints
+		if type(count) ~= "number" or count < 1 then count = 5 end
+		local cpsw, cpsh = 12, 12
+		local i = 1
+		local cp = _G["ComboPoint1"]
+		while cp do
+			cpsw, cpsh = cp:GetSize()
+			cp:ClearAllPoints()
+			if i <= start then
+				cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
+			else
+				cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
+			end
+
+			i = i + 1
+			cp = _G["ComboPoint" .. i]
+		end
+
+		ComboFrame:SetSize(cpsw * count, cpsh)
+	end, "UpdateComboFrameLayout")
+end
+
 local msgOnce = {}
 function MoveAny:LoadAddon()
 	MoveAny.init = MoveAny.init or false
@@ -2647,21 +2673,8 @@ function MoveAny:LoadAddon()
 				})
 			end
 		elseif ComboFrame and MoveAny:IsEnabled("COMBOFRAME", false) then
-			local cpsw, cpsh = 12, 12
-			for i = 1, 5 do
-				local cp = _G["ComboPoint" .. i]
-				if cp then
-					cpsw, cpsh = cp:GetSize()
-					cp:ClearAllPoints()
-					if i == 1 then
-						cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
-					else
-						cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
-					end
-				end
-			end
-
-			ComboFrame:SetSize(cpsw * 5, cpsh)
+			MoveAny:UpdateComboFrameLayout()
+			if ComboFrame_UpdateMax then hooksecurefunc("ComboFrame_UpdateMax", function() MoveAny:UpdateComboFrameLayout() end) end
 			MoveAny:RegisterWidget({
 				["name"] = "ComboFrame",
 				["lstr"] = "LID_COMBOFRAME",

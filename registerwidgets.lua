@@ -1014,7 +1014,7 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 
 		dragframe.opt:SetFrameLevel(framelevel)
 		framelevel = framelevel + 1
-		if dragframe.opt.CloseButton then dragframe.opt.CloseButton:SetFrameLevel(framelevel) end
+		if dragframe.opt.CloseButton then dragframe.opt.CloseButton:SetFrameLevel(dragframe.opt:GetFrameLevel() + 510) end
 		framelevel = framelevel + 100
 		MoveAny:MenuOptions(dragframe.opt, fram)
 		dragframe.opt:HookScript("OnShow", function(sel)
