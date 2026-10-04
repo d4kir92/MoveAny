@@ -96,9 +96,19 @@ function UI.WindowMixin:AddSlider(tab)
             label:SetText(FormatText(text, newValue))
             holder.value = newValue
             if not box:HasFocus() then ShowValue() end
-            if tab.func then tab.func(newValue) end
+            if tab.func and not holder.dragging then tab.func(newValue) end
         end
     )
+
+    if tab.commitOnRelease then
+        slider:HookScript("OnMouseDown", function() holder.dragging = true end)
+        slider:HookScript("OnMouseUp", function()
+            if not holder.dragging then return end
+            holder.dragging = false
+            if tab.func then tab.func(holder.value) end
+        end)
+        slider:HookScript("OnHide", function() holder.dragging = false end)
+    end
 
     box:SetScript("OnEnterPressed", function(sel) sel:ClearFocus() end)
     box:SetScript(

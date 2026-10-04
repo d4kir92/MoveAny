@@ -17,6 +17,8 @@
 <Script file="D4InstancePins.lua"/>
 <Script file="D4ZoneCrossings.lua"/>
 <Script file="D4Menus.lua"/>
+<Script file="D4InstanceMap.lua"/>
+<Script file="D4SharedSettings.lua"/>
 <Script file="D4Waypoints.lua"/>
 <Script file="D4FrameTools.lua"/>
 <Script file="D4SlashCmds.lua"/>

@@ -6,7 +6,7 @@ UI.SPACING = 5
 UI.ROW = 24
 UI.INDENT = 16
 UI.WindowMixin = {}
-local NEW_DAYS = 7
+local NEW_DAYS = 5
 local NEW_SECONDS = NEW_DAYS * 24 * 60 * 60
 
 function UI:Text(key, ...)
@@ -54,7 +54,7 @@ function UI:IsNew(added)
         local ok, now = pcall(getTime)
         if not ok or type(now) ~= "number" then return false end
         local age = now - added
-        return age >= 0 and age <= NEW_SECONDS
+        return age >= 0 and age < NEW_SECONDS
     end
 
     if type(added) ~= "string" then return false end
@@ -64,7 +64,7 @@ function UI:IsNew(added)
     local currentYear, currentMonth, currentDay = CurrentDate()
     if not currentYear or not currentMonth or not currentDay then return false end
     local age = DateToDays(currentYear, currentMonth, currentDay) - DateToDays(year, month, day)
-    return age >= -1 and age <= NEW_DAYS
+    return age >= -1 and age < NEW_DAYS
 end
 
 function UI:AddNewBadge(frame, added)
