@@ -302,6 +302,7 @@ local function AddCategory(key, layer, hud)
 		["key"] = key,
 		["search"] = key,
 	})
+
 	cas[key].maHud = hud
 	return cas[key]
 end
@@ -661,7 +662,6 @@ function MoveAny:InitMALock()
 	end
 
 	MALock.Language:UpdateLanguage()
-
 	function MoveAny:UpdateFrameKeybindText()
 		cbs["FRAMESKEYDRAG"]:UpdateLabel()
 		cbs["FRAMESKEYSCALE"]:UpdateLabel()
@@ -1906,7 +1906,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.6")
+	MoveAny:SetVersion(135994, "1.13.7")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -2440,7 +2440,6 @@ function MoveAny:GetComboStyleAtlases()
 	for _, atlas in pairs(atlases) do
 		if type(atlas) == "string" and C_Texture.GetAtlasInfo(atlas) == nil then return nil end
 	end
-
 	return atlases
 end
 
@@ -2477,7 +2476,6 @@ local function CreateComboStyle(cp, atlases)
 			style.icon:SetAlpha(alpha)
 		end
 	end)
-
 	return style
 end
 
