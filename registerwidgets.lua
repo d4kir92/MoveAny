@@ -850,12 +850,12 @@ local function AddAlphaOptions(win, name)
 		AddEleSlider(win, name, "ALPHAISFULLHEALTH", 1, 0, 1, 0.1, 1, apply)
 	end
 
-	AddEleSlider(win, name, "ALPHAINVEHICLE", 1, 0, 1, 0.1, 1, apply)
+	if MoveAny:IsVehicleAlphaSupported() then AddEleSlider(win, name, "ALPHAINVEHICLE", 1, 0, 1, 0.1, 1, apply) end
 	AddEleSlider(win, name, "ALPHAISMOUNTED", 1, 0, 1, 0.1, 1, apply)
 	AddEleSlider(win, name, "ALPHAINRESTEDAREA", 1, 0, 1, 0.1, 1, apply)
 	AddEleSlider(win, name, "ALPHAISSTEALTHED", 1, 0, 1, 0.1, 1, apply)
 	if MoveAny:IsPetBattleAvailable() then AddEleSlider(win, name, "ALPHAISINPETBATTLE", 1, 0, 1, 0.1, 1, apply) end
-	if DragonridingUtil then AddEleSlider(win, name, "ALPHAISSKYRIDING", 1, 0, 1, 0.1, 1, apply) end
+	if MoveAny:IsSkyridingAlphaSupported() then AddEleSlider(win, name, "ALPHAISSKYRIDING", 1, 0, 1, 0.1, 1, apply) end
 	AddEleSlider(win, name, "ALPHANOTINCOMBAT", 1, 0, 1, 0.1, 1, apply)
 end
 

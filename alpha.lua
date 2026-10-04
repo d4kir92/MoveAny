@@ -136,7 +136,22 @@ function MoveAny:CurrentChatTab()
     return 0
 end
 
+function MoveAny:IsExpansionAtLeast(expansion)
+    if GetClassicExpansionLevel then return GetClassicExpansionLevel() >= expansion end
+    if GetExpansionLevel then return GetExpansionLevel() >= expansion end
+    return false
+end
+
+function MoveAny:IsVehicleAlphaSupported()
+    return UnitInVehicle ~= nil and MoveAny:IsExpansionAtLeast(LE_EXPANSION_WRATH_OF_THE_LICH_KING or 2)
+end
+
+function MoveAny:IsSkyridingAlphaSupported()
+    return MoveAny:IsExpansionAtLeast(LE_EXPANSION_DRAGONFLIGHT or 9)
+end
+
 function MoveAny:IsDragonriding()
+    if not MoveAny:IsSkyridingAlphaSupported() then return false end
     return GetBonusBarIndex() == 11 and GetBonusBarOffset() == 5
 end
 
@@ -261,6 +276,7 @@ function MoveAny:UpdateAlphaVehicle()
 end
 
 function MoveAny:InitAlphaVehicle()
+    if not MoveAny:IsVehicleAlphaSupported() then return end
     MoveAny:UpdateAlphaVehicle()
     local alphaFrameVehicle = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameVehicle, "UNIT_ENTERED_VEHICLE")
