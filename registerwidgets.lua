@@ -1088,7 +1088,18 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 		end)
 	end
 
-	if activeEleOptions and activeEleOptions ~= dragframe.opt then activeEleOptions:Hide() end
+	local old = activeEleOptions
+	if old and old ~= dragframe.opt then
+		local point = {old:GetPoint(1)}
+		if point[1] then
+			dragframe.opt:ClearAllPoints()
+			dragframe.opt:SetPoint(unpack(point))
+		end
+
+		dragframe.opt:SetSize(old:GetSize())
+		old:Hide()
+	end
+
 	activeEleOptions = dragframe.opt
 	activeEleOptionsArgs = {name, fram, dragframe}
 	restoreEleOptions = false
