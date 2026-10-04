@@ -262,7 +262,13 @@ function MoveAny:InitAlphaAura()
     MoveAny:UpdateAlphaAura()
     local alphaFrameAura = CreateFrame("Frame")
     MoveAny:RegisterEvent(alphaFrameAura, "UNIT_AURA", "player")
-    MoveAny:OnEvent(alphaFrameAura, function(sel, event, ...) MoveAny:UpdateAlphaAura() end, "alphaFrameAura")
+    MoveAny:RegisterEvent(alphaFrameAura, "PLAYER_MOUNT_DISPLAY_CHANGED")
+    MoveAny:RegisterEvent(alphaFrameAura, "PLAYER_CONTROL_GAINED")
+    MoveAny:RegisterEvent(alphaFrameAura, "PLAYER_CONTROL_LOST")
+    MoveAny:OnEvent(alphaFrameAura, function(sel, event, ...)
+        MoveAny:UpdateAlphaAura()
+        if event ~= "UNIT_AURA" then MoveAny:After(0.3, function() MoveAny:UpdateAlphaAura() end, "alphaFrameAura") end
+    end, "alphaFrameAura")
 end
 
 function MoveAny:UpdateAlphaVehicle()
