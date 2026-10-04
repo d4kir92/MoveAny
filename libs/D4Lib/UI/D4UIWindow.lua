@@ -102,6 +102,11 @@ function UI.WindowMixin:UpdateBodyLayout()
     self.scrollFrame:ClearAllPoints()
     self.scrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", self.scrollInset.left, -(TOP_INSET + topExtra))
     self.scrollFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", self.scrollInset.right, self.scrollInset.bottom + bottomExtra)
+    if self.scrollBar == nil or self.grip == nil then return end
+    local gripLift = math.max(0, GRIP_INSET - self.scrollInset.bottom - bottomExtra)
+    self.scrollBar:ClearAllPoints()
+    self.scrollBar:SetPoint("TOPLEFT", self.scrollFrame, "TOPRIGHT", 6, 0)
+    self.scrollBar:SetPoint("BOTTOMLEFT", self.scrollFrame, "BOTTOMRIGHT", 6, gripLift)
 end
 
 function UI.WindowMixin:GetContentOffset()
@@ -178,6 +183,7 @@ local function CreateGrip(win, name)
     )
 
     win.grip = grip
+    win:UpdateBodyLayout()
 
     return grip
 end
