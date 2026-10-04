@@ -2416,6 +2416,100 @@ local comboAnchorFrac = {
 	["BOTTOMRIGHT"] = {1, 1},
 }
 
+local comboStyleAtlases = {
+	["ROGUE"] = {
+		["shadow"] = "uf-roguecp-bg-shadow",
+		["shadowY"] = -4,
+		["inactive"] = "uf-roguecp-bg-dis",
+		["active"] = "uf-roguecp-bg",
+		["icon"] = "uf-roguecp-icon-red",
+	},
+	["DRUID"] = {
+		["shadow"] = "uf-druidcp-bg-shadow",
+		["shadowY"] = -2,
+		["inactive"] = "uf-druidcp-bg-dis",
+		["active"] = "uf-druidcp-bg-active",
+		["icon"] = "uf-druidcp-icon",
+	},
+}
+
+function MoveAny:GetComboStyleAtlases()
+	if C_Texture == nil or C_Texture.GetAtlasInfo == nil then return nil end
+	local _, class = UnitClass("player")
+	local atlases = comboStyleAtlases[class] or comboStyleAtlases["ROGUE"]
+	for _, atlas in pairs(atlases) do
+		if type(atlas) == "string" and C_Texture.GetAtlasInfo(atlas) == nil then return nil end
+	end
+
+	return atlases
+end
+
+local function CreateComboStyle(cp, atlases)
+	local style = {
+		["w"] = cp:GetWidth(),
+		["h"] = cp:GetHeight(),
+		["colors"] = {},
+	}
+
+	for _, region in ipairs({cp:GetRegions()}) do
+		if region ~= cp.Highlight and region ~= cp.Shine then style.base = region end
+	end
+
+	if style.base then style.baseAlpha = style.base:GetAlpha() end
+	for _, tex in ipairs({cp.Highlight, cp.Shine}) do
+		style.colors[tex] = {tex:GetVertexColor()}
+	end
+
+	style.shadow = cp:CreateTexture(nil, "BACKGROUND", nil, -1)
+	style.shadow:SetAtlas(atlases.shadow, true)
+	style.shadow:SetPoint("CENTER", cp, "CENTER", 0, atlases.shadowY)
+	style.inactive = cp:CreateTexture(nil, "BACKGROUND", nil, 1)
+	style.active = cp:CreateTexture(nil, "BACKGROUND", nil, 2)
+	style.icon = cp:CreateTexture(nil, "ARTWORK", nil, 1)
+	for _, key in ipairs({"inactive", "active", "icon"}) do
+		style[key]:SetAtlas(atlases[key], true)
+		style[key]:SetPoint("CENTER", cp, "CENTER", 0, 0)
+	end
+
+	hooksecurefunc(cp.Highlight, "SetAlpha", function(_, alpha)
+		if cp.maRetail then
+			style.active:SetAlpha(alpha)
+			style.icon:SetAlpha(alpha)
+		end
+	end)
+
+	return style
+end
+
+local function ApplyComboStyle(points)
+	local atlases = nil
+	if MoveAny:GetEleOption("ComboFrame", "COMBOSTYLE", 0, "UpdateComboFrameLayout") == 1 then atlases = MoveAny:GetComboStyleAtlases() end
+	for _, cp in ipairs(points) do
+		local retail = atlases ~= nil and cp.Highlight ~= nil and cp.Shine ~= nil
+		if retail and cp.maStyle == nil then cp.maStyle = CreateComboStyle(cp, atlases) end
+		local style = cp.maStyle
+		if style and (cp.maRetail or false) ~= retail then
+			cp.maRetail = retail
+			for _, key in ipairs({"shadow", "inactive", "active", "icon"}) do
+				style[key]:SetShown(retail)
+			end
+
+			if style.base then style.base:SetAlpha(retail and 0 or style.baseAlpha) end
+			for tex, color in pairs(style.colors) do
+				tex:SetVertexColor(color[1], color[2], color[3], retail and 0 or color[4])
+			end
+
+			if retail then
+				cp:SetSize(20, 20)
+				style.active:SetAlpha(cp.Highlight:GetAlpha())
+				style.icon:SetAlpha(cp.Highlight:GetAlpha())
+			else
+				cp:SetSize(style.w, style.h)
+			end
+		end
+	end
+end
+
 local function LayoutComboFrameOriginal(points, start, count)
 	local boxes = {}
 	for i, cp in ipairs(points) do
@@ -2435,8 +2529,10 @@ local function LayoutComboFrameOriginal(points, start, count)
 		end
 
 		local w, h = cp:GetSize()
-		local left = frac[1] * comboFrameOrig.w + (p[4] or 0) - frac[1] * w
-		local top = -frac[2] * comboFrameOrig.h + (p[5] or 0) + frac[2] * h
+		local ow, oh = comboFrameOrig.sizes[i][1], comboFrameOrig.sizes[i][2]
+		local f = ow > 0 and w / ow or 1
+		local left = (frac[1] * comboFrameOrig.w + (p[4] or 0) - frac[1] * ow) * f
+		local top = (-frac[2] * comboFrameOrig.h + (p[5] or 0) + frac[2] * oh) * f
 		boxes[i] = {left, top, w, h}
 	end
 
@@ -2472,13 +2568,16 @@ function MoveAny:UpdateComboFrameLayout()
 				["w"] = ComboFrame:GetWidth(),
 				["h"] = ComboFrame:GetHeight(),
 				["points"] = {},
+				["sizes"] = {},
 			}
 
 			for i, cp in ipairs(points) do
 				comboFrameOrig.points[i] = {cp:GetPoint(1)}
+				comboFrameOrig.sizes[i] = {cp:GetSize()}
 			end
 		end
 
+		ApplyComboStyle(points)
 		local start = ComboFrame.startComboPointIndex or 1
 		local count = ComboFrame.maxComboPoints
 		if type(count) ~= "number" or count < 1 then count = 5 end
@@ -2489,8 +2588,9 @@ function MoveAny:UpdateComboFrameLayout()
 		end
 
 		local cpsw, cpsh = points[1]:GetSize()
+		local gap = points[1].maRetail and 4 or 0
 		local radius = 0
-		if count > 1 then radius = (cpsw + 2) / (2 * math.sin(math.pi / count)) end
+		if count > 1 then radius = (cpsw + 2 + gap) / (2 * math.sin(math.pi / count)) end
 		for i, cp in ipairs(points) do
 			cp:ClearAllPoints()
 			if layout == 3 then
@@ -2500,21 +2600,21 @@ function MoveAny:UpdateComboFrameLayout()
 				if i <= start then
 					cp:SetPoint("BOTTOM", ComboFrame, "BOTTOM", 0, 0)
 				else
-					cp:SetPoint("BOTTOM", points[i - 1], "TOP", 0, 0)
+					cp:SetPoint("BOTTOM", points[i - 1], "TOP", 0, gap)
 				end
 			elseif i <= start then
 				cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
 			else
-				cp:SetPoint("LEFT", points[i - 1], "RIGHT", 0, 0)
+				cp:SetPoint("LEFT", points[i - 1], "RIGHT", gap, 0)
 			end
 		end
 
 		if layout == 3 then
 			ComboFrame:SetSize(radius * 2 + cpsw, radius * 2 + cpsh)
 		elseif layout == 1 then
-			ComboFrame:SetSize(cpsw, cpsh * count)
+			ComboFrame:SetSize(cpsw, cpsh * count + gap * (count - 1))
 		else
-			ComboFrame:SetSize(cpsw * count, cpsh)
+			ComboFrame:SetSize(cpsw * count + gap * (count - 1), cpsh)
 		end
 	end, "UpdateComboFrameLayout")
 end

@@ -740,6 +740,11 @@ local COMBO_LAYOUTS = {
 	[3] = "CIRCLE",
 }
 
+local COMBO_STYLES = {
+	[0] = "DEFAULT",
+	[1] = "RETAIL",
+}
+
 local function HasFullAuraModes()
 	local build = MoveAny:GetWoWBuild()
 	return build ~= "RETAIL" and build ~= "CLASSIC" and build ~= "TBC" and build ~= "MISTS"
@@ -895,6 +900,7 @@ function MoveAny:MenuOptions(win, frame)
 	if name == "ComboFrame" then
 		AddEleCategory(win, "COMBOFRAME")
 		AddEleDropdown(win, name, "COMBOLAYOUT", 0, COMBO_LAYOUTS, function() MoveAny:UpdateComboFrameLayout() end, "LID_LAYOUT")
+		if MoveAny:GetComboStyleAtlases() then AddEleDropdown(win, name, "COMBOSTYLE", 0, COMBO_STYLES, function() MoveAny:UpdateComboFrameLayout() end, "LID_STYLE") end
 	end
 
 	win:ResumeLayout()
