@@ -2293,29 +2293,119 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 	end
 end
 
+local comboFrameOrig = nil
+local comboAnchorFrac = {
+	["TOPLEFT"] = {0, 0},
+	["TOP"] = {0.5, 0},
+	["TOPRIGHT"] = {1, 0},
+	["LEFT"] = {0, 0.5},
+	["CENTER"] = {0.5, 0.5},
+	["RIGHT"] = {1, 0.5},
+	["BOTTOMLEFT"] = {0, 1},
+	["BOTTOM"] = {0.5, 1},
+	["BOTTOMRIGHT"] = {1, 1},
+}
+
+local function LayoutComboFrameOriginal(points, start, count)
+	local boxes = {}
+	for i, cp in ipairs(points) do
+		local p = comboFrameOrig.points[i]
+		local frac = p and comboAnchorFrac[p[1]]
+		if frac == nil or p[2] ~= ComboFrame or p[1] ~= p[3] then
+			for j, cpr in ipairs(points) do
+				local pr = comboFrameOrig.points[j]
+				if pr and pr[1] then
+					cpr:ClearAllPoints()
+					cpr:SetPoint(pr[1], pr[2], pr[3], pr[4], pr[5])
+				end
+			end
+
+			ComboFrame:SetSize(comboFrameOrig.w, comboFrameOrig.h)
+			return
+		end
+
+		local w, h = cp:GetSize()
+		local left = frac[1] * comboFrameOrig.w + (p[4] or 0) - frac[1] * w
+		local top = -frac[2] * comboFrameOrig.h + (p[5] or 0) + frac[2] * h
+		boxes[i] = {left, top, w, h}
+	end
+
+	local last = math.min(#points, start + count - 1)
+	local minX, maxX, minY, maxY
+	for i = math.min(start, last), last do
+		local b = boxes[i]
+		minX = math.min(minX or b[1], b[1])
+		maxX = math.max(maxX or (b[1] + b[3]), b[1] + b[3])
+		minY = math.min(minY or (b[2] - b[4]), b[2] - b[4])
+		maxY = math.max(maxY or b[2], b[2])
+	end
+
+	for i, cp in ipairs(points) do
+		cp:ClearAllPoints()
+		cp:SetPoint("TOPLEFT", ComboFrame, "TOPLEFT", boxes[i][1] - minX, boxes[i][2] - maxY)
+	end
+
+	ComboFrame:SetSize(maxX - minX, maxY - minY)
+end
+
 function MoveAny:UpdateComboFrameLayout()
 	if ComboFrame == nil then return end
 	MoveAny:SafeExec(ComboFrame, function()
+		local points = {}
+		while _G["ComboPoint" .. (#points + 1)] do
+			points[#points + 1] = _G["ComboPoint" .. (#points + 1)]
+		end
+
+		if #points == 0 then return end
+		if comboFrameOrig == nil then
+			comboFrameOrig = {
+				["w"] = ComboFrame:GetWidth(),
+				["h"] = ComboFrame:GetHeight(),
+				["points"] = {},
+			}
+
+			for i, cp in ipairs(points) do
+				comboFrameOrig.points[i] = {cp:GetPoint(1)}
+			end
+		end
+
 		local start = ComboFrame.startComboPointIndex or 1
 		local count = ComboFrame.maxComboPoints
 		if type(count) ~= "number" or count < 1 then count = 5 end
-		local cpsw, cpsh = 12, 12
-		local i = 1
-		local cp = _G["ComboPoint1"]
-		while cp do
-			cpsw, cpsh = cp:GetSize()
-			cp:ClearAllPoints()
-			if i <= start then
-				cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
-			else
-				cp:SetPoint("LEFT", _G["ComboPoint" .. (i - 1)], "RIGHT", 0, 0)
-			end
-
-			i = i + 1
-			cp = _G["ComboPoint" .. i]
+		local layout = MoveAny:GetEleOption("ComboFrame", "COMBOLAYOUT", 0, "UpdateComboFrameLayout")
+		if layout == 2 then
+			LayoutComboFrameOriginal(points, start, count)
+			return
 		end
 
-		ComboFrame:SetSize(cpsw * count, cpsh)
+		local cpsw, cpsh = points[1]:GetSize()
+		local radius = 0
+		if count > 1 then radius = (cpsw + 2) / (2 * math.sin(math.pi / count)) end
+		for i, cp in ipairs(points) do
+			cp:ClearAllPoints()
+			if layout == 3 then
+				local angle = 2 * math.pi * math.max(i - start, 0) / count
+				cp:SetPoint("CENTER", ComboFrame, "CENTER", radius * math.sin(angle), radius * math.cos(angle))
+			elseif layout == 1 then
+				if i <= start then
+					cp:SetPoint("TOP", ComboFrame, "TOP", 0, 0)
+				else
+					cp:SetPoint("TOP", points[i - 1], "BOTTOM", 0, 0)
+				end
+			elseif i <= start then
+				cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)
+			else
+				cp:SetPoint("LEFT", points[i - 1], "RIGHT", 0, 0)
+			end
+		end
+
+		if layout == 3 then
+			ComboFrame:SetSize(radius * 2 + cpsw, radius * 2 + cpsh)
+		elseif layout == 1 then
+			ComboFrame:SetSize(cpsw, cpsh * count)
+		else
+			ComboFrame:SetSize(cpsw * count, cpsh)
+		end
 	end, "UpdateComboFrameLayout")
 end
 

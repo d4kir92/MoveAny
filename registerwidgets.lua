@@ -733,6 +733,13 @@ local MODES_SIMPLE = {
 	[1] = "TOP",
 }
 
+local COMBO_LAYOUTS = {
+	[0] = "HORIZONTAL",
+	[1] = "VERTICAL",
+	[2] = "ORIGINAL",
+	[3] = "CIRCLE",
+}
+
 local function HasFullAuraModes()
 	local build = MoveAny:GetWoWBuild()
 	return build ~= "RETAIL" and build ~= "CLASSIC" and build ~= "TBC" and build ~= "MISTS"
@@ -885,6 +892,11 @@ function MoveAny:MenuOptions(win, frame)
 	end
 
 	if string.find(name, "BagsBar") then AddBagOptions(win, name) end
+	if name == "ComboFrame" then
+		AddEleCategory(win, "COMBOFRAME")
+		AddEleDropdown(win, name, "COMBOLAYOUT", 0, COMBO_LAYOUTS, function() MoveAny:UpdateComboFrameLayout() end, "LID_LAYOUT")
+	end
+
 	win:ResumeLayout()
 end
 
