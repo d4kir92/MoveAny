@@ -302,6 +302,7 @@ local function AddCategory(key, layer, hud)
 		["key"] = key,
 		["search"] = key,
 	})
+	cas[key].maHud = hud
 	return cas[key]
 end
 
@@ -519,6 +520,62 @@ function MoveAny:GetAllParents(hoverFrame)
 	return parents
 end
 
+local minimapTooltip = {}
+local function UpdateMinimapTooltip()
+	minimapTooltip[1] = {"|T135994:16:16:0:0|t Move|rAny|r", "v" .. tostring(MoveAny:GetVersion())}
+	minimapTooltip[2] = {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}
+	minimapTooltip[3] = {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}
+	return minimapTooltip
+end
+
+local function SetButtonText(btn, key, minWidth)
+	if btn == nil then return end
+	btn:SetText(MoveAny:Trans(key))
+	if minWidth then btn:SetWidth(math.max(minWidth, btn:GetTextWidth() + 24)) end
+end
+
+function MoveAny:RefreshLanguage()
+	if MALock then
+		for key, header in pairs(cas) do
+			local label = MoveAny:Trans("LID_" .. key)
+			if header.maHud then label = label .. " (" .. MoveAny:Trans("LID_MOVEANYINFO") .. ")" end
+			header.Label:SetText(label)
+			MoveAny.UI:SetLabel(header.element, label)
+		end
+
+		for _, cb in pairs(cbs) do
+			cb:UpdateLabel()
+		end
+
+		for key, dd in pairs(dds) do
+			local label = MoveAny:Trans("LID_" .. key)
+			dd.Label:SetText(label)
+			MoveAny.UI:SetLabel(dd.uiElement, label)
+			if dd.value ~= nil then dd:SetValue(dd.value) end
+		end
+
+		SetButtonText(MALock.Profiles, "LID_PROFILES")
+		SetButtonText(MALock.save, "LID_SAVEANDCLOSE", 120)
+		SetButtonText(MALock.reload, "LID_RELOADANDREOPEN", 120)
+		if MALock.Search and MALock.Search.Hint then MALock.Search.Hint:SetText(MoveAny:Trans("LID_SEARCH")) end
+		if MALock.FinderHint then MALock.FinderHint:SetText(MoveAny:Trans("LID_PRESSESCTOLEAVE")) end
+		if MALock.Language then MALock.Language:UpdateLanguage() end
+		if MALock.Search then MALock:Filter(MALock.Search:GetText()) end
+	end
+
+	for _, win in pairs({MAProfiles, MAAddProfile, MARenameProfile, MAImportProfile, MAExportProfile}) do
+		win:Hide()
+	end
+
+	MAProfiles = nil
+	MAAddProfile = nil
+	MARenameProfile = nil
+	MAImportProfile = nil
+	MAExportProfile = nil
+	UpdateMinimapTooltip()
+	if MoveAny.RefreshEleOptionsLanguage then MoveAny:RefreshEleOptionsLanguage() end
+end
+
 function MoveAny:InitMALock()
 	sh = MoveAny:MClamp(656, 200, GetScreenHeight())
 	local function CloseMALock()
@@ -552,6 +609,58 @@ function MoveAny:InitMALock()
 	MALock:AddFooter({
 		["height"] = 24
 	})
+
+	function MALock.LanguageMenu(_, root)
+		root:CreateTitle(MoveAny:Trans("LID_LANGUAGE"))
+		for _, info in ipairs(MoveAny.LANGUAGES) do
+			local lang = info[2]
+			root:CreateRadio(format("%s (%s)", info[1], lang), function() return MoveAny:GetLanguage() == lang end, function() MoveAny:SetLanguage(lang) end)
+		end
+	end
+
+	if MoveAny:GetWoWBuild() == "RETAIL" and MoveAny:CheckTemplates("WowStyle1DropdownTemplate") then
+		MALock.Language = CreateFrame("DropdownButton", "MALock_Language", MALock.titleBar or MALock, "WowStyle1DropdownTemplate")
+		MALock.Language:SetScale(0.8)
+		MALock.Language:SetSize(162.5, 25)
+		MALock.Language:SetPoint("TOPLEFT", MALock.titleBar or MALock, "TOPLEFT", 10, -1.25)
+		MALock.Language:SetSelectionText(function() return MoveAny:GetLanguageName() end)
+		MALock.Language:SetTooltip(function(tooltip) tooltip:SetText(MoveAny:Trans("LID_LANGUAGE")) end)
+		MALock.Language:SetupMenu(MALock.LanguageMenu)
+	else
+		MALock.Language = MoveAny:CreateButton("MALock_Language", MALock.titleBar or MALock)
+		MALock.Language:SetSize(130, 20)
+		MALock.Language:SetPoint("TOPLEFT", MALock.titleBar or MALock, "TOPLEFT", 7, -2)
+		MALock.Language.Arrow = MALock.Language:CreateTexture(nil, "OVERLAY")
+		MALock.Language.Arrow:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
+		MALock.Language.Arrow:SetSize(16, 16)
+		MALock.Language.Arrow:SetPoint("RIGHT", MALock.Language, "RIGHT", -2, 0)
+		MALock.Language:SetScript("OnClick", function(sel)
+			if MenuUtil and MenuUtil.CreateContextMenu then
+				MenuUtil.CreateContextMenu(sel, MALock.LanguageMenu)
+			else
+				local current = 1
+				for i, info in ipairs(MoveAny.LANGUAGES) do
+					if info[2] == MoveAny:GetLanguage() then current = i end
+				end
+
+				MoveAny:SetLanguage(MoveAny.LANGUAGES[current % #MoveAny.LANGUAGES + 1][2])
+			end
+		end)
+
+		MALock.Language:SetScript("OnEnter", function(sel)
+			GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+			GameTooltip:SetText(MoveAny:Trans("LID_LANGUAGE"))
+			GameTooltip:Show()
+		end)
+
+		MALock.Language:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	end
+
+	function MALock.Language:UpdateLanguage()
+		self:SetText(MoveAny:GetLanguageName())
+	end
+
+	MALock.Language:UpdateLanguage()
 
 	function MoveAny:UpdateFrameKeybindText()
 		cbs["FRAMESKEYDRAG"]:UpdateLabel()
@@ -972,6 +1081,7 @@ function MoveAny:InitMALock()
 			hover.t2:SetPoint("CENTER", hover, "CENTER", 0, -20)
 			MoveAny:SetFontSize(hover.t2, 14, "THINOUTLINE")
 			hover.t2:SetText(MoveAny:Trans("LID_PRESSESCTOLEAVE"))
+			MALock.FinderHint = hover.t2
 		end
 
 		hovers[i] = hover
@@ -1802,7 +1912,7 @@ function MoveAny:PlayerLogin()
 			["name"] = "MoveAny",
 			["icon"] = 135994,
 			["dbtab"] = MATAB,
-			["vTT"] = {{"|T135994:16:16:0:0|t Move|rAny|r", "v" .. MoveAny:GetVersion()}, {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}, {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}},
+			["vTT"] = UpdateMinimapTooltip(),
 			["vTTUpdate"] = function(sel, tt)
 				tt:AddDoubleLine(MoveAny:Trans("LID_MIDDLECLICK"), MAGetLockText())
 				return false
@@ -2388,9 +2498,9 @@ function MoveAny:UpdateComboFrameLayout()
 				cp:SetPoint("CENTER", ComboFrame, "CENTER", radius * math.sin(angle), radius * math.cos(angle))
 			elseif layout == 1 then
 				if i <= start then
-					cp:SetPoint("TOP", ComboFrame, "TOP", 0, 0)
+					cp:SetPoint("BOTTOM", ComboFrame, "BOTTOM", 0, 0)
 				else
-					cp:SetPoint("TOP", points[i - 1], "BOTTOM", 0, 0)
+					cp:SetPoint("BOTTOM", points[i - 1], "TOP", 0, 0)
 				end
 			elseif i <= start then
 				cp:SetPoint("LEFT", ComboFrame, "LEFT", 0, 0)

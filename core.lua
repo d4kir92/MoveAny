@@ -17,6 +17,40 @@ function MoveAny:GetDragFrames()
 	return MADF
 end
 
+MoveAny.LANGUAGES = {{"English", "enUS"}, {"Deutsch", "deDE"}, {"Español (España)", "esES"}, {"Español (México)", "esMX"}, {"Français", "frFR"}, {"Italiano", "itIT"}, {"한국어", "koKR"}, {"Português (Brasil)", "ptBR"}, {"Русский", "ruRU"}, {"简体中文", "zhCN"}, {"繁體中文", "zhTW"}}
+local languageNames = {}
+for _, info in ipairs(MoveAny.LANGUAGES) do
+	languageNames[info[2]] = info[1]
+end
+
+function MoveAny:GetLanguage()
+	local lang = type(MATAB) == "table" and MATAB["LANGUAGE"] or nil
+	if lang ~= nil and languageNames[lang] ~= nil then return lang end
+	if languageNames[GetLocale()] ~= nil then return GetLocale() end
+	return "enUS"
+end
+
+function MoveAny:GetLanguageName(lang)
+	lang = lang or MoveAny:GetLanguage()
+	return languageNames[lang] or lang
+end
+
+function MoveAny:SetLanguage(lang)
+	if languageNames[lang] == nil or lang == MoveAny:GetLanguage() or type(MATAB) ~= "table" then return end
+	if lang == GetLocale() then
+		MATAB["LANGUAGE"] = nil
+	else
+		MATAB["LANGUAGE"] = lang
+	end
+
+	if MoveAny.RefreshLanguage then MoveAny:RefreshLanguage() end
+end
+
+local LibTrans = MoveAny.Trans
+function MoveAny:Trans(key, lang, ...)
+	return LibTrans(self, key, lang or MoveAny:GetLanguage(), ...)
+end
+
 --[[ HIDEPANEL ]]
 local MAHIDDEN = CreateFrame("Frame", "MAHIDDEN", UIParent)
 function MoveAny:GetHidden()
@@ -283,10 +317,7 @@ function MoveAny:ShowMALock()
 	if MoveAny:IsMALockNotReady() then return end
 	MoveAny:Unlock()
 	if MoveAny:IsEnabled("MALOCK", false) then
-		for i, df in pairs(MoveAny:GetDragFrames()) do
-			if df.opt then df.opt:Show() end
-		end
-
+		MoveAny:RestoreEleOptions()
 		if MALock then
 			MALock:Show()
 			MoveAny:UpdateEditorVisibility()
@@ -300,9 +331,9 @@ function MoveAny:HideMALock(onlyHide)
 	if MoveAny:IsMALockNotReady() then return end
 	if not onlyHide then MoveAny:Lock() end
 	if onlyHide or not MoveAny:IsEnabled("MALOCK", false) then
+		MoveAny:HideEleOptions()
 		for i, df in pairs(MoveAny:GetDragFrames()) do
 			df:Hide()
-			if df.opt then df.opt:Hide() end
 		end
 
 		if MALock then

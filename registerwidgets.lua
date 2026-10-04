@@ -1007,6 +1007,53 @@ if MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or Mo
 	end, "ThinkHelpFrame Init")
 end
 
+local activeEleOptions = nil
+local restoreEleOptions = false
+function MoveAny:HideEleOptions()
+	if activeEleOptions and activeEleOptions:IsShown() then
+		restoreEleOptions = true
+		activeEleOptions:Hide()
+	end
+end
+
+function MoveAny:RestoreEleOptions()
+	if restoreEleOptions and activeEleOptions then activeEleOptions:Show() end
+	restoreEleOptions = false
+end
+
+local activeEleOptionsArgs = nil
+function MoveAny:RefreshEleOptionsLanguage()
+	local old = activeEleOptions
+	local reopen = old ~= nil and old:IsShown() and activeEleOptionsArgs ~= nil
+	local point, width, height
+	if reopen then
+		point = {old:GetPoint(1)}
+		width, height = old:GetSize()
+	end
+
+	for _, df in pairs(MoveAny:GetDragFrames()) do
+		if df.opt then
+			df.opt:Hide()
+			df.opt = nil
+		end
+
+		if df.UpdateLanguage then df:UpdateLanguage() end
+	end
+
+	activeEleOptions = nil
+	restoreEleOptions = false
+	if reopen then
+		local args = activeEleOptionsArgs
+		MoveAny:ToggleElementOptions(args[1], args[2], args[3])
+		local win = args[3].opt
+		if win and point[1] then
+			win:ClearAllPoints()
+			win:SetPoint(unpack(point))
+			win:SetSize(width, height)
+		end
+	end
+end
+
 function MoveAny:ToggleElementOptions(name, fram, dragframe)
 	if dragframe.opt == nil then
 		dragframe.opt = MoveAny:CreateUIWindow({
@@ -1035,6 +1082,10 @@ function MoveAny:ToggleElementOptions(name, fram, dragframe)
 		end)
 	end
 
+	if activeEleOptions and activeEleOptions ~= dragframe.opt then activeEleOptions:Hide() end
+	activeEleOptions = dragframe.opt
+	activeEleOptionsArgs = {name, fram, dragframe}
+	restoreEleOptions = false
 	dragframe.opt:Show()
 end
 
@@ -1379,6 +1430,15 @@ function MoveAny:RegisterWidget(tab)
 			if font2 then dragframe.desc:SetFont(font2, 10, fontFlags2) end
 			dragframe.desc:SetText(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"))
 			dragframe.desc:Hide()
+		end
+
+		function dragframe:UpdateLanguage()
+			local text = MoveAny:Trans(tab.lstr)
+			if lstri then text = format(text, lstri) end
+			local enab, forc = MoveAny:IsInEditModeEnabled(name)
+			if enab and not forc then text = text .. " |cFFFFFF00" .. MoveAny:Trans("LID_ISENABLEDINEDITMODE") end
+			self.name:SetText(text)
+			self.desc:SetText(MoveAny:Trans("LID_RIGHTCLICKFOROPTIONS"))
 		end
 
 		dragframe:SetScript("OnEnter", function()
