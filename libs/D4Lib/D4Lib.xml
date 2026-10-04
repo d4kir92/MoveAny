@@ -15,6 +15,7 @@
 <Script file="D4Colors.lua"/>
 <Script file="D4Icons.lua"/>
 <Script file="D4InstancePins.lua"/>
+<Script file="D4ZoneCrossings.lua"/>
 <Script file="D4Menus.lua"/>
 <Script file="D4Waypoints.lua"/>
 <Script file="D4FrameTools.lua"/>
