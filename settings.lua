@@ -2433,17 +2433,24 @@ local comboStyleAtlases = {
 	},
 }
 
-function MoveAny:GetComboStyleAtlases()
+function MoveAny:GetComboStyleAtlases(style)
 	if C_Texture == nil or C_Texture.GetAtlasInfo == nil then return nil end
-	local _, class = UnitClass("player")
-	local atlases = comboStyleAtlases[class] or comboStyleAtlases["ROGUE"]
+	local class = "ROGUE"
+	if style == 3 then
+		class = "DRUID"
+	elseif style == nil or style == 1 then
+		local _, playerClass = UnitClass("player")
+		if comboStyleAtlases[playerClass] then class = playerClass end
+	end
+
+	local atlases = comboStyleAtlases[class]
 	for _, atlas in pairs(atlases) do
 		if type(atlas) == "string" and C_Texture.GetAtlasInfo(atlas) == nil then return nil end
 	end
 	return atlases
 end
 
-local function CreateComboStyle(cp, atlases)
+local function CreateComboStyle(cp)
 	local style = {
 		["w"] = cp:GetWidth(),
 		["h"] = cp:GetHeight(),
@@ -2460,14 +2467,11 @@ local function CreateComboStyle(cp, atlases)
 	end
 
 	style.shadow = cp:CreateTexture(nil, "BACKGROUND", nil, -1)
-	style.shadow:SetAtlas(atlases.shadow, true)
-	style.shadow:SetPoint("CENTER", cp, "CENTER", 0, atlases.shadowY)
 	style.inactive = cp:CreateTexture(nil, "BACKGROUND", nil, 1)
 	style.active = cp:CreateTexture(nil, "BACKGROUND", nil, 2)
 	style.icon = cp:CreateTexture(nil, "ARTWORK", nil, 1)
-	for _, key in ipairs({"inactive", "active", "icon"}) do
-		style[key]:SetAtlas(atlases[key], true)
-		style[key]:SetPoint("CENTER", cp, "CENTER", 0, 0)
+	for _, key in ipairs({"shadow", "inactive", "active", "icon"}) do
+		style[key]:Hide()
 	end
 
 	hooksecurefunc(cp.Highlight, "SetAlpha", function(_, alpha)
@@ -2481,11 +2485,24 @@ end
 
 local function ApplyComboStyle(points)
 	local atlases = nil
-	if MoveAny:GetEleOption("ComboFrame", "COMBOSTYLE", 0, "UpdateComboFrameLayout") == 1 then atlases = MoveAny:GetComboStyleAtlases() end
+	local mode = MoveAny:GetEleOption("ComboFrame", "COMBOSTYLE", 0, "UpdateComboFrameLayout")
+	if mode ~= 0 then atlases = MoveAny:GetComboStyleAtlases(mode) end
 	for _, cp in ipairs(points) do
 		local retail = atlases ~= nil and cp.Highlight ~= nil and cp.Shine ~= nil
-		if retail and cp.maStyle == nil then cp.maStyle = CreateComboStyle(cp, atlases) end
+		if retail and cp.maStyle == nil then cp.maStyle = CreateComboStyle(cp) end
 		local style = cp.maStyle
+		if retail and style.atlases ~= atlases then
+			style.atlases = atlases
+			style.shadow:SetAtlas(atlases.shadow, true)
+			style.shadow:ClearAllPoints()
+			style.shadow:SetPoint("CENTER", cp, "CENTER", 0, atlases.shadowY)
+			for _, key in ipairs({"inactive", "active", "icon"}) do
+				style[key]:SetAtlas(atlases[key], true)
+				style[key]:ClearAllPoints()
+				style[key]:SetPoint("CENTER", cp, "CENTER", 0, 0)
+			end
+		end
+
 		if style and (cp.maRetail or false) ~= retail then
 			cp.maRetail = retail
 			for _, key in ipairs({"shadow", "inactive", "active", "icon"}) do

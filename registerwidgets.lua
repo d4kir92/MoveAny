@@ -742,7 +742,9 @@ local COMBO_LAYOUTS = {
 
 local COMBO_STYLES = {
 	[0] = "DEFAULT",
-	[1] = "RETAIL",
+	[1] = "RETAILCLASS",
+	[2] = "RETAILROGUE",
+	[3] = "RETAILDRUID",
 }
 
 local function HasFullAuraModes()
