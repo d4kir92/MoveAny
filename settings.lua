@@ -2423,6 +2423,34 @@ local comboStyleAtlases = {
 		["inactive"] = "uf-roguecp-bg-dis",
 		["active"] = "uf-roguecp-bg",
 		["icon"] = "uf-roguecp-icon-red",
+		["fx"] = {
+			["textures"] = {
+				{"glow", "uf-roguecp-bg", "BACKGROUND", 3},
+				{"spark", "uf-roguecp-fx-red", "ARTWORK", 2},
+				{"frameGlow", "uf-roguecp-frame-glow", "OVERLAY", 0},
+				{"slash", "uf-roguecp-slash-red", "OVERLAY", 1, 0, 0, 43, 43},
+			},
+			["flip"] = {0.57, 3, 6, 17},
+			["activate"] = {
+				{"icon", 0, 0.5, 0.1},
+				{"icon", 0.5, 1, 0.27, 0.27},
+				{"active", 0, 0, 0.2},
+				{"active", 0, 1, 0.17, 0.2},
+				{"inactive", 1, 1, 0.37},
+				{"inactive", 1, 0, 0.1, 0.37},
+				{"glow", 0, 1, 0.17},
+				{"glow", 1, 0, 0.4, 0.17},
+			},
+			["deactivate"] = {
+				{"frameGlow", 1, 0, 0.5},
+				{"icon", 1, 0, 0.17},
+				{"spark", 1, 0, 0.4},
+				{"active", 1, 1, 0.2},
+				{"active", 1, 0, 0.17, 0.2},
+				{"inactive", 0, 0, 0.37},
+				{"inactive", 0, 1, 0.1, 0.37},
+			},
+		},
 	},
 	["DRUID"] = {
 		["shadow"] = "uf-druidcp-bg-shadow",
@@ -2430,6 +2458,41 @@ local comboStyleAtlases = {
 		["inactive"] = "uf-druidcp-bg-dis",
 		["active"] = "uf-druidcp-bg-active",
 		["icon"] = "uf-druidcp-icon",
+		["fx"] = {
+			["textures"] = {
+				{"glow", "uf-druidcp-bg-glow", "BACKGROUND", 3},
+				{"deplete", "uf-druidcp-deplete", "ARTWORK", 0},
+				{"ring", "uf-druidcp-ring-glow", "OVERLAY", 0},
+				{"slash", "uf-druidcp-slash", "OVERLAY", 1, 1, 3, 26, 41},
+				{"smoke", "uf-druidcp-smoke", "OVERLAY", 2, 0, 15},
+			},
+			["flip"] = {1, 3, 8, 20},
+			["move"] = {"smoke", 0, 7, 0.56},
+			["activate"] = {
+				{"icon", 0, 0.5, 0.1},
+				{"icon", 0.5, 1, 0.2, 0.47},
+				{"ring", 0, 1, 0.27},
+				{"ring", 1, 0, 0.47, 0.27},
+				{"active", 0, 0, 0.27},
+				{"active", 0, 1, 0.01, 0.27},
+				{"inactive", 1, 1, 0.27},
+				{"inactive", 1, 0, 0.01, 0.27},
+				{"glow", 0, 0, 0.17},
+				{"glow", 0, 1, 0.13, 0.17},
+				{"glow", 1, 0, 0.4, 0.3},
+			},
+			["deactivate"] = {
+				{"smoke", 1, 1, 0.33},
+				{"smoke", 1, 0, 0.23, 0.33},
+				{"ring", 1, 1, 0.43},
+				{"ring", 1, 0, 0.23, 0.43},
+				{"icon", 1, 0, 0.2},
+				{"active", 1, 0, 0.2},
+				{"inactive", 0, 1, 0.2},
+				{"deplete", 1, 1, 0.23},
+				{"deplete", 1, 0, 0.2, 0.23},
+			},
+		},
 	},
 }
 
@@ -2475,12 +2538,114 @@ local function CreateComboStyle(cp)
 	end
 
 	hooksecurefunc(cp.Highlight, "SetAlpha", function(_, alpha)
-		if cp.maRetail then
+		if not cp.maRetail then return end
+		if style.fxOn then
+			MoveAny:SetComboPointFull(style, alpha > 0)
+		else
 			style.active:SetAlpha(alpha)
 			style.icon:SetAlpha(alpha)
 		end
 	end)
 	return style
+end
+
+local function AddComboAlpha(group, target, from, to, duration, delay)
+	local anim = group:CreateAnimation("Alpha")
+	anim:SetTarget(target)
+	anim:SetFromAlpha(from)
+	anim:SetToAlpha(to)
+	anim:SetDuration(duration)
+	anim:SetStartDelay(delay or 0)
+	anim:SetOrder(1)
+end
+
+local function CreateComboFx(cp, style, data)
+	for _, info in ipairs(data.textures) do
+		if C_Texture.GetAtlasInfo(info[2]) == nil then return nil end
+	end
+
+	local fx = {
+		["textures"] = {},
+	}
+
+	for _, info in ipairs(data.textures) do
+		local tex = cp:CreateTexture(nil, info[3], nil, info[4])
+		tex:SetAtlas(info[2], true)
+		if info[7] then tex:SetSize(info[7], info[8]) end
+		tex:SetPoint("CENTER", cp, "CENTER", info[5] or 0, info[6] or 0)
+		tex:SetAlpha(0)
+		fx[info[1]] = tex
+		tinsert(fx.textures, tex)
+	end
+
+	for _, key in ipairs({"activate", "deactivate"}) do
+		local group = cp:CreateAnimationGroup()
+		group:SetToFinalAlpha(true)
+		for _, info in ipairs(data[key]) do
+			AddComboAlpha(group, fx[info[1]] or style[info[1]], info[2], info[3], info[4], info[5])
+		end
+
+		fx[key] = group
+	end
+
+	local ok, flip = pcall(fx.activate.CreateAnimation, fx.activate, "FlipBook")
+	if ok and flip and flip.SetFlipBookRows then
+		flip:SetTarget(fx.slash)
+		flip:SetDuration(data.flip[1])
+		flip:SetOrder(1)
+		flip:SetFlipBookRows(data.flip[2])
+		flip:SetFlipBookColumns(data.flip[3])
+		flip:SetFlipBookFrames(data.flip[4])
+		flip:SetFlipBookFrameWidth(0)
+		flip:SetFlipBookFrameHeight(0)
+		AddComboAlpha(fx.activate, fx.slash, 0, 1, 0)
+	end
+
+	fx.activate:SetScript("OnFinished", function() fx.slash:SetAlpha(0) end)
+	if data.move then
+		local move = fx.deactivate:CreateAnimation("Translation")
+		move:SetTarget(fx[data.move[1]])
+		move:SetOffset(data.move[2], data.move[3])
+		move:SetDuration(data.move[4])
+		move:SetOrder(1)
+	end
+	return fx
+end
+
+local function ResetComboFx(style)
+	local fx = style.fx
+	if not fx then return end
+	fx.activate:Stop()
+	fx.deactivate:Stop()
+	for _, tex in ipairs(fx.textures) do
+		tex:SetAlpha(0)
+	end
+end
+
+function MoveAny:SetComboPointFull(style, full)
+	if style.full == full then return end
+	style.full = full
+	ResetComboFx(style)
+	if full then
+		style.fx.activate:Play()
+	else
+		style.fx.deactivate:Play()
+	end
+end
+
+local function SyncComboStyle(cp, style)
+	local alpha = cp.Highlight:GetAlpha()
+	ResetComboFx(style)
+	style.full = alpha > 0
+	if style.fxOn then
+		style.active:SetAlpha(style.full and 1 or 0)
+		style.icon:SetAlpha(style.full and 1 or 0)
+		style.inactive:SetAlpha(style.full and 0 or 1)
+	else
+		style.active:SetAlpha(alpha)
+		style.icon:SetAlpha(alpha)
+		style.inactive:SetAlpha(1)
+	end
 end
 
 local function ApplyComboStyle(points)
@@ -2491,8 +2656,15 @@ local function ApplyComboStyle(points)
 		local retail = atlases ~= nil and cp.Highlight ~= nil and cp.Shine ~= nil
 		if retail and cp.maStyle == nil then cp.maStyle = CreateComboStyle(cp) end
 		local style = cp.maStyle
+		local sync = false
 		if retail and style.atlases ~= atlases then
+			sync = true
 			style.atlases = atlases
+			ResetComboFx(style)
+			style.fxSets = style.fxSets or {}
+			if atlases.fx and style.fxSets[atlases] == nil then style.fxSets[atlases] = CreateComboFx(cp, style, atlases.fx) or false end
+			style.fx = style.fxSets[atlases] or nil
+			style.fxOn = style.fx ~= nil
 			style.shadow:SetAtlas(atlases.shadow, true)
 			style.shadow:ClearAllPoints()
 			style.shadow:SetPoint("CENTER", cp, "CENTER", 0, atlases.shadowY)
@@ -2515,13 +2687,15 @@ local function ApplyComboStyle(points)
 			end
 
 			if retail then
+				sync = true
 				cp:SetSize(20, 20)
-				style.active:SetAlpha(cp.Highlight:GetAlpha())
-				style.icon:SetAlpha(cp.Highlight:GetAlpha())
 			else
+				ResetComboFx(style)
 				cp:SetSize(style.w, style.h)
 			end
 		end
+
+		if sync then SyncComboStyle(cp, style) end
 	end
 end
 
