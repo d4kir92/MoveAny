@@ -14,6 +14,67 @@ local HEADER_LIFT = 5
 local HEADER_GROW = 5
 local FOOTER_TRIM = 3
 
+local function KeepWindowOnScreen(win)
+    if win.screenBoundsUpdating then return end
+    local scale = win:GetEffectiveScale()
+    if scale <= 0 then return end
+    local parentScale = UIParent:GetEffectiveScale()
+    local screenWidth = UIParent:GetWidth() * parentScale / scale
+    local screenHeight = UIParent:GetHeight() * parentScale / scale
+    if screenWidth <= 0 or screenHeight <= 0 then return end
+    win.screenBoundsUpdating = true
+    local tab = win.screenBoundsOptions
+    if tab and tab.resizable ~= false and tab.resizable ~= "width" then
+        local maxWidth = tab.maxWidth or 0
+        local maxHeight = tab.maxHeight or 0
+        maxWidth = maxWidth > 0 and math.min(maxWidth, screenWidth) or screenWidth
+        maxHeight = maxHeight > 0 and math.min(maxHeight, screenHeight) or screenHeight
+        local minWidth = math.min(tab.minWidth or 300, maxWidth)
+        local minHeight = math.min(tab.minHeight or 200, maxHeight)
+        if win.SetResizeBounds then
+            win:SetResizeBounds(minWidth, minHeight, maxWidth, maxHeight)
+        else
+            if win.SetMinResize then win:SetMinResize(minWidth, minHeight) end
+            if win.SetMaxResize then win:SetMaxResize(maxWidth, maxHeight) end
+        end
+    end
+
+    local width = math.min(win:GetWidth(), screenWidth)
+    local height = math.min(win:GetHeight(), screenHeight)
+    if width ~= win:GetWidth() or height ~= win:GetHeight() then win:SetSize(width, height) end
+    local left, top = win:GetLeft(), win:GetTop()
+    if left and top then
+        local x = math.max(0, math.min(left, screenWidth - width))
+        local y = math.max(height, math.min(top, screenHeight))
+        if x ~= left or y ~= top then
+            win:ClearAllPoints()
+            win:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+        end
+    end
+
+    win.screenBoundsWidth = screenWidth
+    win.screenBoundsHeight = screenHeight
+    win.screenBoundsScale = scale
+    win.screenBoundsUpdating = false
+end
+
+local function SetupScreenBounds(win, tab)
+    win.screenBoundsOptions = tab
+    D4:SetClampedToScreen(win, true)
+    win:SetClampRectInsets(0, 0, 0, 0)
+    win:HookScript("OnShow", KeepWindowOnScreen)
+    win:HookScript("OnSizeChanged", KeepWindowOnScreen)
+    win:HookScript("OnUpdate", function(sel)
+        local scale = sel:GetEffectiveScale()
+        if scale <= 0 then return end
+        local parentScale = UIParent:GetEffectiveScale()
+        local width = UIParent:GetWidth() * parentScale / scale
+        local height = UIParent:GetHeight() * parentScale / scale
+        if width ~= sel.screenBoundsWidth or height ~= sel.screenBoundsHeight or scale ~= sel.screenBoundsScale then KeepWindowOnScreen(sel) end
+    end)
+    KeepWindowOnScreen(win)
+end
+
 local function FindInset(win)
     if win.InsetBg then return win.InsetBg end
     if win.Inset then return win.Inset end
@@ -317,6 +378,7 @@ function D4:CreateUIWindowFrame(name, parent, templates)
     if modern then templates = MODERN_TEMPLATE end
     local win = D4:CreateFrame(name, parent or UIParent, templates)
     if modern then ApplyModernTemplate(win) end
+    SetupScreenBounds(win)
     return win
 end
 
@@ -416,6 +478,7 @@ function D4:CreateUIWindow(tab)
     win.getCollapsed = tab.getCollapsed
     win.setCollapsed = tab.setCollapsed
     if tab.resizable ~= false then MakeResizable(win, name, tab) end
+    SetupScreenBounds(win, tab)
     win:HookScript("OnHide", function() UI:CloseDropdowns() end)
     local escClose = tab.escClose
     if escClose == nil then escClose = tab.onClose == nil end
