@@ -277,6 +277,7 @@ MoveAny:AddTrans("zhCN", "LID_STANCEBARANCHOR", "姿态栏锚点 (姿态按钮)"
 MoveAny:AddTrans("zhCN", "LID_STARTHELP", "点击小地图按钮打开设置")
 MoveAny:AddTrans("zhCN", "LID_STARTHELP2", "或在聊天框输入 /move 或 /moveany")
 MoveAny:AddTrans("zhCN", "LID_STARTHELP3", "在MoveAny菜单中禁用提示可隐藏此消息")
+MoveAny:AddTrans("zhCN", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("zhCN", "LID_STATUSTRACKINGBARMANAGER", "状态追踪条管理 (经验值, 声望)")
 MoveAny:AddTrans("zhCN", "LID_STRATA", "框架层 (粗调)")
 MoveAny:AddTrans("zhCN", "LID_STYLE", "样式")

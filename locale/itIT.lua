@@ -277,6 +277,7 @@ MoveAny:AddTrans("itIT", "LID_STANCEBARANCHOR", "Ancora barra posizione (StanceB
 MoveAny:AddTrans("itIT", "LID_STARTHELP", "Clicca sul pulsante Minimap di MoveAny per aprire le impostazioni.")
 MoveAny:AddTrans("itIT", "LID_STARTHELP2", "Or tap /move or /moveany in chat to open the settings.")
 MoveAny:AddTrans("itIT", "LID_STARTHELP3", "Per nascondere questi messaggi disattiva i suggerimenti nel menu di MoveAny.")
+MoveAny:AddTrans("itIT", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("itIT", "LID_STATUSTRACKINGBARMANAGER", "Gestore della barra di monitoraggio dello stato (XP, Reputazione)")
 MoveAny:AddTrans("itIT", "LID_STRATA", "Strato (grossolano)")
 MoveAny:AddTrans("itIT", "LID_STYLE", "Stile")

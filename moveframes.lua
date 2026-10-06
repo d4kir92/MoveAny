@@ -8,8 +8,6 @@ tinsert(MAFRAMES, "GameMenuFrame")
 tinsert(MAFRAMES, "PVPReadyDialog")
 tinsert(MAFRAMES, "ReadyCheckFrame")
 tinsert(MAFRAMES, "RolePollPopup")
-tinsert(MAFRAMES, "StaticPopup1")
-tinsert(MAFRAMES, "StaticPopup2")
 tinsert(MAFRAMES, "InstanceAbandonPopup")
 local MAFRAMESONLYRETAIL = {}
 for i, v in pairs({"HouseEditorFrame.StoragePanel", "TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "HouseListFrame", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "LFGListInviteDialog", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ScrappingMachineFrame", "InspectRecipeFrame", "SettingsPanel", "QuickKeybindFrame", "ContainerFrameCombinedBags", "ClassTalentFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "WeeklyRewardsFrame", "WardrobeFrame", "AuctionHouseFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CovenantRenownFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame",}) do

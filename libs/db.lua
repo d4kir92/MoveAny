@@ -431,6 +431,21 @@ function MoveAny:GetElePoint(key)
 end
 
 function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
+	if key == "StaticPopup1" and p1 and p3 and p4 and p5 and StaticPopup1 then
+		local offsets = {
+			CENTER = {0, 0}, TOP = {0, 0.5}, BOTTOM = {0, -0.5},
+			LEFT = {-0.5, 0}, RIGHT = {0.5, 0},
+			TOPLEFT = {-0.5, 0.5}, TOPRIGHT = {0.5, 0.5},
+			BOTTOMLEFT = {-0.5, -0.5}, BOTTOMRIGHT = {0.5, -0.5},
+		}
+		local old, relative = offsets[p1], offsets[p3]
+		if old and relative then
+			local root = MoveAny:GetMainPanel()
+			local scale = StaticPopup1:GetEffectiveScale() / root:GetEffectiveScale()
+			local y = relative[2] * root:GetHeight() + p5 * scale
+			p1 = math.abs(y) < 0.001 and "CENTER" or y > 0 and "TOP" or "BOTTOM"
+		end
+	end
 	elePointCache[key] = nil
 	MoveAny:CheckDB("SetElePoint")
 	MoveAny:GetTab()["ELES"]["POINTS"][key] = MoveAny:GetTab()["ELES"]["POINTS"][key] or {}

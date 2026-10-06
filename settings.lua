@@ -37,6 +37,11 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 		return
 	end
 
+	if window == StaticPopup1 and MoveAny:GetDragFromName("StaticPopup1") and MoveAny:IsEnabled("STATICPOPUP", false) then
+		p2 = MoveAny:GetDragFromName("StaticPopup1")
+		p3, p4, p5 = p1, 0, 0
+	end
+
 	sptab[window] = sptab[window] or false
 	MoveAny:SafeExec(window, function()
 		if p1 then
@@ -892,6 +897,7 @@ function MoveAny:InitMALock()
 
 		if MoveAny:IsValidFrame(CompactArenaFrame) then AddCheckBox("COMPACTARENAFRAME", false) end
 		AddCheckBox("BATTLEFIELDMAPFRAME", false)
+		if StaticPopup1 then AddCheckBox("STATICPOPUP", false) end
 		if RolePollPopup then AddCheckBox("ROLEPOLLPOPUP", false) end
 		if ReadyCheckListenerFrame then AddCheckBox("READYCHECKLISTENERFRAME", false) end
 		local ttOnCursor = AddCheckBox("GAMETOOLTIP_ONCURSOR", false, function() MALock:UpdateDependencies() end)
@@ -2424,32 +2430,10 @@ local comboStyleAtlases = {
 		["active"] = "uf-roguecp-bg",
 		["icon"] = "uf-roguecp-icon-red",
 		["fx"] = {
-			["textures"] = {
-				{"glow", "uf-roguecp-bg", "BACKGROUND", 3},
-				{"spark", "uf-roguecp-fx-red", "ARTWORK", 2},
-				{"frameGlow", "uf-roguecp-frame-glow", "OVERLAY", 0},
-				{"slash", "uf-roguecp-slash-red", "OVERLAY", 1, 0, 0, 43, 43},
-			},
+			["textures"] = {{"glow", "uf-roguecp-bg", "BACKGROUND", 3}, {"spark", "uf-roguecp-fx-red", "ARTWORK", 2}, {"frameGlow", "uf-roguecp-frame-glow", "OVERLAY", 0}, {"slash", "uf-roguecp-slash-red", "OVERLAY", 1, 0, 0, 43, 43},},
 			["flip"] = {0.57, 3, 6, 17},
-			["activate"] = {
-				{"icon", 0, 0.5, 0.1},
-				{"icon", 0.5, 1, 0.27, 0.27},
-				{"active", 0, 0, 0.2},
-				{"active", 0, 1, 0.17, 0.2},
-				{"inactive", 1, 1, 0.37},
-				{"inactive", 1, 0, 0.1, 0.37},
-				{"glow", 0, 1, 0.17},
-				{"glow", 1, 0, 0.4, 0.17},
-			},
-			["deactivate"] = {
-				{"frameGlow", 1, 0, 0.5},
-				{"icon", 1, 0, 0.17},
-				{"spark", 1, 0, 0.4},
-				{"active", 1, 1, 0.2},
-				{"active", 1, 0, 0.17, 0.2},
-				{"inactive", 0, 0, 0.37},
-				{"inactive", 0, 1, 0.1, 0.37},
-			},
+			["activate"] = {{"icon", 0, 0.5, 0.1}, {"icon", 0.5, 1, 0.27, 0.27}, {"active", 0, 0, 0.2}, {"active", 0, 1, 0.17, 0.2}, {"inactive", 1, 1, 0.37}, {"inactive", 1, 0, 0.1, 0.37}, {"glow", 0, 1, 0.17}, {"glow", 1, 0, 0.4, 0.17},},
+			["deactivate"] = {{"frameGlow", 1, 0, 0.5}, {"icon", 1, 0, 0.17}, {"spark", 1, 0, 0.4}, {"active", 1, 1, 0.2}, {"active", 1, 0, 0.17, 0.2}, {"inactive", 0, 0, 0.37}, {"inactive", 0, 1, 0.1, 0.37},},
 		},
 	},
 	["DRUID"] = {
@@ -2459,39 +2443,11 @@ local comboStyleAtlases = {
 		["active"] = "uf-druidcp-bg-active",
 		["icon"] = "uf-druidcp-icon",
 		["fx"] = {
-			["textures"] = {
-				{"glow", "uf-druidcp-bg-glow", "BACKGROUND", 3},
-				{"deplete", "uf-druidcp-deplete", "ARTWORK", 0},
-				{"ring", "uf-druidcp-ring-glow", "OVERLAY", 0},
-				{"slash", "uf-druidcp-slash", "OVERLAY", 1, 1, 3, 26, 41},
-				{"smoke", "uf-druidcp-smoke", "OVERLAY", 2, 0, 15},
-			},
+			["textures"] = {{"glow", "uf-druidcp-bg-glow", "BACKGROUND", 3}, {"deplete", "uf-druidcp-deplete", "ARTWORK", 0}, {"ring", "uf-druidcp-ring-glow", "OVERLAY", 0}, {"slash", "uf-druidcp-slash", "OVERLAY", 1, 1, 3, 26, 41}, {"smoke", "uf-druidcp-smoke", "OVERLAY", 2, 0, 15},},
 			["flip"] = {1, 3, 8, 20},
 			["move"] = {"smoke", 0, 7, 0.56},
-			["activate"] = {
-				{"icon", 0, 0.5, 0.1},
-				{"icon", 0.5, 1, 0.2, 0.47},
-				{"ring", 0, 1, 0.27},
-				{"ring", 1, 0, 0.47, 0.27},
-				{"active", 0, 0, 0.27},
-				{"active", 0, 1, 0.01, 0.27},
-				{"inactive", 1, 1, 0.27},
-				{"inactive", 1, 0, 0.01, 0.27},
-				{"glow", 0, 0, 0.17},
-				{"glow", 0, 1, 0.13, 0.17},
-				{"glow", 1, 0, 0.4, 0.3},
-			},
-			["deactivate"] = {
-				{"smoke", 1, 1, 0.33},
-				{"smoke", 1, 0, 0.23, 0.33},
-				{"ring", 1, 1, 0.43},
-				{"ring", 1, 0, 0.23, 0.43},
-				{"icon", 1, 0, 0.2},
-				{"active", 1, 0, 0.2},
-				{"inactive", 0, 1, 0.2},
-				{"deplete", 1, 1, 0.23},
-				{"deplete", 1, 0, 0.2, 0.23},
-			},
+			["activate"] = {{"icon", 0, 0.5, 0.1}, {"icon", 0.5, 1, 0.2, 0.47}, {"ring", 0, 1, 0.27}, {"ring", 1, 0, 0.47, 0.27}, {"active", 0, 0, 0.27}, {"active", 0, 1, 0.01, 0.27}, {"inactive", 1, 1, 0.27}, {"inactive", 1, 0, 0.01, 0.27}, {"glow", 0, 0, 0.17}, {"glow", 0, 1, 0.13, 0.17}, {"glow", 1, 0, 0.4, 0.3},},
+			["deactivate"] = {{"smoke", 1, 1, 0.33}, {"smoke", 1, 0, 0.23, 0.33}, {"ring", 1, 1, 0.43}, {"ring", 1, 0, 0.23, 0.43}, {"icon", 1, 0, 0.2}, {"active", 1, 0, 0.2}, {"inactive", 0, 1, 0.2}, {"deplete", 1, 1, 0.23}, {"deplete", 1, 0, 0.2, 0.23},},
 		},
 	},
 }
@@ -2902,6 +2858,21 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "CompactArenaFrame",
 				["lstr"] = "LID_COMPACTARENAFRAME"
+			})
+		end
+
+		if MoveAny:IsEnabled("STATICPOPUP", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "StaticPopup1",
+				["fixedMoverSize"] = true,
+				["cleft"] = 0,
+				["cright"] = 0,
+				["ctop"] = 0,
+				["cbottom"] = 0,
+				["lstr"] = "LID_STATICPOPUP",
+				["sw"] = 320,
+				["sh"] = 32,
+				["noreparent"] = true,
 			})
 		end
 

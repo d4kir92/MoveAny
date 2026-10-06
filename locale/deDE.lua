@@ -277,6 +277,7 @@ MoveAny:AddTrans("deDE", "LID_STANCEBARANCHOR", "Haltungsleiste-Anker (StanceBut
 MoveAny:AddTrans("deDE", "LID_STARTHELP", "Klicken Sie auf die MoveAny Minimap-Schaltfläche, um die Einstellungen zu öffnen")
 MoveAny:AddTrans("deDE", "LID_STARTHELP2", "Oder tippe im Chat auf /move oder /moveany, um die Einstellungen zu öffnen.")
 MoveAny:AddTrans("deDE", "LID_STARTHELP3", "Um diese Nachrichten zu verstecken deaktiviere Tipps im MoveAny Menü.")
+MoveAny:AddTrans("deDE", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("deDE", "LID_STATUSTRACKINGBARMANAGER", "Statusverfolgungsleiste Manager (EP, Ruf)")
 MoveAny:AddTrans("deDE", "LID_STRATA", "Strata (grob)")
 MoveAny:AddTrans("deDE", "LID_STYLE", "Stil")

@@ -277,6 +277,7 @@ MoveAny:AddTrans("enUS", "LID_STANCEBARANCHOR", "Stance Bar Anchor (StanceButton
 MoveAny:AddTrans("enUS", "LID_STARTHELP", "Click the MoveAny Minimap Button to open the settings.")
 MoveAny:AddTrans("enUS", "LID_STARTHELP2", "Or type /move or /moveany in chat to open the settings.")
 MoveAny:AddTrans("enUS", "LID_STARTHELP3", "To hide these messages deactivate tips in the MoveAny menu.")
+MoveAny:AddTrans("enUS", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("enUS", "LID_STATUSTRACKINGBARMANAGER", "Status Tracking Bar Manager (XP, Reputation)")
 MoveAny:AddTrans("enUS", "LID_STRATA", "Strata (coarse)")
 MoveAny:AddTrans("enUS", "LID_STYLE", "Style")

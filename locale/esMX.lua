@@ -277,6 +277,7 @@ MoveAny:AddTrans("esMX", "LID_STANCEBARANCHOR", "Ancla de la barra de posturas (
 MoveAny:AddTrans("esMX", "LID_STARTHELP", "Haz clic en el botón del minimapa de MoveAny para abrir la configuración.")
 MoveAny:AddTrans("esMX", "LID_STARTHELP2", "O escribe /move o /moveany en el chat para abrir la configuración.")
 MoveAny:AddTrans("esMX", "LID_STARTHELP3", "Para ocultar estos mensajes desactiva los consejos en el menú de MoveAny.")
+MoveAny:AddTrans("esMX", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("esMX", "LID_STATUSTRACKINGBARMANAGER", "Administrador de barra de seguimiento de estado (XP, Reputación)")
 MoveAny:AddTrans("esMX", "LID_STRATA", "Estrato (aproximado)")
 MoveAny:AddTrans("esMX", "LID_STYLE", "Estilo")

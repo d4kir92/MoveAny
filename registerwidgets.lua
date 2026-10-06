@@ -1145,6 +1145,14 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 
 	if not anchor then anchor = UIParent end
 	dragframe:ClearAllPoints()
+	if dragframe.maName == "StaticPopup1" and anchor == StaticPopup1 then
+		local _, root, point, x, y = MoveAny:GetElePoint("StaticPopup1")
+		if point and x and y then
+			local scale = StaticPopup1:GetEffectiveScale() / dragframe:GetEffectiveScale()
+			if pcall(dragframe.SetPoint, dragframe, "CENTER", root, point, x * scale + posx, y * scale + posy) then return true end
+		end
+	end
+
 	if pcall(dragframe.SetPoint, dragframe, "CENTER", anchor, "CENTER", posx, posy) then return true end
 	dragframe:ClearAllPoints()
 	pcall(dragframe.SetPoint, dragframe, "CENTER", UIParent, "CENTER", 0, 0)
@@ -1504,6 +1512,12 @@ function MoveAny:RegisterWidget(tab)
 			if btn == "LeftButton" then MoveAny:SelectEle(sel) end
 			if btn == "LeftButton" then
 				MoveAny:DetachDrag(dragframe)
+				if name == "StaticPopup1" then
+					local p1, _, p3, x, y = MoveAny:GetElePoint(name)
+					local cx, cy = dragframe:GetCenter()
+					local scale = dragframe:GetEffectiveScale()
+					dragframe.maPopupDrag = {p1, p3, x, y, cx * scale, cy * scale}
+				end
 				dragframe:SetMovable(true)
 				dragframe:StartMoving()
 				ma_ismoving[dragframe] = true
@@ -1536,6 +1550,16 @@ function MoveAny:RegisterWidget(tab)
 					np4 = (x * eff + (dx or 0) - root:GetLeft() * rootScale) / eff - posx
 					np5 = (y * eff + (dy or 0) - root:GetBottom() * rootScale) / eff - posy
 				end
+				if name == "StaticPopup1" and dragframe.maPopupDrag then
+					local start = dragframe.maPopupDrag
+					local x, y = dragframe:GetCenter()
+					local scale = fram:GetEffectiveScale()
+					np1, np3 = start[1], start[2]
+					np4 = start[3] + (x * eff - start[5] + (dx or 0)) / scale
+					np5 = start[4] + (y * eff - start[6] + (dy or 0)) / scale
+					dragframe.maPopupDrag = nil
+				end
+
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5) end
 				if dragframe.opt and dragframe.opt.elePos then dragframe.opt.elePos:UpdateText() end
 				dragframe:SetMovable(true)
@@ -1746,6 +1770,11 @@ function MoveAny:RegisterWidget(tab)
 	elseif osw ~= sw or osh ~= sh then
 		MoveAny:SetEleSize(name, sw, sh)
 	end
+	if tab.fixedMoverSize then
+		local p1, _, p3, x, y = MoveAny:GetElePoint(name)
+		if p1 and p3 and x and y then MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, x, y) end
+		MoveAny:SafeAnchorDrag(MoveAny:GetDragFromName(name), frame, posx, posy)
+	end
 	local pointFunc = "SetPoint"
 	if frame.SetPointBase then pointFunc = "SetPointBase" end
 	hooksecurefunc(frame, pointFunc, function(sel, p1, p2, p3, p4, p5)
@@ -1808,7 +1837,7 @@ function MoveAny:RegisterWidget(tab)
 		if MoveAny:CheckIfMicroMenuInVehicle(frame) then newScale = 1 end
 		if newScale and type(newScale) == "number" and newScale > 0 and scale ~= newScale and not icl then sel:SetScale(newScale) end
 		local dragframe = MoveAny:GetDragFromName(name)
-		if dragframe then dragframe:SetScale(newScale) end
+		if dragframe then dragframe:SetScale(name == "StaticPopup1" and sel:GetEffectiveScale() / dragframe:GetParent():GetEffectiveScale() or newScale) end
 		ma_setscale_ele[sel] = false
 	end)
 
@@ -1819,6 +1848,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	hooksecurefunc(frame, "SetSize", function(sel, w, h)
+		if tab.fixedMoverSize then return end
 		if InCombatLockdown() and sel:IsProtected() then return false end
 		local isToSmall = false
 		local df = MoveAny:GetDragFromName(name)
@@ -1840,12 +1870,13 @@ function MoveAny:RegisterWidget(tab)
 	end)
 
 	MoveAny:SafeExec(frame, function()
-		frame:SetSize(sw, sh)
+		if not tab.fixedMoverSize then frame:SetSize(sw, sh) end
 		if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then frame:SetScale(MoveAny:GetEleScale(name)) end
 	end, "RegisterWidget SetScale " .. tostring(name))
 
 	MoveAny:ApplyEleLayer(name, frame)
 	local dragframe = MoveAny:GetDragFromName(name)
+	if name == "StaticPopup1" then dragframe:SetScale(frame:GetEffectiveScale() / dragframe:GetParent():GetEffectiveScale()) end
 	dragframe:SetSize(sw, sh)
 	MoveAny:SafeAnchorDrag(dragframe, frame, posx, posy)
 	if MoveAny:GetEleOption(name, "Hide", false, "Hide3") then

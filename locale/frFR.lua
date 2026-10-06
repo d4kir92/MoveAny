@@ -277,6 +277,7 @@ MoveAny:AddTrans("frFR", "LID_STANCEBARANCHOR", "Ancre de la barre de posture (S
 MoveAny:AddTrans("frFR", "LID_STARTHELP", "Cliquez sur le bouton MoveAny de la Minimap pour ouvrir les paramètres")
 MoveAny:AddTrans("frFR", "LID_STARTHELP2", "Ou tapez /move ou /moveany dans le chat pour ouvrir les paramètres.")
 MoveAny:AddTrans("frFR", "LID_STARTHELP3", "Pour masquer ces messages, désactivez les astuces dans le menu MoveAny.")
+MoveAny:AddTrans("frFR", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("frFR", "LID_STATUSTRACKINGBARMANAGER", "Gestionnaire de barre de suivi de statut (XP, Réputation)")
 MoveAny:AddTrans("frFR", "LID_STRATA", "Strate (grossier)")
 MoveAny:AddTrans("frFR", "LID_STYLE", "Style")

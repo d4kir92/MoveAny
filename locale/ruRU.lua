@@ -277,6 +277,7 @@ MoveAny:AddTrans("ruRU", "LID_STANCEBARANCHOR", "Крепление панели
 MoveAny:AddTrans("ruRU", "LID_STARTHELP", "Нажмите кнопку на миникарте, чтобы открыть настройки MoveAny.")
 MoveAny:AddTrans("ruRU", "LID_STARTHELP2", "Или введите /move или /moveany в чате, чтобы открыть настройки.")
 MoveAny:AddTrans("ruRU", "LID_STARTHELP3", "Чтобы скрыть эти сообщения, отключите подсказки в меню MoveAny.")
+MoveAny:AddTrans("ruRU", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("ruRU", "LID_STATUSTRACKINGBARMANAGER", "Менеджер панели отслеживания статуса (опыт, репутация и т.д...)")
 MoveAny:AddTrans("ruRU", "LID_STRATA", "Страта (грубо)")
 MoveAny:AddTrans("ruRU", "LID_STYLE", "Стиль")

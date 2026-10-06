@@ -277,6 +277,7 @@ MoveAny:AddTrans("koKR", "LID_STANCEBARANCHOR", "스탠스 바 앵커 (StanceBut
 MoveAny:AddTrans("koKR", "LID_STARTHELP", "미니맵 이동 버튼을 클릭하면 설정이 열립니다.")
 MoveAny:AddTrans("koKR", "LID_STARTHELP2", "또는 채팅에서 /이동 또는 /무브어니를 입력하여 설정을 엽니 다.")
 MoveAny:AddTrans("koKR", "LID_STARTHELP3", "이 메시지를 숨기려면 MoveAny 메뉴에서 팁을 비활성화하세요.")
+MoveAny:AddTrans("koKR", "LID_STATICPOPUP", "StaticPopupsAnchor")
 MoveAny:AddTrans("koKR", "LID_STATUSTRACKINGBARMANAGER", "상태 추적 바 관리자(경험치, 평판)")
 MoveAny:AddTrans("koKR", "LID_STRATA", "계층 구간 (대략)")
 MoveAny:AddTrans("koKR", "LID_STYLE", "스타일")
