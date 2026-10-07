@@ -1829,6 +1829,7 @@ function MoveAny:RegisterWidget(tab)
 	end
 
 	hooksecurefunc(frame, "SetScale", function(sel, scale)
+		if tab.active and not tab.active() then return end
 		local icl = InCombatLockdown()
 		if icl and sel:IsProtected() then return false end
 		if ma_setscale_ele[sel] then return end
@@ -1871,7 +1872,7 @@ function MoveAny:RegisterWidget(tab)
 
 	MoveAny:SafeExec(frame, function()
 		if not tab.fixedMoverSize then frame:SetSize(sw, sh) end
-		if MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then frame:SetScale(MoveAny:GetEleScale(name)) end
+		if (not tab.active or tab.active()) and MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then frame:SetScale(MoveAny:GetEleScale(name)) end
 	end, "RegisterWidget SetScale " .. tostring(name))
 
 	MoveAny:ApplyEleLayer(name, frame)
