@@ -8,6 +8,8 @@ tinsert(MAFRAMES, "GameMenuFrame")
 tinsert(MAFRAMES, "PVPReadyDialog")
 tinsert(MAFRAMES, "ReadyCheckFrame")
 tinsert(MAFRAMES, "RolePollPopup")
+tinsert(MAFRAMES, "StaticPopup1")
+tinsert(MAFRAMES, "StaticPopup2")
 tinsert(MAFRAMES, "InstanceAbandonPopup")
 local MAFRAMESONLYRETAIL = {}
 for i, v in pairs({"SocialUIFrame", "HouseEditorFrame.StoragePanel", "TutorialDoubleKey_Frame", "HousingInviteResidentFrame", "ClickBindingFrame", "TransmogFrame", "HouseListFrame", "HousingModelPreviewFrame", "HousingHouseSettingsFrame", "HousingCornerstoneHouseInfoFrame", "HousingDashboardFrame", "HousingCornerstonePurchaseFrame", "HousingCornerstoneVisitorFrame", "HouseFinderFrame", "HousingBulletinBoardFrame", "CooldownViewerSettings", "RemixArtifactFrame", "StableFrame", "LFGListInviteDialog", "CurrencyTransferMenu", "HeroTalentsSelectionDialog", "CurrencyTransferLog", "DelvesCompanionConfigurationFrame", "DelvesDifficultyPickerFrame", "ProfessionsBookFrame", "PlayerSpellsFrame", "GroupLootHistoryFrame", "ScrappingMachineFrame", "InspectRecipeFrame", "SettingsPanel", "QuickKeybindFrame", "ContainerFrameCombinedBags", "ClassTalentFrame", "ChallengesKeystoneFrame", "CovenantMissionFrame", "OrderHallMissionFrame", "PVPMatchScoreboard", "WeeklyRewardsFrame", "WardrobeFrame", "AuctionHouseFrame", "ProfessionsCustomerOrdersFrame", "AnimaDiversionFrame", "CovenantSanctumFrame", "SoulbindViewer", "GarrisonLandingPage", "PlayerChoiceFrame", "GenericPlayerChoiseTobbleButton", "ExpansionLandingPage", "MajorFactionRenownFrame", "GenericTraitFrame", "FlightMapFrame", "ItemUpgradeFrame", "ProfessionsFrame", "CommunitiesFrame", "CovenantRenownFrame", "ItemInteractionFrame", "GarrisonCapacitiveDisplayFrame",}) do
@@ -287,6 +289,13 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 	run = true
 	local runId = id
 	if MoveAny:Loaded("UpdateMoveFrames") and MoveAny:IsEnabled("MOVEFRAMES", true) then
+		local staticPopupAnchor = MoveAny:IsEnabled("STATICPOPUP", false)
+		if staticPopupAnchor and (MAFS["StaticPopup1"] or MAFS["StaticPopup2"]) then
+			MAFS["StaticPopup1"] = nil
+			MAFS["StaticPopup2"] = nil
+			MAFSRecountPending()
+		end
+
 		if once then
 			once = false
 			if WorldMapFrame then
@@ -341,8 +350,8 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 			if PVPReadyDialog then MoveAny:SetClampedToScreen(PVPReadyDialog, true, "UpdateMoveFrames 5") end
 			if ReadyCheckFrame then MoveAny:SetClampedToScreen(ReadyCheckFrame, true, "UpdateMoveFrames 6") end
 			if RolePollPopup then MoveAny:SetClampedToScreen(RolePollPopup, true, "UpdateMoveFrames 7") end
-			if StaticPopup1 then MoveAny:SetClampedToScreen(StaticPopup1, true, "UpdateMoveFrames 8") end
-			if StaticPopup2 then MoveAny:SetClampedToScreen(StaticPopup2, true, "UpdateMoveFrames 9") end
+			if StaticPopup1 and not staticPopupAnchor then MoveAny:SetClampedToScreen(StaticPopup1, true, "UpdateMoveFrames 8") end
+			if StaticPopup2 and not staticPopupAnchor then MoveAny:SetClampedToScreen(StaticPopup2, true, "UpdateMoveFrames 9") end
 		end
 
 		for i, name in pairs(EnableMouseFrames) do
