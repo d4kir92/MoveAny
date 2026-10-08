@@ -5228,9 +5228,10 @@ function MoveAny:LoadAddon()
 					if not container or not container.maxIndex or not container.rollFrames then return end
 					local reservedSize = 78
 					local shown = 0
+					local ownBonusRoll = BonusRollFrame and MoveAny:IsEnabled("BONUSROLLFRAME", false)
 					for i = 1, container.maxIndex do
 						local frame = container.rollFrames[i]
-						if frame then
+						if frame and not (ownBonusRoll and frame == BonusRollFrame) then
 							MoveAny:InitGLF(frame, i) -- nur behalten, wenn es NICHT positioniert
 							frame:ClearAllPoints()
 							frame:SetPoint("BOTTOM", GroupLootContainer_MA_DRAG, "BOTTOM", 0, reservedSize * shown)
