@@ -495,7 +495,9 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 
 		if frame then
 			local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetElePoint(key)
-			if dbp1 and dbp3 then
+			if dbp1 and dbp3 and key == "StaticPopup1" then
+				MoveAny:SetPoint(frame, dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
+			elseif dbp1 and dbp3 then
 				frame:ClearAllPoints()
 				frame:SetPoint(dbp1, MoveAny:GetMainPanel(), dbp3, dbp4, dbp5)
 			end
