@@ -1512,12 +1512,6 @@ function MoveAny:RegisterWidget(tab)
 			if btn == "LeftButton" then MoveAny:SelectEle(sel) end
 			if btn == "LeftButton" then
 				MoveAny:DetachDrag(dragframe)
-				if name == "StaticPopup1" then
-					local p1, _, p3, x, y = MoveAny:GetElePoint(name)
-					local cx, cy = dragframe:GetCenter()
-					local scale = dragframe:GetEffectiveScale()
-					dragframe.maPopupDrag = {p1, p3, x, y, cx * scale, cy * scale}
-				end
 				dragframe:SetMovable(true)
 				dragframe:StartMoving()
 				ma_ismoving[dragframe] = true
@@ -1550,14 +1544,19 @@ function MoveAny:RegisterWidget(tab)
 					np4 = (x * eff + (dx or 0) - root:GetLeft() * rootScale) / eff - posx
 					np5 = (y * eff + (dy or 0) - root:GetBottom() * rootScale) / eff - posy
 				end
-				if name == "StaticPopup1" and dragframe.maPopupDrag then
-					local start = dragframe.maPopupDrag
+				if name == "StaticPopup1" and np3 then
 					local x, y = dragframe:GetCenter()
+					local root = MoveAny:GetMainPanel()
+					local rootScale = root:GetEffectiveScale()
 					local scale = fram:GetEffectiveScale()
-					np1, np3 = start[1], start[2]
-					np4 = start[3] + (x * eff - start[5] + (dx or 0)) / scale
-					np5 = start[4] + (y * eff - start[6] + (dy or 0)) / scale
-					dragframe.maPopupDrag = nil
+					local rx, ry = root:GetCenter()
+					if strfind(np3, "LEFT") then rx = root:GetLeft() elseif strfind(np3, "RIGHT") then rx = root:GetRight() end
+					if strfind(np3, "TOP") then ry = root:GetTop() elseif strfind(np3, "BOTTOM") then ry = root:GetBottom() end
+					np1 = np3
+					np4 = (x * eff + (dx or 0) - rx * rootScale) / scale
+					np5 = (y * eff + (dy or 0) - ry * rootScale) / scale
+					np4 = dx and MoveAny:MathR(np4, 2) + 0 or MoveAny:Snap(np4)
+					np5 = dy and MoveAny:MathR(np5, 2) + 0 or MoveAny:Snap(np5)
 				end
 
 				if np1 ~= op1 or np3 ~= op3 or np4 ~= op4 or np5 ~= op5 then MoveAny:SetElePoint(name, np1, MoveAny:GetMainPanel(), np3, np4, np5) end
