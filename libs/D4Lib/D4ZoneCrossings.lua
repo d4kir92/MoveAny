@@ -6,11 +6,11 @@ zoneCrossings[1411] = {
 }
 
 zoneCrossings[1412] = {
-	{0.671, 0.626, 1413},
-	{0.376, 0.39, 1456, "South", up = true},
-	{0.4, 0.312, 1456, "North", up = true},
-	{0.28, 0.227, 1443},
-	{0.44, 0.13, 1442},
+	{0.691, 0.606, 1413, forever = {0.671, 0.626}},
+	{0.378, 0.33, 1456, "South", up = true, forever = {0.376, 0.39}},
+	{0.406, 0.202, 1456, "North", up = true, forever = {0.4, 0.312}},
+	{0.28, 0.227, 1443, foreverOnly = true},
+	{0.44, 0.13, 1442, foreverOnly = true},
 }
 
 zoneCrossings[1413] = {
@@ -62,7 +62,7 @@ zoneCrossings[1422] = {
 }
 
 zoneCrossings[1423] = {
-	{0.119, 0.728, 1422},
+	{0.119, 0.728, 1422, forever = {0.091, 0.618}},
 }
 
 zoneCrossings[1424] = {
@@ -125,9 +125,9 @@ zoneCrossings[1432] = {
 }
 
 zoneCrossings[1433] = {
-	{0.046, 0.852, 1431},
-	{0.034, 0.712, 1429},
-	{0.474, 0.144, 1428},
+	{0.086, 0.882, 1431, forever = {0.046, 0.852}},
+	{0.034, 0.732, 1429, forever = {0.034, 0.712}},
+	{0.474, 0.144, 1428, forever = {0.423, 0.144}},
 }
 
 zoneCrossings[1434] = {
@@ -229,7 +229,7 @@ zoneCrossings[1452] = {
 }
 
 zoneCrossings[1453] = {
-	{0.744, 0.924, 1429},
+	{0.624, 0.724, 1429, forever = {0.744, 0.924}},
 }
 
 zoneCrossings[1454] = {
@@ -337,8 +337,30 @@ zoneCrossings[1955] = {
 	{0.764, 0.433, 1952},
 }
 
+local resolvedCrossings = {}
 function D4:GetZoneCrossings(uiMapID)
-	if uiMapID == nil then return nil end
+	if uiMapID == nil or zoneCrossings[uiMapID] == nil then return nil end
+	if resolvedCrossings[uiMapID] == nil then
+		local forever = D4:IsForever()
+		local list = {}
+		for _, row in ipairs(zoneCrossings[uiMapID]) do
+			if forever or not row.foreverOnly then
+				if forever and row.forever ~= nil then
+					local copy = {}
+					for key, value in pairs(row) do
+						copy[key] = value
+					end
 
-	return zoneCrossings[uiMapID]
+					copy[1], copy[2] = row.forever[1], row.forever[2]
+					row = copy
+				end
+
+				tinsert(list, row)
+			end
+		end
+
+		resolvedCrossings[uiMapID] = list
+	end
+
+	return resolvedCrossings[uiMapID]
 end
