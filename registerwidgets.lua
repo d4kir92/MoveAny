@@ -1769,11 +1769,7 @@ function MoveAny:RegisterWidget(tab)
 	elseif osw ~= sw or osh ~= sh then
 		MoveAny:SetEleSize(name, sw, sh)
 	end
-	if tab.fixedMoverSize then
-		local p1, _, p3, x, y = MoveAny:GetElePoint(name)
-		if p1 and p3 and x and y then MoveAny:SetElePoint(name, p1, MoveAny:GetMainPanel(), p3, x, y) end
-		MoveAny:SafeAnchorDrag(MoveAny:GetDragFromName(name), frame, posx, posy)
-	end
+	if tab.fixedMoverSize then MoveAny:SafeAnchorDrag(MoveAny:GetDragFromName(name), frame, posx, posy) end
 	local pointFunc = "SetPoint"
 	if frame.SetPointBase then pointFunc = "SetPointBase" end
 	hooksecurefunc(frame, pointFunc, function(sel, p1, p2, p3, p4, p5)
