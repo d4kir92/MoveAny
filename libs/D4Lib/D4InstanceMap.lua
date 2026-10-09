@@ -12,6 +12,7 @@ local NAV_BUTTON_PLAIN = 30
 local NAV_BUTTON_MIN_TEXT = 60
 local PIN_TOGGLE_OFFSET_X = 40
 local PIN_TOGGLE_OFFSET_Y = 10
+local SIDE_PANEL_BUTTONS = {"OpenButton", "CloseButton"}
 local function GetChild()
     if WorldMapFrame == nil or WorldMapFrame.ScrollContainer == nil then return nil end
     return WorldMapFrame.ScrollContainer.Child
@@ -451,7 +452,7 @@ function D4:CreateInstanceMap(provider)
         if toggle ~= nil and toggle.SetFrameLevel ~= nil then
             local level = overlay:GetFrameLevel() + 2001
             if toggle:GetFrameLevel() < level then toggle:SetFrameLevel(level) end
-            for _, name in ipairs({"OpenButton", "CloseButton"}) do
+            for _, name in ipairs(SIDE_PANEL_BUTTONS) do
                 local button = toggle[name]
                 if button ~= nil and button.SetFrameLevel ~= nil and button:GetFrameLevel() <= level then button:SetFrameLevel(level + 1) end
             end
