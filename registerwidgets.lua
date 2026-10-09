@@ -1139,8 +1139,12 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 	posx = posx or 0
 	posy = posy or 0
 	if anchor and anchor ~= UIParent then
-		if anchor.IsForbidden and anchor:IsForbidden() then anchor = UIParent end
-		if anchor.IsAnchoringRestricted and anchor:IsAnchoringRestricted() then anchor = UIParent end
+		local restricted = anchor.IsForbidden and anchor:IsForbidden()
+		if not restricted and anchor.IsAnchoringRestricted and anchor:IsAnchoringRestricted() then restricted = true end
+		if restricted then
+			if MoveAny:AnchorDragToElePoint(dragframe, posx, posy) then return true end
+			anchor = UIParent
+		end
 	end
 
 	if not anchor then anchor = UIParent end
@@ -1154,9 +1158,26 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 	end
 
 	if pcall(dragframe.SetPoint, dragframe, "CENTER", anchor, "CENTER", posx, posy) then return true end
+	if MoveAny:AnchorDragToElePoint(dragframe, posx, posy) then return true end
 	dragframe:ClearAllPoints()
 	pcall(dragframe.SetPoint, dragframe, "CENTER", UIParent, "CENTER", 0, 0)
 	return false
+end
+
+function MoveAny:AnchorDragToElePoint(dragframe, posx, posy)
+	local name = dragframe and dragframe.maName
+	if name == nil then return false end
+	local p1, root, p3, x, y = MoveAny:GetElePoint(name)
+	if not p1 or not p3 or not root then return false end
+	local scale = 1
+	local frame = _G[name]
+	if frame and frame.GetEffectiveScale then
+		local fs, ds = frame:GetEffectiveScale(), dragframe:GetEffectiveScale()
+		if MoveAny:CanAccessValues(fs, ds) and type(fs) == "number" and type(ds) == "number" and ds > 0 then scale = fs / ds end
+	end
+
+	dragframe:ClearAllPoints()
+	return pcall(dragframe.SetPoint, dragframe, p1, root, p3, (x or 0) * scale + (posx or 0), (y or 0) * scale + (posy or 0))
 end
 
 function MoveAny:DetachDrag(dragframe)
