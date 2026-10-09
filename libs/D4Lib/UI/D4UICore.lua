@@ -77,9 +77,14 @@ function UI:AddNewBadge(frame, added)
     badge:SetPoint(point, relativeTo, relativePoint, xOffset, yOffset)
     frame.Label:SetPoint("LEFT", badge, "RIGHT", 4, 0)
     badge:SetWordWrap(false)
-    badge:SetText("|cff66ccff[" .. tostring(_G["NEW_CAPS"] or UI:Text("LID_NEW")) .. "]|r")
     frame.NewBadge = badge
+    UI:RefreshNewBadge(frame)
     return badge
+end
+
+function UI:RefreshNewBadge(frame)
+    if frame == nil or frame.NewBadge == nil then return end
+    frame.NewBadge:SetText("|cff66ccff[" .. tostring(UI:Text("LID_NEW")) .. "]|r")
 end
 
 function UI:NextName(win, kind)
@@ -133,6 +138,7 @@ end
 function UI:SetLabel(element, text)
     if element == nil then return end
     element.label = string.lower(text or "")
+    UI:RefreshNewBadge(element.frame)
 end
 
 function UI:ChoicesFromMap(map, current)
