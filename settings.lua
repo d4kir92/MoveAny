@@ -1912,7 +1912,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.12")
+	MoveAny:SetVersion(135994, "1.13.13")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -5330,6 +5330,8 @@ function MoveAny:LoadAddon()
 	end
 
 	if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
+		if rawget(BonusRollFrame, "SetPoint") then BonusRollFrame.SetPoint = nil end
+		if rawget(BonusRollFrame, "ClearAllPoints") then BonusRollFrame.ClearAllPoints = nil end
 		if BonusRollFrame:GetPoint() == nil then BonusRollFrame:SetPoint("CENTER", 0, 0) end
 		MoveAny:RegisterWidget({
 			["name"] = "BonusRollFrame",
