@@ -5533,6 +5533,30 @@ function MoveAny:LoadAddon()
 				end
 			end)
 		end
+
+		if AlertFrame and AlertFrame.UpdateAnchors and AlertFrame.alertFrameSubSystems and GroupLootContainer then
+			local function SkipGroupLootContainer()
+				if not GroupLootContainer:IsShown() then return false end
+				if not MoveAny:IsEnabled("GROUPLOOTCONTAINER", false) then return true end
+				local ownBonusRoll = BonusRollFrame and MoveAny:IsEnabled("BONUSROLLFRAME", false)
+				for _, frame in pairs(GroupLootContainer.rollFrames or {}) do
+					if not (ownBonusRoll and frame == BonusRollFrame) then return false end
+				end
+
+				return true
+			end
+
+			hooksecurefunc(AlertFrame, "UpdateAnchors", function(sel)
+				if not SkipGroupLootContainer() then return end
+				local relativeFrame = sel.baseAnchorFrame or sel
+				for _, subSystem in ipairs(sel.alertFrameSubSystems) do
+					if subSystem.anchorFrame ~= GroupLootContainer then
+						local resultFrame = subSystem:AdjustAnchors(relativeFrame)
+						if not resultFrame or not resultFrame.IsInDefaultPosition or resultFrame:IsInDefaultPosition() then relativeFrame = resultFrame end
+					end
+				end
+			end)
+		end
 	end
 
 	for i = 1, 10 do
