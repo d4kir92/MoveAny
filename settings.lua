@@ -1912,7 +1912,7 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.13")
+	MoveAny:SetVersion(135994, "1.13.14")
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
@@ -5542,7 +5542,6 @@ function MoveAny:LoadAddon()
 				for _, frame in pairs(GroupLootContainer.rollFrames or {}) do
 					if not (ownBonusRoll and frame == BonusRollFrame) then return false end
 				end
-
 				return true
 			end
 
