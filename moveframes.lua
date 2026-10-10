@@ -231,11 +231,7 @@ function MoveAny:MAFrameStopMoving(frameObj, name)
 	local name2 = MoveAny:GetName(frameObj)
 	if name2 then
 		local fM = _G[name2 .. "Move"]
-		if fM == nil then
-			MoveAny:INFO("#1 FAILED TO STOP MOVING", name)
-			return
-		end
-
+		if fM == nil then return end
 		if fM and ma_ismoving[fM] then
 			ma_ismoving[fM] = false
 			fM:StopMovingOrSizing()
