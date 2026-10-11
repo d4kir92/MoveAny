@@ -21,6 +21,7 @@ local mmShapes = {
 }
 
 local BTNPREFIX = "MinimapButton_D4Lib_LibDBIcon_"
+local ALWAYSSHOWKEY = "D4MMBTNALWAYSSHOW"
 
 local function CollectD4Buttons(skip)
     local list = {}
@@ -57,6 +58,24 @@ local function ReleaseD4Buttons(list)
     if list == nil then return end
     for _, child in ipairs(list) do
         if child.D4Think then child.D4Think(true) end
+    end
+end
+
+local function RefreshD4Buttons()
+    for _, child in ipairs(CollectD4Buttons()) do
+        if child.D4Think then child.D4Think(true) end
+    end
+end
+
+local function ToggleAutoHide(btn)
+    local enableAutoHide = btn.db[ALWAYSSHOWKEY] ~= false
+    btn.db[ALWAYSSHOWKEY] = not enableAutoHide
+    if D4.SetSharedSetting then D4:SetSharedSetting(ALWAYSSHOWKEY, not enableAutoHide) end
+    RefreshD4Buttons()
+    if enableAutoHide then
+        D4:MSG(D4:Trans("LID_MMBTNAUTOHIDEON"))
+    else
+        D4:MSG(D4:Trans("LID_MMBTNAUTOHIDEOFF"))
     end
 end
 
@@ -295,7 +314,9 @@ function D4:CreateMinimapButton(params)
     if params.border == false then btn.overlay:Hide() end
     btn:SetScript("OnClick", function(sel, btnName)
         if d4_isMouseDown[sel] then return end
-        if btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
+        if btnName == "MiddleButton" and IsShiftKeyDown() and sel.D4Think then
+            ToggleAutoHide(sel)
+        elseif btnName == "LeftButton" and IsShiftKeyDown() and params.funcSL then
             params:funcSL()
         elseif btnName == "RightButton" and IsShiftKeyDown() and params.funcSR then
             params:funcSR()
@@ -318,6 +339,7 @@ function D4:CreateMinimapButton(params)
         end
 
         if params.vTTUpdate then params:vTTUpdate(btn.tooltip) end
+        if btn.D4Think and IsOnMinimap(btn) then btn.tooltip:AddDoubleLine(D4:Trans("LID_SHIFTMIDDLECLICK"), D4:Trans("LID_MMBTNAUTOHIDE")) end
         btn.tooltip:Show()
     end)
 
@@ -378,7 +400,7 @@ function D4:CreateMinimapButton(params)
         local oldState = false
         local function BtnThink(force)
             local onMinimap = IsOnMinimap(btn)
-            local shouldShow = not onMinimap or insideBtn or insideMinimap or d4_isMouseDown[btn] == true
+            local shouldShow = not onMinimap or btn.db[ALWAYSSHOWKEY] ~= false or insideBtn or insideMinimap or d4_isMouseDown[btn] == true
             if force then oldState = nil end
             if oldState ~= shouldShow then
                 oldState = shouldShow
@@ -421,6 +443,15 @@ function D4:CreateMinimapButton(params)
         end)
 
         D4:After(4, function() BtnThink(true) end, "[D4] MinimapInit")
+        if D4.RegisterSharedSettings then
+            D4:RegisterSharedSettings({
+                ["keys"] = {ALWAYSSHOWKEY},
+                ["getDB"] = function() return btn.db end,
+                ["get"] = function(key) return btn.db[key] end,
+                ["set"] = function(key, value) btn.db[key] = value end,
+                ["onChange"] = function() BtnThink(true) end,
+            })
+        end
     end
 
     if params.dbkey and params.dbkey ~= "" then
