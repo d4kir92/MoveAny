@@ -2699,12 +2699,46 @@ local function LayoutComboFrameOriginal(points, start, count)
 	ComboFrame:SetSize(maxX - minX, maxY - minY)
 end
 
+local function LayoutComboFramePool(points, count)
+	local layout = ComboFrame.layout
+	local startAngle = ComboFrame:GetEffectiveStartAngleDegrees()
+	local w, h = points[1]:GetSize()
+	local s = points[1]:GetScale()
+	local offsets = {}
+	local minX, maxX, minY, maxY
+	for i = 1, count do
+		local angle = math.rad(startAngle + (i - 1) * layout.angleStepDegrees)
+		local x, y = math.cos(angle) * layout.radius, math.sin(angle) * layout.radius
+		offsets[i] = {x, y}
+		minX = math.min(minX or x, x)
+		maxX = math.max(maxX or x, x)
+		minY = math.min(minY or y, y)
+		maxY = math.max(maxY or y, y)
+	end
+
+	for i, cp in ipairs(points) do
+		local o = offsets[math.min(i, count)]
+		cp:ClearAllPoints()
+		cp:SetPoint("CENTER", ComboFrame, "TOPLEFT", o[1] - minX + w / 2, o[2] - maxY - h / 2)
+	end
+
+	ComboFrame:SetSize((maxX - minX + w) * s, (maxY - minY + h) * s)
+end
+
 function MoveAny:UpdateComboFrameLayout()
 	if ComboFrame == nil then return end
 	MoveAny:SafeExec(ComboFrame, function()
 		local points = {}
 		while _G["ComboPoint" .. (#points + 1)] do
 			points[#points + 1] = _G["ComboPoint" .. (#points + 1)]
+		end
+
+		local pool = false
+		if #points == 0 and type(ComboFrame.ComboPoints) == "table" then
+			pool = true
+			for i, cp in ipairs(ComboFrame.ComboPoints) do
+				points[i] = cp
+			end
 		end
 
 		if #points == 0 then return end
@@ -2722,18 +2756,34 @@ function MoveAny:UpdateComboFrameLayout()
 			end
 		end
 
-		ApplyComboStyle(points)
+		if not pool then ApplyComboStyle(points) end
 		local start = ComboFrame.startComboPointIndex or 1
 		local count = ComboFrame.maxComboPoints
 		if type(count) ~= "number" or count < 1 then count = 5 end
+		if pool then count = math.min(count, #points) end
 		local layout = MoveAny:GetEleOption("ComboFrame", "COMBOLAYOUT", 0, "UpdateComboFrameLayout")
 		if layout == 2 then
-			LayoutComboFrameOriginal(points, start, count)
+			if pool then
+				if ComboFrame.layout and ComboFrame.GetEffectiveStartAngleDegrees then LayoutComboFramePool(points, count) end
+			else
+				LayoutComboFrameOriginal(points, start, count)
+			end
+
 			return
 		end
 
+		if pool then
+			local ordered = {}
+			for i, cp in ipairs(points) do
+				ordered[i <= count and (count - i + 1) or i] = cp
+			end
+
+			points = ordered
+		end
+
 		local cpsw, cpsh = points[1]:GetSize()
-		local gap = points[1].maRetail and 4 or 0
+		local s = points[1]:GetScale()
+		local gap = (points[1].maRetail or pool) and 4 or 0
 		local radius = 0
 		if count > 1 then radius = (cpsw + 2 + gap) / (2 * math.sin(math.pi / count)) end
 		for i, cp in ipairs(points) do
@@ -2755,11 +2805,11 @@ function MoveAny:UpdateComboFrameLayout()
 		end
 
 		if layout == 3 then
-			ComboFrame:SetSize(radius * 2 + cpsw, radius * 2 + cpsh)
+			ComboFrame:SetSize((radius * 2 + cpsw) * s, (radius * 2 + cpsh) * s)
 		elseif layout == 1 then
-			ComboFrame:SetSize(cpsw, cpsh * count + gap * (count - 1))
+			ComboFrame:SetSize(cpsw * s, (cpsh * count + gap * (count - 1)) * s)
 		else
-			ComboFrame:SetSize(cpsw * count + gap * (count - 1), cpsh)
+			ComboFrame:SetSize((cpsw * count + gap * (count - 1)) * s, cpsh * s)
 		end
 	end, "UpdateComboFrameLayout")
 end
@@ -3135,6 +3185,7 @@ function MoveAny:LoadAddon()
 		elseif ComboFrame and MoveAny:IsEnabled("COMBOFRAME", false) then
 			MoveAny:UpdateComboFrameLayout()
 			if ComboFrame_UpdateMax then hooksecurefunc("ComboFrame_UpdateMax", function() MoveAny:UpdateComboFrameLayout() end) end
+			if ComboFrame.LayoutPointsCircle then hooksecurefunc(ComboFrame, "LayoutPointsCircle", function() MoveAny:UpdateComboFrameLayout() end) end
 			MoveAny:RegisterWidget({
 				["name"] = "ComboFrame",
 				["lstr"] = "LID_COMBOFRAME",

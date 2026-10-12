@@ -258,13 +258,13 @@ MoveAny.editorVisibility = {grid = true, movers = true}
 function MoveAny:IsEditorMoverVisible(name)
 	local dragframe = MoveAny:GetDragFromName(name)
 	if dragframe and dragframe.maActive and not dragframe.maActive() then return false end
-	if not MoveAny:IsEnabled("MALOCK", false) or InCombatLockdown() then return false end
+	if not MoveAny:IsEnabled("MALOCK", false) or MoveAny:IsInCombat() then return false end
 	if MoveAny:GetEleOption(name, "Hide", false, "EditorVisibility") then return not MoveAny:IsEnabled("HIDEHIDDENFRAMES", false) end
 	return MoveAny.editorVisibility.movers
 end
 
 function MoveAny:UpdateEditorVisibility()
-	local open = MoveAny:IsEnabled("MALOCK", false) and not InCombatLockdown()
+	local open = MoveAny:IsEnabled("MALOCK", false) and not MoveAny:IsInCombat()
 	if MAGridFrame then
 		if open and MoveAny.editorVisibility.grid then MAGridFrame:Show() else MAGridFrame:Hide() end
 	end
@@ -313,9 +313,20 @@ function MoveAny:ToggleEditorVisibility(kind)
 	MoveAny:UpdateEditorVisibility()
 end
 
+local inCombat = false
+function MoveAny:IsInCombat()
+	return InCombatLockdown() or UnitAffectingCombat("player")
+end
+
 function MoveAny:ShowMALock()
 	if MoveAny:IsMALockNotReady() then return end
 	MoveAny:Unlock()
+	if MoveAny:IsInCombat() then
+		inCombat = true
+		MoveAny:HideMALock(true)
+		return
+	end
+
 	if MoveAny:IsEnabled("MALOCK", false) then
 		MoveAny:RestoreEleOptions()
 		if MALock then
@@ -364,12 +375,12 @@ function MoveAny:ToggleMALock()
 	end
 end
 
-local inCombat = false
 function MoveAny:UpdateMALock(event)
-	if MoveAny:IsEnabled("MALOCK", false) and InCombatLockdown() then
+	if MALock == nil then return end
+	if MoveAny:IsEnabled("MALOCK", false) and MoveAny:IsInCombat() then
 		inCombat = true
 		MoveAny:HideMALock(true)
-	elseif inCombat and not InCombatLockdown() then
+	elseif inCombat and not MoveAny:IsInCombat() then
 		inCombat = false
 		MoveAny:ShowMALock()
 	end
@@ -378,7 +389,17 @@ end
 local maLockCheck = CreateFrame("Frame")
 MoveAny:RegisterEvent(maLockCheck, "PLAYER_REGEN_ENABLED")
 MoveAny:RegisterEvent(maLockCheck, "PLAYER_REGEN_DISABLED")
-MoveAny:OnEvent(maLockCheck, function(sel, event) MoveAny:UpdateMALock(event) end, "maLockCheck")
+MoveAny:RegisterEvent(maLockCheck, "PLAYER_ENTERING_WORLD")
+MoveAny:OnEvent(
+	maLockCheck,
+	function(sel, event)
+		MoveAny:UpdateMALock(event)
+		if event == "PLAYER_ENTERING_WORLD" then
+			MoveAny:After(1, function() MoveAny:UpdateMALock(event) end, "maLockCheck PEW 1")
+			MoveAny:After(3, function() MoveAny:UpdateMALock(event) end, "maLockCheck PEW 3")
+		end
+	end, "maLockCheck"
+)
 function MoveAny:InitSlash()
 	MoveAny:AddSlash("move", MoveAny.ToggleMALock)
 	MoveAny:AddSlash("moveany", MoveAny.ToggleMALock)

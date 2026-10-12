@@ -902,7 +902,7 @@ function MoveAny:MenuOptions(win, frame)
 	if name == "ComboFrame" then
 		AddEleCategory(win, "COMBOFRAME")
 		AddEleDropdown(win, name, "COMBOLAYOUT", 0, COMBO_LAYOUTS, function() MoveAny:UpdateComboFrameLayout() end, "LID_LAYOUT")
-		if MoveAny:GetComboStyleAtlases() then AddEleDropdown(win, name, "COMBOSTYLE", 0, COMBO_STYLES, function() MoveAny:UpdateComboFrameLayout() end, "LID_STYLE") end
+		if ComboPoint1 and MoveAny:GetComboStyleAtlases() then AddEleDropdown(win, name, "COMBOSTYLE", 0, COMBO_STYLES, function() MoveAny:UpdateComboFrameLayout() end, "LID_STYLE") end
 	end
 
 	win:ResumeLayout()
