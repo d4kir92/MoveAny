@@ -318,6 +318,23 @@ function MoveAny:IsInCombat()
 	return InCombatLockdown() or UnitAffectingCombat("player")
 end
 
+function MoveAny:SafeHideEditorFrame(frame)
+	if frame == nil then return end
+	if InCombatLockdown() and frame:IsProtected() then
+		frame.maCombatHidden = true
+		frame:SetAlpha(0)
+	else
+		frame:Hide()
+	end
+end
+
+function MoveAny:RestoreEditorFrameAlpha(frame)
+	if frame and frame.maCombatHidden then
+		frame.maCombatHidden = nil
+		frame:SetAlpha(1)
+	end
+end
+
 function MoveAny:ShowMALock()
 	if MoveAny:IsMALockNotReady() then return end
 	MoveAny:Unlock()
@@ -330,6 +347,12 @@ function MoveAny:ShowMALock()
 	if MoveAny:IsEnabled("MALOCK", false) then
 		MoveAny:RestoreEleOptions()
 		if MALock then
+			MoveAny:RestoreEditorFrameAlpha(MALock)
+			MoveAny:RestoreEditorFrameAlpha(MAGridFrame)
+			for _, df in pairs(MoveAny:GetDragFrames()) do
+				MoveAny:RestoreEditorFrameAlpha(df)
+			end
+
 			MALock:Show()
 			MoveAny:UpdateEditorVisibility()
 		else
@@ -344,12 +367,12 @@ function MoveAny:HideMALock(onlyHide)
 	if onlyHide or not MoveAny:IsEnabled("MALOCK", false) then
 		MoveAny:HideEleOptions()
 		for i, df in pairs(MoveAny:GetDragFrames()) do
-			df:Hide()
+			MoveAny:SafeHideEditorFrame(df)
 		end
 
 		if MALock then
-			MALock:Hide()
-			if MAGridFrame then MAGridFrame:Hide() end
+			MoveAny:SafeHideEditorFrame(MALock)
+			MoveAny:SafeHideEditorFrame(MAGridFrame)
 		else
 			MoveAny:MSG("[HideMALock] Settings Frame couldn't be created, please tell dev.")
 		end
