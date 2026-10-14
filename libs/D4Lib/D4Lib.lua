@@ -459,8 +459,8 @@ function D4:IsAddonLoaded(name, from)
 end
 
 function D4:AtlasExists(atlas)
-    if atlas == nil then return false end
-    if C_Texture and C_Texture.GetAtlasInfo(atlas) then
+    if type(atlas) ~= "string" or atlas == "" then return false end
+    if C_Texture and C_Texture.GetAtlasInfo and C_Texture.GetAtlasInfo(atlas) then
         return true
     elseif GetAtlasInfo and GetAtlasInfo(atlas) then
         return true
