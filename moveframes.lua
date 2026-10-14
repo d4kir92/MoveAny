@@ -226,6 +226,7 @@ end
 local maframesetpoint = {}
 local masetscale_frame = {}
 local ma_ismoving = {}
+local ma_externalmove = {}
 local once = true
 function MoveAny:MAFrameStopMoving(frameObj, name)
 	local name2 = MoveAny:GetName(frameObj)
@@ -496,7 +497,15 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						frame:SetMovable(true)
 					end
 
+					hooksecurefunc(frame, "StartMoving", function(sel)
+						if ma_externalmove[sel] then return end
+						ma_externalmove[sel] = true
+						MoveAny:MAFrameStopMoving(sel, name)
+						MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
+					end)
+
 					function frame:MA_OnMouseDown(sel, btn)
+						if ma_externalmove[frame] then return end
 						if frame:GetPoint() then
 							fm:SetSize(frame:GetSize())
 							fm:ClearAllPoints()
@@ -572,7 +581,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					MAHookScript(frame, "OnMouseDown", function(sel, btn) frame:MA_OnMouseDown(sel, btn) end)
 					MAHookScript(frame, "OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(sel, btn) end)
 					hooksecurefunc(frame, "SetPoint", function(sel, p1, p2, p3, p4, p5)
-						if maframesetpoint[sel] then return end
+						if maframesetpoint[sel] or ma_externalmove[sel] then return end
 						maframesetpoint[sel] = true
 						if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
