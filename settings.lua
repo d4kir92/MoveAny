@@ -528,7 +528,7 @@ end
 
 local minimapTooltip = {}
 local function UpdateMinimapTooltip()
-	minimapTooltip[1] = {"|T135994:16:16:0:0|t Move|rAny|r", "v" .. tostring(MoveAny:GetVersion())}
+	minimapTooltip[1] = {format("|T%s:16:16:0:0|t Move|rAny|r", MoveAny:GetAddonIcon()),"v" .. tostring(MoveAny:GetVersion())}
 	minimapTooltip[2] = {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}
 	minimapTooltip[3] = {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}
 	return minimapTooltip
@@ -598,7 +598,7 @@ function MoveAny:InitMALock()
 		["minHeight"] = 200,
 		["maxWidth"] = sw + 200,
 		["maxHeight"] = GetScreenHeight(),
-		["title"] = format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()),
+		["title"] = format("|T%s:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetAddonIcon(), MoveAny:GetVersion()),
 		["onMove"] = function(p1, p3, p4, p5) MoveAny:SetElePoint("MALock", p1, nil, p3, MoveAny:Snap(p4), MoveAny:Snap(p5)) end,
 		["getCollapsed"] = function(key) return MoveAny:GetCollapsed(key) end,
 		["setCollapsed"] = function(key, collapsed) MoveAny:SetCollapsed(key, collapsed) end,
@@ -1635,7 +1635,7 @@ function MoveAny:ShowProfiles()
 			MoveAny:SetElePoint("MALock", p1, _, p3, p4, p5)
 		end)
 
-		MAProfiles.TitleText:SetText(format("|T135994:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetVersion()))
+		MAProfiles.TitleText:SetText(format("|T%s:16:16:0:0|t Move|rAny|r v%s", MoveAny:GetAddonIcon(), MoveAny:GetVersion()))
 		MAProfiles.CloseButton:SetScript("OnClick", function()
 			MoveAny:SetEnabled("MAPROFILES", false)
 			MAProfiles:Hide()
@@ -1912,11 +1912,11 @@ function MoveAny:PlayerLogin()
 		return MoveAny:Trans("LID_LOCKWINDOWS")
 	end
 
-	MoveAny:SetVersion(135994, "1.13.17")
+	MoveAny:SetVersion()
 	if MoveAny.GetVersion ~= nil and MoveAny:GetVersion() ~= nil and MoveAny.Trans ~= nil then
 		MoveAny:CreateMinimapButton({
 			["name"] = "MoveAny",
-			["icon"] = 135994,
+			["icon"] = MoveAny:GetAddonIcon(),
 			["dbtab"] = MATAB,
 			["vTT"] = UpdateMinimapTooltip(),
 			["vTTUpdate"] = function(sel, tt)

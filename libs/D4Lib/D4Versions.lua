@@ -3,6 +3,8 @@ local pre = AddonName .. "D4PREFIX"
 D4.VersionTab = D4.VersionTab or {}
 if C_ChatInfo then C_ChatInfo.RegisterAddonMessagePrefix(pre) end
 function D4:SetVersion(icon, ver)
+    icon = icon or D4:GetAddonIcon()
+    ver = ver or D4:GetAddonVersion()
     if icon == nil then
         D4:MSG("|cffff0000[SetVersion] MISSING ICON AT SetVersion", icon)
         return false
