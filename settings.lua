@@ -936,9 +936,10 @@ function MoveAny:InitMALock()
 	MALock.Pipette = MoveAny:CreateButton("MALock_Pipette", MALock.header)
 	MALock.Pipette:SetSize(32, 32)
 	MALock.Pipette:SetText("")
-	MALock.Pipette.texture = MALock.Pipette:CreateTexture()
-	MALock.Pipette.texture:SetTexture("Interface\\Addons\\MoveAny\\media\\pipette")
-	MALock.Pipette.texture:SetSize(16, 16)
+	MALock.Pipette.texture = MALock.Pipette:CreateTexture(nil, "OVERLAY")
+	MALock.Pipette.texture:SetTexture("Interface\\Addons\\MoveAny\\media\\toolbar_pipette")
+	MALock.Pipette.texture:SetVertexColor(1, 0.82, 0)
+	MALock.Pipette.texture:SetSize(22, 22)
 	MALock.Pipette.texture:SetPoint("CENTER", MALock.Pipette, "CENTER", 0, 0)
 	MALock.Pipette:SetScript("OnEnter", function(sel)
 		GameTooltip:SetOwner(sel, "ANCHOR_NONE")
@@ -966,6 +967,7 @@ function MoveAny:InitMALock()
 	MALock.ToolbarSeparator:SetPoint("LEFT", MALock.Pipette, "RIGHT", 4, 0)
 	MALock.VisibilityButtons = {}
 	local visibilityLabels = {"LID_EDITORVISIBILITYALL", "LID_EDITORVISIBILITYGRID", "LID_EDITORVISIBILITYMOVERS", "LID_EDITORVISIBILITYHIDDEN", "LID_SNAPTOELEMENTS"}
+	local visibilityIcons = {"toolbar_all", "toolbar_grid", "toolbar_movers", "toolbar_hidden", "toolbar_snap"}
 	local previousButton = MALock.Pipette
 	for i, label in ipairs(visibilityLabels) do
 		local kind = i
@@ -973,44 +975,12 @@ function MoveAny:InitMALock()
 		button:SetSize(32, 32)
 		button:SetText("")
 		button:SetPoint("LEFT", previousButton, "RIGHT", i == 1 and 9 or 2, 0)
-		button.icons = {}
-		local function Icon(texture, width, height, x, y)
-			local icon = button:CreateTexture(nil, "OVERLAY")
-			if texture then
-				icon:SetTexture(texture)
-			else
-				icon:SetColorTexture(1, 1, 1, 1)
-				icon.maTinted = true
-			end
-
-			icon:SetSize(math.max(1, math.floor(width * 0.8 + 0.5)), math.max(1, math.floor(height * 0.8 + 0.5)))
-			icon:SetPoint("CENTER", button, "CENTER", math.floor(x * 0.8 + 0.5), math.floor(y * 0.8 + 0.5))
-			table.insert(button.icons, icon)
-		end
-
-		if i == 1 then
-			for _, x in ipairs({-6, 6}) do
-				for _, y in ipairs({-6, 6}) do
-					Icon(nil, 8, 8, x, y)
-				end
-			end
-		elseif i == 2 then
-			for _, offset in ipairs({-9, 0, 9}) do
-				Icon(nil, 1, 19, offset, 0)
-				Icon(nil, 19, 1, 0, offset)
-			end
-		elseif i == 3 then
-			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up", 10, 10, 0, 7)
-			Icon("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up", 10, 10, 0, -7)
-			Icon("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up", 10, 10, -7, 0)
-			Icon("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up", 10, 10, 7, 0)
-		elseif i == 4 then
-			Icon("Interface\\Icons\\Ability_Hunter_EagleEye", 20, 20, 0, 0)
-		else
-			Icon(nil, 1, 24, 0, 0)
-			Icon(nil, 8, 8, -5, 6)
-			Icon(nil, 8, 8, 5, -6)
-		end
+		local icon = button:CreateTexture(nil, "OVERLAY")
+		icon:SetTexture("Interface\\Addons\\MoveAny\\media\\" .. visibilityIcons[i])
+		icon:SetSize(22, 22)
+		icon:SetPoint("CENTER", button, "CENTER", 0, 0)
+		icon.maTinted = true
+		button.icons = {icon}
 
 		button:SetScript("OnClick", function() MoveAny:ToggleEditorVisibility(kind) end)
 		button:SetScript("OnEnter", function(sel)
