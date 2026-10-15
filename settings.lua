@@ -960,6 +960,10 @@ function MoveAny:InitMALock()
 	end)
 
 	MALock.Pipette:SetPoint("LEFT", MALock.header, "LEFT", 2, 1)
+	MALock.ToolbarSeparator = MALock.header:CreateTexture(nil, "ARTWORK")
+	MALock.ToolbarSeparator:SetColorTexture(1, 0.82, 0, 0.35)
+	MALock.ToolbarSeparator:SetSize(1, 20)
+	MALock.ToolbarSeparator:SetPoint("LEFT", MALock.Pipette, "RIGHT", 4, 0)
 	MALock.VisibilityButtons = {}
 	local visibilityLabels = {"LID_EDITORVISIBILITYALL", "LID_EDITORVISIBILITYGRID", "LID_EDITORVISIBILITYMOVERS", "LID_EDITORVISIBILITYHIDDEN", "LID_SNAPTOELEMENTS"}
 	local previousButton = MALock.Pipette
@@ -968,7 +972,7 @@ function MoveAny:InitMALock()
 		local button = MoveAny:CreateButton("MALock_Visibility" .. i, MALock.header)
 		button:SetSize(32, 32)
 		button:SetText("")
-		button:SetPoint("LEFT", previousButton, "RIGHT", i == 1 and 3 or 1, 0)
+		button:SetPoint("LEFT", previousButton, "RIGHT", i == 1 and 9 or 2, 0)
 		button.icons = {}
 		local function Icon(texture, width, height, x, y)
 			local icon = button:CreateTexture(nil, "OVERLAY")
@@ -976,6 +980,7 @@ function MoveAny:InitMALock()
 				icon:SetTexture(texture)
 			else
 				icon:SetColorTexture(1, 1, 1, 1)
+				icon.maTinted = true
 			end
 
 			icon:SetSize(math.max(1, math.floor(width * 0.8 + 0.5)), math.max(1, math.floor(height * 0.8 + 0.5)))
@@ -1040,8 +1045,8 @@ function MoveAny:InitMALock()
 	end
 
 	MALock.Search:ClearAllPoints()
-	MALock.Search:SetPoint("LEFT", previousButton, "RIGHT", 9, 0)
-	MALock.Search:SetPoint("RIGHT", MALock.Profiles, "LEFT", -3, 0)
+	MALock.Search:SetPoint("LEFT", previousButton, "RIGHT", 10, 0)
+	MALock.Search:SetPoint("RIGHT", MALock.Profiles, "LEFT", -6, 0)
 	MALock.save = MoveAny:CreateReloadButton("MALock" .. ".save", MALock.footer, false)
 	MALock.save:SetSize(120, 24)
 	MALock.save:SetPoint("LEFT", MALock.footer, "LEFT", 4, 0)

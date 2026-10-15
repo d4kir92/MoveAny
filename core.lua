@@ -278,10 +278,11 @@ function MoveAny:UpdateEditorVisibility()
 		local states = {MoveAny.editorVisibility.grid and MoveAny.editorVisibility.movers and hidden, MoveAny.editorVisibility.grid, MoveAny.editorVisibility.movers and hidden, hidden, MoveAny:IsEnabled("SNAPTOELEMENTS", true)}
 		for i, button in ipairs(MALock.VisibilityButtons) do
 			for _, texture in ipairs(button.icons) do
+				texture:SetDesaturated(not states[i])
 				if states[i] then
-					if i == 5 then texture:SetVertexColor(1, 0, 0) else texture:SetVertexColor(1, 0.82, 0) end
+					if texture.maTinted then texture:SetVertexColor(1, 0.82, 0) else texture:SetVertexColor(1, 1, 1) end
 				else
-					texture:SetVertexColor(0.45, 0.45, 0.45)
+					texture:SetVertexColor(0.4, 0.4, 0.4)
 				end
 			end
 		end
