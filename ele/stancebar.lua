@@ -91,7 +91,7 @@ function MoveAny:InitStanceBar()
 		end
 
 		local setStanceBarPoint = false
-		hooksecurefunc(StanceBar, "SetPoint", function(sel, ...)
+		local function ApplyStanceBarPoint()
 			if setStanceBarPoint then return end
 			setStanceBarPoint = true
 			MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] = MoveAny:GetEleOptions("StanceBarAnchor")["ORIENTATION"] or "CENTERED"
@@ -107,12 +107,12 @@ function MoveAny:InitStanceBar()
 			end
 
 			setStanceBarPoint = false
-		end)
+		end
 
+		hooksecurefunc(StanceBar, "SetPoint", ApplyStanceBarPoint)
 		hooksecurefunc(StanceBarAnchor, "SetScale", function(sel, scale) StanceBar:SetScale(scale) end)
 		hooksecurefunc(StanceBarAnchor, "SetAlpha", function(sel, alpha) StanceBar:SetAlpha(alpha) end)
-		StanceBar:ClearAllPoints()
-		StanceBar:SetPoint("CENTER", StanceBarAnchor, "CENTER", 0, 0)
+		ApplyStanceBarPoint()
 		local cou = MoveAny:GetStanceBarCount()
 		if StanceBar.actionButtons then
 			for i, v in pairs(StanceBar.actionButtons) do

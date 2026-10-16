@@ -45,7 +45,7 @@ function MoveAny:SetPoint(window, p1, p2, p3, p4, p5)
 	sptab[window] = sptab[window] or false
 	MoveAny:SafeExec(window, function()
 		if p1 then
-			local ClearAllPoints = window.FClearAllPoints or window.ClearAllPoints
+			local ClearAllPoints = window.FClearAllPoints or window.ClearAllPointsBase or window.ClearAllPoints
 			local SetPoint = window.FSetPointBase or window.FSetPoint or window.SetPointBase or window.SetPoint
 			sptab[window] = true
 			ClearAllPoints(window)
