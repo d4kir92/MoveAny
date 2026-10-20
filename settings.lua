@@ -813,6 +813,7 @@ function MoveAny:InitMALock()
 
 		AddCategory("CATPARTYRAID", 3)
 		if PartyFrame or PartyMemberFrame1 then AddCheckBox("PARTYFRAME", false, nil, nil, "ShowPartyFrames") end
+		if MoveAny:CanMovePartyMembers() then MoveAny:SetupPartyMembersCheckBox(AddCheckBox("PARTYMEMBERFRAMES", false, nil, nil, nil, nil, "PARTYFRAME")) end
 		if CompactRaidFrameContainer then AddCheckBox("COMPACTRAIDFRAMECONTAINER", false, nil, nil, "ShowRaidFrames") end
 		AddCategory("CATCHAT", 2)
 		for i = 1, 10 do
@@ -4306,12 +4307,14 @@ function MoveAny:LoadAddon()
 
 		if MoveAny:IsEnabled("PARTYFRAME", false) then
 			if PartyFrame then
-				MoveAny:RegisterWidget({
-					["name"] = "PartyFrame",
-					["lstr"] = "LID_PARTYFRAME",
-					["sw"] = 120,
-					["sh"] = 244
-				})
+				if not MoveAny:InitPartyMemberMovers() then
+					MoveAny:RegisterWidget({
+						["name"] = "PartyFrame",
+						["lstr"] = "LID_PARTYFRAME",
+						["sw"] = 120,
+						["sh"] = 244
+					})
+				end
 			else
 				for x = 1, 4 do
 					MoveAny:RegisterWidget({
