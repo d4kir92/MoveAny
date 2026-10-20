@@ -13,7 +13,11 @@ local spikes = {}
 local spikeLimit = 3
 local maxSpikes = 40
 local startTime = 0
+local errCount = 0
+local lastRecord = 0
+local rowCount = 30
 local function OnError(err)
+	errCount = errCount + 1
 	local handler = geterrorhandler and geterrorhandler()
 	if handler then handler(err) end
 end
@@ -64,6 +68,7 @@ local function Record(label, incl, own)
 	frameSelf[label] = (frameSelf[label] or 0) + own
 	frameCount[label] = (frameCount[label] or 0) + 1
 	frameTotal = frameTotal + own
+	lastRecord = GetTime()
 end
 
 local function Run(label, fn, ...)
@@ -187,6 +192,8 @@ function P.Reset()
 	FlushFrame()
 	frameStamp = nil
 	startTime = GetTime()
+	errCount = 0
+	lastRecord = 0
 end
 
 function P.SetEnabled(on)
@@ -239,18 +246,29 @@ function P.BuildSpikes(count)
 end
 
 local views = {
-	top = {"Top - self time", function() return P.BuildReport(30, "own") end},
-	calls = {"Calls - most frequent", function() return P.BuildReport(30, "n") end},
-	max = {"Max - biggest single call", function() return P.BuildReport(30, "max") end},
-	spikes = {"Spikes - frames above the limit", function() return P.BuildSpikes(30) end},
+	top = {"Top - self time", function(count) return P.BuildReport(count, "own") end},
+	calls = {"Calls - most frequent", function(count) return P.BuildReport(count, "n") end},
+	max = {"Max - biggest single call", function(count) return P.BuildReport(count, "max") end},
+	spikes = {"Spikes - frames above the limit", function(count) return P.BuildSpikes(count) end},
 }
 
-local function AddView(view)
+local allViews = {"top", "calls", "max", "spikes"}
+local function AddView(view, count)
+	count = count or rowCount
+	if count <= 0 then count = math.huge end
+	if view == "all" then
+		for _, name in ipairs(allViews) do
+			AddView(name, count)
+		end
+
+		return
+	end
+
 	local v = views[view]
 	if v == nil then return end
 	AddLine(" ")
 	AddLine("|cffffd100== " .. v[1] .. " ==|r")
-	for _, line in ipairs(v[2]()) do
+	for _, line in ipairs(v[2](count)) do
 		AddLine(line)
 	end
 end
@@ -267,14 +285,15 @@ end
 local function UpdateStatus()
 	if win == nil then return end
 	local seconds = enabled and GetTime() - startTime or 0
-	win.status:SetText(string.format("%s   %.0fs measured   %d entries   %d spikes   spike limit %.1fms", enabled and "|cff00ff00Running|r" or "|cffff4040Stopped|r", seconds, CountStats(), #spikes, spikeLimit))
+	local since = lastRecord > 0 and string.format("%.0fs ago", GetTime() - lastRecord) or "never"
+	win.status:SetText(string.format("%s   %.0fs measured   %d entries   %d spikes   last call %s   caught errors %d", enabled and "|cff00ff00Running|r" or "|cffff4040Stopped|r", seconds, CountStats(), #spikes, since, errCount))
 	win.toggle:SetText(enabled and "Stop" or "Start")
 end
 
-function P.ShowView(view, live)
+function P.ShowView(view, live, count)
 	lastView = view
 	if live then wipe(logLines) end
-	AddView(view)
+	AddView(view, count)
 	if P.ShowWindow then P.ShowWindow() end
 	RefreshLog(not live)
 	UpdateStatus()
@@ -283,7 +302,8 @@ end
 local function Help()
 	AddLine("|cffffd100== MoveAny Profiler ==|r")
 	AddLine("Start: measure CPU time of MoveAny events, timers, hooks and functions (stays on after /reload).")
-	AddLine("Top / Calls / Max / Spikes: add that view to the log. Live: refresh the last view every second.")
+	AddLine("Top / Calls / Max / Spikes: add that view to the log, All: all four below each other. Live: refresh the last view every second.")
+	AddLine("Lines: how many rows each view shows, 0 = all.")
 	AddLine("Spike limit: a frame where MoveAny used more than this many ms is logged under Spikes.")
 	AddLine("The log can be selected and copied (Ctrl+A, Ctrl+C). Data is also saved to MATAB.PROFILER on /reload.")
 	AddLine("Chat: /maprof on|off|reset|top|calls|max|spikes|limit <ms>")
@@ -346,6 +366,7 @@ function P.CreateWindow()
 	table.insert(row, MakeButton("Calls", 64, function() P.ShowView("calls", win.live:GetChecked()) end))
 	table.insert(row, MakeButton("Max", 64, function() P.ShowView("max", win.live:GetChecked()) end))
 	table.insert(row, MakeButton("Spikes", 70, function() P.ShowView("spikes", win.live:GetChecked()) end))
+	table.insert(row, MakeButton("All", 50, function() P.ShowView("all", win.live:GetChecked()) end))
 	table.insert(row, MakeButton("Clear log", 84, function()
 		wipe(logLines)
 		RefreshLog(false)
@@ -361,7 +382,7 @@ function P.CreateWindow()
 
 	win.live = CreateFrame("CheckButton", nil, win, "UICheckButtonTemplate")
 	win.live:SetSize(24, 24)
-	win.live:SetPoint("LEFT", row[#row], "RIGHT", 10, 0)
+	win.live:SetPoint("TOPLEFT", win, "TOPLEFT", 10, -54)
 	win.liveText = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	win.liveText:SetPoint("LEFT", win.live, "RIGHT", 2, 0)
 	win.liveText:SetText("Live")
@@ -386,11 +407,38 @@ function P.CreateWindow()
 		sel:ClearFocus()
 	end)
 
+	win.rowsText = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	win.rowsText:SetPoint("LEFT", win.limit, "RIGHT", 16, 0)
+	win.rowsText:SetText("Lines (0 = all)")
+	win.rows = CreateFrame("EditBox", nil, win, "InputBoxTemplate")
+	win.rows:SetSize(40, 20)
+	win.rows:SetPoint("LEFT", win.rowsText, "RIGHT", 10, 0)
+	win.rows:SetAutoFocus(false)
+	win.rows:SetNumeric(true)
+	win.rows:SetText(tostring(rowCount))
+	win.rows:SetScript("OnEnterPressed", function(sel)
+		local num = tonumber(sel:GetText())
+		if num and num >= 0 then rowCount = math.floor(num) end
+		sel:SetText(tostring(rowCount))
+		sel:ClearFocus()
+	end)
+
+	win.rows:SetScript("OnEditFocusLost", function(sel)
+		local num = tonumber(sel:GetText())
+		if num and num >= 0 then rowCount = math.floor(num) end
+		sel:SetText(tostring(rowCount))
+	end)
+
+	win.rows:SetScript("OnEscapePressed", function(sel)
+		sel:SetText(tostring(rowCount))
+		sel:ClearFocus()
+	end)
+
 	win.status = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	win.status:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -60)
+	win.status:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -84)
 	win.status:SetJustifyH("LEFT")
 	win.scroll = CreateFrame("ScrollFrame", "MAProfilerWindowScroll", win, "UIPanelScrollFrameTemplate")
-	win.scroll:SetPoint("TOPLEFT", win, "TOPLEFT", 14, -78)
+	win.scroll:SetPoint("TOPLEFT", win, "TOPLEFT", 14, -102)
 	win.scroll:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -32, 24)
 	if win.Inset then
 		win.Inset:ClearAllPoints()
@@ -461,8 +509,8 @@ local function OnSlash(msg)
 	elseif cmd == "reset" then
 		P.Reset()
 		Out("Data reset")
-	elseif views[cmd] then
-		P.ShowView(cmd, false)
+	elseif views[cmd] or cmd == "all" then
+		P.ShowView(cmd, false, num)
 	elseif cmd == "limit" and num and num > 0 then
 		spikeLimit = num
 		if win then win.limit:SetText(tostring(spikeLimit)) end
@@ -487,7 +535,8 @@ svFrame:SetScript("OnEvent", function(sel, event, name)
 		end
 		if MATAB and MATAB["PROFILER"] and MATAB["PROFILER"].enabled then
 			P.SetEnabled(true)
-			print("|cff55d2ff[MoveAny Profiler]|r running - /maprof opens the window")
+			print("|cff55d2ff[MoveAny Profiler]|r running - /maprof toggles the window")
+			C_Timer.After(1, function() P.ShowWindow() end)
 		end
 	elseif event == "PLAYER_LOGOUT" then
 		if not MATAB or not MATAB["PROFILER"] then return end

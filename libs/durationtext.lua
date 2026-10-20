@@ -776,10 +776,15 @@ local function NoteAuraUpdate(unit, updateInfo)
 	end
 end
 
-local function ApplyAnchor(fs, btn, ele, prefix)
+local function OnDurationMoved(fs)
+	if not fs.maAnchoring then fs.maAnchorSig = nil end
+end
+
+local function ApplyAnchor(fs, btn, ele, prefix, onlyChanged)
 	local point = MoveAny.DurationAnchors[MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0)]
 	local anchor = anchors[point]
 	if anchor == nil then
+		fs.maAnchorSig = nil
 		pcall(RestoreOriginals, fs)
 
 		return false
@@ -787,8 +792,17 @@ local function ApplyAnchor(fs, btn, ele, prefix)
 
 	local spacing = MoveAny:GetEleOption(ele, prefix .. "SPACING", 0)
 	local rel = GetIconRegion(btn) or btn
+	local sig = tostring(point) .. ":" .. tostring(spacing) .. ":" .. tostring(rel)
+	if onlyChanged and fs.maAnchorSig == sig then return true end
+	if not fs.maAnchorHooked then
+		fs.maAnchorHooked = true
+		pcall(hooksecurefunc, fs, "SetPoint", OnDurationMoved)
+		pcall(hooksecurefunc, fs, "ClearAllPoints", OnDurationMoved)
+	end
+
 	local x = anchor[2] * spacing
 	local y = anchor[3] * spacing
+	fs.maAnchoring = true
 	pcall(function()
 		fs:SetJustifyH("CENTER")
 		fs:SetJustifyV("MIDDLE")
@@ -796,6 +810,8 @@ local function ApplyAnchor(fs, btn, ele, prefix)
 		fs:SetPoint(anchor[1], rel, point, x, y)
 	end)
 
+	fs.maAnchoring = false
+	fs.maAnchorSig = sig
 	reanchored = reanchored + 1
 
 	return true
@@ -808,7 +824,7 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	local fs = GetDurationFontString(btn)
 	if fs == nil then return false end
 	if onlyNew and fs.maDurationHooked then
-		ApplyAnchor(fs, btn, ele, prefix)
+		ApplyAnchor(fs, btn, ele, prefix, true)
 
 		return true
 	end
