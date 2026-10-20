@@ -175,7 +175,14 @@ local function HookLabel(a, b)
 	return "hook " .. ObjName(a) .. ":" .. (PlainString(b) or "?") .. " @" .. Caller()
 end
 
+local hookLabels = true
 function MoveAny.hooksecurefunc(a, b, c)
+	if not hookLabels then
+		if type(a) == "string" then return hooksecurefunc(a, b) end
+
+		return hooksecurefunc(a, b, c)
+	end
+
 	local ok, label = pcall(HookLabel, a, b)
 	if not ok or type(label) ~= "string" then label = "hook ?" end
 	if type(a) == "string" then return hooksecurefunc(a, P.Wrap(label, b)) end
@@ -247,6 +254,7 @@ end
 
 function P.SetEnabled(on)
 	enabled = on and true or false
+	if enabled then hookLabels = true end
 	if enabled then P.Reset() end
 	P.Save("enabled", enabled)
 end
@@ -650,6 +658,7 @@ svFrame:SetScript("OnEvent", function(sel, event, name)
 			if type(saved.view) == "string" and (views[saved.view] or saved.view == "all") then lastView = saved.view end
 		end
 
+		hookLabels = saved and saved.enabled and true or false
 		if saved and saved.enabled then
 			P.SetEnabled(true)
 			print("|cff55d2ff[MoveAny Profiler]|r running - /maprof toggles the window")

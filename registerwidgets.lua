@@ -1427,11 +1427,26 @@ function MoveAny:RegisterWidget(tab)
 			dragframe.t.highlight:SetAllPoints(dragframe.t)
 			dragframe.t.highlight:EnableMouse(false)
 			dragframe.t.highlight:SetFrameLevel(dragframe:GetFrameLevel())
-			NineSliceUtil.ApplyLayout(dragframe.t.highlight, dragframe.t.layout, "editmode-actionbar-highlight")
-			dragframe.t.highlight:SetBlendMode("ADD")
-			dragframe.t.highlight:SetAlpha(0.4)
 			dragframe.t.highlight:Hide()
+			function dragframe.t:EnsureLayout()
+				if self.maBuilt then return end
+				self.maBuilt = true
+				NineSliceUtil.ApplyLayout(self.highlight, self.layout, "editmode-actionbar-highlight")
+				self.highlight:SetBlendMode("ADD")
+				self.highlight:SetAlpha(0.4)
+				local color = self.maColor
+				if color then
+					self:SetVertexColor(color[1], color[2], color[3], color[4])
+				else
+					self:SetVertexColor(MoveAny:GetColor("el"))
+				end
+			end
+
+			dragframe:HookScript("OnShow", function() dragframe.t:EnsureLayout() end)
 			function dragframe.t:SetVertexColor(r, g, b, a)
+				self.maColor = self.maColor or {}
+				self.maColor[1], self.maColor[2], self.maColor[3], self.maColor[4] = r, g, b, a
+				if not self.maBuilt then return end
 				local kit = dragframe == MACurrentEle and "editmode-actionbar-selected" or "editmode-actionbar-highlight"
 				if self.textureKit ~= kit then
 					NineSliceUtil.ApplyLayout(self, self.layout, kit)
