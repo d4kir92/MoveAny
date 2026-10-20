@@ -44,7 +44,7 @@ local function FlushFrame()
 	wipe(frameCount)
 end
 
-local function Record(label, incl, own)
+local function Record(label, incl, own, noFrame)
 	local s = stats[label]
 	if s == nil then
 		s = {
@@ -65,6 +65,7 @@ local function Record(label, incl, own)
 	if incl > s.max then s.max = incl end
 	if incl > 1 then s.o1 = s.o1 + 1 end
 	if incl > 5 then s.o5 = s.o5 + 1 end
+	if noFrame then return end
 	frameSelf[label] = (frameSelf[label] or 0) + own
 	frameCount[label] = (frameCount[label] or 0) + 1
 	frameTotal = frameTotal + own
@@ -87,6 +88,22 @@ local function Run(label, fn, ...)
 	depth = myDepth - 1
 	if depth > 0 then childTime[depth] = childTime[depth] + incl end
 	Record(label, incl, incl - childTime[myDepth])
+end
+
+local markT = {}
+local markChild = {}
+function P.Mark(label)
+	if not enabled then return end
+	local now = debugprofilestop()
+	local child = childTime[depth] or 0
+	local last = markT[depth]
+	if label and last then
+		local incl = now - last
+		Record("section " .. label, incl, incl - (child - markChild[depth]), true)
+	end
+
+	markT[depth] = now
+	markChild[depth] = child
 end
 
 function P.Wrap(label, fn)
@@ -623,7 +640,7 @@ svFrame:SetScript("OnEvent", function(sel, event, name)
 	if event == "ADDON_LOADED" then
 		if name ~= addonName then return end
 		sel:UnregisterEvent("ADDON_LOADED")
-		for _, method in ipairs({"UpdateAuraDurations", "StyleAuraDuration", "LayoutAuraGrid", "TryHookAuraDuration", "HookAuraFrames", "UpdateActionBar", "DoUpdateMicroBarNow"}) do
+		for _, method in ipairs({"UpdateAuraDurations", "StyleAuraDuration", "LayoutAuraGrid", "TryHookAuraDuration", "HookAuraFrames", "UpdateActionBar", "DoUpdateMicroBarNow", "RegisterWidget"}) do
 			if type(MoveAny[method]) == "function" then MoveAny[method] = P.Wrap("func " .. method, MoveAny[method]) end
 		end
 		local saved = MATAB and MATAB["PROFILER"]

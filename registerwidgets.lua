@@ -1349,6 +1349,7 @@ function MoveAny:UpdateSnapVisibility()
 end
 
 function MoveAny:RegisterWidget(tab)
+	MoveAny.Profiler.Mark()
 	local name = tab.name
 	local lstr = tab.lstr
 	local lstri = tab.lstri
@@ -1386,6 +1387,7 @@ function MoveAny:RegisterWidget(tab)
 
 	local frame = MoveAny:GetFrameByName(name)
 	if frame then MoveAny:AddFrameName(frame, name) end
+	MoveAny.Profiler.Mark("RW 2 editmode/frame lookup")
 	if MoveAny:GetDragFromName(name) == nil then
 		cacheDrags[name] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())
 		local dragframe = MoveAny:GetDragFromName(name)
@@ -1591,6 +1593,7 @@ function MoveAny:RegisterWidget(tab)
 		tinsert(MoveAny:GetDragFrames(), dragframe)
 	end
 
+	MoveAny.Profiler.Mark("RW 3 create mover")
 	local dragf = MoveAny:GetDragFromName(name)
 	if frame and MoveAny:IsEditorMoverVisible(name) then
 		dragf:Show()
@@ -1634,9 +1637,11 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end
 
+	MoveAny.Profiler.Mark("RW 4 clamp/checks")
 	tinsert(MoveAny:GetEleFrames(), frame)
 	MoveAny:AddAlphaFrame(frame)
 	if MoveAny.SafeUpdateAlphas then MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().ADDED) end
+	MoveAny.Profiler.Mark("RW 5 alphas")
 	if frame and frame.GetChildren then
 		MoveAny:ForeachChildren(frame, function(child)
 			function child:GetMAEle()
@@ -1759,6 +1764,7 @@ function MoveAny:RegisterWidget(tab)
 		frame:EnableMouse(false)
 	end
 
+	MoveAny.Profiler.Mark("RW 6 hide/clickthrough")
 	local elesetpoint = false
 	local movableSetup = false
 	local ma_secure = secure
@@ -1792,6 +1798,7 @@ function MoveAny:RegisterWidget(tab)
 		MoveAny:SetEleSize(name, sw, sh)
 	end
 	if tab.fixedMoverSize then MoveAny:SafeAnchorDrag(MoveAny:GetDragFromName(name), frame, posx, posy) end
+	MoveAny.Profiler.Mark("RW 7 elepoint/size")
 	local pointFunc = "SetPoint"
 	if frame.SetPointBase then pointFunc = "SetPointBase" end
 	hooksecurefunc(frame, pointFunc, function(sel, p1, p2, p3, p4, p5)
@@ -1887,6 +1894,7 @@ function MoveAny:RegisterWidget(tab)
 		end
 	end)
 
+	MoveAny.Profiler.Mark("RW 8 hooks")
 	MoveAny:SafeExec(frame, function()
 		if not tab.fixedMoverSize then frame:SetSize(sw, sh) end
 		if (not tab.active or tab.active()) and MoveAny:GetEleScale(name) and MoveAny:GetEleScale(name) > 0 then frame:SetScale(MoveAny:GetEleScale(name)) end
@@ -1972,7 +1980,9 @@ function MoveAny:RegisterWidget(tab)
 		grip:Show()
 	end
 
+	MoveAny.Profiler.Mark("RW 9 resize/finish")
 	if setup then setup() end
+	MoveAny.Profiler.Mark("RW 10 setup")
 end
 
 function MoveAny:AnyActionbarEnabled()

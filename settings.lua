@@ -606,6 +606,7 @@ function MoveAny:InitMALock()
 		["onClose"] = CloseMALock,
 	})
 
+	MoveAny.Profiler.Mark("MALock 1 window")
 	MALock:SetFrameLevel(999)
 	if MALock.CloseButton then MALock.CloseButton:SetFrameLevel(MALock:GetFrameLevel() + 510) end
 	MoveAny:After(0, function() if MALock:GetHeight() > GetScreenHeight() then MALock:SetHeight(GetScreenHeight()) end end, "InitMALock")
@@ -935,6 +936,7 @@ function MoveAny:InitMALock()
 		MALock:ResumeLayout()
 	end
 
+	MoveAny.Profiler.Mark("MALock 2 header/language")
 	MALock.Pipette = MoveAny:CreateButton("MALock_Pipette", MALock.header)
 	MALock.Pipette:SetSize(32, 32)
 	MALock.Pipette:SetText("")
@@ -1046,7 +1048,9 @@ function MoveAny:InitMALock()
 	MALock.DISCORD:SetPoint("LEFT", MALock.reload, "RIGHT", 10, 0)
 	MALock.DISCORD:SetPoint("RIGHT", MALock.footer, "RIGHT", -4, 0)
 	MALock.DISCORD:SetAutoFocus(false)
+	MoveAny.Profiler.Mark("MALock 3 toolbar/footer")
 	BuildElementList()
+	MoveAny.Profiler.Mark("MALock 4 element list")
 	local finder = CreateFrame("Frame", "MoveAny_finder", UIParent)
 	local hovers = {}
 	for i = 1, 6 do
@@ -2832,6 +2836,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
+	MoveAny.Profiler.Mark("Slash/DB/Profiles/PetBattle")
 	if MoveAny.InitStanceBar then MoveAny:InitStanceBar() end
 	if MoveAny.InitPetBar then MoveAny:InitPetBar() end
 	if Arena_LoadUI then
@@ -2843,6 +2848,7 @@ function MoveAny:LoadAddon()
 		ContainerFrameContainer:EnableMouse(false) -- Contains all bags
 	end
 
+	MoveAny.Profiler.Mark("Stance/Pet/Arena/Bags")
 	if MoveAny.RegisterWidget then
 		if MoveAny:IsEnabled("EssentialCooldownViewer", false) then
 			MoveAny:RegisterWidget({
@@ -3068,6 +3074,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
+		MoveAny.Profiler.Mark("widgets 1 Cooldowns-CastBar")
 		if ShardBarFrame and MoveAny:IsEnabled("SHARDBARFRAME", false) and class == "WARLOCK" then
 			MoveAny:RegisterWidget({
 				["name"] = "ShardBarFrame",
@@ -3347,6 +3354,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		MoveAny.Profiler.Mark("widgets 2 ClassBars-PlayerFrame")
 		if MoveAny:IsEnabled("TARGETFRAME", false) then
 			if ComboFrame then
 				hooksecurefunc(TargetFrame, "SetScale", function(sel, scale)
@@ -3604,6 +3612,7 @@ function MoveAny:LoadAddon()
 			end
 		end)
 
+		MoveAny.Profiler.Mark("widgets 3 TargetFrame-StanceBar")
 		if MoveAny:IsEnabled("TALKINGHEAD", false) and TalkingHeadFrame then
 			MoveAny:RegisterWidget({
 				["name"] = "TalkingHeadFrame",
@@ -3874,6 +3883,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		MoveAny.Profiler.Mark("widgets 4 TalkingHead-EndCaps")
 		for i = 1, 12 do
 			if MoveAny:IsEnabled("CHATEDITBOX", false) and _G["ChatFrame" .. i .. "Tab"] and _G["ChatFrame" .. i .. "Tab"]:IsShown() then
 				MoveAny:RegisterWidget({
@@ -4327,6 +4337,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		MoveAny.Profiler.Mark("widgets 5 ActionBars-QuestTimer")
 		if MoveAny:IsEnabled("COMPACTRAIDFRAMECONTAINER", false) then
 			MoveAny:RegisterWidget({
 				["name"] = "CompactRaidFrameContainer",
@@ -4632,6 +4643,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		MoveAny.Profiler.Mark("widgets 6 Raid-PowerBarAlt")
 		if MoveAny:IsEnabled("DEBUFFS", false) then
 			if (MoveAny:GetWoWBuild() == "RETAIL" or MoveAny:GetWoWBuild() == "CLASSIC" or MoveAny:GetWoWBuild() == "TBC" or MoveAny:GetWoWBuild() == "MISTS") and DebuffFrame then
 				MoveAny:RegisterWidget({
@@ -4916,6 +4928,7 @@ function MoveAny:LoadAddon()
 			})
 		end
 
+		MoveAny.Profiler.Mark("widgets 7 Debuffs-ArenaEnemy")
 		if MoveAny:IsEnabled("MINIMAPFLAG", false) then
 			local flags = {"MiniMapInstanceDifficulty", "MiniMapChallengeMode", "GuildInstanceDifficulty"}
 			for i, name in pairs(flags) do
@@ -5153,6 +5166,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		MoveAny.Profiler.Mark("widgets 8 MinimapFlag-Tooltip")
 		-- BOTTOM
 		C_Timer.After(0, function()
 			if ZoneAbilityFrame and MoveAny:IsEnabled("ZONEABILITYFRAME", false) then
@@ -5356,6 +5370,7 @@ function MoveAny:LoadAddon()
 				end
 			end
 		end
+		MoveAny.Profiler.Mark("widgets 9 Bottom-LFG")
 	end
 
 	if MoveAny:IsEnabled("BONUSROLLFRAME", false) and BonusRollFrame then
@@ -5414,6 +5429,7 @@ function MoveAny:LoadAddon()
 		end, "MainStatusTrackingBarContainer")
 	end
 
+	MoveAny.Profiler.Mark("BonusRoll/StatusTrackingBars")
 	if MainMenuExpBar and ReputationWatchBar then
 		if MoveAny:IsEnabled("REPUTATIONWATCHBAR", false) then
 			local opts = nil
@@ -5538,6 +5554,7 @@ function MoveAny:LoadAddon()
 		end
 	end
 
+	MoveAny.Profiler.Mark("ExpRep/Totem")
 	if MoveAny:IsEnabled("ALERTFRAME", false) then
 		local afsw, afsh = 276, 68
 		MoveAny:RegisterWidget({
@@ -5679,7 +5696,9 @@ function MoveAny:LoadAddon()
 		UIPARENT_MANAGED_FRAME_POSITIONS["ArenaEnemyFrames"] = nil
 	end
 
+	MoveAny.Profiler.Mark("AlertFrames-ArenaEnemy")
 	MoveAny:InitMALock()
+	MoveAny.Profiler.Mark("MALock 5 finder/rest")
 	if MoveAny.InitMinimap then MoveAny:InitMinimap() end
 	if MoveAny.InitBuffBar then MoveAny:InitBuffBar() end
 	if MoveAny.InitDebuffBar then MoveAny:InitDebuffBar() end
@@ -5692,7 +5711,9 @@ function MoveAny:LoadAddon()
 	if MoveAny.InitMAFPSFrame then MoveAny:InitMAFPSFrame() end
 	if MoveAny.InitMultiCastActionBar then MoveAny:InitMultiCastActionBar() end
 	if MoveAny.InitPartyFrame then MoveAny:InitPartyFrame() end
+	MoveAny.Profiler.Mark("Minimap/Buffs/Micro/Bags/Party")
 	if MoveAny.MoveFrames then MoveAny:MoveFrames() end
+	MoveAny.Profiler.Mark("MoveFrames")
 	if MoveAny.InitMAVehicleSeatIndicator then MoveAny:InitMAVehicleSeatIndicator() end
 	if WorldMapFrame then
 		if WorldMapFrame.Minimize then
@@ -5722,8 +5743,10 @@ function MoveAny:LoadAddon()
 		end
 	end
 
+	MoveAny.Profiler.Mark("VehicleSeat/WorldMap")
 	if MoveAny:IsEnabled("MALOCK", false) and not InCombatLockdown() then MoveAny:ShowMALock() end
 	if MoveAny:IsEnabled("MAPROFILES", false) then MoveAny:ShowProfiles() end
 	MoveAny:After(1, function() if MoveAny.InitAlphas then MoveAny:InitAlphas() end end, "Init CheckAlphas")
 	if MoveAny.UpdateMALock then MoveAny:UpdateMALock() end
+	MoveAny.Profiler.Mark("Lock/Profiles/UpdateMALock")
 end

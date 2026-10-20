@@ -780,8 +780,11 @@ function MoveAny:AddonLoaded(event, ...)
 			MoveAny:UnregisterEvent(mf, event)
 		end
 	elseif event == "PLAYER_LOGIN" then
+		MoveAny.Profiler.Mark()
 		if MoveAny.PlayerLogin then MoveAny:PlayerLogin() end
+		MoveAny.Profiler.Mark("PlayerLogin")
 		if MoveAny.LoadAddon then MoveAny:LoadAddon() end
+		MoveAny.Profiler.Mark("LoadAddon rest")
 		MoveAny:UnregisterEvent(mf, event)
 	end
 end
