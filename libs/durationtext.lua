@@ -1,5 +1,34 @@
 local _, MoveAny = ...
 local hooksecurefunc = MoveAny.hooksecurefunc
+local optCache = {}
+local optStamp = nil
+local optNil = {}
+local function Opt(ele, key, default)
+	local now = GetTime()
+	if now ~= optStamp then
+		optStamp = now
+		wipe(optCache)
+	end
+
+	local eleCache = optCache[ele]
+	if eleCache == nil then
+		eleCache = {}
+		optCache[ele] = eleCache
+	end
+
+	local value = eleCache[key]
+	if value == nil then
+		value = MoveAny:GetEleOption(ele, key, nil, "durationtext")
+		if value == nil then value = optNil end
+		eleCache[key] = value
+	end
+
+	if value == optNil then return default end
+
+	return value
+end
+
+hooksecurefunc(MoveAny, "SetEleOption", function() optStamp = nil end)
 local PROTOTYPEFONT = "Interface\\AddOns\\MoveAny\\media\\Prototype.ttf"
 local origSize = {}
 local origSizeSet = {}
@@ -182,7 +211,7 @@ end
 
 local function GetFormat(fs)
 	if fs.maDurationEle == nil or fs.maDurationKey == nil then return 0 end
-	return MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "FORMAT", 0)
+	return Opt(fs.maDurationEle, fs.maDurationKey .. "FORMAT", 0)
 end
 
 local unitFactors = nil
@@ -350,9 +379,9 @@ end
 
 local function GetColor(fs)
 	if fs.maDurationEle == nil or fs.maDurationKey == nil then return nil end
-	local r = MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "COLOR_R", nil, "GetColor")
+	local r = Opt(fs.maDurationEle, fs.maDurationKey .. "COLOR_R", nil, "GetColor")
 	if r == nil then return nil end
-	return r, MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "COLOR_G", 1), MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "COLOR_B", 1), MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "COLOR_A", 1)
+	return r, Opt(fs.maDurationEle, fs.maDurationKey .. "COLOR_G", 1), Opt(fs.maDurationEle, fs.maDurationKey .. "COLOR_B", 1), Opt(fs.maDurationEle, fs.maDurationKey .. "COLOR_A", 1)
 end
 
 local function ApplyColor(fs)
@@ -407,9 +436,9 @@ local function ApplyLook(fs)
 	if styling[fs] then return end
 	styling[fs] = true
 	local path = fs.maDurationOrigFont
-	if MoveAny.DurationFonts[MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "FONT", 0)] == "PROTOTYPE" then path = PROTOTYPEFONT end
-	local size = MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "SIZE", fs.maDurationOrigSize)
-	local flags = GetOutlineFlags(fs.maDurationOrigFlags, MoveAny:GetEleOption(fs.maDurationEle, fs.maDurationKey .. "OUTLINE", nil, "ApplyLook"))
+	if MoveAny.DurationFonts[Opt(fs.maDurationEle, fs.maDurationKey .. "FONT", 0)] == "PROTOTYPE" then path = PROTOTYPEFONT end
+	local size = Opt(fs.maDurationEle, fs.maDurationKey .. "SIZE", fs.maDurationOrigSize)
+	local flags = GetOutlineFlags(fs.maDurationOrigFlags, Opt(fs.maDurationEle, fs.maDurationKey .. "OUTLINE", nil, "ApplyLook"))
 	if fs:SetFont(path, size, flags) == false then fs:SetFont(fs.maDurationOrigFont, size, flags) end
 	ApplyShadow(fs, flags)
 	styling[fs] = false
@@ -662,9 +691,9 @@ local function FallbackCountOriginals(fs, btn)
 end
 
 local function ApplyCountLook(fs, ele, prefix)
-	local size = MoveAny:GetEleOption(ele, prefix .. "SIZE", nil, "ApplyCountLook")
-	local outline = MoveAny:GetEleOption(ele, prefix .. "OUTLINE", nil, "ApplyCountLook")
-	local font = MoveAny:GetEleOption(ele, prefix .. "FONT", nil, "ApplyCountLook")
+	local size = Opt(ele, prefix .. "SIZE", nil, "ApplyCountLook")
+	local outline = Opt(ele, prefix .. "OUTLINE", nil, "ApplyCountLook")
+	local font = Opt(ele, prefix .. "FONT", nil, "ApplyCountLook")
 	if size == nil and outline == nil and font == nil and not fs.maCountResized then return end
 	if size == nil then size = fs.maCountOrigSize end
 	local path = fs.maCountOrigFont
@@ -676,7 +705,7 @@ local function ApplyCountLook(fs, ele, prefix)
 end
 
 local function ApplyCountAnchor(fs, btn, ele, prefix)
-	local point = MoveAny.DurationAnchors[MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0)]
+	local point = MoveAny.DurationAnchors[Opt(ele, prefix .. "ANCHOR", 0)]
 	if anchors[point] == nil then
 		if not fs.maCountMoved then return end
 		fs.maCountMoved = false
@@ -686,7 +715,7 @@ local function ApplyCountAnchor(fs, btn, ele, prefix)
 		return
 	end
 
-	local spacing = MoveAny:GetEleOption(ele, prefix .. "SPACING", 0)
+	local spacing = Opt(ele, prefix .. "SPACING", 0)
 	fs.maCountMoved = true
 	fs:ClearAllPoints()
 	fs:SetPoint(point, GetIconRegion(btn) or btn, point, -anchors[point][2] * spacing, -anchors[point][3] * spacing)
@@ -696,10 +725,10 @@ local countColoring = {}
 local function ApplyCountColor(fs)
 	if countColoring[fs] then return end
 	if fs.maCountEle == nil or fs.maCountKey == nil then return end
-	local r = MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_R", nil, "ApplyCountColor")
+	local r = Opt(fs.maCountEle, fs.maCountKey .. "COLOR_R", nil, "ApplyCountColor")
 	if r == nil then return end
 	countColoring[fs] = true
-	fs:SetTextColor(r, MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_G", 1), MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_B", 1), MoveAny:GetEleOption(fs.maCountEle, fs.maCountKey .. "COLOR_A", 1))
+	fs:SetTextColor(r, Opt(fs.maCountEle, fs.maCountKey .. "COLOR_G", 1), Opt(fs.maCountEle, fs.maCountKey .. "COLOR_B", 1), Opt(fs.maCountEle, fs.maCountKey .. "COLOR_A", 1))
 	countColoring[fs] = false
 end
 
@@ -711,7 +740,7 @@ local COUNT_SIG_KEYS = {"ANCHOR", "SPACING", "SIZE", "OUTLINE", "FONT", "COLOR_R
 local function GetCountSignature(ele, prefix)
 	local sig = ele
 	for _, key in ipairs(COUNT_SIG_KEYS) do
-		sig = sig .. ":" .. tostring(MoveAny:GetEleOption(ele, prefix .. key, nil, "GetCountSignature"))
+		sig = sig .. ":" .. tostring(Opt(ele, prefix .. key, nil, "GetCountSignature"))
 	end
 	return sig
 end
@@ -781,7 +810,7 @@ local function OnDurationMoved(fs)
 end
 
 local function ApplyAnchor(fs, btn, ele, prefix, onlyChanged)
-	local point = MoveAny.DurationAnchors[MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0)]
+	local point = MoveAny.DurationAnchors[Opt(ele, prefix .. "ANCHOR", 0)]
 	local anchor = anchors[point]
 	if anchor == nil then
 		fs.maAnchorSig = nil
@@ -790,7 +819,7 @@ local function ApplyAnchor(fs, btn, ele, prefix, onlyChanged)
 		return false
 	end
 
-	local spacing = MoveAny:GetEleOption(ele, prefix .. "SPACING", 0)
+	local spacing = Opt(ele, prefix .. "SPACING", 0)
 	local rel = GetIconRegion(btn) or btn
 	local sig = tostring(point) .. ":" .. tostring(spacing) .. ":" .. tostring(rel)
 	if onlyChanged and fs.maAnchorSig == sig then return true end
@@ -819,6 +848,7 @@ end
 
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
+	if onlyNew and type(btn.IsShown) == "function" and not btn:IsShown() then return false end
 	prefix = prefix or "MABUFFDURATION"
 	pcall(StyleAuraCount, btn, ele, prefix)
 	local fs = GetDurationFontString(btn)
@@ -930,7 +960,7 @@ local function OnAuraButtonUpdateDuration(btn, timeLeft)
 	btn.maDurationStamp = GetTime()
 	local ele, prefix = GetFormatTarget(btn)
 	if ele == nil then return end
-	local mode = MoveAny:GetEleOption(ele, prefix .. "FORMAT", 0)
+	local mode = Opt(ele, prefix .. "FORMAT", 0)
 	if mode == 0 then return end
 	if mode == 1 or mode == 3 then
 		local formatString, value = SecondsToTimeAbbrev(timeLeft)

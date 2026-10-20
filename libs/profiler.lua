@@ -196,12 +196,16 @@ function P.Reset()
 	lastRecord = 0
 end
 
+function P.Save(key, value)
+	MATAB = MATAB or {}
+	MATAB["PROFILER"] = MATAB["PROFILER"] or {}
+	MATAB["PROFILER"][key] = value
+end
+
 function P.SetEnabled(on)
 	enabled = on and true or false
 	if enabled then P.Reset() end
-	MATAB = MATAB or {}
-	MATAB["PROFILER"] = MATAB["PROFILER"] or {}
-	MATAB["PROFILER"].enabled = enabled
+	P.Save("enabled", enabled)
 end
 
 function P.IsEnabled()
@@ -292,6 +296,7 @@ end
 
 function P.ShowView(view, live, count)
 	lastView = view
+	P.Save("view", view)
 	if live then wipe(logLines) end
 	AddView(view, count)
 	if P.ShowWindow then P.ShowWindow() end
@@ -303,7 +308,8 @@ local function Help()
 	AddLine("|cffffd100== MoveAny Profiler ==|r")
 	AddLine("Start: measure CPU time of MoveAny events, timers, hooks and functions (stays on after /reload).")
 	AddLine("Top / Calls / Max / Spikes: add that view to the log, All: all four below each other. Live: refresh the last view every second.")
-	AddLine("Lines: how many rows each view shows, 0 = all.")
+	AddLine("Lines: how many rows each view shows, 0 = all. Live, Lines and Spike ms are remembered.")
+	AddLine("Reset & reload: turns measuring on and reloads the UI, so the next measurement starts clean (not available in combat).")
 	AddLine("Spike limit: a frame where MoveAny used more than this many ms is logged under Spikes.")
 	AddLine("The log can be selected and copied (Ctrl+A, Ctrl+C). Data is also saved to MATAB.PROFILER on /reload.")
 	AddLine("Chat: /maprof on|off|reset|top|calls|max|spikes|limit <ms>")
@@ -313,6 +319,28 @@ local function OnTick()
 	if win == nil or not win:IsShown() then return end
 	if win.live:GetChecked() and lastView then P.ShowView(lastView, true) end
 	UpdateStatus()
+end
+
+local function AttachReloadButton()
+	if win == nil or InCombatLockdown() then return end
+	if win.reload == nil then
+		win.reload = MoveAny:CreateReloadButton("MAProfilerWindowReload", win)
+		win.reload:SetSize(120, 22)
+		win.reload:SetText("Reset & reload")
+		win.reload:SetWidth(math.max(120, win.reload:GetTextWidth() + 24))
+		win.reload:SetScript("PreClick", function() P.SetEnabled(true) end)
+	end
+
+	win.reload:SetParent(win)
+	win.reload:ClearAllPoints()
+	win.reload:SetPoint("TOPRIGHT", win, "TOPRIGHT", -14, -54)
+	win.reload:Show()
+end
+
+local function ParkReloadButton()
+	if win == nil or win.reload == nil or InCombatLockdown() then return end
+	win.reload:ClearAllPoints()
+	win.reload:SetParent(win.reloadPark)
 end
 
 local function MakeButton(text, width, onClick)
@@ -382,6 +410,8 @@ function P.CreateWindow()
 
 	win.live = CreateFrame("CheckButton", nil, win, "UICheckButtonTemplate")
 	win.live:SetSize(24, 24)
+	win.live:SetChecked(MATAB and MATAB["PROFILER"] and MATAB["PROFILER"].live or false)
+	win.live:SetScript("OnClick", function(sel) P.Save("live", sel:GetChecked() and true or false) end)
 	win.live:SetPoint("TOPLEFT", win, "TOPLEFT", 10, -54)
 	win.liveText = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	win.liveText:SetPoint("LEFT", win.live, "RIGHT", 2, 0)
@@ -396,7 +426,10 @@ function P.CreateWindow()
 	win.limit:SetText(tostring(spikeLimit))
 	win.limit:SetScript("OnEnterPressed", function(sel)
 		local num = tonumber(sel:GetText())
-		if num and num > 0 then spikeLimit = num end
+		if num and num > 0 then
+			spikeLimit = num
+			P.Save("spikeLimit", spikeLimit)
+		end
 		sel:SetText(tostring(spikeLimit))
 		sel:ClearFocus()
 		UpdateStatus()
@@ -418,14 +451,20 @@ function P.CreateWindow()
 	win.rows:SetText(tostring(rowCount))
 	win.rows:SetScript("OnEnterPressed", function(sel)
 		local num = tonumber(sel:GetText())
-		if num and num >= 0 then rowCount = math.floor(num) end
+		if num and num >= 0 then
+			rowCount = math.floor(num)
+			P.Save("rows", rowCount)
+		end
 		sel:SetText(tostring(rowCount))
 		sel:ClearFocus()
 	end)
 
 	win.rows:SetScript("OnEditFocusLost", function(sel)
 		local num = tonumber(sel:GetText())
-		if num and num >= 0 then rowCount = math.floor(num) end
+		if num and num >= 0 then
+			rowCount = math.floor(num)
+			P.Save("rows", rowCount)
+		end
 		sel:SetText(tostring(rowCount))
 	end)
 
@@ -477,6 +516,20 @@ function P.CreateWindow()
 	end)
 
 	win:Hide()
+	win.reloadPark = CreateFrame("Frame")
+	win.reloadPark:Hide()
+	win.combatWatch = CreateFrame("Frame")
+	win.combatWatch:RegisterEvent("PLAYER_REGEN_DISABLED")
+	win.combatWatch:RegisterEvent("PLAYER_REGEN_ENABLED")
+	win.combatWatch:SetScript("OnEvent", function(sel, event)
+		if event == "PLAYER_REGEN_DISABLED" then
+			ParkReloadButton()
+		else
+			AttachReloadButton()
+		end
+	end)
+
+	AttachReloadButton()
 	if #logLines == 0 then Help() end
 
 	return win
@@ -513,6 +566,7 @@ local function OnSlash(msg)
 		P.ShowView(cmd, false, num)
 	elseif cmd == "limit" and num and num > 0 then
 		spikeLimit = num
+		P.Save("spikeLimit", spikeLimit)
 		if win then win.limit:SetText(tostring(spikeLimit)) end
 		Out("Spike limit " .. spikeLimit .. "ms")
 	else
@@ -533,7 +587,14 @@ svFrame:SetScript("OnEvent", function(sel, event, name)
 		for _, method in ipairs({"UpdateAuraDurations", "StyleAuraDuration", "LayoutAuraGrid", "TryHookAuraDuration", "HookAuraFrames", "UpdateActionBar", "DoUpdateMicroBarNow"}) do
 			if type(MoveAny[method]) == "function" then MoveAny[method] = P.Wrap("func " .. method, MoveAny[method]) end
 		end
-		if MATAB and MATAB["PROFILER"] and MATAB["PROFILER"].enabled then
+		local saved = MATAB and MATAB["PROFILER"]
+		if saved then
+			if type(saved.spikeLimit) == "number" and saved.spikeLimit > 0 then spikeLimit = saved.spikeLimit end
+			if type(saved.rows) == "number" and saved.rows >= 0 then rowCount = saved.rows end
+			if type(saved.view) == "string" and (views[saved.view] or saved.view == "all") then lastView = saved.view end
+		end
+
+		if saved and saved.enabled then
 			P.SetEnabled(true)
 			print("|cff55d2ff[MoveAny Profiler]|r running - /maprof toggles the window")
 			C_Timer.After(1, function() P.ShowWindow() end)
