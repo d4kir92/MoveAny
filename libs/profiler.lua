@@ -128,11 +128,16 @@ end
 
 local function Caller()
 	if debugstack == nil then return "?" end
-	local ok, stack = pcall(debugstack, 5, 4, 0)
+	local ok, stack = pcall(debugstack, 2, 10, 0)
 	stack = ok and PlainString(stack)
-	if stack == nil then return "?" end
-	local found, file, line = pcall(string.match, stack, "([%w_]+%.lua)[^:\n]*:(%d+)")
-	if found and PlainString(file) and PlainString(line) then return file .. ":" .. line end
+	if not stack then return "?" end
+	local found, result = pcall(function()
+		for file, line in string.gmatch(stack, "([%w_]+%.lua)[^:\n]*:(%d+)") do
+			if file ~= "profiler.lua" then return file .. ":" .. line end
+		end
+	end)
+
+	if found and PlainString(result) then return result end
 
 	return "?"
 end

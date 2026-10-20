@@ -123,15 +123,15 @@ local function ApplyAuraGrid(btn)
     if info == nil then return false end
     if btn.IsProtected and InCombatLockdown() and btn:IsProtected() then return false end
 
-    local limit = MoveAny:GetEleOption(info.ele, info.prefix .. "LIMIT", 10)
+    local limit = MoveAny:GetEleOptionFast(info.ele, info.prefix .. "LIMIT", 10)
     if type(limit) ~= "number" or limit < 1 then limit = 1 end
-    local spacingX = MoveAny:GetEleOption(info.ele, info.prefix .. "SPACINGX", 4)
-    local spacingY = MoveAny:GetEleOption(info.ele, info.prefix .. "SPACINGY", 10)
+    local spacingX = MoveAny:GetEleOptionFast(info.ele, info.prefix .. "SPACINGX", 4)
+    local spacingY = MoveAny:GetEleOptionFast(info.ele, info.prefix .. "SPACINGY", 10)
     if type(spacingX) ~= "number" then spacingX = 4 end
     if type(spacingY) ~= "number" then spacingY = 10 end
     local sw, sh = SafeSize(btn)
     if sw == nil then return false end
-    local anchor = ResolveGridAnchor(info.ele, info.root, MoveAny:GetEleOption(info.ele, info.prefix .. "ANCHOR", 0))
+    local anchor = ResolveGridAnchor(info.ele, info.root, MoveAny:GetEleOptionFast(info.ele, info.prefix .. "ANCHOR", 0))
     local unit = MoveAny:GetPixelUnit(btn)
     local row = math.floor((info.index - 1) / limit)
     local col = (info.index - 1) % limit
@@ -250,6 +250,7 @@ local function ApplyCollapseButton(cb)
     return ok
 end
 
+MoveAny.lastAuraGrid = {}
 function MoveAny:LayoutAuraGrid(root, ele, prefix, globalPrefix)
     if root == nil or ele == nil then return 0 end
     local container = root.AuraContainer or root
@@ -287,6 +288,29 @@ function MoveAny:LayoutAuraGrid(root, ele, prefix, globalPrefix)
         end
     )
 
+    local now = GetTime()
+    local last = MoveAny.lastAuraGrid[root]
+    if last and last.stamp == now and last.n == #list then
+        local same = true
+        for i = 1, #list do
+            if last[i] ~= list[i].btn then
+                same = false
+                break
+            end
+        end
+
+        if same then return #list end
+    end
+
+    last = last or {}
+    wipe(last)
+    last.stamp = now
+    last.n = #list
+    for i = 1, #list do
+        last[i] = list[i].btn
+    end
+
+    MoveAny.lastAuraGrid[root] = last
     for index, entry in ipairs(list) do
         local btn = entry.btn
         gridInfo[btn] = {
@@ -309,7 +333,7 @@ function MoveAny:LayoutAuraGrid(root, ele, prefix, globalPrefix)
         collapseInfo[cb] = {
             ["first"] = list[1].btn,
             ["root"] = root,
-            ["anchor"] = ResolveGridAnchor(ele, root, MoveAny:GetEleOption(ele, prefix .. "ANCHOR", 0))
+            ["anchor"] = ResolveGridAnchor(ele, root, MoveAny:GetEleOptionFast(ele, prefix .. "ANCHOR", 0))
         }
 
         if collapseHooked[cb] == nil then

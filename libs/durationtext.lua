@@ -1,34 +1,8 @@
 local _, MoveAny = ...
 local hooksecurefunc = MoveAny.hooksecurefunc
-local optCache = {}
-local optStamp = nil
-local optNil = {}
 local function Opt(ele, key, default)
-	local now = GetTime()
-	if now ~= optStamp then
-		optStamp = now
-		wipe(optCache)
-	end
-
-	local eleCache = optCache[ele]
-	if eleCache == nil then
-		eleCache = {}
-		optCache[ele] = eleCache
-	end
-
-	local value = eleCache[key]
-	if value == nil then
-		value = MoveAny:GetEleOption(ele, key, nil, "durationtext")
-		if value == nil then value = optNil end
-		eleCache[key] = value
-	end
-
-	if value == optNil then return default end
-
-	return value
+	return MoveAny:GetEleOptionFast(ele, key, default)
 end
-
-hooksecurefunc(MoveAny, "SetEleOption", function() optStamp = nil end)
 local PROTOTYPEFONT = "Interface\\AddOns\\MoveAny\\media\\Prototype.ttf"
 local origSize = {}
 local origSizeSet = {}

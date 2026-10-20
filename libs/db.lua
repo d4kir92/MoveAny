@@ -388,7 +388,37 @@ function MoveAny:GetEleOption(element, key, value, from)
 	return value
 end
 
+local fastOptCache = {}
+local fastOptStamp = nil
+local fastOptNil = {}
+function MoveAny:GetEleOptionFast(element, key, value)
+	if element == nil then return value end
+	local now = GetTime()
+	if now ~= fastOptStamp then
+		fastOptStamp = now
+		wipe(fastOptCache)
+	end
+
+	local eleCache = fastOptCache[element]
+	if eleCache == nil then
+		eleCache = {}
+		fastOptCache[element] = eleCache
+	end
+
+	local cached = eleCache[key]
+	if cached == nil then
+		cached = MoveAny:GetEleOption(element, key, nil, "GetEleOptionFast")
+		if cached == nil then cached = fastOptNil end
+		eleCache[key] = cached
+	end
+
+	if cached == fastOptNil then return value end
+
+	return cached
+end
+
 function MoveAny:SetEleOption(element, key, value)
+	fastOptStamp = nil
 	if element == nil then
 		MoveAny:MSG("SetEleOption(): element is nil")
 		return value
