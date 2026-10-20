@@ -394,7 +394,9 @@ function MoveAny:UpdateActionBar(bar, from)
 					if flipped then
 						abtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 					else
-						abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, 1 - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
+						local topPad = 1
+						if frame == MAMenuBar and MoveAny:GetWoWBuild() == "RETAIL" then topPad = 0 end
+						abtn:SetPoint("TOPLEFT", frame, "TOPLEFT", (id - 1) % cols * (fSizeW + spacing) + ofx + offset, topPad - ((id - 1) / cols - (id - 1) % cols / cols) * (fSizeH + spacing) + ofy - offset)
 					end
 
 					if ma_setup[abtn] == nil then
