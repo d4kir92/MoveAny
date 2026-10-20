@@ -116,28 +116,49 @@ function P.WrapEvent(label, fn)
 	end
 end
 
+local function IsSecret(value)
+	return issecretvalue ~= nil and issecretvalue(value) and true or false
+end
+
+local function PlainString(value)
+	if type(value) ~= "string" or IsSecret(value) then return nil end
+
+	return value
+end
+
 local function Caller()
-	local stack = debugstack and debugstack(3, 4, 0) or ""
-	local file, line = string.match(stack, "([%w_]+%.lua)[^:\n]*:(%d+)")
-	if file then return file .. ":" .. line end
+	if debugstack == nil then return "?" end
+	local ok, stack = pcall(debugstack, 5, 4, 0)
+	stack = ok and PlainString(stack)
+	if stack == nil then return "?" end
+	local found, file, line = pcall(string.match, stack, "([%w_]+%.lua)[^:\n]*:(%d+)")
+	if found and PlainString(file) and PlainString(line) then return file .. ":" .. line end
 
 	return "?"
 end
 
 local function ObjName(obj)
-	if type(obj) ~= "table" then return tostring(obj) end
+	if type(obj) ~= "table" then return PlainString(obj) or type(obj) end
 	if type(obj.IsObjectType) == "function" and type(obj.GetName) == "function" then
 		local ok, name = pcall(obj.GetName, obj)
-		if ok and type(name) == "string" then return name end
+		if ok and PlainString(name) then return name end
 	end
 
 	return "table"
 end
 
-function MoveAny.hooksecurefunc(a, b, c)
-	if type(a) == "string" then return hooksecurefunc(a, P.Wrap("hook " .. a .. " @" .. Caller(), b)) end
+local function HookLabel(a, b)
+	if type(a) == "string" then return "hook " .. (PlainString(a) or "?") .. " @" .. Caller() end
 
-	return hooksecurefunc(a, b, P.Wrap("hook " .. ObjName(a) .. ":" .. tostring(b) .. " @" .. Caller(), c))
+	return "hook " .. ObjName(a) .. ":" .. (PlainString(b) or "?") .. " @" .. Caller()
+end
+
+function MoveAny.hooksecurefunc(a, b, c)
+	local ok, label = pcall(HookLabel, a, b)
+	if not ok or type(label) ~= "string" then label = "hook ?" end
+	if type(a) == "string" then return hooksecurefunc(a, P.Wrap(label, b)) end
+
+	return hooksecurefunc(a, b, P.Wrap(label, c))
 end
 
 local origOnEvent = MoveAny.OnEvent
@@ -317,7 +338,7 @@ end
 
 local function OnTick()
 	if win == nil or not win:IsShown() then return end
-	if win.live:GetChecked() and lastView then P.ShowView(lastView, true) end
+	if win.live:GetChecked() and lastView and not win.log:HasFocus() then P.ShowView(lastView, true) end
 	UpdateStatus()
 end
 
@@ -395,6 +416,13 @@ function P.CreateWindow()
 	table.insert(row, MakeButton("Max", 64, function() P.ShowView("max", win.live:GetChecked()) end))
 	table.insert(row, MakeButton("Spikes", 70, function() P.ShowView("spikes", win.live:GetChecked()) end))
 	table.insert(row, MakeButton("All", 50, function() P.ShowView("all", win.live:GetChecked()) end))
+	table.insert(row, MakeButton("Copy", 60, function()
+		RefreshLog(false)
+		win.log:SetFocus()
+		win.log:HighlightText()
+		win.copyHint:SetText("|cff00ff00Selected - press Ctrl+C|r")
+	end))
+
 	table.insert(row, MakeButton("Clear log", 84, function()
 		wipe(logLines)
 		RefreshLog(false)
@@ -408,6 +436,8 @@ function P.CreateWindow()
 		end
 	end
 
+	win.copyHint = win:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+	win.copyHint:SetPoint("LEFT", row[#row], "RIGHT", 8, 0)
 	win.live = CreateFrame("CheckButton", nil, win, "UICheckButtonTemplate")
 	win.live:SetSize(24, 24)
 	win.live:SetChecked(MATAB and MATAB["PROFILER"] and MATAB["PROFILER"].live or false)
@@ -491,6 +521,10 @@ function P.CreateWindow()
 	win.log:SetFontObject(ChatFontNormal)
 	win.log:SetWidth(800)
 	win.log:SetScript("OnEscapePressed", win.log.ClearFocus)
+	win.log:SetScript("OnEditFocusLost", function(sel)
+		sel:HighlightText(0, 0)
+		win.copyHint:SetText("")
+	end)
 	win.log:SetScript("OnTextChanged", function(sel, userInput) if userInput then sel:SetText(win.logText or "") end end)
 	win.scroll:SetScrollChild(win.log)
 	win.scroll:SetScript("OnSizeChanged", function(sel, width) win.log:SetWidth(math.max(1, width)) end)

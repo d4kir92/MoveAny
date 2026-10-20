@@ -849,12 +849,15 @@ end
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
 	if onlyNew and type(btn.IsShown) == "function" and not btn:IsShown() then return false end
+	local now = GetTime()
+	if onlyNew and btn.maStyleStamp == now and btn.maDurationFS and btn.maDurationFS.maAnchorSig then return true end
 	prefix = prefix or "MABUFFDURATION"
 	pcall(StyleAuraCount, btn, ele, prefix)
 	local fs = GetDurationFontString(btn)
 	if fs == nil then return false end
 	if onlyNew and fs.maDurationHooked then
 		ApplyAnchor(fs, btn, ele, prefix, true)
+		btn.maStyleStamp = now
 
 		return true
 	end
@@ -897,12 +900,15 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	return true
 end
 
-local function ForeachAuraButton(root, globalPrefix, callback)
+local buttonLists = {}
+local buttonListStamp = nil
+local function CollectAuraButtons(root, globalPrefix)
+	local list = {}
 	local seen = {}
 	local function add(btn)
 		if btn == nil or type(btn) ~= "table" or seen[btn] then return end
 		seen[btn] = true
-		callback(btn)
+		table.insert(list, btn)
 	end
 
 	if root then
@@ -920,6 +926,28 @@ local function ForeachAuraButton(root, globalPrefix, callback)
 		for i = 1, 40 do
 			add(_G[globalPrefix .. i])
 		end
+	end
+
+	return list
+end
+
+local function ForeachAuraButton(root, globalPrefix, callback)
+	local now = GetTime()
+	if buttonListStamp ~= now then
+		buttonListStamp = now
+		wipe(buttonLists)
+	end
+
+	local key = globalPrefix or root
+	if key == nil then return end
+	local list = buttonLists[key]
+	if list == nil then
+		list = CollectAuraButtons(root, globalPrefix)
+		buttonLists[key] = list
+	end
+
+	for i = 1, #list do
+		callback(list[i])
 	end
 end
 
@@ -1016,7 +1044,7 @@ function MoveAny:UpdateAuraDurations(from, onlyNew)
 		if debuffEle == "DebuffFrame" and DebuffFrame then MoveAny:LayoutAuraGrid(DebuffFrame, debuffEle, "MADEBUFF", "DebuffButton") end
 	end
 
-	if MoveAny:DEBUG() and from ~= "tick" then MoveAny:MSG("[UpdateAuraDurations]", tostring(from), "styled", styled, "of", total, "hookfires", auraHookFires, "reanchored", reanchored) end
+	if MoveAny:DEBUG() and from ~= "late" then MoveAny:MSG("[UpdateAuraDurations]", tostring(from), "styled", styled, "of", total, "hookfires", auraHookFires, "reanchored", reanchored) end
 	return styled, total
 end
 
@@ -1069,31 +1097,42 @@ function MoveAny:HookAuraFrames()
 	return hooked
 end
 
+local pendingFull = false
 local function ScheduleAuraDurations(from)
+	if from == "PLAYER_ENTERING_WORLD" then pendingFull = true end
 	if pending then return end
 	pending = true
 	MoveAny:After(0, function()
+		local full = pendingFull
 		pending = false
-		MoveAny:UpdateAuraDurations(from)
+		pendingFull = false
+		MoveAny:UpdateAuraDurations(from, not full)
 	end, "UpdateAuraDurations")
 end
 
-local function TickAuraDurations()
-	MoveAny:UpdateAuraDurations("tick", true)
-	MoveAny:After(0.25, TickAuraDurations, "TickAuraDurations")
+local latePending = false
+local function ScheduleLateAuraPass()
+	if latePending then return end
+	latePending = true
+	MoveAny:After(0.25, function()
+		latePending = false
+		MoveAny:UpdateAuraDurations("late", true)
+	end, "LateAuraDurations")
 end
 
 function MoveAny:InitAuraDurations()
 	MoveAny:TryHookAuraDuration()
 	MoveAny:HookAuraFrames()
-	MoveAny:After(0.25, TickAuraDurations, "TickAuraDurations")
 	local f = CreateFrame("FRAME")
 	MoveAny:RegisterEvent(f, "UNIT_AURA", "player")
 	MoveAny:RegisterEvent(f, "PLAYER_ENTERING_WORLD")
+	MoveAny:RegisterEvent(f, "WEAPON_ENCHANT_CHANGED")
+	MoveAny:RegisterEvent(f, "UNIT_INVENTORY_CHANGED", "player")
 	MoveAny:OnEvent(f, function(sel, event, ...)
 		if event == "UNIT_AURA" then pcall(NoteAuraUpdate, ...) end
 		if event == "PLAYER_ENTERING_WORLD" then MoveAny:HookAuraFrames() end
 		ScheduleAuraDurations(event)
+		ScheduleLateAuraPass()
 	end, "InitAuraDurations")
 	for i, delay in ipairs({0.5, 1, 2, 4, 8}) do
 		MoveAny:After(delay, function() MoveAny:UpdateAuraDurations("init " .. delay) end, "InitAuraDurations")
