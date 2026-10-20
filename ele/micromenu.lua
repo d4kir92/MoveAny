@@ -192,6 +192,12 @@ function MoveAny:InitMicroMenu()
 					local sw2, sh2 = MoveAny:GetMicroButtonSize()
 					if MoveAny:GetWoWBuild() == "RETAIL" then
 						mb:SetSize(sw2, sh2)
+						if mb.Background then
+							local bw, bh = mb.Background:GetSize()
+							local dx = math.max(0, (bw - sw2) / 2)
+							local dy = math.max(0, (bh - sh2) / 2)
+							mb:SetHitRectInsets(-dx, -dx, -dy, -dy)
+						end
 					elseif MoveAny:GetWoWBuild() == "CLASSIC" then
 						mb:SetParent(MAMenuBar)
 						mb.ofx = -2
