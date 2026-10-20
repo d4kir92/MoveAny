@@ -823,12 +823,11 @@ end
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
 	local shown = type(btn.IsShown) ~= "function" or btn:IsShown()
-	if onlyNew and not shown then return false end
+	if not shown then return false end
 	local now = GetTime()
 	if onlyNew and btn.maStyleStamp == now and btn.maDurationFS and btn.maDurationFS.maAnchorSig then return true end
 	prefix = prefix or "MABUFFDURATION"
 	local fs = GetDurationFontString(btn)
-	if not shown and fs ~= nil and fs.maDurationHooked then return false end
 	pcall(StyleAuraCount, btn, ele, prefix)
 	if fs == nil then return false end
 	local gen = MoveAny.eleOptionGen or 0
