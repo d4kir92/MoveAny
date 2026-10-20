@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local KEYBAG = {"KeyRingButton"}
 local SMALLBAGS = {"CharacterBag3Slot", "CharacterBag2Slot", "CharacterBag1Slot", "CharacterBag0Slot"}
 local BAGS = {"CharacterBag3Slot", "CharacterBag2Slot", "CharacterBag1Slot", "CharacterBag0Slot"}

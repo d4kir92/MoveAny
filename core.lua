@@ -1,5 +1,5 @@
 local _, MoveAny = ...
-local hooksecurefunc = _G["hooksecurefunc"]
+local hooksecurefunc = MoveAny.hooksecurefunc
 local CreateFrame = _G["CreateFrame"]
 local InCombatLockdown = _G["InCombatLockdown"]
 local colors = {}

@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_setparent = {}
 local btnsize = 36
 local once = true

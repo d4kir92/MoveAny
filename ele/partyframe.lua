@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 function MoveAny:InitPartyFrame()
 end
 

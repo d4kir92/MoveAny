@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local buffsDelay = 0.1
 local ma_bb_set_scale = {}
 local gridBusy = {}

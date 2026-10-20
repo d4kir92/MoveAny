@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_set_parent = {}
 local ma_set_parent_elpmb = {}
 local ma_setalpha = {}
@@ -2159,7 +2160,7 @@ function MoveAny:InitMinimapDrag(frame, key, offset, rotate, func)
 		hooksecurefunc(Minimap, "SetPoint", UpdateMinimapDragFrames)
 		hooksecurefunc(Minimap, "SetScale", UpdateMinimapDragFrames)
 		if Minimap.SetMaskTexture then hooksecurefunc(Minimap, "SetMaskTexture", UpdateMinimapDragFrames) end
-		Minimap:HookScript("OnSizeChanged", UpdateMinimapDragFrames)
+		Minimap:HookScript("OnSizeChanged", MoveAny.Profiler.WrapOnce("script Minimap OnSizeChanged", UpdateMinimapDragFrames))
 		if MinimapCluster then
 			hooksecurefunc(MinimapCluster, "SetScale", UpdateMinimapDragFrames)
 			MinimapCluster:HookScript("OnSizeChanged", UpdateMinimapDragFrames)
@@ -2367,7 +2368,7 @@ function MoveAny:UpdateStatusTrackingBarWidth(name)
 					hooksecurefunc(statusBar, "SetMinMaxValues", update)
 					hooksecurefunc(statusBar, "SetStatusBarTexture", update)
 					hooksecurefunc(statusBar, "SetStatusBarColor", update)
-					statusBar:HookScript("OnSizeChanged", update)
+					statusBar:HookScript("OnSizeChanged", MoveAny.Profiler.Wrap("script StatusBar OnSizeChanged", update))
 				end)
 			end
 
@@ -4124,7 +4125,7 @@ function MoveAny:LoadAddon()
 				b.cooldown:SetAllPoints(b)
 				b:RegisterEvent("BAG_UPDATE_COOLDOWN")
 				b:RegisterEvent("PLAYER_ENTERING_WORLD")
-				b:SetScript("OnEvent", function(sel, event)
+				b:SetScript("OnEvent", MoveAny.Profiler.WrapEvent("event QuestButton", function(sel, event)
 					local itemName = sel:GetAttribute("item")
 					if itemName == nil then return end
 					local itemID = MoveAny:GetItemInfoInstant(itemName)
@@ -4138,7 +4139,7 @@ function MoveAny:LoadAddon()
 					else
 						sel.cooldown:Clear()
 					end
-				end)
+				end))
 
 				if true then
 					b.icon = _G[b:GetName() .. "Icon"] or b:CreateTexture(nil, "ARTWORK")
@@ -4293,14 +4294,14 @@ function MoveAny:LoadAddon()
 			evt:RegisterEvent("QUEST_ACCEPTED")
 			evt:RegisterEvent("QUEST_COMPLETE")
 			evt:RegisterEvent("QUEST_LOG_UPDATE")
-			evt:SetScript("OnEvent", function(sel, event, ...)
+			evt:SetScript("OnEvent", MoveAny.Profiler.WrapEvent("event QuestBar", function(sel, event, ...)
 				if updateItems then return end
 				updateItems = true
-				C_Timer.After(0.3, function()
+				C_Timer.After(0.3, MoveAny.Profiler.Wrap("timer QuestBar Update", function()
 					pcall(function() Update() end)
 					updateItems = false
-				end)
-			end)
+				end))
+			end))
 
 			C_Timer.After(1, Update)
 		end
@@ -5147,7 +5148,7 @@ function MoveAny:LoadAddon()
 					end
 				end
 
-				GameTooltip:HookScript("OnShow", function() MoveAny:ThinkTooltip() end)
+				GameTooltip:HookScript("OnShow", MoveAny.Profiler.Wrap("script GameTooltip OnShow", function() MoveAny:ThinkTooltip() end))
 				MoveAny:ThinkTooltip()
 			end
 		end

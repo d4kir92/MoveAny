@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_vsisetpoint = {}
 local tries = 0
 function MoveAny:InitMAVehicleSeatIndicator()

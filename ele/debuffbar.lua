@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_enablemouse = {}
 local ma_setpoint_bbtn = {}
 local btnsize = 36

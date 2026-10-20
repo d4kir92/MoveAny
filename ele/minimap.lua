@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_setalpha = {}
 local ma_mm_show = {}
 function MoveAny:InitMinimap()

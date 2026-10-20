@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_ismoving = {}
 local ma_setup = {}
 local ma_enablemouse = {}
@@ -1399,7 +1400,7 @@ function MoveAny:RegisterWidget(tab)
 			dragframe:SetSize(100, 100)
 		end
 
-		dragframe:HookScript("OnSizeChanged", function(sel) MoveAny:UpdateDragLevel(sel) end)
+		dragframe:HookScript("OnSizeChanged", MoveAny.Profiler.Wrap("script DragFrame OnSizeChanged", function(sel) MoveAny:UpdateDragLevel(sel) end))
 		dragframe:HookScript("OnShow", function(sel) MoveAny:UpdateDragLevel(sel) end)
 		hooksecurefunc(dragframe, "SetScale", function(sel) MoveAny:UpdateDragLevel(sel) end)
 		MoveAny:UpdateDragLevel(dragframe)
@@ -1967,7 +1968,7 @@ function MoveAny:RegisterWidget(tab)
 		end)
 		grip:SetScript("OnMouseUp", StopResize)
 		grip:SetScript("OnHide", StopResize)
-		frame:HookScript("OnSizeChanged", function(_, width, height) UpdateMoverSize(width, height) end)
+		frame:HookScript("OnSizeChanged", MoveAny.Profiler.Wrap("script Element OnSizeChanged", function(_, width, height) UpdateMoverSize(width, height) end))
 		grip:Show()
 	end
 

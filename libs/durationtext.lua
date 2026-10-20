@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local PROTOTYPEFONT = "Interface\\AddOns\\MoveAny\\media\\Prototype.ttf"
 local origSize = {}
 local origSizeSet = {}
@@ -843,7 +844,7 @@ function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	ApplyAnchor(fs, btn, ele, prefix)
 	if IsTimeMode(GetFormat(fs)) and not btn.maDurationOnUpdate and btn.HookScript then
 		btn.maDurationOnUpdate = true
-		pcall(btn.HookScript, btn, "OnUpdate", OnUpdateDuration)
+		pcall(btn.HookScript, btn, "OnUpdate", MoveAny.Profiler.WrapOnce("script durationtext OnUpdate", OnUpdateDuration))
 	end
 
 	SafeApplyFormat(fs)

@@ -40,6 +40,7 @@
 ## IconTexture: 135994
 
 libs\D4Lib\D4Lib.xml
+libs\profiler.lua
 
 libs\math.lua
 libs\db.lua

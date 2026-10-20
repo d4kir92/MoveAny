@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_aef_hide = {}
 local ma_setup = {}
 function MoveAny:InitArenaEnemyFrames()

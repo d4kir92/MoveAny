@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_db_setpoint = {}
 local ma_buffsetpoint = {}
 local ma_enablemouse = {}

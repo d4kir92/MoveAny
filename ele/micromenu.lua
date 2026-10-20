@@ -1,4 +1,5 @@
 local _, MoveAny = ...
+local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_set_s = {}
 local ma_SetScaleAdjustment = {}
 function MoveAny:UpdateMicroButtonScale(button)
@@ -47,14 +48,17 @@ function MoveAny:DoUpdateMicroBar(from)
 	end
 
 	microBarDirty = false
+	if updateBar then return end
+	updateBar = true
+	xpcall(MoveAny.DoUpdateMicroBarNow, geterrorhandler(), MoveAny)
+	updateBar = false
+end
+
+function MoveAny:DoUpdateMicroBarNow()
 	if MoveAny:GetWoWBuild() ~= "RETAIL" and MoveAny:GetWoWBuild() ~= "CLASSIC" and MoveAny:GetWoWBuild() ~= "TBC" and MoveAny:GetWoWBuild() ~= "MISTS" then MoveAny:PetBattleChat(ChatFrame1) end
 	if MoveAny.IsPetBattleAvailable and (MoveAny:IsPetBattleAvailable() and MoveAny.IsInPetBattle and MoveAny:IsInPetBattle() or PetBattleFrame and PetBattleFrame:IsShown()) then ChatFrame1:SetShown(true) end
 	MoveAny:SetPoint(MAMenuBar, MAMenuBar:GetPoint())
-	if MoveAny.UpdateActionBar then
-		updateBar = true
-		MoveAny:UpdateActionBar(MAMenuBar, "DoUpdateMicroBar")
-		updateBar = false
-	end
+	if MoveAny.UpdateActionBar then MoveAny:UpdateActionBar(MAMenuBar, "DoUpdateMicroBar") end
 end
 
 function MoveAny:UpdateMicroBar(from)
