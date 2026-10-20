@@ -822,19 +822,24 @@ end
 
 function MoveAny:StyleAuraDuration(btn, ele, prefix, onlyNew)
 	if btn == nil or ele == nil or type(btn) ~= "table" then return false end
-	if onlyNew and type(btn.IsShown) == "function" and not btn:IsShown() then return false end
+	local shown = type(btn.IsShown) ~= "function" or btn:IsShown()
+	if onlyNew and not shown then return false end
 	local now = GetTime()
 	if onlyNew and btn.maStyleStamp == now and btn.maDurationFS and btn.maDurationFS.maAnchorSig then return true end
 	prefix = prefix or "MABUFFDURATION"
-	pcall(StyleAuraCount, btn, ele, prefix)
 	local fs = GetDurationFontString(btn)
+	if not shown and fs ~= nil and fs.maDurationHooked then return false end
+	pcall(StyleAuraCount, btn, ele, prefix)
 	if fs == nil then return false end
-	if onlyNew and fs.maDurationHooked then
+	local gen = MoveAny.eleOptionGen or 0
+	if fs.maDurationHooked and fs.maStyleGen == gen and fs.maDurationEle == ele and fs.maDurationKey == prefix then
 		ApplyAnchor(fs, btn, ele, prefix, true)
 		btn.maStyleStamp = now
 
 		return true
 	end
+
+	fs.maStyleGen = gen
 
 	if not fs.maDurationCaptured then
 		fs.maDurationCaptured = true
@@ -1104,7 +1109,10 @@ function MoveAny:InitAuraDurations()
 	MoveAny:RegisterEvent(f, "UNIT_INVENTORY_CHANGED", "player")
 	MoveAny:OnEvent(f, function(sel, event, ...)
 		if event == "UNIT_AURA" then pcall(NoteAuraUpdate, ...) end
-		if event == "PLAYER_ENTERING_WORLD" then MoveAny:HookAuraFrames() end
+		if event == "PLAYER_ENTERING_WORLD" then
+			MoveAny.eleOptionGen = (MoveAny.eleOptionGen or 0) + 1
+			MoveAny:HookAuraFrames()
+		end
 		ScheduleAuraDurations(event)
 		ScheduleLateAuraPass()
 	end, "InitAuraDurations")

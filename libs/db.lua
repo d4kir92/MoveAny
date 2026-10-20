@@ -419,6 +419,7 @@ end
 
 function MoveAny:SetEleOption(element, key, value)
 	fastOptStamp = nil
+	MoveAny.eleOptionGen = (MoveAny.eleOptionGen or 0) + 1
 	if element == nil then
 		MoveAny:MSG("SetEleOption(): element is nil")
 		return value
