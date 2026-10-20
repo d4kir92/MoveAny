@@ -472,6 +472,7 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 			systemInfo = systemFrame.systemInfo
 		end
 
+		if systemInfo and Enum and Enum.EditModeSystem and systemFrame.system == Enum.EditModeSystem.UnitFrame then systemInfo = nil end
 		if systemInfo then
 			if systemInfo.anchorInfo then
 				systemInfo.anchorInfo.point = p1
@@ -480,14 +481,6 @@ function MoveAny:SetElePoint(key, p1, p2, p3, p4, p5)
 				systemInfo.anchorInfo.offsetX = p4
 				systemInfo.anchorInfo.offsetY = p5
 				systemInfo.isInDefaultPosition = false
-			end
-
-			if systemInfo.settings and Enum and Enum.EditModeUnitFrameSetting and Enum.EditModeUnitFrameSetting.FrameSize then
-				for i, v in pairs(systemInfo.settings) do
-					if Enum.EditModeUnitFrameSetting.FrameSize and v.setting == Enum.EditModeUnitFrameSetting.FrameSize then
-						v.value = 0 -- = Scale: 1.0
-					end
-				end
 			end
 
 			EditModeSystemMixin.UpdateSystem(systemFrame, systemInfo)
