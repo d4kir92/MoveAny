@@ -3006,6 +3006,8 @@ function MoveAny:LoadAddon()
 					["name"] = "PlayerCastingBarFrame",
 					["lstr"] = "LID_CASTINGBAR",
 				})
+
+				MoveAny:UpdateCastBarWidth("PlayerCastingBarFrame")
 			end
 
 			if MoveAny:IsEnabled("CASTINGBARTIMER", false) then
@@ -3038,6 +3040,8 @@ function MoveAny:LoadAddon()
 					["name"] = "CastingBarFrame",
 					["lstr"] = "LID_CASTINGBAR"
 				})
+
+				MoveAny:UpdateCastBarWidth("CastingBarFrame")
 			end
 		end
 
@@ -4389,6 +4393,8 @@ function MoveAny:LoadAddon()
 					["lstr"] = "LID_TARGETFRAMESPELLBAR",
 					["userplaced"] = true
 				})
+
+				MoveAny:UpdateCastBarWidth("TargetFrameSpellBar")
 			else
 				if msgOnce["TARGETFRAMESPELLBAR"] == nil then
 					msgOnce["TARGETFRAMESPELLBAR"] = true
@@ -4406,6 +4412,8 @@ function MoveAny:LoadAddon()
 					["lstr"] = "LID_FOCUSFRAMESPELLBAR",
 					["userplaced"] = true
 				})
+
+				MoveAny:UpdateCastBarWidth("FocusFrameSpellBar")
 			else
 				if msgOnce["FOCUSFRAMESPELLBAR"] == nil then
 					msgOnce["FOCUSFRAMESPELLBAR"] = true

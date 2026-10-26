@@ -825,6 +825,57 @@ local function AddStatusTrackingBarOptions(win, name, opts, frame, label)
 	})
 end
 
+function MoveAny:IsCastBar(name)
+	return name == "PlayerCastingBarFrame" or name == "CastingBarFrame" or name == "TargetFrameSpellBar" or name == "FocusFrameSpellBar"
+end
+
+function MoveAny:GetCastBarBaseWidth(region)
+	local w = region:GetWidth()
+	if region.maCastSet == nil or math.abs(w - region.maCastSet) > 0.5 or region.maCastBase == nil then region.maCastBase = w end
+	return region.maCastBase
+end
+
+function MoveAny:UpdateCastBarWidth(name)
+	local frame = _G[name]
+	if frame == nil or frame.GetWidth == nil then return end
+	if not frame.maCastHooked then
+		frame.maCastHooked = true
+		if frame.SetLook then hooksecurefunc(frame, "SetLook", function() MoveAny:UpdateCastBarWidth(name) end) end
+		if CastingBarFrame_SetLook and not MoveAny.castBarLookHooked then
+			MoveAny.castBarLookHooked = true
+			hooksecurefunc("CastingBarFrame_SetLook", function(bar)
+				local barName = bar and bar.GetName and bar:GetName()
+				if barName and MoveAny:IsCastBar(barName) then MoveAny:UpdateCastBarWidth(barName) end
+			end)
+		end
+	end
+
+	local width = MoveAny:GetEleOption(name, "CASTBARWIDTH", nil, "UpdateCastBarWidth")
+	if width == nil then return end
+	local base = MoveAny:GetCastBarBaseWidth(frame)
+	if base == nil or base <= 0 then return end
+	local ratio = width / base
+	for _, key in ipairs({"Border", "BorderShield", "Flash", "Text"}) do
+		local region = frame[key] or _G[name .. key]
+		if region and region.GetNumPoints and region:GetNumPoints() == 1 then
+			local regionBase = MoveAny:GetCastBarBaseWidth(region)
+			if regionBase and regionBase > 0 then
+				region.maCastSet = regionBase * ratio
+				region:SetWidth(region.maCastSet)
+			end
+		end
+	end
+
+	frame.maCastSet = width
+	frame:SetSize(width, frame:GetHeight())
+end
+
+local function AddCastBarOptions(win, name, frame)
+	AddEleCategory(win, "CASTBAR", MoveAny:Trans("LID_CASTINGBAR"))
+	local base = MoveAny:MathR(frame.maCastBase or frame:GetWidth())
+	AddEleSlider(win, name, "CASTBARWIDTH", base, 50, 600, 1, 0, function() MoveAny:UpdateCastBarWidth(name) end, "LID_WIDTH")
+end
+
 local function AddBagOptions(win, name)
 	AddEleCategory(win, "BAGEXTRAS")
 	win:AddCheckbox({
@@ -899,6 +950,7 @@ function MoveAny:MenuOptions(win, frame)
 		AddStatusTrackingBarOptions(win, name, opts, frame, MoveAny:Trans("LID_" .. name))
 	end
 
+	if MoveAny:IsCastBar(name) then AddCastBarOptions(win, name, frame) end
 	if string.find(name, "BagsBar") then AddBagOptions(win, name) end
 	if name == "ComboFrame" then
 		AddEleCategory(win, "COMBOFRAME")
