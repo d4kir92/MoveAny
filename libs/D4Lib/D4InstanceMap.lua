@@ -13,9 +13,16 @@ local NAV_BUTTON_MIN_TEXT = 60
 local PIN_TOGGLE_OFFSET_X = 40
 local PIN_TOGGLE_OFFSET_Y = 10
 local SIDE_PANEL_BUTTONS = {"OpenButton", "CloseButton"}
+local VIEW_MAX_ZOOM = 4
+local VIEW_WHEEL_FACTOR = 1.25
 local function GetChild()
     if WorldMapFrame == nil or WorldMapFrame.ScrollContainer == nil then return nil end
     return WorldMapFrame.ScrollContainer.Child
+end
+
+local function GetContainer()
+    if WorldMapFrame == nil then return nil end
+    return WorldMapFrame.ScrollContainer
 end
 
 local function GetPlayerMapID()
@@ -48,7 +55,78 @@ function D4:CreateInstanceMap(provider)
     local mapPinSet = nil
     local mapPinKey = nil
     local cache = {}
+    local view = {
+        ["zoom"] = 1,
+        ["x"] = 0,
+        ["y"] = 0,
+        ["baseWidth"] = 0,
+        ["baseHeight"] = 0,
+    }
+
     local Refresh = nil
+    local function ApplyView()
+        if overlay == nil then return end
+        local width = view.baseWidth * view.zoom
+        local height = view.baseHeight * view.zoom
+        local maxX = max(0, (width - (overlay:GetWidth() or 0)) / 2)
+        local maxY = max(0, (height - (overlay:GetHeight() or 0)) / 2)
+        view.x = min(maxX, max(-maxX, view.x))
+        view.y = min(maxY, max(-maxY, view.y))
+        overlay.art:SetSize(width, height)
+        overlay.art:ClearAllPoints()
+        overlay.art:SetPoint("CENTER", overlay, "CENTER", view.x, view.y)
+    end
+
+    local function ResetView()
+        view.zoom = 1
+        view.x = 0
+        view.y = 0
+        view.drag = nil
+    end
+
+    local function GetCursorOffset()
+        local scale = overlay:GetEffectiveScale()
+        local centerX, centerY = overlay:GetCenter()
+        if scale == nil or scale <= 0 or centerX == nil then return nil end
+        local cursorX, cursorY = GetCursorPosition()
+        return cursorX / scale - centerX, cursorY / scale - centerY
+    end
+
+    local function OnOverlayWheel(_, delta)
+        local zoom = min(VIEW_MAX_ZOOM, max(1, view.zoom * VIEW_WHEEL_FACTOR ^ delta))
+        if zoom == view.zoom then return end
+        local dx, dy = GetCursorOffset()
+        if dx ~= nil then
+            local factor = zoom / view.zoom
+            view.x = dx - (dx - view.x) * factor
+            view.y = dy - (dy - view.y) * factor
+        end
+
+        view.zoom = zoom
+        ApplyView()
+    end
+
+    local function OnOverlayMouseDown(_, button)
+        if button ~= "LeftButton" or view.zoom <= 1 then return end
+        local dx, dy = GetCursorOffset()
+        if dx == nil then return end
+        view.drag = {dx, dy, view.x, view.y}
+    end
+
+    local function OnOverlayUpdate()
+        local drag = view.drag
+        if drag == nil then return end
+        if not IsMouseButtonDown("LeftButton") then
+            view.drag = nil
+            return
+        end
+
+        local dx, dy = GetCursorOffset()
+        if dx == nil then return end
+        view.x = drag[3] + dx - drag[1]
+        view.y = drag[4] + dy - drag[2]
+        ApplyView()
+    end
     local function GetLevels(instanceMapID)
         if instanceMapID == nil then return nil end
         if cache[instanceMapID] == nil then cache[instanceMapID] = provider.getLevels(instanceMapID) or false end
@@ -220,6 +298,7 @@ function D4:CreateInstanceMap(provider)
     end
 
     local function OnCanvasMouseUp(_, button)
+        if button == "LeftButton" then view.drag = nil end
         if button ~= "RightButton" then return end
         ToggleOverlay()
     end
@@ -291,9 +370,9 @@ function D4:CreateInstanceMap(provider)
     end
 
     local function UpdateMapPins(info)
-        local scale = GetChild():GetScale()
+        local scale = 1
         local rows = provider.getPins and provider.getPins(info) or nil
-        if rows == nil or scale == nil or scale <= 0 then
+        if rows == nil then
             HideMapPins()
             return
         end
@@ -331,19 +410,24 @@ function D4:CreateInstanceMap(provider)
     local function CreateOverlay()
         if overlay ~= nil then return overlay end
         local child = GetChild()
-        if child == nil then return nil end
-        overlay = CreateFrame("FRAME", nil, child)
+        local container = GetContainer()
+        if child == nil or container == nil then return nil end
+        overlay = CreateFrame("FRAME", nil, container)
         overlay:SetFrameLevel(child:GetFrameLevel() + OVERLAY_LEVEL)
         overlay:EnableMouse(true)
+        overlay:EnableMouseWheel(true)
         overlay:SetScript("OnMouseUp", OnCanvasMouseUp)
-        overlay:SetAllPoints(child)
+        overlay:SetScript("OnMouseDown", OnOverlayMouseDown)
+        overlay:SetScript("OnMouseWheel", OnOverlayWheel)
+        overlay:SetScript("OnUpdate", OnOverlayUpdate)
+        overlay:SetAllPoints(container)
+        if overlay.SetClipsChildren ~= nil then overlay:SetClipsChildren(true) end
         overlay.bg = overlay:CreateTexture(nil, "BACKGROUND")
         overlay.bg:SetAllPoints(overlay)
         overlay.bg:SetColorTexture(0, 0, 0, 1)
         overlay.art = overlay:CreateTexture(nil, "ARTWORK")
         overlay.art:SetPoint("CENTER", overlay, "CENTER", 0, 0)
         overlay:Hide()
-        local container = WorldMapFrame.ScrollContainer
         local navBar = GetNavBar()
         if navBar ~= nil then
             levelButton = CreateNavButton(navBar)
@@ -365,6 +449,8 @@ function D4:CreateInstanceMap(provider)
         container:HookScript("OnMouseUp", OnCanvasMouseUp)
         WorldMapFrame:HookScript("OnShow", function()
             hiddenFor = nil
+            view.file = nil
+            lastKey = nil
             ClearForced()
         end)
 
@@ -372,10 +458,8 @@ function D4:CreateInstanceMap(provider)
     end
 
     local function Layout(info)
-        local child = GetChild()
-        if child == nil then return end
-        local w = child:GetWidth()
-        local h = child:GetHeight()
+        local w = overlay:GetWidth()
+        local h = overlay:GetHeight()
         if w == nil or h == nil or w <= 0 or h <= 0 then return end
         local ratio = (info.height or DEFAULT_ART_HEIGHT) / (info.width or DEFAULT_ART_WIDTH)
         local width = w
@@ -386,7 +470,9 @@ function D4:CreateInstanceMap(provider)
         end
 
         local zoom = info.zoom or 1
-        overlay.art:SetSize(width * zoom, height * zoom)
+        view.baseWidth = width * zoom
+        view.baseHeight = height * zoom
+        ApplyView()
     end
 
     local function GetVisibleLevels()
@@ -411,6 +497,7 @@ function D4:CreateInstanceMap(provider)
             shownLevels = nil
             shownIndex = nil
             shownInstance = nil
+            view.file = nil
             HideMapPins()
             if overlay ~= nil then
                 overlay:Hide()
@@ -426,10 +513,14 @@ function D4:CreateInstanceMap(provider)
         shownLevels = levels
         shownIndex = index
         shownInstance = instanceMapID
-        local child = GetChild()
-        local key = format("%s|%.1f|%.1f", info.file, child:GetWidth() or 0, child:GetHeight() or 0)
+        local key = format("%s|%.1f|%.1f", info.file, overlay:GetWidth() or 0, overlay:GetHeight() or 0)
         if key ~= lastKey then
             lastKey = key
+            if view.file ~= info.file then
+                view.file = info.file
+                ResetView()
+            end
+
             overlay.art:SetTexture(info.file)
             local width = info.width or DEFAULT_ART_WIDTH
             local height = info.height or DEFAULT_ART_HEIGHT
@@ -479,6 +570,7 @@ function D4:CreateInstanceMap(provider)
         forcedIndex = level or 1
         hiddenFor = nil
         lastKey = nil
+        view.file = nil
         Refresh()
         return true
     end
