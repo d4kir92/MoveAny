@@ -132,7 +132,9 @@ end
 function MoveAny:UpdateDragLevel(dragframe)
 	if dragframe == nil or dragframe.SetFrameLevel == nil then return end
 	local scale = dragframe:GetEffectiveScale() or 1
-	local area = math.max(1, (dragframe:GetWidth() or 1) * (dragframe:GetHeight() or 1) * scale * scale)
+	local w, h = dragframe:GetWidth(), dragframe:GetHeight()
+	if MoveAny:IsSecret(scale) or MoveAny:IsSecret(w) or MoveAny:IsSecret(h) then return end
+	local area = math.max(1, (w or 1) * (h or 1) * scale * scale)
 	if dragframe.maDragArea == area then return end
 	dragframe.maDragArea = area
 	local frames = {}
