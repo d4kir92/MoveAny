@@ -1196,6 +1196,7 @@ function MoveAny:SafeAnchorDrag(dragframe, anchor, posx, posy)
 	if anchor and anchor ~= UIParent then
 		local restricted = anchor.IsForbidden and anchor:IsForbidden()
 		if not restricted and anchor.IsAnchoringRestricted and anchor:IsAnchoringRestricted() then restricted = true end
+		if not restricted and anchor.GetCenter and not MoveAny:CanAccessValues(anchor:GetCenter()) then restricted = true end
 		if restricted then
 			if MoveAny:AnchorDragToElePoint(dragframe, posx, posy) then return true end
 			anchor = UIParent
@@ -1242,7 +1243,7 @@ function MoveAny:DetachDrag(dragframe)
 	local rootX, rootY = root:GetCenter()
 	local scale = dragframe:GetEffectiveScale()
 	local rootScale = root:GetEffectiveScale()
-	if not MoveAny:CanAccessValues(x, y, rootX, rootY, scale, rootScale) then return false end
+	if not MoveAny:CanAccessValues(x, y, rootX, rootY, scale, rootScale) then return MoveAny:AnchorDragToElePoint(dragframe, 0, 0) end
 	if type(x) ~= "number" or type(y) ~= "number" or type(rootX) ~= "number" or type(rootY) ~= "number" or type(scale) ~= "number" or type(rootScale) ~= "number" then return false end
 	if scale <= 0 or rootScale <= 0 then return false end
 	return MoveAny:SafeAnchorDrag(dragframe, root, (x * scale - rootX * rootScale) / scale, (y * scale - rootY * rootScale) / scale)
@@ -1627,6 +1628,12 @@ function MoveAny:RegisterWidget(tab)
 				local op1, _, op3, op4, op5 = MoveAny:GetElePoint(name)
 				local np1, _, np3, p4, p5 = dragframe:GetPoint()
 				local eff = dragframe:GetEffectiveScale()
+				if not MoveAny:CanAccessValues(np1, np3, p4, p5, eff) then
+					dragframe:SetMovable(true)
+					MoveAny:SafeAnchorDrag(dragframe, fram, posx, posy)
+
+					return
+				end
 				local np4 = dx and p4 + dx / eff or MoveAny:Snap(p4)
 				local np5 = dy and p5 + dy / eff or MoveAny:Snap(p5)
 				if tab.resizable then
@@ -1845,12 +1852,15 @@ function MoveAny:RegisterWidget(tab)
 	sh = MoveAny:MathR(sh)
 	if (not tab.active or tab.active()) and MoveAny:GetElePoint(name) == nil then
 		local an, parent, re, px, py = frame:GetPoint()
-		if parent == nil or parent == UIParent or parent == MoveAny:GetMainPanel() and an ~= nil and re ~= nil then
+		local fl, fb = frame:GetLeft(), frame:GetBottom()
+		local pl, pb = nil, nil
+		if parent ~= nil and parent.GetLeft then pl, pb = parent:GetLeft(), parent:GetBottom() end
+		if (parent == nil or parent == UIParent or parent == MoveAny:GetMainPanel()) and an ~= nil and re ~= nil and MoveAny:CanAccessValues(px, py) then
 			MoveAny:SetElePoint(name, an, MoveAny:GetMainPanel(), re, MoveAny:Snap(px), MoveAny:Snap(py))
-		elseif frame:GetLeft() and frame:GetBottom() then
-			MoveAny:SetElePoint(name, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", MoveAny:Snap(frame:GetLeft()), MoveAny:Snap(frame:GetBottom()))
-		elseif parent ~= nil then
-			MoveAny:SetElePoint(name, an, MoveAny:GetMainPanel(), re, MoveAny:Snap(parent:GetLeft()), MoveAny:Snap(parent:GetBottom()))
+		elseif MoveAny:CanAccessValues(fl, fb) and fl and fb then
+			MoveAny:SetElePoint(name, "BOTTOMLEFT", MoveAny:GetMainPanel(), "BOTTOMLEFT", MoveAny:Snap(fl), MoveAny:Snap(fb))
+		elseif parent ~= nil and MoveAny:CanAccessValues(pl, pb) then
+			MoveAny:SetElePoint(name, an, MoveAny:GetMainPanel(), re, MoveAny:Snap(pl), MoveAny:Snap(pb))
 		else
 			local an1 = tab.an or "CENTER"
 			local re1 = tab.re or "CENTER"
