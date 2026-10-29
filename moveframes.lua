@@ -444,6 +444,20 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 						fm:RegisterForDrag("LeftButton")
 						if HookedEnableMouseFrames[name] == nil then fm:EnableMouse(false) end
+						MAHookScript(frame, "OnShow", function(sel)
+							if maframesetpoint[sel] or ma_externalmove[sel] then return end
+							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
+							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
+							if dbp1 and dbp3 then
+								local w, h = sel:GetSize()
+								local multiPoint = sel:GetNumPoints() > 1
+								maframesetpoint[sel] = true
+								pcall(MoveAny.SetPoint, MoveAny, sel, dbp1, nil, dbp3, dbp4, dbp5)
+								if multiPoint then pcall(sel.SetSize, sel, w, h) end
+								maframesetpoint[sel] = false
+							end
+						end)
+
 						hooksecurefunc(frame, "SetScale", function(sel, scale)
 							if MoveAny:IsEnabled("SCALEFRAMES", true) == false then return false end
 							MoveAny:SafeExec(fm, function() if scale and type(scale) == "number" and scale > 0 and (currentWindowName == nil) then fm:SetScale(scale) end end, "frame SetScale MoveFrames " .. tostring(name))
