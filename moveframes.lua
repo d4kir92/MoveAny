@@ -500,9 +500,9 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 					hooksecurefunc(frame, "StartMoving", function(sel)
 						if ma_externalmove[sel] then return end
+						if not IsMouseButtonDown("LeftButton") or not MouseIsOver(sel) then return end
 						ma_externalmove[sel] = true
 						MoveAny:MAFrameStopMoving(sel, name)
-						MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
 					end)
 
 					function frame:MA_OnMouseDown(sel, btn)
