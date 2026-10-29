@@ -500,6 +500,18 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 					hooksecurefunc(frame, "StartMoving", function(sel)
 						if ma_externalmove[sel] then return end
+						-- Many Blizzard panels call :StartMoving() on themselves as part of
+						-- their own normal show/layout/docking logic, not only when something
+						-- is actually dragging them. Treating every such call as "another addon
+						-- moved this" wiped the saved position (SaveFramePointToDB with nils)
+						-- the first time one of those internal calls happened, so the frame
+						-- looked correct on its first show that session (saved point still in
+						-- the DB) and reset to Blizzard's default on every show after (the DB
+						-- entry now gone, and the restore hook refusing to touch it at all).
+						-- A real external drag (the user grabbing a native title bar, or
+						-- another addon's own drag code) always has a mouse button held down
+						-- at this exact moment; Blizzard's internal calls don't.
+						if not IsMouseButtonDown("LeftButton") and not IsMouseButtonDown("RightButton") then return end
 						ma_externalmove[sel] = true
 						MoveAny:MAFrameStopMoving(sel, name)
 						MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
