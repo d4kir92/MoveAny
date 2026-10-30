@@ -2082,6 +2082,15 @@ function MoveAny:RegisterWidgetRaw(tab)
 			function dragframe.t:SetAlpha(alpha)
 				self.highlight:SetShown(alpha > 0.4)
 			end
+
+			local function KeepBorderScale()
+				local scale = dragframe:GetScale()
+				if MoveAny:IsSecret(scale) or not scale or scale <= 0 then return end
+				dragframe.t:SetScale(1 / scale)
+			end
+
+			hooksecurefunc(dragframe, "SetScale", KeepBorderScale)
+			KeepBorderScale()
 		else
 			dragframe.t = dragframe:CreateTexture(name .. "_MA_DRAG.t", "BACKGROUND", nil, 1)
 			dragframe.t:SetAllPoints(dragframe)
@@ -2199,6 +2208,19 @@ function MoveAny:RegisterWidgetRaw(tab)
 				end
 				local np4 = dx and p4 + dx / eff or MoveAny:Snap(p4)
 				local np5 = dy and p5 + dy / eff or MoveAny:Snap(p5)
+				if fram and fram.GetSize and type(np1) == "string" then
+					local fw, fh = fram:GetSize()
+					local mw, mh = dragframe:GetSize()
+					local fs = fram:GetEffectiveScale()
+					if MoveAny:CanAccessValues(fw, fh, mw, mh, fs) and fw > 0 and fh > 0 and eff > 0 then
+						fw, fh = fw * fs / eff, fh * fs / eff
+						local fx, fy = 0, 0
+						if strfind(np1, "LEFT") then fx = -0.5 elseif strfind(np1, "RIGHT") then fx = 0.5 end
+						if strfind(np1, "BOTTOM") then fy = -0.5 elseif strfind(np1, "TOP") then fy = 0.5 end
+						np4 = np4 + fx * (fw - mw) - (posx or 0)
+						np5 = np5 + fy * (fh - mh) - (posy or 0)
+					end
+				end
 				if tab.resizable then
 					local x, y = dragframe:GetCenter()
 					local root = MoveAny:GetMainPanel()
