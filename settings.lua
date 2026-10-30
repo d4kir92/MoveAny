@@ -3382,7 +3382,8 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "TargetFrame",
 				["lstr"] = "LID_TARGETFRAME",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["editModeKeys"] = {"TARGETFRAME", "TARGETFRAMESPELLBAR", "TARGETFRAMEBUFFMOVER", "TARGETFRAMEDEBUFFMOVER", "TARGETFRAMETOTBUFFMOVER", "TARGETFRAMETOTDEBUFFMOVER"}
 			})
 		end
 
@@ -3464,7 +3465,8 @@ function MoveAny:LoadAddon()
 			MoveAny:RegisterWidget({
 				["name"] = "FocusFrame",
 				["lstr"] = "LID_FOCUSFRAME",
-				["userplaced"] = true
+				["userplaced"] = true,
+				["editModeKeys"] = {"FOCUSFRAME", "FOCUSFRAMESPELLBAR", "FOCUSFRAMEBUFFMOVER", "FOCUSFRAMEDEBUFFMOVER", "FOCUSFRAMETOTBUFFMOVER", "FOCUSFRAMETOTDEBUFFMOVER"}
 			})
 		end
 

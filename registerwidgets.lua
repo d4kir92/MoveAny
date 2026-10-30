@@ -300,12 +300,22 @@ function MoveAny:CheckEditModeTakeover()
 	if InCombatLockdown() then return end
 	local list = {}
 	for name, tab in pairs(MoveAny.registeredWidgets) do
-		local key = MoveAny:GetWidgetEnableKey(tab)
+		local keys = tab.editModeKeys
+		if keys == nil then
+			local key = MoveAny:GetWidgetEnableKey(tab)
+			if key then keys = {key} end
+		end
+
+		local anyEnabled = false
+		for _, key in ipairs(keys or {}) do
+			if MoveAny:IsEnabled(key, false, true) then anyEnabled = true end
+		end
+
 		local label = MoveAny:Trans(tab.lstr)
 		if tab.lstri then label = format(label, tab.lstri) end
-		if key and MoveAny:IsEnabled(key, false, true) and MoveAny:IsEditModeConflict(name, label) then
+		if anyEnabled and MoveAny:IsEditModeConflict(name, label) then
 			tinsert(list, {
-				key = key,
+				keys = keys,
 				label = label,
 				blizz = MoveAny:GetEditModeSettingLabel(name) or MoveAny:GetEditModeSettingLabel(label)
 			})
@@ -329,7 +339,9 @@ function MoveAny:CheckEditModeTakeover()
 		win.ok:SetText(OKAY or "OK")
 		win.ok:SetScript("OnClick", function()
 			for _, entry in ipairs(win.entries or {}) do
-				MoveAny:SetEnabled(entry.key, false)
+				for _, key in ipairs(entry.keys) do
+					if MoveAny:IsEnabled(key, false, true) then MoveAny:SetEnabled(key, false) end
+				end
 			end
 
 			ReloadUI()
