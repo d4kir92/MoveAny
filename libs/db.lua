@@ -434,13 +434,11 @@ function MoveAny:SetEleOption(element, key, value)
 		return value
 	end
 
-	local ignoreReload = false
-	if string.find(key, "ALPHA", 1, true) or string.find(key, "DURATION", 1, true) or string.find(key, "BUFFCOUNT", 1, true) or key == "Hide" or key == "STRATA" or key == "FRAMELEVEL" then ignoreReload = true end
 	MoveAny:CheckDB("SetEleOption")
 	MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 	MoveAny:GetTab()["ELES"]["OPTIONS"][element][key] = value
-	MoveAny:EnableSave("SetEleOption", key, true, false, ignoreReload)
+	MoveAny:EnableSave("SetEleOption", key, true, false, true)
 	if MoveAny.InvalidateAlphaOptionsCache then MoveAny:InvalidateAlphaOptionsCache(element) end
 end
 
