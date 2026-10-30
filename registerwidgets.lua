@@ -114,6 +114,7 @@ function MoveAny:ReloadEditModeWidgets()
 	end
 
 	MoveAny:UpdateEditModeConflictWindow()
+	MoveAny:CheckEditModeTakeover()
 end
 
 function MoveAny:HookEditModeBarSetup()
@@ -216,48 +217,10 @@ function MoveAny:UpdateEditModeConflictWindow()
 	end
 
 	if win == nil then
-		local pos = MoveAny:MAGV("EDITMODECONFLICTPOS", nil)
-		local pTab = {"CENTER", UIParent, "CENTER", 0, 150}
-		if type(pos) == "table" and pos[1] then pTab = {pos[1], UIParent, pos[2], pos[3], pos[4]} end
-		win = MoveAny:CreateUIWindow({
-			["name"] = "MAEditModeConflictWindow",
-			["parent"] = UIParent,
-			["pTab"] = pTab,
-			["width"] = 460,
-			["height"] = 200,
-			["resizable"] = false,
-			["title"] = MoveAny:Trans("LID_EDITMODECONFLICTTITLE"),
-			["onMove"] = function(p1, p3, p4, p5) MoveAny:MASV("EDITMODECONFLICTPOS", {p1, p3, p4, p5}) end,
-			["onClose"] = function(sel) sel:Hide() end,
-		})
-
+		win = MoveAny:CreateEditModeInfoWindow("MAEditModeConflictWindow", "EDITMODECONFLICTPOS", "LID_EDITMODECONFLICTTITLE", 150)
 		MoveAny.editModeConflictWindow = win
-		win:SetFrameStrata("DIALOG")
-		if win.content then win.content:Hide() end
-		if win.scrollBar then win.scrollBar:Hide() end
-		for _, suffix in ipairs({"ScrollBox", "ScrollBar", "Scroll"}) do
-			local part = _G["MAEditModeConflictWindow" .. suffix]
-			if part then part:Hide() end
-		end
-		local holder = CreateFrame("Frame", nil, win)
-		holder:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -36)
-		holder:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -16, 12)
-		holder:SetFrameLevel(win:GetFrameLevel() + 20)
-		win.info = holder:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-		win.info:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
-		win.info:SetWidth(428)
-		win.info:SetJustifyH("LEFT")
-		win.list = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-		win.list:SetPoint("TOPLEFT", win.info, "BOTTOMLEFT", 0, -12)
-		win.list:SetWidth(428)
-		win.list:SetJustifyH("LEFT")
-		win.hint = holder:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-		win.hint:SetPoint("TOPLEFT", win.list, "BOTTOMLEFT", 0, -12)
-		win.hint:SetWidth(428)
-		win.hint:SetJustifyH("LEFT")
 	end
 
-	if win.titleBar and win.titleBar.Title then win.titleBar.Title:SetText(MoveAny:Trans("LID_EDITMODECONFLICTTITLE")) end
 	win.info:SetText(MoveAny:Trans("LID_EDITMODECONFLICTTEXT"))
 	local lines = {}
 	for _, entry in ipairs(list) do
@@ -272,7 +235,125 @@ function MoveAny:UpdateEditModeConflictWindow()
 
 	win.list:SetText(table.concat(lines, "\n"))
 	win.hint:SetText(MoveAny:Trans("LID_EDITMODECONFLICTHINT"))
-	win:SetHeight(36 + win.info:GetStringHeight() + 12 + win.list:GetStringHeight() + 12 + win.hint:GetStringHeight() + 20)
+	win:UpdateHeight()
+	win:Show()
+end
+
+function MoveAny:CreateEditModeInfoWindow(name, posKey, titleKey, offsetY)
+	local pos = MoveAny:MAGV(posKey, nil)
+	local pTab = {"CENTER", UIParent, "CENTER", 0, offsetY}
+	if type(pos) == "table" and pos[1] then pTab = {pos[1], UIParent, pos[2], pos[3], pos[4]} end
+	local win = MoveAny:CreateUIWindow({
+		["name"] = name,
+		["parent"] = UIParent,
+		["pTab"] = pTab,
+		["width"] = 460,
+		["height"] = 200,
+		["resizable"] = false,
+		["title"] = MoveAny:Trans(titleKey),
+		["onMove"] = function(p1, p3, p4, p5) MoveAny:MASV(posKey, {p1, p3, p4, p5}) end,
+		["onClose"] = function(sel) sel:Hide() end,
+	})
+
+	win:SetFrameStrata("DIALOG")
+	if win.content then win.content:Hide() end
+	if win.scrollBar then win.scrollBar:Hide() end
+	for _, suffix in ipairs({"ScrollBox", "ScrollBar", "Scroll"}) do
+		local part = _G[name .. suffix]
+		if part then part:Hide() end
+	end
+
+	local holder = CreateFrame("Frame", nil, win)
+	holder:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -36)
+	holder:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -16, 12)
+	holder:SetFrameLevel(win:GetFrameLevel() + 20)
+	win.holder = holder
+	win.info = holder:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	win.info:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
+	win.info:SetWidth(428)
+	win.info:SetJustifyH("LEFT")
+	win.list = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	win.list:SetPoint("TOPLEFT", win.info, "BOTTOMLEFT", 0, -12)
+	win.list:SetWidth(428)
+	win.list:SetJustifyH("LEFT")
+	win.hint = holder:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+	win.hint:SetPoint("TOPLEFT", win.list, "BOTTOMLEFT", 0, -12)
+	win.hint:SetWidth(428)
+	win.hint:SetJustifyH("LEFT")
+	win.extraHeight = 0
+	function win:UpdateHeight()
+		self:SetHeight(36 + self.info:GetStringHeight() + 12 + self.list:GetStringHeight() + 12 + self.hint:GetStringHeight() + 20 + self.extraHeight)
+	end
+
+	return win
+end
+
+MoveAny.registeredWidgets = {}
+function MoveAny:GetWidgetEnableKey(tab)
+	if type(tab.lstr) ~= "string" or string.sub(tab.lstr, 1, 4) ~= "LID_" then return nil end
+	local key = string.sub(tab.lstr, 5)
+	if tab.lstri then key = key .. tab.lstri end
+	return key
+end
+
+function MoveAny:CheckEditModeTakeover()
+	if InCombatLockdown() then return end
+	local list = {}
+	for name, tab in pairs(MoveAny.registeredWidgets) do
+		local key = MoveAny:GetWidgetEnableKey(tab)
+		local label = MoveAny:Trans(tab.lstr)
+		if tab.lstri then label = format(label, tab.lstri) end
+		if key and MoveAny:IsEnabled(key, false, true) and MoveAny:IsEditModeConflict(name, label) then
+			tinsert(list, {
+				key = key,
+				label = label,
+				blizz = MoveAny:GetEditModeSettingLabel(name) or MoveAny:GetEditModeSettingLabel(label)
+			})
+		end
+	end
+
+	local win = MoveAny.editModeTakeoverWindow
+	if #list == 0 then
+		if win then win:Hide() end
+		return
+	end
+
+	table.sort(list, function(a, b) return a.label < b.label end)
+	if win == nil then
+		win = MoveAny:CreateEditModeInfoWindow("MAEditModeTakeoverWindow", "EDITMODETAKEOVERPOS", "LID_EDITMODETAKEOVERTITLE", 150)
+		MoveAny.editModeTakeoverWindow = win
+		win.extraHeight = 34
+		win.ok = CreateFrame("Button", nil, win.holder, "UIPanelButtonTemplate")
+		win.ok:SetSize(140, 24)
+		win.ok:SetPoint("BOTTOMRIGHT", win.holder, "BOTTOM", -6, 0)
+		win.ok:SetText(OKAY or "OK")
+		win.ok:SetScript("OnClick", function()
+			for _, entry in ipairs(win.entries or {}) do
+				MoveAny:SetEnabled(entry.key, false)
+			end
+
+			ReloadUI()
+		end)
+
+		win.cancel = CreateFrame("Button", nil, win.holder, "UIPanelButtonTemplate")
+		win.cancel:SetSize(140, 24)
+		win.cancel:SetPoint("BOTTOMLEFT", win.holder, "BOTTOM", 6, 0)
+		win.cancel:SetText(CANCEL or "Cancel")
+		win.cancel:SetScript("OnClick", function() win:Hide() end)
+	end
+
+	win.entries = list
+	win.info:SetText(MoveAny:Trans("LID_EDITMODETAKEOVERTEXT"))
+	local lines = {}
+	for _, entry in ipairs(list) do
+		local text = entry.label
+		if entry.blizz and entry.blizz ~= "" then text = format(MoveAny:Trans("LID_EDITMODECONFLICTENTRY"), entry.label, entry.blizz) end
+		tinsert(lines, "|cFFFFD100- " .. text .. "|r")
+	end
+
+	win.list:SetText(table.concat(lines, "\n"))
+	win.hint:SetText(MoveAny:Trans("LID_EDITMODETAKEOVERHINT"))
+	win:UpdateHeight()
 	win:Show()
 end
 
@@ -1877,6 +1958,7 @@ function MoveAny:RegisterWidget(tab)
 
 	if missingWidgets[name] then missingWidgets[name] = nil end
 	if giveUpWidgets[name] then giveUpWidgets[name] = nil end
+	MoveAny.registeredWidgets[name] = tab
 	MoveAny:After(1, function()
 		enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 		enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
