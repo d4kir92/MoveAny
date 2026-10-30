@@ -76,6 +76,27 @@ function MoveAny:UpdateStanceBar()
 	end
 end
 
+function MoveAny:SetupStanceBarAnchorButtons()
+	if not StanceBarAnchor or StanceBarAnchor.maButtonsSetup then return end
+	StanceBarAnchor.maButtonsSetup = true
+	for i = 1, 12 do
+		local btn = _G["StanceButton" .. i]
+		if btn then
+			function btn:GetMAEle()
+				return StanceBarAnchor
+			end
+
+			MoveAny:RegisterChildAlphaFrame(btn, StanceBarAnchor)
+			if _G["StanceButton" .. i .. "NormalTexture2"] then
+				_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
+				_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", btn, "CENTER", 0, 0)
+			end
+		end
+	end
+
+	hooksecurefunc(StanceBarAnchor, "SetParent", function(sel, parent) if parent == MoveAny:GetHidden() then StanceBar:SetParent(MoveAny:GetHidden()) end end)
+end
+
 function MoveAny:UpdateStanceBarOrientation()
 	if MoveAny.ApplyStanceBarPoint then MoveAny.ApplyStanceBarPoint() end
 end

@@ -3475,30 +3475,18 @@ function MoveAny:LoadAddon()
 		end
 
 		if MoveAny:IsEnabled("STANCEBARANCHOR", false) and StanceBar then
-			if StanceBarAnchor then
-				for i = 1, 12 do
-					local btn = _G["StanceButton" .. i]
-					if btn then
-						function btn:GetMAEle()
-							return StanceBarAnchor
-						end
-
-						MoveAny:RegisterChildAlphaFrame(btn, StanceBarAnchor)
-						if _G["StanceButton" .. i .. "NormalTexture2"] then
-							_G["StanceButton" .. i .. "NormalTexture2"]:ClearAllPoints()
-							_G["StanceButton" .. i .. "NormalTexture2"]:SetPoint("CENTER", btn, "CENTER", 0, 0)
-						end
-					end
-				end
-
-				hooksecurefunc(StanceBarAnchor, "SetParent", function(sel, parent) if parent == MoveAny:GetHidden() then StanceBar:SetParent(MoveAny:GetHidden()) end end)
-			end
-
+			MoveAny:SetupStanceBarAnchorButtons()
 			MoveAny:RegisterWidget({
 				["name"] = "StanceBarAnchor",
 				["lstr"] = "LID_STANCEBARANCHOR",
 				["secure"] = true,
 				["userplaced"] = true,
+				["editModeReload"] = function()
+					if not StanceBarAnchor then
+						MoveAny:InitStanceBar()
+						MoveAny:SetupStanceBarAnchorButtons()
+					end
+				end,
 			})
 		end
 

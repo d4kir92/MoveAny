@@ -16,6 +16,7 @@ local MAEF = {}
 local startRegisterWidget = false
 local missingWidgets = {}
 local giveUpWidgets = {}
+local editModeWidgets = {}
 local giveUpScheduled = false
 local retryFrame = CreateFrame("Frame")
 local function GiveUpMissingWidgets()
@@ -92,10 +93,28 @@ hooksecurefunc("CreateFrame", function(...)
 end)
 
 MoveAny:After(2, function() MoveAny:RetryRegisterWidgets() end, "Init startRegisterWidget 1")
+function MoveAny:ReloadEditModeWidgets()
+	if InCombatLockdown() then return end
+	local tabs = {}
+	for name, tab in pairs(editModeWidgets) do
+		local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
+		local enabled2, forced2 = MoveAny:IsInEditModeEnabled(MoveAny:Trans(tab.lstr))
+		if not ((enabled1 or enabled2) and (not forced1 and not forced2)) then tinsert(tabs, tab) end
+	end
+
+	for _, tab in ipairs(tabs) do
+		editModeWidgets[tab.name] = nil
+		if tab.editModeReload then tab.editModeReload() end
+		local ok, err = pcall(MoveAny.RegisterWidget, MoveAny, tab)
+		if not ok then MoveAny:MSG("[RegisterWidget] FAILED", tab.name, err) end
+	end
+end
+
 MoveAny:After(7, function()
 	startRegisterWidget = true
 	MoveAny:RegisterEvent(retryFrame, "ADDON_LOADED")
 	MoveAny:RetryRegisterWidgets()
+	if EditModeManagerFrame and EditModeManagerFrame.ExitEditMode and MoveAny:IsBlizEditModeEnabled() then hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function() MoveAny:After(0.5, function() MoveAny:ReloadEditModeWidgets() end, "ReloadEditModeWidgets") end) end
 end, "Init startRegisterWidget 2")
 
 function MoveAny:GetEleFrames()
@@ -1436,10 +1455,12 @@ function MoveAny:RegisterWidget(tab)
 	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 	if (enabled1 or enabled2) and (not forced1 and not forced2) then
+		editModeWidgets[name] = tab
 		MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
 		return
 	end
 
+	editModeWidgets[name] = nil
 	local frame = MoveAny:GetFrameByName(name)
 	if frame then MoveAny:AddFrameName(frame, name) end
 	MoveAny.Profiler.Mark("RW 2 editmode/frame lookup")
