@@ -393,6 +393,9 @@ local function AddCheckBox(key, val, func, id, editModeEnum, showReload, require
 			if value and not oldVal and MoveAny.LoadElementLive and MoveAny:LoadElementLive(key) then
 				oldVal = true
 				MoveAny:ClearReloadFor(key)
+			elseif not value and oldVal and MoveAny.UnloadElementLive and MoveAny:UnloadElementLive(key) then
+				oldVal = false
+				MoveAny:ClearReloadFor(key)
 			end
 			if func then func(sel, value) end
 		end,
@@ -498,17 +501,27 @@ function MoveAny:EnableSave(from, key, val, oldVal, ignoreReload)
 
 		if c ~= 0 then
 			needReload = true
-			if MALock.save then MALock.save:Enable() end
 			if MALock.CloseButton then MALock.CloseButton:Disable() end
 		else
 			needReload = false
-			if MALock.save then MALock.save:Disable() end
 			if MALock.CloseButton then MALock.CloseButton:Enable() end
 		end
-	else
-		if MALock.save then MALock.save:Enable() end
 	end
 
+	MoveAny:UpdateSaveButton()
+end
+
+function MoveAny:IsReloadNeeded()
+	return needReload
+end
+
+function MoveAny:UpdateSaveButton()
+	if MALock == nil or MALock.save == nil then return end
+	local text = MoveAny:Trans("LID_SAVEANDCLOSE")
+	if needReload then text = "|TInterface\\Buttons\\UI-RefreshButton:14:14:0:0|t " .. text end
+	MALock.save:Enable()
+	MALock.save:SetText(text)
+	MALock.save:SetWidth(math.max(120, MALock.save:GetTextWidth() + 24))
 	MoveAny:SetReloadAction(MALock.save, needReload)
 end
 
@@ -581,7 +594,7 @@ function MoveAny:RefreshLanguage()
 		end
 
 		SetButtonText(MALock.Profiles, "LID_PROFILES")
-		SetButtonText(MALock.save, "LID_SAVEANDCLOSE", 120)
+		MoveAny:UpdateSaveButton()
 		SetButtonText(MALock.reload, "LID_RELOADANDREOPEN", 120)
 		if MALock.Search and MALock.Search.Hint then MALock.Search.Hint:SetText(MoveAny:Trans("LID_SEARCH")) end
 		if MALock.FinderHint then MALock.FinderHint:SetText(MoveAny:Trans("LID_PRESSESCTOLEAVE")) end
@@ -1048,13 +1061,12 @@ function MoveAny:InitMALock()
 	MALock.save:SetScript("PostClick", function()
 		--MoveAny:TrySaveEditMode()
 		if not needReload then
-			if MALock.save then MALock.save:Disable() end
 			if MALock.CloseButton then MALock.CloseButton:Enable() end
 			CloseMALock()
 		end
 	end)
 
-	MALock.save:Disable()
+	MoveAny:UpdateSaveButton()
 	MALock.reload = MoveAny:CreateReloadButton("MALock" .. ".reload", MALock.footer)
 	MALock.reload:SetSize(120, 24)
 	MALock.reload:SetPoint("LEFT", MALock.save, "RIGHT", 4, 0)
@@ -2857,7 +2869,9 @@ function MoveAny:LoadAddon()
 	end, true)
 
 	MoveAny.Profiler.Mark("Slash/DB/Profiles/PetBattle")
-	if MoveAny.InitStanceBar then MoveAny:InitStanceBar() end
+	MoveAny:AddElementLoader(function()
+		if MoveAny.InitStanceBar then MoveAny:InitStanceBar() end
+	end)
 	MoveAny:AddElementLoader(function()
 		if MoveAny.InitPetBar then MoveAny:InitPetBar() end
 	end)
@@ -3601,6 +3615,7 @@ function MoveAny:LoadAddon()
 							MoveAny:SetupStanceBarAnchorButtons()
 						end
 					end,
+					["onRelease"] = function() MoveAny:RestoreWidgetState("StanceBar", StanceBar) end,
 				})
 			end
 		end)

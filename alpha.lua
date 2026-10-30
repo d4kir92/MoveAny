@@ -42,12 +42,21 @@ function MoveAny:GetAlphaFrames()
     return MAAF
 end
 
+function MoveAny:RemoveAlphaFrame(frame)
+    MAAFS[frame] = nil
+    for i = #MAAF, 1, -1 do
+        if MAAF[i] == frame then tremove(MAAF, i) end
+    end
+end
+
 function MoveAny:AddAlphaFrame(frame)
+    if MAAFS[frame] then return end
     MAAF[#MAAF + 1] = frame
     MAAFS[frame] = true
-    if not frame:IsMouseEnabled() then return end
+    if frame.maAlphaHooked or not frame:IsMouseEnabled() then return end
+    frame.maAlphaHooked = true
     frame:HookScript("OnEnter", function()
-        if not alphasReady then return end
+        if not alphasReady or not MAAFS[frame] then return end
         frame:SetAlpha(1)
         MoveAny:SetMouseEleAlpha(frame, frame)
     end)

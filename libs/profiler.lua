@@ -177,6 +177,14 @@ end
 
 local hookLabels = true
 function MoveAny.hooksecurefunc(a, b, c)
+	if MoveAny.GuardElementCallback then
+		if type(a) == "string" then
+			b = MoveAny:GuardElementCallback(b)
+		else
+			c = MoveAny:GuardElementCallback(c)
+		end
+	end
+
 	if not hookLabels then
 		if type(a) == "string" then return hooksecurefunc(a, b) end
 
@@ -192,11 +200,13 @@ end
 
 local origOnEvent = MoveAny.OnEvent
 function MoveAny:OnEvent(frame, callback, from)
+	if MoveAny.GuardElementCallback then callback = MoveAny:GuardElementCallback(callback) end
 	return origOnEvent(self, frame, P.WrapEvent("event " .. tostring(from), callback), from)
 end
 
 local origAfter = MoveAny.After
 function MoveAny:After(time, callback, from)
+	if MoveAny.GuardElementCallback then callback = MoveAny:GuardElementCallback(callback) end
 	if enabled then callback = P.Wrap("timer " .. tostring(from), callback) end
 
 	return origAfter(self, time, callback, from)

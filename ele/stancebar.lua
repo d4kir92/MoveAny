@@ -114,6 +114,8 @@ function MoveAny:InitStanceBar()
 		if not StanceBar then
 			StanceBar = CreateFrame("Frame", "StanceBar", MoveAny:GetMainPanel())
 			StanceBar:SetSize(btnsize, btnsize)
+		else
+			MoveAny:CaptureWidgetState("StanceBar", StanceBar)
 		end
 
 		local setStanceBarPoint = false

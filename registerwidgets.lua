@@ -293,6 +293,9 @@ function MoveAny:AddElementLoader(func, noLive)
 	local loader = {
 		func = func,
 		keys = {},
+		widgets = {},
+		created = {},
+		gen = 1,
 		active = false,
 		noLive = noLive
 	}
@@ -303,16 +306,90 @@ end
 
 function MoveAny:RunElementLoader(loader)
 	local prev = MoveAny.currentElementLoader
+	local prevRunning = loader.running
 	MoveAny.currentElementLoader = loader
+	loader.running = true
 	xpcall(loader.func, geterrorhandler())
+	loader.running = prevRunning
 	MoveAny.currentElementLoader = prev
+end
+
+function MoveAny:GuardElementCallback(callback)
+	local loader = MoveAny.currentElementLoader
+	if loader == nil or type(callback) ~= "function" then return callback end
+	local gen = loader.gen
+	return function(...)
+		if loader.gen ~= gen then return end
+		local prev = MoveAny.currentElementLoader
+		MoveAny.currentElementLoader = loader
+		local _, a, b, c, d = xpcall(callback, geterrorhandler(), ...)
+		MoveAny.currentElementLoader = prev
+		return a, b, c, d
+	end
 end
 
 function MoveAny:RecordElementKey(key, result)
 	local loader = MoveAny.currentElementLoader
-	if loader == nil then return end
+	if loader == nil or not loader.running or (MoveAny.inRegisterWidget or 0) > 0 then return end
 	loader.keys[key] = true
 	if result then loader.active = true end
+end
+
+hooksecurefunc(
+	"CreateFrame",
+	function(_, frameName)
+		local loader = MoveAny.currentElementLoader
+		if loader and type(frameName) == "string" then loader.created[frameName] = true end
+	end
+)
+
+MoveAny.widgetOrigState = {}
+function MoveAny:CaptureWidgetState(name, frame)
+	if MoveAny.widgetOrigState[name] or frame == nil or frame.GetPoint == nil then return end
+	local state = {
+		parent = frame:GetParent(),
+		scale = frame:GetScale(),
+		alpha = frame:GetAlpha(),
+		points = {}
+	}
+
+	local ok = pcall(
+		function()
+			for i = 1, frame:GetNumPoints() do
+				local point = {frame:GetPoint(i)}
+				for _, v in pairs(point) do
+					if issecretvalue and issecretvalue(v) then error("secret") end
+				end
+
+				state.points[i] = point
+			end
+		end
+	)
+
+	if not ok then state.points = nil end
+	if issecretvalue and (issecretvalue(state.scale) or issecretvalue(state.alpha)) then
+		state.scale = nil
+		state.alpha = nil
+	end
+
+	MoveAny.widgetOrigState[name] = state
+end
+
+function MoveAny:RestoreWidgetState(name, frame)
+	local state = MoveAny.widgetOrigState[name]
+	if state == nil or frame == nil then return end
+	if state.parent and frame:GetParent() ~= state.parent then frame:SetParent(state.parent) end
+	if state.points and #state.points > 0 then
+		local ClearAllPoints = frame.ClearAllPointsBase or frame.ClearAllPoints
+		local SetPoint = frame.SetPointBase or frame.SetPoint
+		ClearAllPoints(frame)
+		for _, point in ipairs(state.points) do
+			SetPoint(frame, unpack(point))
+		end
+	end
+
+	if state.scale and state.scale > 0 then frame:SetScale(state.scale) end
+	if state.alpha then frame:SetAlpha(state.alpha) end
 end
 
 function MoveAny:GetElementLoaders(key)
@@ -354,6 +431,88 @@ function MoveAny:LoadElementLive(key)
 	MoveAny:RetryRegisterWidgets()
 	if MoveAny.UpdateEditorVisibility then MoveAny:UpdateEditorVisibility() end
 	return CountKeys(MoveAny.registeredWidgets) > registered or CountKeys(editModeWidgets) > skipped
+end
+
+MoveAny.unloadIgnoreKeys = {
+	MALOCK = true,
+	MAPROFILES = true,
+	HIDEHIDDENFRAMES = true,
+	SNAPTOELEMENTS = true,
+	SHOWMINIMAPBUTTON = true
+}
+
+local function HasForeignChildren(loader)
+	for frameName in pairs(loader.created) do
+		local frame = _G[frameName]
+		if type(frame) == "table" and frame.GetChildren then
+			for _, child in ipairs({frame:GetChildren()}) do
+				local childName = child.GetName and child:GetName()
+				if childName and not loader.created[childName] and not string.find(childName, "_MA_DRAG", 1, true) then return true end
+			end
+		end
+	end
+
+	return false
+end
+
+function MoveAny:CanUnloadElementLive(key)
+	if InCombatLockdown() then return false end
+	local list = MoveAny:GetElementLoaders(key)
+	if #list == 0 then return false end
+	for _, loader in ipairs(list) do
+		if loader.noLive then return false end
+		for otherKey in pairs(loader.keys) do
+			if otherKey ~= key and not MoveAny.unloadIgnoreKeys[otherKey] and MoveAny:IsEnabled(otherKey, false, true) then return false end
+		end
+
+		if HasForeignChildren(loader) then return false end
+	end
+
+	return true
+end
+
+function MoveAny:ReleaseElementLoader(loader)
+	loader.gen = loader.gen + 1
+	for name, tab in pairs(loader.widgets) do
+		MoveAny:ReleaseWidget(name, loader.created[name])
+		if tab.onRelease then xpcall(tab.onRelease, geterrorhandler()) end
+	end
+
+	for name, tab in pairs(editModeWidgets) do
+		if tab.loader == loader then editModeWidgets[name] = nil end
+	end
+
+	for name, tab in pairs(missingWidgets) do
+		if tab.loader == loader then missingWidgets[name] = nil end
+	end
+
+	for name, tab in pairs(giveUpWidgets) do
+		if tab.loader == loader then giveUpWidgets[name] = nil end
+	end
+
+	for frameName in pairs(loader.created) do
+		local frame = _G[frameName]
+		if type(frame) == "table" and frame.Hide and frame.IsShown and not frame:IsProtected() and frame:IsShown() then
+			frame.maReleasedHidden = true
+			frame:Hide()
+		end
+	end
+
+	loader.widgets = {}
+	loader.active = false
+end
+
+function MoveAny:UnloadElementLive(key)
+	if not MoveAny:CanUnloadElementLive(key) then return false end
+	local list = MoveAny:GetElementLoaders(key)
+	for i = #list, 1, -1 do
+		MoveAny:ReleaseElementLoader(list[i])
+	end
+
+	if MoveAny.UpdateEditorVisibility then MoveAny:UpdateEditorVisibility() end
+	if MoveAny.SafeUpdateAlphas and MoveAny.GetEnumAlpha then MoveAny:SafeUpdateAlphas(MoveAny:GetEnumAlpha().ADDED) end
+	MoveAny:QueueEditModeConflictWindow()
+	return true
 end
 
 MoveAny.registeredWidgets = {}
@@ -1520,6 +1679,33 @@ function MoveAny:GetDragFromName(name)
 	return cacheDrags[name]
 end
 
+function MoveAny:ReleaseWidget(name, created)
+	local frame = MoveAny:GetFrameByName(name)
+	local dragframe = cacheDrags[name]
+	if dragframe then
+		if MoveAny:GetCurrentEle() == dragframe then MoveAny:ClearSelectEle() end
+		dragframe:Hide()
+		if dragframe.opt then dragframe.opt:Hide() end
+		local drags = MoveAny:GetDragFrames()
+		for i = #drags, 1, -1 do
+			if drags[i] == dragframe then tremove(drags, i) end
+		end
+
+		cacheDrags[name] = nil
+	end
+
+	MoveAny.registeredWidgets[name] = nil
+	if frame then
+		local eleFrames = MoveAny:GetEleFrames()
+		for i = #eleFrames, 1, -1 do
+			if eleFrames[i] == frame then tremove(eleFrames, i) end
+		end
+
+		if MoveAny.RemoveAlphaFrame then MoveAny:RemoveAlphaFrame(frame) end
+		if not created then MoveAny:RestoreWidgetState(name, frame) end
+	end
+end
+
 local reapplyPoints = {}
 local reapplyPending = false
 function MoveAny:ReapplyElePoints(from)
@@ -1756,6 +1942,26 @@ function MoveAny:UpdateSnapVisibility()
 end
 
 function MoveAny:RegisterWidget(tab)
+	tab.loader = tab.loader or MoveAny.currentElementLoader
+	local prev = MoveAny.currentElementLoader
+	MoveAny.currentElementLoader = tab.loader
+	MoveAny.inRegisterWidget = (MoveAny.inRegisterWidget or 0) + 1
+	local ok, res = xpcall(MoveAny.RegisterWidgetRaw, geterrorhandler(), MoveAny, tab)
+	MoveAny.inRegisterWidget = MoveAny.inRegisterWidget - 1
+	MoveAny.currentElementLoader = prev
+	if ok and tab.loader and MoveAny.registeredWidgets[tab.name] == tab then
+		tab.loader.widgets[tab.name] = tab
+		local frame = MoveAny:GetFrameByName(tab.name)
+		if frame and frame.maReleasedHidden then
+			frame.maReleasedHidden = nil
+			frame:Show()
+		end
+	end
+
+	return res
+end
+
+function MoveAny:RegisterWidgetRaw(tab)
 	MoveAny.Profiler.Mark()
 	local name = tab.name
 	local lstr = tab.lstr
@@ -1795,7 +2001,10 @@ function MoveAny:RegisterWidget(tab)
 
 	editModeWidgets[name] = nil
 	local frame = MoveAny:GetFrameByName(name)
-	if frame then MoveAny:AddFrameName(frame, name) end
+	if frame then
+		MoveAny:AddFrameName(frame, name)
+		MoveAny:CaptureWidgetState(name, frame)
+	end
 	MoveAny.Profiler.Mark("RW 2 editmode/frame lookup")
 	if MoveAny:GetDragFromName(name) == nil then
 		cacheDrags[name] = CreateFrame("FRAME", name .. "_MA_DRAG", MoveAny:GetMainPanel())

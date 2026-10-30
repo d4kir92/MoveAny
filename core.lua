@@ -388,7 +388,7 @@ function MoveAny:ToggleMALock()
 		return
 	end
 
-	if MoveAny:IsEnabled("MALOCK", false) and MALock.save and MALock.save:IsEnabled() then
+	if MoveAny:IsEnabled("MALOCK", false) and MoveAny.IsReloadNeeded and MoveAny:IsReloadNeeded() then
 		MoveAny:INFO("Can't Toggle Settings Frame when it is not saved.")
 		return
 	end
