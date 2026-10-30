@@ -354,17 +354,22 @@ function MoveAny:IsEnabled(element, value, settings)
 		else
 			MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), MoveAny:Trans(element)))
 		end
+
+		if MoveAny.RecordElementKey then MoveAny:RecordElementKey(element, false) end
 		return false
 	end
 
+	local result = false
 	if MoveAny:GetTab() then
 		MoveAny:GetTab()["ELES"] = MoveAny:GetTab()["ELES"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"] = MoveAny:GetTab()["ELES"]["OPTIONS"] or {}
 		MoveAny:GetTab()["ELES"]["OPTIONS"][element] = MoveAny:GetTab()["ELES"]["OPTIONS"][element] or {}
 		if MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] == nil and value ~= nil then MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] = value end
-		return MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] or false
+		result = MoveAny:GetTab()["ELES"]["OPTIONS"][element]["ENABLED"] or false
 	end
-	return false
+
+	if MoveAny.RecordElementKey then MoveAny:RecordElementKey(element, result) end
+	return result
 end
 
 function MoveAny:GetEleOptions(key, from)

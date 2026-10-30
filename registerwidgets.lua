@@ -288,6 +288,74 @@ function MoveAny:CreateEditModeInfoWindow(name, posKey, titleKey, offsetY)
 	return win
 end
 
+MoveAny.elementLoaders = {}
+function MoveAny:AddElementLoader(func, noLive)
+	local loader = {
+		func = func,
+		keys = {},
+		active = false,
+		noLive = noLive
+	}
+
+	tinsert(MoveAny.elementLoaders, loader)
+	MoveAny:RunElementLoader(loader)
+end
+
+function MoveAny:RunElementLoader(loader)
+	local prev = MoveAny.currentElementLoader
+	MoveAny.currentElementLoader = loader
+	xpcall(loader.func, geterrorhandler())
+	MoveAny.currentElementLoader = prev
+end
+
+function MoveAny:RecordElementKey(key, result)
+	local loader = MoveAny.currentElementLoader
+	if loader == nil then return end
+	loader.keys[key] = true
+	if result then loader.active = true end
+end
+
+function MoveAny:GetElementLoaders(key)
+	local list = {}
+	for _, loader in ipairs(MoveAny.elementLoaders) do
+		if loader.keys[key] then tinsert(list, loader) end
+	end
+
+	return list
+end
+
+function MoveAny:CanLoadElementLive(key)
+	local list = MoveAny:GetElementLoaders(key)
+	if #list == 0 then return false end
+	for _, loader in ipairs(list) do
+		if loader.active or loader.noLive then return false end
+	end
+
+	return true
+end
+
+local function CountKeys(tab)
+	local count = 0
+	for _ in pairs(tab) do
+		count = count + 1
+	end
+
+	return count
+end
+
+function MoveAny:LoadElementLive(key)
+	if InCombatLockdown() or not MoveAny:CanLoadElementLive(key) then return false end
+	local registered = CountKeys(MoveAny.registeredWidgets)
+	local skipped = CountKeys(editModeWidgets)
+	for _, loader in ipairs(MoveAny:GetElementLoaders(key)) do
+		MoveAny:RunElementLoader(loader)
+	end
+
+	MoveAny:RetryRegisterWidgets()
+	if MoveAny.UpdateEditorVisibility then MoveAny:UpdateEditorVisibility() end
+	return CountKeys(MoveAny.registeredWidgets) > registered or CountKeys(editModeWidgets) > skipped
+end
+
 MoveAny.registeredWidgets = {}
 function MoveAny:GetWidgetEnableKey(tab)
 	if type(tab.lstr) ~= "string" or string.sub(tab.lstr, 1, 4) ~= "LID_" then return nil end
