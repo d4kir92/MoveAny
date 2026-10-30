@@ -354,6 +354,7 @@ function MoveAny:ShowMALock()
 				MoveAny:RestoreEditorFrameAlpha(df)
 			end
 
+			if not MoveAny:MAGV("TIPSSEEN", false) then MoveAny:MASV("TIPSSEEN", true) end
 			MALock:Show()
 			MoveAny:UpdateEditorVisibility()
 		else

@@ -108,13 +108,185 @@ function MoveAny:ReloadEditModeWidgets()
 		local ok, err = pcall(MoveAny.RegisterWidget, MoveAny, tab)
 		if not ok then MoveAny:MSG("[RegisterWidget] FAILED", tab.name, err) end
 	end
+
+	for name, info in pairs(MoveAny.editModeConflicts) do
+		if not MoveAny:IsEditModeConflict(name, info.lstr) then MoveAny.editModeConflicts[name] = nil end
+	end
+
+	MoveAny:UpdateEditModeConflictWindow()
+end
+
+function MoveAny:HookEditModeBarSetup()
+	if MoveAny.editModeBarSetupHooked then return end
+	local accountSettings = EditModeManagerFrame and EditModeManagerFrame.AccountSettings
+	if not accountSettings or not accountSettings.EditModeFrameSetup then return end
+	MoveAny.editModeBarSetupHooked = true
+	local bars = {
+		{
+			key = "STANCEBARANCHOR",
+			ele = "StanceBarAnchor",
+			bar = "StanceBar"
+		},
+		{
+			key = "PETBAR",
+			ele = "PetActionBar",
+			bar = "PetActionBar"
+		},
+	}
+
+	hooksecurefunc(accountSettings, "EditModeFrameSetup", function(sel)
+		for _, info in ipairs(bars) do
+			local bar = _G[info.bar]
+			if bar and MoveAny:GetDragFromName(info.ele) and MoveAny:IsEnabled(info.key, false, true) then
+				local enabled, forced = MoveAny:IsInEditModeEnabled(info.ele)
+				if not enabled and not forced then
+					local cb = sel.settingsCheckButtons and sel.settingsCheckButtons[info.bar]
+					if cb and cb:IsControlChecked() then cb:SetControlChecked(false) end
+					if bar.Selection then bar.Selection:Hide() end
+				end
+			end
+		end
+	end)
+end
+
+MoveAny.editModeConflicts = {}
+function MoveAny:IsEditModeConflict(name, lstr)
+	local enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
+	local enabled2, forced2 = false, false
+	if lstr then enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr) end
+	return (enabled1 or enabled2) and not forced1 and not forced2
+end
+
+function MoveAny:AddEditModeConflict(name, label, lstr)
+	if MoveAny.editModeConflicts[name] == nil then
+		MoveAny.editModeConflicts[name] = {
+			label = label,
+			lstr = lstr
+		}
+	end
+
+	MoveAny:QueueEditModeConflictWindow()
+end
+
+function MoveAny:QueueEditModeConflictWindow()
+	if MoveAny.editModeConflictQueued then return end
+	MoveAny.editModeConflictQueued = true
+	MoveAny:After(1, function()
+		MoveAny.editModeConflictQueued = false
+		MoveAny:UpdateEditModeConflictWindow()
+	end, "UpdateEditModeConflictWindow")
+end
+
+function MoveAny:GetEditModeConflictEntries()
+	local entries = {}
+	for name, tab in pairs(editModeWidgets) do
+		local label = MoveAny:Trans(tab.lstr)
+		if tab.lstri then label = format(label, tab.lstri) end
+		entries[name] = {
+			label = label,
+			lstr = label
+		}
+	end
+
+	for name, info in pairs(MoveAny.editModeConflicts) do
+		if entries[name] == nil then entries[name] = info end
+	end
+
+	local list = {}
+	for name, info in pairs(entries) do
+		tinsert(list, {
+			name = name,
+			label = info.label or name,
+			lstr = info.lstr,
+			open = MoveAny:IsEditModeConflict(name, info.lstr),
+			blizz = MoveAny:GetEditModeSettingLabel(name) or (info.lstr and MoveAny:GetEditModeSettingLabel(info.lstr))
+		})
+	end
+
+	table.sort(list, function(a, b) return a.label < b.label end)
+	return list
+end
+
+function MoveAny:UpdateEditModeConflictWindow()
+	local list = MoveAny:GetEditModeConflictEntries()
+	local win = MoveAny.editModeConflictWindow
+	if #list == 0 then
+		if win then win:Hide() end
+		return
+	end
+
+	if win == nil then
+		local pos = MoveAny:MAGV("EDITMODECONFLICTPOS", nil)
+		local pTab = {"CENTER", UIParent, "CENTER", 0, 150}
+		if type(pos) == "table" and pos[1] then pTab = {pos[1], UIParent, pos[2], pos[3], pos[4]} end
+		win = MoveAny:CreateUIWindow({
+			["name"] = "MAEditModeConflictWindow",
+			["parent"] = UIParent,
+			["pTab"] = pTab,
+			["width"] = 460,
+			["height"] = 200,
+			["resizable"] = false,
+			["title"] = MoveAny:Trans("LID_EDITMODECONFLICTTITLE"),
+			["onMove"] = function(p1, p3, p4, p5) MoveAny:MASV("EDITMODECONFLICTPOS", {p1, p3, p4, p5}) end,
+			["onClose"] = function(sel) sel:Hide() end,
+		})
+
+		MoveAny.editModeConflictWindow = win
+		win:SetFrameStrata("DIALOG")
+		if win.content then win.content:Hide() end
+		if win.scrollBar then win.scrollBar:Hide() end
+		for _, suffix in ipairs({"ScrollBox", "ScrollBar", "Scroll"}) do
+			local part = _G["MAEditModeConflictWindow" .. suffix]
+			if part then part:Hide() end
+		end
+		local holder = CreateFrame("Frame", nil, win)
+		holder:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -36)
+		holder:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -16, 12)
+		holder:SetFrameLevel(win:GetFrameLevel() + 20)
+		win.info = holder:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+		win.info:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
+		win.info:SetWidth(428)
+		win.info:SetJustifyH("LEFT")
+		win.list = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+		win.list:SetPoint("TOPLEFT", win.info, "BOTTOMLEFT", 0, -12)
+		win.list:SetWidth(428)
+		win.list:SetJustifyH("LEFT")
+		win.hint = holder:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+		win.hint:SetPoint("TOPLEFT", win.list, "BOTTOMLEFT", 0, -12)
+		win.hint:SetWidth(428)
+		win.hint:SetJustifyH("LEFT")
+	end
+
+	if win.titleBar and win.titleBar.Title then win.titleBar.Title:SetText(MoveAny:Trans("LID_EDITMODECONFLICTTITLE")) end
+	win.info:SetText(MoveAny:Trans("LID_EDITMODECONFLICTTEXT"))
+	local lines = {}
+	for _, entry in ipairs(list) do
+		local text = entry.label
+		if entry.blizz and entry.blizz ~= "" then text = format(MoveAny:Trans("LID_EDITMODECONFLICTENTRY"), entry.label, entry.blizz) end
+		if entry.open then
+			tinsert(lines, "|cFFFF4040- " .. text .. "|r")
+		else
+			tinsert(lines, "|cFF40FF40- " .. text .. "|r")
+		end
+	end
+
+	win.list:SetText(table.concat(lines, "\n"))
+	win.hint:SetText(MoveAny:Trans("LID_EDITMODECONFLICTHINT"))
+	win:SetHeight(36 + win.info:GetStringHeight() + 12 + win.list:GetStringHeight() + 12 + win.hint:GetStringHeight() + 20)
+	win:Show()
 end
 
 MoveAny:After(7, function()
 	startRegisterWidget = true
 	MoveAny:RegisterEvent(retryFrame, "ADDON_LOADED")
 	MoveAny:RetryRegisterWidgets()
-	if EditModeManagerFrame and EditModeManagerFrame.ExitEditMode and MoveAny:IsBlizEditModeEnabled() then hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function() MoveAny:After(0.5, function() MoveAny:ReloadEditModeWidgets() end, "ReloadEditModeWidgets") end) end
+	if EditModeManagerFrame and EditModeManagerFrame.ExitEditMode and MoveAny:IsBlizEditModeEnabled() then
+		hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function() MoveAny:After(0.5, function() MoveAny:ReloadEditModeWidgets() end, "ReloadEditModeWidgets") end)
+		if EditModeManagerFrame.OnAccountSettingChanged then hooksecurefunc(EditModeManagerFrame, "OnAccountSettingChanged", function() if MoveAny.editModeConflictWindow and MoveAny.editModeConflictWindow:IsShown() then MoveAny:QueueEditModeConflictWindow() end end) end
+	end
+
+	MoveAny:HookEditModeBarSetup()
+	MoveAny:QueueEditModeConflictWindow()
 end, "Init startRegisterWidget 2")
 
 function MoveAny:GetEleFrames()
@@ -1456,7 +1628,7 @@ function MoveAny:RegisterWidget(tab)
 	local enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 	if (enabled1 or enabled2) and (not forced1 and not forced2) then
 		editModeWidgets[name] = tab
-		MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
+		MoveAny:QueueEditModeConflictWindow()
 		return
 	end
 
@@ -1709,7 +1881,7 @@ function MoveAny:RegisterWidget(tab)
 		enabled1, forced1 = MoveAny:IsInEditModeEnabled(name)
 		enabled2, forced2 = MoveAny:IsInEditModeEnabled(lstr)
 		if (enabled1 or enabled2) and (not forced1 and not forced2) then
-			MoveAny:MSG(format(MoveAny:Trans("LID_HELPTEXT"), lstr))
+			MoveAny:AddEditModeConflict(name, lstr, lstr)
 			return
 		end
 	end, "RegisterWidget 1")

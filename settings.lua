@@ -293,6 +293,15 @@ function MoveAny:IsInEditModeEnabled(val)
 	return false, false
 end
 
+function MoveAny:GetEditModeSettingLabel(val)
+	local key = EMMap[val] or val
+	if type(key) ~= "string" or string.sub(key, 1, 4) ~= "Show" then return nil end
+	local accountSettings = EditModeManagerFrame and EditModeManagerFrame.AccountSettings
+	local cb = accountSettings and accountSettings.settingsCheckButtons and accountSettings.settingsCheckButtons[string.sub(key, 5)]
+	if cb and cb.Label and cb.Label.GetText then return cb.Label:GetText() end
+	return nil
+end
+
 local lastSelected = nil
 function MoveAny:GetLastSelected()
 	return lastSelected
@@ -685,7 +694,6 @@ function MoveAny:InitMALock()
 		local _, class = UnitClass("player")
 		MALock:SuspendLayout()
 		AddCategory("GENERAL")
-		AddCheckBox("SHOWTIPS", true)
 		AddCheckBox("SHOWMINIMAPBUTTON", MoveAny:GetWoWBuild() ~= "RETAIL", function(sel, value)
 			if value then
 				MoveAny:ShowMMBtn("MoveAny")
@@ -2800,7 +2808,8 @@ function MoveAny:LoadAddon()
 	if MoveAny.init then return end
 	MoveAny.init = true
 	local _, class = UnitClass("player")
-	if MoveAny:IsEnabled("SHOWTIPS", true) then
+	local showTips = not MoveAny:MAGV("TIPSSEEN", false)
+	if showTips then
 		if MoveAny:IsAddOnLoaded("Dominos") then MoveAny:INFO("Dominos Detected, please make sure that an element is only controlled by one addon at a time!") end
 		if MoveAny:IsAddOnLoaded("Bartender4") then MoveAny:INFO("Bartender4 Detected, please make sure that an element is only controlled by one addon at a time!") end
 	end
@@ -2809,10 +2818,9 @@ function MoveAny:LoadAddon()
 	if MoveAny.InitSlash then MoveAny:InitSlash() end
 	if MoveAny.InitDB then MoveAny:InitDB() end
 	MoveAny:InitProfileShare()
-	if MoveAny:IsEnabled("SHOWTIPS", true) then
+	if showTips then
 		MoveAny:MSG(MoveAny:Trans("LID_STARTHELP"))
 		MoveAny:MSG(MoveAny:Trans("LID_STARTHELP2"))
-		MoveAny:MSG(MoveAny:Trans("LID_STARTHELP3"))
 	end
 
 	if PetBattleFrame and not MoveAny:IsAddOnLoaded("ElvUI") then
