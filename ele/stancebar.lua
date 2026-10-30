@@ -76,6 +76,10 @@ function MoveAny:UpdateStanceBar()
 	end
 end
 
+function MoveAny:UpdateStanceBarOrientation()
+	if MoveAny.ApplyStanceBarPoint then MoveAny.ApplyStanceBarPoint() end
+end
+
 function MoveAny:InitStanceBar()
 	local enabled, forced = MoveAny:IsInEditModeEnabled("StanceBarAnchor")
 	if enabled and not forced then return end
@@ -110,6 +114,7 @@ function MoveAny:InitStanceBar()
 			setStanceBarPoint = false
 		end
 
+		MoveAny.ApplyStanceBarPoint = ApplyStanceBarPoint
 		hooksecurefunc(StanceBar, "SetPoint", ApplyStanceBarPoint)
 		hooksecurefunc(StanceBarAnchor, "SetScale", function(sel, scale) StanceBar:SetScale(scale) end)
 		hooksecurefunc(StanceBarAnchor, "SetAlpha", function(sel, alpha) StanceBar:SetAlpha(alpha) end)

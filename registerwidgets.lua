@@ -698,7 +698,7 @@ local function AddActionBarOptions(win, name, opts, frame, optionFrame)
 			},
 			["func"] = function(value)
 				opts["ORIENTATION"] = value
-				MoveAny:SetPoint(StanceBar, "CENTER", StanceBarAnchor, "CENTER", 0, 0)
+				MoveAny:UpdateStanceBarOrientation()
 			end,
 		})
 	end
