@@ -3041,7 +3041,7 @@ function MoveAny:LoadAddon()
 				else
 					C_Timer.After(2, function()
 						if MiniMapTrackingButton then
-							MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", -2, nil, function()
+							MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", nil, nil, function()
 								local function SyncMiniMapTrackingButton(p1, p2, p3, p4, p5)
 									if not p1 or not p2 or p2 == MiniMapTracking then return end
 									if ma_set_parent[MiniMapTrackingButton] then return end
