@@ -1348,6 +1348,90 @@ function MoveAny:GetCastBarBaseWidth(region)
 	return region.maCastBase
 end
 
+function MoveAny:SyncCastBarSlices(region)
+	local slices = region.maCastSlices
+	if slices == nil then return end
+	local shown = region.maCastSliced and region:IsShown() and region:GetTexture() ~= nil
+	local alpha = region:GetAlpha()
+	for _, slice in ipairs(slices) do
+		slice:SetAlpha(alpha)
+		slice:SetShown(shown)
+	end
+end
+
+function MoveAny:RefreshCastBarSlices(region)
+	local slices = region.maCastSlices
+	if slices == nil or not region.maCastSliced then return end
+	local tex = region:GetTexture()
+	local ulx, uly, _, lly, urx = region:GetTexCoord()
+	local l, t, r, b = ulx or 0, uly or 0, urx or 1, lly or 1
+	local cut = (r - l) * 0.2
+	local coords = {{l, l + cut}, {l + cut, r - cut}, {r - cut, r}}
+	local layer, subLevel = region:GetDrawLayer()
+	local cr, cg, cb, ca = region:GetVertexColor()
+	local blend = region.GetBlendMode and region:GetBlendMode()
+	local desaturated = region.IsDesaturated and region:IsDesaturated()
+	for i, slice in ipairs(slices) do
+		slice:SetTexture(tex)
+		slice:SetTexCoord(coords[i][1], coords[i][2], t, b)
+		slice:SetDrawLayer(layer, subLevel)
+		if blend then slice:SetBlendMode(blend) end
+		slice:SetVertexColor(cr or 1, cg or 1, cb or 1, ca or 1)
+		slice:SetDesaturated(desaturated and true or false)
+	end
+
+	MoveAny:SyncCastBarSlices(region)
+end
+
+function MoveAny:CanSliceCastBarRegion(region)
+	if region.GetTexture == nil or region.GetTexCoord == nil or region.AddMaskTexture == nil then return false end
+	local parent = region:GetParent()
+	return parent ~= nil and parent.CreateMaskTexture ~= nil
+end
+
+function MoveAny:SliceCastBarRegion(region, width, base)
+	local parent = region:GetParent()
+	if region.maCastSlices == nil then
+		local layer, subLevel = region:GetDrawLayer()
+		region.maCastSlices = {parent:CreateTexture(nil, layer, nil, subLevel), parent:CreateTexture(nil, layer, nil, subLevel), parent:CreateTexture(nil, layer, nil, subLevel)}
+		region.maCastMask = parent:CreateMaskTexture()
+		region.maCastMask:SetTexture("Interface\\Buttons\\WHITE8X8", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+		region.maCastMask:SetSize(1, 1)
+		region.maCastMask:SetPoint("BOTTOMRIGHT", parent, "TOPLEFT", -8, 8)
+		for _, func in ipairs({"Show", "Hide", "SetShown", "SetAlpha"}) do
+			if region[func] then
+				hooksecurefunc(region, func, function(sel) MoveAny:SyncCastBarSlices(sel) end)
+			end
+		end
+
+		for _, func in ipairs({"SetTexture", "SetAtlas", "SetTexCoord", "SetVertexColor", "SetDesaturated", "SetBlendMode", "SetDrawLayer"}) do
+			if region[func] then
+				hooksecurefunc(region, func, function(sel) MoveAny:RefreshCastBarSlices(sel) end)
+			end
+		end
+	end
+
+	if not region.maCastSliced then
+		region.maCastSliced = true
+		region:AddMaskTexture(region.maCastMask)
+	end
+
+	local slices = region.maCastSlices
+	local cap = math.min(base * 0.2, width / 2)
+	slices[1]:ClearAllPoints()
+	slices[1]:SetPoint("TOPLEFT", region, "TOPLEFT")
+	slices[1]:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT")
+	slices[1]:SetWidth(cap)
+	slices[3]:ClearAllPoints()
+	slices[3]:SetPoint("TOPRIGHT", region, "TOPRIGHT")
+	slices[3]:SetPoint("BOTTOMRIGHT", region, "BOTTOMRIGHT")
+	slices[3]:SetWidth(cap)
+	slices[2]:ClearAllPoints()
+	slices[2]:SetPoint("TOPLEFT", slices[1], "TOPRIGHT")
+	slices[2]:SetPoint("BOTTOMRIGHT", slices[3], "BOTTOMLEFT")
+	MoveAny:RefreshCastBarSlices(region)
+end
+
 function MoveAny:UpdateCastBarWidth(name)
 	local frame = _G[name]
 	if frame == nil or frame.GetWidth == nil then return end
@@ -1373,8 +1457,14 @@ function MoveAny:UpdateCastBarWidth(name)
 		if region and region.GetNumPoints and region:GetNumPoints() == 1 then
 			local regionBase = MoveAny:GetCastBarBaseWidth(region)
 			if regionBase and regionBase > 0 then
-				region.maCastSet = regionBase * ratio
-				region:SetWidth(region.maCastSet)
+				if key ~= "Text" and MoveAny:CanSliceCastBarRegion(region) then
+					region.maCastSet = math.max(1, regionBase + width - base)
+					region:SetWidth(region.maCastSet)
+					MoveAny:SliceCastBarRegion(region, region.maCastSet, regionBase)
+				else
+					region.maCastSet = regionBase * ratio
+					region:SetWidth(region.maCastSet)
+				end
 			end
 		end
 	end
