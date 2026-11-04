@@ -447,6 +447,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						MAHookScript(frame, "OnShow", function(sel)
 							if maframesetpoint[sel] or ma_externalmove[sel] then return end
 							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
+							if sel:GetNumPoints() == 0 then return end
 							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 							if dbp1 and dbp3 then
 								local w, h = sel:GetSize()
