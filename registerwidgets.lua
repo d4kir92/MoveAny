@@ -1389,7 +1389,24 @@ function MoveAny:CanSliceCastBarRegion(region)
 	return parent ~= nil and parent.CreateMaskTexture ~= nil
 end
 
+function MoveAny:SliceCastBarAtlas(region)
+	if not region.SetTextureSliceMargins or not region.GetAtlas or not C_Texture or not C_Texture.GetAtlasInfo then return false end
+	local atlas = region:GetAtlas()
+	local info = atlas and C_Texture.GetAtlasInfo(atlas)
+	if not info then return false end
+	local cap = math.floor(info.width * 0.2)
+	region:SetTextureSliceMargins(cap, 0, cap, 0)
+	region:SetTextureSliceMode(Enum.UITextureSliceMode.Stretched)
+	if not region.maCastAtlasHooked then
+		region.maCastAtlasHooked = true
+		hooksecurefunc(region, "SetAtlas", function(sel) MoveAny:SliceCastBarAtlas(sel) end)
+	end
+
+	return true
+end
+
 function MoveAny:SliceCastBarRegion(region, width, base)
+	if MoveAny:SliceCastBarAtlas(region) then return end
 	local parent = region:GetParent()
 	if region.maCastSlices == nil then
 		local layer, subLevel = region:GetDrawLayer()
@@ -1452,16 +1469,18 @@ function MoveAny:UpdateCastBarWidth(name)
 	local base = MoveAny:GetCastBarBaseWidth(frame)
 	if base == nil or base <= 0 then return end
 	local ratio = width / base
-	for _, key in ipairs({"Border", "BorderShield", "Flash", "Text"}) do
+	for _, key in ipairs({"Border", "BorderShield", "Flash", "Text", "Background", "TextBorder", "DropShadow", "ChargeFlash"}) do
 		local region = frame[key] or _G[name .. key]
-		if region and region.GetNumPoints and region:GetNumPoints() == 1 then
-			local regionBase = MoveAny:GetCastBarBaseWidth(region)
+		local shieldIcon = key == "BorderShield" and region and region.GetAtlas and region:GetAtlas() == "ui-castingbar-shield"
+		if region and region.GetNumPoints and not shieldIcon then
+			local singleAnchor = region:GetNumPoints() == 1
+			local regionBase = singleAnchor and MoveAny:GetCastBarBaseWidth(region) or region:GetWidth() - frame:GetWidth() + base
 			if regionBase and regionBase > 0 then
 				if key ~= "Text" and MoveAny:CanSliceCastBarRegion(region) then
 					region.maCastSet = math.max(1, regionBase + width - base)
-					region:SetWidth(region.maCastSet)
+					if singleAnchor then region:SetWidth(region.maCastSet) end
 					MoveAny:SliceCastBarRegion(region, region.maCastSet, regionBase)
-				else
+				elseif singleAnchor then
 					region.maCastSet = regionBase * ratio
 					region:SetWidth(region.maCastSet)
 				end
@@ -1469,6 +1488,16 @@ function MoveAny:UpdateCastBarWidth(name)
 		end
 	end
 
+	for _, key in ipairs({"InterruptGlow", "ChargeGlow", "EnergyGlow", "EnergyMask", "Flakes01", "Flakes02", "Flakes03", "Shine", "CraftingMask", "BorderMask"}) do
+		local region = frame[key]
+		if region and region:GetNumPoints() == 1 then
+			region.maCastSet = MoveAny:GetCastBarBaseWidth(region) * ratio
+			region:SetWidth(region.maCastSet)
+		end
+	end
+
+	local fill = frame.GetStatusBarTexture and frame:GetStatusBarTexture()
+	if fill then MoveAny:SliceCastBarAtlas(fill) end
 	frame.maCastSet = width
 	frame:SetSize(width, frame:GetHeight())
 end
