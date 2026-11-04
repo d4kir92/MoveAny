@@ -3041,6 +3041,24 @@ function MoveAny:LoadAddon()
 				else
 					C_Timer.After(2, function()
 						if MiniMapTrackingButton then
+							for index, region in ipairs({MiniMapTrackingBackground, MiniMapTrackingIcon, MiniMapTrackingIconOverlay}) do
+								if region and region:GetParent() == MiniMapTracking then
+									local points = {}
+									for i = 1, region:GetNumPoints() do
+										local p1, p2, p3, p4, p5 = region:GetPoint(i)
+										if p2 == MiniMapTracking then p2 = MiniMapTrackingButton end
+										points[i] = {p1, p2, p3, p4, p5}
+									end
+
+									region:SetParent(MiniMapTrackingButton)
+									region:SetDrawLayer("BACKGROUND", index)
+									region:ClearAllPoints()
+									for _, p in ipairs(points) do
+										region:SetPoint(p[1], p[2], p[3], p[4], p[5])
+									end
+								end
+							end
+
 							MoveAny:InitMinimapDrag(MiniMapTrackingButton, "MiniMapTrackingButton", nil, nil, function()
 								local function SyncMiniMapTrackingButton(p1, p2, p3, p4, p5)
 									if not p1 or not p2 or p2 == MiniMapTracking then return end
