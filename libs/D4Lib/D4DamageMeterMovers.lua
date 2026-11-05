@@ -40,36 +40,38 @@ local function GetScaledRect(frame)
 	return left * scale, (left + width) * scale, bottom * scale, (bottom + height) * scale
 end
 
-local function CheckSnapTarget(target, rect, best)
+local function CheckSnapTarget(target, rect, best, sizing)
 	local left, right, bottom, top = GetScaledRect(target)
 	if not left then return end
 	if rect.top >= bottom - SNAP_RANGE and rect.bottom <= top + SNAP_RANGE then
-		for _, pair in ipairs({{rect.left, right}, {rect.right, left}, {rect.left, left}, {rect.right, right}}) do
+		local pairsX = sizing and {{rect.right, left}, {rect.right, right}} or {{rect.left, right}, {rect.right, left}, {rect.left, left}, {rect.right, right}}
+		for _, pair in ipairs(pairsX) do
 			local delta = pair[2] - pair[1]
 			if math.abs(delta) <= SNAP_RANGE and (not best.x or math.abs(delta) < math.abs(best.x.delta)) then best.x = {delta = delta, line = pair[2]} end
 		end
 	end
 
 	if rect.right >= left - SNAP_RANGE and rect.left <= right + SNAP_RANGE then
-		for _, pair in ipairs({{rect.top, bottom}, {rect.bottom, top}, {rect.top, top}, {rect.bottom, bottom}}) do
+		local pairsY = sizing and {{rect.bottom, top}, {rect.bottom, bottom}} or {{rect.top, bottom}, {rect.bottom, top}, {rect.top, top}, {rect.bottom, bottom}}
+		for _, pair in ipairs(pairsY) do
 			local delta = pair[2] - pair[1]
 			if math.abs(delta) <= SNAP_RANGE and (not best.y or math.abs(delta) < math.abs(best.y.delta)) then best.y = {delta = delta, line = pair[2]} end
 		end
 	end
 end
 
-local function FindSnap(frame)
+local function FindSnap(frame, sizing)
 	local left, right, bottom, top = GetScaledRect(frame)
 	if not left then return nil end
 	local rect = {left = left, right = right, bottom = bottom, top = top}
 	local best = {}
 	for i = 1, MAX_SESSION_WINDOWS do
 		local target = _G["DamageMeterSessionWindow" .. i]
-		if target and target ~= frame and target:IsVisible() then CheckSnapTarget(target, rect, best) end
+		if target and target ~= frame and target:IsVisible() then CheckSnapTarget(target, rect, best, sizing) end
 	end
 
 	for target in pairs(registry.snapFrames) do
-		if target ~= frame and target:IsVisible() then CheckSnapTarget(target, rect, best) end
+		if target ~= frame and target:IsVisible() then CheckSnapTarget(target, rect, best, sizing) end
 	end
 
 	return best.x, best.y
@@ -91,9 +93,9 @@ local function GetSnapLines()
 	return holder
 end
 
-local function UpdateSnapLines(frame)
+local function UpdateSnapLines(frame, sizing)
 	local lines = GetSnapLines()
-	local snapX, snapY = FindSnap(frame)
+	local snapX, snapY = FindSnap(frame, sizing)
 	lines.vertical:SetShown(snapX ~= nil)
 	lines.horizontal:SetShown(snapY ~= nil)
 	if snapX then
@@ -158,16 +160,40 @@ local function StopMover(mover)
 	lines:Hide()
 	if not window then return end
 	window:StopMovingOrSizing()
-	if not wasDragging or not IsSnapEnabled() then return end
-	local snapX, snapY = FindSnap(window)
+	if not IsSnapEnabled() then return end
+	local snapX, snapY = FindSnap(window, not wasDragging)
 	local left, top = window:GetLeft(), window:GetTop()
-	if (snapX or snapY) and left and top then
-		local scale = window:GetEffectiveScale() / UIParent:GetEffectiveScale()
+	if not (snapX or snapY) or not left or not top then return end
+	local scale = window:GetEffectiveScale() / UIParent:GetEffectiveScale()
+	if wasDragging then
 		if snapX then left = left + snapX.delta / scale end
 		if snapY then top = top + snapY.delta / scale end
 		window:ClearAllPoints()
 		window:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
+		return
 	end
+
+	local width, height = window:GetSize()
+	if snapX then width = width + snapX.delta / scale end
+	if snapY then height = height - snapY.delta / scale end
+	if type(window.GetResizeBounds) == "function" then
+		local minW, minH, maxW, maxH = window:GetResizeBounds()
+		if minW and minW > 0 then width = math.max(width, minW) end
+		if minH and minH > 0 then height = math.max(height, minH) end
+		if maxW and maxW > 0 then width = math.min(width, maxW) end
+		if maxH and maxH > 0 then height = math.min(height, maxH) end
+	end
+
+	window:ClearAllPoints()
+	window:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
+	window:SetSize(width, height)
+end
+
+local function StartSnapLines(window, sizing)
+	if not IsSnapEnabled() then return end
+	local lines = GetSnapLines()
+	lines:SetScript("OnUpdate", function() UpdateSnapLines(window, sizing) end)
+	lines:Show()
 end
 
 local function StartMoverDrag(mover)
@@ -176,11 +202,7 @@ local function StartMoverDrag(mover)
 	SelectMover(mover)
 	window:StartMoving()
 	mover.isDragging = true
-	if IsSnapEnabled() then
-		local lines = GetSnapLines()
-		lines:SetScript("OnUpdate", function() UpdateSnapLines(window) end)
-		lines:Show()
-	end
+	StartSnapLines(window, false)
 end
 
 local function CreateMover(index)
@@ -213,6 +235,7 @@ local function CreateMover(index)
 		SelectMover(mover)
 		window:StartSizing("BOTTOMRIGHT")
 		mover.isSizing = true
+		StartSnapLines(window, true)
 	end)
 
 	mover.Grip:SetScript("OnMouseUp", function() StopMover(mover) end)
