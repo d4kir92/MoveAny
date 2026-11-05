@@ -21,6 +21,7 @@
 <Script file="D4SharedSettings.lua"/>
 <Script file="D4Waypoints.lua"/>
 <Script file="D4FrameTools.lua"/>
+<Script file="D4DamageMeterMovers.lua"/>
 <Script file="D4SlashCmds.lua"/>
 <Script file="D4AtlasViewer.lua"/>
 <Script file="D4Translations.lua"/>

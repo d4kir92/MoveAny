@@ -4944,6 +4944,7 @@ function MoveAny:LoadAddon()
 			end
 		end
 
+		MoveAny:EnableDamageMeterWindowMovers("MoveAny", 100)
 		MoveAny:AddElementLoader(function()
 			if MoveAny:IsEnabled("UIWIDGETTOPCENTER", false) and UIWidgetTopCenterContainerFrame then
 				MoveAny:RegisterWidget({
