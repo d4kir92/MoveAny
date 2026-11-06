@@ -172,6 +172,7 @@ MoveAny:AddTrans("ruRU", "LID_LOCKPARENT", "Блокировать родите�
 MoveAny:AddTrans("ruRU", "LID_LOCKPARENTDESC", "Принудительно возвращает этот элемент на панель MoveAny всякий раз, когда что-то другое (Blizzard или другой аддон) меняет его родительский фрейм. Включите это, если элемент случайно прыгает, меняет размер или сам теряет сохранённую позицию (например, после посадки в транспорт).")
 MoveAny:AddTrans("ruRU", "LID_LOCKWINDOWS", "Заблокировать окна")
 MoveAny:AddTrans("ruRU", "LID_LOSSOFCONTROLFRAME", "Потеря контроля")
+MoveAny:AddTrans("ruRU", "LID_MACombatText", "Текст боя (всплывающий текст боя)")
 MoveAny:AddTrans("ruRU", "LID_MAFPSFrame", "FPS (Новый FPS-счетчик)")
 MoveAny:AddTrans("ruRU", "LID_MAGEARCANECHARGESFRAME", "Маг - Чародейские заряды")
 MoveAny:AddTrans("ruRU", "LID_MAINMENUEXPBAR", "Опыт")

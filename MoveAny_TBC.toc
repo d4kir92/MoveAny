@@ -57,6 +57,7 @@ ele\bagbar.lua
 ele\buffbar.lua
 ele\debuffbar.lua
 ele\fps.lua
+ele\combattext.lua
 ele\mavehicleseatindicator.lua
 ele\micromenu.lua
 ele\minimap.lua

@@ -872,6 +872,7 @@ function MoveAny:InitMALock()
 		if RaidBossEmoteFrame then AddCheckBox("RAIDBOSSEMOTEFRAME", false) end
 		if MoveAny:IsValidFrame(QueueStatusButton) then AddCheckBox("QUEUESTATUSBUTTON", false) end
 		AddCheckBox("MAFPSFrame", false)
+		AddCheckBox("MACombatText", false)
 		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
 		AddCategory("CLASSSPECIFIC", 1, true)
 		if MoveAny:IsValidFrame(RuneFrame) and class == "DEATHKNIGHT" then AddCheckBox("RUNEFRAME", false) end
@@ -4906,6 +4907,15 @@ function MoveAny:LoadAddon()
 			end
 		end)
 
+		MoveAny:AddElementLoader(function()
+			if MoveAny:IsEnabled("MACombatText", false) then
+				MoveAny:RegisterWidget({
+					["name"] = "MACombatText",
+					["lstr"] = "LID_MACombatText"
+				})
+			end
+		end)
+
 		if MoveAny:IsAddOnLoaded("ImproveAny") then
 			for name, label in pairs({
 				IAMoneyBar = "LID_MONEYBAR",
@@ -6019,6 +6029,9 @@ function MoveAny:LoadAddon()
 
 	MoveAny:AddElementLoader(function()
 		if MoveAny.InitMAFPSFrame then MoveAny:InitMAFPSFrame() end
+	end)
+	MoveAny:AddElementLoader(function()
+		if MoveAny.InitMACombatText then MoveAny:InitMACombatText() end
 	end)
 	if MoveAny.InitMultiCastActionBar then MoveAny:InitMultiCastActionBar() end
 	if MoveAny.InitPartyFrame then MoveAny:InitPartyFrame() end
