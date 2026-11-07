@@ -88,7 +88,8 @@ end
 
 function MoveAny:RegisterChildAlphaFrame(child, parentAlphaFrame)
     if not child or not parentAlphaFrame then return end
-    if not child:IsMouseEnabled() then return end
+    local mouseEnabled = child:IsMouseEnabled()
+    if MoveAny:IsSecret(mouseEnabled) or not mouseEnabled then return end
     if child == UIParent then return end
     if child == MoveAny:GetMainPanel() then return end
     if hookedChildren[child] then return end
