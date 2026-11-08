@@ -725,6 +725,10 @@ function MoveAny:InitMALock()
 			end
 		end, nil, nil, false)
 
+		AddCheckBox("MINIMAPBUTTONBAG", false, function()
+			MoveAny:UpdateMinimapButtonBag()
+			MoveAny:ClearReloadFor("MINIMAPBUTTONBAG")
+		end, nil, nil, false)
 		AddDropdown("SNAPSIZE", 5, nil, gridChoices)
 		AddDropdown("GRIDSIZE", 10, MoveAny.UpdateGrid, gridChoices)
 		AddCategory("FRAMES")
@@ -1953,6 +1957,7 @@ function MoveAny:PlayerLogin()
 	end
 
 	MoveAny:InitActionBarLayouts()
+	MoveAny:InitMinimapButtonBag()
 	if MoveAny.AnyActionbarEnabled and MoveAny:AnyActionbarEnabled() then
 		MoveAny:CustomBars()
 		for i, bar in pairs(MoveAny:GetAllActionBars()) do
