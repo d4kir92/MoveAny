@@ -2576,7 +2576,7 @@ function MoveAny:RegisterWidgetRaw(tab)
 	end
 
 	local osw, osh = MoveAny:GetEleSize(name)
-	if tab.resizable and osw and osh then
+	if tab.resizable and osw and osh and osw > 0 and osh > 0 then
 		sw, sh = osw, osh
 	elseif osw ~= sw or osh ~= sh then
 		MoveAny:SetEleSize(name, sw, sh)
