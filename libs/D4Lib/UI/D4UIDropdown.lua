@@ -266,7 +266,7 @@ function UI.WindowMixin:AddDropdown(tab)
         SetIndex(start)
     end
 
-    UI:Add(win, holder, height, text, true, tab.search, tab.added)
+    UI:Add(win, holder, height, text, true, tab.search, tab.added, tab)
 
     return holder
 end

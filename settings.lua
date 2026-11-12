@@ -1405,7 +1405,11 @@ local function NormalizeShareName(name)
 end
 
 local function GetSharePlayerName()
+	local key = MoveAny:GetPlayerCharacterKey()
+	if key and not key:find("%s") then return key end
+
 	local name, realm = UnitFullName("player")
+	if not MoveAny:CanAccessValues(name, realm) then return end
 	if name ~= nil and realm ~= nil and realm ~= "" then return name .. "-" .. realm end
 	return NormalizeShareName(name)
 end

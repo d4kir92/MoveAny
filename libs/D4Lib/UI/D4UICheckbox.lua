@@ -29,11 +29,27 @@ function UI.WindowMixin:AddCheckbox(tab)
         cb.row = row
     end
 
-    local element = UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added)
+    local element = UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added, tab)
     cb.uiElement = element
+    element.whatsNewControl = tab.whatsNewControl
+    if tab.tooltip then
+        local tooltipTarget = row or cb
+        if not row then cb:SetHitRectInsets(0, UI.ROW - holder:GetWidth(), 0, 0) end
+        local function HideTooltip(sel)
+            if GameTooltip:GetOwner() == sel then GameTooltip:Hide() end
+        end
+        tooltipTarget:HookScript("OnEnter", function(sel)
+            GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+            GameTooltip:SetText(UI:Text(tab.tooltip), 1, 1, 1, 1, true)
+            GameTooltip:Show()
+        end)
+        tooltipTarget:HookScript("OnLeave", HideTooltip)
+        tooltipTarget:HookScript("OnHide", HideTooltip)
+    end
+
     function cb:UpdateLabel()
-        if tab.textFunc == nil then return end
-        local newText = tab.textFunc(cb) or ""
+        local newText = UI:Text(tab.label)
+        if tab.textFunc then newText = tab.textFunc(cb) or "" end
         cb.Label:SetText(newText)
         UI:SetLabel(element, newText)
     end

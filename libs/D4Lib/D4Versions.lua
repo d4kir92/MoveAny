@@ -84,9 +84,9 @@ function D4:CheckVersion(name, ver)
     local ov1, ov2, ov3 = string.split(".", ver)
     local cv1, cv2, cv3 = string.split(".", D4:GetVersion(name) or "0.0.0")
     local higher = D4:IsHigherVersion(ov1, ov2, ov3, cv1, cv2, cv3)
-    if higher and name and D4.VersionTab and D4.VersionTab[string.lower(name)] then
+    if higher and name and D4.VersionTab and D4.VersionTab[string.lower(name)] and not D4.VersionTab[string.lower(name)].foundHigher then
         D4.VersionTab[string.lower(name)].foundHigher = true
-        D4:MSG(name, D4.VersionTab[string.lower(name)].icon, string.format("New Version available (v%s -> v%s)", D4:GetVersion(name), ver))
+        D4:MSG(string.format("New Version available (v%s -> v%s)", D4:GetVersion(name), ver))
     end
 end
 

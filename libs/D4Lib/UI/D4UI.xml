@@ -15,5 +15,6 @@
 <Script file="D4UIKeybind.lua"/>
 <Script file="D4UIList.lua"/>
 <Script file="D4UIOrderList.lua"/>
+<Script file="D4UIWhatsNew.lua"/>
 
 </Ui>

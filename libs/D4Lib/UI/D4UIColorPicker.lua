@@ -65,6 +65,10 @@ function UI.WindowMixin:AddColorPicker(tab)
         Refresh()
     end
 
+    function holder:SetEnabled(value)
+        swatch:SetEnabled(value == true)
+    end
+
     holder:SetValue(ReadColor(tab.value))
     local function Commit(r, g, b, a)
         holder:SetValue(r, g, b, a)
@@ -111,7 +115,7 @@ function UI.WindowMixin:AddColorPicker(tab)
         end
     )
 
-    UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added)
+    UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added, tab)
 
     return holder
 end

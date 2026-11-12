@@ -108,7 +108,7 @@ function UI:ApplyWindow(win)
     end
 end
 
-function UI:Add(win, frame, height, label, stretch, search, added)
+function UI:Add(win, frame, height, label, stretch, search, added, setting)
     local element = {
         ["frame"] = frame,
         ["height"] = height or UI.ROW,
@@ -123,6 +123,8 @@ function UI:Add(win, frame, height, label, stretch, search, added)
         ["match"] = true,
         ["selfMatch"] = true,
         ["added"] = added,
+        ["settingLabel"] = setting and setting.label,
+        ["whatsNew"] = setting and setting.whatsNew,
     }
 
     if win.category then element.depth = win.category.depth + 1 end

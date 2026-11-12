@@ -555,11 +555,12 @@ function D4:SetWaypointTracked(tracked)
 end
 
 function D4:SetTrackedWaypoint(mapID, x, y)
-    if mapID == nil or x == nil or y == nil then return false end
+    if type(mapID) ~= "number" or type(x) ~= "number" or type(y) ~= "number" then return false end
     if registry.impl.IsFallback() then return registry.impl.SetWaypoint(mapID, x, y) end
     if not registry.impl.IsNative() then return false end
     if C_Map.CanSetUserWaypointOnMap ~= nil and not C_Map.CanSetUserWaypointOnMap(mapID) then return false, "invalid" end
-    C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(mapID, x, y))
+    local ok, wasSet = pcall(C_Map.SetUserWaypoint, UiMapPoint.CreateFromCoordinates(mapID, x, y))
+    if not ok or wasSet == false then return false, "invalid" end
     D4:SetWaypointTracked(true)
 
     return true

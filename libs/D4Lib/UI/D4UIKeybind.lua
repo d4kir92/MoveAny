@@ -127,7 +127,7 @@ function UI.WindowMixin:AddKeybind(tab)
 
 	button:SetScript("OnHide", function() if recording then StopRecording() end end)
 	Display()
-	UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added)
+	UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added, tab)
 
 	return holder
 end

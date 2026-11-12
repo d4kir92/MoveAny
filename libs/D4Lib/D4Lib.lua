@@ -67,6 +67,24 @@ function D4:CanAccessValues(...)
     return true
 end
 
+function D4:GetPlayerCharacterKey()
+    local getName = UnitNameUnmodified or UnitName
+    local name, surname = getName("player")
+    if not self:CanAccessValues(name, surname) or not name or name == "" or name == UNKNOWNOBJECT then return end
+    if self:IsForever() and not name:find(" ", 1, true) then
+        if not surname or surname == "" then return end
+        name = name .. " " .. surname
+    end
+
+    local realm = GetNormalizedRealmName and GetNormalizedRealmName()
+    if not self:CanAccessValue(realm) or not realm or realm == "" then
+        realm = GetRealmName and GetRealmName()
+    end
+    if not self:CanAccessValue(realm) or not realm or realm == "" then return end
+
+    return name .. "-" .. realm, name, realm
+end
+
 D4.oldWow = D4.oldWow or false
 if _G["C_Timer"] == nil then
     D4:MSG("[D4] ADD MISSING: C_Timer")
