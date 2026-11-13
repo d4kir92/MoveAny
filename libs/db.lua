@@ -641,7 +641,20 @@ function MoveAny:SetEleLayer(key, strata, level)
 	if level ~= nil then MoveAny:SetEleOption(key, "FRAMELEVEL", level) end
 end
 
+function MoveAny:GetFramePointKey(key)
+	if key == "WorldMapFrame" and WorldMapFrame ~= nil and (WorldMapFrame.isMaximized or (WorldMapFrame.IsMaximized ~= nil and WorldMapFrame:IsMaximized())) then return "WorldMapFrameMaximized" end
+
+	return key
+end
+
+function MoveAny:ApplyWorldMapPoint()
+	if WorldMapFrame == nil or (InCombatLockdown() and WorldMapFrame:IsProtected()) then return end
+	local p1, _, p3, p4, p5 = MoveAny:GetFramePoint("WorldMapFrame")
+	if p1 and p3 then MoveAny:SetPoint(WorldMapFrame, p1, nil, p3, p4, p5) end
+end
+
 function MoveAny:GetFramePoint(key)
+	key = MoveAny:GetFramePointKey(key)
 	local c = framePointCache[key]
 	if c ~= nil then
 		if c == CACHE_EMPTY then return nil, nil, nil, nil, nil end
@@ -662,6 +675,7 @@ function MoveAny:GetFramePoint(key)
 end
 
 function MoveAny:SaveFramePointToDB(key, p1, p2, p3, p4, p5)
+	key = MoveAny:GetFramePointKey(key)
 	MoveAny:CheckDB("SaveFramePointToDB")
 	MoveAny:GetTab()["FRAMES"]["POINTS"][key] = MoveAny:GetTab()["FRAMES"]["POINTS"][key] or {}
 	if MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then

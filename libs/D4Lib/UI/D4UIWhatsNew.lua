@@ -8,6 +8,7 @@ local function GetSettingID(element, since)
     if type(added) ~= "string" or not added:match("^%d%d%d%d%-%d%d%-%d%d$") or since and added < since then return end
 
     local id = tostring(element.added) .. ":" .. element.settingLabel
+    if element.frame and element.frame.slider and element.keywords and element.keywords ~= "" then id = id .. ":" .. element.keywords end
     local category = element.category
     while category do
         if category.hidden then return end
@@ -43,7 +44,7 @@ function D4:CreateUIWhatsNew(tab)
         for _, row in pairs(rows) do
             if not row.element.hidden then
                 if row.control then
-                    row.control:UpdateLabel()
+                    if row.control.UpdateLabel then row.control:UpdateLabel() end
                 elseif row.category then
                     local text = UI:Text(row.category.settingLabel)
                     row.header.Label:SetText(text)
@@ -86,6 +87,24 @@ function D4:CreateUIWhatsNew(tab)
         return {control = control, source = source, element = control.uiElement}
     end
 
+    local function AddSliderRow(setting)
+        local source, options = setting.frame, setting.setting
+        local control = win:AddSlider({
+            label = options.label,
+            added = options.added,
+            min = options.min,
+            max = options.max,
+            step = options.step,
+            decimals = options.decimals,
+            commitOnRelease = options.commitOnRelease,
+            value = source.value,
+            func = function(value)
+                if source.value ~= value then source.slider:SetValue(value) end
+            end
+        })
+        return {control = control, sliderSource = source, element = control.uiElement}
+    end
+
     local function AddRow(setting)
         if setting.whatsNewControl then
             local control = setting.whatsNewControl(win)
@@ -93,6 +112,7 @@ function D4:CreateUIWhatsNew(tab)
         end
 
         if setting.checkbox and setting.setting then return AddCheckboxRow(setting) end
+        if setting.frame and setting.frame.slider and setting.setting then return AddSliderRow(setting) end
 
         local holder = CreateFrame("Frame", nil, win.content)
         local label = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -167,6 +187,7 @@ function D4:CreateUIWhatsNew(tab)
             local row = rows[entry.id] or AddRow(entry.setting)
             row.setting = entry.setting
             if row.source then row.control:SetChecked(row.source:GetChecked()) end
+            if row.sliderSource then row.control.slider:SetValue(row.sliderSource.value) end
             Place(entry.id, row, #categories, parent)
         end
         table.sort(win.elements, function(left, right) return (left.noticeOrder or math.huge) < (right.noticeOrder or math.huge) end)

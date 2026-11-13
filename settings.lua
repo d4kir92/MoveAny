@@ -6053,11 +6053,13 @@ function MoveAny:LoadAddon()
 			hooksecurefunc(WorldMapFrame, "Minimize", function(sel)
 				if MoveAny:HasExternalWorldMapDrag() then return end
 				sel:SetScale(1)
+				MoveAny:ApplyWorldMapPoint()
 			end)
 
 			hooksecurefunc(WorldMapFrame, "Maximize", function(sel)
 				if MoveAny:HasExternalWorldMapDrag() then return end
 				sel:SetScale(1)
+				MoveAny:ApplyWorldMapPoint()
 			end)
 		end
 
