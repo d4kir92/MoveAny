@@ -749,8 +749,16 @@ local function StyleAuraCount(btn, ele, prefix)
 	OnCountColor(fs)
 end
 
+local function IsSecretTable(tab)
+	if issecretvalue and issecretvalue(tab) then return true end
+	if issecrettable and issecrettable(tab) then return true end
+	if canaccesstable and not canaccesstable(tab) then return true end
+
+	return false
+end
+
 local function SafeLen(tab)
-	if type(tab) ~= "table" then return 0 end
+	if type(tab) ~= "table" or IsSecretTable(tab) then return 0 end
 	local n = 0
 	if pcall(function() n = #tab end) and type(n) == "number" then return n end
 
@@ -759,7 +767,7 @@ end
 
 local function NoteAuraUpdate(unit, updateInfo)
 	if unit ~= "player" then return end
-	if type(updateInfo) ~= "table" then return end
+	if type(updateInfo) ~= "table" or IsSecretTable(updateInfo) then return end
 	local added = nil
 	local updated = nil
 	pcall(function() added = updateInfo.addedAuras end)
