@@ -31,6 +31,7 @@ function UI.WindowMixin:AddCheckbox(tab)
 
     local element = UI:Add(win, holder, UI.ROW, text, true, tab.search, tab.added, tab)
     cb.uiElement = element
+    element.checkbox = cb
     element.whatsNewControl = tab.whatsNewControl
     if tab.tooltip then
         local tooltipTarget = row or cb

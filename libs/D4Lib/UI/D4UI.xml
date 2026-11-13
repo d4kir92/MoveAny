@@ -5,6 +5,7 @@
 <Script file="D4UITranslations.lua"/>
 
 <Script file="D4UIWindow.lua"/>
+<Script file="D4UINavigation.lua"/>
 <Script file="D4UISearch.lua"/>
 <Script file="D4UICategory.lua"/>
 <Script file="D4UICheckbox.lua"/>

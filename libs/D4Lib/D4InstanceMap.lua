@@ -13,6 +13,13 @@ local NAV_BUTTON_MIN_TEXT = 60
 local PIN_TOGGLE_OFFSET_X = 40
 local PIN_TOGGLE_OFFSET_Y = 10
 local SIDE_PANEL_BUTTONS = {"OpenButton", "CloseButton"}
+local BOSS_SCALE = {
+    ["min"] = 0.5,
+    ["max"] = 1.5,
+    ["step"] = 0.05,
+    ["width"] = 120,
+    ["gap"] = 16,
+}
 local VIEW_MAX_ZOOM = 4
 local VIEW_WHEEL_FACTOR = 1.25
 local function GetChild()
@@ -394,12 +401,45 @@ function D4:CreateInstanceMap(provider)
                     Refresh()
                 end,
                 ["getToggleText"] = provider.getToggleText,
+                ["getBossScale"] = provider.getBossScale,
             })
 
             local container = WorldMapFrame.ScrollContainer
             local toggles = mapPinSet:CreateToggles(container)
             toggles:SetPoint("BOTTOMRIGHT", container, "BOTTOMRIGHT", -PIN_TOGGLE_OFFSET_X, PIN_TOGGLE_OFFSET_Y)
             toggles:SetFrameLevel(overlay:GetFrameLevel() + 1000)
+            if provider.getBossScale ~= nil and provider.setBossScale ~= nil then
+                local template = DoesTemplateExist ~= nil and (DoesTemplateExist("MinimalSliderTemplate") and "MinimalSliderTemplate" or DoesTemplateExist("UISliderTemplate") and "UISliderTemplate") or "OptionsSliderTemplate"
+                local slider = CreateFrame("Slider", nil, toggles, template)
+                slider:SetSize(BOSS_SCALE.width, 16)
+                slider:SetPoint("RIGHT", toggles, "LEFT", -BOSS_SCALE.gap, 0)
+                slider:SetMinMaxValues(BOSS_SCALE.min, BOSS_SCALE.max)
+                slider:SetValueStep(BOSS_SCALE.step)
+                if slider.SetObeyStepOnDrag ~= nil then slider:SetObeyStepOnDrag(true) end
+                for _, region in ipairs({slider:GetRegions()}) do
+                    if region.GetObjectType ~= nil and region:GetObjectType() == "FontString" then region:SetText("") end
+                end
+
+                slider.label = slider:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+                slider.label:SetPoint("BOTTOM", slider, "TOP", 0, 1)
+                local function UpdateLabel(value)
+                    local percent = floor(value * 100 + 0.5)
+                    slider.label:SetText(provider.getBossScaleText ~= nil and provider.getBossScaleText(percent) or format("%d%%", percent))
+                end
+
+                slider:SetValue(provider.getBossScale() or 1)
+                UpdateLabel(slider:GetValue())
+                slider:SetScript("OnValueChanged", function(_, value)
+                    value = floor(value / BOSS_SCALE.step + 0.5) * BOSS_SCALE.step
+                    UpdateLabel(value)
+                    if abs(value - (provider.getBossScale() or 1)) < 0.001 then return end
+                    provider.setBossScale(value)
+                    mapPinKey = nil
+                    Refresh()
+                end)
+
+                toggles.bossScale = slider
+            end
         end
 
         mapPinSet:Update(rows, overlay.art, scale)

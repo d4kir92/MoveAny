@@ -158,10 +158,19 @@ function UI.WindowMixin:UpdateBodyLayout()
     end
 
     self:UpdateInset(topExtra, bottomExtra)
+    local navWidth = self.GetNavWidth and self:GetNavWidth() or 0
+    if self.nav then
+        self.nav:SetShown(navWidth > 0)
+        self.nav:ClearAllPoints()
+        self.nav:SetPoint("TOPLEFT", self, "TOPLEFT", self.leftInset + 4, -(TOP_INSET + topExtra))
+        self.nav:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", self.leftInset + 4, (self.scrollInset and self.scrollInset.bottom or 7) + bottomExtra)
+        self.nav:SetWidth(math.max(1, navWidth - 8))
+    end
+
     if self.scrollFrame == nil then return end
     if self.scrollInset == nil then return end
     self.scrollFrame:ClearAllPoints()
-    self.scrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", self.scrollInset.left, -(TOP_INSET + topExtra))
+    self.scrollFrame:SetPoint("TOPLEFT", self, "TOPLEFT", self.scrollInset.left + navWidth, -(TOP_INSET + topExtra))
     self.scrollFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", self.scrollInset.right, self.scrollInset.bottom + bottomExtra)
     if self.scrollBar == nil or self.grip == nil then return end
     local gripLift = math.max(0, GRIP_INSET - self.scrollInset.bottom - bottomExtra)
@@ -238,7 +247,7 @@ local function CreateGrip(win, name)
     win:SetScript(
         "OnSizeChanged",
         function(sel, width)
-            sel.contentWidth = width - sel.contentTrim
+            sel.contentWidth = width - sel.contentTrim - (sel.GetNavWidth and sel:GetNavWidth() or 0)
             sel:Layout()
         end
     )
@@ -479,6 +488,7 @@ function D4:CreateUIWindow(tab)
     win.setCollapsed = tab.setCollapsed
     if tab.resizable ~= false then MakeResizable(win, name, tab) end
     SetupScreenBounds(win, tab)
+    if tab.navigation == true then win:EnableNavigation() end
     win:HookScript("OnHide", function() UI:CloseDropdowns() end)
     local escClose = tab.escClose
     if escClose == nil then escClose = tab.onClose == nil end

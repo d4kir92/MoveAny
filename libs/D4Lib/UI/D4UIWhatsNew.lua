@@ -18,6 +18,17 @@ local function GetSettingID(element, since)
     return id
 end
 
+local function GetCategories(element)
+    local list = {}
+    local category = element.category
+    while category do
+        table.insert(list, 1, category)
+        category = category.category
+    end
+
+    return list
+end
+
 function D4:CreateUIWhatsNew(tab)
     local db = tab.db
     db.seen = db.seen or {}
@@ -33,6 +44,10 @@ function D4:CreateUIWhatsNew(tab)
             if not row.element.hidden then
                 if row.control then
                     row.control:UpdateLabel()
+                elseif row.category then
+                    local text = UI:Text(row.category.settingLabel)
+                    row.header.Label:SetText(text)
+                    UI:SetLabel(row.element, text)
                 else
                     local setting = row.setting
                     row.label:SetText(UI:Text(setting.settingLabel))
@@ -48,11 +63,36 @@ function D4:CreateUIWhatsNew(tab)
         win:Layout()
     end
 
+    local function AddHeader(category, id)
+        local header = win:AddCategory({label = category.settingLabel, key = id, added = category.added, level = category.level})
+        win.category = nil
+        win.categoryStack = {}
+        return {category = category, header = header, element = header.element}
+    end
+
+    local function AddCheckboxRow(setting)
+        local source, options = setting.checkbox, setting.setting
+        local control = win:AddCheckbox({
+            label = options.label,
+            added = options.added,
+            textFunc = options.textFunc,
+            tooltip = options.tooltip,
+            value = source:GetChecked(),
+            func = function(value)
+                source:SetChecked(value)
+                if options.func then options.func(value, source) end
+            end
+        })
+        return {control = control, source = source, element = control.uiElement}
+    end
+
     local function AddRow(setting)
         if setting.whatsNewControl then
             local control = setting.whatsNewControl(win)
             return {control = control, element = control.uiElement}
         end
+
+        if setting.checkbox and setting.setting then return AddCheckboxRow(setting) end
 
         local holder = CreateFrame("Frame", nil, win.content)
         local label = holder:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -61,7 +101,8 @@ function D4:CreateUIWhatsNew(tab)
         body:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -4)
         body:SetWidth(win.contentWidth - 16)
         body:SetJustifyH("LEFT")
-        return {label = label, text = body, element = UI:Add(win, holder, UI.ROW, nil, true)}
+        holder.Label = label
+        return {label = label, text = body, element = UI:Add(win, holder, UI.ROW, nil, true, nil, setting.added)}
     end
 
     local function Show(onlyNew)
@@ -77,7 +118,7 @@ function D4:CreateUIWhatsNew(tab)
         if #entries == 0 then return end
 
         if not win then
-            win = D4:CreateUIWindow({name = tab.name, title = tab.title, width = 520, height = 250, resizable = false})
+            win = D4:CreateUIWindow({name = tab.name, title = tab.title, width = 520, height = 500, resizable = false})
             if tab.addLanguageButton then refreshLanguageButton = tab.addLanguageButton(win) end
             local header = win:AddHeader()
             heading = header:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -98,14 +139,37 @@ function D4:CreateUIWhatsNew(tab)
             row.element.hidden = true
             row.element.noticeOrder = math.huge
         end
-        for index, entry in ipairs(entries) do
-            local row = rows[entry.id] or AddRow(entry.setting)
-            rows[entry.id] = row
-            row.setting = entry.setting
+
+        local order, shown = 0, {}
+        local function Place(id, row, depth, parent)
+            rows[id] = row
+            order = order + 1
             row.element.hidden = false
-            row.element.noticeOrder = index
+            row.element.noticeOrder = order
+            row.element.depth = depth
+            row.element.category = parent
         end
-        table.sort(win.elements, function(left, right) return left.noticeOrder < right.noticeOrder end)
+
+        for _, entry in ipairs(entries) do
+            local path, parent = "", nil
+            local categories = GetCategories(entry.setting)
+            for depth, category in ipairs(categories) do
+                path = path .. ":" .. (category.settingLabel or category.key or "")
+                local headerID = "category" .. path
+                local header = rows[headerID] or AddHeader(category, headerID)
+                if not shown[headerID] then
+                    shown[headerID] = true
+                    Place(headerID, header, depth - 1, parent)
+                end
+                parent = header.element
+            end
+
+            local row = rows[entry.id] or AddRow(entry.setting)
+            row.setting = entry.setting
+            if row.source then row.control:SetChecked(row.source:GetChecked()) end
+            Place(entry.id, row, #categories, parent)
+        end
+        table.sort(win.elements, function(left, right) return (left.noticeOrder or math.huge) < (right.noticeOrder or math.huge) end)
 
         win:Show()
         notice:RefreshLanguage()

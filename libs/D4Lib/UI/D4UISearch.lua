@@ -7,7 +7,7 @@ function UI.WindowMixin:AddSearch(tab)
     local name = UI:NextName(win, "Search")
     local header = win.header or win:AddHeader({["height"] = 32})
     local box = CreateFrame("EditBox", name, header, "InputBoxTemplate")
-    box:SetPoint("LEFT", header, "LEFT", 9 + (tab.leftInset or 0), 1)
+    box:SetPoint("LEFT", header, "LEFT", 9 + (tab.leftInset or 0) + (win.navToggle and 26 or 0), 1)
     box:SetPoint("RIGHT", header, "RIGHT", -(3 + (tab.rightInset or 0)), 1)
     local height = tab.height or UI.ROW
     box:SetHeight(height)

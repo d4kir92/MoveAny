@@ -1,6 +1,7 @@
 local _, D4 = ...
 local PIN_SIZE = 26
 local BOSS_PIN_SIZE = 34
+local BOSS_PIN_BASE_SCALE = 0.6
 local PIN_RING_SCALE = 1.55
 local PIN_RING_TEXTURE = "Interface\\Minimap\\MiniMap-TrackingBorder"
 local PIN_MASK = "Interface\\CharacterFrame\\TempPortraitAlphaMask"
@@ -238,6 +239,7 @@ function InstancePins:Update(rows, art, scale)
     local w = art:GetWidth()
     local h = art:GetHeight()
     local baseLevel = self.parent:GetFrameLevel()
+    local bossScale = BOSS_PIN_BASE_SCALE * (options.getBossScale ~= nil and options.getBossScale() or 1)
     local count = 0
     for _, row in ipairs(rows or {}) do
         local level = nil
@@ -256,10 +258,11 @@ function InstancePins:Update(rows, art, scale)
             pin.badge:SetFrameLevel(frameLevel + 2)
             pin.row = row
             pin.level = level
-            pin:SetScale(1 / scale)
+            local pinScale = (row[1] == "boss" and bossScale or 1) / scale
+            pin:SetScale(pinScale)
             StylePin(pin, row, options.media)
             pin:ClearAllPoints()
-            pin:SetPoint("CENTER", art, "TOPLEFT", w * row[2] * scale, -h * row[3] * scale)
+            pin:SetPoint("CENTER", art, "TOPLEFT", w * row[2] / pinScale, -h * row[3] / pinScale)
             pin:Show()
         end
     end

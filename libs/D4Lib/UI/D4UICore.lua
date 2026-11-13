@@ -125,6 +125,7 @@ function UI:Add(win, frame, height, label, stretch, search, added, setting)
         ["added"] = added,
         ["settingLabel"] = setting and setting.label,
         ["whatsNew"] = setting and setting.whatsNew,
+        ["setting"] = setting,
     }
 
     if win.category then element.depth = win.category.depth + 1 end
@@ -321,8 +322,10 @@ function UI.WindowMixin:Layout()
             element.frame:ClearAllPoints()
             element.frame:SetPoint("TOPLEFT", self.content, "TOPLEFT", x, y)
             element.frame:Show()
+            element.offsetY = -y
             y = y - element.height - UI.SPACING
         else
+            element.offsetY = nil
             element.frame:Hide()
         end
     end
@@ -330,6 +333,7 @@ function UI.WindowMixin:Layout()
     if self.scroll then self.content:SetWidth(self.contentWidth) end
     self.content:SetHeight(math.max(1, -y + UI.PADDING))
     self:UpdateScroll()
+    if self.nav then self:RefreshNav() end
 end
 
 function UI.WindowMixin:UpdateScroll()
