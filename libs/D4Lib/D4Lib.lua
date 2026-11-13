@@ -1242,6 +1242,11 @@ D4:OnEvent(f, function(self, event, ...)
             MiniMapTracking:Show()
         end
     end
+
+    if D4:IsForever() and C_CVar and C_CVar.GetCVar and C_CVar.GetCVar("showKeyring") == "0" then
+        C_CVar.SetCVar("showKeyring", "1")
+        if KeyRingButton and KeyRingButton.OnBagUpdate then KeyRingButton:OnBagUpdate() end
+    end
 end, "MiniMapTracking")
 
 function D4:DrawDebug(name, callback, fontSize, sw, sh, p1, p2, p3, p4, p5)
