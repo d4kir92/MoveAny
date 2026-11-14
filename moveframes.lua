@@ -265,6 +265,21 @@ function MoveAny:MAFrameStopMoving(frameObj, name)
 	prevMouseY = nil
 end
 
+function MoveAny:IsOffScreenPoint(...)
+	for i = 1, select("#", ...) do
+		local v = select(i, ...)
+		if type(v) == "number" and (v >= 10000 or v <= -10000) then return true end
+	end
+
+	return false
+end
+
+function MoveAny:IsFrameParkedOffScreen(frameObj)
+	local ok, res = pcall(function() return MoveAny:IsOffScreenPoint(select(2, frameObj:GetPoint(1))) end)
+
+	return ok and res == true
+end
+
 function MoveAny:CheckSave(frameObj, name)
 	if not MoveAny:IsEnabled("SAVEFRAMEPOSITION", true) then
 		MoveAny:SaveFramePointToDB(name, nil, nil, nil, nil, nil)
@@ -449,6 +464,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 							if maframesetpoint[sel] or ma_externalmove[sel] then return end
 							if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 							if sel:GetNumPoints() == 0 then return end
+							if MoveAny:IsFrameParkedOffScreen(sel) then return end
 							local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
 							if dbp1 and dbp3 then
 								local w, h = sel:GetSize()
@@ -487,7 +503,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 						end
 					end
 
-					if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPWINDOWTOSCREEN", true) then MoveAny:SetClampedToScreen(frame, true, "UpdateMoveFrames 2") end
+					if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPWINDOWTOSCREEN", true) and not MoveAny:IsFrameParkedOffScreen(frame) then MoveAny:SetClampedToScreen(frame, true, "UpdateMoveFrames 2") end
 					MoveAny:CheckSave(frame, name)
 					local function OnMAFrameHidden()
 						MoveAny:MAFrameStopMoving(frame, name)
@@ -599,6 +615,13 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 					MAHookScript(frame, "OnMouseUp", function(sel, btn) frame:MA_OnMouseUp(sel, btn) end)
 					hooksecurefunc(frame, "SetPoint", function(sel, p1, p2, p3, p4, p5)
 						if maframesetpoint[sel] or ma_externalmove[sel] then return end
+						if MoveAny:IsOffScreenPoint(p2, p3, p4, p5) then
+							MoveAny:SetClampedToScreen(sel, false, "UpdateMoveFrames OffScreen")
+
+							return
+						end
+
+						if MAFRAMESIGNORECLAMP[name] == nil and MoveAny:IsEnabled("CLAMPWINDOWTOSCREEN", true) and not sel:IsClampedToScreen() then MoveAny:SetClampedToScreen(sel, true, "UpdateMoveFrames OnScreen") end
 						maframesetpoint[sel] = true
 						if name == "LootFrame" and MoveAny:IsEnabled("MOVELOOTFRAME", false) == false then return end
 						local dbp1, _, dbp3, dbp4, dbp5 = MoveAny:GetFramePoint(name)
