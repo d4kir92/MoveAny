@@ -532,7 +532,7 @@ function MoveAny:UpdateMoveFrames(from, force, ts)
 
 					hooksecurefunc(frame, "StartMoving", function(sel)
 						if ma_externalmove[sel] then return end
-						if not IsMouseButtonDown("LeftButton") or not MouseIsOver(sel) then return end
+						if not IsMouseButtonDown("LeftButton") or not sel:IsMouseOver() then return end
 						ma_externalmove[sel] = true
 						MoveAny:MAFrameStopMoving(sel, name)
 					end)
