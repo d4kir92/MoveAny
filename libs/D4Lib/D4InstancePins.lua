@@ -13,7 +13,45 @@ local PIN_ICONS = {
     ["raid"] = {{"Raid", "Dungeon", "DungeonSkull", "Dungeon-Normal"}, "Interface\\Icons\\INV_Misc_Bone_Skull_02"},
     ["down"] = {{"CaveUnderground-Down", "CaveUnderground-Up"}, "Interface\\Icons\\INV_Misc_Map_01"},
     ["up"] = {{"CaveUnderground-Up", "CaveUnderground-Down"}, "Interface\\Icons\\INV_Misc_Map_01"},
+    ["queststart"] = {{"QuestNormal", "Quest-Available"}, "Interface\\GossipFrame\\AvailableQuestIcon"},
+    ["questend"] = {{"QuestTurnin", "Quest-Complete"}, "Interface\\GossipFrame\\ActiveQuestIcon"},
 }
+
+local QUEST_KINDS = {
+    ["queststart"] = true,
+    ["questend"] = true,
+}
+
+function D4:IsInstanceQuestCompleted(questID)
+    if C_QuestLog ~= nil and C_QuestLog.IsQuestFlaggedCompleted ~= nil then return C_QuestLog.IsQuestFlaggedCompleted(questID) == true end
+    if IsQuestFlaggedCompleted ~= nil then return IsQuestFlaggedCompleted(questID) == true end
+
+    return false
+end
+
+function D4:IsInstanceQuestActive(questID)
+    if C_QuestLog ~= nil and C_QuestLog.GetLogIndexForQuestID ~= nil then return C_QuestLog.GetLogIndexForQuestID(questID) ~= nil end
+    if GetNumQuestLogEntries == nil or GetQuestLogTitle == nil then return false end
+    for index = 1, GetNumQuestLogEntries() do
+        local _, _, _, isHeader, _, _, _, id = GetQuestLogTitle(index)
+        if not isHeader and id == questID then return true end
+    end
+
+    return false
+end
+
+function D4:IsInstanceQuestPinVisible(row)
+    local questID = row[4]
+    if type(questID) ~= "number" or D4:IsInstanceQuestCompleted(questID) then return false end
+    local active = D4:IsInstanceQuestActive(questID)
+    if row[1] == "questend" then return active end
+    if active then return false end
+    for _, prerequisiteID in ipairs(type(row[6]) == "table" and row[6] or {}) do
+        if not D4:IsInstanceQuestCompleted(prerequisiteID) then return false end
+    end
+
+    return true
+end
 
 local BADGE_STYLES = {
     [0] = {
@@ -141,16 +179,17 @@ local function StylePin(pin, row, media)
         pin.portrait:SetTexture(GetItemTexture(row[4]))
         pcall(pin.portrait.SetTexCoord, pin.portrait, 0.07, 0.93, 0.07, 0.93)
     else
-        local def = row[1] == "entrance" and PIN_ICONS[row[4] == "raid" and "raid" or "entrance"] or row[5] and PIN_ICONS["up"] or PIN_ICONS["down"]
+        local def = QUEST_KINDS[row[1]] and PIN_ICONS[row[1]] or row[1] == "entrance" and PIN_ICONS[row[4] == "raid" and "raid" or "entrance"] or row[5] and PIN_ICONS["up"] or PIN_ICONS["down"]
         ApplyIcon(pin.icon, def)
         ApplyIcon(pin.highlight, def)
     end
 end
 
-local TOGGLES = {{"boss", {{}, "Interface\\TargetingFrame\\UI-RaidTargetingIcons"}, {0.75, 1, 0.25, 0.5}}, {"item", {{}, "Interface\\Icons\\INV_Misc_Bag_10"}}, {"entrance", PIN_ICONS["entrance"]}, {"level", PIN_ICONS["up"]}}
+local TOGGLES = {{"boss", {{}, "Interface\\TargetingFrame\\UI-RaidTargetingIcons"}, {0.75, 1, 0.25, 0.5}}, {"item", {{}, "Interface\\Icons\\INV_Misc_Bag_10"}}, {"quest", {{}, "Interface\\GossipFrame\\AvailableQuestIcon"}},{"entrance", PIN_ICONS["entrance"]}, {"level", PIN_ICONS["up"]}}
 local InstancePins = {}
 InstancePins.__index = InstancePins
 function InstancePins:IsKindEnabled(kind)
+    if QUEST_KINDS[kind] then kind = "quest" end
     return self.options.isEnabled == nil or self.options.isEnabled(kind) ~= false
 end
 
@@ -244,7 +283,7 @@ function InstancePins:Update(rows, art, scale)
     for _, row in ipairs(rows or {}) do
         local level = nil
         if row[1] == "level" and options.getLevel then level = options.getLevel(row) end
-        if self:IsKindEnabled(row[1]) and (row[1] ~= "level" or level ~= nil) then
+        if self:IsKindEnabled(row[1]) and (row[1] ~= "level" or level ~= nil) and self:IsQuestRowVisible(row) then
             count = count + 1
             local pin = self.pins[count]
             if pin == nil then
@@ -253,7 +292,11 @@ function InstancePins:Update(rows, art, scale)
             end
 
             local frameLevel = baseLevel + 2 + count * 3
-            if row[1] == "boss" then frameLevel = frameLevel + #rows * 3 end
+            if row[1] == "boss" then
+                frameLevel = frameLevel + #rows * 3
+            elseif QUEST_KINDS[row[1]] then
+                frameLevel = frameLevel + #rows * 6
+            end
             pin:SetFrameLevel(frameLevel)
             pin.badge:SetFrameLevel(frameLevel + 2)
             pin.row = row
@@ -270,6 +313,13 @@ function InstancePins:Update(rows, art, scale)
     for i = count + 1, #self.pins do
         self.pins[i]:Hide()
     end
+end
+
+function InstancePins:IsQuestRowVisible(row)
+    if not QUEST_KINDS[row[1]] then return true end
+    if self.options.isQuestVisible ~= nil then return self.options.isQuestVisible(row) ~= false end
+
+    return D4:IsInstanceQuestPinVisible(row)
 end
 
 function InstancePins:Hide()

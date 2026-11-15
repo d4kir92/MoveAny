@@ -333,6 +333,10 @@ function D4:CreateInstanceMap(provider)
             else
                 GameTooltip:SetHyperlink("item:" .. row[4])
             end
+        elseif row[1] == "queststart" or row[1] == "questend" then
+            GameTooltip:SetText(provider.getQuestName and provider.getQuestName(row) or row[5] or "")
+            local text = provider.getQuestKindText and provider.getQuestKindText(row)
+            if text then GameTooltip:AddLine(text, 1, 0.82, 0) end
         elseif row[1] == "level" then
             GameTooltip:SetText(GetLabel(shownLevels, shownLevels[pin.level]))
             local hint = provider.getLevelHint and provider.getLevelHint()
@@ -384,7 +388,15 @@ function D4:CreateInstanceMap(provider)
             return
         end
 
-        local key = format("%s|%.4f|%.1f|%.1f|%d", info.key, scale, overlay.art:GetWidth(), overlay.art:GetHeight(), #rows)
+        local questKey = {}
+        for _, row in ipairs(rows) do
+            if row[1] == "queststart" or row[1] == "questend" then
+                local visible = provider.isQuestPinVisible ~= nil and provider.isQuestPinVisible(row) or provider.isQuestPinVisible == nil and D4:IsInstanceQuestPinVisible(row)
+                tinsert(questKey, visible and "1" or "0")
+            end
+        end
+
+        local key = format("%s|%.4f|%.1f|%.1f|%d|%s", info.key, scale, overlay.art:GetWidth(), overlay.art:GetHeight(), #rows, table.concat(questKey))
         if key == mapPinKey then return end
         mapPinKey = key
         if mapPinSet == nil then
@@ -395,6 +407,7 @@ function D4:CreateInstanceMap(provider)
                 ["onMouseUp"] = OnMapPinMouseUp,
                 ["getLevel"] = function(row) return FindLevelIndex(shownLevels, row[4]) end,
                 ["isEnabled"] = provider.isPinEnabled,
+                ["isQuestVisible"] = provider.isQuestPinVisible,
                 ["setEnabled"] = function(kind, enabled)
                     if provider.setPinEnabled then provider.setPinEnabled(kind, enabled) end
                     mapPinKey = nil
