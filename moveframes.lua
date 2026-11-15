@@ -266,9 +266,16 @@ function MoveAny:MAFrameStopMoving(frameObj, name)
 end
 
 function MoveAny:IsOffScreenPoint(...)
+	local limit = 10000
+	if UIParent and UIParent.GetWidth then
+		local w, h = UIParent:GetWidth() or 0, UIParent:GetHeight() or 0
+		local screen = math.max(w, h) * 1.25
+		if screen > 0 and screen < limit then limit = screen end
+	end
+
 	for i = 1, select("#", ...) do
 		local v = select(i, ...)
-		if type(v) == "number" and (v >= 10000 or v <= -10000) then return true end
+		if type(v) == "number" and (v >= limit or v <= -limit) then return true end
 	end
 
 	return false
