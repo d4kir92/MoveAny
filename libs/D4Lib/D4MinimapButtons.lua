@@ -85,7 +85,7 @@ local function GetButtonBag()
     return _G[BAGNAME]
 end
 
-local function IsExcludedFromButtonBag(btn)
+local function IsExcludedByLeatrix(btn)
     local db = _G["LeaPlusDB"]
     if type(db) ~= "table" or type(db["MiniExcludeList"]) ~= "string" then return false end
     local nam = D4:GetName(btn)
@@ -142,7 +142,7 @@ end
 
 local function MoveToButtonBag(btn)
     local bag = GetButtonBag()
-    if bag == nil or btn.d4NoBag or D4:GetParent(btn) == bag or IsExcludedFromButtonBag(btn) then return end
+    if bag == nil or btn.d4NoBag or D4:GetParent(btn) == bag or IsExcludedByLeatrix(btn) then return end
     if not bag.d4Hooked then
         bag.d4Hooked = true
         bag:HookScript("OnShow", function() D4:After(0, LayoutButtonBag, "[D4] ButtonBagLayout") end)
@@ -176,16 +176,32 @@ end
 local pos = {}
 function D4:UpdatePosition(button, position, parent)
     if parent == nil and GetButtonBag() ~= nil and D4:GetParent(button) == GetButtonBag() then return false end
+    if InCombatLockdown() and button:IsProtected() then
+        D4:After(0.1, function() D4:UpdatePosition(button, position, parent) end, "UpdatePosition")
+        return false
+    end
+
     parent = parent or Minimap
     pos[button] = position or 225
+    if parent == Minimap then
+        button.ltp = true
+        local dbIcon = LibStub and LibStub("LibDBIcon-1.0", true)
+        if dbIcon and dbIcon.SetButtonToPosition then
+            button:ClearAllPoints()
+            dbIcon:SetButtonToPosition(button, pos[button])
+            return true
+        end
+    end
     local angle = rad(pos[button])
     local x, y, q = cos(angle), sin(angle), 1
     if x < 0 then q = q + 1 end
     if y > 0 then q = q + 2 end
     local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
     local qt = mmShapes[minimapShape]
-    local w = (Minimap:GetWidth() / 2) + button:GetWidth() / 2 - button:GetWidth() / 5
-    local h = (Minimap:GetHeight() / 2) + button:GetHeight() / 2 - button:GetHeight() / 5
+    local horizontalInset = parent == Minimap and 5 or button:GetWidth() * 0.3
+    local verticalInset = parent == Minimap and 5 or button:GetHeight() * 0.3
+    local w = Minimap:GetWidth() / 2 + horizontalInset
+    local h = Minimap:GetHeight() / 2 + verticalInset
     w = w / button:GetScale()
     h = h / button:GetScale()
     if qt[q] then
@@ -195,11 +211,6 @@ function D4:UpdatePosition(button, position, parent)
         local drh = sqrt(2 * h ^ 2) - 10
         x = max(-w, min(x * drw, w))
         y = max(-h, min(y * drh, h))
-    end
-
-    if InCombatLockdown() and button:IsProtected() then
-        D4:After(0.1, function() D4:UpdatePosition(button, position, parent) end, "UpdatePosition")
-        return false
     end
 
     button:ClearAllPoints()
@@ -429,12 +440,19 @@ function D4:CreateMinimapButton(params)
         local oldState = false
         local function BtnThink(force)
             local onMinimap = IsOnMinimap(btn)
-            local shouldShow = not onMinimap or btn.db[ALWAYSSHOWKEY] ~= false or insideBtn or insideMinimap or d4_isMouseDown[btn] == true
+            local leatrix = LeaPlusDB
+            local hideWithLeatrix = leatrix and leatrix["MinimapModder"] == "On"
+                and leatrix["MinimapButtonBag"] == "Off" and leatrix["HideMiniAddonButtons"] == "On"
+                and not IsExcludedByLeatrix(btn)
+            local alwaysShow = btn.db[ALWAYSSHOWKEY] ~= false and not hideWithLeatrix
+            local shouldShow = not onMinimap or alwaysShow or insideBtn or insideMinimap or d4_isMouseDown[btn] == true
             if force then oldState = nil end
             if oldState ~= shouldShow then
                 oldState = shouldShow
                 if not shouldShow then
                     btn.fadeIn:Stop()
+                    animOut:SetStartDelay(hideWithLeatrix and 1 or 0.1)
+                    animOut:SetDuration(hideWithLeatrix and 0.2 or 0.1)
                     btn.fadeOut:Play()
                 elseif onMinimap then
                     btn.fadeOut:Stop()
@@ -536,20 +554,9 @@ function D4:HideMMBtn(name)
 end
 
 function D4:UpdateLTP()
-    local MinimapModder = LeaPlusDB and LeaPlusDB["MinimapModder"] and LeaPlusDB["MinimapModder"] == "On"
-    if MinimapModder then
-        --local HideMiniAddonButtons = LeaPlusDB["HideMiniAddonButtons"] == "On"
-        D4:ForeachChildren(Minimap, function(child)
-            local name = D4:GetName(child)
-            if name then
-                local s1 = string.find(string.lower(name), "libdbicon")
-                if s1 and s1 > 1 and child.ltp == nil then
-                    child.ltp = true
-                    child:SetScale(0.75)
-                    D4:UpdatePosition(child, pos[child])
-                end
-            end
-        end, "MMBtns")
+    if not LeaPlusDB or LeaPlusDB["MinimapModder"] ~= "On" then return end
+    for button, position in pairs(pos) do
+        if IsOnMinimap(button) then D4:UpdatePosition(button, position) end
     end
 end
 
