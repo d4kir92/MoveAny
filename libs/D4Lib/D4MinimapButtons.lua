@@ -211,6 +211,34 @@ function D4:GetMMBtn(name)
     return _G[name]
 end
 
+function D4:SetAddonCompartmentEnabled(name, enabled)
+    local compartment = AddonCompartmentFrame
+    local btn = self:GetMMBtn(BTNPREFIX .. name)
+    local entry = btn and btn.d4CompartmentEntry
+    if not compartment or not entry then return end
+
+    local entries = compartment.registeredAddons
+    if type(entries) == "table" then
+        for index, registeredEntry in ipairs(entries) do
+            if registeredEntry == entry then
+                if not enabled and compartment.UpdateDisplay then
+                    table.remove(entries, index)
+                    compartment:UpdateDisplay()
+                end
+
+                return
+            end
+        end
+    elseif btn.d4CompartmentRegistered then
+        return
+    end
+
+    if enabled and compartment.RegisterAddon then
+        compartment:RegisterAddon(entry)
+        btn.d4CompartmentRegistered = true
+    end
+end
+
 function D4:CreateMinimapButton(params)
     if params.icon == nil and params.atlas == nil then
         D4:MSG("[CreateMinimapButton] Missing Icon/Atlas")
@@ -345,7 +373,7 @@ function D4:CreateMinimapButton(params)
 
     btn:SetScript("OnLeave", function(sel) btn.tooltip:Hide() end)
     if AddonCompartmentFrame and (params.addoncomp == nil or params.addoncomp == true) then
-        AddonCompartmentFrame:RegisterAddon({
+        btn.d4CompartmentEntry = {
             text = params.name,
             icon = params.icon,
             registerForAnyClick = true,
@@ -375,7 +403,8 @@ function D4:CreateMinimapButton(params)
                 end)
             end,
             funcOnLeave = function(button) MenuUtil.HideTooltip(button) end,
-        })
+        }
+        D4:SetAddonCompartmentEnabled(params.name, params.addoncompEnabled ~= false)
     end
 
     if not params.noalpha then
