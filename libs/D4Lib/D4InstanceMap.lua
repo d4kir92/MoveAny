@@ -12,7 +12,7 @@ local NAV_BUTTON_PLAIN = 30
 local NAV_BUTTON_MIN_TEXT = 60
 local PIN_TOGGLE_OFFSET_X = 40
 local PIN_TOGGLE_OFFSET_Y = 10
-local SIDE_PANEL_BUTTONS = {"OpenButton", "CloseButton"}
+local FRAME_STRATA = {"BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "FULLSCREEN", "FULLSCREEN_DIALOG", "TOOLTIP"}
 local BOSS_SCALE = {
     ["min"] = 0.5,
     ["max"] = 1.5,
@@ -473,6 +473,31 @@ function D4:CreateInstanceMap(provider)
         overlay:SetScript("OnMouseDown", OnOverlayMouseDown)
         overlay:SetScript("OnMouseWheel", OnOverlayWheel)
         overlay:SetScript("OnUpdate", OnOverlayUpdate)
+        local toggle = WorldMapFrame.SidePanelToggle
+        if toggle ~= nil then
+            local originalStrata, raisedStrata
+            overlay:HookScript("OnShow", function()
+                local overlayStrata = overlay:GetFrameStrata()
+                local toggleStrata = toggle:GetFrameStrata()
+                local overlayIndex, toggleIndex
+                for index, strata in ipairs(FRAME_STRATA) do
+                    if strata == overlayStrata then overlayIndex = index end
+                    if strata == toggleStrata then toggleIndex = index end
+                end
+
+                if overlayIndex ~= nil and toggleIndex ~= nil and toggleIndex <= overlayIndex then
+                    raisedStrata = FRAME_STRATA[overlayIndex + 1]
+                    if raisedStrata ~= nil then
+                        originalStrata = toggleStrata
+                        toggle:SetFrameStrata(raisedStrata)
+                    end
+                end
+            end)
+            overlay:HookScript("OnHide", function()
+                if originalStrata ~= nil and toggle:GetFrameStrata() == raisedStrata then toggle:SetFrameStrata(originalStrata) end
+                originalStrata, raisedStrata = nil, nil
+            end)
+        end
         overlay:SetAllPoints(container)
         if overlay.SetClipsChildren ~= nil then overlay:SetClipsChildren(true) end
         overlay.bg = overlay:CreateTexture(nil, "BACKGROUND")
@@ -596,16 +621,6 @@ function D4:CreateInstanceMap(provider)
             if not levelButton:IsShown() then levelButton:Show() end
         elseif levelButton:IsShown() then
             levelButton:Hide()
-        end
-
-        local toggle = WorldMapFrame.SidePanelToggle
-        if toggle ~= nil and toggle.SetFrameLevel ~= nil then
-            local level = overlay:GetFrameLevel() + 2001
-            if toggle:GetFrameLevel() < level then toggle:SetFrameLevel(level) end
-            for _, name in ipairs(SIDE_PANEL_BUTTONS) do
-                local button = toggle[name]
-                if button ~= nil and button.SetFrameLevel ~= nil and button:GetFrameLevel() <= level then button:SetFrameLevel(level + 1) end
-            end
         end
 
         if not overlay:IsShown() then overlay:Show() end

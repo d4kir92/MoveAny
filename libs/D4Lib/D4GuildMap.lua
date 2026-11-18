@@ -106,6 +106,11 @@ function D4:CreateGuildMap(options)
         }
     }
 
+    function Guild.GetClassColor(class)
+        local color = options.getClassColor and options.getClassColor(class)
+        return color or RAID_CLASS_COLORS[class or ""] or Guild.fallbackColor
+    end
+
     function Guild.IsActive()
         return D4:GetGuildMapOwner() == Guild.owner
     end
@@ -508,7 +513,7 @@ function D4:CreateGuildMap(options)
 
             GameTooltip:SetText(commonZone or GUILD)
             for index, member in ipairs(pin.zoneMembers) do
-                local color = RAID_CLASS_COLORS[member.class or ""] or Guild.fallbackColor
+                local color = Guild.GetClassColor(member.class)
                 local details = {}
                 local rank = member.rank or Guild.ranks[member.name]
                 local level = Guild.rosterLevels[member.name] or member.level
@@ -527,7 +532,7 @@ function D4:CreateGuildMap(options)
         local member = pin.member
         if member == nil then return end
         GameTooltip:SetOwner(pin, "ANCHOR_RIGHT")
-        local color = RAID_CLASS_COLORS[member.class or ""] or Guild.fallbackColor
+        local color = Guild.GetClassColor(member.class)
         GameTooltip:SetText(member.name, color.r, color.g, color.b)
         local rank = member.rank or Guild.ranks[member.name]
         if rank ~= nil then
@@ -800,11 +805,13 @@ function D4:CreateGuildMap(options)
         pie:Show()
         Guild.SetLabel(pie.count, #members > 1 and #members or nil, fontSize, Guild.textColor)
         local signature = {}
-        local sectors, total = {}, 0
+        local sectors, colors, total = {}, {}, 0
         for _, class in ipairs(classes) do
             total = total + counts[class]
             sectors[#sectors + 1] = total / #members
-            signature[#signature + 1] = class .. counts[class]
+            local color = Guild.GetClassColor(class)
+            colors[#colors + 1] = color
+            signature[#signature + 1] = table.concat({class, counts[class], color.r, color.g, color.b}, ":")
         end
         local key = table.concat(signature, ":")
         if pie.key == key and pie.size == size and pie.inset == inset then return end
@@ -833,7 +840,7 @@ function D4:CreateGuildMap(options)
                             run = pie:CreateTexture(nil, "ARTWORK")
                             pie.runs[used] = run
                         end
-                        local color = RAID_CLASS_COLORS[classes[previous]] or Guild.fallbackColor
+                        local color = colors[previous]
                         run:SetColorTexture(color.r, color.g, color.b)
                         run:SetPoint("TOPLEFT", pie, "TOPLEFT", start * pixel, -row * pixel)
                         run:SetSize((column - start) * pixel, pixel)
@@ -1021,7 +1028,7 @@ function D4:CreateGuildMap(options)
                     pin.dot:ClearAllPoints()
                     pin.dot:SetPoint("TOPLEFT", inset, -inset)
                     pin.dot:SetPoint("BOTTOMRIGHT", -inset, inset)
-                    local color = RAID_CLASS_COLORS[member.class or ""] or Guild.fallbackColor
+                    local color = Guild.GetClassColor(member.class)
                     local taxiIcon = member.taxi and (member.faction == "Horde" and 132268 or member.faction == "Alliance" and 132239)
                     pin.dot:SetTexture(taxiIcon or Guild.mask)
                     if taxiIcon then
