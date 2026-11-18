@@ -87,6 +87,11 @@ end
 
 function MoveAny:HasExternalWorldMapDrag()
 	if maWorldMapExternalDrag then return true end
+	if MoveAny:IsAddOnLoaded("MapUtils") then
+		maWorldMapExternalDrag = true
+		return true
+	end
+
 	if maWorldMapOwned then return false end
 	if not C_Widget.IsWidget(WorldMapFrame) then return false end
 	local external = false
