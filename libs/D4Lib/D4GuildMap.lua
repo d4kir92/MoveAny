@@ -17,6 +17,19 @@ function D4:AttachGuildMapHooks()
     end
 end
 
+function D4:MarkGuildMapDirty()
+    for _, guild in pairs(_G[GUILDMAP_MAPS] or {}) do
+        guild.dirty = true
+    end
+end
+
+function D4:GetActiveGuildMap()
+    local maps = _G[GUILDMAP_MAPS]
+    local owner = D4:GetGuildMapOwner()
+
+    return maps ~= nil and owner ~= nil and maps[owner] or nil
+end
+
 function D4:GetGuildMapOwner()
     local owners = _G[GUILDMAP_OWNERS]
     if owners == nil then return nil end
@@ -42,7 +55,10 @@ function D4:CreateGuildMap(options)
         getClip = options.getClip,
         getZoneSpace = options.getZoneSpace,
         setPinScale = options.setPinScale,
-        attach = options.attach
+        attach = options.attach,
+        getFriends = options.getFriends,
+        isFriend = options.isFriend,
+        friendLabel = options.friendLabel
     }
 
     local Guild = {
@@ -79,6 +95,18 @@ function D4:CreateGuildMap(options)
             g = 1,
             b = 1
         },
+        friendColor = {
+            r = 0.51,
+            g = 0.77,
+            b = 1
+        },
+        guildColor = {
+            r = 0.25,
+            g = 1,
+            b = 0.25
+        },
+        drawList = {},
+        drawn = {},
         members = {},
         pins = {},
         rects = {},
@@ -98,7 +126,8 @@ function D4:CreateGuildMap(options)
             GuildMap = 20,
             GuildAtlas = 150,
             GuildCrest = 30,
-            Kinship = 1900
+            Kinship = 1900,
+            OpenMap = 150
         },
         ownSources = {
             MapUtils = true,
@@ -137,12 +166,48 @@ function D4:CreateGuildMap(options)
         return Guild.IsActive() and Guild.GetConfig("GUILDMEMBERSHARE", true)
     end
 
-    function Guild.IsHiddenOn(mapID)
+    function Guild.IsHiddenOn(mapID, kind)
         for _, hooks in pairs(_G[GUILDMAP_HOOKS]) do
-            if hooks.isHidden ~= nil and hooks.isHidden(mapID) then return true end
+            if hooks.isHidden ~= nil and hooks.isHidden(mapID, kind or "guild") then return true end
         end
 
         return false
+    end
+
+    function Guild.GetFriends()
+        for _, hooks in pairs(_G[GUILDMAP_HOOKS]) do
+            local friends = hooks.getFriends ~= nil and hooks.getFriends()
+            if friends then return friends end
+        end
+    end
+
+    function Guild.IsFriend(name)
+        for _, hooks in pairs(_G[GUILDMAP_HOOKS]) do
+            if hooks.isFriend ~= nil and hooks.isFriend(name) then return true end
+        end
+
+        return false
+    end
+
+    function Guild.GetFriendLabel()
+        for _, hooks in pairs(_G[GUILDMAP_HOOKS]) do
+            local label = hooks.friendLabel ~= nil and hooks.friendLabel()
+            if label then return label end
+        end
+
+        return FRIEND or "Friend"
+    end
+
+    function Guild.GetRelationText(member)
+        local parts = {}
+        local function Add(text, color)
+            parts[#parts + 1] = format("|cff%02x%02x%02x%s|r", math.floor(color.r * 255 + 0.5), math.floor(color.g * 255 + 0.5), math.floor(color.b * 255 + 0.5), text)
+        end
+
+        if member.friend then Add(Guild.GetFriendLabel(), Guild.friendColor) end
+        if member.guild then Add(GUILD or "Guild", Guild.guildColor) end
+
+        return #parts > 0 and table.concat(parts, ", ") or nil
     end
 
     function Guild.GetClip(mapID)
@@ -367,6 +432,12 @@ function D4:CreateGuildMap(options)
             local mapID, x, y, class, level = message:match("^1~POS~[^~]*~(%d+)~([%d%.]+)~([%d%.]+)~(%u+)~(%d+)~%d+$")
             Guild.Store(sender, "GuildCrest", tonumber(mapID), tonumber(x), tonumber(y), class, tonumber(level))
         end,
+        OpenMapLoc = function(message, sender)
+            local kind, mapID, x, y, class, level = strsplit("\t", message)
+            if kind == "L0" then return Guild.Remove(sender, "OpenMap") end
+            if kind ~= "L1" then return end
+            Guild.Store(sender, "OpenMap", tonumber(mapID), tonumber(x), tonumber(y), class, tonumber(level))
+        end,
         Kinship = function(message, sender)
             local kind, body = message:match("^(%u):(.*)$")
             if kind == "P" then
@@ -399,7 +470,7 @@ function D4:CreateGuildMap(options)
                 if not Guild.IsSecret(level) and type(level) == "number" and level > 0 then Guild.rosterLevels[name] = level end
                 if rankIndex == 0 then leader = name end
                 if online and not Guild.IsSecret(zone, class, mobile) and not mobile and type(zone) == "string" and zone ~= "" and not Guild.IsSelf(name, name) then
-                    Guild.rosterZones[name] = {name = name, zone = zone, class = class}
+                    Guild.rosterZones[name] = {name = name, zone = zone, class = class, guild = true}
                 end
             end
         end
@@ -511,12 +582,19 @@ function D4:CreateGuildMap(options)
                 end
             end
 
-            GameTooltip:SetText(commonZone or GUILD)
+            local anyFriend = false
+            for _, member in ipairs(pin.zoneMembers) do
+                if member.friend then anyFriend = true end
+            end
+
+            GameTooltip:SetText(commonZone or (anyFriend and Guild.GetRelationText({friend = true, guild = true})) or GUILD)
             for index, member in ipairs(pin.zoneMembers) do
                 local color = Guild.GetClassColor(member.class)
                 local details = {}
                 local rank = member.rank or Guild.ranks[member.name]
                 local level = Guild.rosterLevels[member.name] or member.level
+                local relation = anyFriend and Guild.GetRelationText(member)
+                if relation then details[#details + 1] = relation end
                 if rank ~= nil and rank ~= "" then details[#details + 1] = rank end
                 if level ~= nil then details[#details + 1] = format("%s %d", LEVEL or "Level", level) end
                 if commonZone == nil and zones[index] ~= nil then details[#details + 1] = zones[index] end
@@ -534,7 +612,9 @@ function D4:CreateGuildMap(options)
         GameTooltip:SetOwner(pin, "ANCHOR_RIGHT")
         local color = Guild.GetClassColor(member.class)
         GameTooltip:SetText(member.name, color.r, color.g, color.b)
-        local rank = member.rank or Guild.ranks[member.name]
+        local relation = member.friend and Guild.GetRelationText(member)
+        if relation then GameTooltip:AddLine(relation, 1, 1, 1) end
+        local rank = member.guild ~= false and (member.rank or Guild.ranks[member.name]) or nil
         if rank ~= nil then
             if (member.debug and Guild.debug.crown) or (not member.debug and Guild.IsLeader(member.name)) then rank = Guild.GetCrownMarkup() .. " " .. rank end
             GameTooltip:AddLine(rank, 0.25, 1, 0.25)
@@ -856,6 +936,7 @@ function D4:CreateGuildMap(options)
     function Guild.SetGroupPin(pin, members, zone, size, scale)
         table.sort(members, function(a, b) return a.name < b.name end)
         pin.member, pin.zone, pin.zoneMembers = nil, zone, members
+        pin.border:SetVertexColor(0, 0, 0, 0.9)
         pin.dot:Hide()
         pin.level:Hide()
         pin.name:Hide()
@@ -935,13 +1016,15 @@ function D4:CreateGuildMap(options)
         end
     end
 
-    function Guild.UpdateZonePins(canvas, mapID, count, scale, width, height, level, size)
+    function Guild.UpdateZonePins(canvas, mapID, count, scale, width, height, level, size, friends)
         if not Guild.GetConfig("GUILDMEMBERZONES", true) then return count end
         local now = GetTime()
         local groups = {}
         for name, member in pairs(Guild.rosterZones) do
             local tracked = Guild.members[name]
-            if (tracked == nil or tracked.expire <= now) and not Guild.IsGrouped(name) then
+            local friend = friends and friends[name]
+            if (tracked == nil or tracked.expire <= now) and (friend == nil or friend.expire <= now) and not Guild.IsGrouped(name) then
+                member.friend = Guild.IsFriend(name) or nil
                 local group = groups[member.zone]
                 if group == nil then
                     group = {}
@@ -982,10 +1065,56 @@ function D4:CreateGuildMap(options)
         end
     end
 
+    function Guild.CollectMembers(guildShown, friends, now)
+        local list, drawn = Guild.drawList, Guild.drawn
+        wipe(list)
+        wipe(drawn)
+        if guildShown then
+            for name, member in pairs(Guild.members) do
+                if member.debug then
+                    member.guild, member.friend = true, nil
+                    list[#list + 1] = member
+                elseif member.expire > now and not Guild.IsGrouped(name) then
+                    member.guild = true
+                    member.friend = Guild.IsFriend(name) or nil
+                    list[#list + 1] = member
+                    drawn[name] = true
+                end
+            end
+        end
+
+        if friends then
+            for name, member in pairs(friends) do
+                local tracked = Guild.members[name]
+                local guildFresh = guildShown and tracked ~= nil and tracked.expire > now
+                if member.expire > now and not drawn[name] and not guildFresh and not Guild.IsGrouped(name) then
+                    member.friend = true
+                    member.guild = Guild.online[name] ~= nil or nil
+                    list[#list + 1] = member
+                    drawn[name] = true
+                end
+            end
+
+            if not guildShown then
+                for name, member in pairs(Guild.members) do
+                    if not member.debug and not drawn[name] and member.expire > now and Guild.IsFriend(name) and not Guild.IsGrouped(name) then
+                        member.guild, member.friend = true, true
+                        list[#list + 1] = member
+                        drawn[name] = true
+                    end
+                end
+            end
+        end
+
+        return list
+    end
+
     function Guild.UpdatePins()
         local canvas = WorldMapFrame:GetCanvas()
         local mapID = WorldMapFrame:GetMapID()
-        if canvas == nil or mapID == nil or not Guild.IsShown() or Guild.IsHiddenOn(mapID) then
+        local guildShown = mapID ~= nil and Guild.IsShown() and not Guild.IsHiddenOn(mapID, "guild")
+        local friends = mapID ~= nil and not Guild.IsHiddenOn(mapID, "friend") and Guild.GetFriends() or nil
+        if canvas == nil or mapID == nil or (not guildShown and friends == nil) then
             Guild.HidePins()
 
             return
@@ -1009,59 +1138,62 @@ function D4:CreateGuildMap(options)
         local count = 0
         local debugVisible = false
         local now = GetTime()
-        for name, member in pairs(Guild.members) do
-            if member.debug or (member.expire > now and not Guild.IsGrouped(name)) then
-                local x, y = Guild.Project(member.mapID, mapID, member.x, member.y)
-                if x ~= nil and x >= low and x <= high and y >= low and y <= high then
-                    count = count + 1
-                    local pin = Guild.pins[count]
-                    if pin == nil then
-                        pin = Guild.CreatePin(canvas)
-                        Guild.pins[count] = pin
-                    end
-
-                    pin.member, pin.zone, pin.zoneMembers = member, nil, nil
-                    pin.dot:Show()
-                    if pin.pie ~= nil then pin.pie:Hide() end
-                    if pin:GetFrameLevel() ~= level then pin:SetFrameLevel(level) end
-                    pin:SetSize(size, size)
-                    pin.dot:ClearAllPoints()
-                    pin.dot:SetPoint("TOPLEFT", inset, -inset)
-                    pin.dot:SetPoint("BOTTOMRIGHT", -inset, inset)
-                    local color = Guild.GetClassColor(member.class)
-                    local taxiIcon = member.taxi and (member.faction == "Horde" and 132268 or member.faction == "Alliance" and 132239)
-                    pin.dot:SetTexture(taxiIcon or Guild.mask)
-                    if taxiIcon then
-                        pin.dot:SetVertexColor(1, 1, 1, 1)
-                    else
-                        pin.dot:SetVertexColor(color.r, color.g, color.b, 1)
-                    end
-                    pin.level:ClearAllPoints()
-                    pin.level:SetPoint("CENTER", (member.level or 0) < 10 and Guild.levelOffsetX / scale or 0, 0)
-                    Guild.SetLabel(pin.level, showLevel and not taxiIcon and member.level or nil, levelSize, Guild.textColor)
-                    Guild.SetLabel(pin.name, showName and member.name or nil, nameSize, color)
-                    pin.name:ClearAllPoints()
-                    if (member.debug and Guild.debug.crown) or (not member.debug and Guild.IsLeader(name)) then
-                        pin.crown:SetSize(crownSize, crownSize)
-                        pin.crown:ClearAllPoints()
-                        pin.crown:SetPoint("BOTTOM", pin, "TOP", 0, -crownOverlap)
-                        pin.crown:Show()
-                        pin.name:SetPoint("BOTTOM", pin.crown, "TOP", 0, -Guild.nameCrownOverlap / scale)
-                    else
-                        pin.crown:Hide()
-                        pin.name:SetPoint("BOTTOM", pin, "TOP")
-                    end
-
-                    Guild.SetPinScale(pin, scale)
-                    pin:ClearAllPoints()
-                    pin:SetPoint("CENTER", canvas, "TOPLEFT", width * x, -height * y + (member.debug and Guild.debug.y / scale or 0))
-                    if member.debug then debugVisible = true end
-                    pin:Show()
+        for _, member in ipairs(Guild.CollectMembers(guildShown, friends, now)) do
+            local x, y = Guild.Project(member.mapID, mapID, member.x, member.y)
+            if x ~= nil and x >= low and x <= high and y >= low and y <= high then
+                count = count + 1
+                local pin = Guild.pins[count]
+                if pin == nil then
+                    pin = Guild.CreatePin(canvas)
+                    Guild.pins[count] = pin
                 end
+
+                pin.member, pin.zone, pin.zoneMembers = member, nil, nil
+                if member.friend then
+                    pin.border:SetVertexColor(Guild.friendColor.r, Guild.friendColor.g, Guild.friendColor.b, 1)
+                else
+                    pin.border:SetVertexColor(0, 0, 0, 0.9)
+                end
+                pin.dot:Show()
+                if pin.pie ~= nil then pin.pie:Hide() end
+                if pin:GetFrameLevel() ~= level then pin:SetFrameLevel(level) end
+                pin:SetSize(size, size)
+                pin.dot:ClearAllPoints()
+                pin.dot:SetPoint("TOPLEFT", inset, -inset)
+                pin.dot:SetPoint("BOTTOMRIGHT", -inset, inset)
+                local color = Guild.GetClassColor(member.class)
+                local taxiIcon = member.taxi and (member.faction == "Horde" and 132268 or member.faction == "Alliance" and 132239)
+                pin.dot:SetTexture(taxiIcon or Guild.mask)
+                if taxiIcon then
+                    pin.dot:SetVertexColor(1, 1, 1, 1)
+                else
+                    pin.dot:SetVertexColor(color.r, color.g, color.b, 1)
+                end
+                pin.level:ClearAllPoints()
+                pin.level:SetPoint("CENTER", (member.level or 0) < 10 and Guild.levelOffsetX / scale or 0, 0)
+                Guild.SetLabel(pin.level, showLevel and not taxiIcon and member.level or nil, levelSize, Guild.textColor)
+                Guild.SetLabel(pin.name, showName and member.name or nil, nameSize, color)
+                pin.name:ClearAllPoints()
+                if (member.debug and Guild.debug.crown) or (not member.debug and member.guild and Guild.IsLeader(member.name)) then
+                    pin.crown:SetSize(crownSize, crownSize)
+                    pin.crown:ClearAllPoints()
+                    pin.crown:SetPoint("BOTTOM", pin, "TOP", 0, -crownOverlap)
+                    pin.crown:Show()
+                    pin.name:SetPoint("BOTTOM", pin.crown, "TOP", 0, -Guild.nameCrownOverlap / scale)
+                else
+                    pin.crown:Hide()
+                    pin.name:SetPoint("BOTTOM", pin, "TOP")
+                end
+
+                Guild.SetPinScale(pin, scale)
+                pin:ClearAllPoints()
+                pin:SetPoint("CENTER", canvas, "TOPLEFT", width * x, -height * y + (member.debug and Guild.debug.y / scale or 0))
+                if member.debug then debugVisible = true end
+                pin:Show()
             end
         end
 
-        count = Guild.UpdateZonePins(canvas, mapID, count, scale, width, height, level, size)
+        if guildShown then count = Guild.UpdateZonePins(canvas, mapID, count, scale, width, height, level, size, friends) end
         Guild.MergeOverlappingPins(canvas, count, size, scale)
         Guild.SetDebugArrowHidden(debugVisible)
         for index = count + 1, #Guild.pins do
