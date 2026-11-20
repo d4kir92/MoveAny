@@ -23,6 +23,7 @@
 <Script file="D4GuildMap.lua"/>
 <Script file="D4GuildInvite.lua"/>
 <Script file="D4FrameTools.lua"/>
+<Script file="D4EditMode.lua"/>
 <Script file="D4DamageMeterMovers.lua"/>
 <Script file="D4SlashCmds.lua"/>
 <Script file="D4AtlasViewer.lua"/>

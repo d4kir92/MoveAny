@@ -19,6 +19,9 @@ so any string starting with `LID_` is translated and any other string is used as
 | `D4UIColorPicker.lua` | `win:AddColorPicker` |
 | `D4UIList.lua` | `win:AddList` |
 | `D4UIOrderList.lua` | `win:AddOrderList` |
+| `D4UIKeybind.lua` | `win:AddKeybind` |
+| `D4UINavigation.lua` | category sidebar (`navigation = true`) |
+| `D4UIWhatsNew.lua` | `D4:CreateUIWhatsNew` |
 
 ## Usage
 
@@ -176,6 +179,9 @@ so a date one day in the future still counts as new; later dates are ignored.
   `onClick` adds an invisible click surface spanning the rest of the row next to the
   box; it receives the mouse button, so left and right click can do different things.
   `cb:SetEnabled(false)` greys out the box and that surface together.
+  `tooltip = "LID_..."` shows a wrapped, translated tooltip over the box (and the click
+  surface). `whatsNew = "LID_..."` is the description shown under the setting in the
+  What's New window; `whatsNew = false` keeps the setting out of it.
 - `AddSlider`: `label`, `value`, `min`, `max`, `step`, `decimals`, `func(value)`.
   If the translated label contains a format placeholder (`%s`, `%.2f`), the value is
   inserted there; otherwise it is appended as `label: value`.
@@ -207,6 +213,8 @@ so a date one day in the future still counts as new; later dates are ignored.
   Everywhere else it falls back to a self-drawn list — the same values and the same
   `func`, just a plain list opened by one button. Lists longer than `maxVisible`
   (12 by default) scroll there instead of growing off-screen.
+  `holder:UpdateLabel()` re-translates the label and the selected choice; the
+  fallback list re-translates its entries every time it opens.
 - `AddEditbox`: `label`, `value`, `func(value, box)`, `maxLetters`, `numeric`.
   The label sits above the box, the box stretches to the window width.
   `func` fires on every actual change of the text, not on every keystroke that leaves
@@ -358,6 +366,61 @@ A hidden category also hides everything under it, a hidden element stays hidden 
 a search is active and does not pull its category into the search results. Use it for
 content that depends on runtime state, e.g. entries that only apply to one mode; the
 window re-lays out immediately unless the layout is suspended.
+
+`win:SetLeftShift(px)` moves the inset, header, footer and scroll area `px` to the right
+and keeps the frame art where it is, e.g. to leave room for another frame's side tabs
+drawn over the window's left edge. With `resizable = "width"`, `minWidth` / `maxWidth`
+then apply to the width without the shift; `onResize` still gets the full width.
+
+`win:RefreshLanguage()` re-translates the existing window in place after the addon's
+language changed: checkbox, slider, dropdown (label and selected choice), category and
+other element labels, the search hint, the new badges and the navigation. Nothing is
+rebuilt, so frames keep their styling. Texts the addon set itself (titles, footer
+buttons) stay its own job.
+
+## Navigation
+
+`navigation = true` in `D4:CreateUIWindow` adds a sidebar (150px) left of the scroll area
+that lists every category header. Clicking an entry scrolls to it; the entry of the
+category currently at the top is highlighted while scrolling. Sub-categories are
+indented, a category with sub-categories gets a small arrow to fold them in the sidebar,
+and categories holding `[NEW]` settings are marked. The sidebar follows the search box
+(only matching categories are listed) and can be collapsed with the arrow button in the
+header. With `getCollapsed` / `setCollapsed` the collapsed sidebar is stored under
+`D4UI_NAVIGATION`, folded sidebar entries under `NAV_<category key>`.
+
+Give a window enough top-level categories for the sidebar to be useful; elements added
+before the first category are not reachable from it.
+
+## What's New
+
+`D4:CreateUIWhatsNew(tab)` builds a separate window that lists the settings added since
+a date, with their category path, a live copy of each checkbox/slider and the
+`whatsNew` description:
+
+```lua
+MyAddonDB.whatsNew = MyAddonDB.whatsNew or {}
+MyAddon.WhatsNew = D4:CreateUIWhatsNew({
+    name = "MyAddonWhatsNew",
+    title = "MyAddon",
+    db = MyAddonDB.whatsNew,
+    since = "2026-11-19",
+    getSettings = function() return settingsWindow end,
+    addLanguageButton = function(win) return MyAddon:AddLanguageButton(win) end,
+})
+```
+
+- A setting is listed when its `added` date is `since` or later, it is not hidden and
+  it has no `whatsNew = false`. Its id (category path + date + label) goes into
+  `db.seen` once shown, so each setting is announced only once.
+- `notice:ShowIfNew()` opens the window if unseen settings exist and the user has not
+  turned it off (`db.enabled`); call it after login, e.g. a few seconds after
+  `PLAYER_ENTERING_WORLD`.
+- `notice:AddSettingsCheckbox(win, added)` adds the "Show What's New window" checkbox
+  to the settings window; the "Don't show this window again" button unticks it.
+- `notice:RefreshLanguage()` re-translates an open window. `addLanguageButton` is
+  optional: it receives the new window and returns a function that refreshes the
+  button after a language change.
 
 ## Resizing
 

@@ -42,6 +42,7 @@ function UI.WindowMixin:AddSearch(tab)
     )
 
     box:SetScript("OnEnterPressed", function(sel) sel:ClearFocus() end)
+    box.hintLabel = tab.label or "LID_SEARCH"
     win.search = box
 
     return box

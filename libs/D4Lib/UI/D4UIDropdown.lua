@@ -162,8 +162,10 @@ local function CreateFallback(holder, name, tab, choices, width, Pick)
     button:SetSize(width, UI.ROW)
     button:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
     local list, content, itemWidth = CreateList(name, button, width, #choices, tab.maxVisible or MAXVISIBLE)
+    local items = {}
     for index, choice in ipairs(choices) do
         local item = CreateFrame("Button", name .. "Item" .. index, content)
+        items[index] = item
         item:SetSize(itemWidth, ITEM)
         item:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -(index - 1) * ITEM)
         item.Label = item:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -188,6 +190,10 @@ local function CreateFallback(holder, name, tab, choices, width, Pick)
             local wasShown = list:IsShown()
             UI:CloseDropdowns()
             if not wasShown then
+                for index, item in ipairs(items) do
+                    item.Label:SetText(UI:Text(choices[index].label))
+                end
+
                 list:Show()
                 UI.openList = list
             end
@@ -247,6 +253,14 @@ function UI.WindowMixin:AddDropdown(tab)
         if index == nil then return end
         holder.value = newValue
         SetIndex(index)
+    end
+
+    function holder:UpdateLabel()
+        local newText = UI:Text(tab.label)
+        holder.Label:SetText(newText)
+        UI:SetLabel(holder.uiElement, newText)
+        local index = IndexOf(choices, holder.value)
+        if index then SetIndex(index) end
     end
 
     function holder:SetEnabled(value)

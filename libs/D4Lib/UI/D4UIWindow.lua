@@ -133,8 +133,22 @@ function UI.WindowMixin:UpdateInset(topExtra, bottomExtra)
         local point, relativeTo, relativePoint, x, y = anchor[1], anchor[2], anchor[3], anchor[4], anchor[5]
         if string.find(point, "TOP") then y = y - topExtra end
         if string.find(point, "BOTTOM") then y = y + bottomExtra end
+        if string.find(point, "LEFT") then x = x + (self.leftShift or 0) end
         self.insetFrame:SetPoint(point, relativeTo, relativePoint, x, y)
     end
+end
+
+function UI.WindowMixin:SetLeftShift(shift)
+    shift = math.max(0, shift or 0)
+    local delta = shift - (self.leftShift or 0)
+    if delta == 0 then return end
+    self.leftShift = shift
+    self.leftInset = self.leftInset + delta
+    self.contentTrim = self.contentTrim + delta
+    if self.scrollInset then self.scrollInset.left = self.scrollInset.left + delta end
+    self:UpdateContentWidth()
+    self:UpdateBodyLayout()
+    self:Layout()
 end
 
 function UI.WindowMixin:UpdateBodyLayout()
@@ -260,8 +274,6 @@ end
 
 local function MakeWidthResizable(win, name, tab)
     local grip = CreateGrip(win, name)
-    local minWidth = tab.minWidth or 300
-    local maxWidth = tab.maxWidth or 0
     local function StopSizing()
         if grip:GetScript("OnUpdate") == nil then return end
         grip:SetScript("OnUpdate", nil)
@@ -274,6 +286,10 @@ local function MakeWidthResizable(win, name, tab)
             local scale = win:GetEffectiveScale()
             local startX = GetCursorPosition() / scale
             local startWidth = win:GetWidth()
+            local shift = win.leftShift or 0
+            local minWidth = (tab.minWidth or 300) + shift
+            local maxWidth = tab.maxWidth or 0
+            if maxWidth > 0 then maxWidth = maxWidth + shift end
             grip:SetScript(
                 "OnUpdate",
                 function()

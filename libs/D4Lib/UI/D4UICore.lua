@@ -312,6 +312,28 @@ function UI.WindowMixin:ResumeLayout()
     self:Layout()
 end
 
+function UI.WindowMixin:RefreshLanguage()
+    for _, element in ipairs(self.elements) do
+        local frame = element.frame
+        local setting = element.setting
+        if element.checkbox and element.checkbox.UpdateLabel then
+            element.checkbox:UpdateLabel()
+        elseif frame and frame.UpdateLabel then
+            frame:UpdateLabel()
+        elseif frame and frame.Label and setting and setting.label then
+            local text = UI:Text(setting.label)
+            frame.Label:SetText(text)
+            UI:SetLabel(element, text)
+        else
+            UI:RefreshNewBadge(frame)
+        end
+    end
+
+    if self.search and self.search.Hint then self.search.Hint:SetText(UI:Text(self.search.hintLabel or "LID_SEARCH")) end
+    if self.RefreshNav then self:RefreshNav() end
+    self:Layout()
+end
+
 function UI.WindowMixin:Layout()
     if self.layoutSuspended then return end
     local y = -UI.PADDING
