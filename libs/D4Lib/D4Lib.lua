@@ -1063,6 +1063,56 @@ function D4:GetTalentIcons()
     return icons
 end
 
+local function PackResults(...)
+    return {
+        ["n"] = select("#", ...),
+        ...
+    }
+end
+
+local function GetCamelotSpecInfo(specInfo, index)
+    local result = PackResults(pcall(specInfo.GetSpecializationInfo, index))
+    if result[1] then return unpack(result, 1, result.n) end
+    return pcall(specInfo.GetSpecializationInfo, {
+        ["specializationIndex"] = index
+    })
+end
+
+local function GetCamelotTraitTab()
+    local classTalents, traits = _G["C_ClassTalents"], _G["C_Traits"]
+    if classTalents == nil or traits == nil or classTalents.GetActiveConfigID == nil or traits.GetGroupDisplayInfoByTreeID == nil or traits.GetGroupCurrencyInfo == nil then return nil, nil end
+    local okConfig, configId = pcall(classTalents.GetActiveConfigID)
+    if not okConfig or configId == nil then return nil, nil end
+    local okInfo, configInfo = pcall(traits.GetConfigInfo, configId)
+    if not okInfo or configInfo == nil or configInfo.treeIDs == nil or configInfo.treeIDs[1] == nil then return nil, nil end
+    local okDisplay, displayInfos = pcall(traits.GetGroupDisplayInfoByTreeID, configInfo.treeIDs[1])
+    if not okDisplay or displayInfos == nil or #displayInfos == 0 then return nil, nil end
+    table.sort(displayInfos, function(a, b) return (a.orderIndex or 0) < (b.orderIndex or 0) end)
+    local groupIds = {}
+    for _, displayInfo in ipairs(displayInfos) do
+        table.insert(groupIds, displayInfo.groupID)
+    end
+
+    local okCurrency, groupInfos = pcall(traits.GetGroupCurrencyInfo, configId, groupIds)
+    if not okCurrency or groupInfos == nil then return nil, nil end
+    local spent = {}
+    for _, groupInfo in ipairs(groupInfos) do
+        local currencyInfo = groupInfo.currencyInfos and groupInfo.currencyInfos[1]
+        if currencyInfo then spent[groupInfo.traitNodeGroupID] = currencyInfo.spent end
+    end
+
+    local bestTab, bestIcon, best = nil, nil, 0
+    for index, displayInfo in ipairs(displayInfos) do
+        local points = spent[displayInfo.groupID] or 0
+        if points > best then
+            best = points
+            bestTab = index
+            bestIcon = displayInfo.icon
+        end
+    end
+    return bestTab, bestIcon
+end
+
 local function GetCamelotTalentInfo()
     local specInfo = _G["C_SpecializationInfo"]
     if specInfo == nil or specInfo.GetSpecializationInfo == nil then return nil, nil end
@@ -1076,10 +1126,7 @@ local function GetCamelotTalentInfo()
     num = num or 3
     local specid, icon, best = nil, nil, 0
     for i = 1, num do
-        local ok, _, _, _, tex, _, _, points = pcall(specInfo.GetSpecializationInfo, {
-            ["specializationIndex"] = i
-        })
-
+        local ok, _, _, _, tex, _, _, points = GetCamelotSpecInfo(specInfo, i)
         if ok and points and points > best then
             best = points
             specid = i
@@ -1088,13 +1135,13 @@ local function GetCamelotTalentInfo()
     end
 
     if specid then return specid, icon end
+    local traitTab, traitIcon = GetCamelotTraitTab()
+    if traitTab then return traitTab, traitIcon end
+
     if specInfo.GetSpecialization then
         local ok, active = pcall(specInfo.GetSpecialization)
         if ok and active then
-            local ok2, _, _, _, tex = pcall(specInfo.GetSpecializationInfo, {
-                ["specializationIndex"] = active
-            })
-
+            local ok2, _, _, _, tex = GetCamelotSpecInfo(specInfo, active)
             if ok2 then return active, tex end
             return active, nil
         end
@@ -1479,7 +1526,7 @@ function D4:GetInspectILvl(unit)
     for _, slotId in ipairs(slots) do
         local itemLink = GetInventoryItemLink(unit, slotId)
         if itemLink then
-            local _, _, _, itemLevel = GetItemInfo(itemLink)
+            local _, _, _, itemLevel = D4:GetItemInfo(itemLink)
             if itemLevel and itemLevel > 0 then
                 totalLevel = totalLevel + itemLevel
                 itemCount = itemCount + 1

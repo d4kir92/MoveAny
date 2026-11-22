@@ -38,6 +38,12 @@ local function GetPlayerMapID()
     return nil
 end
 
+local function IsWorldMap(mapID)
+    if mapID == nil or C_Map == nil or C_Map.GetMapInfo == nil or Enum == nil or Enum.UIMapType == nil then return false end
+    local info = C_Map.GetMapInfo(mapID)
+    return info ~= nil and info.mapType ~= nil and info.mapType <= Enum.UIMapType.World
+end
+
 local function GetNavBar()
     if WorldMapFrame == nil then return nil end
     local navBar = WorldMapFrame.NavBar
@@ -51,6 +57,7 @@ function D4:CreateInstanceMap(provider)
     local overlay = nil
     local levelButton = nil
     local hiddenFor = nil
+    local leftPlayerMap = false
     local forced = nil
     local forcedMapID = nil
     local forcedIndex = 1
@@ -276,13 +283,15 @@ function D4:CreateInstanceMap(provider)
             local info = shownLevels ~= nil and shownLevels[shownIndex] or nil
             local mapID = provider.getReturnMapID(info)
             if mapID ~= nil and WorldMapFrame.SetMapID ~= nil then
-                hiddenFor = shownInstance
+                hiddenFor = shownInstance or select(2, GetInstanceArt())
                 ClearForced()
                 overlay:Hide()
                 levelButton:Hide()
+                mapPinKey = nil
                 if mapPinSet ~= nil then mapPinSet:Hide() end
                 WorldMapFrame:SetMapID(mapID)
                 Refresh()
+                if provider.onReturn ~= nil then provider.onReturn(info) end
                 return
             end
         end
@@ -296,6 +305,7 @@ function D4:CreateInstanceMap(provider)
         local levels, instanceMapID = GetInstanceArt()
         if levels == nil then return end
         if hiddenFor == instanceMapID then
+            if provider.keepShown ~= nil and provider.keepShown() then return end
             hiddenFor = nil
         else
             hiddenFor = instanceMapID
@@ -530,6 +540,7 @@ function D4:CreateInstanceMap(provider)
         container:HookScript("OnMouseUp", OnCanvasMouseUp)
         WorldMapFrame:HookScript("OnShow", function()
             hiddenFor = nil
+            leftPlayerMap = false
             view.file = nil
             lastKey = nil
             ClearForced()
@@ -559,15 +570,21 @@ function D4:CreateInstanceMap(provider)
     local function GetVisibleLevels()
         if WorldMapFrame == nil or WorldMapFrame.GetMapID == nil then return nil end
         if forced ~= nil then
-            if WorldMapFrame:GetMapID() == forcedMapID then return forced, forcedIndex, nil end
+            if WorldMapFrame:GetMapID() == forcedMapID or provider.keepShown ~= nil and provider.keepShown() then return forced, forcedIndex, nil end
             ClearForced()
         end
 
         local levels, instanceMapID = GetInstanceArt()
         if levels == nil then return nil end
         if hiddenFor == instanceMapID then return nil end
+        if provider.keepShown ~= nil and provider.keepShown() then return levels, selected[instanceMapID] or 1, instanceMapID end
         local playerMapID = GetPlayerMapID()
-        if playerMapID ~= nil and WorldMapFrame:GetMapID() ~= playerMapID then return nil end
+        if playerMapID ~= nil and WorldMapFrame:GetMapID() ~= playerMapID then
+            leftPlayerMap = true
+            return nil
+        end
+
+        if leftPlayerMap and IsWorldMap(playerMapID) then return nil end
         return levels, selected[instanceMapID] or 1, instanceMapID
     end
 
@@ -659,6 +676,13 @@ function D4:CreateInstanceMap(provider)
 
     function map:Toggle()
         if not map:HasArt() then return false end
+        if leftPlayerMap and forced == nil and not map:IsShown() then
+            leftPlayerMap = false
+            hiddenFor = nil
+            Refresh()
+            return true
+        end
+
         ToggleOverlay()
         return true
     end

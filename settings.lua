@@ -563,7 +563,8 @@ local minimapTooltip = {}
 local function UpdateMinimapTooltip()
 	minimapTooltip[1] = {format("|T%s:16:16:0:0|t Move|rAny|r", MoveAny:GetAddonIcon()),"v" .. tostring(MoveAny:GetVersion())}
 	minimapTooltip[2] = {MoveAny:Trans("LID_LEFTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}
-	minimapTooltip[3] = {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}
+	minimapTooltip[3] = {MoveAny:Trans("LID_RIGHTCLICK"), MoveAny:Trans("LID_OPENSETTINGS")}
+	minimapTooltip[4] = {MoveAny:Trans("LID_SHIFTRIGHTCLICK"), MoveAny:Trans("LID_HIDEMINIMAPBUTTON")}
 	return minimapTooltip
 end
 
@@ -1944,7 +1945,8 @@ function MoveAny:PlayerLogin()
 				return false
 			end,
 			["funcL"] = function() MoveAny:ToggleMALock() end,
-			["funcR"] = function()
+			["funcR"] = function() MoveAny:ToggleMALock() end,
+			["funcSR"] = function()
 				MoveAny:SetEnabled("SHOWMINIMAPBUTTON", false)
 				MoveAny:HideMMBtn("MoveAny")
 			end,
