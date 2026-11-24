@@ -2,7 +2,7 @@ local _, MoveAny = ...
 local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_setalpha = {}
 local ma_mm_show = {}
-local buttonBag = {buttons = {}, hooked = {}, known = {}}
+local buttonBag = {buttons = {}, hooked = {}, known = {}, failed = {}}
 
 function MoveAny:GetMinimapButtonLabel(button)
 	if button:GetName() == "MetashiForeverMinimapButton" then return "MetashiForever" end
@@ -28,7 +28,7 @@ function MoveAny:ReleaseMinimapButton(button)
 	button:SetScale(state.scale)
 	button:ClearAllPoints()
 	for _, point in ipairs(state.points) do
-		button:SetPoint(unpack(point))
+		button:SetPoint(unpack(point, 1, 5))
 	end
 
 	button:SetScript("OnDragStart", state.dragStart)
@@ -73,9 +73,12 @@ function MoveAny:RefreshMinimapButtonSettings()
 				row.selection = row:CreateTexture(nil, "BACKGROUND")
 				row.selection:SetAllPoints()
 				row.selection:SetColorTexture(0.2, 0.5, 0.8, 0.4)
+				row.icon = row:CreateTexture(nil, "ARTWORK")
+				row.icon:SetSize(20, 20)
+				row.icon:SetPoint("LEFT", 4, 0)
 				row.label = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-				row.label:SetPoint("LEFT", 6, 0)
-				row.label:SetWidth(206)
+				row.label:SetPoint("LEFT", row.icon, "RIGHT", 6, 0)
+				row.label:SetWidth(184)
 				row.label:SetJustifyH("LEFT")
 				row:RegisterForDrag("LeftButton")
 				row:SetScript("OnClick", function(sel)
@@ -108,16 +111,69 @@ function MoveAny:RefreshMinimapButtonSettings()
 
 			row.button = button
 			row.label:SetText(MoveAny:GetMinimapButtonLabel(button))
+			if not pcall(MoveAny.CopyMinimapButtonIcon, MoveAny, button, row.icon) then row.icon:SetTexture(134400) end
 			row.selection:SetShown(buttonBag.selected == button)
 			row:Show()
 		end
 
 		panel.content:SetHeight(math.max(1, #list * 28))
-		panel.scroll:SetVerticalScroll(math.min(panel.scroll:GetVerticalScroll(), math.max(0, #list * 28 - panel.scroll:GetHeight())))
+		if panel.scrollBox then
+			panel.scrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately)
+		else
+			panel.scroll:SetVerticalScroll(math.min(panel.scroll:GetVerticalScroll(), math.max(0, #list * 28 - panel.scroll:GetHeight())))
+		end
 	end
 
 	window.toMinimap:SetEnabled(buttonBag.selected ~= nil and MoveAny:ShouldCollectMinimapButton(buttonBag.selected))
 	window.toBag:SetEnabled(buttonBag.selected ~= nil and not MoveAny:ShouldCollectMinimapButton(buttonBag.selected))
+end
+
+function MoveAny:CopyMinimapButtonIcon(button, target)
+	local source = button.icon or button.Icon
+	if not source or not source.GetTexture then
+		target:SetTexture(134400)
+		target:SetTexCoord(0, 1, 0, 1)
+		target:SetVertexColor(1, 1, 1, 1)
+
+		return
+	end
+
+	local atlas = source.GetAtlas and source:GetAtlas()
+	if atlas then
+		target:SetAtlas(atlas)
+	else
+		target:SetTexture(source:GetTexture() or 134400)
+		target:SetTexCoord(source:GetTexCoord())
+	end
+
+	target:SetVertexColor(source:GetVertexColor())
+	target:SetDesaturated(source:IsDesaturated() and true or false)
+end
+
+function MoveAny:CreateMinimapBagScroll(panel)
+	if ScrollUtil and ScrollUtil.InitScrollBoxWithScrollBar and CreateScrollBoxLinearView and ScrollBoxConstants and MoveAny:CheckTemplates("WowScrollBox, MinimalScrollBar") then
+		panel.scrollBox = CreateFrame("Frame", nil, panel, "WowScrollBox")
+		panel.scrollBox:SetPoint("TOPLEFT", 4, -4)
+		panel.scrollBox:SetPoint("BOTTOMRIGHT", -22, 4)
+		panel.scrollBar = CreateFrame("EventFrame", nil, panel, "MinimalScrollBar")
+		panel.scrollBar:SetPoint("TOPLEFT", panel.scrollBox, "TOPRIGHT", 6, 0)
+		panel.scrollBar:SetPoint("BOTTOMLEFT", panel.scrollBox, "BOTTOMRIGHT", 6, 0)
+		panel.content = CreateFrame("Frame", nil, panel.scrollBox)
+		panel.content.scrollable = true
+		panel.content:SetSize(218, 1)
+		local view = CreateScrollBoxLinearView()
+		view:SetPanExtent(28)
+		ScrollUtil.InitScrollBoxWithScrollBar(panel.scrollBox, panel.scrollBar, view)
+
+		return
+	end
+
+	panel.scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+	panel.scroll:SetPoint("TOPLEFT", 4, -4)
+	panel.scroll:SetPoint("BOTTOMRIGHT", -26, 4)
+	panel.content = CreateFrame("Frame", nil, panel.scroll)
+	panel.content:SetSize(218, 1)
+	panel.scroll:SetScrollChild(panel.content)
 end
 
 function MoveAny:ToggleMinimapButtonSettings()
@@ -154,12 +210,7 @@ function MoveAny:ToggleMinimapButtonSettings()
 			panel:SetBackdropColor(0, 0, 0, 0.5)
 			panel.title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 			panel.title:SetPoint("BOTTOM", panel, "TOP", 0, 8)
-			panel.scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
-			panel.scroll:SetPoint("TOPLEFT", 4, -4)
-			panel.scroll:SetPoint("BOTTOMRIGHT", -26, 4)
-			panel.content = CreateFrame("Frame", nil, panel.scroll)
-			panel.content:SetSize(218, 1)
-			panel.scroll:SetScrollChild(panel.content)
+			MoveAny:CreateMinimapBagScroll(panel)
 			panel.rows = {}
 		end
 
@@ -209,76 +260,102 @@ function MoveAny:LayoutMinimapButtons()
 	end
 
 	table.sort(visible, function(a, b) return a:GetName() < b:GetName() end)
-	for i, button in ipairs(visible) do
-		local state = buttonBag.buttons[button]
-		button:SetParent(buttonBag.menu)
-		button:SetFrameStrata(buttonBag.menu:GetFrameStrata())
-		if button:GetFrameStrata() ~= buttonBag.menu:GetFrameStrata() and button.SetFixedFrameStrata then
-			state.fixedStrata = true
-			button:SetFixedFrameStrata(false)
-			button:SetFrameStrata(buttonBag.menu:GetFrameStrata())
+	local count = 0
+	for _, button in ipairs(visible) do
+		local ok = pcall(MoveAny.PlaceMinimapButton, MoveAny, button, count + 1)
+		if ok then
+			count = count + 1
+		else
+			MoveAny:DropMinimapButton(button)
 		end
-
-		button:SetFrameLevel(buttonBag.menu:GetFrameLevel() + 2)
-		if button:GetFrameLevel() ~= buttonBag.menu:GetFrameLevel() + 2 and button.SetFixedFrameLevel then
-			state.fixedLevel = true
-			button:SetFixedFrameLevel(false)
-			button:SetFrameLevel(buttonBag.menu:GetFrameLevel() + 2)
-		end
-
-		button:SetScale(1)
-		button:ClearAllPoints()
-		button:SetPoint("CENTER", buttonBag.menu, "TOPRIGHT", -24 - ((i - 1) % 6) * 36, -24 - math.floor((i - 1) / 6) * 36)
 	end
 
-	buttonBag.menu:SetSize(math.max(1, math.min(6, #visible)) * 36 + 12, math.max(1, math.ceil(#visible / 6)) * 36 + 12)
+	buttonBag.menu:SetSize(math.max(1, math.min(6, count)) * 36 + 12, math.max(1, math.ceil(count / 6)) * 36 + 12)
 	buttonBag.updating = false
+end
+
+function MoveAny:DropMinimapButton(button)
+	buttonBag.failed[button] = true
+	pcall(MoveAny.ReleaseMinimapButton, MoveAny, button)
+	buttonBag.buttons[button] = nil
+end
+
+function MoveAny:PlaceMinimapButton(button, i)
+	local state = buttonBag.buttons[button]
+	button:SetParent(buttonBag.menu)
+	button:SetFrameStrata(buttonBag.menu:GetFrameStrata())
+	if button:GetFrameStrata() ~= buttonBag.menu:GetFrameStrata() and button.SetFixedFrameStrata then
+		state.fixedStrata = true
+		button:SetFixedFrameStrata(false)
+		button:SetFrameStrata(buttonBag.menu:GetFrameStrata())
+	end
+
+	button:SetFrameLevel(buttonBag.menu:GetFrameLevel() + 2)
+	if button:GetFrameLevel() ~= buttonBag.menu:GetFrameLevel() + 2 and button.SetFixedFrameLevel then
+		state.fixedLevel = true
+		button:SetFixedFrameLevel(false)
+		button:SetFrameLevel(buttonBag.menu:GetFrameLevel() + 2)
+	end
+
+	button:SetScale(1)
+	button:ClearAllPoints()
+	button:SetPoint("CENTER", buttonBag.menu, "TOPRIGHT", -24 - ((i - 1) % 6) * 36, -24 - math.floor((i - 1) / 6) * 36)
+end
+
+function MoveAny:IsMinimapBagCandidate(button)
+	if button == buttonBag.toggle or buttonBag.buttons[button] or buttonBag.failed[button] then return false end
+	if button:IsForbidden() or button:IsProtected() or not button:IsObjectType("Button") then return false end
+	local name = button:GetName()
+	return name ~= nil and (name:find("LibDBIcon10_", 1, true) == 1 or name:find("MinimapButton_D4Lib_LibDBIcon_", 1, true) == 1 or name == "MetashiForeverMinimapButton")
+end
+
+function MoveAny:CollectMinimapButton(button)
+	if not MoveAny:IsMinimapBagCandidate(button) then return end
+	buttonBag.known[button] = true
+	if not MoveAny:ShouldCollectMinimapButton(button) then return end
+	local state = {parent = button:GetParent(), scale = button:GetScale(), points = {}, dragStart = button:GetScript("OnDragStart"), dragStop = button:GetScript("OnDragStop")}
+	state.strata = button:GetFrameStrata()
+	state.level = button:GetFrameLevel()
+	for i = 1, button:GetNumPoints() do
+		tinsert(state.points, {button:GetPoint(i)})
+	end
+
+	buttonBag.buttons[button] = state
+	button:SetScript("OnDragStart", nil)
+	button:SetScript("OnDragStop", nil)
+	button:SetParent(buttonBag.menu)
+	if not buttonBag.hooked[button] then
+		buttonBag.hooked[button] = true
+		local function Refresh()
+			if buttonBag.buttons[button] then MoveAny:LayoutMinimapButtons() end
+		end
+
+		hooksecurefunc(button, "SetPoint", Refresh)
+		hooksecurefunc(button, "SetParent", Refresh)
+		hooksecurefunc(button, "SetScale", Refresh)
+		hooksecurefunc(button, "SetFrameStrata", Refresh)
+		hooksecurefunc(button, "SetFrameLevel", Refresh)
+		if button.SetFixedFrameStrata then hooksecurefunc(button, "SetFixedFrameStrata", Refresh) end
+		if button.SetFixedFrameLevel then hooksecurefunc(button, "SetFixedFrameLevel", Refresh) end
+		button:HookScript("OnShow", Refresh)
+		button:HookScript("OnHide", Refresh)
+	end
 end
 
 function MoveAny:CollectMinimapButtons()
 	if not buttonBag.enabled or InCombatLockdown() then return end
+	buttonBag.childCount = Minimap:GetNumChildren()
 	for button in pairs(buttonBag.buttons) do
-		if not MoveAny:ShouldCollectMinimapButton(button) then MoveAny:ReleaseMinimapButton(button) end
+		local ok, collect = pcall(MoveAny.ShouldCollectMinimapButton, MoveAny, button)
+		if (not ok or not collect) and not pcall(MoveAny.ReleaseMinimapButton, MoveAny, button) then MoveAny:DropMinimapButton(button) end
 	end
 
 	for _, button in ipairs({Minimap:GetChildren()}) do
-		local name = button:GetName()
-		if name and button ~= buttonBag.toggle and not buttonBag.buttons[button] and not button:IsProtected() and button:IsObjectType("Button") and (name:find("LibDBIcon10_", 1, true) == 1 or name:find("MinimapButton_D4Lib_LibDBIcon_", 1, true) == 1 or name == "MetashiForeverMinimapButton") then
-			buttonBag.known[button] = true
-			if MoveAny:ShouldCollectMinimapButton(button) then
-				local state = {parent = button:GetParent(), scale = button:GetScale(), points = {}, dragStart = button:GetScript("OnDragStart"), dragStop = button:GetScript("OnDragStop")}
-				state.strata = button:GetFrameStrata()
-				state.level = button:GetFrameLevel()
-				for i = 1, button:GetNumPoints() do
-					tinsert(state.points, {button:GetPoint(i)})
-				end
-
-				buttonBag.buttons[button] = state
-				button:SetScript("OnDragStart", nil)
-				button:SetScript("OnDragStop", nil)
-				button:SetParent(buttonBag.menu)
-				if not buttonBag.hooked[button] then
-					buttonBag.hooked[button] = true
-					local function Refresh()
-						if buttonBag.buttons[button] then MoveAny:LayoutMinimapButtons() end
-					end
-
-					hooksecurefunc(button, "SetPoint", Refresh)
-					hooksecurefunc(button, "SetParent", Refresh)
-					hooksecurefunc(button, "SetScale", Refresh)
-					hooksecurefunc(button, "SetFrameStrata", Refresh)
-					hooksecurefunc(button, "SetFrameLevel", Refresh)
-					if button.SetFixedFrameStrata then hooksecurefunc(button, "SetFixedFrameStrata", Refresh) end
-					if button.SetFixedFrameLevel then hooksecurefunc(button, "SetFixedFrameLevel", Refresh) end
-					button:HookScript("OnShow", Refresh)
-					button:HookScript("OnHide", Refresh)
-				end
-			end
-		end
+		if not pcall(MoveAny.CollectMinimapButton, MoveAny, button) then MoveAny:DropMinimapButton(button) end
 	end
 
 	MoveAny:LayoutMinimapButtons()
-	MoveAny:RefreshMinimapButtonSettings()
+	pcall(MoveAny.RefreshMinimapButtonSettings, MoveAny)
 end
 
 function MoveAny:UpdateMinimapButtonBag()
@@ -326,8 +403,17 @@ function MoveAny:UpdateMinimapButtonBag()
 	buttonBag.toggle:SetShown(enabled)
 	if enabled then
 		MoveAny:CollectMinimapButtons()
+		if not buttonBag.watcher then
+			buttonBag.watcher = CreateFrame("Frame")
+			buttonBag.watcher:SetScript("OnUpdate", function()
+				if Minimap:GetNumChildren() ~= buttonBag.childCount then MoveAny:CollectMinimapButtons() end
+			end)
+		end
+
+		buttonBag.watcher:Show()
 		if not buttonBag.ticker then buttonBag.ticker = C_Timer.NewTicker(5, function() MoveAny:CollectMinimapButtons() end) end
 	else
+		if buttonBag.watcher then buttonBag.watcher:Hide() end
 		buttonBag.menu:Hide()
 		if buttonBag.settings then buttonBag.settings:Hide() end
 		if buttonBag.ticker then
