@@ -6,6 +6,7 @@ local PIN_RING_SCALE = 1.55
 local PIN_RING_TEXTURE = "Interface\\Minimap\\MiniMap-TrackingBorder"
 local PIN_MASK = "Interface\\CharacterFrame\\TempPortraitAlphaMask"
 local BOSS_PORTRAIT_FALLBACK = "Interface\\Icons\\INV_Misc_QuestionMark"
+local DEAD_MARK = "Interface\\RaidFrame\\ReadyCheck-NotReady"
 local ITEM_ICON_FALLBACK = 134400
 local LEVEL_SKULL_MIN = 63
 local PIN_ICONS = {
@@ -115,6 +116,11 @@ local function CreatePin(parent, options)
     pin.dragon = pin:CreateTexture(nil, "OVERLAY", nil, 2)
     pin.dragon:SetSize(256 * scale, 128 * scale)
     pin.dragon:SetPoint("CENTER", pin, "CENTER", -54 * scale, -20 * scale)
+    pin.dead = pin:CreateTexture(nil, "OVERLAY", nil, 3)
+    pin.dead:SetTexture(DEAD_MARK)
+    pin.dead:SetPoint("TOPLEFT", pin.portrait, "TOPLEFT", 1, -1)
+    pin.dead:SetPoint("BOTTOMRIGHT", pin.portrait, "BOTTOMRIGHT", -1, 1)
+    pin.dead:Hide()
     pin.badge = CreateFrame("Frame", nil, pin)
     pin.badge:SetSize(badgeSize, badgeSize)
     pin.badge:SetPoint("CENTER", pin, "CENTER", 19.5 * scale, -22 * scale)
@@ -142,21 +148,29 @@ local function CreatePin(parent, options)
     return pin
 end
 
-local function StylePin(pin, row, media)
+local function StylePin(pin, row, media, killed)
     local isBoss = row[1] == "boss"
     local isItem = row[1] == "item"
     local size = isBoss and BOSS_PIN_SIZE or PIN_SIZE
     pin:SetSize(size, size)
     pin.portrait:SetShown(isBoss or isItem)
+    pin.portrait:SetDesaturated(false)
+    pin.portrait:SetVertexColor(1, 1, 1)
     pin.icon:SetShown(not isBoss and not isItem)
     pin.ring:SetSize((size - 4) * PIN_RING_SCALE, (size - 4) * PIN_RING_SCALE)
     pin.ring:SetShown(isBoss or isItem)
     pin.dragon:Hide()
+    pin.dead:Hide()
     pin.badge:Hide()
     pin.highlight:SetTexture(nil)
     if isBoss then
         pcall(pin.portrait.SetTexCoord, pin.portrait, 0, 1, 0, 1)
         if not row[7] or SetPortraitTextureFromCreatureDisplayID == nil or not pcall(SetPortraitTextureFromCreatureDisplayID, pin.portrait, row[7]) then pin.portrait:SetTexture(BOSS_PORTRAIT_FALLBACK) end
+        if killed then
+            pin.portrait:SetDesaturated(true)
+            pin.portrait:SetVertexColor(0.6, 0.6, 0.6)
+            pin.dead:Show()
+        end
         local style = BADGE_STYLES[row[8]] or BADGE_STYLES[0]
         if style.dragon and media then
             pin.dragon:SetTexture(media .. style.dragon)
@@ -303,7 +317,8 @@ function InstancePins:Update(rows, art, scale)
             pin.level = level
             local pinScale = (row[1] == "boss" and bossScale or 1) / scale
             pin:SetScale(pinScale)
-            StylePin(pin, row, options.media)
+            local killed = row[1] == "boss" and options.isBossKilled ~= nil and options.isBossKilled(row) == true
+            StylePin(pin, row, options.media, killed)
             pin:ClearAllPoints()
             pin:SetPoint("CENTER", art, "TOPLEFT", w * row[2] / pinScale, -h * row[3] / pinScale)
             pin:Show()
