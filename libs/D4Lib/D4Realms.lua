@@ -84,6 +84,7 @@ end
 local function InitRealms()
     if initRealms then return end
     initRealms = true
+    if D4:IsForever() then return end
     if #realmData == 0 and missingWoWBuildOnce then
         missingWoWBuildOnce = false
         D4:MSG("[D4] Missing WoW-Build", D4:GetWoWBuildNr())
@@ -101,7 +102,7 @@ local function FindRealmLang(realmName)
 end
 
 function D4:GetRealmLang(realmName)
-    if D4:IsSecret(realmName) then return "" end
+    if D4:IsForever() or D4:IsSecret(realmName) then return "" end
     InitRealms()
     if realmsSupported == false then return "" end
     if realmName == nil then
@@ -160,7 +161,7 @@ local function InitRealmLangs()
 end
 
 function D4:GetRealmFlag(realmName)
-    if D4:IsSecret(realmName) then return "" end
+    if D4:IsForever() or D4:IsSecret(realmName) then return "" end
     if initRealmLangs == false then
         initRealmLangs = true
         InitRealmLangs()
