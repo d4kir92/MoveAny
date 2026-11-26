@@ -13,7 +13,8 @@ function MoveAny:ShouldCollectMinimapButton(button)
 	local choices = MATAB.minimapButtonBag and MATAB.minimapButtonBag.choices
 	local choice = choices and choices[button:GetName()]
 	if choice ~= nil then return choice end
-	return not MoveAny:GetMinimapButtonLabel(button):lower():find("bug", 1, true)
+	local label = MoveAny:GetMinimapButtonLabel(button):lower()
+	return not label:find("bug", 1, true) and not label:find("lfg", 1, true)
 end
 
 function MoveAny:ReleaseMinimapButton(button)
