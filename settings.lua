@@ -802,6 +802,7 @@ function MoveAny:InitMALock()
 		AddCheckBox("STANCEBARANCHOR", false, nil, nil, "ShowStanceBar")
 		if PossessActionBar or PossessBarFrame then AddCheckBox("POSSESSBAR", false, nil, nil, "ShowPossessActionBar") end
 		if OverrideActionBar then AddCheckBox("OVERRIDEACTIONBAR", false) end
+		if MoveAny:IsForever() or GamepadMainActionBarFrame then AddCheckBox("GAMEPADACTIONBAR", false) end
 		AddCheckBox("LEAVEVEHICLE", false, nil, nil, "ShowVehicleLeaveButton")
 		if ExtraAbilityContainer then
 			AddCheckBox("EXTRAABILITYCONTAINER", false, nil, nil, "ShowExtraAbilities")
@@ -876,6 +877,7 @@ function MoveAny:InitMALock()
 		AddCheckBox("ZONETEXTFRAME", false)
 		if RaidBossEmoteFrame then AddCheckBox("RAIDBOSSEMOTEFRAME", false) end
 		if MoveAny:IsValidFrame(QueueStatusButton) then AddCheckBox("QUEUESTATUSBUTTON", false) end
+		if MoveAny:IsForever() or PromptedBindingFooter then AddCheckBox("PROMPTEDBINDINGFOOTER", false) end
 		AddCheckBox("MAFPSFrame", false)
 		AddCheckBox("MACombatText", false)
 		AddCheckBox("COMPACTRAIDFRAMEMANAGER", false)
@@ -5863,6 +5865,26 @@ function MoveAny:LoadAddon()
 					["soft"] = true,
 				})
 			end
+		end
+	end)
+
+	MoveAny:AddElementLoader(function()
+		if not MoveAny:IsForever() and not GamepadMainActionBarFrame and not PromptedBindingFooter then return end
+		if MoveAny:IsEnabled("GAMEPADACTIONBAR", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "GamepadMainActionBarFrame",
+				["lstr"] = "LID_GAMEPADACTIONBAR",
+				["userplaced"] = true,
+				["secure"] = true,
+			})
+		end
+
+		if MoveAny:IsEnabled("PROMPTEDBINDINGFOOTER", false) then
+			MoveAny:RegisterWidget({
+				["name"] = "PromptedBindingFooter",
+				["lstr"] = "LID_PROMPTEDBINDINGFOOTER",
+				["userplaced"] = true,
+			})
 		end
 	end)
 
