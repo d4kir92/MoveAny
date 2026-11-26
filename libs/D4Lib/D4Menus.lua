@@ -11,7 +11,9 @@ function D4:ShowContextMenu(owner, entries, anchor)
     if MenuUtil ~= nil and MenuUtil.CreateContextMenu ~= nil then
         MenuUtil.CreateContextMenu(owner, function(_, rootDescription)
             for _, entry in ipairs(entries) do
-                if entry.checked ~= nil then
+                if entry.divider then
+                    rootDescription:CreateDivider()
+                elseif entry.checked ~= nil then
                     rootDescription:CreateRadio(entry.text, function() return IsChecked(entry) end, entry.func)
                 else
                     rootDescription:CreateButton(entry.text, entry.func)
@@ -26,16 +28,28 @@ function D4:ShowContextMenu(owner, entries, anchor)
     if fallbackMenu == nil then fallbackMenu = CreateFrame("Frame", AddonName .. "D4ContextMenu", UIParent, "UIDropDownMenuTemplate") end
     UIDropDownMenu_Initialize(fallbackMenu, function()
         for _, entry in ipairs(entries) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = entry.text
-            info.func = entry.func
-            if entry.checked ~= nil then
-                info.checked = IsChecked(entry)
+            if entry.divider then
+                if UIDropDownMenu_AddSeparator ~= nil then
+                    UIDropDownMenu_AddSeparator()
+                else
+                    local info = UIDropDownMenu_CreateInfo()
+                    info.text = ""
+                    info.disabled = true
+                    info.notCheckable = true
+                    UIDropDownMenu_AddButton(info)
+                end
             else
-                info.notCheckable = true
-            end
+                local info = UIDropDownMenu_CreateInfo()
+                info.text = entry.text
+                info.func = entry.func
+                if entry.checked ~= nil then
+                    info.checked = IsChecked(entry)
+                else
+                    info.notCheckable = true
+                end
 
-            UIDropDownMenu_AddButton(info)
+                UIDropDownMenu_AddButton(info)
+            end
         end
     end, "MENU")
 

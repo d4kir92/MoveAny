@@ -3,7 +3,15 @@ local DEFAULT_ART_WIDTH = 1024
 local DEFAULT_ART_HEIGHT = 1024
 local UPDATE_INTERVAL = 0.05
 local OVERLAY_LEVEL = 3000
+local LEVEL_BUTTON_WIDTH = 260
+local LEVEL_BUTTON_HEIGHT = 22
 local LEVEL_BUTTON_OFFSET = 8
+local LEVEL_STEPPER_PAD = 70
+local NAV_BUTTON_EXTRA = 53
+local NAV_BUTTON_PLAIN = 30
+local NAV_BUTTON_MIN_TEXT = 60
+local MAP_DOCK_ICON = 134269
+local CONFIRM_POPUP_KEY = "D4_INSTANCE_LEVEL_MODE"
 local PIN_TOGGLE_OFFSET_X = 40
 local PIN_TOGGLE_OFFSET_Y = 10
 local FRAME_STRATA = {"BACKGROUND", "LOW", "MEDIUM", "HIGH", "DIALOG", "FULLSCREEN", "FULLSCREEN_DIALOG", "TOOLTIP"}
@@ -36,6 +44,14 @@ local function IsWorldMap(mapID)
     if mapID == nil or C_Map == nil or C_Map.GetMapInfo == nil or Enum == nil or Enum.UIMapType == nil then return false end
     local info = C_Map.GetMapInfo(mapID)
     return info ~= nil and info.mapType ~= nil and info.mapType <= Enum.UIMapType.World
+end
+
+local function GetNavBar()
+    if WorldMapFrame == nil then return nil end
+    local navBar = WorldMapFrame.NavBar
+    if navBar == nil or type(navBar.navList) ~= "table" then return nil end
+    if not D4:CheckTemplates("NavButtonTemplate") then return nil end
+    return navBar
 end
 
 function D4:CreateInstanceLevelPanel(parent, options)
@@ -95,9 +111,10 @@ function D4:CreateInstanceLevelPanel(parent, options)
         end
     end
 
+    local titleRight = options.onSwitchToNav ~= nil and -38 or -22
     header.title = header:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     header.title:SetPoint("LEFT", header, "LEFT", 17, 0)
-    header.title:SetPoint("RIGHT", header, "RIGHT", -22, 0)
+    header.title:SetPoint("RIGHT", header, "RIGHT", titleRight, 0)
     header.title:SetJustifyH("LEFT")
     header.title:SetWordWrap(false)
     header.title:SetTextColor(1, 0.82, 0)
@@ -132,6 +149,36 @@ function D4:CreateInstanceLevelPanel(parent, options)
 
     toggle:SetScript("OnClick", function() panel:ToggleCollapsed() end)
     header.toggle = toggle
+    if options.onSwitchToNav ~= nil then
+        local dock = CreateFrame("Button", nil, header)
+        dock:SetSize(16, 16)
+        dock:SetPoint("RIGHT", toggle, "LEFT", -2, 0)
+        dock.bg = dock:CreateTexture(nil, "BACKGROUND")
+        dock.bg:SetAllPoints(dock)
+        dock.bg:SetColorTexture(1, 1, 1, 0)
+        dock.icon = dock:CreateTexture(nil, "ARTWORK")
+        dock.icon:SetSize(12, 12)
+        dock.icon:SetPoint("CENTER", dock, "CENTER", 0, 0)
+        dock.icon:SetTexture(MAP_DOCK_ICON)
+        dock.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        dock.icon:SetVertexColor(0.84, 0.8, 0.68, 0.95)
+        dock:SetScript("OnEnter", function(sel)
+            sel.bg:SetColorTexture(1, 1, 1, 0.14)
+            sel.icon:SetVertexColor(1, 1, 1, 1)
+            GameTooltip:SetOwner(sel, "ANCHOR_RIGHT")
+            GameTooltip:SetText(options.getSwitchToNavTooltip and options.getSwitchToNavTooltip() or "Move to map navigation", 1, 0.82, 0)
+            GameTooltip:Show()
+        end)
+
+        dock:SetScript("OnLeave", function(sel)
+            sel.bg:SetColorTexture(1, 1, 1, 0)
+            sel.icon:SetVertexColor(0.84, 0.8, 0.68, 0.95)
+            if GameTooltip:IsOwned(sel) then GameTooltip:Hide() end
+        end)
+
+        dock:SetScript("OnClick", function() options.onSwitchToNav() end)
+        header.dock = dock
+    end
     header:SetScript("OnEnter", function(sel)
         sel.bg:SetColorTexture(0.16, 0.15, 0.18, 0.95)
         for _, dot in ipairs(sel.dots) do
@@ -438,9 +485,10 @@ function D4:CreateInstanceLevelPanel(parent, options)
 
         self.measure:SetText(title)
         local titleW = self.measure:GetStringWidth() or 0
-        local headerW = titleW + 34
+        local extraHeader = options.onSwitchToNav ~= nil and 18 or 0
+        local headerW = titleW + 34 + extraHeader
         if headerW > maxW then maxW = headerW end
-        self.collapsedWidth = max(84, min(200, ceil(titleW) + 46))
+        self.collapsedWidth = max(84 + extraHeader, min(200, ceil(titleW) + 46 + extraHeader))
         self.innerWidth = max(110, min(200, ceil(maxW) + 20))
         self:Layout()
     end
@@ -454,6 +502,8 @@ function D4:CreateInstanceMap(provider)
     local map = {}
     local overlay = nil
     local levelButton = nil
+    local navButton = nil
+    local useNavMode = nil
     local hiddenFor = nil
     local leftPlayerMap = false
     local forced = nil
@@ -571,6 +621,175 @@ function D4:CreateInstanceMap(provider)
         Refresh()
     end
 
+    local function StepLevel(delta)
+        if shownLevels == nil or shownIndex == nil then return end
+        local index = shownIndex + delta
+        if index < 1 or index > #shownLevels then return end
+        SelectLevel(index)
+    end
+
+    local function IsNavMode()
+        if useNavMode == nil then
+            useNavMode = provider.getLevelUseNav ~= nil and provider.getLevelUseNav() == true or false
+        end
+        return useNavMode == true
+    end
+
+    local function HideLevelControls()
+        if levelButton ~= nil then levelButton:Hide() end
+        if navButton ~= nil then navButton:Hide() end
+    end
+
+    local function SetNavMode(enabled)
+        useNavMode = enabled == true
+        if provider.setLevelUseNav ~= nil then provider.setLevelUseNav(useNavMode) end
+        lastKey = nil
+        HideLevelControls()
+        Refresh()
+    end
+
+    local function GetSwitchToWidgetLabel()
+        return provider.getLevelToWidgetLabel and provider.getLevelToWidgetLabel() or "Switch to Floors widget"
+    end
+
+    local function RequestSwitchMode(toNav)
+        if StaticPopupDialogs == nil or StaticPopup_Show == nil then
+            SetNavMode(toNav)
+            return
+        end
+        local text = toNav and (provider.getLevelToNavConfirm and provider.getLevelToNavConfirm() or "Move the Floors selector to the map navigation bar?") or (provider.getLevelToWidgetConfirm and provider.getLevelToWidgetConfirm() or "Switch the floor selector to the floating Floors widget?")
+        StaticPopupDialogs[CONFIRM_POPUP_KEY] = {
+            ["text"] = text,
+            ["button1"] = YES,
+            ["button2"] = NO,
+            ["OnAccept"] = function(_, data)
+                if type(data) == "table" and data.apply ~= nil then data.apply(data.toNav) end
+            end,
+            ["timeout"] = 0,
+            ["whileDead"] = true,
+            ["hideOnEscape"] = true,
+            ["preferredIndex"] = 3,
+        }
+        StaticPopup_Show(CONFIRM_POPUP_KEY, nil, nil, {
+            ["toNav"] = toNav == true,
+            ["apply"] = SetNavMode,
+        })
+    end
+
+    local function SetupLevelMenu(dropdown)
+        if dropdown == nil or dropdown.SetupMenu == nil then return end
+        dropdown:SetupMenu(function(_, root)
+            local levels = shownLevels
+            if levels == nil then return end
+            for i, level in ipairs(levels) do
+                root:CreateRadio(GetLabel(levels, level), function() return shownIndex == i end, function() SelectLevel(i) end)
+            end
+            if #levels > 1 then
+                root:CreateDivider()
+                root:CreateButton(GetSwitchToWidgetLabel(), function() RequestSwitchMode(false) end)
+            end
+        end)
+    end
+
+    local function OpenLevelMenu(owner)
+        local levels = shownLevels
+        if levels == nil then return end
+        local entries = {}
+        for i, level in ipairs(levels) do
+            tinsert(entries, {
+                ["text"] = GetLabel(levels, level),
+                ["checked"] = function() return shownIndex == i end,
+                ["func"] = function() SelectLevel(i) end,
+            })
+        end
+        if #levels > 1 then
+            tinsert(entries, {
+                ["divider"] = true,
+            })
+            tinsert(entries, {
+                ["text"] = GetSwitchToWidgetLabel(),
+                ["func"] = function() RequestSwitchMode(false) end,
+            })
+        end
+
+        D4:ShowContextMenu(owner, entries)
+    end
+
+    local function CreateStepperControl(container)
+        local control = CreateFrame("Frame", nil, container, "SettingsDropdownWithButtonsTemplate")
+        control:SetWidth(LEVEL_BUTTON_WIDTH + LEVEL_STEPPER_PAD)
+        if control.Dropdown then control.Dropdown:SetWidth(LEVEL_BUTTON_WIDTH) end
+        local steppers = D4:SetupDropdownSteppers(control, function() StepLevel(-1) end, function() StepLevel(1) end, true)
+        local function UpdateSteppers()
+            local count = shownLevels and #shownLevels or 0
+            local index = shownIndex or 1
+            steppers:SetEnabled(index > 1, index < count)
+        end
+
+        SetupLevelMenu(control.Dropdown)
+        function control:SetLabel(text)
+            D4:SetDropdownText(self.Dropdown, text)
+            UpdateSteppers()
+            if C_Timer then C_Timer.After(0, UpdateSteppers) end
+        end
+
+        control:HookScript("OnShow", UpdateSteppers)
+        return control
+    end
+
+    local function CreateNavButton(navBar)
+        local button = CreateFrame("Button", nil, navBar, "NavButtonTemplate")
+        button.listFunc = function() return nil end
+        local arrow = button.MenuArrowButton
+        button:RegisterForClicks("LeftButtonUp")
+        button:SetScript("OnClick", function(sel)
+            if arrow ~= nil and arrow.OpenMenu ~= nil then
+                arrow:OpenMenu()
+            else
+                OpenLevelMenu(sel)
+            end
+        end)
+
+        if arrow ~= nil and arrow.SetupMenu == nil then
+            arrow:SetScript("OnClick", function() OpenLevelMenu(button) end)
+        end
+        if NavBar_ButtonOnEnter ~= nil then button:SetScript("OnEnter", NavBar_ButtonOnEnter) end
+        if NavBar_ButtonOnLeave ~= nil then button:SetScript("OnLeave", NavBar_ButtonOnLeave) end
+        button:HookScript("OnShow", function() SetupLevelMenu(arrow) end)
+        SetupLevelMenu(arrow)
+        if button.selected ~= nil then button.selected:Show() end
+        function button:Reanchor()
+            local list = navBar.navList
+            local last = list[#list]
+            if last == nil then return end
+            local hasMenu = shownLevels ~= nil and #shownLevels > 1
+            local extra = hasMenu and NAV_BUTTON_EXTRA or NAV_BUTTON_PLAIN
+            if arrow ~= nil then arrow:SetShown(hasMenu) end
+            if self:IsEnabled() ~= hasMenu then self:SetEnabled(hasMenu) end
+            local space = (navBar:GetRight() or 0) - (last:GetRight() or 0) - extra
+            local width = min(self.textWidth or 0, max(space, NAV_BUTTON_MIN_TEXT))
+            self.text:SetWidth(width)
+            self:SetWidth(width + extra)
+            if self.anchor ~= last then
+                self.anchor = last
+                self:ClearAllPoints()
+                self:SetPoint("LEFT", last, "RIGHT", 0, 0)
+            end
+
+            self:SetFrameLevel(max(navBar:GetFrameLevel(), last:GetFrameLevel() - 1))
+        end
+
+        function button:SetLabel(text)
+            self.text:SetWidth(0)
+            self:SetText(text)
+            self.textWidth = self.text:GetStringWidth()
+            self:Reanchor()
+        end
+
+        button:Hide()
+        return button
+    end
+
     local function ToggleOverlay()
         if overlay ~= nil and overlay:IsShown() and provider.getReturnMapID ~= nil then
             local info = shownLevels ~= nil and shownLevels[shownIndex] or nil
@@ -579,7 +798,7 @@ function D4:CreateInstanceMap(provider)
                 hiddenFor = shownInstance or select(2, GetInstanceArt())
                 ClearForced()
                 overlay:Hide()
-                levelButton:Hide()
+                HideLevelControls()
                 mapPinKey = nil
                 if mapPinSet ~= nil then mapPinSet:Hide() end
                 if not (InCombatLockdown ~= nil and InCombatLockdown()) and (WorldMapFrame.GetMapID == nil or WorldMapFrame:GetMapID() ~= mapID) then
@@ -826,14 +1045,33 @@ function D4:CreateInstanceMap(provider)
             ["setPos"] = provider.setLevelPanelPos,
             ["getCollapsed"] = provider.getLevelPanelCollapsed,
             ["setCollapsed"] = provider.setLevelPanelCollapsed,
+            ["onSwitchToNav"] = function() RequestSwitchMode(true) end,
+            ["getSwitchToNavTooltip"] = provider.getLevelToNavTooltip,
             ["getFrameLevel"] = function() return overlay:GetFrameLevel() + 1000 end,
         })
+
+        local navBar = GetNavBar()
+        if navBar ~= nil then
+            navButton = CreateNavButton(navBar)
+        elseif D4:CheckTemplates("SettingsDropdownWithButtonsTemplate") then
+            navButton = CreateStepperControl(container)
+        else
+            navButton = CreateFrame("Button", nil, container, "UIPanelButtonTemplate")
+            navButton:SetSize(LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT)
+            navButton:SetScript("OnClick", OpenLevelMenu)
+            navButton.SetLabel = navButton.SetText
+        end
+
+        if navBar == nil then
+            navButton:SetPoint("BOTTOMLEFT", container, "BOTTOMLEFT", LEVEL_BUTTON_OFFSET, LEVEL_BUTTON_OFFSET)
+            navButton:SetFrameLevel(overlay:GetFrameLevel() + 1000)
+        end
 
         overlay:HookScript("OnSizeChanged", function()
             if levelButton ~= nil and levelButton:IsShown() then levelButton:Layout() end
         end)
 
-        levelButton:Hide()
+        HideLevelControls()
         container:HookScript("OnMouseUp", OnCanvasMouseUp)
         WorldMapFrame:HookScript("OnShow", function()
             hiddenFor = nil
@@ -896,7 +1134,7 @@ function D4:CreateInstanceMap(provider)
             HideMapPins()
             if overlay ~= nil then
                 overlay:Hide()
-                levelButton:Hide()
+                HideLevelControls()
             end
 
             return
@@ -908,7 +1146,8 @@ function D4:CreateInstanceMap(provider)
         shownLevels = levels
         shownIndex = index
         shownInstance = instanceMapID
-        local key = format("%s|%.1f|%.1f", info.file, overlay:GetWidth() or 0, overlay:GetHeight() or 0)
+        local useNav = IsNavMode()
+        local key = format("%s|%.1f|%.1f|%d", info.file, overlay:GetWidth() or 0, overlay:GetHeight() or 0, useNav and 1 or 0)
         if key ~= lastKey then
             lastKey = key
             if view.file ~= info.file then
@@ -924,17 +1163,34 @@ function D4:CreateInstanceMap(provider)
             local credit = provider.getCredit and provider.getCredit(info)
             overlay.credit:SetText(credit or "")
             overlay.credit:SetShown(credit ~= nil)
-            if #levels > 1 then levelButton:Refresh(levels, index) end
+            if useNav then
+                navButton:SetLabel(GetLabel(levels, info))
+            elseif #levels > 1 then
+                levelButton:Refresh(levels, index)
+            end
         end
 
         UpdateMapPins(info)
-        if #levels > 1 then
-            if not levelButton:IsShown() then
-                levelButton:Refresh(levels, index)
-                levelButton:Show()
+        if useNav then
+            if levelButton:IsShown() then levelButton:Hide() end
+            if navButton.Reanchor ~= nil then
+                navButton:Reanchor()
+                if not navButton:IsShown() then navButton:Show() end
+            elseif #levels > 1 then
+                if not navButton:IsShown() then navButton:Show() end
+            elseif navButton:IsShown() then
+                navButton:Hide()
             end
-        elseif levelButton:IsShown() then
-            levelButton:Hide()
+        else
+            if navButton:IsShown() then navButton:Hide() end
+            if #levels > 1 then
+                if not levelButton:IsShown() then
+                    levelButton:Refresh(levels, index)
+                    levelButton:Show()
+                end
+            elseif levelButton:IsShown() then
+                levelButton:Hide()
+            end
         end
 
         if not overlay:IsShown() then overlay:Show() end
