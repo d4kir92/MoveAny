@@ -2,11 +2,13 @@ local _, MoveAny = ...
 local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_setalpha = {}
 local ma_mm_show = {}
-local buttonBag = {buttons = {}, hooked = {}, known = {}, failed = {}, byName = {}, lines = {}}
+local buttonBag = {buttons = {}, hooked = {}, known = {}, failed = {}, byName = {}, lines = {}, blizzard = {GarrisonLandingPageMinimapButton = true, ExpansionLandingPageMinimapButton = true, QueueStatusMinimapButton = true}}
 
 function MoveAny:GetMinimapButtonLabel(button)
-	if button:GetName() == "MetashiForeverMinimapButton" then return "MetashiForever" end
-	return (button:GetName():gsub("^MinimapButton_D4Lib_LibDBIcon_", ""):gsub("^LibDBIcon10_", ""))
+	local name = button:GetName()
+	if name:find("MinimapButton_D4Lib_LibDBIcon_", 1, true) == 1 then return (name:gsub("^MinimapButton_D4Lib_LibDBIcon_", "")) end
+	if name:find("LibDBIcon10_", 1, true) == 1 then return (name:gsub("^LibDBIcon10_", "")) end
+	return (name:gsub("MinimapButton$", ""))
 end
 
 function MoveAny:ShouldCollectMinimapButton(button)
@@ -627,7 +629,8 @@ function MoveAny:IsMinimapBagCandidate(button)
 	if button == buttonBag.toggle or buttonBag.buttons[button] or buttonBag.failed[button] then return false end
 	if button:IsForbidden() or button:IsProtected() or not button:IsObjectType("Button") then return false end
 	local name = button:GetName()
-	return name ~= nil and (name:find("LibDBIcon10_", 1, true) == 1 or name:find("MinimapButton_D4Lib_LibDBIcon_", 1, true) == 1 or name == "MetashiForeverMinimapButton")
+	if name == nil or buttonBag.blizzard[name] then return false end
+	return name:find("LibDBIcon10_", 1, true) == 1 or name:find("MinimapButton_D4Lib_LibDBIcon_", 1, true) == 1 or (name ~= "MinimapButton" and name:sub(-13) == "MinimapButton")
 end
 
 function MoveAny:CollectMinimapButton(button)
