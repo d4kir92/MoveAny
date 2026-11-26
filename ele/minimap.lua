@@ -203,8 +203,59 @@ function MoveAny:CreateMinimapBagRow(panel, i)
 	return row
 end
 
+function MoveAny:MirrorMinimapButtonFlipBook(button, row)
+	local source = button and (button.icon or button.Icon)
+	if not source or not button.GetAnimationGroups then return end
+	for _, group in ipairs({button:GetAnimationGroups()}) do
+		for _, anim in ipairs({group:GetAnimations()}) do
+			if anim:GetObjectType() == "FlipBook" and anim:GetTarget() == source then
+				row.flipGroup = row.flipGroup or row:CreateAnimationGroup()
+				row.flip = row.flip or row.flipGroup:CreateAnimation("FlipBook")
+				row.flip:SetTarget(row.icon)
+				row.flip:SetFlipBookRows(anim:GetFlipBookRows())
+				row.flip:SetFlipBookColumns(anim:GetFlipBookColumns())
+				row.flip:SetFlipBookFrames(anim:GetFlipBookFrames())
+				row.flip:SetFlipBookFrameWidth(anim:GetFlipBookFrameWidth())
+				row.flip:SetFlipBookFrameHeight(anim:GetFlipBookFrameHeight())
+				row.flip:SetDuration(anim:GetDuration())
+				row.flipGroup:SetLooping(group:GetLooping())
+				row.flipGroup:Play()
+				row.mirrorFlip = true
+
+				return
+			end
+		end
+	end
+end
+
+function MoveAny:SyncMinimapBagRowIcons()
+	local window = buttonBag.settings
+	for _, panel in ipairs(window.panels) do
+		for _, row in ipairs(panel.rows) do
+			local button = row:IsShown() and not row.mirrorFlip and buttonBag.byName[row.key]
+			local source = button and (button.icon or button.Icon)
+			if source and source.GetTexCoord and not (source.GetAtlas and source:GetAtlas()) then row.icon:SetTexCoord(source:GetTexCoord()) end
+		end
+	end
+end
+
+function MoveAny:CreateMinimapBagButton(parent)
+	local templates = {"MainMenuFrameButtonTemplate", "GameMenuButtonTemplate", "UIPanelButtonTemplate"}
+	if GameMenuFrame and type(GameMenuFrame.buttonTemplate) == "string" then tinsert(templates, 1, GameMenuFrame.buttonTemplate) end
+	for _, template in ipairs(templates) do
+		if MoveAny:CheckTemplates(template) then
+			local ok, button = pcall(CreateFrame, "Button", nil, parent, template)
+			if ok and button then return button end
+		end
+	end
+
+	return CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+end
+
 function MoveAny:FillMinimapBagRow(row, key)
 	row.key = key
+	row.mirrorFlip = nil
+	if row.flipGroup then row.flipGroup:Stop() end
 	row.label:SetText(MoveAny:GetMinimapBagKeyLabel(key))
 	if MoveAny:IsMinimapBagSeparator(key) then
 		row.icon:Hide()
@@ -218,6 +269,7 @@ function MoveAny:FillMinimapBagRow(row, key)
 		row.line:Hide()
 		row.label:SetTextColor(1, 0.82, 0)
 		if not pcall(MoveAny.CopyMinimapButtonIcon, MoveAny, buttonBag.byName[key], row.icon) then row.icon:SetTexture(134400) end
+		pcall(MoveAny.MirrorMinimapButtonFlipBook, MoveAny, buttonBag.byName[key], row)
 	end
 
 	row.selection:SetShown(buttonBag.selected == key)
@@ -410,12 +462,12 @@ function MoveAny:ToggleMinimapButtonSettings()
 		window.dropLine:SetHeight(2)
 		window.dropLine:SetColorTexture(1, 0.82, 0, 1)
 		window.dropLine:Hide()
-		window.addSeparator = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+		window.addSeparator = MoveAny:CreateMinimapBagButton(window)
 		window.addSeparator:SetHeight(22)
 		window.addSeparator:SetPoint("TOPLEFT", window.panels[1], "BOTTOMLEFT", 0, -8)
 		window.addSeparator:SetPoint("RIGHT", window.panels[1], "CENTER", -2, 0)
 		window.addSeparator:SetScript("OnClick", function() MoveAny:AddMinimapBagSeparator() end)
-		window.removeSeparator = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+		window.removeSeparator = MoveAny:CreateMinimapBagButton(window)
 		window.removeSeparator:SetHeight(22)
 		window.removeSeparator:SetPoint("TOPRIGHT", window.panels[1], "BOTTOMRIGHT", 0, -8)
 		window.removeSeparator:SetPoint("LEFT", window.panels[1], "CENTER", 2, 0)
@@ -424,12 +476,12 @@ function MoveAny:ToggleMinimapButtonSettings()
 		end)
 		MoveAny:CreateMinimapBagResizeGrip(window)
 
-		window.toMinimap = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+		window.toMinimap = MoveAny:CreateMinimapBagButton(window)
 		window.toMinimap:SetSize(44, 28)
 		window.toMinimap:SetPoint("CENTER", 0, 20)
 		window.toMinimap:SetText(">")
 		window.toMinimap:SetScript("OnClick", function() MoveAny:MoveMinimapBagEntry(buttonBag.selected, false) end)
-		window.toBag = CreateFrame("Button", nil, window, "UIPanelButtonTemplate")
+		window.toBag = MoveAny:CreateMinimapBagButton(window)
 		window.toBag:SetSize(44, 28)
 		window.toBag:SetPoint("CENTER", 0, -20)
 		window.toBag:SetText("<")
@@ -453,6 +505,13 @@ function MoveAny:ToggleMinimapButtonSettings()
 			buttonBag.dragging = nil
 			window.ghost:Hide()
 			window:StopMovingOrSizing()
+		end)
+		window.iconTime = 0
+		window:SetScript("OnUpdate", function(sel, elapsed)
+			sel.iconTime = sel.iconTime + elapsed
+			if sel.iconTime < 0.05 then return end
+			sel.iconTime = 0
+			MoveAny:SyncMinimapBagRowIcons()
 		end)
 		tinsert(UISpecialFrames, "MAMinimapButtonSettings")
 		window:Hide()
