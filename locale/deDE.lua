@@ -185,6 +185,7 @@ MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAG", "Minimap-Buttons zusammenfassen
 MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGADDSEPARATOR", "Trenner hinzufügen")
 MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGCOLLECTED", "Gesammelt")
 MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGCONFIG", "Sammlung einstellen")
+MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGEXTERNAL", "Deaktiviert, da %s bereits Minimap-Buttons sammelt.")
 MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGHINT", "Einträge zum Sortieren oder zwischen die Listen ziehen. Trenner erscheinen im Button-Menü als Linie.")
 MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGKEPT", "An der Minimap lassen")
 MoveAny:AddTrans("deDE", "LID_MINIMAPBUTTONBAGREMOVESEPARATOR", "Trenner entfernen")

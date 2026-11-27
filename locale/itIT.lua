@@ -185,6 +185,7 @@ MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAG", "Raggruppa i pulsanti della min
 MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGADDSEPARATOR", "Aggiungi separatore")
 MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGCOLLECTED", "Raggruppati")
 MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGCONFIG", "Configura raggruppamento")
+MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGEXTERNAL", "Disattivato perché %s raggruppa già i pulsanti della minimappa.")
 MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGHINT", "Trascina le voci per ordinarle o spostarle tra gli elenchi. I separatori appaiono come una linea nel menu dei pulsanti.")
 MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGKEPT", "Mantieni sulla minimappa")
 MoveAny:AddTrans("itIT", "LID_MINIMAPBUTTONBAGREMOVESEPARATOR", "Rimuovi separatore")

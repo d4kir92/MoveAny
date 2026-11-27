@@ -185,6 +185,7 @@ MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAG", "Объединить кноп�
 MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGADDSEPARATOR", "Добавить разделитель")
 MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGCOLLECTED", "Собранные")
 MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGCONFIG", "Настроить сбор кнопок")
+MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGEXTERNAL", "Отключено, так как %s уже объединяет кнопки мини-карты.")
 MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGHINT", "Перетаскивайте элементы, чтобы упорядочить их или переместить между списками. Разделители отображаются линией в меню кнопок.")
 MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGKEPT", "Оставить на мини-карте")
 MoveAny:AddTrans("ruRU", "LID_MINIMAPBUTTONBAGREMOVESEPARATOR", "Удалить разделитель")

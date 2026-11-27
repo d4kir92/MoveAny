@@ -185,6 +185,7 @@ MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAG", "Regrouper les boutons de la mi
 MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGADDSEPARATOR", "Ajouter un séparateur")
 MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGCOLLECTED", "Regroupés")
 MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGCONFIG", "Configurer le regroupement")
+MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGEXTERNAL", "Désactivé car %s regroupe déjà les boutons de la minicarte.")
 MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGHINT", "Glissez les éléments pour les trier ou les déplacer entre les listes. Les séparateurs s'affichent comme une ligne dans le menu des boutons.")
 MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGKEPT", "Garder sur la minicarte")
 MoveAny:AddTrans("frFR", "LID_MINIMAPBUTTONBAGREMOVESEPARATOR", "Retirer le séparateur")

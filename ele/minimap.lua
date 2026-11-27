@@ -2,7 +2,85 @@ local _, MoveAny = ...
 local hooksecurefunc = MoveAny.hooksecurefunc
 local ma_setalpha = {}
 local ma_mm_show = {}
-local buttonBag = {buttons = {}, hooked = {}, known = {}, failed = {}, byName = {}, lines = {}, blizzard = {GarrisonLandingPageMinimapButton = true, ExpansionLandingPageMinimapButton = true, QueueStatusMinimapButton = true}}
+local buttonBag = {buttons = {}, hooked = {}, known = {}, failed = {}, external = {}, byName = {}, lines = {}, blizzard = {GarrisonLandingPageMinimapButton = true, ExpansionLandingPageMinimapButton = true, QueueStatusMinimapButton = true}}
+
+function MoveAny:GetExternalMinimapButtonCollector()
+	if MoveAny:IsAddOnLoaded("DaylightUI_InfoPanel") and type(_G.DaylightUI) == "table" then
+		local dui = _G.DaylightUI
+		if not dui.loggedIn then return "DaylightUI" end
+		local api = dui.API
+		if type(api) == "table" and type(api.IsModuleEnabled) == "function" and type(api.GetSetting) == "function" and api.IsModuleEnabled("InfoPanel") and api.GetSetting("InfoPanel", "map.enabled") ~= false and api.GetSetting("InfoPanel", "map.drawer") == true then return "DaylightUI" end
+	end
+
+	if _G["LeaPlusGlobalMinimapCombinedButtonFrame"] ~= nil or (MoveAny:IsAddOnLoaded("Leatrix_Plus") and type(_G.LeaPlusDB) == "table" and _G.LeaPlusDB["MinimapModder"] == "On" and _G.LeaPlusDB["MinimapButtonBag"] == "On") then return "Leatrix Plus" end
+	if MoveAny:IsAddOnLoaded("MinimapButtonButton") or _G["MinimapButtonButton"] ~= nil then return "MinimapButtonButton" end
+	if MoveAny:IsAddOnLoaded("MBB") or MoveAny:IsAddOnLoaded("MinimapButtonBag") or MoveAny:IsAddOnLoaded("MinimapButtonBag-Reborn") or MoveAny:IsAddOnLoaded("MinimapButtonBag_Reborn") or _G["MBB_MinimapButtonFrame"] ~= nil then return "MinimapButtonBag" end
+	if MoveAny:IsAddOnLoaded("HidingBar") or _G["HidingBarAddon"] ~= nil then return "HidingBar" end
+	if MoveAny:IsAddOnLoaded("MinimapButtonFrame") or _G["MinimapButtonFrame"] ~= nil then return "MinimapButtonFrame" end
+	if _G["SquareMinimapButtonBar"] ~= nil then return "SquareMinimapButtons" end
+	if _G["WTMinimapButtonBar"] ~= nil then return "ElvUI WindTools" end
+
+	return nil
+end
+
+function MoveAny:IsMinimapButtonOwnedExternally(button)
+	local parent = button and button:GetParent()
+
+	return parent ~= nil and parent ~= buttonBag.menu and parent ~= Minimap and parent ~= MinimapBackdrop
+end
+
+function MoveAny:ScheduleMinimapButtonLayout()
+	if buttonBag.layoutPending or not buttonBag.enabled then return end
+	buttonBag.layoutPending = true
+	C_Timer.After(0, function()
+		buttonBag.layoutPending = false
+		MoveAny:LayoutMinimapButtons()
+	end)
+end
+
+function MoveAny:ReleaseExternalMinimapButton(button)
+	buttonBag.buttons[button] = nil
+	buttonBag.external[button] = true
+	buttonBag.known[button] = nil
+	local name = button and button:GetName()
+	if name and buttonBag.byName[name] == button then buttonBag.byName[name] = nil end
+	MoveAny:ScheduleMinimapButtonLayout()
+end
+
+function MoveAny:ShowMinimapButtonBagTooltip(owner)
+	local collector = MoveAny:GetExternalMinimapButtonCollector()
+	if collector == nil then return end
+	GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+	GameTooltip:AddLine(MoveAny:Trans("LID_MINIMAPBUTTONBAG"))
+	GameTooltip:AddLine(format(MoveAny:Trans("LID_MINIMAPBUTTONBAGEXTERNAL"), collector), 1, 0.3, 0.3, true)
+	GameTooltip:Show()
+end
+
+function MoveAny:SetupMinimapButtonBagCheckBox(cb)
+	if cb == nil then return end
+	local function Update()
+		local blocked = MoveAny:GetExternalMinimapButtonCollector() ~= nil
+		cb:SetEnabled(not blocked)
+		if cb.Label then cb.Label:SetAlpha(blocked and 0.5 or 1) end
+	end
+
+	local function OnEnter(sel)
+		MoveAny:ShowMinimapButtonBagTooltip(sel)
+	end
+
+	cb:SetMotionScriptsWhileDisabled(true)
+	cb:SetScript("OnEnter", OnEnter)
+	cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	if cb.row then
+		cb.row:SetMotionScriptsWhileDisabled(true)
+		cb.row:SetScript("OnEnter", OnEnter)
+		cb.row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	end
+
+	if cb.holder then cb.holder:HookScript("OnShow", Update) end
+	buttonBag.updateCheckbox = Update
+	Update()
+end
 
 function MoveAny:GetMinimapButtonLabel(button)
 	local name = button:GetName()
@@ -23,6 +101,7 @@ function MoveAny:ReleaseMinimapButton(button)
 	local state = buttonBag.buttons[button]
 	if not state then return end
 	buttonBag.buttons[button] = nil
+	if button:GetParent() ~= buttonBag.menu then return end
 	button:SetParent(state.parent)
 	button:SetFrameStrata(state.strata)
 	button:SetFrameLevel(state.level)
@@ -526,6 +605,12 @@ end
 
 function MoveAny:LayoutMinimapButtons()
 	if buttonBag.updating or InCombatLockdown() or not buttonBag.enabled then return end
+	if MoveAny:GetExternalMinimapButtonCollector() then
+		MoveAny:UpdateMinimapButtonBag()
+
+		return
+	end
+
 	buttonBag.updating = true
 	pcall(MoveAny.ArrangeMinimapButtons, MoveAny)
 	buttonBag.updating = false
@@ -626,7 +711,7 @@ function MoveAny:PlaceMinimapButton(button, index, top)
 end
 
 function MoveAny:IsMinimapBagCandidate(button)
-	if button == buttonBag.toggle or buttonBag.buttons[button] or buttonBag.failed[button] then return false end
+	if button == buttonBag.toggle or buttonBag.buttons[button] or buttonBag.failed[button] or buttonBag.external[button] then return false end
 	if button:IsForbidden() or button:IsProtected() or not button:IsObjectType("Button") then return false end
 	local name = button:GetName()
 	if name == nil or buttonBag.blizzard[name] then return false end
@@ -646,13 +731,30 @@ function MoveAny:CollectMinimapButton(button)
 	end
 
 	buttonBag.buttons[button] = state
+	local prevUpdating = buttonBag.updating
+	buttonBag.updating = true
+	local ok, err = pcall(button.SetParent, button, buttonBag.menu)
+	buttonBag.updating = prevUpdating
+	if not ok then error(err) end
 	button:SetScript("OnDragStart", nil)
 	button:SetScript("OnDragStop", nil)
-	button:SetParent(buttonBag.menu)
 	if not buttonBag.hooked[button] then
 		buttonBag.hooked[button] = true
 		local function Refresh()
-			if buttonBag.buttons[button] then MoveAny:LayoutMinimapButtons() end
+			if buttonBag.updating or not buttonBag.buttons[button] then return end
+			if MoveAny:GetExternalMinimapButtonCollector() then
+				MoveAny:UpdateMinimapButtonBag()
+
+				return
+			end
+
+			if MoveAny:IsMinimapButtonOwnedExternally(button) then
+				MoveAny:ReleaseExternalMinimapButton(button)
+
+				return
+			end
+
+			MoveAny:ScheduleMinimapButtonLayout()
 		end
 
 		hooksecurefunc(button, "SetPoint", Refresh)
@@ -669,10 +771,19 @@ end
 
 function MoveAny:CollectMinimapButtons()
 	if not buttonBag.enabled or InCombatLockdown() then return end
-	buttonBag.childCount = Minimap:GetNumChildren()
+	if MoveAny:GetExternalMinimapButtonCollector() then
+		MoveAny:UpdateMinimapButtonBag()
+
+		return
+	end
+
 	for button in pairs(buttonBag.buttons) do
-		local ok, collect = pcall(MoveAny.ShouldCollectMinimapButton, MoveAny, button)
-		if (not ok or not collect) and not pcall(MoveAny.ReleaseMinimapButton, MoveAny, button) then MoveAny:DropMinimapButton(button) end
+		if MoveAny:IsMinimapButtonOwnedExternally(button) then
+			MoveAny:ReleaseExternalMinimapButton(button)
+		else
+			local ok, collect = pcall(MoveAny.ShouldCollectMinimapButton, MoveAny, button)
+			if (not ok or not collect) and not pcall(MoveAny.ReleaseMinimapButton, MoveAny, button) then MoveAny:DropMinimapButton(button) end
+		end
 	end
 
 	for _, button in ipairs({Minimap:GetChildren()}) do
@@ -681,12 +792,15 @@ function MoveAny:CollectMinimapButtons()
 
 	pcall(MoveAny.SyncMinimapBagOrder, MoveAny)
 	MoveAny:LayoutMinimapButtons()
+	buttonBag.childCount = Minimap:GetNumChildren()
 	pcall(MoveAny.RefreshMinimapButtonSettings, MoveAny)
 end
 
 function MoveAny:UpdateMinimapButtonBag()
+	if buttonBag.updateCheckbox then buttonBag.updateCheckbox() end
 	if InCombatLockdown() then return end
-	local enabled = MoveAny:IsEnabled("MINIMAPBUTTONBAG", false)
+	local collector = MoveAny:GetExternalMinimapButtonCollector()
+	local enabled = MoveAny:IsEnabled("MINIMAPBUTTONBAG", false) and collector == nil
 	if not buttonBag.menu then
 		if not enabled then return end
 		local menu = CreateFrame("Frame", "MAMinimapButtonMenu", UIParent, "BackdropTemplate")
@@ -739,6 +853,7 @@ function MoveAny:UpdateMinimapButtonBag()
 		buttonBag.watcher:Show()
 		if not buttonBag.ticker then buttonBag.ticker = C_Timer.NewTicker(5, function() MoveAny:CollectMinimapButtons() end) end
 	else
+		buttonBag.layoutPending = false
 		if buttonBag.watcher then buttonBag.watcher:Hide() end
 		buttonBag.menu:Hide()
 		if buttonBag.settings then buttonBag.settings:Hide() end
@@ -748,7 +863,7 @@ function MoveAny:UpdateMinimapButtonBag()
 		end
 
 		for button in pairs(buttonBag.buttons) do
-			MoveAny:ReleaseMinimapButton(button)
+			pcall(MoveAny.ReleaseMinimapButton, MoveAny, button)
 		end
 
 		wipe(buttonBag.buttons)
@@ -756,17 +871,36 @@ function MoveAny:UpdateMinimapButtonBag()
 end
 
 function MoveAny:InitMinimapButtonBag()
+	local function HookDaylightUI()
+		if buttonBag.daylightHooked then return end
+		local api = type(_G.DaylightUI) == "table" and _G.DaylightUI.API
+		if type(api) ~= "table" or type(api.On) ~= "function" then return end
+		buttonBag.daylightHooked = true
+		api.On("Login", function() MoveAny:UpdateMinimapButtonBag() end, "MoveAny")
+		api.On("SettingChanged", function(scope, path)
+			if scope == "InfoPanel" and (path == "map.drawer" or path == "map.enabled") then MoveAny:UpdateMinimapButtonBag() end
+		end, "MoveAny")
+	end
+
 	local events = CreateFrame("Frame")
 	events:RegisterEvent("PLAYER_REGEN_ENABLED")
 	events:RegisterEvent("PLAYER_REGEN_DISABLED")
+	events:RegisterEvent("PLAYER_ENTERING_WORLD")
+	events:RegisterEvent("ADDON_LOADED")
 	events:SetScript("OnEvent", function(_, event)
 		if event == "PLAYER_REGEN_DISABLED" then
 			if buttonBag.menu then buttonBag.menu:Hide() end
 			if buttonBag.settings then buttonBag.settings:Hide() end
+		elseif event == "ADDON_LOADED" then
+			HookDaylightUI()
+			local want = MoveAny:IsEnabled("MINIMAPBUTTONBAG", false) and MoveAny:GetExternalMinimapButtonCollector() == nil
+			if buttonBag.enabled ~= want then MoveAny:UpdateMinimapButtonBag() elseif buttonBag.updateCheckbox then buttonBag.updateCheckbox() end
 		else
+			HookDaylightUI()
 			MoveAny:UpdateMinimapButtonBag()
 		end
 	end)
+	HookDaylightUI()
 	MoveAny:UpdateMinimapButtonBag()
 end
 

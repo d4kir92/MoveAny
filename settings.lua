@@ -726,10 +726,10 @@ function MoveAny:InitMALock()
 			end
 		end, nil, nil, false)
 
-		AddCheckBox("MINIMAPBUTTONBAG", false, function()
+		MoveAny:SetupMinimapButtonBagCheckBox(AddCheckBox("MINIMAPBUTTONBAG", false, function()
 			MoveAny:UpdateMinimapButtonBag()
 			MoveAny:ClearReloadFor("MINIMAPBUTTONBAG")
-		end, nil, nil, false)
+		end, nil, nil, false))
 		AddDropdown("SNAPSIZE", 5, nil, gridChoices)
 		AddDropdown("GRIDSIZE", 10, MoveAny.UpdateGrid, gridChoices)
 		AddCategory("FRAMES")
